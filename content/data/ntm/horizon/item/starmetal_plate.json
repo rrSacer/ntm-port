@@ -1,4 +1,16 @@
 {
   "template": "minecraft:netherite_chestplate",
-  "max_stack_size": 1
+  "max_stack_size": 1,
+  "components": {
+    "minecraft:max_damage": 2400,
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:armor",
+        "id": "minecraft:armor.chest",
+        "amount": 8,
+        "operation": "add_value",
+        "slot": "chest"
+      }
+    ]
+  }
 }

@@ -3422,6 +3422,51 @@
       }
     },
     {
+      "id": "ntm:bulk__79bcc45c00bbd29e84",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:152",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:cladding_paint",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8317336f0e39ab5be9",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:153",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:cladding_rubber",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__ce116d8345798dcd7c",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:154",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:cladding_lead",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__329c09325db25676cc",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:155",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:cladding_desh",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1892034fef1f564c91",
+      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:156",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:cladding_ghiorsium",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__d9e4d951e7014a54f5",
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:214",
       "type": "minecraft:crafting_shaped",
@@ -8381,7 +8426,7 @@
       }
     }
   ],
-  "generated_count": 931,
+  "generated_count": 936,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -11778,36 +11823,6 @@
       "callee": "addShapelessAuto",
       "reason": "unregistered/ambiguous source item mush",
       "expression": "new ItemStack(ModItems.radaway_strong, 1), new Object[] { ModItems.radaway, ModBlocks.mush }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:152",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item cladding_paint",
-      "expression": "new ItemStack(ModItems.cladding_paint, 1), new Object[] { PB.nugget(), PB.nugget(), PB.nugget(), PB.nugget(), Items.clay_ball, Items.glass_bottle }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:153",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item cladding_rubber",
-      "expression": "new ItemStack(ModItems.cladding_rubber, 1), new Object[] { \"RCR\", \"CDC\", \"RCR\", 'R', ANY_RUBBER.ingot(), 'C', COAL.dust(), 'D', ModItems.ducttape }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:154",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item cladding_lead",
-      "expression": "new ItemStack(ModItems.cladding_lead, 1), new Object[] { \"DPD\", \"PRP\", \"DPD\", 'R', ModItems.cladding_rubber, 'P', PB.plate(), 'D', ModItems.ducttape }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:155",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item cladding_desh",
-      "expression": "new ItemStack(ModItems.cladding_desh, 1), new Object[] { \"DPD\", \"PRP\", \"DPD\", 'R', ModItems.cladding_lead, 'P', ModItems.plate_desh, 'D', ModItems.ducttape }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:156",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item cladding_ghiorsium",
-      "expression": "new ItemStack(ModItems.cladding_ghiorsium, 1), new Object[] { \"DPD\", \"PRP\", \"DPD\", 'R', ModItems.cladding_desh, 'P', ModItems.ingot_gh336, 'D', ModItems.ducttape }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ConsumableRecipes.java:157",

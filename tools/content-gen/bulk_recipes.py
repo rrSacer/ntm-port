@@ -265,7 +265,8 @@ def generate(src,out,rows,emit):
             # These newly imported tools need DictGroup ANY_PLASTIC. Reuse
             # the machine resolver's existing exact group expansion while
             # keeping the previous vanilla catalog's conservative profile.
-            if file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.hand_drill(?:_desh)?\)',args.strip()):
+            # The radiation claddings (onda 1) need DictGroup ANY_RUBBER the same way.
+            if (file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.hand_drill(?:_desh)?\)',args.strip())) or (file.name=='ConsumableRecipes.java' and re.match(r'new ItemStack\(ModItems\.cladding_rubber, 1\)',args.strip())):
                 if pile_resolver is None:
                     from machine_recipes import MachineResolver
                     pile_resolver=MachineResolver(src,rows)

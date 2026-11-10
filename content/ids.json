@@ -3135,20 +3135,27 @@
       "template": "minecraft:diamond_boots",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "alloy_boots = new ArmorFSB(MainRegistry.aMatAlloy, 3, RefStrings.MODID + \":textures/armor/alloy_1.png\").cloneStats((ArmorFSB) alloy_helmet).setUnlocalizedName(\"alloy_boots\").setTextureName(RefStrings.MODID + \":alloy_boots\");",
+        "source_stats": "ArmorMaterial durability 40, reduction {3, 8, 6, 3} (MainRegistry.java:136); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatAlloy = EnumHelper.addArmorMaterial(\"HBM_ALLOY\", 40, new int[] { 3, 8, 6, 3 }, 12);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/alloy_boots.png",
+      "max_damage": 520,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
       "source_registry": "hbm:item.alloy_boots",
       "names": {
         "en_us": "Advanced Alloy Boots (LEGACY)",
@@ -3172,20 +3179,27 @@
       "template": "minecraft:diamond_helmet",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "alloy_helmet = new ArmorFSB(MainRegistry.aMatAlloy, 0, RefStrings.MODID + \":textures/armor/alloy_1.png\").setUnlocalizedName(\"alloy_helmet\").setTextureName(RefStrings.MODID + \":alloy_helmet\");",
+        "source_stats": "ArmorMaterial durability 40, reduction {3, 8, 6, 3} (MainRegistry.java:136); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatAlloy = EnumHelper.addArmorMaterial(\"HBM_ALLOY\", 40, new int[] { 3, 8, 6, 3 }, 12);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/alloy_helmet.png",
+      "max_damage": 440,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
       "source_registry": "hbm:item.alloy_helmet",
       "names": {
         "en_us": "Advanced Alloy Helmet (LEGACY)",
@@ -3246,20 +3260,27 @@
       "template": "minecraft:diamond_leggings",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "alloy_legs = new ArmorFSB(MainRegistry.aMatAlloy, 2, RefStrings.MODID + \":textures/armor/alloy_2.png\").cloneStats((ArmorFSB) alloy_helmet).setUnlocalizedName(\"alloy_legs\").setTextureName(RefStrings.MODID + \":alloy_legs\");",
+        "source_stats": "ArmorMaterial durability 40, reduction {3, 8, 6, 3} (MainRegistry.java:136); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatAlloy = EnumHelper.addArmorMaterial(\"HBM_ALLOY\", 40, new int[] { 3, 8, 6, 3 }, 12);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/alloy_legs.png",
+      "max_damage": 600,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
       "source_registry": "hbm:item.alloy_legs",
       "names": {
         "en_us": "Advanced Alloy Leggings (LEGACY)",
@@ -3283,20 +3304,27 @@
       "template": "minecraft:diamond_chestplate",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "alloy_plate = new ArmorFSB(MainRegistry.aMatAlloy, 1, RefStrings.MODID + \":textures/armor/alloy_1.png\").cloneStats((ArmorFSB) alloy_helmet).setUnlocalizedName(\"alloy_plate\").setTextureName(RefStrings.MODID + \":alloy_plate\");",
+        "source_stats": "ArmorMaterial durability 40, reduction {3, 8, 6, 3} (MainRegistry.java:136); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatAlloy = EnumHelper.addArmorMaterial(\"HBM_ALLOY\", 40, new int[] { 3, 8, 6, 3 }, 12);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/alloy_plate.png",
+      "max_damage": 640,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
       "source_registry": "hbm:item.alloy_plate",
       "names": {
         "en_us": "Advanced Alloy Chestplate (LEGACY)",
@@ -20815,20 +20843,27 @@
       "template": "minecraft:iron_boots",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "cobalt_boots = new ArmorFSB(MainRegistry.aMatCobalt, 3, RefStrings.MODID + \":textures/armor/cobalt_1.png\").cloneStats((ArmorFSB) cobalt_helmet).setUnlocalizedName(\"cobalt_boots\").setTextureName(RefStrings.MODID + \":cobalt_boots\");",
+        "source_stats": "ArmorMaterial durability 70, reduction {3, 8, 6, 3} (MainRegistry.java:143); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatCobalt = EnumHelper.addArmorMaterial(\"HBM_COBALT\", 70, new int[] { 3, 8, 6, 3 }, 60);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/cobalt_boots.png",
+      "max_damage": 910,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
       "source_registry": "hbm:item.cobalt_boots",
       "names": {
         "en_us": "Cobalt Boots",
@@ -20894,20 +20929,27 @@
       "template": "minecraft:iron_helmet",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "cobalt_helmet = new ArmorFSB(MainRegistry.aMatCobalt, 0, RefStrings.MODID + \":textures/armor/cobalt_1.png\").setUnlocalizedName(\"cobalt_helmet\").setTextureName(RefStrings.MODID + \":cobalt_helmet\");",
+        "source_stats": "ArmorMaterial durability 70, reduction {3, 8, 6, 3} (MainRegistry.java:143); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatCobalt = EnumHelper.addArmorMaterial(\"HBM_COBALT\", 70, new int[] { 3, 8, 6, 3 }, 60);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/cobalt_helmet.png",
+      "max_damage": 770,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
       "source_registry": "hbm:item.cobalt_helmet",
       "names": {
         "en_us": "Cobalt Helmet",
@@ -20973,20 +21015,27 @@
       "template": "minecraft:iron_leggings",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "cobalt_legs = new ArmorFSB(MainRegistry.aMatCobalt, 2, RefStrings.MODID + \":textures/armor/cobalt_2.png\").cloneStats((ArmorFSB) cobalt_helmet).setUnlocalizedName(\"cobalt_legs\").setTextureName(RefStrings.MODID + \":cobalt_legs\");",
+        "source_stats": "ArmorMaterial durability 70, reduction {3, 8, 6, 3} (MainRegistry.java:143); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatCobalt = EnumHelper.addArmorMaterial(\"HBM_COBALT\", 70, new int[] { 3, 8, 6, 3 }, 60);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/cobalt_legs.png",
+      "max_damage": 1050,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
       "source_registry": "hbm:item.cobalt_legs",
       "names": {
         "en_us": "Cobalt Leggings",
@@ -21010,20 +21059,27 @@
       "template": "minecraft:iron_chestplate",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "cobalt_plate = new ArmorFSB(MainRegistry.aMatCobalt, 1, RefStrings.MODID + \":textures/armor/cobalt_1.png\").cloneStats((ArmorFSB) cobalt_helmet).setUnlocalizedName(\"cobalt_plate\").setTextureName(RefStrings.MODID + \":cobalt_plate\");",
+        "source_stats": "ArmorMaterial durability 70, reduction {3, 8, 6, 3} (MainRegistry.java:143); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatCobalt = EnumHelper.addArmorMaterial(\"HBM_COBALT\", 70, new int[] { 3, 8, 6, 3 }, 60);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/cobalt_plate.png",
+      "max_damage": 1120,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
       "source_registry": "hbm:item.cobalt_plate",
       "names": {
         "en_us": "Cobalt Chestplate",
@@ -57795,20 +57851,27 @@
       "template": "minecraft:netherite_boots",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "starmetal_boots = new ArmorFSB(MainRegistry.aMatStarmetal, 3, RefStrings.MODID + \":textures/armor/starmetal_1.png\").cloneStats((ArmorFSB) starmetal_helmet).setUnlocalizedName(\"starmetal_boots\").setTextureName(RefStrings.MODID + \":starmetal_boots\");",
+        "source_stats": "ArmorMaterial durability 150, reduction {3, 8, 6, 3} (MainRegistry.java:144); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatStarmetal = EnumHelper.addArmorMaterial(\"HBM_STARMETAL\", 150, new int[] { 3, 8, 6, 3 }, 100);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/starmetal_boots.png",
+      "max_damage": 1950,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
       "source_registry": "hbm:item.starmetal_boots",
       "names": {
         "en_us": "Starmetal Boots",
@@ -57832,20 +57895,27 @@
       "template": "minecraft:netherite_helmet",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "starmetal_helmet = new ArmorFSB(MainRegistry.aMatStarmetal, 0, RefStrings.MODID + \":textures/armor/starmetal_1.png\")\n\t\t\t\t.setUnlocalizedName(\"starmetal_helmet\").setTextureName(RefStrings.MODID + \":starmetal_helmet\");",
+        "source_stats": "ArmorMaterial durability 150, reduction {3, 8, 6, 3} (MainRegistry.java:144); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatStarmetal = EnumHelper.addArmorMaterial(\"HBM_STARMETAL\", 150, new int[] { 3, 8, 6, 3 }, 100);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/starmetal_helmet.png",
+      "max_damage": 1650,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
       "source_registry": "hbm:item.starmetal_helmet",
       "names": {
         "en_us": "Starmetal Helmet",
@@ -57906,20 +57976,27 @@
       "template": "minecraft:netherite_leggings",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "starmetal_legs = new ArmorFSB(MainRegistry.aMatStarmetal, 2, RefStrings.MODID + \":textures/armor/starmetal_2.png\").cloneStats((ArmorFSB) starmetal_helmet).setUnlocalizedName(\"starmetal_legs\").setTextureName(RefStrings.MODID + \":starmetal_legs\");",
+        "source_stats": "ArmorMaterial durability 150, reduction {3, 8, 6, 3} (MainRegistry.java:144); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatStarmetal = EnumHelper.addArmorMaterial(\"HBM_STARMETAL\", 150, new int[] { 3, 8, 6, 3 }, 100);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/starmetal_legs.png",
+      "max_damage": 2250,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
       "source_registry": "hbm:item.starmetal_legs",
       "names": {
         "en_us": "Starmetal Leggings",
@@ -57943,20 +58020,27 @@
       "template": "minecraft:netherite_chestplate",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "starmetal_plate = new ArmorFSB(MainRegistry.aMatStarmetal, 1, RefStrings.MODID + \":textures/armor/starmetal_1.png\").cloneStats((ArmorFSB) starmetal_helmet).setUnlocalizedName(\"starmetal_plate\").setTextureName(RefStrings.MODID + \":starmetal_plate\");",
+        "source_stats": "ArmorMaterial durability 150, reduction {3, 8, 6, 3} (MainRegistry.java:144); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatStarmetal = EnumHelper.addArmorMaterial(\"HBM_STARMETAL\", 150, new int[] { 3, 8, 6, 3 }, 100);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/starmetal_plate.png",
+      "max_damage": 2400,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
       "source_registry": "hbm:item.starmetal_plate",
       "names": {
         "en_us": "Starmetal Chestplate",
@@ -58026,20 +58110,27 @@
       "template": "minecraft:iron_boots",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "steel_boots = new ArmorFSB(MainRegistry.aMatSteel, 3, RefStrings.MODID + \":textures/armor/steel_1.png\").cloneStats((ArmorFSB) steel_helmet).setUnlocalizedName(\"steel_boots\").setTextureName(RefStrings.MODID + \":steel_boots\");",
+        "source_stats": "ArmorMaterial durability 30, reduction {3, 8, 6, 3} (MainRegistry.java:135); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatSteel = EnumHelper.addArmorMaterial(\"HBM_STEEL\", 30, new int[] { 3, 8, 6, 3 }, 5);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/steel_boots.png",
+      "max_damage": 390,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
       "source_registry": "hbm:item.steel_boots",
       "names": {
         "en_us": "Steel Boots",
@@ -58063,20 +58154,27 @@
       "template": "minecraft:iron_helmet",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "steel_helmet = new ArmorFSB(MainRegistry.aMatSteel, 0, RefStrings.MODID + \":textures/armor/steel_1.png\").setUnlocalizedName(\"steel_helmet\").setTextureName(RefStrings.MODID + \":steel_helmet\");",
+        "source_stats": "ArmorMaterial durability 30, reduction {3, 8, 6, 3} (MainRegistry.java:135); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatSteel = EnumHelper.addArmorMaterial(\"HBM_STEEL\", 30, new int[] { 3, 8, 6, 3 }, 5);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/steel_helmet.png",
+      "max_damage": 330,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
       "source_registry": "hbm:item.steel_helmet",
       "names": {
         "en_us": "Steel Helmet",
@@ -58137,20 +58235,27 @@
       "template": "minecraft:iron_leggings",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "steel_legs = new ArmorFSB(MainRegistry.aMatSteel, 2, RefStrings.MODID + \":textures/armor/steel_2.png\").cloneStats((ArmorFSB) steel_helmet).setUnlocalizedName(\"steel_legs\").setTextureName(RefStrings.MODID + \":steel_legs\");",
+        "source_stats": "ArmorMaterial durability 30, reduction {3, 8, 6, 3} (MainRegistry.java:135); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatSteel = EnumHelper.addArmorMaterial(\"HBM_STEEL\", 30, new int[] { 3, 8, 6, 3 }, 5);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/steel_legs.png",
+      "max_damage": 450,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
       "source_registry": "hbm:item.steel_legs",
       "names": {
         "en_us": "Steel Leggings",
@@ -58174,20 +58279,27 @@
       "template": "minecraft:iron_chestplate",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "steel_plate = new ArmorFSB(MainRegistry.aMatSteel, 1, RefStrings.MODID + \":textures/armor/steel_1.png\").cloneStats((ArmorFSB) steel_helmet).setUnlocalizedName(\"steel_plate\").setTextureName(RefStrings.MODID + \":steel_plate\");",
+        "source_stats": "ArmorMaterial durability 30, reduction {3, 8, 6, 3} (MainRegistry.java:135); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatSteel = EnumHelper.addArmorMaterial(\"HBM_STEEL\", 30, new int[] { 3, 8, 6, 3 }, 5);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/steel_plate.png",
+      "max_damage": 480,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
       "source_registry": "hbm:item.steel_plate",
       "names": {
         "en_us": "Steel Chestplate",
@@ -59199,20 +59311,27 @@
       "template": "minecraft:iron_boots",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "titanium_boots = new ArmorFSB(MainRegistry.aMatTitan, 3, RefStrings.MODID + \":textures/armor/titanium_1.png\").cloneStats((ArmorFSB) titanium_helmet).setUnlocalizedName(\"titanium_boots\").setTextureName(RefStrings.MODID + \":titanium_boots\");",
+        "source_stats": "ArmorMaterial durability 25, reduction {3, 8, 6, 3} (MainRegistry.java:138); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatTitan = EnumHelper.addArmorMaterial(\"HBM_TITANIUM\", 25, new int[] { 3, 8, 6, 3 }, 9);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/titanium_boots.png",
+      "max_damage": 325,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
       "source_registry": "hbm:item.titanium_boots",
       "names": {
         "en_us": "Titanium Boots",
@@ -59236,20 +59355,27 @@
       "template": "minecraft:iron_helmet",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "titanium_helmet = new ArmorFSB(MainRegistry.aMatTitan, 0, RefStrings.MODID + \":textures/armor/titanium_1.png\").setUnlocalizedName(\"titanium_helmet\").setMaxStackSize(1).setTextureName(RefStrings.MODID + \":titanium_helmet\");",
+        "source_stats": "ArmorMaterial durability 25, reduction {3, 8, 6, 3} (MainRegistry.java:138); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatTitan = EnumHelper.addArmorMaterial(\"HBM_TITANIUM\", 25, new int[] { 3, 8, 6, 3 }, 9);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/titanium_helmet.png",
+      "max_damage": 275,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
       "source_registry": "hbm:item.titanium_helmet",
       "names": {
         "en_us": "Titanium Helmet",
@@ -59310,20 +59436,27 @@
       "template": "minecraft:iron_leggings",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "titanium_legs = new ArmorFSB(MainRegistry.aMatTitan, 2, RefStrings.MODID + \":textures/armor/titanium_2.png\").cloneStats((ArmorFSB) titanium_helmet).setUnlocalizedName(\"titanium_legs\").setMaxStackSize(1).setTextureName(RefStrings.MODID + \":titanium_legs\");",
+        "source_stats": "ArmorMaterial durability 25, reduction {3, 8, 6, 3} (MainRegistry.java:138); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatTitan = EnumHelper.addArmorMaterial(\"HBM_TITANIUM\", 25, new int[] { 3, 8, 6, 3 }, 9);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/titanium_legs.png",
+      "max_damage": 375,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
       "source_registry": "hbm:item.titanium_legs",
       "names": {
         "en_us": "Titanium Leggings",
@@ -59384,20 +59517,27 @@
       "template": "minecraft:iron_chestplate",
       "max_stack_size": 1,
       "equipment_gap": {
-        "source_stats": "titanium_plate = new ArmorFSB(MainRegistry.aMatTitan, 1, RefStrings.MODID + \":textures/armor/titanium_1.png\").cloneStats((ArmorFSB) titanium_helmet).setUnlocalizedName(\"titanium_plate\").setMaxStackSize(1).setTextureName(RefStrings.MODID + \":titanium_plate\");",
+        "source_stats": "ArmorMaterial durability 25, reduction {3, 8, 6, 3} (MainRegistry.java:138); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
         "differences": [
-          "durability",
-          "attack damage/speed or armor protection/toughness",
           "enchantability",
           "repair material",
           "equipped armor appearance uses vanilla template"
         ],
-        "reason": "content API 0.2 exposes template/max_stack_size/rarity only; common equipment adaptation authorized by coordinator",
-        "source_material_definitions": [
-          "public static ArmorMaterial aMatTitan = EnumHelper.addArmorMaterial(\"HBM_TITANIUM\", 25, new int[] { 3, 8, 6, 3 }, 9);"
-        ]
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
       },
       "source_texture": "src/main/resources/assets/hbm/textures/items/titanium_plate.png",
+      "max_damage": 400,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
       "source_registry": "hbm:item.titanium_plate",
       "names": {
         "en_us": "Titanium Chestplate",
@@ -107932,6 +108072,116 @@
           "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:79"
         }
       ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cladding_paint",
+      "source_variable": "cladding_paint",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)",
+      "source_registry": "hbm:item.cladding_paint",
+      "names": {
+        "en_us": "Lead Paint",
+        "pt_br": "Tinta de Chumbo"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cladding_paint.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cladding_paint.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cladding_paint.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cladding_rubber",
+      "source_variable": "cladding_rubber",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)",
+      "source_registry": "hbm:item.cladding_rubber",
+      "names": {
+        "en_us": "Rubber Cladding",
+        "pt_br": "Revestimento de Borracha"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cladding_rubber.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cladding_rubber.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cladding_rubber.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cladding_lead",
+      "source_variable": "cladding_lead",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)",
+      "source_registry": "hbm:item.cladding_lead",
+      "names": {
+        "en_us": "Lead Cladding",
+        "pt_br": "Revestimento de Chumbo"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cladding_lead.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cladding_lead.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cladding_lead.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cladding_desh",
+      "source_variable": "cladding_desh",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)",
+      "source_registry": "hbm:item.cladding_desh",
+      "names": {
+        "en_us": "Desh Cladding",
+        "pt_br": "Revestimento de Desh"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cladding_desh.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cladding_desh.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cladding_desh.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:cladding_ghiorsium",
+      "source_variable": "cladding_ghiorsium",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)",
+      "source_registry": "hbm:item.cladding_ghiorsium",
+      "names": {
+        "en_us": "Ghiorsium Cladding",
+        "pt_br": "Revestimento de Ghiorsium"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.cladding_ghiorsium.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.cladding_ghiorsium.name"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/items/cladding_ghiorsium.png",
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     }
   ]

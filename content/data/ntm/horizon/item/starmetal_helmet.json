@@ -1,4 +1,16 @@
 {
   "template": "minecraft:netherite_helmet",
-  "max_stack_size": 1
+  "max_stack_size": 1,
+  "components": {
+    "minecraft:max_damage": 1650,
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:armor",
+        "id": "minecraft:armor.head",
+        "amount": 3,
+        "operation": "add_value",
+        "slot": "head"
+      }
+    ]
+  }
 }
