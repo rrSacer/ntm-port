@@ -1066,7 +1066,7 @@ Branch do motor `upstream-a3bf653-fix` sobre `a8dc3409f`, em commits atômicos:
 
 | Achado | Commit | Correção e prova |
 | --- | --- | --- |
-| **P1-1** `/forceload add` descarregava colunas sem gravar e sem o gancho (código novo do upstream) | `d93271e38` | O tratamento das colunas descarregadas do quadro virou `retire_unloaded` (gancho E2, LOD, entidades, BEs, `save_later` das sujas) e o laço de espera do `/forceload` o usa, além de tirar as malhas das colunas do renderer e enfileirar as novas. Teste `no_streaming_pass_drops_the_columns_it_unloads` (falha com a correção tirada). **Em jogo** (`confirm/forceload_probe.py`, gravação eager desligada para isolar o caminho): chunk A mantido só por `/forceload`, com uma bateria NTM e um baú vanilla (controle) com uma pilha gravada e outra posta depois do save; uma função de datapack faz `forceload remove A` + `forceload add` de 169 chunks distantes no mesmo comando (a varredura cai no laço de espera); salvar, fechar, reabrir, ler A. Sem a correção (`26c81d42`): **2/2 execuções perderam a bateria e o baú inteiros**; com ela (`fd1125ad`): **2/2 conservaram as duas pilhas** de cada um. |
+| **P1-1** `/forceload add` descarregava colunas sem gravar e sem o gancho (código novo do upstream) | `d93271e38` | O tratamento das colunas descarregadas do quadro virou `retire_unloaded` (gancho E2, LOD, entidades, BEs, `save_later` das sujas) e o laço de espera do `/forceload` o usa, além de tirar as malhas das colunas do renderer e enfileirar as novas. Teste `no_streaming_pass_drops_the_columns_it_unloads` (falha com a correção tirada). **Em jogo** (`confirm/forceload_probe.py`, gravação eager desligada para isolar o caminho): chunk A mantido só por `/forceload`, com uma bateria NTM e um baú vanilla (controle) com uma pilha gravada e outra posta depois do save; uma função de datapack faz `forceload remove A` + `forceload add` de 169 chunks distantes no mesmo comando (a varredura cai no laço de espera); salvar, fechar, reabrir, ler A. Sem a correção (`26c81d42`), quatro execuções: `probe-bug-7` e `probe-bug-8` **perderam a bateria e o baú inteiros**; `probe-bug-5` não conclui (A nunca carregou, timeout); `probe-bug-6` conservou, mas rodou com a versão anterior da sonda, que relia A na mesma sessão, onde a BE órfã ainda estava na memória. Por isso a sonda passou a salvar, fechar e reabrir (a partir da bug-7). Com a sonda final: sem a correção, **2/2 perderam**; com ela (`fd1125ad`, `probe-fix-1`/`-2`, e o release `1d8d074b`, #26), **3/3 conservaram as duas pilhas** de cada um (`confirm/probe-*.out`). |
 | **P2-1** o gancho eager perguntava diferente da passada | `5ab19be7d` | `ModifiedChunks::save_eagerly_heard`: a própria passada chama o gancho uma vez, logo antes do primeiro chunk que vai gravar, com o mesmo `now`, `available()` (prazo do tick e fila do escritor) e luz. Sem tempo, com a fila cheia, nada vencido ou só colunas sem luz, o gancho não roda; nenhum chunk é gravado sem ele. O que os mods sujam ao ouvi-lo volta ao conjunto sujo. |
 | **P2-2** teste só textual | `5ab19be7d`, `7cba121ec` | `an_eager_pass_is_heard_once_before_the_first_chunk_it_saves` (rastreador: ordem, uma vez, e nenhum gancho sem tempo, sem nada vencido ou com coluna sem luz) e `an_eager_pass_is_heard_by_the_mods_only_when_it_saves` (jogo real com um mod contador, processo próprio: ouvido uma vez, sem espera, pela passada que grava; não ouvido sem nada sujo, sem tempo no tick, em cooldown). O teste textual agora lê só código (uma chamada comentada o reprova). Mutantes (cada um compilado e rodado, código restaurado depois; `confirm/mutants.log`): m1 gancho trocado por um no-op e m2 chamada comentada reprovam o teste de jogo e o textual; m3 condição invertida (ouvido quando a passada não tem tempo, não antes de gravar) reprova o teste de jogo e o do rastreador. A linha de base passa nos três. |
 | **P3-2** `mod_browser_closed` | `ec056cf3f` | Restaurado no fechamento pela tecla de inventário e no fechamento atrás das opções de depuração; teste `every_creative_close_lets_go_of_the_mod_browser`. |
@@ -1168,6 +1168,43 @@ Lacunas que ficam registradas (sem correção nesta rodada):
   comparados com o `a3bf6531e` puro; o save em etapas (`game/saving.rs`, controle `save` sem servidor integrado) não
   passa por `save_game_with` (preexistente, igual em `a31497f38`; o texto da Onda 0 que diz "todo save passa por
   `save_game_with`" fica corrigido aqui).
+
+### Re-revisão (`cf7685c2`): aprovada com ressalvas
+
+A `ntm-current` do motor foi para `6a79054fa9`. Ressalvas, sem bloqueio, registradas como pendências nominais:
+
+- **P2-1** a guarda do P1-1 (`no_streaming_pass_drops_the_columns_it_unloads`) é textual e aceita a chamada comentada.
+  Falta um teste comportamental: uma passada de `/forceload` que descarrega uma coluna suja e a encontra gravada.
+- **P2-2** bombs: mesmo com `5b58dfa6`, a cratera pode acabar entre a leitura do status (depois do save) e o
+  fechamento, que grava de novo. Fechar a janela: ler `dug`/status antes do save e fechar logo, ou congelar o tick
+  até o fechamento.
+- **P2-3** a contagem da sonda do `/forceload` omitia `probe-bug-5` e `probe-bug-6`. Corrigida acima.
+- **P3** `items` julga por relógio real (`time.sleep` entre apertar e soltar, `cancel_does_not_consume`,
+  `real_eating_started`, `thrown_container_waits_its_pickup_delay`). Converter para ticks do servidor, como o roteiro da
+  Onda 1 faz.
+- **P3** o teste de `hash.rs` do commit `01e5147ef5` da `rbmk-t02-engine` não passa no `cargo fmt` deste motor (o porte
+  `88d6b88a2d` saiu formatado). O RBMK formatou em `00454b508a`; a tabela "Contatos de motor do RBMK" da `rbmk-t03`
+  foi atualizada.
+- **P3** `host_prepared_craft`: o gancho `prepare_item_craft` roda antes de saber se a retirada cabe. Num shift-click
+  sem espaço, ou com o cursor ocupado por outro item, o mod já ouviu (e pode ter feito efeitos colaterais) uma
+  retirada que é recusada. O RBMK manteve essa ordem de propósito e a documentou em `host_prepared_craft`: é o contrato
+  da grade do convidado (`lan_crafting` pergunta a cada mudança da grade), ou seja, o resultado preparado, não a
+  retirada. A glue do NTM não tem efeito colateral ali. No mesmo laço, empilhar no cursor comparava só o item
+  (`c.item == result.item`), e um resultado com componentes do mod se juntava a uma pilha sem eles. Corrigido na
+  `rbmk-t02-engine` em `00454b508a` (`same_item_same_components`; o mesmo commit formata o teste de `hash.rs`).
+  **Falta portar** para a `ntm-current` (`menu_clicks.rs`, perto da l. 784). Fica para a próxima mudança de pin,
+  com revisão.
+
+### Merge da `main` (`27380b26`)
+
+Merge sem rebase em `73e5a45e`, sem conflitos (a `main` não toca em `native/`; o pin continua `6a79054fa9`). Depois do
+merge: `cargo test --workspace` verde (`ntm-core` 514 e as suítes de integração, entre elas portas, rede de energia e
+Watz/PWR), `cargo clippy --workspace --all-targets -- -D warnings` limpo. `cargo fmt --check` acusa 122 arquivos, nenhum
+tocado por esta branch: o NTM não segue o rustfmt na `main`. A cópia transformada foi regenerada contra
+`6a79054fa9` e o release compilou: `horizon-client` `b84aac6a25fc5c200aa59662a51743d3357edbf058ddf2bd932fc38a01e7a4da`,
+pacote de conteúdo novo `ntm.hmod` `483392a4d3640aa4444926f1ca6d44956577d7aefa5143e6764cad94325959a9` (a `main` mudou o
+conteúdo). Em jogo, uma por vez, `NTM_GAME_WIDE=1`: stations, dims e a prova de save `original` `kill` passaram (#55–#57).
+Clippy `-D warnings` da cópia transformada (`horizon-client-lib`, `horizon-client`, com a glue do NTM) limpo.
 
 ### Limitações e pendências
 
