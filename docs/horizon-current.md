@@ -1221,6 +1221,17 @@ de `6a79054fa9`, com, nesta ordem:
 não foram tocadas. O pin de `native/ntm/compatibility.json` continua `6a79054fa9`: as provas usam `NEXT_REV` na ponta
 da `rbmk-t03-engine`, e o pin muda quando o agente do Horizon integrar esses três commits.
 
+**Provas depois dos merges (10/11/2026).** NTM `57144cee` (com a `main` `e4aa8b2c`), motor `rbmk-t03-engine` @
+`643e359566`; binário `horizon-client` SHA-256 `fef5a228546a1770774df2c23a74aaf5d6303d28981e7e3f9c3e1a6755206232`,
+pacote `ntm.hmod` `1fc434042789510b844d2fcfdf53cf6d25778eb3afe48850d2f9f0c9c90cb956`. **J: 22 de 22**
+(`.agent-tmp/rbmk-t03/evidence/j-merge/`). **C nos cortes `kill`, `players_saved` e `live_chunk:2,0`: 3 de 3**
+(`evidence/c-merge/report.json`), NTM = controle em todos (2/2/2, 3/3/3, 2/2/2), cada barra com a chave alheia, a lore e a
+tag. No motor novo o `kill` fica com 2 nos dois mundos: depois do ato o motor faz um save sozinho, que grava o canal
+(ou o barril) vazio antes da gota; é o resíduo vanilla, igual nos dois. Testes na árvore fundida: os 293 do
+`tools/content-gen`; lib 534 (2 ignorados) e 118 de integração em 12 binários; `save_model` em release 11/11; clippy do
+`ntm-core`, da glue (stage de `643e359566`) e do `horizon-world` (motor): 0 avisos; `mod_multiblocks` 7/7 e
+`item::hash` 9/9 na `rbmk-t03-engine`.
+
 ### Contatos de motor do RBMK (todos os commits a portar para o motor novo)
 
 Branch `rbmk-t02-engine`, a partir de `ntm-current` @ `a31497f38`. Cada linha é reaplicada sobre o upstream novo
