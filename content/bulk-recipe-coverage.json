@@ -1955,6 +1955,24 @@
       }
     },
     {
+      "id": "ntm:bulk__c48578d1be6f4d6150",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:614",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:jackt",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__cfe3678f5039c766ad",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:615",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:jackt2",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__28594fd93c0ec5ea08",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:621",
       "type": "minecraft:crafting_shaped",
@@ -2995,6 +3013,177 @@
       "type": "minecraft:crafting_shaped",
       "result": {
         "id": "ntm:hazmat_boots_grey",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__dfa76c3dddb81f9a32",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:134",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:asbestos_helmet",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__a5f068f9828cfeae69",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:135",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:asbestos_plate",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__fe130bbf0dded33398",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:136",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:asbestos_legs",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__29a0c875f41b20f726",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:137",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:asbestos_boots",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__63490b2f713e6ca68b",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:138",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_paa_helmet",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9c19610776b2614374",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:139",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_paa_plate",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__aaafd701635b93f72d",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:140",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_paa_legs",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__808ee3f811f249136a",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:141",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:hazmat_paa_boots",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3d876794473fd9ee0a",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:147",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:liquidator_helmet",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__0d0266c218f525baac",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:148",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:liquidator_plate",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__1e49997e515244c8e3",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:149",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:liquidator_legs",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__121c26d79b67cc4109",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:150",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:liquidator_boots",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2770b48b163364c2ee",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:153",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:goggles",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__6e951414ad1950f94e",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:154",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:gas_mask",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__d63750474f3d8b5a03",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:156",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:gas_mask_olde",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__5e6187ca8b55b88453",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:157",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:gas_mask_mono",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3a6bbf22f52b91ccec",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:159",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ashglasses",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__cc5292ffc4f4650495",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:160",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:mask_rag",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__2fed78dffdb73795c9",
+      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:161",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:mask_piss",
         "count": 1
       }
     },
@@ -8426,7 +8615,7 @@
       }
     }
   ],
-  "generated_count": 936,
+  "generated_count": 957,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -9657,18 +9846,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item radiorec",
       "expression": "new ItemStack(ModBlocks.radiorec), new Object[] { \"  W\", \"PCP\", \"PIP\", 'W', CU.wireFine(), 'P', STEEL.plate(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.VACUUM_TUBE), 'I', ANY_PLASTIC.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:614",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item jackt",
-      "expression": "new ItemStack(ModItems.jackt), new Object[] { \"S S\", \"LIL\", \"LIL\", 'S', STEEL.plate(), 'L', Items.leather, 'I', ANY_RUBBER.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:615",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item jackt2",
-      "expression": "new ItemStack(ModItems.jackt2), new Object[] { \"S S\", \"LIL\", \"III\", 'S', STEEL.plate(), 'L', Items.leather, 'I', ANY_RUBBER.ingot() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:616",
@@ -11351,54 +11528,6 @@
       "expression": "new ItemStack(ModItems.jetpack_boost, 1), new Object[] { \"PCP\", \"DJD\", \"PAP\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ADVANCED), 'P', BIGMT.plate(), 'D', DESH.ingot(), 'J', ModItems.jetpack_vector, 'A', CU.plateCast() }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:134",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item asbestos_helmet",
-      "expression": "new ItemStack(ModItems.asbestos_helmet, 1), new Object[] { \"EEE\", \"EIE\", 'E', ModItems.asbestos_cloth, 'I', \"plateGold\" }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:135",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item asbestos_plate",
-      "expression": "new ItemStack(ModItems.asbestos_plate, 1), new Object[] { \"E E\", \"EEE\", \"EEE\", 'E', ModItems.asbestos_cloth }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:136",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item asbestos_legs",
-      "expression": "new ItemStack(ModItems.asbestos_legs, 1), new Object[] { \"EEE\", \"E E\", \"E E\", 'E', ModItems.asbestos_cloth }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:137",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item asbestos_boots",
-      "expression": "new ItemStack(ModItems.asbestos_boots, 1), new Object[] { \"E E\", \"E E\", 'E', ModItems.asbestos_cloth }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:138",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_paa_helmet",
-      "expression": "new ItemStack(ModItems.hazmat_paa_helmet, 1), new Object[] { \"EEE\", \"IEI\", \" P \", 'E', ModItems.plate_paa, 'I', KEY_ANYPANE, 'P', IRON.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:139",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_paa_plate",
-      "expression": "new ItemStack(ModItems.hazmat_paa_plate, 1), new Object[] { \"E E\", \"EEE\", \"EEE\", 'E', ModItems.plate_paa }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:140",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_paa_legs",
-      "expression": "new ItemStack(ModItems.hazmat_paa_legs, 1), new Object[] { \"EEE\", \"E E\", \"E E\", 'E', ModItems.plate_paa }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:141",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item hazmat_paa_boots",
-      "expression": "new ItemStack(ModItems.hazmat_paa_boots, 1), new Object[] { \"E E\", \"E E\", 'E', ModItems.plate_paa }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:142",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item paa_plate",
@@ -11417,82 +11546,16 @@
       "expression": "new ItemStack(ModItems.paa_boots, 1), new Object[] { \"E E\", \"N N\", 'E', ModItems.plate_paa, 'N', ModItems.neutron_reflector }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:147",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item liquidator_helmet",
-      "expression": "new ItemStack(ModItems.liquidator_helmet, 1), new Object[] { \"III\", \"CBC\", \"III\", 'I', ANY_RUBBER.ingot(), 'C', ModItems.cladding_lead, 'B', ModItems.hazmat_helmet_grey }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:148",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item liquidator_plate",
-      "expression": "new ItemStack(ModItems.liquidator_plate, 1), new Object[] { \"ICI\", \"TBT\", \"ICI\", 'I', ANY_RUBBER.ingot(), 'C', ModItems.cladding_lead, 'B', ModItems.hazmat_plate_grey, 'T', ModItems.gas_empty }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:149",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item liquidator_legs",
-      "expression": "new ItemStack(ModItems.liquidator_legs, 1), new Object[] { \"III\", \"CBC\", \"I I\", 'I', ANY_RUBBER.ingot(), 'C', ModItems.cladding_lead, 'B', ModItems.hazmat_legs_grey }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:150",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item liquidator_boots",
-      "expression": "new ItemStack(ModItems.liquidator_boots, 1), new Object[] { \"ICI\", \"IBI\", 'I', ANY_RUBBER.ingot(), 'C', ModItems.cladding_lead, 'B', ModItems.hazmat_boots_grey }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:153",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item goggles",
-      "expression": "new ItemStack(ModItems.goggles, 1), new Object[] { \"P P\", \"GPG\", 'G', KEY_ANYPANE, 'P', STEEL.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:154",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item gas_mask",
-      "expression": "new ItemStack(ModItems.gas_mask, 1), new Object[] { \"PPP\", \"GPG\", \" F \", 'G', KEY_ANYPANE, 'P', STEEL.plate(), 'F', IRON.plate() }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:155",
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModItems.gas_mask_m65, 1), new Object[] { \"PPP\", \"GPG\", \" F \", 'G', KEY_ANYPANE, 'P', ANY_RUBBER.ingot(), 'F', IRON.plate() }"
     },
     {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:156",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item gas_mask_olde",
-      "expression": "new ItemStack(ModItems.gas_mask_olde, 1), new Object[] { \"PPP\", \"GPG\", \" F \", 'G', KEY_ANYPANE, 'P', Items.leather, 'F', IRON.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:157",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item gas_mask_mono",
-      "expression": "new ItemStack(ModItems.gas_mask_mono, 1), new Object[] { \" P \", \"PPP\", \" F \", 'P', ANY_RUBBER.ingot(), 'F', IRON.plate() }"
-    },
-    {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:158",
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item mask_of_infamy",
       "expression": "new ItemStack(ModItems.mask_of_infamy, 1), new Object[] { \"III\", \"III\", \" I \", 'I', IRON.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:159",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ashglasses",
-      "expression": "new ItemStack(ModItems.ashglasses, 1), new Object[] { \"I I\", \"GPG\", 'I', ANY_RUBBER.ingot(), 'G', ModBlocks.glass_ash, 'P', ANY_PLASTIC.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:160",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item mask_rag",
-      "expression": "new ItemStack(ModItems.mask_rag, 1), new Object[] { \"RRR\", 'R', ModItems.rag_damp }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:161",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item mask_piss",
-      "expression": "new ItemStack(ModItems.mask_piss, 1), new Object[] { \"RRR\", 'R', ModItems.rag_piss }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ArmorRecipes.java:178",

@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:jackt2",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S S",
+    "LIL",
+    "III"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "L": "minecraft:leather",
+    "I": "#ntm:bulk/ingotanyrubber"
+  }
+}

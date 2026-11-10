@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:iron_helmet",
+  "max_stack_size": 1,
+  "components": {
+    "minecraft:max_damage": 8250,
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:armor",
+        "id": "minecraft:armor.head",
+        "amount": 3,
+        "operation": "add_value",
+        "slot": "head"
+      },
+      {
+        "type": "minecraft:knockback_resistance",
+        "id": "ntm:liquidator.head",
+        "amount": 100.0,
+        "operation": "add_value",
+        "slot": "head"
+      },
+      {
+        "type": "minecraft:movement_speed",
+        "id": "ntm:liquidator.head",
+        "amount": -0.1,
+        "operation": "add_multiplied_base",
+        "slot": "head"
+      }
+    ]
+  }
+}
