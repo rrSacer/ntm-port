@@ -54,9 +54,7 @@ pub fn bonus_of(item: &str) -> u32 {
     let names = crate::oredict::names(item);
     if names.iter().any(|n| n.starts_with("ore")) {
         25
-    } else if names.iter().any(|n| n.starts_with("log")) {
-        50
-    } else if names.iter().any(|n| n == "anyTar") {
+    } else if names.iter().any(|n| n.starts_with("log") || n == "anyTar") {
         50
     } else {
         0

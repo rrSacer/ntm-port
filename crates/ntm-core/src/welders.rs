@@ -138,7 +138,7 @@ pub fn matches(inputs: &[Option<&Stack>], recipe: &[Ingredient]) -> bool {
     for input in inputs.iter().flatten() {
         let Some(at) = left
             .iter()
-            .position(|g| g.ids.iter().any(|i| *i == input.id) && input.count >= g.n)
+            .position(|g| g.ids.contains(&input.id) && input.count >= g.n)
         else {
             return false;
         };
@@ -233,7 +233,7 @@ impl Welder {
                     let Some(s) = &mut self.slots[i] else {
                         continue;
                     };
-                    if g.ids.iter().any(|x| *x == s.id) && s.count >= g.n {
+                    if g.ids.contains(&s.id) && s.count >= g.n {
                         s.count -= g.n;
                         if s.count == 0 {
                             self.slots[i] = None;
