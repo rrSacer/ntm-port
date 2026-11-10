@@ -63,8 +63,14 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         lines.push((Text::legacy(&format!("Vida restante: {:.3}% ({life} / {} ticks)",life as f64/p.lifespan_ticks as f64*100.,p.lifespan_ticks)),u32::MAX));
         lines.push((Text::legacy(&format!("Decai para: {}",p.decay_item)),u32::MAX));
     }
-    let rate=native.as_ref().and_then(|s|ntm_core::zirnox::radiation_rate(s).or_else(||ntm_core::radioisotopes::radiation_rate(s)).or_else(||ntm_core::rbmk::hazards::radiation_rate(s)));
-    let hazard_lines=rate.map_or_else(||client_rad::tooltip_lines(&stack.item,stack.count),|rate|client_rad::tooltip_rate_lines(rate,stack.count));
+    let rate=native.as_ref().and_then(|s|ntm_core::zirnox::radiation_rate(s).or_else(||ntm_core::radioisotopes::radiation_rate(s)));
+    // An RBMK rod's rate as `HazardTypeRadiation` prints its float level (truncated, never past a u32).
+    let rbmk=native.as_ref().and_then(ntm_core::rbmk::hazards::radiation_level);
+    let hazard_lines=match (rate,rbmk) {
+        (_,Some(level))=>ntm_core::rbmk::hazards::radiation_tooltip(level,stack.count),
+        (Some(rate),None)=>client_rad::tooltip_rate_lines(rate,stack.count),
+        (None,None)=>client_rad::tooltip_lines(&stack.item,stack.count),
+    };
     for line in hazard_lines {
         lines.push((Text::legacy(&line), u32::MAX));
     }

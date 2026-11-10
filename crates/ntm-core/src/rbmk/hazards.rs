@@ -8,6 +8,12 @@ use crate::server::container_bridge::Stack;
 /// endpoints, double interpolation, float result), `depletion = 1 − e` when linear else `1 − e²`, then
 /// `+ xe135 · poisonLevel`. None: not an RBMK rod with a hazard.
 pub fn radiation_rate(stack: &Stack) -> Option<u32> {
+    // `if(level > 0)` contaminates: a NaN or negative level none (the cast's 0), an infinite one all it can.
+    radiation_level(stack).map(|level| (level * 1000.0).round() as u32)
+}
+
+/// The rod's radiation level in RAD/s per item, the float `HazardModifierRBMKRadiation.modify` returns.
+pub fn radiation_level(stack: &Stack) -> Option<f32> {
     let rod = persist::rod_of(&stack.id)?;
     let h = crate::radiation::rbmk_hazard(&stack.id)?;
     let m = h.rbmk?;
@@ -17,9 +23,22 @@ pub fn radiation_rate(stack: &Stack) -> Option<u32> {
     let xenon = s.poison_level(rod);
     let level = (f64::from(h.radiation_rad_s) + f64::from(m.target_rad_s - h.radiation_rad_s) * depletion) as f32;
     // `level += xe135 * xenon`: float times double, back to float.
-    let level = (f64::from(level) + f64::from(m.xe135_rad_s) * xenon) as f32;
-    // `if(level > 0)` contaminates: a NaN or negative level none (the cast's 0), an infinite one all it can.
-    Some((level * 1000.0).round() as u32)
+    Some((f64::from(level) + f64::from(m.xe135_rad_s) * xenon) as f32)
+}
+
+/// `HazardTypeRadiation.addHazardInformation` for a `level` (RAD/s per item) and a stack of `count`: nothing below
+/// `1e-5`, else the rate as `"" + Math.floor(level * 1000) / 1000` (the product in float, `Double.toString`) and, past
+/// one item, the stack's `Math.floor(level * 1000 * count) / 1000`. A NaN level shows `NaNRAD/s`, as in Java.
+pub fn radiation_tooltip(level: f32, count: u32) -> Vec<String> {
+    if level < 1e-5 {
+        return Vec::new();
+    }
+    let shown = |v: f32| super::tooltip::java_double(f64::from(v).floor() / 1000.0);
+    let mut lines = vec!["\u{a7}a[Radioactive]".to_owned(), format!("\u{a7}e{}RAD/s", shown(level * 1000.0))];
+    if count > 1 {
+        lines.push(format!("\u{a7}eStack: {}RAD/s", shown(level * 1000.0 * count as f32)));
+    }
+    lines
 }
 
 /// `HazardModifierRBMKHot.modify`: `(int) min(ceil((hull − 100) / 10), 60)`, negative below 100 °C (nothing then, as
@@ -76,6 +95,40 @@ mod tests {
         let nan = rod_stack(ueu, |s, r| s.set_yield(r, f64::NAN));
         assert_eq!(radiation_rate(&nan), Some(0), "NaN > 0 is false: no radiation");
         assert_eq!(radiation_rate(&Stack::new("ntm:rbmk_fuel_test", 1)), None, "THE VOICES registers no hazard");
+    }
+
+    #[test]
+    fn the_tooltip_truncates_the_float_level_as_java() {
+        let ueu = "ntm:rbmk_fuel_ueu";
+        // Every depletion state of the UEU rod: the shown rate is the level truncated to 0.001 (never rounded up),
+        // formatted as Double.toString of floor(f32(level · 1000)) / 1000.
+        for k in 1..1000 {
+            let s = rod_stack(ueu, |s, r| s.set_yield(r, r.yield_ * f64::from(k) / 1000.0));
+            let level = radiation_level(&s).unwrap();
+            let lines = radiation_tooltip(level, 1);
+            let want = crate::rbmk::tooltip::java_double(f64::from(level * 1000.0).floor() / 1000.0);
+            assert_eq!(lines[1], format!("\u{a7}e{want}RAD/s"), "{k}");
+            // Truncated, as Java's floor of the float product (`level * 1000` rounds in float first, as Java's does).
+            let product = f64::from(level * 1000.0);
+            let shown: f64 = want.parse().unwrap();
+            assert!(shown * 1000.0 <= product + 1e-6 && product - shown * 1000.0 < 1.0 + 1e-6, "{k}: {shown} vs {level}");
+        }
+        // Enrichment 0.998: 6.1896… shows 6.189, not 6.19.
+        let s = rod_stack(ueu, |s, r| s.set_yield(r, r.yield_ * 0.998));
+        let level = radiation_level(&s).unwrap();
+        assert!((6.189..6.19).contains(&level), "{level}");
+        assert_eq!(radiation_tooltip(level, 1)[1], "\u{a7}e6.189RAD/s");
+        // A spent balefire rod: 1.2e8 RAD/s as Java's float prints it, no u32 ceiling.
+        let bf = "ntm:rbmk_fuel_balefire";
+        let spent = rod_stack(bf, |s, r| s.set_yield(r, 0.0));
+        let level = radiation_level(&spent).unwrap();
+        assert_eq!(radiation_tooltip(level, 1)[1], format!("\u{a7}e{}RAD/s", crate::rbmk::tooltip::java_double(f64::from(level * 1000.0).floor() / 1000.0)));
+        assert!(radiation_tooltip(level, 1)[1].contains("E8"), "{:?}", radiation_tooltip(level, 1));
+        // Shown from 1e-5 up, hidden below; a stack's line past one item.
+        assert!(radiation_tooltip(0.000_009, 1).is_empty());
+        assert_eq!(radiation_tooltip(0.0002, 1)[1], "\u{a7}e0.0RAD/s");
+        assert_eq!(radiation_tooltip(1.5, 3), ["\u{a7}a[Radioactive]", "\u{a7}e1.5RAD/s", "\u{a7}eStack: 4.5RAD/s"]);
+        assert_eq!(radiation_tooltip(f32::NAN, 1)[1], "\u{a7}eNaNRAD/s");
     }
 
     #[test]
