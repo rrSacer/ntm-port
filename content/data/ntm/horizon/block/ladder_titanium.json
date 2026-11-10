@@ -1,0 +1,11 @@
+{
+  "template": "minecraft:ladder",
+  "properties": {
+    "hardness": 0.25,
+    "explosion_resistance": 2.0,
+    "requires_tool": false,
+    "sounds": "minecraft:ladder",
+    "light": 0
+  },
+  "item": true
+}

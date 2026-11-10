@@ -85,9 +85,23 @@ def lever(g, core):
     g.command('clear @s')
     g.command(f'setblock {pos_text(p)} minecraft:lever[face=floor,facing=north,powered=false]')
     g.command(f'tp @s {core[0]+3.5} {core[1]} {core[2]+.5}')
+    g.ticks(4)  # the teleport is the server's: the click needs the player already standing there
     start = len(log(g))
     observed = g.ctl('interact ' + pos_text(p))
-    g.check('physical_lever_powered', 'powered=true' in str(observed), observed)
+    # The reply of `interact` is sometimes read before the server has applied the click (it then shows the old state with
+    # "changed": false), so when it does not show the lever on it is read again, up to a second of game time. The lever
+    # counts as powered once seen on, in the reply or in a later reading: a bomb it fires may blow the lever away at once,
+    # and the click is never sent twice (a second one would turn the lever off).
+    seen = 'powered=true' in str(observed)
+    read = observed
+    for _ in range(10):
+        if seen:
+            break
+        read = g.ctl('block ' + pos_text(p))
+        seen = 'powered=true' in str(read)
+        if not seen:
+            g.ticks(2)
+    g.check('physical_lever_powered', seen, {'interact': observed, 'block': read})
     return start
 
 
@@ -153,16 +167,19 @@ def dug(g, x):
 
 def restart_arm(g):
     """The second session's start: a nuke and a balefire of radius 80 set off, their craters still being dug when the
-    world is saved and closed (the runner quits): the least fuel a tick allows makes them last minutes."""
+    world is saved and closed (the runner quits): at the least fuel a tick allows, the nuke's crater takes 917 ticks."""
     g.evidence['phase'] = 'restart-arm'
     g.command('gamemode creative')
     g.command('ntmbomba config mundo raiomax 80')
     g.command('ntmbomba config mundo fuel 4')
-    start = len(log(g))
-    for kind, (x, suffix) in RESTART.items():
+    # Both areas are loaded before either goes off: the nuke's crater takes a fixed 917 ticks (~46 s), and a
+    # forceload wait under load, between the two, ate them before the save.
+    for x, _ in RESTART.values():
         g.ground(x, 100, 0, width=4, height=4)
         g.command(f'forceload add {x-80} -80 {x+80} 80')
-        time.sleep(3)
+    time.sleep(3)
+    start = len(log(g))
+    for kind, (x, suffix) in RESTART.items():
         g.command(f'tp @s {x + .5} 100 0.5')
         result = g.command('ntmbomba teste 80' + suffix)
         g.check(f'{kind}_set_off', any('detonada' in line for line in result.get('chat', [])), result)
@@ -176,6 +193,10 @@ def restart_arm(g):
     status = digging()
     g.evidence['restart_arm'] = {'ids': ids, 'status': status, 'dug': {k: dug(g, x) for k, (x, _) in RESTART.items()}}
     g.check('both_still_digging_after_the_save', all(i in status for i in ids.values()), g.evidence['restart_arm'])
+    # Still in its crater (not yet in its fallout, which comes back read): what the reopened world checks.
+    phase = re.search(r'%s (\w+) R=' % ids['nuke'], status)
+    g.check('the_nuke_still_in_its_crater_at_the_save', phase and phase.group(1) in ('Planning', 'Writing', 'Waiting'),
+            g.evidence['restart_arm'])
     (g.folder / 'bombs-restart.json').write_text(json.dumps(g.evidence['restart_arm']))
 
 

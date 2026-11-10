@@ -137,6 +137,8 @@ fn env<'a>(game: &'a Game<'_>) -> Env<'a> {
         names: &game.pack.names,
         trade: None,
         maps: None,
+        limited_crafting: game.limited_crafting(),
+        known_recipes: Some(&game.level.recipe_book),
     }
 }
 fn policy(
@@ -316,6 +318,7 @@ fn open_now(game: &mut Game<'_>, pos: [i32; 3]) {
         (pos[0], pos[1], pos[2]),
         horizon_client::lan::menu::Slots::Native,
         items,
+        None,
     );
     let window = host
         .hub

@@ -1490,11 +1490,7 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "K3 content declared; native registration/behavior and faithful model deferred",
-      "content_id": "ntm:machine_difurnace_off",
-      "content_ids": [
-        "ntm:machine_difurnace_off"
-      ]
+      "status": "not ported; heuristic flags require machine agent verification"
     },
     {
       "id": "machine_difurnace_on",
@@ -1511,11 +1507,7 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "K3 content declared; native registration/behavior and faithful model deferred",
-      "content_id": "ntm:machine_difurnace_on",
-      "content_ids": [
-        "ntm:machine_difurnace_on"
-      ]
+      "status": "not ported; heuristic flags require machine agent verification"
     },
     {
       "id": "machine_difurnace_extension",
@@ -1532,11 +1524,7 @@
       "energy": true,
       "fluid": true,
       "multiblock": false,
-      "status": "K3 content declared; native registration/behavior and faithful model deferred",
-      "content_id": "ntm:machine_difurnace_extension",
-      "content_ids": [
-        "ntm:machine_difurnace_extension"
-      ]
+      "status": "not ported; heuristic flags require machine agent verification"
     },
     {
       "id": "machine_difurnace_rtg_off",
@@ -1553,11 +1541,7 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "K3 content declared; native registration/behavior and faithful model deferred",
-      "content_id": "ntm:machine_difurnace_rtg_off",
-      "content_ids": [
-        "ntm:machine_difurnace_rtg_off"
-      ]
+      "status": "not ported; heuristic flags require machine agent verification"
     },
     {
       "id": "machine_difurnace_rtg_on",
@@ -1574,11 +1558,7 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "K3 content declared; native registration/behavior and faithful model deferred",
-      "content_id": "ntm:machine_difurnace_rtg_on",
-      "content_ids": [
-        "ntm:machine_difurnace_rtg_on"
-      ]
+      "status": "not ported; heuristic flags require machine agent verification"
     },
     {
       "id": "machine_blast_furnace",
@@ -1831,11 +1811,7 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "K3 content declared; native registration/behavior and faithful model deferred",
-      "content_id": "ntm:machine_rtg_furnace_off",
-      "content_ids": [
-        "ntm:machine_rtg_furnace_off"
-      ]
+      "status": "not ported; heuristic flags require machine agent verification"
     },
     {
       "id": "machine_rtg_furnace_on",
@@ -1852,11 +1828,7 @@
       "energy": true,
       "fluid": false,
       "multiblock": false,
-      "status": "K3 content declared; native registration/behavior and faithful model deferred",
-      "content_id": "ntm:machine_rtg_furnace_on",
-      "content_ids": [
-        "ntm:machine_rtg_furnace_on"
-      ]
+      "status": "not ported; heuristic flags require machine agent verification"
     },
     {
       "id": "machine_industrial_generator",
@@ -6933,11 +6905,7 @@
       "energy": true,
       "fluid": true,
       "multiblock": true,
-      "status": "K3 content declared; native registration/behavior and faithful model deferred",
-      "content_id": "ntm:machine_large_turbine",
-      "content_ids": [
-        "ntm:machine_large_turbine"
-      ]
+      "status": "not ported; heuristic flags require machine agent verification"
     },
     {
       "id": "machine_industrial_turbine",

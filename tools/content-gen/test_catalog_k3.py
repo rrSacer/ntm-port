@@ -24,6 +24,18 @@ class CatalogK3(unittest.TestCase):
             self.assertEqual(by[name]['source_item_variable'],name)
             self.assertNotIn(name+'__block',by)
 
+    def test_simple_doors_keep_the_original_door_sound(self):
+        # BlockModDoor plays ntm:block.opendoor opening and closing (docs/sons-hbm.md). It used to be written by
+        # hand into the four generated block files and every regeneration took it out: the catalog now declares
+        # it (`block_properties`) and the generator emits it, so both ends are checked, the declaration and the
+        # block definition the game loads.
+        expected={'open':'ntm:block.opendoor','close':'ntm:block.opendoor'}
+        by={r['id']:r for r in self.rows}
+        for name in ['door_metal','door_office','door_bunker','door_red']:
+            self.assertEqual(by[name]['block_properties']['door_sounds'],expected,name)
+            block=json.loads((ROOT/f'content/data/ntm/horizon/block/{name}.json').read_text())
+            self.assertEqual(block['properties']['door_sounds'],expected,name)
+
     def test_source_items_and_blocks_resolve_to_one_door_identity(self):
         rows=[{**r,'id':'ntm:'+r['id']} for r in self.rows]
         resolver=Resolver(SOURCE,rows)

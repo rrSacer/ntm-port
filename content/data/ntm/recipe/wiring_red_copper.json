@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "PIP",
+    "PPP"
+  ],
+  "key": {
+    "P": "ntm:plate_steel",
+    "I": "ntm:ingot_steel"
+  },
+  "result": {
+    "id": "ntm:wiring_red_copper",
+    "count": 1
+  }
+}

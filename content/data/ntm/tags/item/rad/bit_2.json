@@ -154,7 +154,15 @@
     "ntm:rod_zirnox_natural_uranium_fuel_depleted",
     "ntm:rod_zirnox_plutonium_fuel_depleted",
     "ntm:rod_zirnox_thorium_fuel_depleted",
+    "ntm:sellafield",
     "ntm:trinitite",
-    "ntm:tsar_core"
+    "ntm:tsar_core",
+    "ntm:waste_natural_uranium",
+    "ntm:waste_plate_pu239",
+    "ntm:waste_plate_ra226be",
+    "ntm:waste_plutonium",
+    "ntm:waste_schrabidium",
+    "ntm:waste_u235",
+    "ntm:waste_zfb_mox"
   ]
 }

@@ -85,6 +85,8 @@
     "ntm:machine_solar_boiler",
     "ntm:solar_mirror",
     "ntm:struct_watz_core",
+    "ntm:cm_flux",
+    "ntm:cm_heat",
     "ntm:pile_brick",
     "ntm:pile_device__control",
     "ntm:pile_device__loader",

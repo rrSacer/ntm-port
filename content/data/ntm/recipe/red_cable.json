@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " W ",
+    "RRR",
+    " W "
+  ],
+  "key": {
+    "W": "ntm:plate_polymer",
+    "R": "ntm:wire_fine__red_copper"
+  },
+  "result": {
+    "id": "ntm:red_cable",
+    "count": 16
+  }
+}

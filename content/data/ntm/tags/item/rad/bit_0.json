@@ -33,6 +33,13 @@
     "ntm:rbmk_pellet_mes",
     "ntm:rbmk_pellet_thmeu",
     "ntm:rbmk_pellet_ueu",
-    "ntm:rod_zirnox_tritium"
+    "ntm:rod_zirnox_tritium",
+    "ntm:waste_mox",
+    "ntm:waste_natural_uranium",
+    "ntm:waste_plate_u233",
+    "ntm:waste_plutonium",
+    "ntm:waste_thorium",
+    "ntm:waste_u233",
+    "ntm:waste_uranium"
   ]
 }

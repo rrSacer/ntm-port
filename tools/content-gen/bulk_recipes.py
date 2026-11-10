@@ -107,6 +107,9 @@ class Resolver:
         if meta is not None:
             for r in candidates:
                 if r.get('metadata')==meta:return r['id']
+            # A block with no declared subtype is metadata 0 in 1.7.10 (ItemStack default).
+            plain=[r for r in candidates if 'metadata' not in r]
+            if meta==0 and len(plain)==1:return plain[0]['id']
             raise Unsupported(f'missing subtype {var}:{meta}')
         plain=[r for r in candidates if 'metadata' not in r]
         if len(plain)==1:return plain[0]['id']

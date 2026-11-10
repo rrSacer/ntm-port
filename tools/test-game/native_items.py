@@ -4,15 +4,88 @@ import json
 import re
 import sys
 import os
+import socket
+import threading
 import time
 from pathlib import Path
 from native_game import Game
+
+
+# How long each item's use lasts, in ticks (`ticks` of the table the mod runs on): a use applies what it gives no earlier than that
+# many ticks after its gesture began.
+USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
 FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon').split(',')
 
 
 FAMILY_RUNS=[]
+
+
+# Every wait below is counted in game ticks (the control socket's `wait`), never in wall time: on a loaded
+# machine the same script then sees the same game. Two things stay in wall time on purpose: `settle`
+# (it polls the synchronized screen) and the deadlines that only bound a hung run.
+USE_TICK=[0]    # the earliest tick at which the last use can have applied what it gives (`has_effects` measures the age of an effect from it)
+READ_TICK=[0]   # the tick read right after the effects were last read
+
+
+def pause(g,seconds):
+    """Wait `seconds` of game time (20 ticks a second)."""
+    return g.ticks(max(1,round(seconds*20)))
+
+
+def now(g):
+    """The server's game time in ticks (`time query gametime`): the clock effects, pickup delays and uses run on.
+    (`wait` counts the same ticks; the `ticks` of `state` is the client's own counter and runs apart from them.)"""
+    reply=g.ctl('command time query gametime')
+    found=re.search(r'(\d+)',' '.join(reply.get('chat',[])))
+    if not found:raise AssertionError(f'no game time in {reply}')
+    return int(found[1])
+
+
+def raw(g,line):
+    """One control line on a connection of its own: nothing is recorded and it can run beside another call."""
+    with socket.socket(socket.AF_UNIX) as sock:
+        sock.settimeout(360);sock.connect(str(g.folder/'control.sock'));sock.sendall((line+'\n').encode())
+        with sock.makefile() as stream:reply=json.loads(stream.readline())
+    if reply.get('error'):raise RuntimeError(f'{line}: {reply["error"]}')
+    return reply
+
+
+def held_use(g,seconds,watch=False):
+    """`use-item --hold`: the game itself presses the use button and lets it go after `seconds`, so the delay of
+    the script's calls (tens of ticks on a loaded machine) cannot stretch the hold, as a `mouse right down`, a
+    wait and a `mouse right up` from outside do. With `watch` the state is read on a second connection while the
+    hold runs; returns the first state in which a use was running, or None, and the reply."""
+    box={}
+    def run():
+        try:box['reply']=raw(g,f'use-item --hold {seconds}')
+        except RuntimeError as error:box['error']=error
+    thread=threading.Thread(target=run);thread.start();seen=None
+    while thread.is_alive():
+        if watch and seen is None:
+            state_=raw(g,'state')
+            if state_.get('using') is not None:seen=state_
+        else:thread.join(.1)
+    thread.join()
+    g.evidence['steps'].append({'command':f'use-item --hold {seconds}','result':box.get('reply') or str(box.get('error'))});g.save()
+    if 'error' in box:raise box['error']
+    return seen,box['reply']
+
+
+def short_hold(g,seconds,setup,attempts=8):
+    """Hold the use button `seconds` (well under the use's length) from outside the script's own latency, and
+    return the state seen while the use ran, for the checks that prove what a use cancelled before its end does.
+    A hold during which the state could not be read in time (a loaded machine) is run again from `setup()`; a
+    run that never sees the use fails and says so. What the cancel did is judged by the caller, on every run's
+    result: nothing here can make a check pass that the game does not satisfy.
+    Returns (state seen, number of holds it took)."""
+    for attempt in range(attempts):
+        setup()
+        seen,_=held_use(g,seconds,watch=True)
+        pause(g,.4)
+        if seen is not None:return seen,attempt+1
+    raise AssertionError(f'no use was seen running in {attempts} holds of {seconds} s')
 
 
 def counts(g):
@@ -26,107 +99,53 @@ def state(g):
     return result
 
 
+def used_up(g,item,count,polls=15):
+    """Watch what is held until the use is applied: the reply of `use-item` (a click or a hold) comes before it, and
+    the stack changes some ticks later (its count falls, or it becomes another item, a bottle its empty container).
+    Up to `polls` looks four ticks apart (three seconds of game time); an item that is not spent (creative, refused)
+    waits them out."""
+    for _ in range(polls):
+        g.ticks(4)
+        cur=g.ctl('inventory').get('held') or {}
+        if item and (cur.get('item')!=item or cur.get('count',0)<count):break
+
+
 def use(g,seconds=0):
     """Use the held item: a click, or held for `seconds` of game time (20 server ticks a second)."""
     g.close();g.ctl('look-at 20 160 8')
+    held=g.ctl('inventory').get('held') or {};item,count=held.get('item'),held.get('count',0)
+    # What the use gives is applied no earlier than the item's use length after the gesture began (a click: at once). That tick
+    # is where the age of its effects, cooldowns and counters is counted from, so the age `has_effects` and the others allow
+    # for is a true upper bound of the real one, and not the length of a hold longer than the use, nor a tick later than the
+    # use applied (counting from the end of the gesture, or from after `used_up`, would count too little).
+    began=now(g);USE_TICK[0]=began
     if seconds:
-        start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,round(seconds*20)//(4 if MUTANT=='use_short' else 1))
-        try:g.ctl('mouse right up')
+        USE_TICK[0]=began+min(USE_LENGTH.get(item,0),round(seconds*20))
+        # The game holds the button `seconds` and lets it go (`held_use`): a stack of two loses one, whatever
+        # the delay of the script's calls.
+        try:held_use(g,seconds)
         except RuntimeError as error:
             # A use that killed the player leaves the death screen: nothing to release.
             if 'dead' not in str(error):raise
+            return
     else:
-        # One click: a held button repeats the use of an instant item on a slow frame.
-        g.ctl('mouse right click')
-    time.sleep(.8)  # a loaded machine answers a click a few ticks late
+        # One click, made by the game itself (`use-item`, as the hold above): a `mouse right click` sent from outside
+        # is sometimes lost on a slow frame, and a held button repeats the use of an instant item.
+        g.ctl('use-item')
+    used_up(g,item,count)
+    pause(g,.4)
 
 
-# Consumables whose checks are about game time wait in server ticks, not wall time (coordinator, 10/11): on a
-# loaded machine a second of wall time is any number of ticks.
-EAT_TICKS=32   # ItemFood.getMaxItemUseDuration (cotton candy, vegan schnitzel)
-SYNC_TICKS=10  # tolerance: the client's copy of the inventory and the effects trails the server by a few ticks
-# The server's tick rate while a check needs a release inside a use: a loaded machine takes seconds a controller
-# command (a release measured 15 s late), so 1 tick a second keeps it within the 22 ticks a cancel has.
-SLOW_RATE=1
-
-
-def game_time(g):
-    text=' '.join(g.command('time query gametime').get('chat',[]))
-    n=re.search(r'game time is (\d+)',text)
-    if not n:raise AssertionError('missing game time: '+text)
-    return int(n.group(1))
-
-
-# A deliberate failure for one converted check (tools/test-game: the proof that a check moved to tick or state
-# waits still catches what it caught): see each use of MUTANT. Never set outside a mutation run.
+# A deliberate failure for one Onda 1 check (the proof that it still catches what it should): see each use of
+# MUTANT. Never set outside a mutation run.
 MUTANT=os.environ.get('NTM_ITEMS_MUTANT','')
 
 
-def settle_ticks(g,read,done,ticks=40):
-    """`read()` once `done` holds for it or `ticks` server ticks pass; the check keeps its own verdict."""
-    start=game_time(g)
-    while True:
-        value=read()
-        if done(value) or game_time(g)>=start+ticks:return value
-        time.sleep(.1)
-
-
-def wait_ticks(g,since,n,timeout=180):
-    """Until the server's game time is `n` ticks past `since`; returns it."""
-    deadline=time.monotonic()+timeout
-    while time.monotonic()<deadline:
-        now=game_time(g)
-        if now>=since+n:return now
-        time.sleep(.05)
-    raise TimeoutError(f'{n} ticks')
-
-
-def cancel_use(g,item,count,ticks,duration,release_by=None,on_try=None):
-    """Hold the use of the stack in hand for `ticks` server ticks and release it, well short of its `duration`
-    (or of `release_by`, when the check needs the release earlier); `on_try` runs as each try starts.
-    The server ticks on while the controller waits for the client thread, which a loaded machine slows to over a
-    second a command: at SLOW_RATE ticks a second the release still lands inside the use. A try whose release reached
-    the server after the use could complete is no cancel: it gets its stack back and is repeated. Returns the
-    state while held and the ticks held; waits out `duration` so a late completion would show."""
-    if MUTANT=='late_release:'+item:ticks=duration+SYNC_TICKS
-    g.command(f'tick rate {SLOW_RATE}')
-    try:
-        for attempt in range(3):
-            if on_try:on_try()
-            g.close();g.ctl('look-at 20 160 8')
-            start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,ticks)
-            held=g.ctl('state');g.ctl('mouse right up');released=game_time(g)
-            if released-start<(release_by or duration-SYNC_TICKS) or attempt==2:break
-            # What the completed use left (the containers, a ring pull) goes with it; the last try's stays for
-            # the check to see.
-            g.command('clear @s');give_hand(g,item,count)
-        wait_ticks(g,released,duration+SYNC_TICKS)
-    finally:
-        g.command('tick rate 20')
-    return held,released-start
-
-
-def use_one(g,duration):
-    """Use one of a stack in hand through its `duration` and release before a second is done: at SLOW_RATE ticks a
-    second (see cancel_use), so only for checks that read no effect durations afterwards."""
-    ticks=duration+SYNC_TICKS if MUTANT!='second_one_too' else 2*duration+SYNC_TICKS
-    g.close();g.ctl('look-at 20 160 8');g.command(f'tick rate {SLOW_RATE}')
-    try:
-        start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,ticks)
-        g.ctl('mouse right up');wait_ticks(g,game_time(g),SYNC_TICKS)
-    finally:
-        g.command('tick rate 20')
-
-
-def server_effects(g):
-    """id -> amplifier from the server's own copy of the effects (`/data`)."""
-    text=' '.join(g.command('data get entity @s active_effects').get('chat',[]))
-    out={}
-    for body in re.findall(r'\{[^{}]*\}',text):
-        i=re.search(r'id:\s*"(?:minecraft:)?(\w+)"',body)
-        a=re.search(r'amplifier:\s*(\d+)b',body)
-        if i:out.setdefault(i.group(1),int(a.group(1)) if a else 0)
-    return out
+def item_age(g):
+    """The nearest dropped item's `Age` (ticks since it was thrown), read from the server; None if there is none."""
+    text=' '.join(g.command('data get entity @e[type=item,distance=..8,sort=nearest,limit=1] Age').get('chat',[]))
+    found=re.search(r'entity data:\s*(-?\d+)s',text)
+    return int(found.group(1)) if found else None
 
 
 def give_hand(g,item,count=1,slot=0):
@@ -180,6 +199,9 @@ def put(g,item,count,slot):
 
 def setup(g):
     g.ctl('wait-ready 120');g.close();g.command('gamemode creative @s');g.command('clear @s')
+    # The run lasts tens of thousands of ticks when the machine is loaded (every call of the script takes tens of
+    # them): night would come and a zombie kill the survival player. The day stays noon and no mob spawns.
+    g.command('gamerule advance_time false');g.command('gamerule spawn_mobs false');g.command('time set noon')
     g.ground(20,101,8,width=12,height=8)
     if os.environ.get('NTM_ONLY'):
         # A rerun of the named families alone (on a loaded machine the proof batch's clicks are timing-sensitive).
@@ -190,33 +212,32 @@ def setup(g):
     # The cotton candy is always edible and carries the five Java effects.
     give_hand(g,'ntm:cotton_candy',2)
     # EntityPlayer.canEat is `!capabilities.disableDamage`: 1.7.10 creative cannot eat.
-    g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.45)
-    refused=g.ctl('state');g.ctl('mouse right up');time.sleep(.2)
+    g.ctl('look-at 20 160 8');g.ctl('mouse right down');pause(g,.45)
+    refused=g.ctl('state');g.ctl('mouse right up');pause(g,.2)
     g.check('creative_cannot_eat_item_food',refused.get('using') is None,refused)
     g.command('gamemode survival @s')
-    active,held=cancel_use(g,'ntm:cotton_candy',2,9,EAT_TICKS)
+    # Eating lasts 32 ticks: the button is held half a second (ten). The candy is given again for each run.
+    def candy_again():
+        g.command('effect clear @s');g.command('ntmitem dose 0');give_hand(g,'ntm:cotton_candy',2);g.ctl('look-at 20 160 8')
+    active,held=short_hold(g,.5,candy_again)
     g.check('real_eating_started',active.get('using') is not None,active)
-    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,{'counts':counts(g),'held_ticks':held})
-    # The hunger (20 ticks) drains the food; the candy is eaten held for EAT_TICKS and a margin, at SLOW_RATE ticks a
-    # second so the release lands before a second one is done (EAT_TICKS more).
-    # The saturation goes first (a candy eaten by a late release above leaves plenty): until the food is down.
-    for _ in range(6):
-        g.command('effect give @s minecraft:hunger 1 255 true');wait_ticks(g,game_time(g),20+SYNC_TICKS)
-        if g.ctl('state')['player']['food']<=17:break
-    before=g.ctl('state')['player'];g.close();g.ctl('look-at 20 160 8');g.command(f'tick rate {SLOW_RATE}')
-    start=game_time(g)
-    if MUTANT!='food_not_eaten':g.ctl('mouse right down')
-    wait_ticks(g,start,EAT_TICKS+SYNC_TICKS)
-    g.ctl('mouse right up');released=game_time(g);wait_ticks(g,released,SYNC_TICKS)
-    # The server's copy, read while it still runs at SLOW_RATE ticks a second: the client counted the effects down at
-    # 20 a second meanwhile, and at 20 a slow controller lets the 100-tick wither (ItemCottonCandy:23) run out.
-    if MUTANT=='no_wither':g.command('effect clear @s minecraft:wither')
-    effects=server_effects(g);g.command('tick rate 20')
-    after=g.ctl('state')['player']
-    g.check('food_and_saturation_apply',after['food']>before['food'] and after['saturation']>before['saturation'],
-            {'before':before,'after':after,'held_ticks':released-start})
+    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,{'counts':counts(g),'holds':held})
+    for attempt in range(8):
+        candy_again()
+        # Three seconds of hunger (25 points of exhaustion a second): enough to take the saturation of a candy
+        # eaten by an earlier run (6) and still bring the food bar below 20, where eating can raise it.
+        g.command('effect give @s minecraft:hunger 3 255 true');pause(g,3.4)
+        before=g.ctl('state')['player'];use(g,1.8)
+        after=g.ctl('state')['player']
+        # Poison lasts 300 ticks and the shortest effect, wither, 100: when the state is read more than 90 ticks
+        # after the candy was eaten (the script's calls take tens of ticks on a loaded machine) wither may be gone
+        # by itself and the run says nothing about it, so the candy is eaten again.
+        poison=[e['duration_ticks'] for e in after['effects'] if e['id'].endswith('poison')]
+        if not poison or 300-poison[0]<90:break
+    g.check('food_and_saturation_apply',after['food']>before['food'] and after['saturation']>before['saturation'],{'before':before,'after':after})
     g.check('only_one_food_consumed',counts(g).get('ntm:cotton_candy')==1,counts(g))
-    g.check('java_food_effects',all(effects.get(k)==v for k,v in {'poison':0,'wither':0,'weakness':2,'speed':2,'resistance':4}.items()),effects)
+    effects={e['id'].split(':')[-1]:e['amplifier'] for e in after['effects']}
+    g.check('java_food_effects',all(effects.get(k)==v for k,v in {'poison':0,'wither':0,'weakness':2,'speed':2,'resistance':4}.items()),{'effects':effects,'attempts':attempt+1})
     g.command('effect clear @s');g.command('clear @s');g.command('gamemode creative @s')
     # A stacked syringe returns its container to the inventory.
     give_hand(g,'ntm:syringe_metal_medx',2);use(g)
@@ -234,24 +255,24 @@ def setup(g):
     worn=inventory_tag(g);g.check('exposure_wears_filter','minecraft:damage' in worn and '123' in worn,worn)
     before=worn;g.command('ntmitem expose blister 100');g.check('mask_blacklist_refuses_blister',inventory_tag(g)==before,inventory_tag(g))
     # Real gamma dose uses the same equipped-armor resolver as other sources.
-    g.command('gamemode survival @s');give_hand(g,'ntm:ingot_uranium');time.sleep(11)
+    g.command('gamemode survival @s');give_hand(g,'ntm:ingot_uranium');pause(g,11)
     def rate_sample():
         # The dose is added every RATE_EVERY (20) ticks of the NTM server, which ticks only while the world runs:
-        # frozen, stepped 200 ticks and frozen again, the window holds exactly ten increments however slow the
-        # controller (it was a polled single increment, which a slow poll merged with the next).
-        g.command('tick freeze');before=state(g)['dose'];start=game_time(g)
-        g.command('tick step 200');wait_ticks(g,start,200)
+        # frozen, stepped 200 ticks and frozen again, the window holds exactly ten increments, so the rate is exact
+        # and the values themselves are required (Onda 1 review), not a ratio bound.
+        g.command('tick freeze');before=state(g)['dose'];start=now(g);g.command('tick step 200')
+        while now(g)<start+200:time.sleep(.2)
         after=state(g)['dose'];g.command('tick unfreeze')
         return (after-before)//10
     if MUTANT=='mask_unprotective':g.command('item replace entity @s armor.head with minecraft:leather_helmet')
     mask=rate_sample()
     g.command('item replace entity @s armor.head with minecraft:air');bare=rate_sample()
     g.command('item replace entity @s armor.chest with ntm:hazmat_plate');hazmat=rate_sample()
-    # The window is exact, so the values are: 350 a second bare, the M65 helmet's 0.095 makes 281 and the hazmat
-    # plate's 201 (radiation_mod, 10^-resistance, in Java float); a halved exponent or another sum dies here.
+    # 350 a second bare; the M65 helmet's 0.095 makes 281 and the hazmat plate's 0.24 makes 201 (radiation_mod,
+    # 10^-resistance, in Java float); a halved exponent gives 313.
     g.check('mask_and_hazmat_reduce_gamma',0<mask<bare and 0<hazmat<bare and mask==281 and hazmat==201,{'mask':mask,'bare':bare,'hazmat':hazmat})
     g.command('gamemode creative @s');g.command('clear @s');g.command('ntmitem dose 200000')
-    give_hand(g,'ntm:radaway');use(g);time.sleep(7.5)
+    give_hand(g,'ntm:radaway');use(g);pause(g,7.5)
     g.check('radaway_exact_java_total',state(g)['dose']==60000,state(g))
     g.check('radaway_returns_iv_empty',counts(g).get('ntm:iv_empty')==1,counts(g))
     full_inventory(g)
@@ -289,54 +310,60 @@ def full(g,item,count=1,armor=None,mode='survival'):
     for slot in ['head','chest','legs','feet']:g.command(f'item replace entity @s armor.{slot} with minecraft:air')
     g.command('give @s minecraft:stone 2304');g.command(f'item replace entity @s hotbar.0 with {item} {count}');g.ctl('select 1')
     for slot,worn in (armor or {}).items():g.command(f'item replace entity @s armor.{slot} with {worn}')
-    g.command(f'gamemode {mode} @s');time.sleep(.5)
+    g.command(f'gamemode {mode} @s');pause(g,.5)
     g.check('inventory_is_full_'+item.split(':')[-1],counts(g).get('minecraft:stone')==2240,counts(g))
 
 
 def full_inventory(g):
     """Java item by item: a container that does not fit is dropped (or lost in
     creative), the use still completes; where Java refuses, we refuse."""
-    g.close();g.command('tp @s 24.5 101 7.5');time.sleep(1)
+    g.close();g.command('tp @s 24.5 101 7.5');pause(g,1)
     # Food has no container: eating in a full inventory only consumes the food.
-    full(g,'ntm:cotton_candy',2);g.command('effect give @s minecraft:hunger 1 255 true');time.sleep(1.6)
-    use_one(g,EAT_TICKS);actual=counts(g)
+    full(g,'ntm:cotton_candy',2);g.command('effect give @s minecraft:hunger 1 255 true');pause(g,1.6)
+    use(g,1.8);actual=counts(g)
     g.check('full_food_consumes_one',actual.get('ntm:cotton_candy')==1 and not dropped(g),{'counts':actual,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSyringe: the used-up stack becomes the empty syringe in its own slot...
     full(g,'ntm:syringe_metal_medx',1);use(g);actual=counts(g)
     g.check('full_last_syringe_becomes_empty_in_place',actual.get('ntm:syringe_metal_empty')==1 and not actual.get('ntm:syringe_metal_medx') and not dropped(g),{'counts':actual,'dropped':dropped(g)})
-    # ...and with more in the stack the empty syringe is dropped, never lost. The level is frozen from before the
-    # use (`/tick freeze` ticks only the players): the dropped container's pickup delay does not run while a slow
-    # controller frees the slot and looks.
-    g.command('tick freeze')
+    # ...and with more in the stack the empty syringe is dropped, never lost.
     full(g,'ntm:syringe_metal_medx',2);use(g);actual=counts(g);away=dropped(g)
     effects=g.ctl('state')['player']['effects']
     g.check('full_stacked_syringe_drops_container',actual.get('ntm:syringe_metal_medx')==1 and not actual.get('ntm:syringe_metal_empty') and away.get('ntm:syringe_metal_empty')==1 and any(e['id'].endswith('resistance') and e['amplifier']==2 for e in effects),{'counts':actual,'dropped':away,'effects':effects})
-    # `Player.drop(stack, false)`: pickup delay 40. Still frozen, the freed slot is stepped 30 ticks (the syringe
-    # stays on the ground) and 15 more (it is back): 40, and neither 60 nor 80.
-    g.command('item replace entity @s inventory.26 with minecraft:air');time.sleep(.4)
-    if MUTANT=='pickup_delay_run_out':g.command('tick unfreeze');wait_ticks(g,game_time(g),40+SYNC_TICKS);g.command('tick freeze')
+    # `Player.drop(stack, false)`: pickup delay 40. The syringe is thrown from a full inventory until it is seen on
+    # the ground, then the level is frozen (`/tick freeze` ticks only the players) and its own age read (`Age`, the
+    # ticks since the throw): stepped to age 30 it is still on the ground, 15 ticks later it is back in the freed
+    # slot. That proves 40, and neither 60 nor 80 (Onda 1 review).
+    for attempt in range(8):
+        full(g,'ntm:syringe_metal_medx',2)
+        g.close();g.ctl('look-at 20 160 8');g.ctl('mouse right click')
+        for _ in range(30):
+            if dropped(g).get('ntm:syringe_metal_empty'):break
+            g.ticks(1)
+        g.command('tick freeze');age=item_age(g)
+        if age is not None and age<=30:break
+        g.command('tick unfreeze')
+    g.command('item replace entity @s inventory.26 with minecraft:air')
+    if MUTANT=='pickup_delay_run_out':g.command('tick unfreeze');g.ticks(50);g.command('tick freeze')
     if MUTANT=='pickup_delay_60':g.command('data merge entity @e[type=item,distance=..8,sort=nearest,limit=1] {PickupDelay:60s}')
     def stepped(n):
-        start=game_time(g);g.command(f'tick step {n}');wait_ticks(g,start,n)
+        if n>0:
+            start=now(g);g.command(f'tick step {n}')
+            while now(g)<start+n:time.sleep(.2)
         # Frozen again, the server holds still and only the client's copy may trail: read until it repeats a
         # second apart (a wall-clock bound is safe here, nothing ticks).
         deadline=time.monotonic()+10;last=None
         while True:
-            now=counts(g).get('ntm:syringe_metal_empty',0)
-            if now==last or time.monotonic()>deadline:return now
-            last=now;time.sleep(1)
-    early=stepped(30);late=stepped(15);g.command('tick unfreeze')
-    g.check('thrown_container_waits_its_pickup_delay',early==0 and late==1,{'early':early,'late':late,'dropped':dropped(g)})
+            cur=counts(g).get('ntm:syringe_metal_empty',0)
+            if cur==last or time.monotonic()>deadline:return cur
+            last=cur;time.sleep(1)
+    early=stepped(30-age);late=stepped(15);g.command('tick unfreeze')
+    g.check('thrown_container_waits_its_pickup_delay',early==0 and late==1,{'early':early,'late':late,'age_when_frozen':age,'attempts':attempt+1,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSimpleConsumable.doRadaway: the emptied slot is still taken while the
     # container is added, so even the last RadAway drops its iv_empty.
     g.command('ntmitem dose 200000')
-    full(g,'ntm:radaway',1);use(g)
-    def read():
-        if MUTANT=='radaway_container_lost':g.command('kill @e[type=item,distance=..8]')
-        return counts(g),dropped(g)
-    actual,away=settle_ticks(g,read,lambda v:not v[0].get('ntm:radaway') and v[1].get('ntm:iv_empty')==1);treated=state(g)
+    full(g,'ntm:radaway',1);use(g);actual=counts(g);away=dropped(g);treated=state(g)
     g.check('full_last_radaway_drops_container',not actual.get('ntm:radaway') and not actual.get('ntm:iv_empty') and away.get('ntm:iv_empty')==1 and treated.get('radaway',0)>0,{'counts':actual,'dropped':away,'state':treated})
     full(g,'ntm:radaway',2);use(g);actual=counts(g);away=dropped(g)
     g.check('full_stacked_radaway_keeps_stack_and_drops_container',actual.get('ntm:radaway')==1 and away.get('ntm:iv_empty')==1,{'counts':actual,'dropped':away})
@@ -350,27 +377,27 @@ def full_inventory(g):
     full(g,'ntm:hazmat_kit',armor={'head':'ntm:gas_mask_m65','chest':'minecraft:iron_chestplate'});use(g);actual=counts(g);away=dropped(g)
     # The kit's own slot is empty now and the pieces have no pickup delay, so
     # one of the two returns to it at once; the other stays on the ground.
-    time.sleep(.8);actual=counts(g);away=dropped(g)
+    pause(g,.8);actual=counts(g);away=dropped(g)
     pieces=lambda c:c.get('ntm:gas_mask_m65',0)+c.get('minecraft:iron_chestplate',0)
     g.check('full_kit_equips_and_drops_replaced_armor',all(actual.get('ntm:hazmat_'+p)==1 for p in ['helmet','plate','legs','boots']) and not actual.get('ntm:hazmat_kit') and pieces(actual)==1 and pieces(away)==1 and actual.get('minecraft:stone')==2240,{'counts':actual,'dropped':away})
     # giveHaz's EntityItem sets no delay (the field's 0): a freed slot takes one
     # of the replaced pieces back at once.
-    g.command('item replace entity @s inventory.26 with minecraft:air');time.sleep(1.2);back=counts(g);left=dropped(g)
+    g.command('item replace entity @s inventory.26 with minecraft:air');pause(g,1.2);back=counts(g);left=dropped(g)
     g.check('world_drop_has_no_pickup_delay',pieces(back)==2 and pieces(left)==0,{'counts':back,'dropped':left})
     # ItemFilter: installing swaps the held stack, so a full inventory is fine.
     full(g,'ntm:gas_mask_filter',armor={'head':'ntm:gas_mask_m65'});use(g)
-    g.command('item replace entity @s hotbar.0 with ntm:gas_mask_filter[minecraft:damage=500] 1');time.sleep(.3);use(g)
+    g.command('item replace entity @s hotbar.0 with ntm:gas_mask_filter[minecraft:damage=500] 1');pause(g,.3);use(g)
     held=g.ctl('inventory')['held'] or {}
     g.check('full_filter_swap_returns_old_filter_in_hand',held.get('item')=='ntm:gas_mask_filter' and not dropped(g) and '500' in inventory_tag(g),{'held':held,'dropped':dropped(g)})
     # ArmorGasMask.onItemRightClick: sneaking takes the filter out; no room drops it.
     g.command('item replace entity @s hotbar.0 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air')
-    g.ctl('key shift down');time.sleep(.6);use(g);g.ctl('key shift up');time.sleep(.3)
+    g.ctl('key shift down');pause(g,.6);use(g);g.ctl('key shift up');pause(g,.3)
     mask=(g.ctl('inventory')['held'] or {});away=dropped(g)
     g.check('full_sneak_use_drops_removed_filter',mask.get('item')=='ntm:gas_mask_m65' and away.get('ntm:gas_mask_filter')==1 and 'hfrFilter' not in inventory_tag(g),{'held':mask,'dropped':away})
     g.command('kill @e[type=minecraft:item]');g.command('item replace entity @s inventory.26 with minecraft:air')
     g.command('item replace entity @s armor.head with ntm:gas_mask_m65');give_hand(g,'ntm:gas_mask_filter');use(g)
     g.command('item replace entity @s hotbar.0 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air');g.ctl('select 1')
-    g.ctl('key shift down');time.sleep(.6);use(g);g.ctl('key shift up');time.sleep(.3)
+    g.ctl('key shift down');pause(g,.6);use(g);g.ctl('key shift up');pause(g,.3)
     g.check('free_slot_takes_removed_filter',counts(g).get('ntm:gas_mask_filter')==1 and not dropped(g),{'counts':counts(g),'dropped':dropped(g)})
     # The plate has no container: a right click equips it from a full inventory.
     full(g,'ntm:hazmat_plate');use(g);inv=g.ctl('inventory')
@@ -394,29 +421,25 @@ def death_resets_dose(g):
     does not bring it back at the next radiation tick."""
     g.close();g.command('clear @s');g.command('gamemode survival @s');g.command('ntmitem dose 300000')
     before=state(g)['dose'];g.check('dose_before_death',before>=300000,before)
-    g.command('kill @s');time.sleep(2);g.ctl('respawn');g.ctl('wait-ready 60');g.close();time.sleep(4)
+    g.command('kill @s');pause(g,2);g.ctl('respawn');g.ctl('wait-ready 60');g.close();pause(g,4)
     after=state(g)['dose']
     g.check('death_resets_dose_for_the_next_radiation_tick',after==0,after)
-    time.sleep(3);again=state(g)['dose'];g.check('dose_stays_zero_after_more_ticks',again==0,again)
+    pause(g,3);again=state(g)['dose'];g.check('dose_stays_zero_after_more_ticks',again==0,again)
     g.command('gamemode creative @s')
 
 
 def effect_map(g):
-    return {e['id'].split(':')[-1]:(e['amplifier'],e['duration_ticks']) for e in g.ctl('state')['player']['effects']}
+    state_=g.ctl('state');READ_TICK[0]=now(g)  # read after the state: it cannot delay it
+    return {e['id'].split(':')[-1]:(e['amplifier'],e['duration_ticks']) for e in state_['player']['effects']}
 
 
-def has_effects(effects,expected,elapsed=80):
-    """Amplifier exact; the duration is the Java one minus the ticks since (`elapsed`, counted in game ticks
-    by the callers that measure it, else 80)."""
-    return all(k in effects and effects[k][0]==amp and ticks-elapsed<=effects[k][1]<=ticks for k,(amp,ticks) in expected.items())
-
-
-def eat_ticks(g,item):
-    """Eat `item` holding the button for EAT_TICKS and a margin of game ticks; returns the tick it started."""
-    give_hand(g,item);g.close();g.ctl('look-at 20 160 8')
-    start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,EAT_TICKS+SYNC_TICKS);g.ctl('mouse right up')
-    wait_ticks(g,start,EAT_TICKS+2*SYNC_TICKS)
-    return start
+def has_effects(effects,expected):
+    """Amplifier exact; the duration is the Java one minus the ticks since: at most 80, or the ticks counted from
+    the start of the use to a clock read right after the effects, when that is more (an upper bound of the age of the
+    effect: the script's own calls take tens of ticks on a loaded machine). The upper bound never rejects a correct
+    effect, and a duration shorter than the Java one by more than that is still refused."""
+    age=max(80,READ_TICK[0]-USE_TICK[0]+4)
+    return all(k in effects and effects[k][0]==amp and ticks-age<=effects[k][1]<=ticks for k,(amp,ticks) in expected.items())
 
 
 def stack_damage(g,item):
@@ -435,11 +458,12 @@ def energy(g):
     and the chocolate milk, in the Java order: use, effects, container and
     cap, full inventory, creative, then the cooldown across a reopen."""
     g.close();g.command('gamemode survival @s');g.command('clear @s');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
-    g.command('ntmitem dose 0');g.command('tp @s 20.5 101 11.5');time.sleep(.5)
-    give_hand(g,'ntm:can_smart',2)
-    active,held=cancel_use(g,'ntm:can_smart',2,10,32)  # ItemEnergy.getMaxItemUseDuration
+    g.command('ntmitem dose 0');g.command('tp @s 20.5 101 11.5');pause(g,.5)
+    def can_again():
+        g.command('effect clear @s');g.command('ntmitem dose 0');g.command('kill @e[type=minecraft:item]');give_hand(g,'ntm:can_smart',2);g.ctl('look-at 20 160 8')
+    active,held=short_hold(g,.5,can_again)
     g.check('can_drink_animation_runs',active.get('using') is not None,active)
-    g.check('can_cancel_keeps_it',counts(g).get('ntm:can_smart')==2 and not counts(g).get('ntm:ring_pull'),{'counts':counts(g),'held_ticks':held})
+    g.check('can_cancel_keeps_it',counts(g).get('ntm:can_smart')==2 and not counts(g).get('ntm:ring_pull'),{'counts':counts(g),'holds':held})
     use(g,1.8);actual=counts(g);effects=effect_map(g)
     g.check('can_leaves_ring_pull_and_empty_can',actual.get('ntm:can_smart')==1 and actual.get('ntm:can_empty')==1 and actual.get('ntm:ring_pull')==1,actual)
     g.check('can_smart_java_effects',has_effects(effects,{'speed':(1,600),'resistance':(2,600),'strength':(0,600)}),effects)
@@ -460,11 +484,11 @@ def energy(g):
     g.check('creative_drinks_without_consuming',actual.get('ntm:can_smart')==1 and not actual.get('ntm:can_empty') and not actual.get('ntm:ring_pull'),actual)
     g.command('gamemode survival @s');g.command('clear @s');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
     # A bottle needs the opener in the inventory.
-    g.command('ntmitem dose 0');g.command('damage @s 8 minecraft:generic');time.sleep(.4)
-    give_hand(g,'ntm:bottle_nuka',1);g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.5)
-    blocked=g.ctl('state');g.ctl('mouse right up');time.sleep(.2)
+    g.command('ntmitem dose 0');g.command('damage @s 8 minecraft:generic');pause(g,.4)
+    give_hand(g,'ntm:bottle_nuka',1);g.ctl('look-at 20 160 8');g.ctl('mouse right down');pause(g,.5)
+    blocked=g.ctl('state');g.ctl('mouse right up');pause(g,.2)
     g.check('bottle_needs_the_opener',blocked.get('using') is None and counts(g).get('ntm:bottle_nuka')==1,blocked)
-    g.command('give @s ntm:bottle_opener 1');time.sleep(.3)
+    g.command('give @s ntm:bottle_opener 1');pause(g,.3)
     hurt=g.ctl('state')['player']['health'];use(g,1.8);after=g.ctl('state')['player'];actual=counts(g);effects=effect_map(g)
     g.check('bottle_drinks_with_the_opener',not actual.get('ntm:bottle_nuka') and actual.get('ntm:bottle_empty')==1 and actual.get('ntm:cap_nuka')==1 and actual.get('ntm:bottle_opener')==1,actual)
     g.check('bottle_nuka_heals_four_and_adds_five_rad',after['health']>=hurt+4.0-.01 and state(g)['dose']==5000,{'before':hurt,'after':after['health'],'dose':state(g)})
@@ -476,12 +500,15 @@ def energy(g):
     g.command('ntmitem dose 0');g.command('effect clear @s')
     # The canteen: 10 ticks of drinking, then 180 seconds of cooldown as damage; it stays.
     g.command('gamemode survival @s');g.command('clear @s');give_hand(g,'ntm:canteen_vodka',1);use(g,.8)
-    first=stack_damage(g,'ntm:canteen_vodka');effects=effect_map(g)
-    g.check('canteen_sets_its_cooldown_and_stays',first is not None and 175<=first<=180 and counts(g).get('ntm:canteen_vodka')==1,{'damage':first,'counts':counts(g)})
+    effects=effect_map(g);first=stack_damage(g,'ntm:canteen_vodka');age=now(g)-USE_TICK[0]
+    # It cools one point a second (20 ticks): the damage read `age` ticks after the use began may be that much lower
+    # (five points, or what the age allows when the script's calls took longer).
+    allowed=max(5,age//20+1)
+    g.check('canteen_sets_its_cooldown_and_stays',first is not None and 180-allowed<=first<=180 and counts(g).get('ntm:canteen_vodka')==1,{'damage':first,'age_ticks':age,'allowed_drop':allowed,'counts':counts(g)})
     g.check('canteen_java_effects',has_effects(effects,{'nausea':(0,200),'strength':(2,600)}),effects)
-    g.ctl('mouse right down');time.sleep(.5);again=g.ctl('state');g.ctl('mouse right up')
+    g.ctl('mouse right down');pause(g,.5);again=g.ctl('state');g.ctl('mouse right up')
     g.check('canteen_refuses_while_cooling',again.get('using') is None,again)
-    time.sleep(6);later=stack_damage(g,'ntm:canteen_vodka')
+    pause(g,6);later=stack_damage(g,'ntm:canteen_vodka')
     g.check('canteen_cools_one_per_second',later is not None and later<=first-3,{'first':first,'later':later})
     g.command('effect clear @s')
     # The mango: 200 ticks, ItemFood stats, speed 200 ticks.
@@ -497,26 +524,29 @@ def energy(g):
         return [int(m) for m in re.findall(r'"event":"gulp","item":"(\d+)"',log)]
     def log_size():
         return len((g.folder/'client-first.log').read_text(errors='replace'))
-    g.command('clear @s');give_hand(g,'ntm:bdcl',2);mark=log_size();use_one(g,40)  # ItemBDCL.getMaxItemUseDuration
+    g.command('clear @s');give_hand(g,'ntm:bdcl',2);mark=log_size();use(g,2.1);pause(g,.5)
     g.check('bdcl_is_consumed_without_a_container',counts(g).get('ntm:bdcl')==1 and len(counts(g))==1,counts(g))
     full_use=[0,5,10,15,19,26];heard=gulps(mark)
     # The button is still down when the first drink ends, so a second use may begin: its gulps start over.
     g.check('bdcl_gulps_on_the_java_counts_exactly',heard[:6]==full_use and heard[6:]==full_use[:len(heard)-6],heard)
     # Cancelled after about twelve ticks: only the gulps already due are heard, and nothing is consumed.
-    # ItemBDCL.getMaxItemUseDuration is 40; at most four gulps (0, 5, 10, 15) means released before tick 19.
-    give_hand(g,'ntm:bdcl',2);marks=[]
-    cancel_use(g,'ntm:bdcl',2,11,40,release_by=19,on_try=lambda:marks.append(log_size()))
-    heard=gulps(marks[-1])
-    g.check('cancelled_bdcl_stops_its_gulps',heard==[0,5,10,15,19,26][:len(heard)] and 2<=len(heard)<=4 and counts(g).get('ntm:bdcl')==2,{'heard':heard,'counts':counts(g)})
+    marks=[]
+    def bdcl_again():
+        g.close();g.command('effect clear @s');g.command('ntmitem dose 0');g.command('clear @s');give_hand(g,'ntm:bdcl',2);g.ctl('look-at 20 160 8');marks.append(log_size())
+    for attempt in range(8):  # gulps at ticks 0, 5, 10, 15: held 0.55 s (11 ticks), two to four are heard
+        bdcl_again();held_use(g,.55);pause(g,.4)
+        heard=gulps(marks[-1])
+        if 2<=len(heard)<=4:break
+    g.check('cancelled_bdcl_stops_its_gulps',heard==[0,5,10,15,19,26][:len(heard)] and 2<=len(heard)<=4 and counts(g).get('ntm:bdcl')==2,{'heard':heard,'counts':counts(g),'holds':attempt+1})
     # The chocolate milk is the last: its blast removes the floor around the player.
     g.command('gamemode creative @s');g.command('clear @s');give_hand(g,'ntm:chocolate_milk',1)
-    floor=g.ctl('block 20 100 8').get('state','');use(g,1.8);time.sleep(4)
+    floor=g.ctl('block 20 100 8').get('state','');use(g,1.8);pause(g,4)
     after=g.ctl('block 20 100 8').get('state','')
     g.check('chocolate_milk_blast_breaks_the_floor','stone' in floor and 'air' in after,{'before':floor,'after':after})
     g.ground(20,101,8,width=12,height=8);g.command('clear @s')
     if 'vnt' not in FAMILIES:return
     # EntityProcessorCross: the drinker at the center takes (int)(8 * 100 + 1) damage.
-    g.command('gamemode survival @s');g.command('tp @s 20.5 101 11.5');time.sleep(.4);give_hand(g,'ntm:chocolate_milk',1);g.close();g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(2.4)
+    g.command('gamemode survival @s');g.command('tp @s 20.5 101 11.5');pause(g,.4);give_hand(g,'ntm:chocolate_milk',1);g.close();g.ctl('look-at 20 160 8');g.ctl('mouse right down');pause(g,2.4)
     dead=g.ctl('state')['player']
     g.check('chocolate_milk_kills_a_survival_drinker',dead.get('death_time') is not None or dead['health']<=0,dead)
     g.ctl('respawn');g.ctl('wait-ready 60');g.close();g.command('gamemode creative @s');g.ground(20,101,8,width=12,height=8)
@@ -524,20 +554,27 @@ def energy(g):
 
 def extinguish(g):
     """The schnitzel sets the player on fire for 100 seconds: stand in water for a moment."""
-    g.command('tp @s 20.5 101 11.5');g.command('setblock 20 101 11 minecraft:water');time.sleep(.8)
-    g.command('setblock 20 101 11 minecraft:air');g.command('effect clear @s');time.sleep(.3)
+    g.command('tp @s 20.5 101 11.5');g.command('setblock 20 101 11 minecraft:water');pause(g,.8)
+    g.command('setblock 20 101 11 minecraft:air');g.command('effect clear @s');pause(g,.3)
+
+
+def full_food(g):
+    """The food bar full (20): saturation restores it, a few tries if the first second is not enough."""
+    for _ in range(4):
+        g.command('effect give @s minecraft:saturation 2 20 true');pause(g,2.4);g.command('effect clear @s')
+        if g.ctl('state')['player']['food']>=20:break
 
 
 def starve(g):
     """Hunger until the food bar is below 20 (the saturation goes first)."""
-    g.command('effect give @s minecraft:hunger 30 255 true');deadline=time.monotonic()+20
-    while g.ctl('state')['player']['food']>=20 and time.monotonic()<deadline:time.sleep(.5)
+    g.command('effect give @s minecraft:hunger 30 255 true');deadline=now(g)+400
+    while g.ctl('state')['player']['food']>=20 and now(g)<deadline:pause(g,.5)
     g.command('effect clear @s')
 
 
 def reset(g,mode='survival',dose=0):
     g.close();g.command(f'gamemode {mode} @s');g.command('clear @s');g.command('ntmitem cure');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
-    g.command(f'ntmitem dose {dose}');g.command('tp @s 20.5 101 11.5');time.sleep(.5)
+    g.command(f'ntmitem dose {dose}');g.command('tp @s 20.5 101 11.5');pause(g,.5)
 
 
 def hold(g,item,seconds,count=1,slot=0):
@@ -547,8 +584,8 @@ def hold(g,item,seconds,count=1,slot=0):
 
 def refused(g,item,count=1):
     """The use never starts (no pose) and the stack stays."""
-    give_hand(g,item,count);g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.5)
-    state_=g.ctl('state');g.ctl('mouse right up');time.sleep(.2)
+    give_hand(g,item,count);g.ctl('look-at 20 160 8');g.ctl('mouse right down');pause(g,.5)
+    state_=g.ctl('state');g.ctl('mouse right up');pause(g,.2)
     return state_.get('using') is None and counts(g).get(item)==count
 
 
@@ -565,15 +602,15 @@ def medicine(g):
     leaving the sickness alone); fmn, chocolate, plan C and the poison syringe (Resistance V
     absorbs the euthanasia, a survival player without it dies)."""
     reset(g)
-    g.command('damage @s 10 minecraft:generic');time.sleep(.4);before=health(g)
+    g.command('damage @s 10 minecraft:generic');pause(g,.4);before=health(g)
     hold(g,'ntm:syringe_metal_stimpak',0,2);actual=counts(g)
     g.check('stimpak_heals_five_and_returns_the_syringe',health(g)>=before+5-.01 and actual.get('ntm:syringe_metal_stimpak')==1 and actual.get('ntm:syringe_metal_empty')==1,{'before':before,'after':health(g),'counts':actual})
     reset(g);hold(g,'ntm:syringe_metal_psycho',0);effects=effect_map(g)
     g.check('psycho_java_effects',has_effects(effects,{'resistance':(0,2400),'strength':(0,2400)}),effects)
-    reset(g);g.command('damage @s 15 minecraft:generic');time.sleep(.4);hold(g,'ntm:syringe_metal_super',0);effects=effect_map(g)
+    reset(g);g.command('damage @s 15 minecraft:generic');pause(g,.4);hold(g,'ntm:syringe_metal_super',0);effects=effect_map(g)
     g.check('super_heals_and_slows',health(g)>=19.9 and has_effects(effects,{'slowness':(0,200)}),{'health':health(g),'effects':effects})
     # med_bag: full heal, only the bad effects go, no container.
-    reset(g);g.command('effect give @s minecraft:poison 60 0');g.command('effect give @s minecraft:speed 60 0');g.command('damage @s 10 minecraft:generic');time.sleep(.4)
+    reset(g);g.command('effect give @s minecraft:poison 60 0');g.command('effect give @s minecraft:speed 60 0');g.command('damage @s 10 minecraft:generic');pause(g,.4)
     hold(g,'ntm:med_bag',0);effects=effect_map(g)
     g.check('med_bag_heals_fully_and_cures_the_bad_effects',health(g)>=19.9 and 'poison' not in effects and 'speed' in effects and not counts(g),{'health':health(g),'effects':effects,'counts':counts(g)})
     # Taint: two containers, none in place; the taint mob effect and nausea.
@@ -586,25 +623,27 @@ def medicine(g):
     reset(g);hold(g,'ntm:syringe_awesome',0);effects=effect_map(g)
     g.check('awesome_java_effects',has_effects(effects,{'regeneration':(9,1000),'resistance':(9,1000),'strength':(24,1000),'speed':(6,1000),'jump_boost':(9,1000),'health_boost':(9,1000),'absorption':(4,1000),'radx':(9,1000),'fire_resistance':(0,1000)}),effects)
     # RadAway variants: the treatment counter is the Java potion duration.
-    reset(g,dose=500000);hold(g,'ntm:radaway_strong',0);time.sleep(19.5)
+    reset(g,dose=500000);hold(g,'ntm:radaway_strong',0);pause(g,19.5)
     g.check('radaway_strong_removes_three_hundred_fifty_rad',state(g)['dose']==150000,state(g))
     # The counter is the Java potion duration; the strong one has run out, so it starts from zero.
-    reset(g,dose=500000);before=state(g).get('radaway',0);hold(g,'ntm:radaway_flush',0);treated=state(g)
-    g.check('radaway_flush_is_five_hundred_ticks',480<=treated.get('radaway',0)-before<=500 and counts(g).get('ntm:iv_empty')==1,{'before':before,'state':treated,'counts':counts(g)})
+    reset(g,dose=500000);before=state(g).get('radaway',0);hold(g,'ntm:radaway_flush',0);treated=state(g);age=now(g)-USE_TICK[0]
+    # The counter runs down a tick at a time: read `age` ticks after the use began (20 on a quiet machine) it may be
+    # that much below the 500 of the Java potion.
+    g.check('radaway_flush_is_five_hundred_ticks',500-max(20,age+4)<=treated.get('radaway',0)-before<=500 and counts(g).get('ntm:iv_empty')==1,{'before':before,'state':treated,'age_ticks':age,'counts':counts(g)})
     # The antidote is `clearActivePotions`: the radaway potion goes with the effect list, so the dose stops falling.
-    hold(g,'ntm:syringe_antidote',0);cleared=state(g);time.sleep(1.2);later=state(g)
+    hold(g,'ntm:syringe_antidote',0);cleared=state(g);pause(g,1.2);later=state(g)
     g.check('antidote_clears_the_radaway_treatment',cleared.get('radaway',0)==0 and later.get('radaway',0)==0 and later['dose']==cleared['dose'],{'treated':treated,'cleared':cleared,'later':later})
     # Milk clears the ordinary potions too (`HbmPotion.radaway` has curative items): the treatment ends and the dose stays.
-    reset(g,dose=500000);hold(g,'ntm:radaway_flush',0);treated=state(g);give_hand(g,'minecraft:milk_bucket');use(g,2.2);cleared=state(g);time.sleep(1.2);later=state(g)
+    reset(g,dose=500000);hold(g,'ntm:radaway_flush',0);treated=state(g);give_hand(g,'minecraft:milk_bucket');use(g,2.2);cleared=state(g);pause(g,1.2);later=state(g)
     g.check('milk_ends_the_radaway_treatment',treated.get('radaway',0)>=400 and cleared.get('radaway',0)==0 and later.get('radaway',0)==0 and later['dose']==cleared['dose'],{'treated':treated,'cleared':cleared,'later':later})
     # IV bags: blood costs 5 health, then gives 5.
     reset(g);hold(g,'ntm:iv_empty',0);actual=counts(g)
     g.check('iv_empty_takes_five_health_and_fills',abs(health(g)-15)<.6 and actual.get('ntm:iv_blood')==1 and not actual.get('ntm:iv_empty'),{'health':health(g),'counts':actual})
-    g.command('damage @s 10 minecraft:generic');time.sleep(.4);low=health(g);hold(g,'ntm:iv_blood',0)
+    g.command('damage @s 10 minecraft:generic');pause(g,.4);low=health(g);hold(g,'ntm:iv_blood',0)
     g.check('iv_blood_heals_five',health(g)>=low+5-.01 and counts(g).get('ntm:iv_empty')==1,{'before':low,'after':health(g)})
-    reset(g);g.command('xp set @s 0 points');g.command('xp set @s 3 levels');time.sleep(.3)
+    reset(g);g.command('xp set @s 0 points');g.command('xp set @s 3 levels');pause(g,.3)
     low=g.ctl('state')['player']['xp'];hold(g,'ntm:iv_xp_empty',0);g.check('iv_xp_empty_needs_a_hundred_points',counts(g).get('ntm:iv_xp_empty')==1 and not counts(g).get('ntm:iv_xp'),{'xp':low,'counts':counts(g)})
-    reset(g);g.command('xp set @s 0 levels');g.command('xp set @s 0 points');g.command('xp add @s 15 levels');time.sleep(.3)
+    reset(g);g.command('xp set @s 0 levels');g.command('xp set @s 0 points');g.command('xp add @s 15 levels');pause(g,.3)
     hold(g,'ntm:iv_xp_empty',0);after=g.ctl('state')['player']['xp'];actual=counts(g)
     g.check('iv_xp_empty_takes_a_hundred_points',actual.get('ntm:iv_xp')==1 and after['level']<15 and 315-100<=after['level']*0+ (sum(7+2*i for i in range(after['level']))+int((7+2*after['level'])*after['progress']))<=315-100+2,{'xp':after,'counts':actual})
     reset(g);g.command('xp set @s 0 points');g.command('xp set @s 0 levels');hold(g,'ntm:iv_xp',0);after=g.ctl('state')['player']['xp']
@@ -618,9 +657,9 @@ def medicine(g):
     g.check('herbal_lowers_the_dose_and_applies_its_effects',state(g)['dose']==400000 and has_effects(effects,{'weakness':(2,12000),'mining_fatigue':(2,12000),'potion_sickness':(0,12000)}),{'state':state(g),'effects':effects})
     g.check('potion_sickness_blocks_the_next_pill',refused(g,'ntm:pill_herbal',1),counts(g))
     # `HbmPotion.potionsickness` has no curative items: milk clears the other effects and leaves it running.
-    reset(g);hold(g,'ntm:pill_herbal',.9,1);give_hand(g,'minecraft:milk_bucket');use(g,2.2);time.sleep(.6);effects=effect_map(g)
+    reset(g);hold(g,'ntm:pill_herbal',.9,1);give_hand(g,'minecraft:milk_bucket');use(g,2.2);pause(g,.6);effects=effect_map(g)
     g.check('milk_does_not_cure_the_herbal_sickness','potion_sickness' in effects and effects['potion_sickness'][1]>11000 and 'weakness' not in effects and 'mining_fatigue' not in effects,effects)
-    reset(g);g.command('effect give @s ntm:potion_sickness 30 0');time.sleep(.3)
+    reset(g);g.command('effect give @s ntm:potion_sickness 30 0');pause(g,.3)
     g.check('sick_player_cannot_drink_a_can',refused(g,'ntm:can_smart',1),counts(g))
     g.command('effect clear @s')
     reset(g);g.command('effect give @s minecraft:hunger 1 255 true');hold(g,'ntm:fmn',.9);effects=effect_map(g)
@@ -632,25 +671,25 @@ def medicine(g):
         g.ctl('respawn');g.ctl('wait-ready 60');g.close()
     g.check('chocolate_effects',has_effects(effects,{'haste':(3,1200),'speed':(3,1200),'jump_boost':(3,1200)}),effects)
     # plan C kills a survival player; creative is immune but the pill is still eaten.
-    reset(g,'creative');g.command('effect give @s minecraft:instant_health 1 10 true');time.sleep(.8);before=health(g);hold(g,'ntm:plan_c',.9)
+    reset(g,'creative');g.command('effect give @s minecraft:instant_health 1 10 true');pause(g,.8);before=health(g);hold(g,'ntm:plan_c',.9)
     g.check('plan_c_cannot_hurt_creative_but_is_eaten',health(g)>=before-.01 and before>19 and not counts(g),{'before':before,'health':health(g),'counts':counts(g)})
     # `euthanizedSelf` only bypasses armor: Resistance V (amplifier 4) absorbs all of it, the syringe and the pill alike.
-    reset(g);g.command('effect give @s minecraft:resistance 120 4 true');hold(g,'ntm:syringe_poison',0);time.sleep(.6);alive=g.ctl('state')['player']
+    reset(g);g.command('effect give @s minecraft:resistance 120 4 true');hold(g,'ntm:syringe_poison',0);pause(g,.6);alive=g.ctl('state')['player']
     g.check('resistance_absorbs_the_euthanasia_syringe',alive.get('death_time') is None and alive['health']>=19.9 and counts(g).get('ntm:syringe_empty')==1,{'player':alive,'counts':counts(g)})
-    reset(g);g.command('effect give @s minecraft:resistance 120 4 true');hold(g,'ntm:plan_c',.9);time.sleep(1.2);alive=g.ctl('state')['player']
+    reset(g);g.command('effect give @s minecraft:resistance 120 4 true');hold(g,'ntm:plan_c',.9);pause(g,1.2);alive=g.ctl('state')['player']
     g.check('resistance_absorbs_plan_c',alive.get('death_time') is None and alive['health']>=19.9 and not counts(g),{'player':alive,'counts':counts(g)})
-    reset(g);hold(g,'ntm:plan_c',.9);time.sleep(1.5);dead=g.ctl('state')['player']
+    reset(g);hold(g,'ntm:plan_c',.9);pause(g,1.5);dead=g.ctl('state')['player']
     g.check('plan_c_kills_a_survival_player',dead.get('death_time') is not None or dead['health']<=0,dead)
     g.ctl('respawn');g.ctl('wait-ready 60');g.close();reset(g,'creative')
-    g.command('gamemode survival @s');g.command('effect give @s minecraft:instant_damage 1 0');time.sleep(.4)
-    hold(g,'ntm:syringe_poison',0);time.sleep(1.5);dead=g.ctl('state')['player']
+    g.command('gamemode survival @s');g.command('effect give @s minecraft:instant_damage 1 0');pause(g,.4)
+    hold(g,'ntm:syringe_poison',0);pause(g,1.5);dead=g.ctl('state')['player']
     g.check('poison_syringe_kills_and_leaves_an_empty_one',dead.get('death_time') is not None or dead['health']<=0,dead)
     g.ctl('respawn');g.ctl('wait-ready 60');g.close();reset(g,'creative')
 
 
 def foods(g):
     """Family 3: ItemLemon and the vanilla foods, soups, cigarettes, rag, peas."""
-    reset(g);g.command('effect give @s minecraft:saturation 6 10 true');time.sleep(2);g.command('effect clear @s')
+    reset(g);g.command('effect give @s minecraft:saturation 6 10 true');pause(g,2);g.command('effect clear @s')
     g.check('lemon_needs_hunger',refused(g,'ntm:lemon',1),counts(g))
     starve(g);before=g.ctl('state')['player']
     use(g,1.8);after=g.ctl('state')['player']
@@ -668,25 +707,23 @@ def foods(g):
     reset(g);g.check('ptsd_needs_hunger_at_full_food',refused(g,'ntm:med_ptsd',1),counts(g))
     reset(g);starve(g);hold(g,'ntm:med_ipecac',1.8);effects=effect_map(g)
     g.check('ipecac_when_hungry_induces_hunger',has_effects(effects,{'hunger':(49,50)}) and not counts(g),effects)
-    reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true')
-    start=eat_ticks(g,'ntm:schnitzel_vegan')
-    # 160 ticks: the nearest whole-second duration to a 170-tick blindness that the review asked to kill.
+    reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true');hold(g,'ntm:schnitzel_vegan',1.8)
+    # 160 ticks: the nearest whole-second duration to a 170-tick blindness that the Onda 1 review asked to kill.
     if MUTANT=='schnitzel_short_blindness':g.command('effect clear @s minecraft:blindness');g.command('effect give @s minecraft:blindness 8 0 true')
-    effects=effect_map(g);elapsed=game_time(g)-start
-    # The effects are given when the eating ends, at least EAT_TICKS after `start`, and read before `elapsed`: they
-    # have run at most elapsed - EAT_TICKS. Given in one tick, they also keep the Java's differences exactly.
+    effects=effect_map(g)
+    # Given in one tick, the three keep the Java's differences exactly, whatever age `has_effects` allows for.
     remaining=lambda k:effects.get(k,(0,0))[1]
-    g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)},elapsed-EAT_TICKS)
-            and remaining('nausea')-remaining('blindness')==400 and remaining('hunger')-remaining('blindness')==3400
-            and not counts(g).get('ntm:schnitzel_vegan'),{'effects':effects,'elapsed_ticks':elapsed})
+    g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)})
+            and remaining('nausea')-remaining('blindness')==400 and remaining('hunger')-remaining('blindness')==3400,effects)
     extinguish(g)
-    reset(g);hold(g,'ntm:apple_euphemium',1.8);effects=effect_map(g)
-    g.check('euphemium_apple_effects_are_endless',effects.get('resistance',(0,0))[0]==120 and effects['resistance'][1]>2_000_000_000 and effects.get('fire_resistance',(9,0))[0]==0,effects)
+    # ItemAppleEuphemium.setAlwaysEdible (and `gate: food_always`): eaten with the food bar full, which is how it is made sure to start.
+    reset(g);full_food(g);food_before=g.ctl('state')['player']['food'];hold(g,'ntm:apple_euphemium',1.8);effects=effect_map(g)
+    g.check('euphemium_apple_effects_are_endless',food_before==20 and effects.get('resistance',(0,0))[0]==120 and effects['resistance'][1]>2_000_000_000 and effects.get('fire_resistance',(9,0))[0]==0,{'food_before':food_before,'effects':effects})
     reset(g);g.check('pancake_is_refused_without_the_bj_armor',refused(g,'ntm:pancake',1),counts(g))
     # Cigarettes: thirty ticks, +100 RAD even in creative, consumed in every mode.
     reset(g,'creative');hold(g,'ntm:cigarette',1.9,2)
     g.check('cigarette_adds_one_hundred_rad_in_creative_and_is_consumed',state(g)['dose']==100000 and counts(g).get('ntm:cigarette')==1,{'state':state(g),'counts':counts(g)})
-    reset(g);g.command('damage @s 10 minecraft:generic');time.sleep(.4);before=health(g);hold(g,'ntm:crackpipe',1.9);effects=effect_map(g)
+    reset(g);g.command('damage @s 10 minecraft:generic');pause(g,.4);before=health(g);hold(g,'ntm:crackpipe',1.9);effects=effect_map(g)
     g.check('crackpipe_heals_ten_and_nauseates',health(g)>=min(20,before+10)-.01 and has_effects(effects,{'nausea':(0,200)}),{'before':before,'after':health(g),'effects':effects})
     # Rag: the piss rag is added with the result ignored; peas only consume.
     reset(g);hold(g,'ntm:rag',0,2);actual=counts(g)
@@ -752,8 +789,8 @@ def other_filters(g):
         before=after;g.command('ntmitem expose lung 40')
         g.check(f'{hood}_filter_stops_lung_gas',inventory_tag(g)!=before,inventory_tag(g))
         g.command('item replace entity @s hotbar.3 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air')
-        g.command('item replace entity @s hotbar.0 from entity @s hotbar.3');g.command('item replace entity @s hotbar.3 with minecraft:air');g.ctl('select 1');time.sleep(.3)
-        g.ctl('key shift down');time.sleep(.4);use(g);g.ctl('key shift up');time.sleep(.3)
+        g.command('item replace entity @s hotbar.0 from entity @s hotbar.3');g.command('item replace entity @s hotbar.3 with minecraft:air');g.ctl('select 1');pause(g,.3)
+        g.ctl('key shift down');pause(g,.4);use(g);g.ctl('key shift up');pause(g,.3)
         g.check(f'{hood}_gives_the_filter_back_when_sneak_used',counts(g).get('ntm:gas_mask_filter_combo')==1 and 'hfrFilter' not in inventory_tag(g),{'counts':counts(g),'tag':inventory_tag(g)})
     reset(g,'creative')
 
@@ -775,12 +812,12 @@ def instruments(g):
     reset(g,'survival',dose=250000)
     hold(g,'ntm:geiger_counter',0);text=chat_lines(g)
     g.check('geiger_report',all(k in text for k in ('GEIGER COUNTER','Total environmental radiation','Player contamination','Player resistance')) and '250.0 RAD' in text,text)
-    reset(g,'survival',dose=0);g.command('give @s ntm:ingot_uranium 64');time.sleep(3)
+    reset(g,'survival',dose=0);g.command('give @s ntm:ingot_uranium 64');pause(g,3)
     hold(g,'ntm:dosimeter',0,1,1);text=chat_lines(g)
     g.check('dosimeter_reads_the_server_buffer','DOSIMETER' in text and '>3.6 RAD/s' in text.split('DOSIMETER')[0],text)
     hold(g,'ntm:digamma_diagnostic',0,1,2);text=chat_lines(g)
     g.check('diagnostic_report','DIGAMMA DIAGNOSTIC' in text and 'DRX' in text,text)
-    reset(g);g.command('setblock 25 100 11 ntm:ore_oil');g.command('setblock 20 100 16 ntm:stone_gneiss');time.sleep(.4)
+    reset(g);g.command('setblock 25 100 11 ntm:ore_oil');g.command('setblock 20 100 16 ntm:stone_gneiss');pause(g,.4)
     hold(g,'ntm:survey_scanner',0);text=chat_lines(g)
     g.check('survey_scanner_finds_ported_ores','Found OIL!' in text and 'Found SCHIST!' in text and 'COLTAN' not in text,text)
     g.command('setblock 25 100 11 minecraft:air');g.command('setblock 20 100 16 minecraft:air')
@@ -788,21 +825,21 @@ def instruments(g):
     # source in the same reading, once, while Rad-X and an active RadAway change nothing in it;
     # coffee_radium's direct `incrementRadiation` never enters it.
     def radbuf_window(seconds=3.4):
-        seen=[];end=time.monotonic()+seconds
-        while time.monotonic()<end:
-            seen.append(int(' '.join(g.command('ntmitem radbuf').get('chat',[]))));time.sleep(.1)
+        seen=[];end=now(g)+round(seconds*20)
+        while now(g)<end:
+            seen.append(int(' '.join(g.command('ntmitem radbuf').get('chat',[]))));pause(g,.1)
         return seen
     def drink_and_sample(item,slot,drink=2.0,total=5.5):
         # Sample while drinking: a point event lives in one one-second reading, which a sample taken
         # only after the drink may have missed.
         give_hand(g,item,1,slot);g.close();g.ctl('look-at 20 160 8');g.ctl('mouse right down')
-        seen=[];start=time.monotonic();up=False
-        while time.monotonic()-start<total:
-            if not up and time.monotonic()-start>=drink:g.ctl('mouse right up');up=True
+        seen=[];start=now(g);up=False
+        while now(g)-start<round(total*20):
+            if not up and now(g)-start>=round(drink*20):g.ctl('mouse right up');up=True
             seen.append(int(' '.join(g.command('ntmitem radbuf').get('chat',[]))))
         if not up:g.ctl('mouse right up')
         return seen
-    reset(g,'creative',dose=300000);g.command('item replace entity @s hotbar.5 with ntm:ingot_uranium 8');g.command('item replace entity @s hotbar.6 with ntm:bottle_opener 1');time.sleep(.5)
+    reset(g,'creative',dose=300000);g.command('item replace entity @s hotbar.5 with ntm:ingot_uranium 8');g.command('item replace entity @s hotbar.6 with ntm:bottle_opener 1');pause(g,.5)
     base=max(radbuf_window(2.6));g.check('continuous_source_reads_in_the_buffer',base>0,base)
     g.command('effect give @s ntm:radx 600 0');hold(g,'ntm:radaway_flush',0)
     seen=drink_and_sample('ntm:bottle_nuka',1)
@@ -811,17 +848,17 @@ def instruments(g):
     g.check('direct_increment_stays_out_of_the_buffer',max(seen)==base,{'base':base,'seen':sorted(set(seen))})
     g.command('clear @s')
     # Pipette: an empty one steps its capacity by 50 (sneaking lowers it); the laboratory one by 1.
-    reset(g);give_hand(g,'ntm:pipette',1);g.ctl('key shift down');time.sleep(.5);use(g);g.ctl('key shift up');time.sleep(.3)
+    reset(g);give_hand(g,'ntm:pipette',1);g.ctl('key shift down');pause(g,.5);use(g);g.ctl('key shift up');pause(g,.3)
     text=chat_lines(g);tag=components(g,'ntm:pipette') or ''
     g.check('pipette_capacity_steps_down_when_sneaking','950/1000mB' in text and re.search(r'capacity\W+950',tag),{'chat':text,'tag':tag})
-    reset(g);give_hand(g,'ntm:pipette_laboratory',1);g.ctl('key shift down');time.sleep(.5);use(g);g.ctl('key shift up');time.sleep(.3)
+    reset(g);give_hand(g,'ntm:pipette_laboratory',1);g.ctl('key shift down');pause(g,.5);use(g);g.ctl('key shift up');pause(g,.3)
     g.check('laboratory_pipette_steps_by_one','49/50mB' in chat_lines(g),chat_lines(g))
     # ItemHot: one heat per tick, then the whole tag is gone.
-    reset(g,'creative');g.command('give @s ntm:ingot_chainsteel[minecraft:custom_data={heat:100}] 1');time.sleep(1.2)
+    reset(g,'creative');g.command('give @s ntm:ingot_chainsteel[minecraft:custom_data={heat:100}] 1');pause(g,1.2)
     tag=components(g,'ntm:ingot_chainsteel') or ''
     heat=re.search(r'heat\W+(\d+)',tag)
     g.check('hot_ingot_cools_in_the_inventory',heat is not None and int(heat.group(1))<100,tag)
-    time.sleep(12)
+    pause(g,12)
     g.check('cooled_ingot_loses_its_tag','heat' not in (components(g,'ntm:ingot_chainsteel') or ''),components(g,'ntm:ingot_chainsteel'))
     reset(g,'creative')
 
@@ -829,31 +866,31 @@ def instruments(g):
 def on_blocks(g):
     """The match and the fertilizer used on blocks (ItemMatch, ItemFertilizer) and the AMS lens stack."""
     # ItemMatch.onItemUse: fire on the cell beside the clicked face; the match is spent outside creative.
-    reset(g);g.ground(20,101,8,width=12,height=8);g.command('tp @s 20.5 101 11.5');time.sleep(.5)
-    give_hand(g,'ntm:matchstick',2);g.close();g.ctl('interact 20 100 8 up');time.sleep(.6)
+    reset(g);g.ground(20,101,8,width=12,height=8);g.command('tp @s 20.5 101 11.5');pause(g,.5)
+    give_hand(g,'ntm:matchstick',2);g.close();g.ctl('interact 20 100 8 up');pause(g,.6)
     state_=g.ctl('block 20 101 8').get('state','')
     g.check('match_lights_fire_on_the_clicked_face','fire' in state_ and counts(g).get('ntm:matchstick')==1,{'block':state_,'counts':counts(g)})
     g.command('setblock 20 101 8 minecraft:air')
-    reset(g,'creative');give_hand(g,'ntm:matchstick',2);g.close();g.ctl('interact 22 100 8 up');time.sleep(.6)
+    reset(g,'creative');give_hand(g,'ntm:matchstick',2);g.close();g.ctl('interact 22 100 8 up');pause(g,.6)
     state_=g.ctl('block 22 101 8').get('state','')
     g.check('creative_match_is_not_spent','fire' in state_ and counts(g).get('ntm:matchstick')==2,{'block':state_,'counts':counts(g)})
     g.command('setblock 22 101 8 minecraft:air')
     # ItemFertilizer: bone meal on the 3x3x3 around the click; spent only when something grew.
-    reset(g);g.command('setblock 22 100 8 minecraft:farmland[moisture=7]');g.command('setblock 22 101 8 minecraft:wheat[age=0]');time.sleep(.4)
-    give_hand(g,'ntm:powder_fertilizer',3);g.close();g.ctl('interact 21 100 8 up');time.sleep(.8)
+    reset(g);g.command('setblock 22 100 8 minecraft:farmland[moisture=7]');g.command('setblock 22 101 8 minecraft:wheat[age=0]');pause(g,.4)
+    give_hand(g,'ntm:powder_fertilizer',3);g.close();g.ctl('interact 21 100 8 up');pause(g,.8)
     age=re.search(r'age=(\d+)',g.ctl('block 22 101 8').get('state',''))
     g.check('fertilizer_grows_the_crop_around_the_click',age is not None and int(age.group(1))>0 and counts(g).get('ntm:powder_fertilizer')==2,{'age':age and age.group(1),'counts':counts(g)})
     g.command('setblock 22 101 8 minecraft:air')
     # Nothing to grow: the fertilizer stays.
-    g.ctl('interact 19 100 9 up');time.sleep(.8)
+    g.ctl('interact 19 100 9 up');pause(g,.8)
     g.check('fertilizer_stays_when_nothing_grows',counts(g).get('ntm:powder_fertilizer')==2,counts(g))
     # The clicked cell grows by force (ItemFertilizer `force`), not by the 45% sapling roll. A valid growth
     # may only advance the sapling (`stage=0` to `stage=1`) or turn it into a tree, and either is growth.
     # Vanilla bone meal is the control: what it does to a sapling in this world is recorded, and the
     # fertilizer must change the clicked sapling in every trial, spending exactly one.
     def sapling_trial(item,stage):
-        reset(g);g.command('fill 17 101 6 27 118 10 minecraft:air');g.command('setblock 22 100 8 minecraft:grass_block');g.command(f'setblock 22 101 8 minecraft:oak_sapling[stage={stage}]');time.sleep(.4)
-        before=g.ctl('block 22 101 8').get('state','');give_hand(g,item,2);g.close();g.ctl('interact 22 101 8 up');time.sleep(.9)
+        reset(g);g.command('fill 17 101 6 27 118 10 minecraft:air');g.command('setblock 22 100 8 minecraft:grass_block');g.command(f'setblock 22 101 8 minecraft:oak_sapling[stage={stage}]');pause(g,.4)
+        before=g.ctl('block 22 101 8').get('state','');give_hand(g,item,2);g.close();g.ctl('interact 22 101 8 up');pause(g,.9)
         after=g.ctl('block 22 101 8').get('state','')
         return {'before':before,'after':after,'changed':after!=before,'tree':'sapling' not in after,'spent':counts(g).get(item)==1}
     vanilla=[sapling_trial('minecraft:bone_meal',stage) for stage in (0,0,0,0,0,1,1,1,1,1)]
@@ -870,11 +907,11 @@ def on_blocks(g):
     g.command('fill 17 101 6 27 118 10 minecraft:air')
     # The AMS lens: the tooltip line comes from the lens stack's `damage` long, read through the same
     # function as `ntmitem lens`; the socket cannot read a tooltip, the function is what it draws.
-    reset(g,'creative');g.command('give @s ntm:ams_lens[minecraft:custom_data={damage:108000000L}] 1');g.ctl('select 1');time.sleep(.5)
+    reset(g,'creative');g.command('give @s ntm:ams_lens[minecraft:custom_data={damage:108000000L}] 1');g.ctl('select 1');pause(g,.5)
     tag=components(g,'ntm:ams_lens') or ''
     line=' '.join(g.command('ntmitem lens').get('chat',[]))
     g.check('ams_lens_tooltip_reads_its_damage_tag','108000000' in tag and 'Durability: 324000000/432000000 (75%)' in line,{'tag':tag,'line':line})
-    g.command('clear @s');g.command('give @s ntm:ams_lens 1');g.ctl('select 1');time.sleep(.4)
+    g.command('clear @s');g.command('give @s ntm:ams_lens 1');g.ctl('select 1');pause(g,.4)
     line=' '.join(g.command('ntmitem lens').get('chat',[]))
     g.check('fresh_ams_lens_is_at_full_durability','Durability: 432000000/432000000 (100%)' in line,line)
     g.ground(20,101,8,width=12,height=8);reset(g,'creative')
@@ -893,7 +930,7 @@ def armor_table(g):
     g.close();g.command('clear @s');g.command('setblock 24 101 8 ntm:machine_armor_table')
     g.command('tp @s 24.5 101 11.5')
     # BlockArmorTable.onBlockActivated: `!player.isSneaking()`.
-    g.ctl('key shift down');time.sleep(.6);g.ctl('interact 24 101 8 south');time.sleep(1.5);sneak=g.ctl('screen');g.ctl('key shift up');time.sleep(.3)
+    g.ctl('key shift down');pause(g,.6);g.ctl('interact 24 101 8 south');pause(g,1.5);sneak=g.ctl('screen');g.ctl('key shift up');pause(g,.3)
     g.check('sneaking_does_not_open_the_table',sneak.get('screen')!='container',sneak)
     screen=open_table(g)
     g.check('table_has_exact_14_slots',len(g.slots())==14,screen)
@@ -921,7 +958,7 @@ def armor_table(g):
     # the separated module and armor, so count both pickups and inventory.
     source=next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot']<36 and s.get('item')=='ntm:attachment_mask')
     g.ctl(f'click-slot {source}');g.ctl('click-slot 300')
-    settle(g,lambda s:not s.get('carried') and table_slot(s,0)=='ntm:attachment_mask');g.close();time.sleep(1.5)
+    settle(g,lambda s:not s.get('carried') and table_slot(s,0)=='ntm:attachment_mask');g.close();pause(g,1.5)
     entities=g.ctl('entities')['entities'];drops=[e.get('item') or {} for e in entities]
     total=lambda item:counts(g).get(item,0)+sum(x.get('count',0) for x in drops if x.get('item')==item)
     g.check('table_close_conserves_armor_and_mod',total('ntm:hazmat_helmet')==1 and total('ntm:attachment_mask')==1,{'counts':counts(g),'entities':entities})
@@ -939,7 +976,7 @@ def capture(g):
     g.command('setblock 24 101 8 ntm:machine_armor_table');g.command('tp @s 24.5 101 11.5');screen=open_table(g)
     g.check('capture_table_open',len(g.slots())==14,screen)
     put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0);put(g,'ntm:cladding_lead',1,5)
-    g.ctl('click-slot 309 shift');settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet' and not s.get('carried'));g.close();time.sleep(.5)
+    g.ctl('click-slot 309 shift');settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet' and not s.get('carried'));g.close();pause(g,.5)
     mods=inventory_tag(g);g.check('helmet_worn_with_mod_before_reopen','ntm_armor_mods' in mods and 'attachment_mask' in mods and 'cladding_lead' in mods,mods)
     expected,_=resistance_line([0.6*0.2+0.1]);line=geiger_resistance(g)
     g.check('cladding_counts_before_reopen',line.endswith(expected),{'line':line,'expected':expected})
@@ -961,7 +998,7 @@ def capture(g):
     # The herbal pill's sickness has no curative items: milk leaves it. The pill's -100 RAD moves the dose,
     # so the invariant is read after it.
     give_hand(g,'ntm:pill_herbal',1,3);use(g,.9);give_hand(g,'ntm:radaway_flush',1,3);use(g);treated=state(g).get('radaway',0)
-    give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);time.sleep(.6)
+    give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);pause(g,.6)
     effects=effect_map(g);g.check('herbal_sickness_survives_milk_before_reopen','potion_sickness' in effects and 'weakness' not in effects,effects)
     g.check('milk_ends_radaway_before_reopen',treated>=400 and state(g).get('radaway',0)==0,{'treated':treated,'after':state(g)})
     g.command('effect give @s ntm:radx 6000 0')
@@ -980,7 +1017,7 @@ def reopened(g):
     effects=effect_map(g)
     g.check('content_mob_effects_survive_the_reopen','radx' in effects and 'potion_sickness' in effects,effects)
     # The remembered sickness survived the reopen with its effect: milk still cannot take it away.
-    give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);time.sleep(.6);effects=effect_map(g)
+    give_hand(g,'minecraft:milk_bucket',1,3);use(g,2.2);pause(g,.6);effects=effect_map(g)
     g.check('herbal_sickness_survives_milk_after_reopen','potion_sickness' in effects and 'radx' not in effects,effects)
     # No dose of RadAway was applied between clearing the counter (milk, with the antidote before it) and the reopen.
     g.check('cleared_radaway_stays_zero_after_the_reopen',expected['radaway']==0 and current.get('radaway',0)==0 and current['dose']==expected['dose'],{'before':expected,'after':current})
@@ -1236,6 +1273,8 @@ FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',
 
 if __name__=='__main__':
     g=Game(sys.argv[1],'items-'+(sys.argv[2] if len(sys.argv)>2 else 'setup'));mode=sys.argv[2] if len(sys.argv)>2 else 'setup';g.evidence['phase']=mode
+    g.save_every=20    # the evidence is written every 20 s (and at each check): a write on a busy disk takes seconds of game time
+    g.command_ticks=6  # a command settles for six game ticks (the .3 s it used to wait), whatever the machine's load
     {'setup':setup,'capture-state':capture,'check-state':reopened}[mode](g)
     g.evidence['ok']=True;g.save()
 

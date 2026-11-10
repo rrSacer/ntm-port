@@ -18,8 +18,10 @@ pub mod coker;
 pub mod combustion;
 pub mod solar_stirling;
 pub mod crafter;
+pub mod doors_security;
 pub mod electrolyser;
 pub mod energy;
+pub mod energy_network;
 pub mod explosion;
 pub mod excavator;
 pub mod fluid;
@@ -109,6 +111,8 @@ pub fn warm_tables() {
 pub mod pile;
 
 pub mod zirnox;
+pub mod petroleo_e;
+pub mod watz_pwr;
 
 pub mod rbmk;
 

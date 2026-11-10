@@ -200,10 +200,11 @@ class ExecutableRbmkOracle(unittest.TestCase):
 
     def test_catalog_identity_stack_and_previous_content_are_unchanged(self):
         # Coordinator's decision of 10/11/2026 (option A): the catalog may grow and other fronts may
-        # correct entries outside the RBMK; Onda 1 slice 1 set the Java armor points, durability and
-        # equipment gap of the steel, titanium, alloy, cobalt and starmetal sets on purpose. Every entry
-        # of the T00 snapshot stays present and in the same relative order; the RBMK's own identities
-        # (rbmk_catalog.build: columns, consoles, panels, debris, rods, pellets) stay identical.
+        # correct entries outside the RBMK (Onda 1 slice 1 set the Java armor points, durability and
+        # equipment gap of the steel, titanium, alloy, cobalt and starmetal sets on purpose; the four simple
+        # doors gained their door_sounds). Every entry of the T00 snapshot stays present and in the same
+        # relative order; the RBMK's own identities (rbmk_catalog.build: columns, consoles, panels, debris,
+        # rods, pellets) stay identical.
         before = json.loads(subprocess.check_output(['git', 'show', '81a210d4:content/ids.json'], cwd=ROOT))['entries']
         entries = json.loads((ROOT / 'content/ids.json').read_text())['entries']
         remaining = iter(e['id'] for e in entries)

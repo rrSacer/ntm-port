@@ -1,0 +1,11 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:deco_pipe",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:deco_pipe_quad"
+  ]
+}

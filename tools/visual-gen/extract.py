@@ -94,6 +94,12 @@ def rotation(body):
         rot = num(r[1]) or 0
     t = re.search(r'glTranslate[fd]\(\s*([-\d.]+)[DdFf]?\s*,\s*([-\d.]+)[DdFf]?\s*,\s*([-\d.]+)[DdFf]?\s*\)', c)
     translate = [num(t[1]), num(t[2]), num(t[3])] if t else None
+    # A turn about x or z is not read (only the y turn is): the model would
+    # stand in the wrong pose (RenderFan turns about x and z by metadata).
+    for m in re.finditer(r'glRotate[fd]\(([^)]*)\)', c):
+        if not re.fullmatch(r'\s*[-\d.]+[FfDd]?\s*,\s*0[FfDd.]*\s*,\s*1[FfDd.]*\s*,\s*0[FfDd.]*\s*', m[1]):
+            unread.append('case 2 turns about x or z')
+            break
     return (pre + rot) % 360, translate, unread
 
 

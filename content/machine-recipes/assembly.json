@@ -15,9 +15,9 @@
   },
   "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
-    "emitted": 500,
+    "emitted": 502,
     "scanned_source_calls": 357,
-    "skipped_source_calls": 131,
+    "skipped_source_calls": 129,
     "expanded_fluid_recipes": 276,
     "note": "Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded"
   },
@@ -1638,6 +1638,80 @@
       "pools": [],
       "label": "Abridor de Escotilha de Silo",
       "label_en": "Silo Hatch Opener"
+    },
+    {
+      "name": "ass.yellowbarrel",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:208",
+      "duration": 400,
+      "power": 400,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:tank_steel"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:plate_lead"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:nuclear_waste"
+          ],
+          "count": 10
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:yellow_barrel",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Barril Radioativo",
+      "label_en": "Radioactive Barrel"
+    },
+    {
+      "name": "ass.vitrifiedbarrel",
+      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:210",
+      "duration": 400,
+      "power": 400,
+      "inputItems": [
+        {
+          "ids": [
+            "ntm:tank_steel"
+          ],
+          "count": 1
+        },
+        {
+          "ids": [
+            "ntm:plate_lead"
+          ],
+          "count": 2
+        },
+        {
+          "ids": [
+            "ntm:nuclear_waste_vitrified"
+          ],
+          "count": 10
+        }
+      ],
+      "outputItems": [
+        [
+          "ntm:vitrified_barrel",
+          1
+        ]
+      ],
+      "inputFluids": [],
+      "outputFluids": [],
+      "pools": [],
+      "label": "Tambor de Resíduos Nucleares Vitrificados",
+      "label_en": "Vitrified Nuclear Waste Drum"
     },
     {
       "name": "ass.vaultdoor",
@@ -17952,18 +18026,6 @@
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:147",
       "reason": "missing enum DictFrame.fromOne(ModItems.drive, EnumDriveType.DISK_EMPTY)",
       "expression": "new GenericRecipe(\"ass.diskdrive\").setup(200, 250).outputItems(DictFrame.fromOne(ModItems.drive, EnumDriveType.DISK_EMPTY))\n\t\t\t\t.inputItems(new OreDictStack(ANY_PLASTIC.ingot(), 8), new ComparableStack(ModItems.circuit, 1, EnumCircuitType.BASIC), new OreDictStack(ND.wireDense()))"
-    },
-    {
-      "name": "ass.yellowbarrel",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:208",
-      "reason": "unregistered/ambiguous source item yellow_barrel",
-      "expression": "new GenericRecipe(\"ass.yellowbarrel\").setup(400, 400).outputItems(new ItemStack(ModBlocks.yellow_barrel, 1))\n\t\t\t.inputItems(new ComparableStack(ModItems.tank_steel, 1), new OreDictStack(PB.plate(), 2), new ComparableStack(ModItems.nuclear_waste, 10))"
-    },
-    {
-      "name": "ass.vitrifiedbarrel",
-      "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:210",
-      "reason": "unregistered/ambiguous source item vitrified_barrel",
-      "expression": "new GenericRecipe(\"ass.vitrifiedbarrel\").setup(400, 400).outputItems(new ItemStack(ModBlocks.vitrified_barrel, 1))\n\t\t\t.inputItems(new ComparableStack(ModItems.tank_steel, 1), new OreDictStack(PB.plate(), 2), new ComparableStack(ModItems.nuclear_waste_vitrified, 10))"
     },
     {
       "name": "ass.radar",
