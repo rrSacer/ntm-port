@@ -974,20 +974,19 @@ de `rbmk-t02` @ `c3097105` (os commits seguintes só mudam roteiros de prova e d
 | J em jogo (`--play`, sobrevivência) | 27/27 e, após reabrir, 4/4: alturas 2, 4, 16 e clamp/parse (1→2, 99→16, abc→4) com o item consumido; colunas em pé mantêm a altura quando o dial muda; obstrução recusada com o item na mão; quatro lados de colocação (quatro facings) dão a mesma coluna; quebra pela base, pelo meio e pelo topo leva a coluna inteira e devolve um item; tampa pelo topo (uma da mão), nenhuma segunda, nenhuma num controle; chave de fenda com shift: tampa como item, desgaste 1; sem tampa, nenhum desgaste; tampa de vidro; núcleo trocado por comando leva os dummies; `/ntmrbmk migrate` refaz 2 → 6 e 16 → 6; funil no topo do storage passa barra e segura pedra, no topo do canal segura a barra. Reaberto: dial 4, alturas 6/2/16, tampa de vidro, coluna nova com 4 |
 | C em jogo, duas execuções | `kill`, `kv_committed`, `players_saved`, `live_chunk:2,0`: 4/4 em cada, NTM igual ao controle item a item nas duas reaberturas (3 = 3; 2 = 2 nos cortes em que o controle vanilla também perde a última escrita). O ato: uma tampa da mão para A (transferência), a de B tirada com a chave (item devido no registro do chunk), C quebrada com a tampa (item da coluna e a tampa) |
 
-### Pendências que ficam do T02 (honestas)
+### Pendências herdadas do T02 (decisão do coordenador, 09/11/2026)
 
-1. **Visual da altura (T19 ou ticket próprio):** o modelo de cada coluna é um OBJ fixo de 4 células com a tampa a 4
-   blocos, e os dummies são invisíveis (barreira). Uma coluna de 2 ou de 16 é física e logicamente certa, mas desenha
-   4 células. Proposta: o gerador visual emite 16 grupos de célula e as tampas por altura, mostrados por um valor novo
-   da tela (a altura em pé, que o servidor já sabe ler).
-2. **Colisão da tampa** (`getCollisionBoundingBoxFromPool`: +0,25 em cada célula de uma coluna tampada) e **radiação
-   de coluna destampada** (T04).
-3. **Dials por dimensão** (o cache por `World` do Java e a reescrita do padrão na primeira leitura): T04.
-4. **Fluxo de fluido pelas portas e loaders** (as formas Java já existem em `column_ports`): T08. Por isso o "loaders
-   nas posições Java" do J está provado por teste de unidade, não em jogo.
-5. Entrada do outgasser por automação (receitas): T09. Fila do storage e guindaste: T11. Física das dez colunas
-   adotadas: T08/T09/T11.
-6. Dureza das 18 colunas e do dummy: o padrão genérico do gerador (5/10), não o do Java (3/30); acerto de conteúdo à
-   parte.
-7. O pin `compatibility.json` segue a `ntm-current`; o motor do T02 entra quando a `rbmk-t02-engine` for integrada
-   (depois de reaplicada sobre o upstream novo, com testes e provas repetidos).
+| # | Pendência | Ticket | Critério de saída |
+| --- | --- | --- | --- |
+| 1 | Visual da altura: o modelo é um OBJ fixo de 4 células com a tampa a 4 blocos e os dummies são invisíveis, então uma coluna de 2 ou de 16, certa física e logicamente, desenha 4 | **Ticket próprio de visual, depois do T04** | Colunas de 2, 4 e 16 desenham suas células e a tampa (as duas) no topo, conferidas por captura em jogo; o gerador visual emite os grupos por célula e a tela leva a altura em pé |
+| 2 | Colisão da tampa (`getCollisionBoundingBoxFromPool`, +0,25 em cada célula de coluna tampada) e radiação de coluna destampada | T04 | Caixa de colisão igual à do Java com e sem tampa; dose fora de uma coluna destampada/tampada igual ao Java por teste e em jogo |
+| 3 | Cache de dials por dimensão do Java (primeira leitura num `World` sem cache reescreve o padrão da regra lida; `/gamerule` refaz só o mundo de quem digita) | T04 | Teste com dials mudados lidos na Nether e na Superfície reproduzindo a sequência do Java, ou desvio aprovado e registrado |
+| 4 | Fluxo de fluido pelas portas e loaders (as formas já existem em `persist::column_ports`) | T08 | Água/vapor e criogel entrando e saindo pelas posições Java (sem loader, loader a 1 e a 2) em jogo, com contagem antes/depois e após queda |
+| 5 | Entrada do outgasser por automação (receitas reais) | T09 | Funil insere só insumos com receita no slot 0 e retira só do 1, em jogo |
+| 5b | Fila do storage e guindaste | T11 | Conforme o T11 do plano |
+| 5c | Física das dez colunas adotadas (controles, caldeira, cooler, aquecedor, outgasser, storage no passo) | T08/T09/T11 | Cada coluna no passo do reator com paridade de oráculo |
+| 6 | ~~Dureza das colunas e do dummy~~ | **Feito** (`837a5fb9`) | Teste `test_rbmk_strength` contra o `RBMKBase` (3/30 → 3/18) |
+| 7 | Rebase da `rbmk-t02-engine` sobre o upstream novo | Quando o agente do Horizon fechar a atualização | Commit reaplicado sobre a `ntm-current` nova, testes do motor, glue e provas J/C repetidos no binário novo |
+
+Desvios registrados (não pendências): D5; drop da tampa pelo dial (como o Java); `/setblock` trocando o núcleo por
+outra coluna mantém os dummies; o pin de `compatibility.json` segue a `ntm-current` até o motor ser integrado.
