@@ -312,13 +312,21 @@ def full_inventory(g):
     full(g,'ntm:syringe_metal_medx',2);use(g);actual=counts(g);away=dropped(g)
     effects=g.ctl('state')['player']['effects']
     g.check('full_stacked_syringe_drops_container',actual.get('ntm:syringe_metal_medx')==1 and not actual.get('ntm:syringe_metal_empty') and away.get('ntm:syringe_metal_empty')==1 and any(e['id'].endswith('resistance') and e['amplifier']==2 for e in effects),{'counts':actual,'dropped':away,'effects':effects})
-    # `Player.drop(stack, false)`: pickup delay 40, so a slot freed at once does
-    # not take the syringe back yet; it does after the delay.
+    # `Player.drop(stack, false)`: pickup delay 40. Still frozen, the freed slot is stepped 30 ticks (the syringe
+    # stays on the ground) and 15 more (it is back): 40, and neither 60 nor 80.
     g.command('item replace entity @s inventory.26 with minecraft:air');time.sleep(.4)
-    if MUTANT=='pickup_delay_run_out':g.command('tick unfreeze');wait_ticks(g,game_time(g),40+SYNC_TICKS)
-    early=counts(g).get('ntm:syringe_metal_empty',0)
-    g.command('tick unfreeze');wait_ticks(g,game_time(g),40+SYNC_TICKS)
-    late=settle_ticks(g,lambda:counts(g).get('ntm:syringe_metal_empty',0),lambda n:n==1)
+    if MUTANT=='pickup_delay_run_out':g.command('tick unfreeze');wait_ticks(g,game_time(g),40+SYNC_TICKS);g.command('tick freeze')
+    if MUTANT=='pickup_delay_60':g.command('data merge entity @e[type=item,distance=..8,sort=nearest,limit=1] {PickupDelay:60s}')
+    def stepped(n):
+        start=game_time(g);g.command(f'tick step {n}');wait_ticks(g,start,n)
+        # Frozen again, the server holds still and only the client's copy may trail: read until it repeats a
+        # second apart (a wall-clock bound is safe here, nothing ticks).
+        deadline=time.monotonic()+10;last=None
+        while True:
+            now=counts(g).get('ntm:syringe_metal_empty',0)
+            if now==last or time.monotonic()>deadline:return now
+            last=now;time.sleep(1)
+    early=stepped(30);late=stepped(15);g.command('tick unfreeze')
     g.check('thrown_container_waits_its_pickup_delay',early==0 and late==1,{'early':early,'late':late,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSimpleConsumable.doRadaway: the emptied slot is still taken while the
