@@ -180,6 +180,17 @@ combustível posto no funil de entrada); todos foram corrigidos no roteiro e nad
 foi afrouxado no jogo. Detalhe real descoberto: o forno de tijolo gasta
 combustível enquanto há entrada, mesmo com o funil devagar (Java faz isso).
 
+### Testes de unidade, clippy e mutantes (HEAD `dc1fbe89`)
+
+`cargo test -p ntm-core --lib` + 9 alvos de integração: 580 + 51 testes, 0 falhas
+(os dois ignorados são os que já eram; o `save_model` não roda em debug).
+`cargo clippy --workspace --all-targets -- -D warnings`: limpo. 14 mutantes
+escolhidos à mão (constantes e ramos de cada máquina; `mutate.py`, resultados em
+`content-gen-evidence/onda2-s1/mutants.txt`): 12 mortos de primeira; 2 sobreviveram
+(o módulo de queima do forno de ferro e a difusão do forno de combinação não tinham
+teste no nível certo) e foram mortos pelos testes novos. Um teste de servidor
+roda cada máquina em um mundo falso com conservação de itens a cada tick.
+
 ## Soldadora a arco e estação de solda (commit `f70abae4`, ainda sem prova em jogo)
 
 `welders.rs`: uma só máquina de receita com os dois modelos. Receitas extraídas
