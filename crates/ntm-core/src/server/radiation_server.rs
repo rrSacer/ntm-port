@@ -44,6 +44,29 @@ impl Server {
         let amount=(amount as f64*factor) as u64;
         self.update_player_dose(host,id,|dose|radiation::add_dose(dose,amount));
     }
+    /// `TileEntityDecon.updateEntity`, every tick: each decontaminator whose
+    /// box reaches a player takes 0.5 RAD from them (creative too:
+    /// `incrementRadiation` asks nothing), ends their radiation potion
+    /// (`HbmPotion.radiation`: the port's `zirnox.irradiated`) and clears their
+    /// contamination list (`HbmLivingProps.getCont`, which the port has not).
+    /// Mobs are not reached: the port keeps no dose for them.
+    pub(super) fn decon_tick(&mut self, host: &mut impl ServerHost) {
+        for p in self.players.clone() {
+            let n = radiation::decon_cells(p.pos)
+                .into_iter()
+                .filter(|&c| host.get_block(&p.dim, c).is_some_and(|b| blockstate::id_of(&b) == radiation::DECON))
+                .count();
+            if n == 0 {
+                continue;
+            }
+            if self.player_dose(&p.id).millirad > 0 || host.player_dose(&p.id, &self.player_dose(&p.id)).is_some_and(|d| d.millirad > 0) {
+                self.update_player_dose(host, &p.id, |dose| radiation::decontaminate(dose, n));
+            }
+            if self.ready.world.zirnox.irradiated.contains_key(&p.id) {
+                self.ready.world.zirnox.irradiated.remove(&p.id);
+            }
+        }
+    }
     pub(super) fn radiation_tick(&mut self, host: &mut impl ServerHost) {
         let tick = self.tick;
         if !tick.is_multiple_of(RATE_EVERY) {
@@ -165,5 +188,81 @@ mod tests {
         s.tick=40;s.radiation_tick(&mut h);
         assert_eq!(s.rad_buf("p"),11_250,"events are spent with their window");
         assert!(!s.radiation_env.contains_key("gone"));
+    }
+    /// TileEntityDecon through the server tick: every decontaminator under the
+    /// player takes 0.5 RAD a tick, creative included, and ends the irradiation.
+    #[test]
+    fn decontaminators_take_their_half_rad_and_end_the_irradiation() {
+        #[derive(Default)]
+        struct Decon {inner:Host,decons:Vec<Pos>,dose:Option<crate::radiation::Dose>,commits:u32}
+        impl Kv for Decon {
+            fn get(&mut self,k:&str)->Option<Vec<u8>>{self.inner.get(k)}
+            fn set(&mut self,k:&str,v:&[u8])->Result<(),String>{self.inner.set(k,v)}
+            fn delete(&mut self,k:&str){self.inner.delete(k)}
+        }
+        impl ServerHost for Decon {
+            fn get_block(&mut self,_:&str,p:Pos)->Option<String>{Some(if self.decons.contains(&p){"ntm:decon[facing=north]".into()}else{"minecraft:stone".into()})}
+            fn set_blocks(&mut self,_:&str,_:&[(Pos,String)])->Result<(),String>{Ok(())}
+            fn tell(&mut self,_:&str,_:&str){}
+            fn log(&mut self,_:&str){}
+            fn player_dose(&mut self,_:&str,legacy:&crate::radiation::Dose)->Option<crate::radiation::Dose>{Some(self.dose.clone().unwrap_or_else(||legacy.clone()))}
+            fn commit_player_dose(&mut self,_:&str,_:&crate::radiation::Dose,desired:&crate::radiation::Dose)->bool{self.dose=Some(desired.clone());self.commits+=1;true}
+        }
+        let mut h=Decon{decons:vec![[0,63,0]],dose:Some(crate::radiation::Dose{millirad:2_000}),..Default::default()};
+        let mut s=Server::native(&mut h,0);
+        s.players=vec![PlayerInfo{id:"p".into(),name:"p".into(),dim:"minecraft:overworld".into(),pos:[0.5,64.,0.5],creative:true}];
+        s.ready.world.zirnox.irradiate("p",600,3);
+        s.decon_tick(&mut h);
+        assert_eq!(h.dose.as_ref().unwrap().millirad,1_500);
+        assert!(!s.ready.world.zirnox.irradiated.contains_key("p"));
+        // A second one reaching the same player: one RAD a tick, down to 0.
+        h.decons.push([1,63,0]);s.players[0].pos=[1.0,64.,0.5];
+        s.decon_tick(&mut h);
+        assert_eq!(h.dose.as_ref().unwrap().millirad,500);
+        s.decon_tick(&mut h);
+        assert_eq!(h.dose.as_ref().unwrap().millirad,0);
+        // Nothing left to take: no commit.
+        let commits=h.commits;s.decon_tick(&mut h);assert_eq!(h.commits,commits);
+        // Out of reach: nothing.
+        h.dose=Some(crate::radiation::Dose{millirad:2_000});s.players[0].pos=[3.5,64.,0.5];
+        s.decon_tick(&mut h);
+        assert_eq!(h.dose.as_ref().unwrap().millirad,2_000);
+    }
+    /// WasteEarth.onEntityWalking: glowing mycelium gives the radiation potion
+    /// (30 s, amplifier 3) in a world without any ZIRNOX debris, and the potion
+    /// doses (3 + 1) * 0.05 RAD a tick; a decontaminator ends it.
+    #[test]
+    fn mycelium_irradiates_without_debris_and_decon_ends_it() {
+        #[derive(Default)]
+        struct Soil {inner:Host,block:String,dose:Option<crate::radiation::Dose>}
+        impl Kv for Soil {
+            fn get(&mut self,k:&str)->Option<Vec<u8>>{self.inner.get(k)}
+            fn set(&mut self,k:&str,v:&[u8])->Result<(),String>{self.inner.set(k,v)}
+            fn delete(&mut self,k:&str){self.inner.delete(k)}
+        }
+        impl ServerHost for Soil {
+            fn get_block(&mut self,_:&str,p:Pos)->Option<String>{Some(if p==[0,63,0]{self.block.clone()}else{"minecraft:stone".into()})}
+            fn set_blocks(&mut self,_:&str,_:&[(Pos,String)])->Result<(),String>{Ok(())}
+            fn tell(&mut self,_:&str,_:&str){}
+            fn log(&mut self,_:&str){}
+            fn player_dose(&mut self,_:&str,legacy:&crate::radiation::Dose)->Option<crate::radiation::Dose>{Some(self.dose.clone().unwrap_or_else(||legacy.clone()))}
+            fn commit_player_dose(&mut self,_:&str,_:&crate::radiation::Dose,desired:&crate::radiation::Dose)->bool{self.dose=Some(desired.clone());true}
+        }
+        let mut h=Soil{block:"ntm:waste_mycelium".into(),dose:Some(crate::radiation::Dose{millirad:0}),..Default::default()};
+        let mut s=Server::native(&mut h,0);
+        s.players=vec![PlayerInfo{id:"p".into(),name:"p".into(),dim:"minecraft:overworld".into(),pos:[0.5,64.,0.5],creative:false}];
+        assert!(s.ready.world.zirnox.debris.is_empty());
+        s.zirnox_effects(&mut h);
+        assert_eq!(s.ready.world.zirnox.irradiated.get("p"),Some(&(599,3)));
+        assert_eq!(h.dose.as_ref().unwrap().millirad,200);
+        h.block="minecraft:stone".into();
+        s.zirnox_effects(&mut h);
+        assert_eq!(h.dose.as_ref().unwrap().millirad,400,"the potion keeps dosing off the mycelium");
+        h.block="ntm:decon".into();
+        s.decon_tick(&mut h);
+        assert!(!s.ready.world.zirnox.irradiated.contains_key("p"));
+        h.block="minecraft:stone".into();
+        s.zirnox_effects(&mut h);
+        assert_eq!(h.dose.as_ref().unwrap().millirad,0,"after the decontaminator nothing doses");
     }
 }

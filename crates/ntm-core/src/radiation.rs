@@ -163,6 +163,51 @@ pub fn sickness(dose: &mut Dose) -> Vec<Harm> {
     out
 }
 
+/// The decontaminator (`BlockDecon`, `TileEntityDecon`).
+pub const DECON: &str = "ntm:decon";
+/// `HbmLivingProps.incrementRadiation(e, -0.5F)`: per tick and per unit.
+pub const DECON_MILLIRAD: u64 = 500;
+/// `EntityPlayer.setSize(0.6F, 1.8F)`: the box `getEntitiesWithinAABB` meets.
+const PLAYER_HALF_WIDTH: f64 = 0.3;
+const PLAYER_HEIGHT: f64 = 1.8;
+
+/// Whether the decontaminator at `block` reaches a player standing at `feet`:
+/// `TileEntityDecon.updateEntity` takes the entities within
+/// `(x - 0.5, y, z - 0.5) .. (x + 1.5, y + 2, z + 1.5)`, and an entity is within
+/// a box when its own box intersects it (strict on every axis).
+pub fn decon_reaches(block: crate::Pos, feet: [f64; 3]) -> bool {
+    let [x, y, z] = block.map(f64::from);
+    let (lo, hi) = ([x - 0.5, y, z - 0.5], [x + 1.5, y + 2.0, z + 1.5]);
+    let (plo, phi) = (
+        [feet[0] - PLAYER_HALF_WIDTH, feet[1], feet[2] - PLAYER_HALF_WIDTH],
+        [feet[0] + PLAYER_HALF_WIDTH, feet[1] + PLAYER_HEIGHT, feet[2] + PLAYER_HALF_WIDTH],
+    );
+    (0..3).all(|i| plo[i] < hi[i] && phi[i] > lo[i])
+}
+
+/// Every block whose decontaminator box could reach a player at `feet`, the
+/// cells to look at.
+pub fn decon_cells(feet: [f64; 3]) -> Vec<crate::Pos> {
+    let [fx, fy, fz] = feet.map(|v| v.floor() as i32);
+    let mut out = Vec::new();
+    for x in fx - 2..=fx + 1 {
+        for y in fy - 2..=fy + 2 {
+            for z in fz - 2..=fz + 1 {
+                if decon_reaches([x, y, z], feet) {
+                    out.push([x, y, z]);
+                }
+            }
+        }
+    }
+    out
+}
+
+/// One tick of `n` decontaminators on a dose: `incrementRadiation(-0.5F)` each,
+/// clamped at 0 (`HbmLivingProps.setRadiation`).
+pub fn decontaminate(dose: &mut Dose, n: usize) {
+    dose.millirad = dose.millirad.saturating_sub(DECON_MILLIRAD.saturating_mul(n as u64));
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -277,6 +322,46 @@ mod tests {
         assert!(sickness(&mut d).contains(&Harm::Hurt { amount: 1.0, kind: "minecraft:magic" }));
         d.millirad = 1000000;
         assert_eq!(sickness(&mut d), [Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }]);
+        assert_eq!(d.millirad, 0);
+    }
+
+    /// TileEntityDecon's box against a 0.6 x 1.8 player.
+    #[test]
+    fn the_decontaminator_reaches_who_stands_over_it() {
+        // Standing on top, centred: y + 1 is the box's middle.
+        assert!(decon_reaches([0, 64, 0], [0.5, 65.0, 0.5]));
+        // The box reaches 0.5 to the sides: a player 1.79 away still touches it, 1.8 does not (strict).
+        assert!(decon_reaches([0, 64, 0], [1.5 + 0.29, 65.0, 0.5]));
+        assert!(!decon_reaches([0, 64, 0], [1.5 + 0.3, 65.0, 0.5]));
+        assert!(decon_reaches([0, 64, 0], [-0.5 - 0.29, 65.0, 0.5]));
+        assert!(!decon_reaches([0, 64, 0], [-0.5 - 0.3, 65.0, 0.5]));
+        // Height: from y to y + 2; feet at y + 2 are out, a head inside the block is in.
+        assert!(!decon_reaches([0, 64, 0], [0.5, 66.0, 0.5]));
+        assert!(decon_reaches([0, 64, 0], [0.5, 65.99, 0.5]));
+        assert!(!decon_reaches([0, 64, 0], [0.5, 64.0 - 1.8, 0.5]));
+        assert!(decon_reaches([0, 64, 0], [0.5, 64.0 - 1.79, 0.5]));
+        // The cells looked at are exactly the ones that reach.
+        let feet = [10.2, 70.0, -3.7];
+        let cells = decon_cells(feet);
+        for x in 5..15 {
+            for y in 64..76 {
+                for z in -9..2 {
+                    assert_eq!(cells.contains(&[x, y, z]), decon_reaches([x, y, z], feet), "{x} {y} {z}");
+                }
+            }
+        }
+        // Two decontaminators side by side both reach a player between them.
+        assert!(decon_reaches([0, 64, 0], [1.0, 65.0, 0.5]) && decon_reaches([1, 64, 0], [1.0, 65.0, 0.5]));
+    }
+
+    #[test]
+    fn each_decontaminator_takes_half_a_rad_a_tick() {
+        let mut d = Dose { millirad: 1_200 };
+        decontaminate(&mut d, 1);
+        assert_eq!(d.millirad, 700);
+        decontaminate(&mut d, 2);
+        assert_eq!(d.millirad, 0);
+        decontaminate(&mut d, 1);
         assert_eq!(d.millirad, 0);
     }
 }

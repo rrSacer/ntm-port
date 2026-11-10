@@ -578,6 +578,8 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // TileEntityDecon keeps no state: no block entity is needed, and the
+    // server's `decon_tick` (radiation_server.rs) runs it every tick.
     BlockSpec {
         id: "ntm:decon",
         kind: Kind::Inert,

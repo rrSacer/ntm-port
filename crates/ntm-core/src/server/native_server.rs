@@ -162,6 +162,7 @@ impl Server {
         phases.mark("foundry");
         self.bombs_tick(host);
         phases.mark("bombs");
+        self.decon_tick(host);
         self.radiation_tick(host);
         phases.mark("radiation");
         if !frozen.is_empty(){self.ready.topo_dirty=true;self.ready.world.machines.append(&mut frozen);}
