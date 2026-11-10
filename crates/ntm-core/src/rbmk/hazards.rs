@@ -48,7 +48,8 @@ pub fn radiation_tooltip(level: f32, count: u32) -> Vec<String> {
 pub fn fire_ticks(seconds: i32, highest_fire_protection: u32, left: i32) -> i32 {
     let mut j = seconds.saturating_mul(20);
     if highest_fire_protection > 0 {
-        // `p -= MathHelper.floor_float((float)p * (float)j * 0.15F)`, the ticks first (1.7.10, decompiled).
+        // 1.7.10's bytecode: `p -= floor_float((float)p * ((float)j * 0.15F))`. Here the ticks and the level go first; the
+        // floor is the same for every reachable input (0..=60 s, levels 1..=255, checked in f32 both ways).
         j -= (j as f32 * highest_fire_protection as f32 * 0.15f32).floor() as i32;
     }
     left.max(j)

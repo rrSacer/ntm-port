@@ -209,11 +209,14 @@ class ExecutableRbmkOracle(unittest.TestCase):
         # those entries, in their block_properties or in anything else, still fails.
         doors = {'ntm:door_metal', 'ntm:door_office', 'ntm:door_bunker', 'ntm:door_red'}
         # The eighteen RBMK columns gained their RBMKBase strength in T02 (block_properties hardness and
-        # explosion_resistance, checked in test_rbmk_strength): that field is the only thing allowed to differ there.
+        # explosion_resistance, checked in test_rbmk_strength): those two keys are the only thing allowed to differ.
         columns = {'ntm:' + v for v in rbmk_catalog.COLUMNS}
+        strength = ('hardness', 'explosion_resistance')
         def same(entry):
-            if entry['id'] in columns:
-                return {k: v for k, v in entry.items() if k != 'block_properties'}
+            if entry['id'] in columns and 'block_properties' in entry:
+                props = {k: v for k, v in entry['block_properties'].items() if k not in strength}
+                entry = {k: v for k, v in entry.items() if k != 'block_properties'}
+                return {**entry, 'block_properties': props} if props else entry
             if entry['id'] not in doors or 'block_properties' not in entry:
                 return entry
             props = {k: v for k, v in entry['block_properties'].items() if k != 'door_sounds'}
