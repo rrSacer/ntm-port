@@ -306,6 +306,20 @@ mod tests {
     }
 
     #[test]
+    fn it_pulls_a_quarter_of_the_difference_rounded_up() {
+        let mut f = Combination::default();
+        assert_eq!(f.pull_heat(Some(1000)), 250);
+        assert_eq!(f.heat, 250);
+        assert_eq!(f.pull_heat(Some(1000)), 188, "a quarter of 750, rounded up");
+        let mut g = Combination {
+            heat: 10,
+            ..Default::default()
+        };
+        assert_eq!(g.pull_heat(Some(11)), 1, "never less than one");
+        assert_eq!(g.heat, 11);
+    }
+
+    #[test]
     fn the_exact_item_comes_before_its_keys() {
         assert_eq!(
             output("minecraft:coal").unwrap().item,

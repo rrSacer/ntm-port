@@ -426,6 +426,18 @@ mod tests {
     }
 
     #[test]
+    fn the_iron_furnaces_burn_module_scales_its_fuels() {
+        // `new ModuleBurnTime().setLigniteTimeMod(1.25).setCoalTimeMod(1.25).setCokeTimeMod(1.5).setSolidTimeMod(2)...`
+        assert_eq!(IRON_MODULE.burn_time("ntm:coke__coal"), 4800);
+        assert_eq!(IRON_MODULE.burn_time("minecraft:coal"), 2000);
+        assert_eq!(IRON_MODULE.burn_time("ntm:lignite"), 1500);
+        assert_eq!(IRON_MODULE.burn_time("ntm:solid_fuel"), 6400);
+        assert_eq!(IRON_MODULE.burn_time("ntm:rocket_fuel"), 12_800);
+        assert_eq!(IRON_MODULE.burn_time("ntm:solid_fuel_bf"), 64_000);
+        assert_eq!(IRON_MODULE.burn_time("minecraft:oak_planks"), 300);
+    }
+
+    #[test]
     fn it_loads_a_fuel_without_input_and_keeps_it_unspent() {
         let mut f = iron_with(None, Some(("minecraft:coal", 2)));
         f.step();
