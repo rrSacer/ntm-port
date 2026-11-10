@@ -969,6 +969,15 @@ mod tests {
     }
 
     #[test]
+    fn the_slots_are_the_javas() {
+        // `tank.setType(5, slots)` and `setType(8, slots)`; the battery, the output and the upgrades beside them.
+        assert_eq!((Model::Arc.identifier(), Model::Arc.battery(), Model::Arc.output()), (5, 4, 3));
+        assert_eq!((Model::Solder.identifier(), Model::Solder.battery(), Model::Solder.output()), (8, 7, 6));
+        assert_eq!((Model::Arc.upgrade_slots(), Model::Solder.upgrade_slots()), (6..8, 9..11));
+        assert_eq!((Model::Arc.slots(), Model::Solder.slots()), (8, 11));
+    }
+
+    #[test]
     fn the_containers_reach_every_input_and_only_the_output_comes_out() {
         let arc = container(ARC).unwrap();
         assert_eq!((arc.slots, arc.inputs.clone(), arc.outputs.clone()), (8, vec![0, 1, 2], vec![3]));
