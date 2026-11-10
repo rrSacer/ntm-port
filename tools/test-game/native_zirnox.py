@@ -80,16 +80,26 @@ def lever(g,c,on):
     g.check('lever_'+str(on)+'_'+str(len(g.evidence['steps'])),('powered=true' in block(g,p))==on,block(g,p))
 
 
+def menu_open(g,timeout=20):
+    """The screen once a menu is open (coordinator, 10/11: wait on the state, not a fixed 0.7 s; a loaded
+    machine answers the click late), or the last screen seen when `timeout` seconds pass without one."""
+    deadline=time.monotonic()+timeout
+    while True:
+        screen=g.ctl('screen')
+        if screen.get('screen')=='container' or time.monotonic()>=deadline:return screen
+        time.sleep(.1)
+
+
 def open_reactor(g,core):
     g.close();g.command(f'tp @s {core[0]+.5} {core[1]} {core[2]+4.5}')
-    p=add(core,(0,1,2));g.ctl('interact '+pos_text(p)+' south');time.sleep(.7)
-    g.check('reactor_menu_'+str(len(g.evidence['steps'])),g.ctl('screen').get('screen')=='container',g.ctl('screen'))
+    p=add(core,(0,1,2));g.ctl('interact '+pos_text(p)+' south');screen=menu_open(g)
+    g.check('reactor_menu_'+str(len(g.evidence['steps'])),screen.get('screen')=='container',screen)
 
 
 def open_tank(g,p):
     g.close();g.command(f'tp @s {p[0]-3.5} {p[1]-1} {p[2]+.5}')
-    g.ctl('interact '+pos_text(p)+' west');time.sleep(.7)
-    g.check('tank_menu_'+str(len(g.evidence['steps'])),g.ctl('screen').get('screen')=='container',g.ctl('screen'))
+    g.ctl('interact '+pos_text(p)+' west');screen=menu_open(g)
+    g.check('tank_menu_'+str(len(g.evidence['steps'])),screen.get('screen')=='container',screen)
 
 
 def type_ports(g,fluid,positions):
@@ -340,11 +350,13 @@ def automation(g):
     g.command('fill '+pos_text(add(core,(-1,-4,-1)))+' '+pos_text(add(core,(1,-4,3)))+' minecraft:stone')
     g.command('fill '+pos_text(low)+' '+pos_text(high)+' minecraft:air')
     g.command('setblock '+pos_text(hopper)+' minecraft:hopper[facing=down]')
-    # A hopper moves one item per eight ticks. Give all 24 slots ample time.
-    time.sleep(12)
+    # A hopper moves one item per eight ticks. Give all 24 slots ample time, counted in game ticks (the
+    # 12 s it was, at 20 ticks a second).
+    start=game_time(g)
+    while game_time(g)<start+240:time.sleep(.2)
     g.command('clear @s')
     g.command(f'tp @s {hopper[0]+.5} {hopper[1]-2} {hopper[2]+2.5}')
-    g.ctl('interact '+pos_text(hopper)+' south');time.sleep(.7)
+    g.ctl('interact '+pos_text(hopper)+' south');menu_open(g)
     g.check('automation_hopper_menu',len(g.slots())==5,g.ctl('screen'))
     received=Counter()
     for s in g.slots():
