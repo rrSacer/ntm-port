@@ -1188,6 +1188,10 @@ e 2/2/2, este o resíduo vanilla), todos os veredictos do R7c verdadeiros e cada
 tag; relatório em `.agent-tmp/rbmk-t03/evidence/c-r2/report.json`. Testes: lib 532 (2 ignorados) e 47 de integração; `save_model` em release
 11/11; clippy `-D warnings` de `ntm-core` com todos os alvos e da glue (stage de `00454b508a`): 0 avisos.
 
+Re-revisão (`881663f7`): aprovada sem P0, P1 nem P2. P3-1 corrigido (o limite `1e-5` comparado em double, como o
+Java). P3-2 registrado: a ordem de `fire_ticks` é a do `EnchantmentProtection.getFireTimeForEntity` decompilado do
+1.7.10, `(float)ticks * (float)nível * 0.15F`; o resultado é o mesmo.
+
 Registrado, sem mudança de código:
 
 - **P3-2, barra de durabilidade:** o Forge 1.7.10 (`RenderItem.renderItemOverlayIntoGUI`, conferido no decompilado)

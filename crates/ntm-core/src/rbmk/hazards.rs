@@ -30,7 +30,8 @@ pub fn radiation_level(stack: &Stack) -> Option<f32> {
 /// `1e-5`, else the rate as `"" + Math.floor(level * 1000) / 1000` (the product in float, `Double.toString`) and, past
 /// one item, the stack's `Math.floor(level * 1000 * count) / 1000`. A NaN level shows `NaNRAD/s`, as in Java.
 pub fn radiation_tooltip(level: f32, count: u32) -> Vec<String> {
-    if level < 1e-5 {
+    // `level < 1e-5`: the float level widened to compare with the double.
+    if f64::from(level) < 1e-5 {
         return Vec::new();
     }
     let shown = |v: f32| super::tooltip::java_double(f64::from(v).floor() / 1000.0);
@@ -47,6 +48,7 @@ pub fn radiation_tooltip(level: f32, count: u32) -> Vec<String> {
 pub fn fire_ticks(seconds: i32, highest_fire_protection: u32, left: i32) -> i32 {
     let mut j = seconds.saturating_mul(20);
     if highest_fire_protection > 0 {
+        // `p -= MathHelper.floor_float((float)p * (float)j * 0.15F)`, the ticks first (1.7.10, decompiled).
         j -= (j as f32 * highest_fire_protection as f32 * 0.15f32).floor() as i32;
     }
     left.max(j)
