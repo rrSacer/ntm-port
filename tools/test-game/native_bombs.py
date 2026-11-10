@@ -85,9 +85,19 @@ def lever(g, core):
     g.command('clear @s')
     g.command(f'setblock {pos_text(p)} minecraft:lever[face=floor,facing=north,powered=false]')
     g.command(f'tp @s {core[0]+3.5} {core[1]} {core[2]+.5}')
+    g.ticks(4)  # the teleport is the server's: the click needs the player already standing there
     start = len(log(g))
     observed = g.ctl('interact ' + pos_text(p))
-    g.check('physical_lever_powered', 'powered=true' in str(observed), observed)
+    # The reply of `interact` is read before the server has applied the click (it then shows the old state
+    # with "changed": false), so the lever is read again, up to a second of game time. The click is not sent
+    # twice: a second one would turn the lever off.
+    read = observed
+    for _ in range(10):
+        read = g.ctl('block ' + pos_text(p))
+        if 'powered=true' in str(read):
+            break
+        g.ticks(2)
+    g.check('physical_lever_powered', 'powered=true' in str(read), {'interact': observed, 'block': read})
     return start
 
 
