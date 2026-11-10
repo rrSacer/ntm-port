@@ -218,7 +218,7 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             } else {
                 let seed = legacy(game).unwrap_or_default();
                 let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
-                let (zone, resistance) = (zone_rate(game), -radiation_factor(game).log10());
+                let (zone, resistance) = (zone_rate(game), player_resistance(game));
                 ins::geiger_lines(&ins::Readings { dose_millirad: dose, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance })
             };
             lines.iter().for_each(|l| say(game, l));
@@ -1136,12 +1136,42 @@ pub(super) fn transfer_commit(
     let benefits = NativePlayerBenefits { drops, silent_equipment: true, ..Default::default() };
     game.native_commit_player(&STATE, expected, desired, benefits)
 }
-pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
-    // HazmatRegistry.getResistance: the armor plus 0.2 while Rad-X is active.
-    item_hooks::dose_factor(
-        game.armor.iter().flatten().map(|s| s.item.as_ref()),
+/// `HazmatRegistry.getResistance(EntityPlayer)`: the four armor pieces with
+/// their cladding, plus 0.2 while Rad-X is active.
+pub(super) fn player_resistance(game: &Game<'_>) -> f32 {
+    item_hooks::player_resistance(
+        game.armor.iter().flatten().map(worn_resistance),
         game.potions.effects.get("ntm:radx").is_some(),
     )
+}
+/// `ContaminationUtil.calculateRadiationMod` for the acting player.
+pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
+    f64::from(item_hooks::radiation_mod(player_resistance(game)))
+}
+/// `HazmatRegistry.getResistance(ItemStack)` of a worn stack: the
+/// `hfr_cladding` float (`getFloat` is 0 when absent or of another type) and
+/// the item in the cladding slot of `ntm_armor_mods`.
+pub(super) fn worn_resistance(stack: &ItemStack) -> f64 {
+    let data = match stack.data().and_then(|d| d.other("minecraft:custom_data")) {
+        Some(Tag::Compound(c)) => Some(c),
+        _ => None,
+    };
+    let hfr_cladding = match data.and_then(|c| c.get(&JavaString::from("hfr_cladding"))) {
+        Some(Tag::Float(bits)) => f32::from_bits(*bits),
+        _ => 0.0,
+    };
+    let slot = JavaString::from(format!("mod_slot_{}", item_hooks::CLADDING_SLOT).as_str());
+    let cladding_mod = data
+        .and_then(|c| match c.get(&JavaString::from("ntm_armor_mods")) {
+            Some(Tag::Compound(mods)) => mods.get(&slot),
+            _ => None,
+        })
+        .and_then(item_from_nbt);
+    item_hooks::piece_resistance(&item_hooks::Piece {
+        id: &stack.item,
+        hfr_cladding,
+        cladding_mod: cladding_mod.as_ref().map(|m| m.item.as_ref()),
+    })
 }
 
 /// Atomic stack custom-data edit. The caller supplies the complete expected

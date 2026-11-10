@@ -42,6 +42,12 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
     if let Some(line)=crate::game::ntm_items::lens_tooltip(stack) {
         lines.push((Text::literal(line),u32::MAX));
     }
+    for line in ntm_core::item_hooks::cladding_lines(&stack.item).unwrap_or_default() {
+        lines.push((Text::legacy(&line),u32::MAX));
+    }
+    if let Some(line)=ntm_core::item_hooks::resistance_line(crate::game::ntm_items::worn_resistance(stack)) {
+        lines.push((Text::legacy(&line),u32::MAX));
+    }
     let native=crate::game::ntm_glue::stack(&Some(stack.clone()));
     if let Some(p)=ntm_core::radioisotopes::pellet(&stack.item) {
         let life=native.as_ref().map_or(p.lifespan_ticks,ntm_core::radioisotopes::life);

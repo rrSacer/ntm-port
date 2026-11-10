@@ -17,6 +17,7 @@ use horizon_world::{
     attachments::{AttachmentCodec, AttachmentError, AttachmentType},
     nbt::{Compound, JavaString, Tag},
 };
+use ntm_core::item_hooks;
 use std::{collections::HashMap, sync::Mutex};
 const BLOCK: &str = "ntm:machine_armor_table";
 const MENU: &str = "ntm:armor_table";
@@ -149,13 +150,13 @@ fn policy(
         return true;
     }
     if slot < 9 {
-        return slot == 0
-            && &*item.item == "ntm:attachment_mask"
-            && slots.get(9).and_then(Option::as_ref).is_some_and(|armor| {
-                lock(&ARMOR)
-                    .iter()
-                    .any(|(id, i)| id == armor.item.as_ref() && *i == 0)
-            });
+        let armor_type = slots.get(9).and_then(Option::as_ref).and_then(|armor| {
+            lock(&ARMOR)
+                .iter()
+                .find(|(id, _)| id == armor.item.as_ref())
+                .map(|(_, i)| *i)
+        });
+        return item_hooks::mod_fits(armor_type, slot, &item.item);
     }
     true
 }
@@ -174,11 +175,12 @@ pub(super) fn filters(game: &Game<'_>) -> Vec<ModSlotFilter> {
         .map(|slot| ModSlotFilter {
             max: Some(1),
             accept: Some(if slot < 9 {
-                if slot == 0 {
-                    vec!["ntm:attachment_mask".into()]
-                } else {
-                    Vec::new()
-                }
+                game.items()
+                    .items
+                    .values()
+                    .filter(|i| item_hooks::armor_mod(&i.id).is_some_and(|m| m.slot == slot))
+                    .map(|i| i.id.to_string())
+                    .collect()
             } else {
                 armor
                     .iter()
@@ -373,8 +375,8 @@ fn quick(game: &Game<'_>, m: &mut Menu, slot: usize) {
         move_to(game, m, slot, (N..N + 36).rev());
     } else if armor_index(game, &stack).is_some() {
         move_to(game, m, slot, [9]);
-    } else if &*stack.item == "ntm:attachment_mask" {
-        move_to(game, m, slot, [0]);
+    } else if let Some(armor_mod) = item_hooks::armor_mod(&stack.item) {
+        move_to(game, m, slot, [armor_mod.slot]);
     }
 }
 pub(super) fn clicked(
