@@ -23,10 +23,13 @@ a decisão de adotar o `rustfmt` no repositório inteiro, num commit só, é do 
 
 ## `bombs`: corrida do lever (corrigida no roteiro)
 
-`tools/test-game/native_bombs.py`, `lever()`: a resposta do `interact` é lida **antes** de o servidor aplicar o clique
-(mostra o estado antigo, `powered=false`, com `"changed": false`), então `physical_lever_powered` falhava por corrida e
-não por defeito do jogo. Corrigido: o roteiro espera 4 ticks depois do teleporte e lê o bloco de novo, por até 20 ticks,
-sem clicar duas vezes (um segundo clique desligaria a alavanca). O jogo não mudou.
+`tools/test-game/native_bombs.py`, `lever()`: a resposta do `interact` às vezes é lida **antes** de o servidor aplicar o clique (mostra
+o estado antigo, `powered=false`, com `"changed": false`), e `physical_lever_powered` falhava por corrida e não por defeito do jogo
+(`fuse-redstone`). Corrigido: o roteiro espera 4 ticks depois do teleporte e, se a resposta não mostrou a alavanca ligada, lê o bloco de
+novo por até 20 ticks, sem clicar duas vezes (um segundo clique a desligaria). A alavanca conta como ligada se foi vista ligada na
+resposta **ou** em alguma leitura posterior: no cenário `little-boy-redstone` a bomba que ela dispara destrói a alavanca na hora, e uma
+releitura que só aceitasse "ligada" a daria por desligada (a primeira versão da correção errou assim, vista em jogo e refeita).
+Evidência: `bombs` completo, 61 de 61 checagens, as duas do lever incluídas. O jogo não mudou.
 
 ## `items`: esperas em ticks de jogo
 
