@@ -1206,6 +1206,27 @@ pacote de conteúdo novo `ntm.hmod` `483392a4d3640aa4444926f1ca6d44956577d7aefa5
 conteúdo). Em jogo, uma por vez, `NTM_GAME_WIDE=1`: stations, dims e a prova de save `original` `kill` passaram (#55–#57).
 Clippy `-D warnings` da cópia transformada (`horizon-client-lib`, `horizon-client`, com a glue do NTM) limpo.
 
+### Merge da `main` (`8ecff5d8`)
+
+A `main` andou para `8ecff5d8` (integração T2–T8: gamma, items em ticks, `door_sounds`, bombs). Merge sem rebase em
+`ec3e633a`, sem conflitos: `content/` e `native_items.py` ficaram iguais aos da `main` (o roteiro de items em ticks é o
+dela). `native_bombs.py` fundiu sozinho: ficou com a leitura da alavanca da `main` e o `restart_arm` de `5b58dfa6`.
+
+- **Geradores como checagem**, na ordem de `16659f63`, no lugar: `generate.py`, `bulk.py`, `generate.py --ids-only` e
+  `visual-gen/generate.py`, com `PYTHONHASHSEED=1`, `NTM_SRC` e `HORIZON_RESOURCES`. **Nenhum arquivo mudou**, e as
+  quatro portas mantêm o `door_sounds`. (Uma primeira tentativa sem `NTM_SRC` parou no `hazard-gen` antes das abas
+  criativas e tirou os títulos das abas das traduções. Os dois arquivos foram restaurados e a rodada refeita.)
+- `content-gen`: `test_rbmk_oracle` (contrato T00, só `door_sounds`) passa, e a suíte inteira tem **290 testes OK**
+  com `PYTHONHASHSEED` 1 e 42. Os testes leem a fonte em `ROOT.parent/ntm-src`, então foi preciso um link temporário no
+  worktree, removido depois.
+- `cargo test --workspace` verde (`ntm-core` 514 e as integrações), clippy `--all-targets -D warnings` limpo. A cópia
+  transformada foi regenerada contra `6a79054fa9`, e o clippy dela está limpo.
+- Release `horizon-client` `b84aac6a25fc5c200aa59662a51743d3357edbf058ddf2bd932fc38a01e7a4da` (igual ao do merge
+  anterior: a glue não mudou). Pacote `ntm.hmod` `483392a4d3640aa4444926f1ca6d44956577d7aefa5143e6764cad94325959a9`,
+  empacotado do conteúdo regenerado sem diferença. É igual ao anterior: entre `27380b26` e `8ecff5d8`, em `content/`,
+  só `ids.json` mudou, e ele não entra no pacote.
+- Em jogo, uma por vez, `NTM_GAME_WIDE=1`: stations, dims e a prova de save `original` `kill` passaram (#60–#62).
+
 ### Limitações e pendências
 
 - **Modo eager:** os cortes dentro de um save (`save_begin`, `live_chunk`, `region_record`, `entities_written`) não são
@@ -1226,3 +1247,14 @@ Clippy `-D warnings` da cópia transformada (`horizon-client-lib`, `horizon-clie
   (`Fire` 600 nas leituras seguintes; -20 sem a visita). Suspeita: a ida e volta da troca de estado regrava um
   `fire_ticks` antigo por cima do da cópia de movimento do convidado (`MotionWorld`, `lan_actions.rs`), onde a água
   apaga. Vale para qualquer mod que visite por tick. O NTM contorna em `rbmk-t03` `52d7bb62` (não visita na água).
+  Continua sem diagnóstico: caso a verificar.
+- Outros contatos de motor do RBMK T03 (revisão do T03, não reproduzidos em jogo, sem correção nesta rodada):
+  - Em `motion/environment.rs` (l. 37–45), `tick_remaining_fire` aplica o dano de fogo antes de a água apagar. Um fogo
+    de 600 no tick em que se entra na água custa 1 de dano (600 % 20 == 0). No 1.7.10, `handleWaterMovement` zera o
+    fogo antes do dano do `onEntityUpdate`.
+  - O atributo `burning_time` soma a Proteção contra Fogo das peças. O 1.7.10 usa o maior nível da armadura
+    (`EnchantmentProtection.getFireTimeForEntity`). O HOT do NTM calcula como no 1.7.10 (`set_remaining_fire_ticks`),
+    mas os outros fogos do motor seguem somando. Lacuna nominal da Onda 4 (regra de armadura).
+  - Barra de durabilidade: o Forge 1.7.10 desenha preto 13×2, uma faixa 12×1 na cor `(255−k)/4 << 16 | 0x3F00` e a
+    barra. O gancho `item_bar` (API 60) só dá largura e cor, então a faixa escura não sai. Falta um campo de cor da
+    faixa na API.
