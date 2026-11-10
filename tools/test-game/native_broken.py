@@ -99,6 +99,15 @@ def setup(g):
     g.check('slots_hold_both_products', sorted(v[2] or '' for v in held.values()) == sorted([A, B]) and all(v[0] == 'ntm:broken_item' for v in held.values()), held)
     counts = {v[2]: v[1] for v in held.values()}
     g.check('counts_kept', counts.get(A) == 2 and counts.get(B) == 1, held)
+    # The machine's own model carries the stack's custom data too (the glue passes it for this item): that is what
+    # `broken::product` reads. A tick has to pass for the saved data to follow the slots.
+    seen = ''
+    for _ in range(10):
+        time.sleep(1)
+        seen = machine_state(g, HOST)
+        if A in seen and B in seen:
+            break
+    g.check('machine_model_sees_the_products', A in seen and B in seen and 'ntm_broken' in seen, seen[:700])
     # a second broken item of the other product, by shift-click: it must not pile on the first stack
     give(g, B, 1)
     g.ctl(f'interact {x} {y} {z} south')
