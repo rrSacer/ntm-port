@@ -48,8 +48,10 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         let mut state=native.as_ref().map(ntm_core::rbmk::persist::stack_rod).unwrap_or_default();
         for line in ntm_core::rbmk::tooltip::lines(rod,&mut state) {
             let args:Vec<Text>=line.args.iter().map(|a|match a.strip_prefix("§key:") { Some(k)=>Text::translate(k,&[]), None=>Text::legacy(a) }).collect();
+            // `EnumChatFormatting.X + I18nUtil.resolveKey(..)`: the line's codes style the whole translated line (a
+            // code alone in its own component would style nothing).
             let text=match &line.key {
-                Some(k)=>Text::legacy(line.style).append(Text::translate(k,&args)),
+                Some(k)=>Text::translate(k,&args).with_style(&legacy_style(line.style)),
                 None=>Text::legacy(&format!("{}{}",line.style,line.args[0])),
             };
             lines.push((text,u32::MAX));
@@ -68,6 +70,19 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
     }
     // `HazardTypeHot.addHazardInformation`, after the radiation as the rod registers them: gold, while the hull is hot.
     if native.as_ref().and_then(ntm_core::rbmk::hazards::hot_level).is_some_and(|l|l>0) {
-        lines.push((Text::legacy("\u{a7}6[").append(Text::translate("trait.hot",&[])).append(Text::legacy("]")),u32::MAX));
+        lines.push((Text::literal("[").append(Text::translate("trait.hot",&[])).append(Text::literal("]")).with_style(&legacy_style("\u{a7}6")),u32::MAX));
     }
+}
+
+/// The style a run of legacy codes (`§9`, `§o`) leaves, as `StringDecomposer.iterateFormatted` applies them.
+fn legacy_style(codes: &str) -> horizon_client::text::Style {
+    let reset = horizon_client::text::Style::default();
+    let mut style = reset.clone();
+    let mut chars = codes.chars();
+    while let Some(c) = chars.next() {
+        if c == '\u{a7}' && let Some(code) = chars.next() {
+            style = horizon_client::text::legacy_format(&style, code, &reset);
+        }
+    }
+    style
 }
