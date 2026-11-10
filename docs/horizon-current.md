@@ -1060,6 +1060,38 @@ diagnóstico tocar uma amostra), `active_pitch_changes_on_same_channel` e `messa
 do R7c, a tampa. Dois desses checks tinham erro do roteiro (revisor, P3-1): o log nuclear era lido antes de o som tocar,
 e a rampa do pitch (0,51 → 1,0 em 25 ticks) já podia estar no topo na primeira amostra. Corrigidos em `99eef2b5`.
 
+### Correções da revisão independente (`3b7a7174`, reprovado → correções)
+
+Branch do motor `upstream-a3bf653-fix` sobre `a8dc3409f`, em commits atômicos:
+
+| Achado | Commit | Correção e prova |
+| --- | --- | --- |
+| **P1-1** `/forceload add` descarregava colunas sem gravar e sem o gancho (código novo do upstream) | `d93271e38` | O tratamento das colunas descarregadas do quadro virou `retire_unloaded` (gancho E2, LOD, entidades, BEs, `save_later` das sujas) e o laço de espera do `/forceload` o usa, além de tirar as malhas das colunas do renderer e enfileirar as novas. Teste `no_streaming_pass_drops_the_columns_it_unloads` (falha com a correção tirada). **Em jogo** (`confirm/forceload_probe.py`, gravação eager desligada para isolar o caminho): chunk A mantido só por `/forceload`, com uma bateria NTM e um baú vanilla (controle) com uma pilha gravada e outra posta depois do save; uma função de datapack faz `forceload remove A` + `forceload add` de 169 chunks distantes no mesmo comando (a varredura cai no laço de espera); salvar, fechar, reabrir, ler A. Sem a correção (`26c81d42`): **2/2 execuções perderam a bateria e o baú inteiros**; com ela (`fd1125ad`): **2/2 conservaram as duas pilhas** de cada um. |
+| **P2-1** o gancho eager perguntava diferente da passada | `5ab19be7d` | `ModifiedChunks::save_eagerly_heard`: a própria passada chama o gancho uma vez, logo antes do primeiro chunk que vai gravar, com o mesmo `now`, `available()` (prazo do tick e fila do escritor) e luz. Sem tempo, com a fila cheia, nada vencido ou só colunas sem luz, o gancho não roda; nenhum chunk é gravado sem ele. O que os mods sujam ao ouvi-lo volta ao conjunto sujo. |
+| **P2-2** teste só textual | `5ab19be7d`, `7cba121ec` | `an_eager_pass_is_heard_once_before_the_first_chunk_it_saves` (rastreador: ordem, uma vez, e nenhum gancho sem tempo, sem nada vencido ou com coluna sem luz) e `an_eager_pass_is_heard_by_the_mods_only_when_it_saves` (jogo real com um mod contador, processo próprio: ouvido uma vez, sem espera, pela passada que grava; não ouvido sem nada sujo, sem tempo no tick, em cooldown). O teste textual agora lê só código (uma chamada comentada o reprova). Mutantes (cada um compilado e rodado, código restaurado depois; `confirm/mutants.log`): m1 gancho trocado por um no-op e m2 chamada comentada reprovam o teste de jogo e o textual; m3 condição invertida (ouvido quando a passada não tem tempo, não antes de gravar) reprova o teste de jogo e o do rastreador. A linha de base passa nos três. |
+| **P3-2** `mod_browser_closed` | `ec056cf3f` | Restaurado no fechamento pela tecla de inventário e no fechamento atrás das opções de depuração; teste `every_creative_close_lets_go_of_the_mod_browser`. |
+| **P3-3** contrato de `world_saving` | `4676522e0` | Documentado: uma passada eager o emite com `wait` falso e sem `world_saved` em seguida; um mod não deve contar com o par. |
+| **P3-4** `region_record` contava escritas eager | `dce43d298` | Failpoint armado implica sem gravação eager. |
+| **P3-8** `t.slots` × tamanho do BE | `7c6f44d08` | `slots()` e `slot_count()` usam os slots do tipo de menu declarado, como a previsão. |
+| **P3-1** roteiro do `audio-lifecycle` | NTM `99eef2b5` | Releitura do log nuclear depois do canal; pitch julgado a partir do início do canal registrado pelo mixer. |
+| **P3-5** oráculo | NTM `39f983f9` (isolado) | Com eager, cortes iguais exigem igualdade com o controle; o resultado L/D sai marcado `proof: false`. |
+
+Lacunas que ficam registradas (sem correção nesta rodada):
+
+- **P3-6** a medição do meltdown não mede o custo do gancho nem prova "não é pior" com força (p ≈ 0,09; 0,22 sem a rodada
+  de aquecimento). Falta medir o span `ntm_world_saving` em máquina quieta, com e sem o gancho. Com P2-1 o gancho deixou
+  de rodar nos ticks atrasados.
+- **P3-7** a quebra por máquina do upstream (#9223, `native_machine_destroy_block`) não resolve multibloco: quebrar um
+  dummy deixa o núcleo com buraco, quebrar o núcleo deixa dummies órfãos (sem perda nem duplicação; os dummies não têm
+  loot). Nada chama isso hoje; resolver o núcleo como `break_block_as_player` antes de usar.
+- **P3-9** com uma passada eager vencida no tick, o settle do NTM roda no meio do tick (antes das entidades): itens de
+  uma máquina quebrada entram na passada de entidades desse tick, e não do seguinte. Diferença de um tick, mais perto do
+  Java (que derrama na hora); sem perda nem duplicação.
+- **P3-10** `frozen-break` sem pareamento de cortes por índice; os três testes de render por GPU de software não foram
+  comparados com o `a3bf6531e` puro; o save em etapas (`game/saving.rs`, controle `save` sem servidor integrado) não
+  passa por `save_game_with` (preexistente, igual em `a31497f38`; o texto da Onda 0 que diz "todo save passa por
+  `save_game_with`" fica corrigido aqui).
+
 ### Limitações e pendências
 
 - **Modo eager:** os cortes dentro de um save (`save_begin`, `live_chunk`, `region_record`, `entities_written`) não são
