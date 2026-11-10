@@ -1,0 +1,1218 @@
+{
+"source": "content/machine-recipes/soldering.json",
+"config": {
+"power_buffer_min": 2000,
+"tank_capacity_mb": 8000,
+"slots": 11,
+"toppings": [
+0,
+3
+],
+"pcb": [
+3,
+5
+],
+"solder": [
+5,
+6
+],
+"output": 6,
+"battery": 7,
+"fluid_identifier": 8,
+"upgrades": [
+9,
+11
+],
+"source": "src/main/java/com/hbm/tileentity/machine/TileEntityMachineSolderingStation.java"
+},
+"recipes": [
+{
+"out": [
+"ntm:circuit__analog",
+1
+],
+"duration": 100,
+"power": 100,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:44",
+"label": "Placa de Circuito Analógico",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"n": 3
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 2
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__pcb"
+],
+"n": 4
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 4
+}
+]
+},
+{
+"out": [
+"ntm:circuit__basic",
+1
+],
+"duration": 200,
+"power": 250,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:54",
+"label": "Placa de Circuito Integrado",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__pcb"
+],
+"n": 4
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 4
+}
+]
+},
+{
+"out": [
+"ntm:circuit__advanced",
+1
+],
+"duration": 300,
+"power": 1000,
+"fluid": [
+"sulfuric_acid",
+1000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:63",
+"label": "Placa de Circuito de Grau Militar",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__pcb"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 2
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 8
+}
+]
+},
+{
+"out": [
+"ntm:circuit__capacitor_board",
+1
+],
+"duration": 200,
+"power": 300,
+"fluid": [
+"peroxide",
+250
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:75",
+"label": "Placa de Capacitores",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__capacitor_tantalium"
+],
+"n": 3
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__pcb"
+],
+"n": 1
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 3
+}
+]
+},
+{
+"out": [
+"ntm:circuit__bismoid",
+1
+],
+"duration": 400,
+"power": 10000,
+"fluid": [
+"solvent",
+1000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:85",
+"label": "Placa de Circuito Versátil",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip_bismoid"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 24
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__pcb"
+],
+"n": 12
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 2
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 12
+}
+]
+},
+{
+"out": [
+"ntm:circuit__quantum",
+1
+],
+"duration": 400,
+"power": 100000,
+"fluid": [
+"helium4",
+1000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:98",
+"label": "Unidade de Processamento Quântico",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip_quantum"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__chip_bismoid"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__atomic_clock"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__pcb"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 4
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 16
+}
+]
+},
+{
+"out": [
+"ntm:circuit__controller",
+1
+],
+"duration": 400,
+"power": 15000,
+"fluid": [
+"perfluoromethyl",
+1000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:116",
+"label": "Unidade de Controle",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 32
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 32
+},
+{
+"ids": [
+"ntm:circuit__capacitor_tantalium"
+],
+"n": 16
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__controller_chassis"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 16
+}
+]
+},
+{
+"out": [
+"ntm:circuit__controller_advanced",
+1
+],
+"duration": 600,
+"power": 25000,
+"fluid": [
+"perfluoromethyl",
+4000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:128",
+"label": "Unidade de Controle Avançada",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip_bismoid"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__capacitor_tantalium"
+],
+"n": 48
+},
+{
+"ids": [
+"ntm:circuit__atomic_clock"
+],
+"n": 1
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__controller_chassis"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 4
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 24
+}
+]
+},
+{
+"out": [
+"ntm:circuit__controller_quantum",
+1
+],
+"duration": 600,
+"power": 250000,
+"fluid": [
+"perfluoromethyl_cold",
+6000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:140",
+"label": "Computador Quântico",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip_quantum"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__chip_bismoid"
+],
+"n": 48
+},
+{
+"ids": [
+"ntm:circuit__atomic_clock"
+],
+"n": 8
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__controller_advanced"
+],
+"n": 2
+},
+{
+"ids": [
+"ntm:upgrade_speed_3"
+],
+"n": 1
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 32
+}
+]
+},
+{
+"out": [
+"ntm:sat_chip",
+1
+],
+"duration": 100,
+"power": 100,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:154",
+"label": "Chip de Identificação de Satélite",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 2
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:circuit__pcb"
+],
+"n": 2
+}
+],
+"solder": [
+{
+"ids": [
+"ntm:wire_fine__lead"
+],
+"n": 4
+}
+]
+},
+{
+"out": [
+"ntm:upgrade_speed_1",
+1
+],
+"duration": 200,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:168",
+"label": "Melhoria de Velocidade Mk.I",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 1
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_template"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:powder_red_copper"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_effect_1",
+1
+],
+"duration": 200,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:173",
+"label": "Melhoria de Eficiência Mk.I",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 1
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_template"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:powder_emerald"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_power_1",
+1
+],
+"duration": 200,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:178",
+"label": "Melhoria de Economia de Energia Mk.I",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 1
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_template"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:powder_gold"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_fortune_1",
+1
+],
+"duration": 200,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:183",
+"label": "Melhoria de Fortuna Mk.I",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 1
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_template"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:powder_niobium"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_afterburn_1",
+1
+],
+"duration": 200,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:188",
+"label": "Melhoria de Pós-Combustão Mk.I",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__vacuum_tube"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 1
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_template"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:powder_tungsten"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_radius",
+1
+],
+"duration": 200,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:193",
+"label": "Melhoria de Alcance do Emissor",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_template"
+],
+"n": 1
+},
+{
+"ids": [
+"minecraft:glowstone_dust"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_health",
+1
+],
+"duration": 200,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:198",
+"label": "Melhoria de Integridade do Emissor",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_template"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:powder_lithium"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_speed_2",
+1
+],
+"duration": 300,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:205",
+"label": "Melhoria de Velocidade Mk.II",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_speed_1"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_speed_3",
+1
+],
+"duration": 400,
+"power": 25000,
+"fluid": [
+"solvent",
+500
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:206",
+"label": "Melhoria de Velocidade Mk.III",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 16
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_speed_2"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_effect_2",
+1
+],
+"duration": 300,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:207",
+"label": "Melhoria de Eficiência Mk.II",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_effect_1"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_effect_3",
+1
+],
+"duration": 400,
+"power": 25000,
+"fluid": [
+"solvent",
+500
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:208",
+"label": "Melhoria de Eficiência Mk.III",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 16
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_effect_2"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_power_2",
+1
+],
+"duration": 300,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:209",
+"label": "Melhoria de Economia de Energia Mk.II",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_power_1"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_power_3",
+1
+],
+"duration": 400,
+"power": 25000,
+"fluid": [
+"solvent",
+500
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:210",
+"label": "Melhoria de Economia de Energia Mk.III",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 16
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_power_2"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_fortune_2",
+1
+],
+"duration": 300,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:211",
+"label": "Melhoria de Fortuna Mk.II",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_fortune_1"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_fortune_3",
+1
+],
+"duration": 400,
+"power": 25000,
+"fluid": [
+"solvent",
+500
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:212",
+"label": "Melhoria de Fortuna Mk.III",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 16
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_fortune_2"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_afterburn_2",
+1
+],
+"duration": 300,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:213",
+"label": "Melhoria de Pós-Combustão Mk.II",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 4
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_afterburn_1"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_bakelite",
+"ntm:ingot_polymer"
+],
+"n": 4
+}
+],
+"solder": []
+},
+{
+"out": [
+"ntm:upgrade_afterburn_3",
+1
+],
+"duration": 400,
+"power": 25000,
+"fluid": [
+"solvent",
+500
+],
+"source": "src/main/java/com/hbm/inventory/recipes/SolderingRecipes.java:214",
+"label": "Melhoria de Pós-Combustão Mk.III",
+"toppings": [
+{
+"ids": [
+"ntm:circuit__chip"
+],
+"n": 16
+},
+{
+"ids": [
+"ntm:circuit__capacitor"
+],
+"n": 16
+}
+],
+"pcb": [
+{
+"ids": [
+"ntm:upgrade_afterburn_2"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_rubber"
+],
+"n": 4
+}
+],
+"solder": []
+}
+]
+}

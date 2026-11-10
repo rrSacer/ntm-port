@@ -91,6 +91,8 @@ pub enum Kind {
     BrickFurnace,
     /// The K3 furnaces of several slots (`crate::furnaces`).
     Furnace,
+    /// The arc welder and the soldering station (`crate::welders`).
+    Welder,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -193,6 +195,7 @@ pub enum Data {
     Rbmk(Box<crate::rbmk::persist::RbmkColumn>),
     BrickFurnace(crate::furnace_brick::BrickFurnace),
     Furnace(Box<crate::furnaces::Furnace>),
+    Welder(Box<crate::welders::Welder>),
     Inert { name: String },
 }
 
@@ -291,6 +294,10 @@ impl Machine {
                 _ => crate::fluidbox::FluidStore::new(16_000, 0),
             }),
             Kind::BrickFurnace => Data::BrickFurnace(Default::default()),
+            Kind::Welder => match crate::welders::Welder::of(block_id) {
+                Some(w) => Data::Welder(Box::new(w)),
+                None => Data::Inert { name: block_id.into() },
+            },
             Kind::Furnace => match crate::furnaces::of(block_id) {
                 Some(f) => Data::Furnace(Box::new(f)),
                 None => Data::Inert { name: block_id.into() },
@@ -370,6 +377,7 @@ impl Machine {
             Data::SolarStirling(_) => Kind::SolarStirling,
             Data::BrickFurnace(_) => Kind::BrickFurnace,
             Data::Furnace(_) => Kind::Furnace,
+            Data::Welder(_) => Kind::Welder,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -416,6 +424,7 @@ impl Machine {
             Data::SolarStirling(m) => &**m,
             Data::BrickFurnace(m) => m,
             Data::Furnace(m) => &**m,
+            Data::Welder(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -462,6 +471,7 @@ impl Machine {
             Data::SolarStirling(m) => &mut **m,
             Data::BrickFurnace(m) => m,
             Data::Furnace(m) => &mut **m,
+            Data::Welder(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }

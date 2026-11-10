@@ -130,6 +130,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Rbmk(c) => Some(&mut **c),
         Data::BrickFurnace(f) => Some(f),
         Data::Furnace(f) => Some(f.slotted()),
+        Data::Welder(w) => Some(&mut **w),
         _ => None,
     }
 }
@@ -170,6 +171,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:furnace_iron", Layout::Native),
     ("ntm:furnace_steel", Layout::Native),
     ("ntm:furnace_combination", Layout::Native),
+    ("ntm:machine_arc_welder", Layout::Native),
+    ("ntm:machine_soldering_station", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
@@ -329,6 +332,9 @@ pub enum Layout {
 /// places it.
 pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
     ("ntm:machine_assembly_machine", [-1, 0, -1], [1, 0, 1]),
+    // MachineArcWelder.getPorts (`{1,0,1,0,1,1}`) and TilePortShapes.solderer: the whole bottom layer.
+    ("ntm:machine_arc_welder", [-1, 0, 0], [1, 0, 1]),
+    ("ntm:machine_soldering_station", [-1, 0, 0], [0, 0, 1]),
     ("ntm:machine_chemical_plant", [-1, 0, -1], [1, 0, 1]),
     ("ntm:machine_purex", [-2, 0, -2], [2, 0, 2]),
     // MachineExcavator.getAllPorts: on the layer above its core.
@@ -402,6 +408,9 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 /// that join the core's fluid networks as ducts. A chain of them reaches the
 /// core: the blast furnace's ports up its front reach it down its column.
 pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
+    // TileEntityProxyCombo().inventory().power().fluid(): every cell of the volume.
+    ("ntm:machine_arc_welder", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1], [1, 0, 0], [1, 0, 1], [-1, 1, 0], [-1, 1, 1], [0, 1, 0], [0, 1, 1], [1, 1, 0], [1, 1, 1]]),
+    ("ntm:machine_soldering_station", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1]]),
     // TilePortShapes.comboven: the ring round the core on its two layers.
     ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),

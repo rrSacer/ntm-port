@@ -461,17 +461,17 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_arc_welder",
-        kind: Kind::Inert,
+        kind: Kind::Welder,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_soldering_station",
-        kind: Kind::Inert,
+        kind: Kind::Welder,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_chemical_factory",
@@ -1730,6 +1730,7 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Processor
         | Kind::Drill
         | Kind::Steam
+        | Kind::Welder
         | Kind::Combustion => vec![crate::energy::DIRS.to_vec()],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.

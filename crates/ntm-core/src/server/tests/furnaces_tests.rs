@@ -258,3 +258,31 @@ fn the_combination_oven_makes_coke_and_sends_its_fluid_down_a_duct() {
     assert_eq!(b.tank.fluid, "coalcreosote");
     assert!(b.tank.mb > 0, "o creosoto não saiu pelo duto");
 }
+
+/// The arc welder on a creative battery: the first recipe (steel plates and
+/// dense wire into two motors), items conserved while the output is taken.
+#[test]
+fn the_arc_welder_welds_on_a_creative_battery_and_keeps_its_state() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_arc_welder[facing=north,honey_level=0]", 8);
+    let r = &crate::welders::recipes(crate::welders::Model::Arc)[0];
+    for (i, ing) in r.arc.iter().enumerate() {
+        g.world.borrow_mut().engine.get_mut(&(OW.to_string(), AT)).unwrap().0[i] = Some(Stack::new(&ing.ids[0], ing.n * 3));
+    }
+    put(&mut g, 4, Some(Stack::new("ntm:battery_creative", 1)));
+    let mut taken = 0;
+    for t in 0..(3 * r.duration + 40) {
+        g.run(1);
+        if t % 77 == 3
+            && let Some(o) = g.world.borrow_mut().engine.get_mut(&(OW.to_string(), AT)).unwrap().0[3].take()
+        {
+            taken += o.count;
+        }
+    }
+    let s = slots(&g);
+    assert_eq!(count(&s, &r.out.0) + taken, 3 * r.out.1, "{s:?}");
+    assert!(s[..3].iter().all(Option::is_none), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    // The screen's ten values, then the eight saved ones.
+    assert_eq!(data.len(), 10 + 8);
+}

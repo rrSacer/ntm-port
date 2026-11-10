@@ -1534,6 +1534,8 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::furnaces::IRON => Some(SlotPolicy(iron_furnace_slot_policy)),
         ntm_core::furnaces::STEEL => Some(SlotPolicy(steel_furnace_slot_policy)),
         ntm_core::furnaces::COMBINATION => Some(SlotPolicy(combination_furnace_slot_policy)),
+        ntm_core::welders::ARC => Some(SlotPolicy(arc_welder_slot_policy)),
+        ntm_core::welders::SOLDER => Some(SlotPolicy(soldering_slot_policy)),
         _ => None,
     };
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
@@ -1553,6 +1555,14 @@ fn rtg_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
 fn radgen_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::radioisotopes::RADGEN, slots, slot, item, action, origin)
+}
+fn arc_welder_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::welders::ARC, slots, slot, item, action, origin)
+}
+fn soldering_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::welders::SOLDER, slots, slot, item, action, origin)
 }
 fn combination_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {

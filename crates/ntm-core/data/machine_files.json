@@ -2427,6 +2427,48 @@
 28
 ]
 },
+"ntm:machine_arc_welder": {
+"inventory": [
+8,
+122
+],
+"slots": [
+{
+"x": 17,
+"y": 36
+},
+{
+"x": 35,
+"y": 36
+},
+{
+"x": 53,
+"y": 36
+},
+{
+"output": true,
+"x": 107,
+"y": 36
+},
+{
+"x": 152,
+"y": 72
+},
+{
+"x": 17,
+"y": 63
+},
+{
+"x": 89,
+"y": 63
+},
+{
+"x": 107,
+"y": 63
+}
+],
+"synced": []
+},
 "ntm:machine_assembly_machine": {
 "inventory": [
 8,
@@ -4900,6 +4942,44 @@
 84
 ],
 "slots": [],
+"synced": []
+},
+"ntm:machine_soldering_station": {
+"inventory": [
+8,
+122
+],
+"slots": [
+{
+"grid": [
+17,
+18,
+3,
+2
+]
+},
+{
+"output": true,
+"x": 107,
+"y": 27
+},
+{
+"x": 152,
+"y": 72
+},
+{
+"x": 17,
+"y": 63
+},
+{
+"x": 89,
+"y": 63
+},
+{
+"x": 107,
+"y": 63
+}
+],
 "synced": []
 },
 "ntm:machine_solidifier": {

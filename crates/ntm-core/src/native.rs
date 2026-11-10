@@ -61,7 +61,7 @@ pub fn container(block: &str) -> Option<Container> {
             menu: Some("minecraft:furnace"),
         });
     }
-    if let Some(c) = crate::furnaces::container(block) {
+    if let Some(c) = crate::furnaces::container(block).or_else(|| crate::welders::container(block)) {
         return Some(c);
     }
     if is_brick_furnace(block) {
@@ -102,6 +102,9 @@ pub struct SlotFilter {
 pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
     if crate::furnaces::is_furnace(block) {
         return crate::furnaces::filters(block);
+    }
+    if crate::welders::Model::of(block).is_some() {
+        return crate::welders::filters(block);
     }
     if is_brick_furnace(block) {
         // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
@@ -146,6 +149,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Extract,SlotOrigin::Manual) => true,
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
         };
+    }
+    if let Some(allowed) = crate::welders::allows(block, slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
+        return allowed;
     }
     if let Some(allowed) = crate::furnaces::allows(block, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;

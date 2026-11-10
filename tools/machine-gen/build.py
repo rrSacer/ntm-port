@@ -282,6 +282,28 @@ if (root / 'content/machine-recipes/combination.json').exists():
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"combination: {len(rows)} receitas → {p.relative_to(root)}")
 
+# The arc welder and the soldering station: the ingredients matched in any
+# order (`SerializableRecipe.matchesIngredients`), an optional fluid, an output.
+for name in ('arc_welder', 'soldering'):
+    f = root / f'content/machine-recipes/{name}.json'
+    if not f.exists():
+        continue
+    src = json.loads(f.read_text())
+    def ing(x):
+        return {'ids': x['ids'], 'n': x['count']}
+    rows = []
+    for r in src['recipes']:
+        row = {'out': r['outputItems'][0], 'duration': r['duration'], 'power': r['power'],
+               'fluid': r['inputFluids'][0] if r['inputFluids'] else None, 'source': r['source'], 'label': r.get('label', r['name'])}
+        if name == 'arc_welder':
+            row['in'] = [ing(x) for x in r['inputItems']]
+        else:
+            row.update(toppings=[ing(x) for x in r['toppings']], pcb=[ing(x) for x in r['pcb']], solder=[ing(x) for x in r['solder']])
+        rows.append(row)
+    p = root / f'crates/ntm-core/data/machines/{name}.json'
+    p.write_text(json.dumps({'source': f'content/machine-recipes/{name}.json', 'config': src['machine_config'], 'recipes': rows}, ensure_ascii=False, indent=0) + '\n')
+    print(f"{name}: {len(rows)} receitas → {p.relative_to(root)}")
+
 # Stateful reactor data is exported once by recipe-gen.
 (root / 'crates/ntm-core/data/reactors_simple.json').write_text((root / 'content/machine-recipes/reactors_simple.json').read_text())
 
