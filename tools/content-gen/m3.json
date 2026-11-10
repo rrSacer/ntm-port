@@ -21259,7 +21259,11 @@
         "top": "blocks/rbmk/rbmk_element_top",
         "front": "blocks/rbmk/rbmk_element_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_rod_mod",
@@ -21277,7 +21281,11 @@
         "top": "blocks/rbmk/rbmk_element_mod_top",
         "front": "blocks/rbmk/rbmk_element_mod_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_rod_reasim",
@@ -21295,7 +21303,11 @@
         "top": "blocks/rbmk/rbmk_element_reasim_top",
         "front": "blocks/rbmk/rbmk_element_reasim_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_rod_reasim_mod",
@@ -21313,7 +21325,11 @@
         "top": "blocks/rbmk/rbmk_element_reasim_mod_top",
         "front": "blocks/rbmk/rbmk_element_reasim_mod_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_control",
@@ -21331,7 +21347,11 @@
         "top": "blocks/rbmk/rbmk_control_top",
         "front": "blocks/rbmk/rbmk_control_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_control_mod",
@@ -21349,7 +21369,11 @@
         "top": "blocks/rbmk/rbmk_control_mod_top",
         "front": "blocks/rbmk/rbmk_control_mod_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_control_auto",
@@ -21367,7 +21391,11 @@
         "top": "blocks/rbmk/rbmk_control_auto_top",
         "front": "blocks/rbmk/rbmk_control_auto_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_control_reasim",
@@ -21385,7 +21413,11 @@
         "top": "blocks/rbmk/rbmk_control_reasim_top",
         "front": "blocks/rbmk/rbmk_control_reasim_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_control_reasim_auto",
@@ -21403,7 +21435,11 @@
         "top": "blocks/rbmk/rbmk_control_reasim_auto_top",
         "front": "blocks/rbmk/rbmk_control_reasim_auto_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_blank",
@@ -21421,7 +21457,11 @@
         "top": "blocks/rbmk/rbmk_blank_top",
         "front": "blocks/rbmk/rbmk_blank_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_boiler",
@@ -21439,7 +21479,11 @@
         "top": "blocks/rbmk/rbmk_boiler_top",
         "front": "blocks/rbmk/rbmk_boiler_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_reflector",
@@ -21457,7 +21501,11 @@
         "top": "blocks/rbmk/rbmk_reflector_top",
         "front": "blocks/rbmk/rbmk_reflector_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_absorber",
@@ -21475,7 +21523,11 @@
         "top": "blocks/rbmk/rbmk_absorber_top",
         "front": "blocks/rbmk/rbmk_absorber_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_moderator",
@@ -21493,7 +21545,11 @@
         "top": "blocks/rbmk/rbmk_moderator_top",
         "front": "blocks/rbmk/rbmk_moderator_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_outgasser",
@@ -21511,7 +21567,11 @@
         "top": "blocks/rbmk/rbmk_outgasser_top",
         "front": "blocks/rbmk/rbmk_outgasser_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_storage",
@@ -21529,7 +21589,11 @@
         "top": "blocks/rbmk/rbmk_storage_top",
         "front": "blocks/rbmk/rbmk_storage_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_cooler",
@@ -21547,7 +21611,11 @@
         "top": "blocks/rbmk/rbmk_cooler_top",
         "front": "blocks/rbmk/rbmk_cooler_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_heater",
@@ -21565,7 +21633,11 @@
         "top": "blocks/rbmk/rbmk_heater_top",
         "front": "blocks/rbmk/rbmk_heater_side"
       },
-      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only."
+      "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      }
     },
     {
       "id": "rbmk_console",

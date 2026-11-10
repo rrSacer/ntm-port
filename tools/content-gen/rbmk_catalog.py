@@ -29,6 +29,27 @@ MACHINES=tuple(v for v in ('rbmk_rod','rbmk_rod_mod','rbmk_rod_reasim','rbmk_rod
     'rbmk_terminal','rbmk_autoloader','rbmk_loader','rbmk_steam_inlet','rbmk_steam_outlet'))
 
 
+# The eighteen columns (RBMKBase): their strength is the base class's, unless ModBlocks sets another.
+COLUMNS=MACHINES[:18]
+
+
+def column_strength(source, var):
+    """(hardness, explosion_resistance) of RBMK column `var`: `RBMKBase()`'s setHardness/setResistance, or the
+    declaration's own in ModBlocks; the resistance as the engine reads it, Java's x 3 / 5 (`setResistance` keeps x 3,
+    `getExplosionResistance` gives / 5), as the ZIRNOX's 100 -> 60."""
+    base=(source/(BASE+'blocks/machine/rbmk/RBMKBase.java')).read_text()
+    ctor=re.search(r'protected RBMKBase\(\)\s*\{(.*?)\}',base,re.S)
+    if not ctor:raise ValueError('RBMKBase constructor drift')
+    def value(text,setter):
+        m=re.findall(setter+r'\(\s*([0-9.]+)F?\s*\)',text)
+        return float(m[-1]) if m else None
+    line=next(l for l in (source/(BASE+'blocks/ModBlocks.java')).read_text().splitlines() if re.match(r'\s*'+var+r'\s*=\s*new ',l))
+    hardness=value(line,'setHardness') or value(ctor[1],'setHardness')
+    resistance=value(line,'setResistance') or value(ctor[1],'setResistance')
+    if hardness is None or resistance is None:raise ValueError('RBMK column strength drift: '+var)
+    return hardness, resistance*3/5
+
+
 def build(source):
     blocks=(source/(BASE+'blocks/ModBlocks.java')).read_text();items=(source/(BASE+'items/ModItems.java')).read_text()
     translations={loc:lang(source/f'{ASSETS}lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]}
@@ -54,6 +75,9 @@ def build(source):
              'textures':{'side':'blocks/'+side,'top':'blocks/'+top,'front':'blocks/'+side},
              'behavior_gap':'Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.'}
         if not exists(side):raise ValueError('Missing RBMK texture: '+side)
+        if var in COLUMNS:
+            hardness,resistance=column_strength(source,var)
+            row['block_properties']={'hardness':hardness,'explosion_resistance':resistance}
         rows.append(row)
     rods,pellets=item_variables(source)
     for var in ['rbmk_lid','rbmk_lid_glass','rbmk_tool']+pellets+rods:
