@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 
+import rbmk_catalog
 import reactors_rbmk
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -207,7 +208,12 @@ class ExecutableRbmkOracle(unittest.TestCase):
         # the T00 snapshot cannot have: that one field is the only thing allowed to differ in a T00 entry. Any other change in
         # those entries, in their block_properties or in anything else, still fails.
         doors = {'ntm:door_metal', 'ntm:door_office', 'ntm:door_bunker', 'ntm:door_red'}
+        # The eighteen RBMK columns gained their RBMKBase strength in T02 (block_properties hardness and
+        # explosion_resistance, checked in test_rbmk_strength): that field is the only thing allowed to differ there.
+        columns = {'ntm:' + v for v in rbmk_catalog.COLUMNS}
         def same(entry):
+            if entry['id'] in columns:
+                return {k: v for k, v in entry.items() if k != 'block_properties'}
             if entry['id'] not in doors or 'block_properties' not in entry:
                 return entry
             props = {k: v for k, v in entry['block_properties'].items() if k != 'door_sounds'}
@@ -216,8 +222,12 @@ class ExecutableRbmkOracle(unittest.TestCase):
         remaining = (same(e) for e in after)
         for old in before:
             self.assertIn(same(old), remaining, old['id'])
-        before_bytes = subprocess.check_output(['git', 'show', '81a210d4:tools/content-gen/rbmk_catalog.py'], cwd=ROOT)
-        self.assertEqual(before_bytes, (ROOT / 'tools/content-gen/rbmk_catalog.py').read_bytes())
+        # rbmk_catalog.py only grew (T02 column strength, T03 tooltip keys): every T00 line is still there, in order.
+        before_lines = subprocess.check_output(['git', 'show', '81a210d4:tools/content-gen/rbmk_catalog.py'], cwd=ROOT,
+                                               text=True).splitlines()
+        now = iter((ROOT / 'tools/content-gen/rbmk_catalog.py').read_text().splitlines())
+        for line in before_lines:
+            self.assertIn(line, now, line)
         entries = json.loads((ROOT / 'content/ids.json').read_text())['entries']
         for rod in self.exported['rods']:
             entry = next(r for r in entries if r['id'] == rod['item'])
