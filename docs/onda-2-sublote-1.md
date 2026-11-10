@@ -182,7 +182,7 @@ combustível enquanto há entrada, mesmo com o funil devagar (Java faz isso).
 
 ### Testes de unidade, clippy e mutantes (HEAD `dc1fbe89`)
 
-`cargo test -p ntm-core --lib` + 9 alvos de integração: 580 + 51 testes, 0 falhas
+`cargo test -p ntm-core --lib` + 9 alvos de integração: 580 na biblioteca + 47 de integração (627), 0 falhas
 (os dois ignorados são os que já eram; o `save_model` não roda em debug).
 `cargo clippy --workspace --all-targets -- -D warnings`: limpo. 14 mutantes
 escolhidos à mão (constantes e ramos de cada máquina; `mutate.py`, resultados em
