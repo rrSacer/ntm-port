@@ -198,9 +198,26 @@ class ExecutableRbmkOracle(unittest.TestCase):
         self.assertTrue(smooth['enabled_default_profile'])
 
     def test_catalog_identity_stack_and_previous_content_are_unchanged(self):
-        for relative in ('content/ids.json', 'tools/content-gen/rbmk_catalog.py'):
-            before = subprocess.check_output(['git', 'show', '81a210d4:' + relative], cwd=ROOT)
-            self.assertEqual(before, (ROOT / relative).read_bytes(), relative)
+        # The catalog may grow: every entry of the T00 snapshot must still be
+        # present, identical and in the same relative order. New entries may
+        # appear anywhere (other fronts add IDs; the generator interleaves them).
+        before = json.loads(subprocess.check_output(['git', 'show', '81a210d4:content/ids.json'], cwd=ROOT))['entries']
+        after = json.loads((ROOT / 'content/ids.json').read_text())['entries']
+        # The four simple doors declare their original sound (block_properties.door_sounds, checked in test_catalog_k3), which
+        # the T00 snapshot cannot have: that one field is the only thing allowed to differ in a T00 entry. Any other change in
+        # those entries, in their block_properties or in anything else, still fails.
+        doors = {'ntm:door_metal', 'ntm:door_office', 'ntm:door_bunker', 'ntm:door_red'}
+        def same(entry):
+            if entry['id'] not in doors or 'block_properties' not in entry:
+                return entry
+            props = {k: v for k, v in entry['block_properties'].items() if k != 'door_sounds'}
+            entry = {k: v for k, v in entry.items() if k != 'block_properties'}
+            return {**entry, 'block_properties': props} if props else entry
+        remaining = (same(e) for e in after)
+        for old in before:
+            self.assertIn(same(old), remaining, old['id'])
+        before_bytes = subprocess.check_output(['git', 'show', '81a210d4:tools/content-gen/rbmk_catalog.py'], cwd=ROOT)
+        self.assertEqual(before_bytes, (ROOT / 'tools/content-gen/rbmk_catalog.py').read_bytes())
         entries = json.loads((ROOT / 'content/ids.json').read_text())['entries']
         for rod in self.exported['rods']:
             entry = next(r for r in entries if r['id'] == rod['item'])

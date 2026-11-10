@@ -1005,14 +1005,19 @@ fica pronto e parado.
   A falta de drop vista antes foi um artefato do teste: o `break` do horizon-ctl responde antes de o item aparecer, e
   o modo ainda era trocado.
 - **Fundição (feito o básico; ver 3c). Falta:**
-  - **Conexões de canal e tanque:** no NTM, o canal estica braços para os vizinhos que aceitam metal, e o tanque
-    abre a parede para o tanque ao lado. O estado do bloco aqui não tem propriedades de conexão, então os dois são
-    desenhados sozinhos (centro fechado; caixa fechada). Caminho: propriedades `north/east/south/west` no template e
-    um blockstate multipart, postas pela lógica do port (que já conhece a rede de canais) ou por uma regra do motor.
+  - **Conexões de canal (feito, 129e1a84):** o canal tem `show` por vizinho no modelo horizon (`ArmNorth`…`WallEast`,
+    o mesmo `canConnectTo` do `RenderFoundryChannel`: canal, molde, saída ou dreno virado para longe).
+  - **Conexões de tanque (feito, T5):** o modelo `foundry_tank` tem o chão e as quatro paredes (`WallNorth`…`WallEast`,
+    0.125 de espessura como `RenderFoundryTank`); a parede some quando há tanque do lado (`not_blocks`). Lacunas:
+    a cara de saída do lado do tanque (`iconSideOutlet`) não troca; a parede não se conecta por cima e por baixo
+    (`conPosY`/`conNegY`, que tira o chão e estica o nível do metal); e o líquido não cresce pela conexão.
   - **Molde e bacia:** o NTM não tem tela; o molde entra e o lingote sai com o botão direito. Aqui, por decisão do
     agente das bombas, são 2 slots num painel simples.
-  - **Jatos:** a lógica zera os jatos a cada tick, então a coluna aparece só no tick em que o metal cai. Falta
-    segurá-los por alguns ticks (lado da lógica) e as partículas do `ParticleFoundry`.
+  - **Jatos (feito, 7109d0ca):** os jatos ficam `JET_HOLD` = 8 ticks após a última queda (`crucible.rs`). **Partículas
+    (feito, T5):** cada tick em que um cadinho despeja, o bloco de baixo mostra `minecraft:falling_lava` no ponto de
+    queda (`foundry_server.rs`). PROVISÓRIO: `minecraft:falling_lava` é a partícula vanilla no lugar do `ParticleFoundry`
+    (`ParticleFoundry.java`). Falta a cor do metal (a partícula vanilla ignora a cor aqui) e a sprite `lava_gray.png`
+    do Java.
   - **Fornalha acesa (feito):** `show` e `glow` no modelo (motor). O `InnerBurning` aparece com luz cheia enquanto
     o `honey_level` não é 0, e o `InnerEmpty` quando ela está fria, como no `RenderFirebox`. As duas partes ficam atrás
     da porta: no NTM ela só abre enquanto um jogador está com a tela aberta (`playersUsing`), e aqui ela ainda não
@@ -1022,6 +1027,38 @@ fica pronto e parado.
     volta ganha a sombra de oclusão de ambiente de um bloco cheio. A forma vem do template do agente de importação.
   - **Luz velha:** um bloco da fundição posto antes desta mudança guarda luz 0 no save. A troca não muda a opacidade
     vista pela iluminação incremental, então ele só clareia quando é recolocado.
+- **Máquinas ativas sem modelo ou tela (T5):** o estado anterior dizia que faltavam. Os modelos já existem em
+  `visual.json`: `machine_boiler`, `machine_industrial_boiler`, `machine_fraction_tower`, `machine_catalytic_cracker`
+  e `heater_electric`. Nenhuma das cinco tem tela no Java (não há `Container`/`GUI` para elas), então não há tela a
+  portar. `machine_shredder` tem tela; o cubo fica como modelo, porque o `MachineShredder` do NTM não tem renderer.
+- **Extrator (T5):** `extract.py`/`auto_models` pegavam só blocos sem entrada manual com modelo. Os blocos `Inert` de
+  uma casa só com modelo no Java (`rbmk_key_pad`, `rbmk_gauge`, `rbmk_numitron`, `rbmk_graph`, `rbmk_lever`,
+  `rbmk_indicator`, `rbmk_terminal`, `machine_microwave`, `machine_thresher`, `fan`) tiveram `auto:false` retirado.
+  Multiblocos seguem com `auto:false`, porque o modelo de um só cubo ficaria errado; `unread` (`no metadata switch`
+  em `machine_autosaw`, `tesla`, `machine_forcefield`) também os deixa de fora, até a rotação ser lida.
+  Multiblocos `Inert` sem modelo (33 RBMK, K3 grandes) dependem de multiblocos no `visual.json` (ver `visual-gen`).
+  Lacunas de animação dos blocos extraídos (T5, todos estáticos; os blocos são `Inert`, sem lógica):
+  - `rbmk_gauge`: o Java translada cada um dos 4 medidores (`translate 0.25...`) e gira o ponteiro `Needle` pelo valor;
+    aqui as peças saem paradas, sem deslocamento nem ponteiro.
+  - `machine_thresher`: o Java anima braço, roda e motor por `angle`/`spin`/`isOn`; aqui sai parado.
+  - `fan`: fora do extrator (rotação em X e Z por metadata, `RenderFan.java`), `auto:false` até essa leitura; as
+    `Blades` não giram em nenhum caso.
+  - Os painéis RBMK (`rbmk_key_pad`, `rbmk_numitron`, `rbmk_graph`, `rbmk_lever`, `rbmk_indicator`, `rbmk_terminal`)
+    não têm animação de estado: o que muda com o valor do reator fica para quando houver lógica.
+  Pontas das paredes do tanque: a face `inner` que o Java desenha nas pontas de cada parede (`if(conPosZ)...`) não
+  entra no modelo; sobra um vão pequeno no canto onde duas paredes se encontram.
+  Metal dentro do tanque: `pour-after.png` mostra o tanque sob o fluxo do cadinho, com `honey_level=2` (metal
+  dentro, lido pelo `block`). O nível do metal aparece na caixa de líquido do modelo; a captura não deixa a superfície
+  do metal clara. Captura do jato com partícula: não confirmada. `pour-burst-*.png` não mostram o jato com clareza
+  (a coluna marrom é decoração do mundo). A partícula continua provada só pelo teste unitário.
+  Testes: `tools/visual-gen/test_visual.py`.
+  Captura (T5, `/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/f-visual/captures/`): `tank-before.png` (base 85d06d9c)
+  e `tank-after2.png` (branch, depois de c5d0e673) mostram os tanques; o da direita é o tanque sozinho, e o do centro
+  são dois tanques conectados. `rbmk-panel-after2.png` mostra o `rbmk_gauge` como painel pequeno.
+  Causa do tanque invisível (corrigida em c5d0e673): o tanque tinha `horizon_liquid` e `horizon_model`, e o motor
+  guarda os dois pelo nome do bloco, então o arquivo de líquido escondia o OBJ. Agora o líquido vai dentro do modelo,
+  como no canal. `tools/visual-gen/test_visual.py` checa isso.
+
 - **Fluidos:** só a energia passa pelo anel do multibloco. As portas de fluido continuam no núcleo.
 - **Explosões e comandos:** uma explosão, um `/fill` ou um `set-blocks` que tira uma célula não tira o resto.
 - **Interface:**

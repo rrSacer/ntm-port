@@ -90,20 +90,17 @@ shaped('machine_press', 'machine_press', ['IRI','IPI','IBI'], {'I':'minecraft:ir
 for brick in ['brick','nether_brick']:
     shaped('stamp_iron_flat_from_'+brick,'stamp_iron_flat',['III','SSS'],{'I':'minecraft:'+brick,'S':'minecraft:iron_ingot'},source='main/CraftingManager.java:346-354')
 
-# Approved temporary M1 bridge, isolated from faithful source recipes.
-shaped('machine_wood_burner','machine_wood_burner',['PPP','CFC','I I'],{'P':'plate_titanium','C':'wire_fine__red_copper','I':'minecraft:iron_ingot','F':'minecraft:furnace'},source='main/CraftingManager.java:251; M1 substitutes steel plate and copper coil',temporary=True)
-shaped('red_cable','red_cable',[' W ','RRR',' W '],{'W':'minecraft:leather','R':'wire_fine__red_copper'},16,'main/CraftingManager.java:239; leather replaces polymer plate',True)
-shaped('machine_electric_furnace','machine_electric_furnace_off',['BBB','WFW','RRR'],{'B':'ingot_beryllium','W':'plate_aluminium','F':'minecraft:furnace','R':'wire_fine__tungsten'},source='main/CraftingManager.java:230; aluminium plate replaces copper cast plate, tungsten wire replaces coil',temporary=True)
-shaped('machine_epress','machine_epress',['PPP','RMR','WCW'],{'P':'plate_titanium','R':'minecraft:piston','M':'machine_press','W':'wire_fine__red_copper','C':'minecraft:redstone'},source='inventory/recipes/AssemblyMachineRecipes.java:354-356; temporary crafting bridge',temporary=True)
-shaped('machine_battery','machine_battery',['PPP','RLR','WWW'],{'P':'plate_lead','R':'minecraft:redstone','L':'lithium','W':'wire_fine__red_copper'},source='M1 design: no source vanilla recipe for machine_battery',temporary=True)
-shaped('wiring_red_copper','wiring_red_copper',['PPP','PIP','PPP'],{'P':'plate_titanium','I':'minecraft:iron_ingot'},source='main/CraftingManager.java:539; substitutes steel',temporary=True)
+# Java recipes whose ingredients M1 already registers: no bridge needed.
+shaped('machine_wood_burner','machine_wood_burner',['PPP','CFC','I I'],{'P':'plate_steel','C':'coil_copper','I':'minecraft:iron_ingot','F':'minecraft:furnace'},source='main/CraftingManager.java:251')
+shaped('red_cable','red_cable',[' W ','RRR',' W '],{'W':'plate_polymer','R':'wire_fine__red_copper'},16,'main/CraftingManager.java:239')
+shaped('machine_electric_furnace','machine_electric_furnace_off',['BBB','WFW','RRR'],{'B':'ingot_beryllium','W':'plate_cast__copper','F':'minecraft:furnace','R':'coil_tungsten'},source='main/CraftingManager.java:230')
+shaped('wiring_red_copper','wiring_red_copper',['PPP','PIP','PPP'],{'P':'plate_steel','I':'ingot_steel'},source='main/CraftingManager.java:539')
+
+# Remaining temporary M1 bridges: each has no Java recipe that M1 can register (see source note).
+shaped('machine_epress','machine_epress',['PPP','RMR','WCW'],{'P':'plate_titanium','R':'minecraft:piston','M':'machine_press','W':'wire_fine__red_copper','C':'minecraft:redstone'},source='inventory/recipes/AssemblyMachineRecipes.java:354-356 (assembly machine, not ported; its part_generic/item_expensive inputs have no catalog IDs); temporary crafting bridge',temporary=True)
+shaped('machine_battery','machine_battery',['PPP','RLR','WWW'],{'P':'plate_lead','R':'minecraft:redstone','L':'lithium','W':'wire_fine__red_copper'},source='no Java 1.7.10 recipe: MachineBattery is registered in ModBlocks without any addRecipe; M1 design bridge',temporary=True)
 for stamp,pattern in [('plate',[' I ',' S ',' I ']),('wire',['I I',' S ','I I'])]:
-    shaped('stamp_iron_'+stamp,'stamp_iron_'+stamp,pattern,{'I':'minecraft:iron_ingot','S':'stamp_iron_flat'},source='inventory/recipes/anvil/AnvilRecipes.java:588-589; custom anvil shaping replaced by craft',temporary=True)
-# Reachability: aluminium ore produces cryolite in NTM, red copper requires alloying,
-# so both bridges are explicit. Do not disguise either as original smelting.
-add('aluminium_from_ore',{'type':'minecraft:smelting','category':'misc','ingredient':ni('ore_aluminium'),'result':{'id':ni('ingot_aluminium'),'count':1},'experience':2.5,'cookingtime':200},'crafting/SmeltingRecipes.java:40; cryolite chain deferred',True)
-furnace.append({'id':'ntm:m1_temp/aluminium_from_ore','input':{'item':ni('ore_aluminium')},'output':{'item':ni('ingot_aluminium')},'experience':2.5})
-shapeless('red_copper_alloy','ingot_red_copper',['minecraft:copper_ingot','minecraft:redstone'],2,'inventory/recipes/BlastFurnaceRecipes.java; M1 replaces alloy furnace',True)
+    shaped('stamp_iron_'+stamp,'stamp_iron_'+stamp,pattern,{'I':'minecraft:iron_ingot','S':'stamp_iron_flat'},source='inventory/recipes/anvil/AnvilRecipes.java:588-589 (anvil construction, anvil not ported); temporary crafting bridge',temporary=True)
 
 # Embed all basic vanilla 26.3 furnace recipes. Use local bundled source data,
 # preserving ingredient tags/alternatives by resolving the vanilla tag graph.

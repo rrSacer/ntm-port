@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/button.obj",
+  "texture": "ntm:textures/models/network/keypad.png",
+  "rotation": 90.0,
+  "radius": 1.5,
+  "hide": []
+}

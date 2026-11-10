@@ -18,6 +18,7 @@
     "ntm:nuclear_waste_short_tiny__uranium233",
     "ntm:nuclear_waste_short_tiny__uranium235",
     "ntm:nugget_actinium",
-    "ntm:nugget_co60"
+    "ntm:nugget_co60",
+    "ntm:waste_plate_pu238be"
   ]
 }

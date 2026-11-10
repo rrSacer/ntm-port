@@ -101,8 +101,9 @@ def state(item):
     if inert:
         needs = sorted({INERT_GIVES[i] for i in inert})
         deps.append('entrega ' + ', '.join(f'`{i}`' for i in inert) + ' só com identidade: o uso real depende de ' + ' e '.join(needs))
-    if row.get('requires'):
-        deps.append('exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`)')
+    # `requires` is checked natively (`native/ntm/mixins/ntm/item_hooks.rs`,
+    # `start`): the opener must be in the inventory. The opener's own mob hit
+    # (`WeaponSpecial`) is not a bottle dependency, so it adds no gap here.
     status = 'parcial' if deps and item not in ('ntm:radaway_flush',) else 'ativo'
     return status, row['origin'], '; '.join(deps)
 
@@ -158,6 +159,14 @@ def sounds():
         out.append(f'| {label or "-"} | `{java}` | `{event}` | {tone} |')
     return '\n'.join(out)
 
+POST = """### Pendências pós-Onda 0
+
+Estas lacunas não se fecham agora porque o ponto de ligação está em arquivos da Onda 0 (`native/ntm/mixins/ntm/horizon-mixin.toml`, zona intocável). O motor já tem o que falta, sem mudança nele, no pin `f22df7b81`:
+
+- Itens no chão (`beta`, `rag` na água, e as lacunas de `ItemDrop` que só precisam de remover ou trocar o item): `native_entity_tick_listened`, `native_entity_tick_pre` e `native_entity_tick_post` (API 146, sobre `minecraft:item`), e `native_set_item_entity` (API 42) para remover ou trocar a pilha. Ligar como injeções `HEAD` no `horizon-mixin.toml`.
+- Pipetas (`ItemPipette`) e fluidos infinitos (`ItemInfiniteFluid`): encher e esvaziar precisam do slot de fluido das máquinas (`IFillableItem`, `FluidLoaderInfinite`). Ligar ao `FluidStore` e a `machine.rs` depois do merge da Onda 0.
+"""
+
 
 def main():
     table, counts = render()
@@ -165,7 +174,7 @@ def main():
     start, end = '<!-- k2-status:start -->', '<!-- k2-status:end -->'
     summary = ', '.join(f'{n} {k}' for k, n in sorted(counts.items()))
     extra = '\n'.join(['| Item | Estado | Origem Java | Dependências nominais |', '|---|---|---|---|'] + [f'| `{a}` | {b} | {c} | {d} |'.replace('`ntm:', '`ntm:') for a, b, c, d in EXTRA])
-    block = f'{start}\n\nResumo dos {len(K2)} itens: {summary}.\n\n{table}\n\n### Itens fora dos 116, adicionados nesta onda\n\n{extra}\n\n### Sons usados e resolução dos eventos originais\n\n{sounds()}\n\n{end}'
+    block = f'{start}\n\nResumo dos {len(K2)} itens: {summary}.\n\n{table}\n\n### Itens fora dos 116, adicionados nesta onda\n\n{extra}\n\n### Sons usados e resolução dos eventos originais\n\n{sounds()}\n\n{POST}\n\n{end}'
     if start in text:
         text = re.sub(re.escape(start) + '.*?' + re.escape(end), lambda _: block, text, flags=re.S)
     else:

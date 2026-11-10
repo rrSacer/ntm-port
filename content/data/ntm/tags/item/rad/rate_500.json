@@ -19,6 +19,7 @@
     "ntm:pwr_fuel__meu",
     "ntm:rbmk_fuel_uzh",
     "ntm:rbmk_pellet_heu235",
-    "ntm:rod_zirnox__uranium_fuel"
+    "ntm:rod_zirnox__uranium_fuel",
+    "ntm:sellafield"
   ]
 }

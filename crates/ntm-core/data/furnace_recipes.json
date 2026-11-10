@@ -1100,16 +1100,6 @@
       "experience": 2.0
     },
     {
-      "id": "ntm:m1_temp/aluminium_from_ore",
-      "input": {
-        "item": "ntm:ore_aluminium"
-      },
-      "output": {
-        "item": "ntm:ingot_aluminium"
-      },
-      "experience": 2.5
-    },
-    {
       "id": "minecraft:baked_potato/potato",
       "input": {
         "item": "minecraft:potato",

@@ -3,6 +3,8 @@
   "values": [
     "ntm:billet_ra226be",
     "ntm:pellet_rtg_radium",
-    "ntm:rbmk_pellet_ra226be"
+    "ntm:rbmk_pellet_ra226be",
+    "ntm:waste_plate_sa326",
+    "ntm:waste_plate_u235"
   ]
 }

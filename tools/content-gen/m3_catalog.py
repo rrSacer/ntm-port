@@ -151,6 +151,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(bedrock_processing_catalog.build(source))
     import catalog_completion
     rows.extend(catalog_completion.build(source))
+    import catalog_t4
+    rows.extend(catalog_t4.build(source))
     import petroleum_catalog
     rows.extend(petroleum_catalog.build(source))
     import reactor_catalog
