@@ -37156,7 +37156,7 @@
     },
     "ntm:machine_arc_welder": {
       "auto": false,
-      "source": "ContainerMachineArcWelder, GUIMachineArcWelder 176x204 (processing/gui_arc_welder.png): inputs (17/35/53,36), output (107,36), battery (152,72), identifier (17,63), upgrades (89,63) and (107,63); the power bar, the progress arrow, the lamp and the 34x16 tank; MachineArcWelder.getDimensions {1,0,1,0,1,1} offset 0, TileEntityProxyCombo().inventory().power().fluid(); the per-cell slot lists of getAccessibleSlotsFromSide(x,y,z,side) are one container here",
+      "source": "ContainerMachineArcWelder, GUIMachineArcWelder 176x204 (processing/gui_arc_welder.png): inputs (17/35/53,36), output (107,36), battery (152,72), identifier (17,63), upgrades (89,63) and (107,63); the power bar, the progress arrow, the lamp and the 34x16 tank; MachineArcWelder.getDimensions {1,0,1,0,1,1} offset 0, TileEntityProxyCombo().inventory().power().fluid(); the per-cell slot lists of getAccessibleSlotsFromSide(x,y,z,side) are one container here (engine gap); the five cells of the lower layer are ports as the Java lists them, the six of the upper layer give {} there and are not ports",
       "machine": {
         "slots": [
           {
@@ -37223,28 +37223,8 @@
               1
             ],
             [
-              -1,
-              1,
-              0
-            ],
-            [
-              -1,
-              1,
-              1
-            ],
-            [
               0,
               0,
-              1
-            ],
-            [
-              0,
-              1,
-              0
-            ],
-            [
-              0,
-              1,
               1
             ],
             [
@@ -37255,16 +37235,6 @@
             [
               1,
               0,
-              1
-            ],
-            [
-              1,
-              1,
-              0
-            ],
-            [
-              1,
-              1,
               1
             ]
           ]
