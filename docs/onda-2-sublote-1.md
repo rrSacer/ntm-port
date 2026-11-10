@@ -269,7 +269,7 @@ está no `roadmap-100` (família "Mísseis e lançamento espacial").
 
 | Achado | O que mudou | Prova |
 | --- | --- | --- |
-| P1: tanque vazio ficava tipado e nunca aceitava outro fluido | O Java tipa o tanque pelo **identificador de fluido** (`ArcWelder.java:84`, `SolderingStation.java:94`) e é só isso que o muda: sem identificador o tanque não aceita nada e outro identificador o esvazia (`FluidTank.java:62-68`). O port agora faz o mesmo (slots 5 e 8, `type_from_identifier` de `combustion.rs`) e a demanda do tanque é "o fluido que o identificador deu". Um tanque que esvazia continua tipado, como no Java; para outro fluido troca-se o identificador. **Desvio do pedido literal:** o teste "oxigênio, esvazia, reformgas" do revisor não vale mais, porque a regra "tanque vazio aceita qualquer fluido" (`refinery.rs:174`) contraria o identificador; o teste novo faz a troca de identificador. | 2 testes de unidade (sem identificador, troca de identificador nos dois modelos), 4 mutantes; em jogo `identifier`. |
+| P1: tanque vazio ficava tipado e nunca aceitava outro fluido | O Java tipa o tanque pelo **identificador de fluido** (`ArcWelder.java:84`, `SolderingStation.java:94`) e é só isso que o muda: sem identificador o tanque não aceita nada e outro identificador o esvazia (`FluidTank.java:62-68`). O port agora faz o mesmo (slots 5 e 8, `type_from_identifier` de `combustion.rs`) e a demanda do tanque é "o fluido que o identificador deu". Um tanque que esvazia continua tipado, como no Java; para outro fluido troca-se o identificador. **Diferença para o `refinery.rs:174`:** a refinaria tipa o tanque pelo fluido que chega (um tanque vazio aceita qualquer fluido); a soldadora e a estação tipam só pelo identificador, como o Java delas (`ArcWelder.java:84`, `SolderingStation.java:94`). **Desvio do pedido literal:** o teste "oxigênio, esvazia, reformgas" do revisor não vale mais, porque a regra "tanque vazio aceita qualquer fluido" (`refinery.rs:174`) contraria o identificador; o teste novo faz a troca de identificador. | 2 testes de unidade (sem identificador, troca de identificador nos dois modelos), 4 mutantes; em jogo `identifier`. |
 | P2: pilha de saída fixa em 64 | Cada receita leva o `max_stack_size` do produto (de `ids.json`, pelo gerador): 16 receitas da estação com pilha 1 (15 melhorias e `sat_chip`), 2 com 16 (`upgrade_radius`, `upgrade_health`), 9 com 64; a soldadora, 24 com 64. A saída para quando não cabe, como `getMaxStackSize`. | teste de unidade do `sat_chip` e da contagem (16, 2); em jogo `solder-stack`: 3 chips de insumo dão 1 chip e os outros esperam. |
 | P2: funil nas células de cima | As 6 células da camada de cima saíram de `inventory_ports` (o Java dá `{}`, `ArcWelder.java:312-331`); ficam as 5 da camada de baixo e o núcleo. A prova antiga usava a célula de cima; a nova põe um funil sobre ela (não pode mover nada) e outro ao lado de uma célula de baixo (alimenta e solda de novo). Listas por célula são **pedido ao motor**, lacuna nominal (abaixo). | `native_welders.py`: `hopper_over_an_upper_cell_moves_nothing`, `arc_hopper_on_a_port_fed_and_welded_again`. |
 | P3: energia truncada em `i32` no save | Energia, máximo e consumo são salvos como `long` (os 31 bits baixos nos valores de antes, mais três palavras altas); um save antigo ainda lê. | teste de unidade (3,2·10⁹ e 3,2·10¹⁰); 1 mutante. |
@@ -278,6 +278,30 @@ está no `roadmap-100` (família "Mísseis e lançamento espacial").
 | P3: carregar a máquina fora da bateria criativa | Lacuna comum ao projeto (só a criativa carrega, `Library.java:257-274`); registrada nas lacunas. | doc. |
 | P3: receitas de míssil sem guarda | A guarda `test_welders.py` e a linha no `roadmap-100` (família "Mísseis e lançamento espacial"). | `python3 tools/content-gen/test_welders.py`: 2 testes. |
 | `build.py` regenera `anvil.json`, `blast_furnace.json` e `radioisotopes.json` diferentes | Restaurados ao commit de base e fora dos commits (`git diff 0e8eda47 -- ` desses três: vazio). | `git diff`. |
+
+### Máquinas que passaram a receber o tipo do identificador (glue, `2147f340`)
+
+Antes dessa correção o glue entregava o item do slot à lógica **sem** o `custom_data`, então nenhuma máquina conseguia ler o
+tipo de um identificador de fluido posto num slot (os testes de unidade punham o dado à mão e passavam). As máquinas do port que
+leem o identificador do slot (`type_from_identifier`, `combustion.rs`) e a conformidade de cada uma com o Java:
+
+| Máquina | Java | Port | Conforme o Java (leitura + teste de unidade) | Provada no jogo? |
+| --- | --- | --- | --- | --- |
+| `machine_arc_welder` | `TileEntityMachineArcWelder.java:84` `tank.setType(5, slots)` | `welders.rs`, slot 5 | sim | **sim** (`welders`: `identifier_oxygen_types_the_tank`, `identifier_reformgas_types_the_tank`) |
+| `machine_soldering_station` | `TileEntityMachineSolderingStation.java:94` `setType(8, slots)` | `welders.rs`, slot 8 | sim | só no unitário (o roteiro prova a soldadora; a estação tem o mesmo código com o slot 8) |
+| `machine_diesel` | `TileEntityMachineDiesel.java:167` `tank.setType(3, slots)` | `combustion.rs:241`, slot 3 | sim | **não** |
+| `machine_combustion_engine` | `TileEntityMachineCombustionEngine.java:81` `if(tank.setType(4, slots)) tenth = 0` | `combustion.rs:331`, slot 4, usa o retorno | sim | **não** |
+| `machine_turbofan` | `TileEntityMachineTurbofan.java:175` `tank.setType(4, slots)` | `combustion.rs:449`, slot 4 | sim | **não** |
+| `machine_turbinegas` | `TileEntityMachineTurbineGas.java:107-110`: só um fluido combustível de grau gás | `combustion.rs:581`, slot 1, com o mesmo filtro | sim (o teste recusa `diesel` e aceita `syngas`) | **não** |
+
+Fora dessa lista o glue não muda nada: o resto das máquinas do port tipa o tanque pelo fluido que chega, pela receita ou por botão, e
+não lê o item do identificador (a centrífuga a gás, por exemplo, só tem o slot reservado: `gascent.rs:112`); onde o Java lê o
+identificador de um slot e o port não, é lacuna nominal de cada máquina, não efeito desta correção.
+
+**Pendências, sem bloquear a soldadora e a estação:** quatro itens de prova no jogo, um por máquina sem prova (`machine_diesel`,
+`machine_combustion_engine`, `machine_turbofan`, `machine_turbinegas`), cada um com o mesmo roteiro da soldadora (dar o identificador com
+o `ntm_fluid`, pô-lo no slot, deixar passar ticks, ler o tipo do tanque no estado salvo, trocar o identificador e ver o tanque esvaziar;
+na turbina a gás, mais um identificador de um fluido que não é gás, que não pode mudar o tipo), e a estação de solda no mesmo roteiro.
 
 ## BrokenItem (mini-sublote)
 
