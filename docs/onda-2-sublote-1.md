@@ -219,6 +219,14 @@ Os pacotes `ntm.hmod` são todos `0ee17b08…4365`. Os clientes release:
 D difere de B só pelo que a soldadora relata ao mudar o tipo do tanque e pelo `custom_data` que o glue passa dos slots para o
 identificador e o item quebrado; nenhum código de forno mudou entre os dois.
 
+**Segunda rodada (P3 do 1b e ressalvas do BrokenItem).** Cliente E `e02fa501fda85af206b89b9b3c1b50e932bd0489871f91fb017cd4a86f683495`
+(mesmo `ntm.hmod`): `welders` 26/26, `combustion` 19/19 (as 15 de antes e a fase `identifier`: o identificador de querosene esvazia o
+diesel que o motor tinha e um identificador sem tipo deixa o tanque sem tipo e vazio) e `broken` 9/9. Testes: 604 na biblioteca + 47 de
+integração (651), clippy limpo, `test_welders.py` 2 testes. Mutantes novos, todos mortos: 4 do identificador sem tipo, da pilha de 16 e da
+demanda do tanque, e 3 do `broken.rs` (o que sobrevivia, a checagem do item, e as do dano e do escape). Um dos primeiros resultados da
+rodada (testes falhando com um tanque "water") era artefato de compilação: os mutantes rodavam numa cópia que compartilhava o diretório de
+alvo; refeitos com alvo próprio, sem diferença no código.
+
 O que cada corte compara (mundo morto em cada fronteira do save, duas reaberturas): `furnace-smelt`, a queima, o progresso e a
 cinza contra o carvão gasto, os lingotes e as cinzas; `iron-state`, o mesmo com o tempo do forno; `steel-state`, o bônus
 (25 × minérios feitos mod 4) e os lingotes (feitos + feitos/4); `combination-state`, carvão + coque = 8 e 100 mB de creosoto
