@@ -272,6 +272,7 @@ impl Welder {
             self.progress,
             self.process_time,
             self.tank.mb,
+            self.tank.fluid.clone(),
         );
         let items_before = (
             self.slots[self.model.output()].clone(),
@@ -326,6 +327,7 @@ impl Welder {
                 self.progress,
                 self.process_time,
                 self.tank.mb,
+                self.tank.fluid.clone(),
             )
             || items_before
                 != (
@@ -966,6 +968,16 @@ mod tests {
         assert_eq!(allows(SOLDER, &st, 1, topping, true, true), Some(false), "the twin of slot 0");
         assert_eq!(allows(SOLDER, &st, 0, topping, true, true), Some(true), "its own slot is no twin");
         assert_eq!(allows(SOLDER, &st, 6, topping, true, true), Some(false));
+    }
+
+    #[test]
+    fn a_new_identifier_counts_as_a_change_of_the_step() {
+        let mut w = arc();
+        w.step();
+        assert!(!w.step(), "idle: nothing changes");
+        identify(&mut w, "oxygen");
+        assert!(w.step(), "the type changed: the saved data and the screen must follow");
+        assert!(!w.step());
     }
 
     #[test]
