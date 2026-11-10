@@ -203,9 +203,17 @@ class ExecutableRbmkOracle(unittest.TestCase):
         # appear anywhere (other fronts add IDs; the generator interleaves them).
         before = json.loads(subprocess.check_output(['git', 'show', '81a210d4:content/ids.json'], cwd=ROOT))['entries']
         after = json.loads((ROOT / 'content/ids.json').read_text())['entries']
-        remaining = iter(after)
+        # The four simple doors now declare their original sound (block_properties.door_sounds, checked in
+        # test_catalog_k3) and no longer say in their behavior_gap that the sound differs: those two fields are
+        # the only change allowed to a T00 entry.
+        doors = {'ntm:door_metal', 'ntm:door_office', 'ntm:door_bunker', 'ntm:door_red'}
+        def same(entry):
+            if entry['id'] not in doors:
+                return entry
+            return {k: v for k, v in entry.items() if k not in ('block_properties', 'behavior_gap')}
+        remaining = (same(e) for e in after)
         for old in before:
-            self.assertIn(old, remaining, old['id'])
+            self.assertIn(same(old), remaining, old['id'])
         before_bytes = subprocess.check_output(['git', 'show', '81a210d4:tools/content-gen/rbmk_catalog.py'], cwd=ROOT)
         self.assertEqual(before_bytes, (ROOT / 'tools/content-gen/rbmk_catalog.py').read_bytes())
         entries = json.loads((ROOT / 'content/ids.json').read_text())['entries']
