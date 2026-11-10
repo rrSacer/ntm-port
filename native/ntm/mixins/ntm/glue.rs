@@ -1380,6 +1380,17 @@ impl ServerHost for Host<'_, '_> {
         // No cursor edit until T05 (`PlayerTransfer::publishable`): one published without an open menu loses the stack.
         if !t.publishable(){return false;}
         let Some(expected)=crate::game::ntm_items::transfer_snapshot(self.game) else{return false};
+        // A stack that leaves a machine slot in this transfer (a rod out of its channel) keeps its every component, as
+        // Java's `ItemStack.copy()`: the slot's own stack is its template, not the bridge's id, count and custom data.
+        let mut taken=Vec::new();
+        for c in commits{
+            for (i,(was,now)) in c.expected.iter().zip(&c.desired).enumerate(){
+                if let Some(was)=was && Some(was)!=now.as_ref() && let Some(cell)=self.entity(&c.dim,c.pos,|e|e.items.get(i).cloned().flatten()).flatten(){
+                    taken.push((was.clone(),cell));
+                }
+            }
+        }
+        let template=|s:&Stack|taken.iter().find(|(w,_)|w.id==s.id&&w.damage==s.damage&&w.custom==s.custom).map(|(_,cell)|cell.clone());
         let mut desired=expected.clone();
         for e in &t.edits{
             let cell=match e.slot{
@@ -1388,11 +1399,12 @@ impl ServerHost for Host<'_, '_> {
                 PlayerSlot::Carried=>&mut desired.carried,
             };
             if cell.as_ref().filter(|s|s.count>0&&&*s.item!="minecraft:air").map(item_snbt)!=e.expected{return false;}
-            *cell=item(e.desired.as_ref(),cell.take());
+            let old=cell.take();
+            *cell=item(e.desired.as_ref(),old.or_else(||e.desired.as_ref().and_then(&template)));
         }
         let mut drops=Vec::new();
         for (s,mode) in &t.drops{
-            let Some(stack)=item(Some(s),None) else{return false};
+            let Some(stack)=item(Some(s),template(s)) else{return false};
             drops.push(NativeDrop::new(stack,match mode{TransferDrop::Thrown=>NativeDropMode::Thrown,TransferDrop::World{delay}=>NativeDropMode::World{delay:*delay}}));
         }
         // The machine slots that take a copy of a player's stack: the stack as the player held it, before the edits.
