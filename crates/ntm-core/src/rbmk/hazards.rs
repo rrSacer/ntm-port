@@ -41,6 +41,17 @@ pub fn radiation_tooltip(level: f32, count: u32) -> Vec<String> {
     lines
 }
 
+/// `Entity.setFire(seconds)` on a player: `seconds · 20`, less `floor(t · level · 0.15F)` for the highest Fire
+/// Protection level among the armour (`EnchantmentProtection.getFireTimeForEntity`, `getLastActiveItems` = the
+/// armour inventory), the fire then the longer of what is left and this (`if(fire < j)`).
+pub fn fire_ticks(seconds: i32, highest_fire_protection: u32, left: i32) -> i32 {
+    let mut j = seconds.saturating_mul(20);
+    if highest_fire_protection > 0 {
+        j -= (j as f32 * highest_fire_protection as f32 * 0.15f32).floor() as i32;
+    }
+    left.max(j)
+}
+
 /// `HazardModifierRBMKHot.modify`: `(int) min(ceil((hull − 100) / 10), 60)`, negative below 100 °C (nothing then, as
 /// `HazardTypeHot` acts only above 0). None: not a HOT rod.
 pub fn hot_level(stack: &Stack) -> Option<i32> {
@@ -129,6 +140,17 @@ mod tests {
         assert_eq!(radiation_tooltip(0.0002, 1)[1], "\u{a7}e0.0RAD/s");
         assert_eq!(radiation_tooltip(1.5, 3), ["\u{a7}a[Radioactive]", "\u{a7}e1.5RAD/s", "\u{a7}eStack: 4.5RAD/s"]);
         assert_eq!(radiation_tooltip(f32::NAN, 1)[1], "\u{a7}eNaNRAD/s");
+    }
+
+    #[test]
+    fn fire_protection_takes_the_highest_piece_as_1_7_10() {
+        // A rod at 400 °C: level 30, 600 ticks. No protection; one piece of IV; two of IV (the highest, not the sum).
+        assert_eq!(fire_ticks(30, 0, -20), 600);
+        assert_eq!(fire_ticks(30, 4, -20), 240);
+        assert_eq!(fire_ticks(30, 2, -20), 420);
+        // The longer of what is left and this.
+        assert_eq!(fire_ticks(30, 4, 500), 500);
+        assert_eq!(fire_ticks(1, 1, 0), 17);
     }
 
     #[test]

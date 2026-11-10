@@ -1503,9 +1503,12 @@ impl ServerHost for Host<'_, '_> {
             let feet=g.world.block(at.x.floor() as i32,at.y.floor() as i32,at.z.floor() as i32);
             let water=g.res.facts().get(feet).fluid==horizon_client::blocks::Fluid::Water;
             if p.fluids.was_touching_water || water || g.in_rain(at,top) {return;}
-            // `setFire(seconds)`: the longer of what is left and this, fire protection's share off.
-            if let Some(p)=g.player.as_mut() && let Err(e)=p.ignite_for_ticks(seconds.saturating_mul(20)) {
-                eprintln!("ntm: set fire {id}: {e}");
+            // `setFire(seconds)` as 1.7.10's: Fire Protection's highest level among the armour, not the engine's
+            // `burning_time` (which sums the pieces).
+            let protection=g.armor.iter().flatten().map(|a|a.enchantment_level("minecraft:fire_protection")).max().unwrap_or(0);
+            if let Some(p)=g.player.as_mut() {
+                let ticks=ntm_core::rbmk::hazards::fire_ticks(seconds,protection,p.fire_ticks);
+                p.set_remaining_fire_ticks(ticks);
             }
         });
     }
