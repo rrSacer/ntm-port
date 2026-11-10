@@ -286,3 +286,31 @@ fn the_arc_welder_welds_on_a_creative_battery_and_keeps_its_state() {
     // The screen's ten values, then the eight saved ones.
     assert_eq!(data.len(), 10 + 8);
 }
+
+/// The sawmill on a firebox: a log becomes six planks on the heat under it (the
+/// engine's slots), and a second one is refused while the machine holds something.
+#[test]
+fn the_sawmill_saws_a_log_on_the_heat_of_the_firebox_under_it() {
+    let mut g = game();
+    let (fire, top) = (AT, [AT[0], AT[1] + 1, AT[2]]);
+    g.place(fire, "ntm:heater_firebox[facing=north,honey_level=0]");
+    g.world.borrow_mut().engine.insert((OW.to_string(), fire), (vec![None; 2], Vec::new()));
+    g.place(top, "ntm:machine_sawmill[facing=north,honey_level=0]");
+    g.world.borrow_mut().engine.insert((OW.to_string(), top), (vec![None; 3], Vec::new()));
+    g.run(2);
+    g.world.borrow_mut().engine.get_mut(&(OW.to_string(), fire)).unwrap().0[0] = Some(Stack::new("minecraft:coal", 8));
+    g.world.borrow_mut().engine.get_mut(&(OW.to_string(), top)).unwrap().0[0] = Some(Stack::new("minecraft:oak_log", 1));
+    let slots_of = |g: &Game| g.world.borrow().engine[&(OW.to_string(), top)].0.clone();
+    for _ in 0..3000 {
+        g.run(1);
+        if count(&slots_of(&g), "minecraft:oak_planks") > 0 {
+            break;
+        }
+    }
+    let s = slots_of(&g);
+    assert_eq!(count(&s, "minecraft:oak_planks"), 6, "{s:?}");
+    assert_eq!(count(&s, "minecraft:oak_log"), 0);
+    let Data::Furnace(f) = g.machine(top).data else { panic!() };
+    let crate::furnaces::Furnace::Sawmill(f) = *f else { panic!() };
+    assert!(f.has_blade && f.progress == 0);
+}

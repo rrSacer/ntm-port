@@ -4877,6 +4877,29 @@
 ],
 "synced": []
 },
+"ntm:machine_sawmill": {
+"inventory": [
+0,
+0
+],
+"slots": [
+{
+"x": 0,
+"y": 0
+},
+{
+"output": true,
+"x": 0,
+"y": 0
+},
+{
+"output": true,
+"x": 0,
+"y": 0
+}
+],
+"synced": []
+},
 "ntm:machine_shredder": {
 "inventory": [
 8,

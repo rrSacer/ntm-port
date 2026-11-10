@@ -8,6 +8,7 @@ use crate::{
     furnace_steel::{self, Steel},
     machine::{Logic, fill_level},
     recipes,
+    sawmill::Sawmill,
     server::container_bridge::{Slots, Slotted, Stack},
     upgrades,
     view::{self, ViewModel},
@@ -20,6 +21,8 @@ pub const STACK: u32 = 64;
 pub const IRON: &str = "ntm:furnace_iron";
 pub const STEEL: &str = "ntm:furnace_steel";
 pub const COMBINATION: &str = "ntm:furnace_combination";
+/// The sawmill shares this file's dispatch: slots, a heat source under it, no screen.
+pub const SAWMILL: &str = "ntm:machine_sawmill";
 
 /// Every block this file runs.
 pub fn of(block: &str) -> Option<Furnace> {
@@ -27,6 +30,7 @@ pub fn of(block: &str) -> Option<Furnace> {
         IRON => Some(Furnace::Iron(Iron::default())),
         STEEL => Some(Furnace::Steel(Steel::default())),
         COMBINATION => Some(Furnace::Combination(Box::default())),
+        SAWMILL => Some(Furnace::Sawmill(Sawmill::default())),
         _ => None,
     }
 }
@@ -41,6 +45,7 @@ pub enum Furnace {
     Iron(Iron),
     Steel(Steel),
     Combination(Box<Combination>),
+    Sawmill(Sawmill),
 }
 
 impl Furnace {
@@ -49,6 +54,7 @@ impl Furnace {
             Furnace::Iron(m) => m,
             Furnace::Steel(m) => m,
             Furnace::Combination(m) => &mut **m,
+            Furnace::Sawmill(m) => m,
         }
     }
     fn logic(&self) -> &dyn Logic {
@@ -56,6 +62,7 @@ impl Furnace {
             Furnace::Iron(m) => m,
             Furnace::Steel(m) => m,
             Furnace::Combination(m) => &**m,
+            Furnace::Sawmill(m) => m,
         }
     }
     fn logic_mut(&mut self) -> &mut dyn Logic {
@@ -63,6 +70,7 @@ impl Furnace {
             Furnace::Iron(m) => m,
             Furnace::Steel(m) => m,
             Furnace::Combination(m) => &mut **m,
+            Furnace::Sawmill(m) => m,
         }
     }
 }
@@ -73,6 +81,7 @@ impl Logic for Furnace {
             Furnace::Iron(m) => m.step(),
             Furnace::Steel(m) => m.step(),
             Furnace::Combination(m) => m.step(),
+            Furnace::Sawmill(m) => m.step(),
         }
     }
     fn fluid(&mut self) -> Option<&mut dyn crate::fluid::FluidNode> {
@@ -410,6 +419,7 @@ pub fn filters(block: &str) -> Vec<crate::native::SlotFilter> {
             output,
         ],
         COMBINATION => vec![plain.clone(), output.clone(), plain, output],
+        SAWMILL => vec![plain, output.clone(), output],
         _ => Vec::new(),
     }
 }

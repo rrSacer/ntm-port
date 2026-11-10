@@ -272,7 +272,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_sawmill",
-        kind: Kind::Inert,
+        kind: Kind::Furnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

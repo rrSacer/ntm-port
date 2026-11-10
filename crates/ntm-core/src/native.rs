@@ -150,6 +150,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
         };
     }
+    if block == crate::furnaces::SAWMILL {
+        return crate::sawmill::allows(slots, slot, item, action == SlotAction::Insert);
+    }
     if let Some(allowed) = crate::welders::allows(block, slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;
     }

@@ -172,6 +172,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:furnace_steel", Layout::Native),
     ("ntm:furnace_combination", Layout::Native),
     ("ntm:machine_arc_welder", Layout::Native),
+    ("ntm:machine_sawmill", Layout::Native),
     ("ntm:machine_soldering_station", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),

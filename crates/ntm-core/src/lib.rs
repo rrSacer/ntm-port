@@ -55,6 +55,7 @@ pub mod shredder;
 pub mod radiation;
 pub mod radioisotopes;
 pub mod registry;
+pub mod sawmill;
 pub mod server;
 pub mod snbt;
 pub mod steam;
