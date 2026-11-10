@@ -48,6 +48,7 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
     if let Some(line)=ntm_core::item_hooks::resistance_line(crate::game::ntm_items::worn_resistance(stack)) {
         lines.push((Text::legacy(&line),u32::MAX));
     }
+    crate::game::ntm_armor_table::mods_tooltip(_game, stack, lines);
     let native=crate::game::ntm_glue::stack(&Some(stack.clone()));
     if let Some(p)=ntm_core::radioisotopes::pellet(&stack.item) {
         let life=native.as_ref().map_or(p.lifespan_ticks,ntm_core::radioisotopes::life);
