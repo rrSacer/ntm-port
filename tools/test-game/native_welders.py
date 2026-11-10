@@ -48,7 +48,10 @@ def open_any(g, cells):
         g.command(f'tp @s {cell[0] + .5} 100 {cell[2] + 3.5}')
         time.sleep(1)
         for _ in range(2):
-            g.ctl(f'interact {cell[0]} {cell[1]} {cell[2]} south')
+            try:
+                g.ctl(f'interact {cell[0]} {cell[1]} {cell[2]} south')
+            except RuntimeError:
+                break  # no visible face from here: another cell
             deadline = time.monotonic() + 4
             while time.monotonic() < deadline:
                 if g.ctl('screen').get('screen') == 'container':
@@ -104,7 +107,7 @@ def arc(g):
 def solder(g):
     x = X + 14
     core = place(g, 'ntm:machine_soldering_station', '"Solder"', x, 100, Z)
-    cells = [(core[0] + dx, core[1], core[2] + dz) for dz in (1, 0) for dx in (0, -1)]
+    cells = [(core[0] + dx, core[1], core[2] + dz) for dz in (1, 0, -1) for dx in (0, -1, 1)]
     open_any(g, cells)
     # A stone is no topping: the hand is refused in the first topping slot.
     g.command('give @s minecraft:stone 1')

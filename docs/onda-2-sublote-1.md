@@ -191,7 +191,7 @@ escolhidos à mão (constantes e ramos de cada máquina; `mutate.py`, resultados
 teste no nível certo) e foram mortos pelos testes novos. Um teste de servidor
 roda cada máquina em um mundo falso com conservação de itens a cada tick.
 
-## Soldadora a arco e estação de solda (commit `f70abae4`, ainda sem prova em jogo)
+## Soldadora a arco e estação de solda (provadas)
 
 `welders.rs`: uma só máquina de receita com os dois modelos. Receitas extraídas
 do Java por `arc_welder_recipes.py` (24; as 18 de míssil ficam `skipped` até os
@@ -199,10 +199,23 @@ itens de míssil da Onda 5) e `soldering_recipes.py` (27, com as cadeias de
 upgrade expandidas). `matchesIngredients` na ordem do Java; tempo e consumo com
 `speed/power/overdrive` (`duration - duration·vermelho/6 + duration·azul/3`,
 `consumo·2^preto`); tanque (24 000 / 8 000 mB) que aceita só fluidos de receita;
-o botão de colisão da estação. Lacunas declaradas: o motor tem um contêiner por
-máquina, então as listas de slot por célula da soldadora (`getAccessibleSlotsFromSide(x,y,z,side)`)
-viram uma só; sem os itens de identificador de fluido (o tanque toma o tipo do
-primeiro fluido que entra, como nos demais).
+o botão de colisão da estação.
+
+Provas (cliente release `19a89ffb…`, `ntm.hmod` `4321c94f…`, de `d66ad17c` +
+docs, em `content-gen-evidence/onda2-s1/welders/`): `welders` 17 verificações,
+0 falhas. Soldadora: duas placas de aço e dois fios densos viram 2 motores em
+60 ticks **só com o upgrade de velocidade 3** (50 ticks; sem ele são 100); a
+saída sai por shift; um funil sobre uma célula do multibloco alimenta e ela
+solda de novo. Estação: uma pedra é recusada num slot de cobertura
+(`SlotNonRetarded`), e 3 válvulas + 2 capacitores + 4 PCB + 4 fios de chumbo dão
+uma placa analógica. Corte de gravação `welder-run` (soldadora fazendo motores
+numa bateria criativa, morta em cada fronteira do save): 7 de 7 pontos, placas
+de aço + motores = 40 exato nas duas reaberturas.
+
+Lacunas declaradas: o motor tem um contêiner por máquina, então as listas de slot
+por célula da soldadora (`getAccessibleSlotsFromSide(x,y,z,side)`) viram uma só;
+sem os itens de identificador de fluido (o tanque toma o tipo do primeiro fluido
+que entra, como nos demais); as 18 receitas de míssil.
 
 ## Serra: recorte proposto (sem a API de entidades)
 
@@ -231,5 +244,5 @@ lacunas de fuligem e de cinzeiro deste sublote ficam nominais para elas.
 | 4 | `furnace_iron` | pronto para revisão |
 | 5 | `furnace_steel` | pronto para revisão |
 | 6 | `furnace_combination` | pronto para revisão |
-| 12, 11 | `machine_arc_welder`, `machine_soldering_station` | lógica e testes de unidade; prova em jogo e de corte pendentes |
+| 12, 11 | `machine_arc_welder`, `machine_soldering_station` | pronto para revisão |
 | 7 a 10, 13 | serra, rotativo, lingotamento contínuo, montadora de precisão, fábrica química | Inert; não iniciados |
