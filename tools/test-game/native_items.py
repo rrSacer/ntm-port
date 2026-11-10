@@ -27,9 +27,10 @@ def state(g):
 
 
 def use(g,seconds=0):
+    """Use the held item: a click, or held for `seconds` of game time (20 server ticks a second)."""
     g.close();g.ctl('look-at 20 160 8')
     if seconds:
-        g.ctl('mouse right down');time.sleep(seconds)
+        start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,round(seconds*20))
         try:g.ctl('mouse right up')
         except RuntimeError as error:
             # A use that killed the player leaves the death screen: nothing to release.
@@ -38,6 +39,63 @@ def use(g,seconds=0):
         # One click: a held button repeats the use of an instant item on a slow frame.
         g.ctl('mouse right click')
     time.sleep(.8)  # a loaded machine answers a click a few ticks late
+
+
+# Consumables whose checks are about game time wait in server ticks, not wall time (coordinator, 10/11): on a
+# loaded machine a second of wall time is any number of ticks.
+EAT_TICKS=32   # ItemFood.getMaxItemUseDuration (cotton candy, vegan schnitzel)
+SYNC_TICKS=10  # tolerance: the client's copy of the inventory and the effects trails the server by a few ticks
+
+
+def game_time(g):
+    text=' '.join(g.command('time query gametime').get('chat',[]))
+    n=re.search(r'game time is (\d+)',text)
+    if not n:raise AssertionError('missing game time: '+text)
+    return int(n.group(1))
+
+
+def wait_ticks(g,since,n,timeout=60):
+    """Until the server's game time is `n` ticks past `since`; returns it."""
+    deadline=time.monotonic()+timeout
+    while time.monotonic()<deadline:
+        now=game_time(g)
+        if now>=since+n:return now
+        time.sleep(.05)
+    raise TimeoutError(f'{n} ticks')
+
+
+def cancel_use(g,item,count,ticks,duration,release_by=None,on_try=None):
+    """Hold the use of the stack in hand for `ticks` server ticks and release it, well short of its `duration`
+    (or of `release_by`, when the check needs the release earlier); `on_try` runs as each try starts.
+    The server ticks on while the controller waits for the client thread, which a loaded machine slows to over a
+    second a command: at 5 ticks a second the release still lands inside the use. A try whose release reached
+    the server after the use could complete is no cancel: it gets its stack back and is repeated. Returns the
+    state while held and the ticks held; waits out `duration` so a late completion would show."""
+    g.command('tick rate 5')
+    try:
+        for _ in range(3):
+            if on_try:on_try()
+            g.close();g.ctl('look-at 20 160 8')
+            start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,ticks)
+            held=g.ctl('state');g.ctl('mouse right up');released=game_time(g)
+            if released-start<(release_by or duration-SYNC_TICKS):break
+            # What the completed use left (the containers, a ring pull) goes with it.
+            g.command('clear @s');give_hand(g,item,count)
+        wait_ticks(g,released,duration+SYNC_TICKS)
+    finally:
+        g.command('tick rate 20')
+    return held,released-start
+
+
+def server_effects(g):
+    """id -> amplifier from the server's own copy of the effects (`/data`)."""
+    text=' '.join(g.command('data get entity @s active_effects').get('chat',[]))
+    out={}
+    for body in re.findall(r'\{[^{}]*\}',text):
+        i=re.search(r'id:\s*"(?:minecraft:)?(\w+)"',body)
+        a=re.search(r'amplifier:\s*(\d+)b',body)
+        if i:out.setdefault(i.group(1),int(a.group(1)) if a else 0)
+    return out
 
 
 def give_hand(g,item,count=1,slot=0):
@@ -105,16 +163,25 @@ def setup(g):
     refused=g.ctl('state');g.ctl('mouse right up');time.sleep(.2)
     g.check('creative_cannot_eat_item_food',refused.get('using') is None,refused)
     g.command('gamemode survival @s')
-    g.ctl('mouse right down');time.sleep(.45)
-    active=g.ctl('state');g.check('real_eating_started',active.get('using') is not None,active)
-    g.ctl('mouse right up');time.sleep(.4)
-    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,counts(g))
-    g.command('effect give @s minecraft:hunger 1 255 true');time.sleep(1.6)
-    before=g.ctl('state')['player'];use(g,1.8)
+    active,held=cancel_use(g,'ntm:cotton_candy',2,9,EAT_TICKS)
+    g.check('real_eating_started',active.get('using') is not None,active)
+    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,{'counts':counts(g),'held_ticks':held})
+    # The hunger (20 ticks) drains the food; the candy is eaten held for EAT_TICKS and a margin, at 5 ticks a
+    # second so the release lands before a second one is done (EAT_TICKS more).
+    # The saturation goes first (a candy eaten by a late release above leaves plenty): until the food is down.
+    for _ in range(6):
+        g.command('effect give @s minecraft:hunger 1 255 true');wait_ticks(g,game_time(g),20+SYNC_TICKS)
+        if g.ctl('state')['player']['food']<=17:break
+    before=g.ctl('state')['player'];g.close();g.ctl('look-at 20 160 8');g.command('tick rate 5')
+    start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,EAT_TICKS+SYNC_TICKS)
+    g.ctl('mouse right up');released=game_time(g);wait_ticks(g,released,SYNC_TICKS);g.command('tick rate 20')
     after=g.ctl('state')['player']
-    g.check('food_and_saturation_apply',after['food']>before['food'] and after['saturation']>before['saturation'],{'before':before,'after':after})
+    g.check('food_and_saturation_apply',after['food']>before['food'] and after['saturation']>before['saturation'],
+            {'before':before,'after':after,'held_ticks':released-start})
     g.check('only_one_food_consumed',counts(g).get('ntm:cotton_candy')==1,counts(g))
-    effects={e['id'].split(':')[-1]:e['amplifier'] for e in after['effects']}
+    # The server's copy: the client counted the effects down at 20 a second while the server ran at 5, and the
+    # 100-tick wither (ItemCottonCandy:23) can already be gone from it.
+    effects=server_effects(g)
     g.check('java_food_effects',all(effects.get(k)==v for k,v in {'poison':0,'wither':0,'weakness':2,'speed':2,'resistance':4}.items()),effects)
     g.command('effect clear @s');g.command('clear @s');g.command('gamemode creative @s')
     # A stacked syringe returns its container to the inventory.
@@ -284,9 +351,18 @@ def effect_map(g):
     return {e['id'].split(':')[-1]:(e['amplifier'],e['duration_ticks']) for e in g.ctl('state')['player']['effects']}
 
 
-def has_effects(effects,expected):
-    """Amplifier exact; the duration is the Java one minus the ticks since."""
-    return all(k in effects and effects[k][0]==amp and ticks-80<=effects[k][1]<=ticks for k,(amp,ticks) in expected.items())
+def has_effects(effects,expected,elapsed=80):
+    """Amplifier exact; the duration is the Java one minus the ticks since (`elapsed`, counted in game ticks
+    by the callers that measure it, else 80)."""
+    return all(k in effects and effects[k][0]==amp and ticks-elapsed<=effects[k][1]<=ticks for k,(amp,ticks) in expected.items())
+
+
+def eat_ticks(g,item):
+    """Eat `item` holding the button for EAT_TICKS and a margin of game ticks; returns the tick it started."""
+    give_hand(g,item);g.close();g.ctl('look-at 20 160 8')
+    start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,EAT_TICKS+SYNC_TICKS);g.ctl('mouse right up')
+    wait_ticks(g,start,EAT_TICKS+2*SYNC_TICKS)
+    return start
 
 
 def stack_damage(g,item):
@@ -307,10 +383,9 @@ def energy(g):
     g.close();g.command('gamemode survival @s');g.command('clear @s');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
     g.command('ntmitem dose 0');g.command('tp @s 20.5 101 11.5');time.sleep(.5)
     give_hand(g,'ntm:can_smart',2)
-    g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.5)
-    active=g.ctl('state');g.check('can_drink_animation_runs',active.get('using') is not None,active)
-    g.ctl('mouse right up');time.sleep(.3)
-    g.check('can_cancel_keeps_it',counts(g).get('ntm:can_smart')==2 and not counts(g).get('ntm:ring_pull'),counts(g))
+    active,held=cancel_use(g,'ntm:can_smart',2,10,32)  # ItemEnergy.getMaxItemUseDuration
+    g.check('can_drink_animation_runs',active.get('using') is not None,active)
+    g.check('can_cancel_keeps_it',counts(g).get('ntm:can_smart')==2 and not counts(g).get('ntm:ring_pull'),{'counts':counts(g),'held_ticks':held})
     use(g,1.8);actual=counts(g);effects=effect_map(g)
     g.check('can_leaves_ring_pull_and_empty_can',actual.get('ntm:can_smart')==1 and actual.get('ntm:can_empty')==1 and actual.get('ntm:ring_pull')==1,actual)
     g.check('can_smart_java_effects',has_effects(effects,{'speed':(1,600),'resistance':(2,600),'strength':(0,600)}),effects)
@@ -374,8 +449,10 @@ def energy(g):
     # The button is still down when the first drink ends, so a second use may begin: its gulps start over.
     g.check('bdcl_gulps_on_the_java_counts_exactly',heard[:6]==full_use and heard[6:]==full_use[:len(heard)-6],heard)
     # Cancelled after about twelve ticks: only the gulps already due are heard, and nothing is consumed.
-    give_hand(g,'ntm:bdcl',2);mark=log_size();g.close();g.ctl('look-at 20 160 8');g.ctl('mouse right down');time.sleep(.55);g.ctl('mouse right up');time.sleep(.5)
-    heard=gulps(mark)
+    # ItemBDCL.getMaxItemUseDuration is 40; at most four gulps (0, 5, 10, 15) means released before tick 19.
+    give_hand(g,'ntm:bdcl',2);marks=[]
+    cancel_use(g,'ntm:bdcl',2,11,40,release_by=19,on_try=lambda:marks.append(log_size()))
+    heard=gulps(marks[-1])
     g.check('cancelled_bdcl_stops_its_gulps',heard==[0,5,10,15,19,26][:len(heard)] and 2<=len(heard)<=4 and counts(g).get('ntm:bdcl')==2,{'heard':heard,'counts':counts(g)})
     # The chocolate milk is the last: its blast removes the floor around the player.
     g.command('gamemode creative @s');g.command('clear @s');give_hand(g,'ntm:chocolate_milk',1)
@@ -537,8 +614,11 @@ def foods(g):
     reset(g);g.check('ptsd_needs_hunger_at_full_food',refused(g,'ntm:med_ptsd',1),counts(g))
     reset(g);starve(g);hold(g,'ntm:med_ipecac',1.8);effects=effect_map(g)
     g.check('ipecac_when_hungry_induces_hunger',has_effects(effects,{'hunger':(49,50)}) and not counts(g),effects)
-    reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true');hold(g,'ntm:schnitzel_vegan',1.8);effects=effect_map(g)
-    g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)}),effects)
+    reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true')
+    start=eat_ticks(g,'ntm:schnitzel_vegan');effects=effect_map(g);elapsed=game_time(g)-start
+    # The effects are given when the eating ends (at least EAT_TICKS after `start`) and read before `elapsed`.
+    g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)},elapsed)
+            and not counts(g).get('ntm:schnitzel_vegan'),{'effects':effects,'elapsed_ticks':elapsed})
     extinguish(g)
     reset(g);hold(g,'ntm:apple_euphemium',1.8);effects=effect_map(g)
     g.check('euphemium_apple_effects_are_endless',effects.get('resistance',(0,0))[0]==120 and effects['resistance'][1]>2_000_000_000 and effects.get('fire_resistance',(9,0))[0]==0,effects)
