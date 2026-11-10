@@ -1231,10 +1231,28 @@ def mb_place(g, kind, fire=True):
 
 
 def mb_open(g, kind, core):
-    """The screen, through the first cell of the multiblock a player can click from the south."""
-    from native_welders import open_any
-    cells = [(core[0] + dx, core[1] + dy, core[2] + dz) for dy in (1, 0, 2) for dz in (0, 1, -1) for dx in (0, -1, 1)]
-    open_any(g, cells)
+    """The screen, through a cell of the multiblock a player can click from the south; patient, the host may be loaded."""
+    first = [(0, 1, 0)] if kind == 'iron' else [(0, 0, 1)]
+    rest = [(dx, dy, dz) for dy in (1, 0, 2) for dz in (0, 1, -1) for dx in (0, -1, 1) if (dx, dy, dz) not in first]
+    g.close()
+    tried = []
+    for dx, dy, dz in first + rest:
+        cell = (core[0] + dx, core[1] + dy, core[2] + dz)
+        g.command('tp @s %s 100 %s' % (cell[0] + .5, cell[2] + 3.5))
+        time.sleep(1.5)
+        for _ in range(3):
+            try:
+                g.ctl('interact %d %d %d south' % cell)
+            except RuntimeError:
+                break  # no visible face from here: another cell
+            deadline = time.monotonic() + 10
+            while time.monotonic() < deadline:
+                if g.ctl('screen').get('screen') == 'container':
+                    return cell
+                time.sleep(.4)
+            g.close()
+        tried.append(cell)
+    raise AssertionError('no cell opened the screen: ' + str(tried))
 
 
 def mb_fill_fire(g, fire_at):
