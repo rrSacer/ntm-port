@@ -662,10 +662,14 @@ def foods(g):
     g.check('ipecac_when_hungry_induces_hunger',has_effects(effects,{'hunger':(49,50)}) and not counts(g),effects)
     reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true')
     start=eat_ticks(g,'ntm:schnitzel_vegan')
-    if MUTANT=='schnitzel_short_blindness':g.command('effect clear @s minecraft:blindness');g.command('effect give @s minecraft:blindness 1 0 true')
+    # 160 ticks: the nearest whole-second duration to a 170-tick blindness that the review asked to kill.
+    if MUTANT=='schnitzel_short_blindness':g.command('effect clear @s minecraft:blindness');g.command('effect give @s minecraft:blindness 8 0 true')
     effects=effect_map(g);elapsed=game_time(g)-start
-    # The effects are given when the eating ends (at least EAT_TICKS after `start`) and read before `elapsed`.
-    g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)},elapsed)
+    # The effects are given when the eating ends, at least EAT_TICKS after `start`, and read before `elapsed`: they
+    # have run at most elapsed - EAT_TICKS. Given in one tick, they also keep the Java's differences exactly.
+    remaining=lambda k:effects.get(k,(0,0))[1]
+    g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)},elapsed-EAT_TICKS)
+            and remaining('nausea')-remaining('blindness')==400 and remaining('hunger')-remaining('blindness')==3400
             and not counts(g).get('ntm:schnitzel_vegan'),{'effects':effects,'elapsed_ticks':elapsed})
     extinguish(g)
     reset(g);hold(g,'ntm:apple_euphemium',1.8);effects=effect_map(g)
