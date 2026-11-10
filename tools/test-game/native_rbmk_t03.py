@@ -92,6 +92,12 @@ def select_rod(g, timeout=10):
     while hand(g) is None and time.monotonic() < deadline:
         time.sleep(.2)
     g.ctl(f'select {UEU}')
+    # The window's selection reaches the server a moment later: wait until the server holds it in the main hand.
+    while time.monotonic() < deadline + 5:
+        held = ' '.join(g.command('data get entity @s SelectedItem').get('chat', []))
+        if UEU in held:
+            return
+        time.sleep(.2)
 
 
 def hand_text(g):
@@ -390,6 +396,20 @@ def play(g):
     g.check('a_burning_holder_goes_out_in_water', all(v is not None and v <= 0 for v in without + with_rod) and lit and lit > 500,
             {'without_rod': without, 'relit': lit, 'with_rod': with_rod})
     g.command(f'fill 50 {Y} 8 66 {Y} 20 minecraft:air replace minecraft:water')
+    # Fire Protection as 1.7.10 reads it: the highest level among the armour, not the sum. Two pieces of IV: the
+    # rod's 30 seconds less floor(600 · 4 · 0.15) = 240 ticks (the engine's summed attribute would give none).
+    g.command('item replace entity @s armor.head with minecraft:diamond_helmet[minecraft:enchantments={"minecraft:fire_protection":4}]')
+    g.command('item replace entity @s armor.feet with minecraft:diamond_boots[minecraft:enchantments={"minecraft:fire_protection":4}]')
+    g.command(f'setblock 58 {Y} 14 minecraft:water')
+    g.command(f'tp @s 58.5 {Y} 14.5')
+    time.sleep(1.5)
+    g.command(f'fill 50 {Y} 8 66 {Y} 20 minecraft:air replace minecraft:water')
+    g.command(f'tp @s 54.5 {Y} 18.5')
+    time.sleep(1.5)
+    armour = ' '.join(g.command('data get entity @s').get('chat', []))
+    protected = [fire(g) for _ in range(3)]
+    g.check('fire_protection_takes_the_highest_piece', all(v is not None and 220 <= v <= 240 for v in protected) and armour.count('fire_protection') == 2,
+            {'fire': protected, 'armour': armour})
     g.command('clear @s')
     g.command('gamemode creative @s')
     g.command('ntmitem dose 0')
