@@ -377,6 +377,19 @@ bindings = [
   { name = "claimed", ty = "&mut bool", value = "&mut *claimed" },
 ]
 
+# The bar under an RBMK rod's icon (`item_bar`, API 60): 1 - its enrichment (`getDurabilityForDisplay`), drawn as
+# Forge 1.7.10 draws it.
+[[injection]]
+id = "rbmk-rod-bar"
+hook = "item_bar"
+hook_version = 1
+kind = "HEAD"
+helper = "rbmk_bar.rs"
+bindings = [
+  { name = "stack", ty = "&horizon_client::items::ItemStack", value = "stack" },
+  { name = "bar", ty = "&mut Option<(i32, u32)>", value = "&mut *bar" },
+]
+
 # A crafting grid's result (`prepare_item_craft`, API 290): an RBMK rod comes out with its tag set up, as
 # `ItemRBMKRod.onCreated` does (`setNBTDefaults`).
 [[injection]]

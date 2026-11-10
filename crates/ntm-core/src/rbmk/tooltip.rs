@@ -132,9 +132,44 @@ pub fn lines(rod: &RodType, s: &mut RodStack) -> Vec<Line> {
     out
 }
 
+/// `Math.round(double)`: `floor(v + 0.5)`.
+fn java_round(v: f64) -> i32 {
+    (v + 0.5).floor() as i32
+}
+
+/// The bar under the rod's icon (`showDurabilityBar`/`getDurabilityForDisplay`, drawn as Forge 1.7.10's
+/// `RenderItem.renderItemOverlayIntoGUI`): with `health = 1 − enrichment`, shown while `health > 0`, its width
+/// `round(13 − health·13)` and its colour `(255 − k) << 16 | k << 8` with `k = round(255 − health·255)`. None: no bar.
+pub fn durability_bar(rod: &RodType, s: &mut RodStack) -> Option<(i32, u32)> {
+    let health = s.durability_for_display(rod);
+    if !(health > 0.0) {
+        return None;
+    }
+    let width = java_round(13.0 - health * 13.0);
+    let k = java_round(255.0 - health * 255.0);
+    Some((width, (((255 - k) << 16) | (k << 8)) as u32))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_bar_is_forges_for_1_minus_the_enrichment() {
+        let rod = RodType::by_variable("rbmk_fuel_ueu").unwrap();
+        // Fresh (health 0): no bar. A dead rod (health 1): an empty red bar.
+        assert_eq!(durability_bar(rod, &mut RodStack::fresh(rod)), None);
+        let mut dead = RodStack::fresh(rod);
+        dead.set_yield(rod, 0.0);
+        assert_eq!(durability_bar(rod, &mut dead), Some((0, 0xff0000)));
+        // Half burnt: health 0.5, width round(6.5) = 7, k = round(127.5) = 128.
+        let mut half = RodStack::fresh(rod);
+        half.set_yield(rod, rod.yield_ / 2.0);
+        assert_eq!(durability_bar(rod, &mut half), Some((7, (127 << 16) | (128 << 8))));
+        // A renamed rod reads a yield of 0 (its tag has no key): dead, as in Java.
+        let mut renamed = RodStack { has_tag: true, ..RodStack::bare() };
+        assert_eq!(durability_bar(rod, &mut renamed), Some((0, 0xff0000)));
+    }
 
     #[test]
     fn doubles_read_as_javas_double_to_string() {
