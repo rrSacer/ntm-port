@@ -114,5 +114,32 @@
    }
   ],
   "half_exponent_binary": "native glue radiation_factor with player_resistance(game) / 2.0, built from 130153a4ac as a throwaway binary (not committed): mask 313, hazmat 265 instead of 281 and 201"
+ },
+ "merge": {
+  "commit": "ff8c6049",
+  "binary": "engine 6a79054fa9",
+  "note": "main's harness is the base; these are the Onda 1 checks kept on it",
+  "final": [
+   {
+    "mutant": "pickup_delay_60",
+    "expected": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "pickup_delay_run_out",
+    "expected": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "mask_unprotective",
+    "expected": "setup:mask_and_hazmat_reduce_gamma",
+    "result": "CAUGHT(setup:mask_and_hazmat_reduce_gamma)"
+   },
+   {
+    "mutant": "schnitzel_short_blindness",
+    "expected": "setup:vegan_schnitzel_java_effects",
+    "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+   }
+  ]
  }
 }

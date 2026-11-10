@@ -330,6 +330,17 @@ de mutação.
 
 Tolerâncias explícitas no roteiro: `SYNC_TICKS = 10`, `SLOW_RATE = 1`, `EAT_TICKS = 32`.
 
+Depois da absorção da `main` `e4aa8b2c` (merge `ff8c6049`): a `main` trouxe a sua própria conversão do harness de
+`items` para ticks (`fe170242`, `567bee58`, `df088afa`, revisada na frente dela), em que o próprio jogo segura o
+botão (`use-item --hold`, `short_hold`) e a idade dos efeitos conta do gesto mais a duração do uso. Ela é a base no
+merge e substitui as minhas conversões dos cancelamentos, do "comer um", da comida, dos efeitos do algodão-doce, do
+contêiner do RadAway e do `use(segundos)` (os ajudantes `cancel_use`, `use_one`, `SLOW_RATE` e afins saíram). Ficam
+da Onda 1, porque a revisão daqui pediu mais que a `main` exige: a gama exata (janela `tick step 200`, 281 e 201, no
+lugar dos tetos 0,92 e 0,75), o atraso de coleta congelado, agora lido da idade (`Age`) da seringa lançada pelo fluxo
+da `main` (passo até 30 e mais 15), e as diferenças exatas do schnitzel (400 e 3400) sobre o `has_effects` da `main`,
+que tolera 80 ticks. No merge: `items` 264 de 264, unidade 527, gerador 299, `test_hazmat` 9; mutações desses três
+trechos refeitas no binário do merge (motor `6a79054fa9`).
+
 Ajustes da re-revisão (10/11): a gama exige 281 (M65) e 201 (placa hazmat) de 350, porque a janela é exata; o
 expoente pela metade daria 313 (`d2225961`). O schnitzel limita pelos ticks desde o fim do consumo
 (`elapsed − EAT_TICKS`) e exige as diferenças do Java entre os efeitos (400 e 3400), dados no mesmo tick; a mutação

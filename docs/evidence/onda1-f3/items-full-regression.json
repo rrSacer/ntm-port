@@ -1,6 +1,5 @@
 {
- "commit": "df59a34f",
- "note": "review adjustments (P3-1..P3-5)",
+ "commit": "ff8c6049 (merge of main e4aa8b2c, engine 6a79054fa9)",
  "phases": {
   "capture-state": {
    "capture-state:mask_kept_with_filter_wear": {
@@ -37,37 +36,37 @@
    "capture-state:antidote_clears_radaway_before_reopen": {
     "ok": true,
     "actual": {
-     "flushed": 482,
+     "flushed": 476,
      "cleared": 0
     }
    },
    "capture-state:radaway_treatment_accumulates": {
     "ok": true,
     "actual": {
-     "dose": 460000,
-     "radaway": 240
+     "dose": 444000,
+     "radaway": 224
     }
    },
    "capture-state:canteen_cooldown_before_reopen": {
     "ok": true,
-    "actual": 179
+    "actual": 172
    },
    "capture-state:herbal_sickness_survives_milk_before_reopen": {
     "ok": true,
     "actual": {
      "potion_sickness": [
       0,
-      11826
+      11694
      ]
     }
    },
    "capture-state:milk_ends_radaway_before_reopen": {
     "ok": true,
     "actual": {
-     "treated": 482,
+     "treated": 476,
      "after": {
-      "dose": 213000,
-      "herbal": 11815,
+      "dose": 69000,
+      "herbal": 11677,
       "radaway": 0
      }
     }
@@ -78,14 +77,14 @@
     "ok": true,
     "actual": {
      "before": {
-      "invariant": 213000,
-      "dose": 213000,
+      "invariant": 69000,
+      "dose": 69000,
       "radaway": 0,
-      "canteen": 179
+      "canteen": 172
      },
      "after": {
-      "dose": 213000,
-      "herbal": 11779,
+      "dose": 69000,
+      "herbal": 11611,
       "radaway": 0
      }
     }
@@ -93,8 +92,8 @@
    "check-state:canteen_cooldown_survives_the_reopen": {
     "ok": true,
     "actual": {
-     "before": 179,
-     "after": 163
+     "before": 172,
+     "after": 151
     }
    },
    "check-state:content_mob_effects_survive_the_reopen": {
@@ -102,11 +101,11 @@
     "actual": {
      "potion_sickness": [
       0,
-      11770
+      11586
      ],
      "radx": [
       0,
-      119962
+      119920
      ]
     }
    },
@@ -115,7 +114,7 @@
     "actual": {
      "potion_sickness": [
       0,
-      11678
+      11438
      ]
     }
    },
@@ -123,14 +122,14 @@
     "ok": true,
     "actual": {
      "before": {
-      "invariant": 213000,
-      "dose": 213000,
+      "invariant": 69000,
+      "dose": 69000,
       "radaway": 0,
-      "canteen": 179
+      "canteen": 172
      },
      "after": {
-      "dose": 213000,
-      "herbal": 11779,
+      "dose": 69000,
+      "herbal": 11611,
       "radaway": 0
      }
     }
@@ -175,7 +174,7 @@
      "counts": {
       "ntm:cotton_candy": 2
      },
-     "held_ticks": 10
+     "holds": 1
     }
    },
    "setup:food_and_saturation_apply": {
@@ -191,11 +190,14 @@
    "setup:java_food_effects": {
     "ok": true,
     "actual": {
-     "poison": 0,
-     "wither": 0,
-     "weakness": 2,
-     "speed": 2,
-     "resistance": 4
+     "effects": {
+      "poison": 0,
+      "wither": 0,
+      "weakness": 2,
+      "speed": 2,
+      "resistance": 4
+     },
+     "attempts": 1
     }
    },
    "setup:syringe_count_and_container": {
@@ -210,7 +212,7 @@
     "actual": [
      {
       "amplifier": 2,
-      "duration_ticks": 4783,
+      "duration_ticks": 4769,
       "id": "resistance"
      }
     ]
@@ -315,6 +317,8 @@
     "actual": {
      "early": 0,
      "late": 1,
+     "age_when_frozen": 3,
+     "attempts": 1,
      "dropped": {}
     }
    },
@@ -335,8 +339,8 @@
       "ntm:iv_empty": 1
      },
      "state": {
-      "dose": 174000,
-      "radaway": 114
+      "dose": 182000,
+      "radaway": 122
      }
     }
    },
@@ -424,7 +428,9 @@
     "actual": {
      "held": {
       "count": 1,
-      "item": "ntm:gas_mask_filter"
+      "durability_left": 20000,
+      "item": "ntm:gas_mask_filter",
+      "max_damage": 20000
      },
      "dropped": {}
     }
@@ -435,7 +441,9 @@
      "held": {
       "components": "{\"minecraft:custom_data\":{}}",
       "count": 1,
-      "item": "ntm:gas_mask_m65"
+      "durability_left": 165,
+      "item": "ntm:gas_mask_m65",
+      "max_damage": 165
      },
      "dropped": {
       "ntm:gas_mask_filter": 1
@@ -471,7 +479,9 @@
       },
       {
        "count": 1,
+       "durability_left": 960,
        "item": "ntm:hazmat_plate",
+       "max_damage": 960,
        "part": "chest",
        "slot": 501
       },
@@ -558,7 +568,7 @@
      "counts": {
       "ntm:can_smart": 2
      },
-     "held_ticks": 11
+     "holds": 1
     }
    },
    "setup:can_leaves_ring_pull_and_empty_can": {
@@ -574,15 +584,15 @@
     "actual": {
      "speed": [
       1,
-      569
+      579
      ],
      "resistance": [
       2,
-      569
+      579
      ],
      "strength": [
       0,
-      569
+      579
      ]
     }
    },
@@ -598,11 +608,11 @@
     "actual": {
      "resistance": [
       2,
-      3575
+      3579
      ],
      "regeneration": [
       2,
-      1175
+      1179
      ]
     }
    },
@@ -667,11 +677,11 @@
     "actual": {
      "speed": [
       1,
-      575
+      578
      ],
      "haste": [
       1,
-      575
+      578
      ]
     }
    },
@@ -684,7 +694,9 @@
    "setup:canteen_sets_its_cooldown_and_stays": {
     "ok": true,
     "actual": {
-     "damage": 179,
+     "damage": 176,
+     "age_ticks": 95,
+     "allowed_drop": 5,
      "counts": {
       "ntm:canteen_vodka": 1
      }
@@ -695,11 +707,11 @@
     "actual": {
      "nausea": [
       0,
-      174
+      107
      ],
      "strength": [
       2,
-      574
+      507
      ]
     }
    },
@@ -710,8 +722,8 @@
    "setup:canteen_cools_one_per_second": {
     "ok": true,
     "actual": {
-     "first": 179,
-     "later": 172
+     "first": 176,
+     "later": 169
     }
    },
    "setup:mango_feeds_and_is_consumed": {
@@ -727,7 +739,7 @@
     "actual": {
      "speed": [
       0,
-      167
+      171
      ]
     }
    },
@@ -747,8 +759,7 @@
      19,
      26,
      0,
-     5,
-     10
+     5
     ]
    },
    "setup:cancelled_bdcl_stops_its_gulps": {
@@ -761,7 +772,8 @@
      ],
      "counts": {
       "ntm:bdcl": 2
-     }
+     },
+     "holds": 1
     }
    },
    "setup:chocolate_milk_blast_breaks_the_floor": {
@@ -779,7 +791,7 @@
     "ok": true,
     "actual": {
      "before": 10.833333015441895,
-     "after": 17.83333396911621,
+     "after": 17.5,
      "counts": {
       "ntm:syringe_metal_empty": 1,
       "ntm:syringe_metal_stimpak": 1
@@ -791,11 +803,11 @@
     "actual": {
      "resistance": [
       0,
-      2383
+      2384
      ],
      "strength": [
       0,
-      2383
+      2384
      ]
     }
    },
@@ -806,7 +818,7 @@
      "effects": {
       "slowness": [
        0,
-       183
+       184
       ]
      }
     }
@@ -818,7 +830,7 @@
      "effects": {
       "speed": [
        0,
-       1144
+       1147
       ]
      },
      "counts": {}
@@ -836,11 +848,11 @@
     "actual": {
      "taint": [
       0,
-      1181
+      1176
      ],
      "nausea": [
       0,
-      81
+      76
      ]
     }
    },
@@ -858,47 +870,47 @@
     "actual": {
      "regeneration": [
       9,
-      983
+      984
      ],
      "resistance": [
       9,
-      983
+      984
      ],
      "fire_resistance": [
       0,
-      983
+      984
      ],
      "strength": [
       24,
-      983
+      984
      ],
      "haste": [
       9,
-      983
+      984
      ],
      "speed": [
       6,
-      983
+      984
      ],
      "jump_boost": [
       9,
-      983
+      984
      ],
      "health_boost": [
       9,
-      983
+      984
      ],
      "absorption": [
       4,
-      983
+      984
      ],
      "nausea": [
       4,
-      83
+      84
      ],
      "radx": [
       9,
-      983
+      984
      ]
     }
    },
@@ -914,9 +926,10 @@
     "actual": {
      "before": 0,
      "state": {
-      "dose": 482000,
-      "radaway": 482
+      "dose": 484000,
+      "radaway": 484
      },
+     "age_ticks": 26,
      "counts": {
       "ntm:iv_empty": 1
      }
@@ -926,15 +939,15 @@
     "ok": true,
     "actual": {
      "treated": {
-      "dose": 482000,
-      "radaway": 482
+      "dose": 484000,
+      "radaway": 484
      },
      "cleared": {
-      "dose": 456000,
+      "dose": 461000,
       "radaway": 0
      },
      "later": {
-      "dose": 456000,
+      "dose": 461000,
       "radaway": 0
      }
     }
@@ -943,15 +956,15 @@
     "ok": true,
     "actual": {
      "treated": {
-      "dose": 482000,
-      "radaway": 482
+      "dose": 485000,
+      "radaway": 485
      },
      "cleared": {
-      "dose": 421000,
+      "dose": 433000,
       "radaway": 0
      },
      "later": {
-      "dose": 421000,
+      "dose": 433000,
       "radaway": 0
      }
     }
@@ -1013,7 +1026,7 @@
     "actual": {
      "radx": [
       0,
-      3571
+      3575
      ]
     }
    },
@@ -1026,33 +1039,33 @@
     "actual": {
      "state": {
       "dose": 400000,
-      "herbal": 11960,
+      "herbal": 11965,
       "radaway": 0
      },
      "effects": {
       "nausea": [
        0,
-       172
+       175
       ],
       "slowness": [
        0,
-       87
+       94
       ],
       "weakness": [
        2,
-       11972
+       11975
       ],
       "mining_fatigue": [
        2,
-       11971
+       11975
       ],
       "poison": [
        2,
-       71
+       75
       ],
       "potion_sickness": [
        0,
-       11971
+       11975
       ]
      }
     }
@@ -1068,7 +1081,7 @@
     "actual": {
      "potion_sickness": [
       0,
-      11868
+      11890
      ]
     }
    },
@@ -1083,7 +1096,7 @@
     "actual": {
      "blindness": [
       0,
-      31
+      35
      ]
     }
    },
@@ -1092,15 +1105,15 @@
     "actual": {
      "haste": [
       3,
-      1171
+      1175
      ],
      "speed": [
       3,
-      1171
+      1175
      ],
      "jump_boost": [
       3,
-      1171
+      1175
      ]
     }
    },
@@ -1152,19 +1165,19 @@
     "actual": {
      "regeneration": [
       1,
-      371
+      379
      ],
      "resistance": [
       2,
-      1171
+      1179
      ],
      "speed": [
       1,
-      1171
+      1179
      ],
      "strength": [
       2,
-      371
+      379
      ]
     }
    },
@@ -1195,57 +1208,57 @@
     "actual": {
      "hunger": [
       49,
-      23
+      21
      ]
     }
    },
    "setup:vegan_schnitzel_java_effects": {
     "ok": true,
     "actual": {
-     "effects": {
-      "slow_falling": [
-       0,
-       2302
-      ],
-      "fire_resistance": [
-       0,
-       2310
-      ],
-      "blindness": [
-       0,
-       171
-      ],
-      "nausea": [
-       0,
-       571
-      ],
-      "hunger": [
-       4,
-       3571
-      ],
-      "wither": [
-       0,
-       31
-      ]
-     },
-     "elapsed_ticks": 70
+     "slow_falling": [
+      0,
+      2296
+     ],
+     "fire_resistance": [
+      0,
+      2308
+     ],
+     "blindness": [
+      0,
+      173
+     ],
+     "nausea": [
+      0,
+      573
+     ],
+     "hunger": [
+      4,
+      3573
+     ],
+     "wither": [
+      0,
+      33
+     ]
     }
    },
    "setup:euphemium_apple_effects_are_endless": {
     "ok": true,
     "actual": {
-     "resistance": [
-      120,
-      2147483620
-     ],
-     "fire_resistance": [
-      0,
-      2147483620
-     ],
-     "saturation": [
-      120,
-      2147483620
-     ]
+     "food_before": 20,
+     "effects": {
+      "resistance": [
+       120,
+       2147483618
+      ],
+      "fire_resistance": [
+       0,
+       2147483618
+      ],
+      "saturation": [
+       120,
+       2147483618
+      ]
+     }
     }
    },
    "setup:pancake_is_refused_without_the_bj_armor": {
@@ -1268,12 +1281,12 @@
    "setup:crackpipe_heals_ten_and_nauseates": {
     "ok": true,
     "actual": {
-     "before": 11.0,
+     "before": 12.0,
      "after": 20.0,
      "effects": {
       "nausea": [
        0,
-       171
+       167
       ]
      }
     }
@@ -1374,7 +1387,7 @@
     "actual": {
      "invisibility": [
       1,
-      583
+      577
      ]
     }
    },
@@ -1508,7 +1521,7 @@
    },
    "setup:survey_scanner_finds_ported_ores": {
     "ok": true,
-    "actual": "Found SCHIST! | Found OIL! | Replaced 1 slot(s) on ItemsTest with [Survey Scanner] | Changed the block at 20, 100, 16 | Changed the block at 25, 100, 11 | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Removed every effect from ItemsTest | true | Removed 66 item(s) from player ItemsTest | Digamma resistance:  N/A"
+    "actual": "Found SCHIST! | Found OIL! | The game time is 18545 tick(s) | Replaced 1 slot(s) on ItemsTest with [Survey Scanner] | Changed the block at 20, 100, 16 | Changed the block at 25, 100, 11 | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Removed every effect from ItemsTest | true | Removed 66 item(s) from player ItemsTest"
    },
    "setup:continuous_source_reads_in_the_buffer": {
     "ok": true,
@@ -1540,11 +1553,11 @@
    },
    "setup:laboratory_pipette_steps_by_one": {
     "ok": true,
-    "actual": "49/50mB | Replaced 1 slot(s) on ItemsTest with [Laboratory Grade Pipette] | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Target has no effects to remove | true | Removed 1 item(s) from player ItemsTest | 950/1000mB | Replaced 1 slot(s) on ItemsTest with [Pipette] | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true"
+    "actual": "49/50mB | The game time is 19651 tick(s) | Replaced 1 slot(s) on ItemsTest with [Laboratory Grade Pipette] | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Target has no effects to remove | true | Removed 1 item(s) from player ItemsTest | 950/1000mB | The game time is 19367 tick(s) | Replaced 1 slot(s) on ItemsTest with [Pipette]"
    },
    "setup:hot_ingot_cools_in_the_inventory": {
     "ok": true,
-    "actual": "{\"minecraft:custom_data\":{heat:70}}"
+    "actual": "{\"minecraft:custom_data\":{heat:64}}"
    },
    "setup:cooled_ingot_loses_its_tag": {
     "ok": true,
@@ -1866,33 +1879,33 @@
    "setup:one_decon_takes_half_a_rad_a_tick": {
     "ok": true,
     "actual": {
-     "drop": 24000
+     "drop": 26000
     }
    },
    "setup:decon_works_in_creative": {
     "ok": true,
     "actual": {
-     "dose": 249000,
+     "dose": 239000,
      "radaway": 0
     }
    },
    "setup:two_decons_take_a_rad_a_tick": {
     "ok": true,
     "actual": {
-     "drop": 50000
+     "drop": 52000
     }
    },
    "setup:out_of_the_box_nothing": {
     "ok": true,
     "actual": {
-     "dose": 280000,
+     "dose": 276000,
      "radaway": 0
     }
    },
    "setup:mycelium_irradiation_keeps_growing_the_dose": {
     "ok": true,
     "actual": {
-     "growth": 8000
+     "growth": 8400
     }
    },
    "setup:decon_ends_the_irradiation": {
@@ -1903,10 +1916,7 @@
    },
    "setup:audio_ntm:item.syringe": {
     "ok": true,
-    "actual": [
-     "sound resolved event=ntm:item.syringe file=/mnt/ssd120/sacer/so/onda1/items-es1g_5sj/.horizon-cache/mod-content/assets/ntm/sounds/tool/stim.ogg stream=false source=7 decoded=Some((39744, 32000))",
-     "sound resolved event=ntm:item.syringe file=/mnt/ssd120/sacer/so/onda1/items-es1g_5sj/.horizon-cache/mod-content/assets/ntm/sounds/tool/stim.ogg stream=false source=7 decoded=Some((39744, 32000))"
-    ]
+    "actual": "(dump omitted)"
    },
    "setup:audio_ntm:item.radaway": {
     "ok": true,
@@ -1923,7 +1933,7 @@
    "setup:audio_ntm:player.groan": {
     "ok": true,
     "actual": [
-     "sound resolved event=ntm:player.groan file=/mnt/ssd120/sacer/so/onda1/items-es1g_5sj/.horizon-cache/mod-content/assets/ntm/sounds/player/groan1.ogg stream=false source=7 decoded=Some((10944, 44100))"
+     "sound resolved event=ntm:player.groan file=/mnt/ssd120/sacer/so/onda1/items-gurkc4e3/.horizon-cache/mod-content/556a7ccc9b0b86d6/assets/ntm/sounds/player/groan2.ogg stream=false source=7 decoded=Some((29184, 44100))"
     ]
    },
    "setup:audio_ntm:item.techboop": {
@@ -1943,19 +1953,16 @@
  "report": {
   "ok": true,
   "scenario": "items",
-  "game": "/mnt/ssd120/sacer/so/onda1/items-es1g_5sj",
-  "binary": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda1/client-after",
-  "binary_sha256": "e7a999ee9c4e3448c88a1cbc8c3123e281a14a82cfa49aa74998ec8089855d84",
-  "bundle": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda1/dist-head/ntm.hmod",
-  "bundle_sha256": "9edeca8ad77a9d3e62076ec59cd5d8aaa0e20dc2d2c84db501c1a94a1a6d17d1",
+  "game": "/mnt/ssd120/sacer/so/onda1/items-gurkc4e3",
+  "binary": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda1/client-merge",
+  "binary_sha256": "bb49076b05f363361e0a3dbc9c220d4d641d6a7778ff9681ba5aad8531423ef1",
+  "bundle": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda1/dist-merge/ntm.hmod",
+  "bundle_sha256": "8aad9aaa6307cd044e86f7c90d8d52f7f8814d61c6eabc613bd0e01174597a7b",
   "phases": [
    "setup",
    "capture-state",
    "check-state"
   ],
-  "backend_warnings": [
-   "Horizon renderer: temporal anti-aliasing unavailable (Validation Error",
-   "Horizon renderer: temporal anti-aliasing unavailable (Validation Error"
-  ]
+  "backend_warnings": []
  }
 }
