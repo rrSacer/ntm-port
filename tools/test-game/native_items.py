@@ -247,7 +247,9 @@ def setup(g):
     mask=rate_sample()
     g.command('item replace entity @s armor.head with minecraft:air');bare=rate_sample()
     g.command('item replace entity @s armor.chest with ntm:hazmat_plate');hazmat=rate_sample()
-    g.check('mask_and_hazmat_reduce_gamma',0<mask<bare and 0<hazmat<bare,{'mask':mask,'bare':bare,'hazmat':hazmat})
+    # The window is exact, so the values are: 350 a second bare, the M65 helmet's 0.095 makes 281 and the hazmat
+    # plate's 201 (radiation_mod, 10^-resistance, in Java float); a halved exponent or another sum dies here.
+    g.check('mask_and_hazmat_reduce_gamma',0<mask<bare and 0<hazmat<bare and mask==281 and hazmat==201,{'mask':mask,'bare':bare,'hazmat':hazmat})
     g.command('gamemode creative @s');g.command('clear @s');g.command('ntmitem dose 200000')
     give_hand(g,'ntm:radaway');use(g);time.sleep(7.5)
     g.check('radaway_exact_java_total',state(g)['dose']==60000,state(g))
