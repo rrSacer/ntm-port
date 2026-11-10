@@ -704,7 +704,20 @@ def break_act(g):
     g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
     g.command('give @s minecraft:diamond_pickaxe 1')
     g.ctl('select minecraft:diamond_pickaxe')
-    g.ctl('break %d %d %d --timeout 30' % core)
+    if SCENARIO in MB_BREAK and not VANILLA:
+        # A multiblock's core hides behind its cells: the player breaks the first cell he can see (any cell breaks it).
+        seen = None
+        for dx, dy, dz in [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]:
+            cell = (core[0] + dx, core[1] + dy, core[2] + dz)
+            try:
+                g.ctl('break %d %d %d --timeout 30' % cell)
+                seen = cell
+                break
+            except RuntimeError:
+                continue
+        g.check('a_cell_was_broken', seen is not None, seen)
+    else:
+        g.ctl('break %d %d %d --timeout 30' % core)
     time.sleep(1.5)
     if SCENARIO == 'replace':
         g.command('clear @s')
