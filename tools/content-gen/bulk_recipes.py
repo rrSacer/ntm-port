@@ -86,6 +86,9 @@ class Resolver:
         vanilla_ores={'ingotIron':'iron_ingot','ingotGold':'gold_ingot','ingotCopper':'copper_ingot','ingotBrick':'brick','ingotBrickNether':'nether_brick','ingotNetherBrick':'nether_brick','nuggetIron':'iron_nugget','nuggetGold':'gold_nugget','dustRedstone':'redstone','dustGlowstone':'glowstone_dust','dustGunpowder':'gunpowder','gemDiamond':'diamond','gemEmerald':'emerald','gemQuartz':'quartz','gemLapis':'lapis_lazuli','blockIron':'iron_block','blockGold':'gold_block','blockDiamond':'diamond_block','blockEmerald':'emerald_block','blockGlass':'glass','blockGlassColorless':'glass','paneGlass':'glass_pane','paneGlassColorless':'glass_pane','sand':'sand','stone':'stone','cobblestone':'cobblestone','stickWood':'stick','slimeball':'slime_ball'}
         vanilla_ores['blockRedstone']='redstone_block'
         for ore,item in vanilla_ores.items():self.ore[ore].add('minecraft:'+item)
+        # Forge 1.7.10 OreDictionary.initVanillaEntries: paneGlass is the plain pane and the stained one with the
+        # wildcard (all 16 colours); paneGlassColorless stays the plain pane.
+        self.ore['paneGlass'].update('minecraft:'+color+'_stained_glass_pane' for color in COLORS)
         for color in COLORS:self.ore['dye'+''.join(x.title() for x in color.split('_'))].add('minecraft:'+color+'_dye')
         # Forge's generic dye key includes all vanilla dye metadata and NTM's
         # explicit registrations (including wildcard enum families).
