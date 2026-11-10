@@ -6,6 +6,7 @@ simulation for the source's 20,000/50,000-life breeding/depletion checks.
 Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|automation|failure|soils
 """
 import json
+import os
 import re
 import sys
 import time
@@ -85,6 +86,8 @@ def menu_open(g,timeout=20):
     machine answers the click late), or the last screen seen when `timeout` seconds pass without one."""
     deadline=time.monotonic()+timeout
     while True:
+        # A deliberate failure for the mutation run (a menu that never opens); never set otherwise.
+        if os.environ.get('NTM_ZIRNOX_MUTANT')=='menu_never':g.close()
         screen=g.ctl('screen')
         if screen.get('screen')=='container' or time.monotonic()>=deadline:return screen
         time.sleep(.1)

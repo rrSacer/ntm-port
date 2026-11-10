@@ -30,7 +30,7 @@ def use(g,seconds=0):
     """Use the held item: a click, or held for `seconds` of game time (20 server ticks a second)."""
     g.close();g.ctl('look-at 20 160 8')
     if seconds:
-        start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,round(seconds*20))
+        start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,round(seconds*20)//(4 if MUTANT=='use_short' else 1))
         try:g.ctl('mouse right up')
         except RuntimeError as error:
             # A use that killed the player leaves the death screen: nothing to release.
@@ -45,6 +45,9 @@ def use(g,seconds=0):
 # loaded machine a second of wall time is any number of ticks.
 EAT_TICKS=32   # ItemFood.getMaxItemUseDuration (cotton candy, vegan schnitzel)
 SYNC_TICKS=10  # tolerance: the client's copy of the inventory and the effects trails the server by a few ticks
+# The server's tick rate while a check needs a release inside a use: a loaded machine takes seconds a controller
+# command (a release measured 15 s late), so 1 tick a second keeps it within the 22 ticks a cancel has.
+SLOW_RATE=1
 
 
 def game_time(g):
@@ -54,7 +57,21 @@ def game_time(g):
     return int(n.group(1))
 
 
-def wait_ticks(g,since,n,timeout=60):
+# A deliberate failure for one converted check (tools/test-game: the proof that a check moved to tick or state
+# waits still catches what it caught): see each use of MUTANT. Never set outside a mutation run.
+MUTANT=os.environ.get('NTM_ITEMS_MUTANT','')
+
+
+def settle_ticks(g,read,done,ticks=40):
+    """`read()` once `done` holds for it or `ticks` server ticks pass; the check keeps its own verdict."""
+    start=game_time(g)
+    while True:
+        value=read()
+        if done(value) or game_time(g)>=start+ticks:return value
+        time.sleep(.1)
+
+
+def wait_ticks(g,since,n,timeout=180):
     """Until the server's game time is `n` ticks past `since`; returns it."""
     deadline=time.monotonic()+timeout
     while time.monotonic()<deadline:
@@ -68,23 +85,37 @@ def cancel_use(g,item,count,ticks,duration,release_by=None,on_try=None):
     """Hold the use of the stack in hand for `ticks` server ticks and release it, well short of its `duration`
     (or of `release_by`, when the check needs the release earlier); `on_try` runs as each try starts.
     The server ticks on while the controller waits for the client thread, which a loaded machine slows to over a
-    second a command: at 5 ticks a second the release still lands inside the use. A try whose release reached
+    second a command: at SLOW_RATE ticks a second the release still lands inside the use. A try whose release reached
     the server after the use could complete is no cancel: it gets its stack back and is repeated. Returns the
     state while held and the ticks held; waits out `duration` so a late completion would show."""
-    g.command('tick rate 5')
+    if MUTANT=='late_release:'+item:ticks=duration+SYNC_TICKS
+    g.command(f'tick rate {SLOW_RATE}')
     try:
-        for _ in range(3):
+        for attempt in range(3):
             if on_try:on_try()
             g.close();g.ctl('look-at 20 160 8')
             start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,ticks)
             held=g.ctl('state');g.ctl('mouse right up');released=game_time(g)
-            if released-start<(release_by or duration-SYNC_TICKS):break
-            # What the completed use left (the containers, a ring pull) goes with it.
+            if released-start<(release_by or duration-SYNC_TICKS) or attempt==2:break
+            # What the completed use left (the containers, a ring pull) goes with it; the last try's stays for
+            # the check to see.
             g.command('clear @s');give_hand(g,item,count)
         wait_ticks(g,released,duration+SYNC_TICKS)
     finally:
         g.command('tick rate 20')
     return held,released-start
+
+
+def use_one(g,duration):
+    """Use one of a stack in hand through its `duration` and release before a second is done: at SLOW_RATE ticks a
+    second (see cancel_use), so only for checks that read no effect durations afterwards."""
+    ticks=duration+SYNC_TICKS if MUTANT!='second_one_too' else 2*duration+SYNC_TICKS
+    g.close();g.ctl('look-at 20 160 8');g.command(f'tick rate {SLOW_RATE}')
+    try:
+        start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,ticks)
+        g.ctl('mouse right up');wait_ticks(g,game_time(g),SYNC_TICKS)
+    finally:
+        g.command('tick rate 20')
 
 
 def server_effects(g):
@@ -166,22 +197,25 @@ def setup(g):
     active,held=cancel_use(g,'ntm:cotton_candy',2,9,EAT_TICKS)
     g.check('real_eating_started',active.get('using') is not None,active)
     g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,{'counts':counts(g),'held_ticks':held})
-    # The hunger (20 ticks) drains the food; the candy is eaten held for EAT_TICKS and a margin, at 5 ticks a
+    # The hunger (20 ticks) drains the food; the candy is eaten held for EAT_TICKS and a margin, at SLOW_RATE ticks a
     # second so the release lands before a second one is done (EAT_TICKS more).
     # The saturation goes first (a candy eaten by a late release above leaves plenty): until the food is down.
     for _ in range(6):
         g.command('effect give @s minecraft:hunger 1 255 true');wait_ticks(g,game_time(g),20+SYNC_TICKS)
         if g.ctl('state')['player']['food']<=17:break
-    before=g.ctl('state')['player'];g.close();g.ctl('look-at 20 160 8');g.command('tick rate 5')
-    start=game_time(g);g.ctl('mouse right down');wait_ticks(g,start,EAT_TICKS+SYNC_TICKS)
-    g.ctl('mouse right up');released=game_time(g);wait_ticks(g,released,SYNC_TICKS);g.command('tick rate 20')
+    before=g.ctl('state')['player'];g.close();g.ctl('look-at 20 160 8');g.command(f'tick rate {SLOW_RATE}')
+    start=game_time(g)
+    if MUTANT!='food_not_eaten':g.ctl('mouse right down')
+    wait_ticks(g,start,EAT_TICKS+SYNC_TICKS)
+    g.ctl('mouse right up');released=game_time(g);wait_ticks(g,released,SYNC_TICKS)
+    # The server's copy, read while it still runs at SLOW_RATE ticks a second: the client counted the effects down at
+    # 20 a second meanwhile, and at 20 a slow controller lets the 100-tick wither (ItemCottonCandy:23) run out.
+    if MUTANT=='no_wither':g.command('effect clear @s minecraft:wither')
+    effects=server_effects(g);g.command('tick rate 20')
     after=g.ctl('state')['player']
     g.check('food_and_saturation_apply',after['food']>before['food'] and after['saturation']>before['saturation'],
             {'before':before,'after':after,'held_ticks':released-start})
     g.check('only_one_food_consumed',counts(g).get('ntm:cotton_candy')==1,counts(g))
-    # The server's copy: the client counted the effects down at 20 a second while the server ran at 5, and the
-    # 100-tick wither (ItemCottonCandy:23) can already be gone from it.
-    effects=server_effects(g)
     g.check('java_food_effects',all(effects.get(k)==v for k,v in {'poison':0,'wither':0,'weakness':2,'speed':2,'resistance':4}.items()),effects)
     g.command('effect clear @s');g.command('clear @s');g.command('gamemode creative @s')
     # A stacked syringe returns its container to the inventory.
@@ -202,13 +236,14 @@ def setup(g):
     # Real gamma dose uses the same equipped-armor resolver as other sources.
     g.command('gamemode survival @s');give_hand(g,'ntm:ingot_uranium');time.sleep(11)
     def rate_sample():
-        # The dose is added once a second: measure the size of single
-        # increments (never a window that may hold three or four of them).
-        last=state(g)['dose'];steps=[];deadline=time.monotonic()+30
-        while len(steps)<3 and time.monotonic()<deadline:
-            time.sleep(.2);now=state(g)['dose']
-            if now!=last:steps.append(now-last);last=now
-        steps.sort();return steps[len(steps)//2] if steps else 0
+        # The dose is added every RATE_EVERY (20) ticks of the NTM server, which ticks only while the world runs:
+        # frozen, stepped 200 ticks and frozen again, the window holds exactly ten increments however slow the
+        # controller (it was a polled single increment, which a slow poll merged with the next).
+        g.command('tick freeze');before=state(g)['dose'];start=game_time(g)
+        g.command('tick step 200');wait_ticks(g,start,200)
+        after=state(g)['dose'];g.command('tick unfreeze')
+        return (after-before)//10
+    if MUTANT=='mask_unprotective':g.command('item replace entity @s armor.head with minecraft:leather_helmet')
     mask=rate_sample()
     g.command('item replace entity @s armor.head with minecraft:air');bare=rate_sample()
     g.command('item replace entity @s armor.chest with ntm:hazmat_plate');hazmat=rate_sample()
@@ -262,27 +297,36 @@ def full_inventory(g):
     g.close();g.command('tp @s 24.5 101 7.5');time.sleep(1)
     # Food has no container: eating in a full inventory only consumes the food.
     full(g,'ntm:cotton_candy',2);g.command('effect give @s minecraft:hunger 1 255 true');time.sleep(1.6)
-    use(g,1.8);actual=counts(g)
+    use_one(g,EAT_TICKS);actual=counts(g)
     g.check('full_food_consumes_one',actual.get('ntm:cotton_candy')==1 and not dropped(g),{'counts':actual,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSyringe: the used-up stack becomes the empty syringe in its own slot...
     full(g,'ntm:syringe_metal_medx',1);use(g);actual=counts(g)
     g.check('full_last_syringe_becomes_empty_in_place',actual.get('ntm:syringe_metal_empty')==1 and not actual.get('ntm:syringe_metal_medx') and not dropped(g),{'counts':actual,'dropped':dropped(g)})
-    # ...and with more in the stack the empty syringe is dropped, never lost.
+    # ...and with more in the stack the empty syringe is dropped, never lost. The level is frozen from before the
+    # use (`/tick freeze` ticks only the players): the dropped container's pickup delay does not run while a slow
+    # controller frees the slot and looks.
+    g.command('tick freeze')
     full(g,'ntm:syringe_metal_medx',2);use(g);actual=counts(g);away=dropped(g)
     effects=g.ctl('state')['player']['effects']
     g.check('full_stacked_syringe_drops_container',actual.get('ntm:syringe_metal_medx')==1 and not actual.get('ntm:syringe_metal_empty') and away.get('ntm:syringe_metal_empty')==1 and any(e['id'].endswith('resistance') and e['amplifier']==2 for e in effects),{'counts':actual,'dropped':away,'effects':effects})
     # `Player.drop(stack, false)`: pickup delay 40, so a slot freed at once does
     # not take the syringe back yet; it does after the delay.
     g.command('item replace entity @s inventory.26 with minecraft:air');time.sleep(.4)
+    if MUTANT=='pickup_delay_run_out':g.command('tick unfreeze');wait_ticks(g,game_time(g),40+SYNC_TICKS)
     early=counts(g).get('ntm:syringe_metal_empty',0)
-    time.sleep(3.6);late=counts(g).get('ntm:syringe_metal_empty',0)
+    g.command('tick unfreeze');wait_ticks(g,game_time(g),40+SYNC_TICKS)
+    late=settle_ticks(g,lambda:counts(g).get('ntm:syringe_metal_empty',0),lambda n:n==1)
     g.check('thrown_container_waits_its_pickup_delay',early==0 and late==1,{'early':early,'late':late,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSimpleConsumable.doRadaway: the emptied slot is still taken while the
     # container is added, so even the last RadAway drops its iv_empty.
     g.command('ntmitem dose 200000')
-    full(g,'ntm:radaway',1);use(g);actual=counts(g);away=dropped(g);treated=state(g)
+    full(g,'ntm:radaway',1);use(g)
+    def read():
+        if MUTANT=='radaway_container_lost':g.command('kill @e[type=item,distance=..8]')
+        return counts(g),dropped(g)
+    actual,away=settle_ticks(g,read,lambda v:not v[0].get('ntm:radaway') and v[1].get('ntm:iv_empty')==1);treated=state(g)
     g.check('full_last_radaway_drops_container',not actual.get('ntm:radaway') and not actual.get('ntm:iv_empty') and away.get('ntm:iv_empty')==1 and treated.get('radaway',0)>0,{'counts':actual,'dropped':away,'state':treated})
     full(g,'ntm:radaway',2);use(g);actual=counts(g);away=dropped(g)
     g.check('full_stacked_radaway_keeps_stack_and_drops_container',actual.get('ntm:radaway')==1 and away.get('ntm:iv_empty')==1,{'counts':actual,'dropped':away})
@@ -443,7 +487,7 @@ def energy(g):
         return [int(m) for m in re.findall(r'"event":"gulp","item":"(\d+)"',log)]
     def log_size():
         return len((g.folder/'client-first.log').read_text(errors='replace'))
-    g.command('clear @s');give_hand(g,'ntm:bdcl',2);mark=log_size();use(g,2.1);time.sleep(.5)
+    g.command('clear @s');give_hand(g,'ntm:bdcl',2);mark=log_size();use_one(g,40)  # ItemBDCL.getMaxItemUseDuration
     g.check('bdcl_is_consumed_without_a_container',counts(g).get('ntm:bdcl')==1 and len(counts(g))==1,counts(g))
     full_use=[0,5,10,15,19,26];heard=gulps(mark)
     # The button is still down when the first drink ends, so a second use may begin: its gulps start over.
@@ -615,7 +659,9 @@ def foods(g):
     reset(g);starve(g);hold(g,'ntm:med_ipecac',1.8);effects=effect_map(g)
     g.check('ipecac_when_hungry_induces_hunger',has_effects(effects,{'hunger':(49,50)}) and not counts(g),effects)
     reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true')
-    start=eat_ticks(g,'ntm:schnitzel_vegan');effects=effect_map(g);elapsed=game_time(g)-start
+    start=eat_ticks(g,'ntm:schnitzel_vegan')
+    if MUTANT=='schnitzel_short_blindness':g.command('effect clear @s minecraft:blindness');g.command('effect give @s minecraft:blindness 1 0 true')
+    effects=effect_map(g);elapsed=game_time(g)-start
     # The effects are given when the eating ends (at least EAT_TICKS after `start`) and read before `elapsed`.
     g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)},elapsed)
             and not counts(g).get('ntm:schnitzel_vegan'),{'effects':effects,'elapsed_ticks':elapsed})

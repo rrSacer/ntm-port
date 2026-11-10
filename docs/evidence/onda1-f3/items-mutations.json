@@ -1,0 +1,78 @@
+{
+ "rule": "each converted wait has a mutant (NTM_ITEMS_MUTANT / NTM_ZIRNOX_MUTANT) that must fail at the check it protects",
+ "final": [
+  {
+   "mutant": "food_not_eaten",
+   "expected": "setup:food_and_saturation_apply",
+   "result": "CAUGHT(setup:food_and_saturation_apply)"
+  },
+  {
+   "mutant": "no_wither",
+   "expected": "setup:java_food_effects",
+   "result": "CAUGHT(setup:java_food_effects)"
+  },
+  {
+   "mutant": "mask_unprotective",
+   "expected": "setup:mask_and_hazmat_reduce_gamma",
+   "result": "CAUGHT(setup:mask_and_hazmat_reduce_gamma)"
+  },
+  {
+   "mutant": "second_one_too",
+   "expected": "setup:full_food_consumes_one",
+   "result": "CAUGHT(setup:full_food_consumes_one)"
+  },
+  {
+   "mutant": "pickup_delay_run_out",
+   "expected": "setup:thrown_container_waits_its_pickup_delay",
+   "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+  },
+  {
+   "mutant": "radaway_container_lost",
+   "expected": "setup:full_last_radaway_drops_container",
+   "result": "CAUGHT(setup:full_last_radaway_drops_container)"
+  },
+  {
+   "mutant": "use_short",
+   "expected": "ANY",
+   "result": "CAUGHT(setup:can_leaves_ring_pull_and_empty_can)"
+  },
+  {
+   "mutant": "late_release:ntm:can_smart",
+   "expected": "setup:can_cancel_keeps_it",
+   "result": "CAUGHT(setup:can_cancel_keeps_it)"
+  },
+  {
+   "mutant": "late_release:ntm:bdcl",
+   "expected": "setup:cancelled_bdcl_stops_its_gulps",
+   "result": "CAUGHT(setup:cancelled_bdcl_stops_its_gulps)"
+  },
+  {
+   "mutant": "second_one_too_energy",
+   "expected": "setup:bdcl_is_consumed_without_a_container",
+   "result": "CAUGHT(setup:bdcl_is_consumed_without_a_container)"
+  },
+  {
+   "mutant": "schnitzel_short_blindness",
+   "expected": "setup:vegan_schnitzel_java_effects",
+   "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+  },
+  {
+   "mutant": "late_release:ntm:cotton_candy",
+   "expected": "setup:cancel_does_not_consume",
+   "result": "CAUGHT(setup:cancel_does_not_consume)"
+  },
+  {
+   "mutant": "menu_never",
+   "expected": "zirnox",
+   "result": "CAUGHT(AssertionError: setup:tank_menu_288: {'buttons': [], 'screen': 'playing'})"
+  }
+ ],
+ "first_pass_not_caught": [
+  {
+   "mutant": "late_release:ntm:cotton_candy",
+   "expected": "setup:cancel_does_not_consume",
+   "result": "NOT-CAUGHT(got:setup:chocolate_milk_kills_a_survival_drinker)"
+  }
+ ],
+ "fix": "cancel_use restocked the stack after its last try too, hiding the consumption; it no longer does"
+}
