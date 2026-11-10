@@ -51,6 +51,10 @@ EMITTING = {'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pil
             'coupled-break': (('ntm:pile_rod',), 6, 6)}
 
 
+# The multiblock furnaces' break scenarios: the items counted before the cut (6 + 1, 6 + 3, 8 + 2).
+MB_TOTALS = {'iron-break': 7, 'steel-break': 9, 'combination-break': 10}
+
+
 # Breaks of a machine holding rods (its hidden contents), with what both worlds hold before: counted equal to the control.
 HIDDEN = {'frozen-break': 12, 'frozen-unload': 12}
 
@@ -373,7 +377,7 @@ def main():
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
                 if exact and controlled:
                     # A death outside any save: both worlds are the last save, exactly (the break, the transfer never happened).
-                    base = TRANSFERS.get(args.scenario) or HIDDEN.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
+                    base = TRANSFERS.get(args.scenario) or HIDDEN.get(args.scenario) or MB_TOTALS.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
                     last = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
                     outcome['as_the_last_save'] = all(v == (base, base) for v in last.values()) and all(
                         o.get(r) == o.get('base_items') for o in outcomes.values() for r in crash_proof.REOPENS)
