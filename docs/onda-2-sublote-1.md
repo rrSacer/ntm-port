@@ -122,8 +122,49 @@ cadeia real. Ela só sai quando a receita original do forno elétrico estiver
 alcançável sem ela; a retirada é individual, com teste, e vem depois dos itens
 1 a 3. As demais não têm relação com estas máquinas.
 
+## Contratos implementados (fonte: classe e linha)
+
+Todos guardam os itens como slots do motor (`Slotted`); a queima, o progresso,
+o calor e os níveis de cinza viajam **com os slots** no `save_state`, para que
+uma queda entre o save do mundo e o do mod nunca deixe um item gasto sem a
+queima que ele deu (ou o contrário).
+
+| ID | Contrato (`ntm-src/.../tileentity/machine/`) | Módulo |
+| --- | --- | --- |
+| `machine_furnace_brick_off/on` | `TileEntityFurnaceBrick.java:65-125`: o combustível só é consumido com algo a fundir; 200 de progresso, somado pela velocidade do item (`burnSpeed`, linhas 36-44: argila/netherrack ×4, pedregulho/areia/troncos ×2); cada 2000 de queima de uma família de combustível (`ashLevel*`, 86-92) deixa uma cinza no slot 3 se couber (`processAsh`, 163-176); balde de lava devolve o balde. `getAccessibleSlotsFromSide` (139-141): entrada por cima, combustível pelos lados, saída/combustível/cinza por baixo; `canExtractItem` só os slots 2 e 3. | `furnace_brick.rs` + `fuel.rs` |
+| `machine_electric_furnace_on` | O mesmo bloco aceso de `MachineElectricFurnace`: um nome a mais para a mesma máquina (`..._off` já era nativa); ambos soltam o `_off` (`getItemDropped`, linhas 61-64). | `machine.rs` (`ElectricFurnace`) |
+| `furnace_iron` | `TileEntityFurnaceIron.java:67-123`: um combustível entra sem entrada mas só queima enquanto funde; `ModuleBurnTime` (49-55: carvão e linhito ×1,25, coque ×1,5, sólido/foguete/balefire ×2); 160 ticks, `baseTime - (baseTime/2)·nível/3` com o upgrade de velocidade (slot 4). Multibloco `{1,0,1,0,1,0}` com `TileEntityProxyCombo(true,false,false)`: toda célula do multibloco alcança o inventário. | `furnaces.rs`, `upgrades.rs` |
+| `furnace_steel` | `TileEntityFurnaceSteel.java:49-80, 191-218`: três linhas; calor puxado do bloco de baixo (`tryPullHeat`: ⌈5 % da diferença⌉); funde acima de 1/3 do calor máximo gastando `(calor − 1/3)/10` por tick e linha, 40 000 TU por item; bônus de 25 % (minérios), 50 % (troncos, alcatrão) paga um item extra a cada 100 %. Multibloco `{1,0,1,1,1,1}`. | `furnace_steel.rs`, `oredict.rs` |
+| `furnace_combination` | `TileEntityFurnaceCombination.java:65-136`: calor do bloco de baixo (¼ da diferença), `calor/100` de progresso por tick, 20 000 por item; saída de item e de fluido (tanque de 24 000 mB, emissor da rede de fluidos, enche recipientes no slot 2→3); 53 receitas extraídas de `CombinationRecipes` (item exato primeiro, depois chaves do OreDict). Portas de fluido: o anel de 16 células de `TilePortShapes.comboven`. | `furnace_combination.rs` |
+
+### Regras de mão e de funil (as duas são diferentes no Java)
+
+`Slot.isItemValid` do 1.7.10 é sempre verdadeiro: uma mão põe qualquer item nos
+`Slot` comuns (entrada e combustível). Só os `SlotSmelting`/`SlotCraftingOutput`
+(saídas) recusam e o `SlotUpgrade` aceita só upgrades. O funil, ao contrário,
+pergunta `isItemValidForSlot` e `canExtractItem` do bloco. Os módulos expõem as
+duas regras; o atalho com shift do forno de tijolo visita o slot de combustível
+antes do de entrada (`transferStackInSlot`), como o Java.
+
+### Lacunas honestas (declaradas, não escondidas)
+
+| Lacuna | Por quê |
+| --- | --- |
+| Fuligem, fumaça e poluição (`PollutionHandler`, `TileEntityMachinePolluting`) | O port inteiro não tem sistema de poluição (a fornalha, os aquecedores e o forno elétrico também omitem). Entra com a frente de sobrevivência. |
+| Cinza do forno de tijolo vira item no slot 3, sem o cinzeiro | O cinzeiro (`machine_ashpit`) é da Onda 1. |
+| Pilha de saída em 64 | O Java usa o `getMaxStackSize` do item; o port não tem esse dado em Rust. |
+| Sons e partículas dos fornos | `fire.fire`, lava e fumaça são do cliente; fora desta frente. |
+| Fogo em entidades acima do forno de combinação | Depende da API de entidades. |
+| Direções das portas de fluido | O motor liga as células do anel como dutos, sem restringir a face de cada uma (`TilePortShapes.comboven` fixa direções). |
+| Modelos 3D | Continua o cubo; ver acima. |
+
 ## Estado
 
 | # | ID | Estado |
 | --- | --- | --- |
-| 1 a 13 | todos | Inert; trabalho não iniciado. |
+| 1, 2 | `machine_furnace_brick_off/on` | lógica, receitas, slots, funil, tela e testes prontos; prova em jogo e de corte pendentes |
+| 3 | `machine_electric_furnace_on` | pronto na lógica e testes; prova em jogo pendente |
+| 4 | `furnace_iron` | idem |
+| 5 | `furnace_steel` | idem |
+| 6 | `furnace_combination` | idem |
+| 7 a 13 | demais | Inert; trabalho não iniciado |
