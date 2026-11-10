@@ -999,7 +999,7 @@ outra coluna mantém os dummies; o pin de `compatibility.json` segue a `ntm-curr
 | P1-1 (achado na reprova J) | A migração encolhendo uma coluna tira dummies do topo: essas escritas são do mod (`set_machine_blocks` com as células como suas, o escopo de blocos próprios do host nativo), não "dummy tirado", senão a corrente do P1-1 quebraria a coluna (a J mostrou 16 → 6 deixando nada). Teste `a_column_is_found_from_any_cell_and_rebuilt_only_on_demand` com as escritas devolvidas como o jogo devolve; a mutação (voltar a `set_blocks`) é pega |
 | P2-1 | A J conta a tampa tirada com a chave em entidades + inventário (a tampa sai sem atraso de coleta, como no Java, e o jogador pode pegá-la). Reexecutada inteira com o pacote atual |
 | P2-2 | **Escolha: confirmação explícita.** `/ntmrbmk dial dialColumnHeight <v>` cuja altura efetiva seja diferente de 4 é recusado com a explicação ("o modelo das colunas ainda desenha 4 células até o ticket T02-V") e só vale com `confirmar` no fim; mesmo assim responde com o aviso. Motivo: mantém o dial do Java disponível (2..16, D5) para quem precisa, sem que alguém o mude por engano e veja um reator enganoso; limitar a 4 tiraria uma regra do Java até o T02-V |
-| P3-1 | **Custo conhecido, sem mudança.** A velocidade já é a do `new EntityItem` do Java (±0,1 horizontal, 0,2 para cima: `dispenser::new_item_motion`). O voo de 3–4 blocos vem de a tampa nascer dentro da célula do topo, que é um cubo sólido (o dummy usa o modelo de barreira): o motor a empurra para fora, como o 1.7.10 faz com `func_145771_j` nas colunas que são cubos normais (o Java tenta −x primeiro). Nos canais (`RBMKRod.isOpaqueCube` falso) o Java não empurra. Igualar exigiria a física de entidade do motor por tipo de coluna; fica registrado |
+| P3-1 | **Custo conhecido, sem mudança.** A velocidade já é a do `new EntityItem` do Java (±0,1 horizontal, 0,2 para cima: `dispenser::new_item_motion`). O voo vem de a tampa nascer dentro da célula do topo e ser empurrada para fora dela, como no 1.7.10: `func_145771_j` empurra qualquer entidade dentro de uma caixa de colisão, e toda coluna tem colisão inteira (`RBMKBase.getCollisionBoundingBoxFromPool:127-148`), canais inclusive. Só a direção difere: no Java a primeira face livre testada é −x; o motor segue a sua ordem. Igualar a direção exigiria a física de entidade do motor; fica registrado |
 | P3-2 | `core_of` de uma célula de coluna desce pela sequência do próprio dummy (`column_core`); a busca dos outros multiblocos volta à altura deles (`rise` sem colunas) |
 | P3-3 | `Registry.column_dummies` (montado no `load`) no lugar de percorrer as definições a cada consulta de funil |
 | P3-4 | Ver P1-1 |
@@ -1009,9 +1009,16 @@ Pontos de contato com o motor: o segundo commit da `rbmk-t02-engine` (`perf(mult
 their own run`) mexe só em `mod_multiblocks.rs` (`Registry.column_dummies`/`column_rise`, `load`, `Multiblock::rise`,
 `core_of` → `column_core`, `inventory_core`, `column_port`, testes).
 
-Desvio que fica (comando no núcleo): `/setblock` sobre o **núcleo** segue o `/setblock` moderno do motor, que apaga o
-BE sem derramar (como um baú no vanilla atual); no Java o `breakBlock` derramaria. A tampa cai mesmo assim (caminho de
-remoção do mod). Quebra pelo jogador, explosão e o dummy por comando derramam.
+### Ressalvas da re-revisão (P3, registradas)
+
+| Achado | Registro |
+| --- | --- |
+| P3-6 | A fila `rbmk_breaks` (dummy tirado → corrente até o núcleo) vive só em memória. Se o chunk descarregar ou o save cair dentro do mesmo tick em que o dummy saiu e antes de a fila rodar, a coluna fica mais baixa, sem perda nem cópia de item (o BE e o conteúdo ficam no núcleo). Ao reabrir, a coluna mais baixa é uma coluna válida; não há retomada da corrente |
+| P3-7 | `/setblock` sobre o **núcleo** segue o `/setblock` moderno do motor, que apaga o BE sem derramar (como um baú no vanilla atual); no Java o `breakBlock` derramaria o inventário. A tampa cai mesmo assim (caminho de remoção do mod). Quebra pelo jogador, explosão e dummy por comando derramam |
+| P3-8 | Numa explosão, o Java dropa um item da coluna por célula explodida, com chance 1/tamanho da explosão (`Block.dropBlockAsItemWithChance`), dummies inclusive (o dummy é o próprio bloco da coluna). O port não dropa nenhum: o dummy é um bloco sem item e o núcleo quebrado pela corrente não dá o item. Desvio que ficou de fora antes; com a resistência Java (18) só explosões fortes chegam lá (T16) |
+
+O cenário C passa a contar também o item da coluna quebrada pelo jogador (`ntm:rbmk_blank`) na próxima rodada de
+provas do T02 (no rebase sobre o motor novo).
 
 
 ### Validação das correções (10/11/2026)
