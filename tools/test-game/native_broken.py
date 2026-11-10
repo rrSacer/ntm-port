@@ -28,18 +28,36 @@ def tag(product):
     return f'{{ntm_broken:{{id:"{product}"}}}}'
 
 
+def top_level(text):
+    """The `{...}` objects of a list at depth 1 (an entry nests components, custom_data and ntm_broken)."""
+    out, depth, start = [], 0, None
+    for i, c in enumerate(text):
+        if c == '{':
+            if depth == 1:
+                start = i
+            depth += 1
+        elif c == '}':
+            depth -= 1
+            if depth == 1 and start is not None:
+                out.append(text[start:i + 1])
+                start = None
+        elif c == '[' and depth == 0:
+            depth = 1
+    return out
+
+
 def items(g, p):
     """The block entity's slots, by slot: [id, count, product named by the stack's custom_data or None]."""
     text = ' '.join(g.command(f'data get block {p[0]} {p[1]} {p[2]} Items').get('chat', []))
+    text = text[text.find('['):]
     out = {}
-    # An entry nests (components, custom_data, ntm_broken): split at each `Slot:` instead of matching braces.
-    for entry in re.split(r'\{\s*[sS]lot:', text)[1:]:
-        slot = re.match(r'\s*(\d+)', entry)
-        ident = re.search(r'id: ?"?([\w:]+)"?', entry)
+    for entry in top_level(text):
+        slot = re.search(r'[sS]lot: ?(\d+)', entry)
         count = re.search(r'[cC]ount: ?(\d+)', entry)
         product = re.search(r'ntm_broken: ?\{ ?id: ?"([\w:]+)"', entry)
-        if slot and ident and count:
-            out[int(slot[1])] = [ident[1], int(count[1]), product[1] if product else None]
+        item = re.search(r'(?:^|[,{] ?)id: ?"(ntm:broken_item|[\w:]+)"(?=[,}])', entry.replace(product[0], '') if product else entry)
+        if slot and item and count:
+            out[int(slot[1])] = [item[1], int(count[1]), product[1] if product else None]
     g.evidence['raw_items'] = text[:600]
     return out
 
