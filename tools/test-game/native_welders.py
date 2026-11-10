@@ -136,9 +136,14 @@ def chest_count(g, p, item):
 
 
 def tank_fluid(g, core):
+    """(fluid, mb) of the tank in the saved state (the engine keeps the keys sorted); None when no tank is there."""
     text = machine_state(g, core)
-    found = re.search(r'"tank":\{"fluid":"(\w*)","mb":(\d+)', text)
-    return (found[1], int(found[2])) if found else None
+    found = re.search(r'"tank":\{([^{}]*)\}', text)
+    if not found:
+        return None
+    fluid = re.search(r'"fluid":"(\w*)"', found[1])
+    mb = re.search(r'"mb":(\d+)', found[1])
+    return (fluid[1] if fluid else '', int(mb[1]) if mb else 0)
 
 
 def identifier(g):
@@ -147,7 +152,7 @@ def identifier(g):
     cells = [(core[0] + dx, core[1] + dy, core[2] + dz) for dy in (1, 0) for dz in (1, 0) for dx in (0, -1, 1)]
     open_any(g, cells)
     before = tank_fluid(g, core)
-    g.check('tank_untyped_without_an_identifier', before in (('', 0), None) or before[0] == '', before)
+    g.check('tank_untyped_without_an_identifier', before == ('', 0), before)
     for fluid in ('oxygen', 'reformgas'):
         g.command(f'give @s ntm:fluid_identifier_multi[minecraft:custom_data={{ntm_fluid:"{fluid}"}}] 1')
         time.sleep(.5)
