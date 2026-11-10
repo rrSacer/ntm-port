@@ -70,7 +70,7 @@ def settle(g,done,timeout=8):
 def try_put(g,item,slot):
     """Carry `item` to table slot `slot`; a refused slot leaves it on the cursor, put back where it was."""
     g.command(f'give @s {item} 1')
-    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])))
+    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])),timeout=20)
     source=next(x['slot'] for x in screen.get('slots',[]) if x['slot']<36 and x.get('item')==item)
     g.ctl(f'click-slot {source}');g.ctl(f'click-slot {300+slot}');time.sleep(.8)
     screen=g.ctl('screen')
@@ -80,7 +80,8 @@ def try_put(g,item,slot):
 
 def put(g,item,count,slot):
     g.command(f'give @s {item} {count}')
-    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])))
+    # A loaded machine syncs the given stack late: wait longer than the click answers.
+    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])),timeout=20)
     source=next((x['slot'] for x in screen.get('slots',[]) if x['slot']<36 and x.get('item')==item),None)
     if source is None:raise AssertionError(f'item not received: {item}')
     g.ctl(f'click-slot {source}');g.ctl(f'click-slot {300+slot}')
@@ -916,11 +917,13 @@ def protection(g):
     # The real gamma dose follows the same factor (bare step times the float factor, truncated).
     reset(g,'survival');give_hand(g,'ntm:ingot_uranium');time.sleep(11)
     def step():
+        # The dose grows once a second; on a slow machine two seconds can land between samples,
+        # so the smallest increment is the one-second step (a merged one is a multiple of it).
         last=state(g)['dose'];steps=[];deadline=time.monotonic()+30
-        while len(steps)<3 and time.monotonic()<deadline:
+        while len(steps)<4 and time.monotonic()<deadline:
             time.sleep(.2);now=state(g)['dose']
             if now!=last:steps.append(now-last);last=now
-        steps.sort();return steps[len(steps)//2] if steps else 0
+        return min(steps) if steps else 0
     bare=step();wear(g,[sets['steel'].format(p) for p in parts]);steel=step()
     _,factor=resistance_line(hz['steel'])
     g.check('steel_set_reduces_the_real_dose_by_the_java_factor',bare>0 and steel==int(bare*factor),{'bare':bare,'steel':steel,'factor':factor})
