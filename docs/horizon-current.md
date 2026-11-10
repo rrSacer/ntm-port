@@ -938,8 +938,13 @@ com cópias locais dos dois ajudantes, cortadas ao que ele usa (sem o convidado 
 | Save de saída | `crates/horizon-client/src/game/saving.rs` | `poll_closing_save` → `save_game_metadata` | 192 |
 | Leitura | `crates/horizon-client/src/lan/playerdata.rs` | `load_owner` lê o arquivo do dono | 84 |
 | Teste do upstream | `crates/horizon-client/src/game/lan.rs` | `owner_attachment_save_tests::an_autosave_writes_the_owners_live_attachments_to_the_file_it_loads` (`#[ignore]`, precisa de `HORIZON_TEST_RESOURCES`) | 3180 |
+| Teste extra (`b22f1fbef1`) | `crates/horizon-client/src/game/lan.rs` | `owner_attachment_save_tests::the_owner_reopened_after_an_autosave_loads_its_live_attachments` | 3216 |
 | Ajudantes adaptados | `crates/horizon-client/src/game/lan.rs` | `server_game`, `host_for` (cópias locais) | 3055, 3093 |
 
 Todos os caminhos de save do dono passam pela mesma `store_owner`; o teste do upstream a exercita direto, mas confere
-só o `level.player_extra` em memória. O ida-e-volta pelo arquivo (`Level::write` → `Level::read` → `load_owner`) e a
-saída/volta ao mundo ficam provados em jogo (cortes de save da Onda 1, `docs/onda-1-protecao.md`).
+só o `level.player_extra` em memória. Por isso há um segundo commit na branch, `b22f1fbef1`, com um teste meu no mesmo
+módulo (`the_owner_reopened_after_an_autosave_loads_its_live_attachments`): `store_owner` → `Level::write` →
+`Level::read` → `load_owner`, o dono reabrindo depois de um crash. Os dois passam (`--ignored`, com
+`HORIZON_TEST_RESOURCES`); com a correção revertida (mutação) os dois falham (`None` em vez de `Some(7)`); clippy
+`-p horizon-client --lib --tests -D warnings` limpo. Hash e teste enviados ao agente do Horizon (1c5fa695). A saída e
+volta ao mundo também ficam provadas em jogo (cortes de save da Onda 1, `docs/onda-1-protecao.md`).

@@ -314,10 +314,11 @@ temporizador, então `dose = 200000` com `herbal > 0`.
 
 | Cenário | Antes da correção (`a31497f38`) | Depois (`130153a4ac`) |
 |---|---|---|
-| Mesa | `none`..`level_saved`: as peças voltam ao inventário, como o controle. `players_saved`, `world_saved`, `kv_committed`: **0 de 2**, contra 1 de 1 no baú do Ender | (a medir) |
-| RadAway | Mesmos três cortes: item consumido, efeito visível, **tratamento restante perdido** (dose 300000 ou 270000, contra 160000) | (a medir) |
-| Herbal | Mesmos três cortes: **temporizador da doença perdido**; em `players_saved` a cura de 100 RAD também (dose 300000) | (a medir) |
+| Mesa | `none`..`level_saved`: as peças voltam ao inventário, como o controle. `players_saved`, `world_saved`, `kv_committed`: **0 de 2**, contra 1 de 1 no baú do Ender | Os 7 cortes: as duas peças voltam uma vez cada, como o controle; as duas reaberturas concordam |
+| RadAway | Mesmos três cortes: item consumido, efeito visível, **tratamento restante perdido** (dose 300000 ou 270000, contra 160000) | Os 7 cortes: consumida ⇒ dose 160000 (tratamento inteiro) |
+| Herbal | Mesmos três cortes: **temporizador da doença perdido**; em `players_saved` a cura de 100 RAD também (dose 300000) | Os 7 cortes: consumida ⇒ dose 200000 e temporizador entre 11189 e 11765 ticks |
 
-Evidência: `docs/evidence/onda1-f3/player-cut-before-{table,radaway,herbal}.json`. As rodadas de RadAway e
+Evidência: `docs/evidence/onda1-f3/player-cut-{before,after}-{table,radaway,herbal}.json` (mesmo bundle nas duas;
+só o motor muda). As rodadas de RadAway e
 herbal usaram uma regra mais fraca (só "efeito presente"), que deixou passar a perda; a regra acima é a do
 runner agora e está aplicada aos mesmos dados (`ok_strict`).
