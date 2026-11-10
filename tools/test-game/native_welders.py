@@ -167,6 +167,12 @@ def identifier(g):
             typed = tank_fluid(g, core)
             if typed is not None and typed[0] == fluid:
                 break
+        screen = g.ctl('screen')
+        g.evidence['probe_' + fluid] = {
+            'slot_305': next((x for x in screen.get('slots', []) if x['slot'] == 305), None),
+            'items': ' '.join(g.command(f'data get block {core[0]} {core[1]} {core[2]} Items').get('chat', []))[:700],
+            'state': machine_state(g, core)[:900],
+        }
         g.check('identifier_' + fluid + '_types_the_tank', typed is not None and typed[0] == fluid and typed[1] == 0, typed)
         g.ctl('click-slot 305 shift')
         g.command('clear @s')
