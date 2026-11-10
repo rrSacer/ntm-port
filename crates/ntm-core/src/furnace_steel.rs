@@ -30,8 +30,9 @@ pub struct Steel {
     pub heat: u32,
     pub was_on: bool,
     /// `lastItems`: what each input was at the end of the last tick; a change
-    /// resets the line.
-    #[serde(skip)]
+    /// resets the line. Saved with the machine's own data (a reopened machine
+    /// is built from it) as well as through `save_state`.
+    #[serde(default)]
     pub last: [Option<(String, u32)>; 3],
     /// A line whose `lastItems` came from a save as "still what the slot
     /// holds": the bridge assigns the slots after `load_state`, so the
@@ -339,6 +340,24 @@ mod tests {
         g.step();
         assert!(g.progress[0] > before, "lost the line: {:?} from {before}", g.progress);
         assert_eq!(g.bonus[0], 10, "the bonus is kept");
+    }
+
+    #[test]
+    fn the_machines_own_data_keeps_the_lines_across_a_reopen() {
+        // The world builds a reopened machine from its serialized data, `last` included.
+        let mut f = hot(MAX_HEAT, "minecraft:iron_ore", 8);
+        f.step();
+        f.bonus[0] = 25;
+        let json = serde_json::to_string(&f).unwrap();
+        let mut g: Steel = serde_json::from_str(&json).unwrap();
+        assert_eq!(g.last, f.last);
+        let before = g.progress[0];
+        g.step();
+        assert!(g.progress[0] > before, "the line went on: {:?}", g.progress);
+        assert_eq!(g.bonus[0], 25, "and kept its bonus");
+        // A save of before, with no `last`, still reads (the line then starts over, as it did).
+        let old = json.replace(&format!(",\"last\":{}", serde_json::to_string(&f.last).unwrap()), "");
+        assert!(serde_json::from_str::<Steel>(&old).is_ok());
     }
 
     #[test]
