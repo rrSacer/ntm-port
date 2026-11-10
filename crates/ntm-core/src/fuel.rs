@@ -429,6 +429,44 @@ mod tests {
         assert!(!all.contains(&"minecraft:iron_door".to_string()));
     }
 
+    /// Every item that burns is offered to the fuel slot by a shift-click (`fuels()` is the menu's list): the list is not
+    /// built from `burn_time`'s own matchers, so what is in one and not the other shows here. Candidates: every NTM id of
+    /// the catalog, every vanilla block and item the 1.7.10 `getItemBurnTime` names, and each wood with a wider set of
+    /// suffixes than the ones that burn.
+    #[test]
+    fn every_item_that_burns_is_in_the_fuel_list() {
+        let all: std::collections::BTreeSet<String> = fuels().into_iter().collect();
+        let ids: serde_json::Value = serde_json::from_str(include_str!("../../../content/ids.json")).unwrap();
+        let mut candidates: Vec<String> = ids["entries"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|e| e["id"].as_str().unwrap().to_string())
+            .collect();
+        for plain in [
+            "coal", "charcoal", "coal_block", "stick", "blaze_rod", "lava_bucket", "crafting_table", "chest", "trapped_chest",
+            "bookshelf", "jukebox", "note_block", "daylight_detector", "ladder", "bowl", "sign", "oak_sign", "wooden_door",
+            "oak_door", "oak_button", "oak_boat", "barrel", "composter", "lectern", "loom", "campfire", "bamboo", "scaffolding",
+            "wooden_sword", "wooden_pickaxe", "wooden_axe", "wooden_shovel", "wooden_hoe",
+        ] {
+            candidates.push(format!("minecraft:{plain}"));
+        }
+        for wood in WOODS {
+            for suffix in [
+                "planks", "log", "wood", "stem", "hyphae", "fence", "fence_gate", "stairs", "trapdoor", "pressure_plate", "slab",
+                "sapling", "door", "button", "sign", "boat",
+            ] {
+                candidates.push(format!("minecraft:{wood}_{suffix}"));
+                // Only the logs have a stripped form in the game.
+                if matches!(suffix, "log" | "wood" | "stem" | "hyphae") {
+                    candidates.push(format!("minecraft:stripped_{wood}_{suffix}"));
+                }
+            }
+        }
+        let missing: Vec<&String> = candidates.iter().filter(|c| burn_time(c) > 0 && !all.contains(*c)).collect();
+        assert!(missing.is_empty(), "burn but are not offered to the fuel slot: {missing:?}");
+    }
+
     #[test]
     fn ash_follows_the_oredict_names() {
         assert_eq!(ash("minecraft:coal"), Ash::Coal);
