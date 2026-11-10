@@ -1,0 +1,175 @@
+{
+ "scenario": "table",
+ "engine": "a31497f38 (before the fix)",
+ "binary": "client-before",
+ "points": [
+  {
+   "point": "none",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   },
+   "control": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   }
+  },
+  {
+   "point": "kill",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   },
+   "control": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   }
+  },
+  {
+   "point": "save_begin",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   },
+   "control": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   }
+  },
+  {
+   "point": "level_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   },
+   "control": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   }
+  },
+  {
+   "point": "players_saved",
+   "ok": false,
+   "mod": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   },
+   "control": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   }
+  },
+  {
+   "point": "world_saved",
+   "ok": false,
+   "mod": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   },
+   "control": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   }
+  },
+  {
+   "point": "kv_committed",
+   "ok": false,
+   "mod": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 0,
+     "ntm:cladding_lead": 0
+    }
+   },
+   "control": {
+    "items": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    },
+    "ender": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   }
+  }
+ ]
+}
