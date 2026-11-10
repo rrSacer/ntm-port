@@ -492,9 +492,9 @@ mod tests {
         use FilterWear::*;
         assert_eq!(filter_wear(true, true, true, true), Helmet);
         assert_eq!(filter_wear(true, true, false, false), Helmet);
-        // ArmorUtil.java:335-341 then :347-351: the mod's filter, worn, lands in the helmet.
-        const { assert!(JAVA_FILTER_COPY_BUG) };
-        assert_eq!(filter_wear(true, false, true, true), CopyIntoHelmet);
+        // ArmorUtil.java:335-341 then :347-351: the mod's filter, worn, lands in the helmet
+        // (JAVA_FILTER_COPY_BUG); with the constant off, the mod's own filter wears.
+        assert_eq!(filter_wear(true, false, true, true), if JAVA_FILTER_COPY_BUG { CopyIntoHelmet } else { Mod });
         assert_eq!(filter_wear(true, false, true, false), None);
         assert_eq!(filter_wear(true, false, false, false), None);
         // ArmorUtil.java:317-326: a plain helmet hands over to its IGasMask mod.
