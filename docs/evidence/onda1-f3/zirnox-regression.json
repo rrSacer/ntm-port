@@ -203,5 +203,33 @@
     2
    ]
   }
+ },
+ "final_harness_run": {
+  "commit": "6dd6f59a",
+  "checks": 136,
+  "all_ok": true,
+  "reference_constant": 84,
+  "differ": [
+   "setup:insert_ntm:fluid_barrel_full__water_2",
+   "failure:destroyed_reactor_replaces_core"
+  ],
+  "debris": {
+   "survivor_delta": [
+    20,
+    10,
+    10,
+    10,
+    16,
+    1
+   ],
+   "created_delta": [
+    20,
+    10,
+    10,
+    10,
+    20,
+    2
+   ]
+  }
  }
 }

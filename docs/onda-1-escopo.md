@@ -40,8 +40,11 @@ unidade, mutações, clippy `-D warnings` e prova em jogo.
 ## Riscos
 
 - Anexos de jogador perdidos num crash depois de um save no meio da sessão (defeito do motor,
-  `docs/onda-1-protecao.md`): RadAway, enjoo herbal, cooldowns e a mesa de armadura. A Onda 1 só
-  entra na `main` junto com a correção do motor (`player-attachments-fix`).
+  `docs/onda-1-protecao.md`): RadAway, enjoo herbal, cooldowns e a mesa de armadura. Corrigido no
+  upstream (`61aa03d1a`); provado aqui na branch `player-attachments-fix` (`130153a4ac`). Decisão do
+  coordenador (10/11): a Onda 1 só entra na `main` quando o motor novo `6a79054fa9` (que contém a
+  correção, `store_owner` idêntico, e o teste extra como `10ae4aa43d`) for aprovado e virar o pin; então
+  a Onda 1 é reprovada no motor novo. Nada de merge sobre `a31497f38`.
 - `filter_exposure` (proteção e desgaste de filtro) só é chamada hoje pelo comando `/ntmitem expose`:
   nenhuma fonte ambiental do port (gases, poeiras, cinzas) existe ainda; o comportamento em jogo das
   máscaras contra gases depende dessas famílias.

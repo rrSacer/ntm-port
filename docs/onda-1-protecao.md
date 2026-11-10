@@ -296,7 +296,8 @@ investigar com o log, que o loop agora guarda. Evidência: `docs/evidence/onda1-
 Com a espera por estado (decisão do coordenador, `e91d5eb3`: menu aberto em vez de 0,7 s fixos, e a transferência
 do funil em ticks), a primeira tentativa fechou completa: 136 de 136. Das 84 checagens constantes nas referências, 6
 diferem, todas do instante do retrato (barris esvaziados, barras esgotadas na automação, calor no fechamento), como na
-rodada lenta; destroços criados `[20, 10, 10, 10, 20, 2]` e não destrutivos `20, 10, 10, 10` exatos.
+rodada lenta; destroços criados `[20, 10, 10, 10, 20, 2]` e não destrutivos `20, 10, 10, 10` exatos. No harness final (`6dd6f59a`), outra rodada completa na primeira tentativa: 136 de 136; das 84
+constantes, 2 diferem (barris esvaziados; as emissões de gás do reator destruído no instante do retrato).
 
 ### Famílias em jogo no binário final e regressão completa de `items`
 
@@ -305,16 +306,38 @@ No binário final (motor `130153a4ac`, bundle no `HEAD` da branch), as famílias
 filtro porque os três cliques de instalação se perderam sob carga (filtro ainda na mão, sem erro no log); repetida, passou.
 Evidência: `docs/evidence/onda1-f3/items-families-final.json`.
 
-**Pendência nominal: a regressão completa de `items` não fechou.** Decisão do coordenador (10/11): as checagens
-de tempo dos consumíveis esperam em ticks do servidor, não em tempo de parede. Feito em `bb52e814`: os
-cancelamentos (algodão-doce, lata, BDCL) seguram por uma contagem de ticks com o servidor a 5 ticks por segundo,
-porque o controlador espera a thread do cliente, que sob carga leva mais de 1 s por comando, e repetem a tentativa
-cuja soltura chegou depois que o uso podia terminar. A checagem de comida espera a comida baixar. Os efeitos do
-algodão-doce são lidos do servidor, porque o cliente conta a 20 ticks por segundo enquanto o servidor anda a 5. O
-schnitzel vegano é comido por ticks e comparado à duração do Java menos os ticks passados. `use(segundos)` segura
-segundos × 20 ticks. Tolerância explícita: `SYNC_TICKS = 10`. Essas checagens passam (cancelamento com 17 ticks
-segurando, comida com 45). A regressão completa ainda para em outras esperas de parede de famílias da `main` (a
-lata vazia que cai do último RadAway, lida 0,8 s depois do clique). Converter o restante é decisão do coordenador.
+**Regressão completa de `items`: fechou (264 de 264, harness final `6dd6f59a`, binário com o motor `130153a4ac`).** Decisões do coordenador (10/11): as esperas por tempo
+de parede que bloqueavam a regressão passam a esperar em ticks do servidor ou num estado, cada conversão com uma
+mutação que prova que a checagem continua pegando a falha que pegava; nenhum veredito mudou. A causa comum: sob
+carga, o controlador do teste leva vários segundos por comando (uma soltura medida 15 s depois), enquanto o servidor
+segue a 20 ticks por segundo. As mutações são ligadas por `NTM_ITEMS_MUTANT` e `NTM_ZIRNOX_MUTANT`, só nas rodadas
+de mutação.
+
+| Checagem | Conversão | Mutação, que a checagem pega |
+| --- | --- | --- |
+| `real_eating_started`, `cancel_does_not_consume` | `cancel_use`: segura 9 ticks com o servidor a `SLOW_RATE` (1) tick por segundo; repete a tentativa cuja soltura chegou depois que o uso podia terminar, sem repor a pilha na última | `late_release:ntm:cotton_candy` (segura além dos 32 ticks) |
+| `can_cancel_keeps_it` | `cancel_use` (32 ticks, `ItemEnergy:205`) | `late_release:ntm:can_smart` |
+| `cancelled_bdcl_stops_its_gulps` | `cancel_use` (40 ticks, `ItemBDCL:12`; soltura antes do tick 19, no máximo quatro goles) | `late_release:ntm:bdcl` |
+| `food_and_saturation_apply`, `only_one_food_consumed` | espera a fome baixar a comida; come segurando `EAT_TICKS` + margem a `SLOW_RATE` | `food_not_eaten` |
+| `java_food_effects` | efeitos lidos do servidor (`/data`), ainda a `SLOW_RATE`: o cliente conta a 20 por segundo e perde o wither de 100 ticks | `no_wither` |
+| `vegan_schnitzel_java_effects` | come por ticks; duração do Java menos os ticks passados | `schnitzel_short_blindness` |
+| `full_food_consumes_one`, `bdcl_is_consumed_without_a_container` | `use_one`: a duração + margem a `SLOW_RATE`, soltura antes do fim da segunda | `second_one_too` |
+| `thrown_container_waits_its_pickup_delay` | `tick freeze` desde antes do uso: o atraso de 40 ticks do item caído não corre | `pickup_delay_run_out` |
+| `full_last_radaway_drops_container` | relê até o estado assentar (`settle_ticks`, 40 ticks) | `radaway_container_lost` (mata o item caído) |
+| `mask_and_hazmat_reduce_gamma` | congela, `tick step 200`, congela: exatamente dez incrementos de dose (`RATE_EVERY` 20; o NTM só anda com o mundo rodando) | `mask_unprotective` (capacete de couro no lugar da M65) |
+| todo `use(g, segundos)` | segura segundos × 20 ticks | `use_short` (pega em `can_leaves_ring_pull_and_empty_can`) |
+| menus do reator, tanque e funil (ZIRNOX) | espera o menu abrir (prazo de 20 s); a transferência do funil em 240 ticks | `menu_never` |
+
+Tolerâncias explícitas no roteiro: `SYNC_TICKS = 10`, `SLOW_RATE = 1`, `EAT_TICKS = 32`. A primeira mutação do
+algodão-doce não foi pega: o `cancel_use` repunha a pilha também depois da última tentativa e escondia o consumo;
+corrigido (não repõe na última) e refeita.
+
+Continuam por tempo de parede, porque não bloquearam a regressão: 100 esperas em `native_items.py` e 28 em
+`native_zirnox.py`, entre elas as recusas (`refused`, o algodão-doce no criativo, a garrafa sem abridor, o cantil
+esfriando), os 0,8 s depois de cada clique em `use`, as expirações longas (RadAway forte 19,5 s, o cantil 6 s, o
+mucho mango, o leite com chocolate 2,4 s, o plan C), as quedas de armadura do kit e, no ZIRNOX, o enchimento do
+tanque d'água e as alavancas. Numa rodada de mutação, `chocolate_milk_kills_a_survival_drinker` (2,4 s) falhou por
+tempo; se passar a bloquear, converte-se do mesmo jeito.
 
 ### Contrato do catálogo do T00 (RBMK) e os stats de armadura
 

@@ -1,0 +1,1960 @@
+{
+ "commit": "6dd6f59a",
+ "phases": {
+  "capture-state": {
+   "capture-state:mask_kept_with_filter_wear": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "capture-state:capture_table_open": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "capture-state:insert_ntm:hazmat_helmet_9": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "capture-state:insert_ntm:attachment_mask_0": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "capture-state:insert_ntm:cladding_lead_5": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "capture-state:helmet_worn_with_mod_before_reopen": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "capture-state:cladding_counts_before_reopen": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 39.74% (0.21)",
+     "expected": "Player resistance: 39.74% (0.21)"
+    }
+   },
+   "capture-state:antidote_clears_radaway_before_reopen": {
+    "ok": true,
+    "actual": {
+     "flushed": 482,
+     "cleared": 0
+    }
+   },
+   "capture-state:radaway_treatment_accumulates": {
+    "ok": true,
+    "actual": {
+     "dose": 460000,
+     "radaway": 240
+    }
+   },
+   "capture-state:canteen_cooldown_before_reopen": {
+    "ok": true,
+    "actual": 179
+   },
+   "capture-state:herbal_sickness_survives_milk_before_reopen": {
+    "ok": true,
+    "actual": {
+     "potion_sickness": [
+      0,
+      11830
+     ]
+    }
+   },
+   "capture-state:milk_ends_radaway_before_reopen": {
+    "ok": true,
+    "actual": {
+     "treated": 482,
+     "after": {
+      "dose": 215000,
+      "herbal": 11819,
+      "radaway": 0
+     }
+    }
+   }
+  },
+  "check-state": {
+   "check-state:treatment_resumes_without_replay": {
+    "ok": true,
+    "actual": {
+     "before": {
+      "invariant": 215000,
+      "dose": 215000,
+      "radaway": 0,
+      "canteen": 179
+     },
+     "after": {
+      "dose": 215000,
+      "herbal": 11783,
+      "radaway": 0
+     }
+    }
+   },
+   "check-state:canteen_cooldown_survives_the_reopen": {
+    "ok": true,
+    "actual": {
+     "before": 179,
+     "after": 167
+    }
+   },
+   "check-state:content_mob_effects_survive_the_reopen": {
+    "ok": true,
+    "actual": {
+     "potion_sickness": [
+      0,
+      11775
+     ],
+     "radx": [
+      0,
+      119963
+     ]
+    }
+   },
+   "check-state:herbal_sickness_survives_milk_after_reopen": {
+    "ok": true,
+    "actual": {
+     "potion_sickness": [
+      0,
+      11683
+     ]
+    }
+   },
+   "check-state:cleared_radaway_stays_zero_after_the_reopen": {
+    "ok": true,
+    "actual": {
+     "before": {
+      "invariant": 215000,
+      "dose": 215000,
+      "radaway": 0,
+      "canteen": 179
+     },
+     "after": {
+      "dose": 215000,
+      "herbal": 11783,
+      "radaway": 0
+     }
+    }
+   },
+   "check-state:filter_wear_and_stack_charge_survive": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "check-state:armor_mods_survive": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "check-state:cladding_still_counts_after_reopen": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 39.74% (0.21)",
+     "expected": "Player resistance: 39.74% (0.21)"
+    }
+   }
+  },
+  "setup": {
+   "setup:native_cas_refusal_replay_and_restore": {
+    "ok": true,
+    "actual": {
+     "chat": [
+      "true"
+     ],
+     "ok": true
+    }
+   },
+   "setup:creative_cannot_eat_item_food": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:real_eating_started": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:cancel_does_not_consume": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "ntm:cotton_candy": 2
+     },
+     "held_ticks": 10
+    }
+   },
+   "setup:food_and_saturation_apply": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:only_one_food_consumed": {
+    "ok": true,
+    "actual": {
+     "ntm:cotton_candy": 1
+    }
+   },
+   "setup:java_food_effects": {
+    "ok": true,
+    "actual": {
+     "poison": 0,
+     "wither": 0,
+     "weakness": 2,
+     "speed": 2,
+     "resistance": 4
+    }
+   },
+   "setup:syringe_count_and_container": {
+    "ok": true,
+    "actual": {
+     "ntm:syringe_metal_empty": 1,
+     "ntm:syringe_metal_medx": 1
+    }
+   },
+   "setup:medx_resistance_three": {
+    "ok": true,
+    "actual": [
+     {
+      "amplifier": 2,
+      "duration_ticks": 4783,
+      "id": "resistance"
+     }
+    ]
+   },
+   "setup:kit_yields_four_pieces": {
+    "ok": true,
+    "actual": {
+     "ntm:hazmat_boots": 1,
+     "ntm:hazmat_helmet": 1,
+     "ntm:hazmat_legs": 1,
+     "ntm:hazmat_plate": 1
+    }
+   },
+   "setup:filter_installed_once": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:exposure_wears_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:mask_blacklist_refuses_blister": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:mask_and_hazmat_reduce_gamma": {
+    "ok": true,
+    "actual": {
+     "mask": 281,
+     "bare": 350,
+     "hazmat": 201
+    }
+   },
+   "setup:radaway_exact_java_total": {
+    "ok": true,
+    "actual": {
+     "dose": 60000,
+     "radaway": 0
+    }
+   },
+   "setup:radaway_returns_iv_empty": {
+    "ok": true,
+    "actual": {
+     "ntm:iv_empty": 1
+    }
+   },
+   "setup:inventory_is_full_cotton_candy": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:cotton_candy": 2
+    }
+   },
+   "setup:full_food_consumes_one": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240,
+      "ntm:cotton_candy": 1
+     },
+     "dropped": {}
+    }
+   },
+   "setup:inventory_is_full_syringe_metal_medx": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:syringe_metal_medx": 2
+    }
+   },
+   "setup:full_last_syringe_becomes_empty_in_place": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240,
+      "ntm:syringe_metal_empty": 1
+     },
+     "dropped": {}
+    }
+   },
+   "setup:full_stacked_syringe_drops_container": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240,
+      "ntm:syringe_metal_medx": 1
+     },
+     "dropped": {
+      "ntm:syringe_metal_empty": 1
+     },
+     "effects": [
+      {
+       "amplifier": 2,
+       "duration_ticks": 4783,
+       "id": "resistance"
+      }
+     ]
+    }
+   },
+   "setup:thrown_container_waits_its_pickup_delay": {
+    "ok": true,
+    "actual": {
+     "early": 0,
+     "late": 1,
+     "dropped": {}
+    }
+   },
+   "setup:inventory_is_full_radaway": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:radaway": 1
+    }
+   },
+   "setup:full_last_radaway_drops_container": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240
+     },
+     "dropped": {
+      "ntm:iv_empty": 1
+     },
+     "state": {
+      "dose": 175000,
+      "radaway": 115
+     }
+    }
+   },
+   "setup:full_stacked_radaway_keeps_stack_and_drops_container": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240,
+      "ntm:radaway": 1
+     },
+     "dropped": {
+      "ntm:iv_empty": 1
+     }
+    }
+   },
+   "setup:free_slot_takes_radaway_container": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2176,
+      "ntm:iv_empty": 1
+     },
+     "dropped": {}
+    }
+   },
+   "setup:creative_full_radaway_discards_container": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240
+     },
+     "dropped": {}
+    }
+   },
+   "setup:inventory_is_full_hazmat_kit": {
+    "ok": true,
+    "actual": {
+     "minecraft:iron_chestplate": 1,
+     "minecraft:stone": 2240,
+     "ntm:gas_mask_m65": 1,
+     "ntm:hazmat_kit": 1
+    }
+   },
+   "setup:full_kit_equips_and_drops_replaced_armor": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:iron_chestplate": 1,
+      "minecraft:stone": 2240,
+      "ntm:hazmat_boots": 1,
+      "ntm:hazmat_helmet": 1,
+      "ntm:hazmat_legs": 1,
+      "ntm:hazmat_plate": 1
+     },
+     "dropped": {
+      "ntm:gas_mask_m65": 1
+     }
+    }
+   },
+   "setup:world_drop_has_no_pickup_delay": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:iron_chestplate": 1,
+      "minecraft:stone": 2176,
+      "ntm:gas_mask_m65": 1,
+      "ntm:hazmat_boots": 1,
+      "ntm:hazmat_helmet": 1,
+      "ntm:hazmat_legs": 1,
+      "ntm:hazmat_plate": 1
+     },
+     "dropped": {}
+    }
+   },
+   "setup:inventory_is_full_gas_mask_filter": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:gas_mask_filter": 1,
+     "ntm:gas_mask_m65": 1
+    }
+   },
+   "setup:full_filter_swap_returns_old_filter_in_hand": {
+    "ok": true,
+    "actual": {
+     "held": {
+      "count": 1,
+      "item": "ntm:gas_mask_filter"
+     },
+     "dropped": {}
+    }
+   },
+   "setup:full_sneak_use_drops_removed_filter": {
+    "ok": true,
+    "actual": {
+     "held": {
+      "components": "{\"minecraft:custom_data\":{}}",
+      "count": 1,
+      "item": "ntm:gas_mask_m65"
+     },
+     "dropped": {
+      "ntm:gas_mask_filter": 1
+     }
+    }
+   },
+   "setup:free_slot_takes_removed_filter": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2176,
+      "ntm:gas_mask_filter": 1,
+      "ntm:gas_mask_m65": 1
+     },
+     "dropped": {}
+    }
+   },
+   "setup:inventory_is_full_hazmat_plate": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:hazmat_plate": 1
+    }
+   },
+   "setup:full_plate_equips": {
+    "ok": true,
+    "actual": {
+     "armor": [
+      {
+       "item": null,
+       "part": "head",
+       "slot": 500
+      },
+      {
+       "count": 1,
+       "item": "ntm:hazmat_plate",
+       "part": "chest",
+       "slot": 501
+      },
+      {
+       "item": null,
+       "part": "legs",
+       "slot": 502
+      },
+      {
+       "item": null,
+       "part": "feet",
+       "slot": 503
+      }
+     ],
+     "dropped": {}
+    }
+   },
+   "setup:filter_at_limit_stays": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:filter_past_limit_is_destroyed": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:sneaking_does_not_open_the_table": {
+    "ok": true,
+    "actual": {
+     "buttons": [],
+     "screen": "playing"
+    }
+   },
+   "setup:table_has_exact_14_slots": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:insert_ntm:hazmat_helmet_9": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:insert_ntm:attachment_mask_0": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:mod_slot_shows_attachment": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:shift_click_equips_armor_and_absorbs_views": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:nested_mod_filter_is_active": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:module_removed_into_inventory": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:table_close_conserves_armor_and_mod": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:dose_before_death": {
+    "ok": true,
+    "actual": 300000
+   },
+   "setup:death_resets_dose_for_the_next_radiation_tick": {
+    "ok": true,
+    "actual": 0
+   },
+   "setup:dose_stays_zero_after_more_ticks": {
+    "ok": true,
+    "actual": 0
+   },
+   "setup:can_drink_animation_runs": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:can_cancel_keeps_it": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "ntm:can_smart": 2
+     },
+     "held_ticks": 11
+    }
+   },
+   "setup:can_leaves_ring_pull_and_empty_can": {
+    "ok": true,
+    "actual": {
+     "ntm:can_empty": 1,
+     "ntm:can_smart": 1,
+     "ntm:ring_pull": 1
+    }
+   },
+   "setup:can_smart_java_effects": {
+    "ok": true,
+    "actual": {
+     "speed": [
+      1,
+      572
+     ],
+     "resistance": [
+      2,
+      572
+     ],
+     "strength": [
+      0,
+      572
+     ]
+    }
+   },
+   "setup:last_can_becomes_empty_can": {
+    "ok": true,
+    "actual": {
+     "ntm:can_empty": 1,
+     "ntm:ring_pull": 1
+    }
+   },
+   "setup:can_mug_java_effects": {
+    "ok": true,
+    "actual": {
+     "resistance": [
+      2,
+      3571
+     ],
+     "regeneration": [
+      2,
+      1171
+     ]
+    }
+   },
+   "setup:inventory_is_full_can_smart": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:can_smart": 1
+    }
+   },
+   "setup:full_last_can_is_replaced_and_the_ring_pull_is_lost": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240,
+      "ntm:can_empty": 1
+     },
+     "dropped": {}
+    }
+   },
+   "setup:full_stacked_can_loses_both_returns": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240,
+      "ntm:can_smart": 1
+     },
+     "dropped": {}
+    }
+   },
+   "setup:creative_drinks_without_consuming": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:can_smart": 1
+    }
+   },
+   "setup:bottle_needs_the_opener": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:bottle_drinks_with_the_opener": {
+    "ok": true,
+    "actual": {
+     "ntm:bottle_empty": 1,
+     "ntm:bottle_opener": 1,
+     "ntm:cap_nuka": 1
+    }
+   },
+   "setup:bottle_nuka_heals_four_and_adds_five_rad": {
+    "ok": true,
+    "actual": {
+     "before": 14.833333015441895,
+     "after": 19.5,
+     "dose": {
+      "dose": 5000
+     }
+    }
+   },
+   "setup:bottle_nuka_java_effects": {
+    "ok": true,
+    "actual": {
+     "speed": [
+      1,
+      570
+     ],
+     "haste": [
+      1,
+      570
+     ]
+    }
+   },
+   "setup:coffee_radium_adds_five_hundred_rad": {
+    "ok": true,
+    "actual": {
+     "dose": 500000
+    }
+   },
+   "setup:canteen_sets_its_cooldown_and_stays": {
+    "ok": true,
+    "actual": {
+     "damage": 178,
+     "counts": {
+      "ntm:canteen_vodka": 1
+     }
+    }
+   },
+   "setup:canteen_java_effects": {
+    "ok": true,
+    "actual": {
+     "nausea": [
+      0,
+      176
+     ],
+     "strength": [
+      2,
+      576
+     ]
+    }
+   },
+   "setup:canteen_refuses_while_cooling": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:canteen_cools_one_per_second": {
+    "ok": true,
+    "actual": {
+     "first": 178,
+     "later": 172
+    }
+   },
+   "setup:mango_feeds_and_is_consumed": {
+    "ok": true,
+    "actual": {
+     "before": 16,
+     "after": 20,
+     "counts": {}
+    }
+   },
+   "setup:mango_speed_two_hundred_ticks": {
+    "ok": true,
+    "actual": {
+     "speed": [
+      0,
+      167
+     ]
+    }
+   },
+   "setup:bdcl_is_consumed_without_a_container": {
+    "ok": true,
+    "actual": {
+     "ntm:bdcl": 1
+    }
+   },
+   "setup:bdcl_gulps_on_the_java_counts_exactly": {
+    "ok": true,
+    "actual": [
+     0,
+     5,
+     10,
+     15,
+     19,
+     26,
+     0,
+     5,
+     10
+    ]
+   },
+   "setup:cancelled_bdcl_stops_its_gulps": {
+    "ok": true,
+    "actual": {
+     "heard": [
+      0,
+      5,
+      10
+     ],
+     "counts": {
+      "ntm:bdcl": 2
+     }
+    }
+   },
+   "setup:chocolate_milk_blast_breaks_the_floor": {
+    "ok": true,
+    "actual": {
+     "before": "minecraft:stone",
+     "after": "minecraft:air"
+    }
+   },
+   "setup:chocolate_milk_kills_a_survival_drinker": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:stimpak_heals_five_and_returns_the_syringe": {
+    "ok": true,
+    "actual": {
+     "before": 10.833333015441895,
+     "after": 17.83333396911621,
+     "counts": {
+      "ntm:syringe_metal_empty": 1,
+      "ntm:syringe_metal_stimpak": 1
+     }
+    }
+   },
+   "setup:psycho_java_effects": {
+    "ok": true,
+    "actual": {
+     "resistance": [
+      0,
+      2383
+     ],
+     "strength": [
+      0,
+      2383
+     ]
+    }
+   },
+   "setup:super_heals_and_slows": {
+    "ok": true,
+    "actual": {
+     "health": 20.0,
+     "effects": {
+      "slowness": [
+       0,
+       183
+      ]
+     }
+    }
+   },
+   "setup:med_bag_heals_fully_and_cures_the_bad_effects": {
+    "ok": true,
+    "actual": {
+     "health": 20.0,
+     "effects": {
+      "speed": [
+       0,
+       1144
+      ]
+     },
+     "counts": {}
+    }
+   },
+   "setup:taint_returns_both_containers": {
+    "ok": true,
+    "actual": {
+     "ntm:bottle2_empty": 1,
+     "ntm:syringe_metal_empty": 1
+    }
+   },
+   "setup:taint_effects": {
+    "ok": true,
+    "actual": {
+     "taint": [
+      0,
+      1181
+     ],
+     "nausea": [
+      0,
+      81
+     ]
+    }
+   },
+   "setup:antidote_clears_every_effect": {
+    "ok": true,
+    "actual": {
+     "effects": {},
+     "counts": {
+      "ntm:syringe_empty": 1
+     }
+    }
+   },
+   "setup:awesome_java_effects": {
+    "ok": true,
+    "actual": {
+     "regeneration": [
+      9,
+      983
+     ],
+     "resistance": [
+      9,
+      983
+     ],
+     "fire_resistance": [
+      0,
+      983
+     ],
+     "strength": [
+      24,
+      983
+     ],
+     "haste": [
+      9,
+      983
+     ],
+     "speed": [
+      6,
+      983
+     ],
+     "jump_boost": [
+      9,
+      983
+     ],
+     "health_boost": [
+      9,
+      983
+     ],
+     "absorption": [
+      4,
+      983
+     ],
+     "nausea": [
+      4,
+      83
+     ],
+     "radx": [
+      9,
+      983
+     ]
+    }
+   },
+   "setup:radaway_strong_removes_three_hundred_fifty_rad": {
+    "ok": true,
+    "actual": {
+     "dose": 150000,
+     "radaway": 0
+    }
+   },
+   "setup:radaway_flush_is_five_hundred_ticks": {
+    "ok": true,
+    "actual": {
+     "before": 0,
+     "state": {
+      "dose": 482000,
+      "radaway": 482
+     },
+     "counts": {
+      "ntm:iv_empty": 1
+     }
+    }
+   },
+   "setup:antidote_clears_the_radaway_treatment": {
+    "ok": true,
+    "actual": {
+     "treated": {
+      "dose": 482000,
+      "radaway": 482
+     },
+     "cleared": {
+      "dose": 456000,
+      "radaway": 0
+     },
+     "later": {
+      "dose": 456000,
+      "radaway": 0
+     }
+    }
+   },
+   "setup:milk_ends_the_radaway_treatment": {
+    "ok": true,
+    "actual": {
+     "treated": {
+      "dose": 482000,
+      "radaway": 482
+     },
+     "cleared": {
+      "dose": 419000,
+      "radaway": 0
+     },
+     "later": {
+      "dose": 419000,
+      "radaway": 0
+     }
+    }
+   },
+   "setup:iv_empty_takes_five_health_and_fills": {
+    "ok": true,
+    "actual": {
+     "health": 15.0,
+     "counts": {
+      "ntm:iv_blood": 1
+     }
+    }
+   },
+   "setup:iv_blood_heals_five": {
+    "ok": true,
+    "actual": {
+     "before": 5.0,
+     "after": 10.0
+    }
+   },
+   "setup:iv_xp_empty_needs_a_hundred_points": {
+    "ok": true,
+    "actual": {
+     "xp": {
+      "level": 3,
+      "progress": 0.0,
+      "total": 0
+     },
+     "counts": {
+      "ntm:iv_xp_empty": 1
+     }
+    }
+   },
+   "setup:iv_xp_empty_takes_a_hundred_points": {
+    "ok": true,
+    "actual": {
+     "xp": {
+      "level": 11,
+      "progress": 0.9655187129974365,
+      "total": 215
+     },
+     "counts": {
+      "ntm:iv_xp": 1
+     }
+    }
+   },
+   "setup:iv_xp_gives_a_hundred_points": {
+    "ok": true,
+    "actual": {
+     "xp": {
+      "level": 7,
+      "progress": 0.42857128381729126,
+      "total": 315
+     }
+    }
+   },
+   "setup:radx_pill_gives_the_radx_effect": {
+    "ok": true,
+    "actual": {
+     "radx": [
+      0,
+      3571
+     ]
+    }
+   },
+   "setup:iodine_cures_poison": {
+    "ok": true,
+    "actual": {}
+   },
+   "setup:herbal_lowers_the_dose_and_applies_its_effects": {
+    "ok": true,
+    "actual": {
+     "state": {
+      "dose": 400000,
+      "herbal": 11952,
+      "radaway": 0
+     },
+     "effects": {
+      "nausea": [
+       0,
+       171
+      ],
+      "slowness": [
+       0,
+       91
+      ],
+      "weakness": [
+       2,
+       11971
+      ],
+      "mining_fatigue": [
+       2,
+       11971
+      ],
+      "poison": [
+       2,
+       71
+      ],
+      "potion_sickness": [
+       0,
+       11971
+      ]
+     }
+    }
+   },
+   "setup:potion_sickness_blocks_the_next_pill": {
+    "ok": true,
+    "actual": {
+     "ntm:pill_herbal": 1
+    }
+   },
+   "setup:milk_does_not_cure_the_herbal_sickness": {
+    "ok": true,
+    "actual": {
+     "potion_sickness": [
+      0,
+      11862
+     ]
+    }
+   },
+   "setup:sick_player_cannot_drink_a_can": {
+    "ok": true,
+    "actual": {
+     "ntm:can_smart": 1
+    }
+   },
+   "setup:fmn_blinds_for_sixty_ticks": {
+    "ok": true,
+    "actual": {
+     "blindness": [
+      0,
+      33
+     ]
+    }
+   },
+   "setup:chocolate_effects": {
+    "ok": true,
+    "actual": {
+     "haste": [
+      3,
+      1171
+     ],
+     "speed": [
+      3,
+      1171
+     ],
+     "jump_boost": [
+      3,
+      1171
+     ]
+    }
+   },
+   "setup:plan_c_cannot_hurt_creative_but_is_eaten": {
+    "ok": true,
+    "actual": {
+     "before": 20.0,
+     "health": 20.0,
+     "counts": {}
+    }
+   },
+   "setup:resistance_absorbs_the_euthanasia_syringe": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:resistance_absorbs_plan_c": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:plan_c_kills_a_survival_player": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:poison_syringe_kills_and_leaves_an_empty_one": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:lemon_needs_hunger": {
+    "ok": true,
+    "actual": {
+     "ntm:lemon": 1
+    }
+   },
+   "setup:lemon_feeds_three": {
+    "ok": true,
+    "actual": {
+     "before": 18,
+     "after": 20
+    }
+   },
+   "setup:loop_stew_leaves_a_bowl_in_the_slot": {
+    "ok": true,
+    "actual": {
+     "minecraft:bowl": 1
+    }
+   },
+   "setup:loop_stew_java_effects": {
+    "ok": true,
+    "actual": {
+     "regeneration": [
+      1,
+      371
+     ],
+     "resistance": [
+      2,
+      1171
+     ],
+     "speed": [
+      1,
+      1171
+     ],
+     "strength": [
+      2,
+      371
+     ]
+    }
+   },
+   "setup:soup_returns_the_bowl": {
+    "ok": true,
+    "actual": {
+     "minecraft:bowl": 1
+    }
+   },
+   "setup:grilled_glyphid_meat_never_gives_strength": {
+    "ok": true,
+    "actual": {}
+   },
+   "setup:ipecac_needs_hunger_at_full_food": {
+    "ok": true,
+    "actual": {
+     "ntm:med_ipecac": 1
+    }
+   },
+   "setup:ptsd_needs_hunger_at_full_food": {
+    "ok": true,
+    "actual": {
+     "ntm:med_ptsd": 1
+    }
+   },
+   "setup:ipecac_when_hungry_induces_hunger": {
+    "ok": true,
+    "actual": {
+     "hunger": [
+      49,
+      23
+     ]
+    }
+   },
+   "setup:vegan_schnitzel_java_effects": {
+    "ok": true,
+    "actual": {
+     "effects": {
+      "slow_falling": [
+       0,
+       2304
+      ],
+      "fire_resistance": [
+       0,
+       2312
+      ],
+      "blindness": [
+       0,
+       171
+      ],
+      "nausea": [
+       0,
+       571
+      ],
+      "hunger": [
+       4,
+       3571
+      ],
+      "wither": [
+       0,
+       31
+      ]
+     },
+     "elapsed_ticks": 70
+    }
+   },
+   "setup:euphemium_apple_effects_are_endless": {
+    "ok": true,
+    "actual": {
+     "resistance": [
+      120,
+      2147483620
+     ],
+     "fire_resistance": [
+      0,
+      2147483620
+     ],
+     "saturation": [
+      120,
+      2147483620
+     ]
+    }
+   },
+   "setup:pancake_is_refused_without_the_bj_armor": {
+    "ok": true,
+    "actual": {
+     "ntm:pancake": 1
+    }
+   },
+   "setup:cigarette_adds_one_hundred_rad_in_creative_and_is_consumed": {
+    "ok": true,
+    "actual": {
+     "state": {
+      "dose": 100000
+     },
+     "counts": {
+      "ntm:cigarette": 1
+     }
+    }
+   },
+   "setup:crackpipe_heals_ten_and_nauseates": {
+    "ok": true,
+    "actual": {
+     "before": 11.0,
+     "after": 20.0,
+     "effects": {
+      "nausea": [
+       0,
+       171
+      ]
+     }
+    }
+   },
+   "setup:rag_becomes_a_piss_rag": {
+    "ok": true,
+    "actual": {
+     "ntm:rag": 1,
+     "ntm:rag_piss": 1
+    }
+   },
+   "setup:inventory_is_full_rag": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:rag": 1
+    }
+   },
+   "setup:full_inventory_loses_the_piss_rag": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "minecraft:stone": 2240
+     },
+     "dropped": {}
+    }
+   },
+   "setup:peas_are_consumed": {
+    "ok": true,
+    "actual": {
+     "ntm:peas": 1
+    }
+   },
+   "setup:peas_stay_in_creative": {
+    "ok": true,
+    "actual": {
+     "ntm:peas": 2
+    }
+   },
+   "setup:gadget_kit_gives_its_bomb_parts": {
+    "ok": true,
+    "actual": {
+     "ntm:early_explosive_lenses": 4,
+     "ntm:gadget_core": 1,
+     "ntm:gadget_wireing": 1,
+     "ntm:hazmat_boots": 1,
+     "ntm:hazmat_helmet": 1,
+     "ntm:hazmat_legs": 1,
+     "ntm:hazmat_plate": 1,
+     "ntm:nuke_gadget": 1
+    }
+   },
+   "setup:gadget_kit_wears_the_yellow_hazmat": {
+    "ok": true,
+    "actual": [
+     "ntm:hazmat_helmet",
+     "ntm:hazmat_plate",
+     "ntm:hazmat_legs",
+     "ntm:hazmat_boots"
+    ]
+   },
+   "setup:grey_kit_wears_the_grey_hazmat": {
+    "ok": true,
+    "actual": [
+     "ntm:hazmat_helmet_grey",
+     "ntm:hazmat_plate_grey",
+     "ntm:hazmat_legs_grey",
+     "ntm:hazmat_boots_grey"
+    ]
+   },
+   "setup:electric_kit_resolves_variants": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:inventory_is_full_boy_kit": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:boy_kit": 1
+    }
+   },
+   "setup:full_inventory_loses_the_kit_parts": {
+    "ok": true,
+    "actual": {
+     "minecraft:stone": 2240,
+     "ntm:hazmat_boots": 1,
+     "ntm:hazmat_helmet": 1,
+     "ntm:hazmat_legs": 1,
+     "ntm:hazmat_plate": 1
+    }
+   },
+   "setup:only_the_replaced_armor_can_reach_the_ground": {
+    "ok": true,
+    "actual": {}
+   },
+   "setup:stealth_boy_invisibility": {
+    "ok": true,
+    "actual": {
+     "invisibility": [
+      1,
+      583
+     ]
+    }
+   },
+   "setup:empty_loot_crate_does_nothing": {
+    "ok": true,
+    "actual": {
+     "ntm:loot_10": 1
+    }
+   },
+   "setup:misc_loot_crate_gives_one_ported_part": {
+    "ok": true,
+    "actual": {
+     "ntm:mp_warhead_10_cloud": 1
+    }
+   },
+   "setup:gas_mask_filter_mono_is_installed": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_mono_co_wears_it": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_mono_lung_is_ignored": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_combo_is_installed": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_combo_co_wears_it": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_combo_bacteria_wears_it": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_combo_blister_is_ignored": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_rag_is_installed": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_rag_coarse_wears_it": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_rag_fine_is_ignored": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_piss_is_installed": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_piss_lung_wears_it": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_piss_coarse_wears_it": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_filter_piss_fine_is_ignored": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_takes_a_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_filter_stops_blistering_gas": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_filter_stops_lung_gas": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_gives_the_filter_back_when_sneak_used": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_red_takes_a_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_red_filter_stops_blistering_gas": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_red_filter_stops_lung_gas": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_red_gives_the_filter_back_when_sneak_used": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_grey_takes_a_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_grey_filter_stops_blistering_gas": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_grey_filter_stops_lung_gas": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:hazmat_helmet_grey_gives_the_filter_back_when_sneak_used": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:geiger_report": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:dosimeter_reads_the_server_buffer": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:diagnostic_report": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:survey_scanner_finds_ported_ores": {
+    "ok": true,
+    "actual": "Found SCHIST! | Found OIL! | Replaced 1 slot(s) on ItemsTest with [Survey Scanner] | Changed the block at 20, 100, 16 | Changed the block at 25, 100, 11 | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Target has no effects to remove | true | Removed 66 item(s) from player ItemsTest | Digamma resistance:  N/A"
+   },
+   "setup:continuous_source_reads_in_the_buffer": {
+    "ok": true,
+    "actual": 2800
+   },
+   "setup:bottle_contaminate_joins_the_buffer_once": {
+    "ok": true,
+    "actual": {
+     "base": 2800,
+     "seen": [
+      2800,
+      7800
+     ],
+     "last": 2800
+    }
+   },
+   "setup:direct_increment_stays_out_of_the_buffer": {
+    "ok": true,
+    "actual": {
+     "base": 2800,
+     "seen": [
+      2800
+     ]
+    }
+   },
+   "setup:pipette_capacity_steps_down_when_sneaking": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:laboratory_pipette_steps_by_one": {
+    "ok": true,
+    "actual": "49/50mB | Replaced 1 slot(s) on ItemsTest with [Laboratory Grade Pipette] | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Target has no effects to remove | true | Removed 1 item(s) from player ItemsTest | 950/1000mB | Replaced 1 slot(s) on ItemsTest with [Pipette] | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true"
+   },
+   "setup:hot_ingot_cools_in_the_inventory": {
+    "ok": true,
+    "actual": "{\"minecraft:custom_data\":{heat:70}}"
+   },
+   "setup:cooled_ingot_loses_its_tag": {
+    "ok": true,
+    "actual": ""
+   },
+   "setup:match_lights_fire_on_the_clicked_face": {
+    "ok": true,
+    "actual": {
+     "block": "minecraft:fire[age=0,east=false,north=false,south=false,up=false,west=false]",
+     "counts": {
+      "ntm:matchstick": 1
+     }
+    }
+   },
+   "setup:creative_match_is_not_spent": {
+    "ok": true,
+    "actual": {
+     "block": "minecraft:fire[age=0,east=false,north=false,south=false,up=false,west=false]",
+     "counts": {
+      "ntm:matchstick": 2
+     }
+    }
+   },
+   "setup:fertilizer_grows_the_crop_around_the_click": {
+    "ok": true,
+    "actual": {
+     "age": "3",
+     "counts": {
+      "ntm:powder_fertilizer": 2
+     }
+    }
+   },
+   "setup:fertilizer_stays_when_nothing_grows": {
+    "ok": true,
+    "actual": {
+     "ntm:powder_fertilizer": 2
+    }
+   },
+   "setup:fertilizer_forces_the_clicked_cell": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ams_lens_tooltip_reads_its_damage_tag": {
+    "ok": true,
+    "actual": {
+     "tag": "{\"minecraft:custom_data\":{damage:108000000L}}",
+     "line": "Durability: 324000000/432000000 (75%)"
+    }
+   },
+   "setup:fresh_ams_lens_is_at_full_durability": {
+    "ok": true,
+    "actual": "Durability: 432000000/432000000 (100%)"
+   },
+   "setup:geiger_resistance_steel_set": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 9.84% (0.04)",
+     "expected": "Player resistance: 9.84% (0.04)"
+    }
+   },
+   "setup:geiger_resistance_titanium_set": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 9.84% (0.04)",
+     "expected": "Player resistance: 9.84% (0.04)"
+    }
+   },
+   "setup:geiger_resistance_alloy_set": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 14.88% (0.07)",
+     "expected": "Player resistance: 14.88% (0.07)"
+    }
+   },
+   "setup:geiger_resistance_cobalt_set": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 25.01% (0.12)",
+     "expected": "Player resistance: 25.01% (0.12)"
+    }
+   },
+   "setup:geiger_resistance_starmetal_set": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 89.99% (1.0)",
+     "expected": "Player resistance: 89.99% (1.0)"
+    }
+   },
+   "setup:geiger_resistance_vanilla_iron_set": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 5.04% (0.02)",
+     "expected": "Player resistance: 5.04% (0.02)"
+    }
+   },
+   "setup:geiger_resistance_vanilla_golden_set": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 5.04% (0.02)",
+     "expected": "Player resistance: 5.04% (0.02)"
+    }
+   },
+   "setup:geiger_resistance_mixed_set_0_as_the_java_oracle": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 30.81% (0.16)",
+     "expected": "Player resistance: 30.81% (0.16)"
+    }
+   },
+   "setup:geiger_resistance_mixed_set_1_as_the_java_oracle": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 65.32% (0.45)",
+     "expected": "Player resistance: 65.32% (0.45)"
+    }
+   },
+   "setup:hfr_cladding_double_tag_counts": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 77.61% (0.64)",
+     "expected": "Player resistance: 77.61% (0.64)"
+    }
+   },
+   "setup:geiger_resistance_grey_hazmat_set": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 99.0% (2.0)",
+     "expected": "Player resistance: 99.0% (2.0)"
+    }
+   },
+   "setup:steel_set_has_the_java_armor_points": {
+    "ok": true,
+    "actual": "The value of attribute Armor for entity ItemsTest is 20.0"
+   },
+   "setup:steel_plate_has_the_java_durability": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:steel_set_reduces_the_real_dose_by_the_java_factor": {
+    "ok": true,
+    "actual": {
+     "bare": 350,
+     "steel": 315,
+     "factor": 0.9015711545944214
+    }
+   },
+   "setup:hfr_cladding_adds_to_the_helmet": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 77.61% (0.64)",
+     "expected": "Player resistance: 77.61% (0.64)"
+    }
+   },
+   "setup:cladding_refused_without_armor": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:insert_ntm:hazmat_helmet_grey_9": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:cladding_refused_in_the_mask_slot": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:insert_ntm:cladding_lead_5": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:cladding_installed_in_slot_5": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:cladding_kept_in_the_helmet_mods": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:cladding_mod_adds_to_the_worn_helmet": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 68.37% (0.5)",
+     "expected": "Player resistance: 68.37% (0.5)"
+    }
+   },
+   "setup:geiger_resistance_paa": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 98.0% (1.7)",
+     "expected": "Player resistance: 98.0% (1.7)"
+    }
+   },
+   "setup:geiger_resistance_liquidator": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 99.6% (2.39)",
+     "expected": "Player resistance: 99.6% (2.39)"
+    }
+   },
+   "setup:geiger_resistance_gas_mask": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 14.88% (0.07)",
+     "expected": "Player resistance: 14.88% (0.07)"
+    }
+   },
+   "setup:geiger_resistance_jackt": {
+    "ok": true,
+    "actual": {
+     "line": "Player resistance: 20.56% (0.1)",
+     "expected": "Player resistance: 20.56% (0.1)"
+    }
+   },
+   "setup:liquidator_attributes": {
+    "ok": true,
+    "actual": {
+     "knockback": "The value of attribute Knockback Resistance for entity ItemsTest is 1.0",
+     "speed": "The value of attribute Speed for entity ItemsTest is 0.060000000894069656"
+    }
+   },
+   "setup:ntm:gas_mask_takes_a_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ntm:gas_mask_stops_lung_gas_and_wears": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ntm:gas_mask_olde_takes_a_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ntm:gas_mask_olde_stops_lung_gas_and_wears": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ntm:gas_mask_mono_takes_a_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:mono_never_protects_lung_gas": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:mono_stops_monoxide_and_wears": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ntm:hazmat_paa_helmet_takes_a_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ntm:hazmat_paa_helmet_stops_lung_gas_and_wears": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ntm:liquidator_helmet_takes_a_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ntm:liquidator_helmet_stops_lung_gas_and_wears": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:mask_rag_coarse_protects": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:mask_rag_lung_does_not_protect": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:mask_piss_lung_protects": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:goggles_light_protects": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:ashglasses_sand_protects": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:asbestos_helmet_light_protects": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_m65_sand_protects": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:gas_mask_m65_light_does_not_protect": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:steel_helmet_sand_does_not_protect": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:copy_bug_setup_one_filter": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:copy_bug_protects_through_the_mod": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:copy_bug_writes_the_worn_copy_into_the_helmet": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:copy_bug_sneak_hands_out_the_copy_and_the_mod_keeps_its_filter": {
+    "ok": true,
+    "actual": {
+     "loose": 1,
+     "helmet": "{\"minecraft:custom_data\":{ntm_armor_mods:{mod_slot_0:{components:{\"minecraft:custom_data\":{hfrFilter:{count:1,id:\"ntm:gas_mask_filter\"}}},count:1,id:\"ntm:attachment_mask\"}}}}"
+    }
+   },
+   "setup:one_decon_takes_half_a_rad_a_tick": {
+    "ok": true,
+    "actual": {
+     "drop": 24000
+    }
+   },
+   "setup:decon_works_in_creative": {
+    "ok": true,
+    "actual": {
+     "dose": 250000,
+     "radaway": 0
+    }
+   },
+   "setup:two_decons_take_a_rad_a_tick": {
+    "ok": true,
+    "actual": {
+     "drop": 48000
+    }
+   },
+   "setup:out_of_the_box_nothing": {
+    "ok": true,
+    "actual": {
+     "dose": 283000,
+     "radaway": 0
+    }
+   },
+   "setup:mycelium_irradiation_keeps_growing_the_dose": {
+    "ok": true,
+    "actual": {
+     "growth": 7600
+    }
+   },
+   "setup:decon_ends_the_irradiation": {
+    "ok": true,
+    "actual": {
+     "growth_after": 0
+    }
+   },
+   "setup:audio_ntm:item.syringe": {
+    "ok": true,
+    "actual": [
+     "sound resolved event=ntm:item.syringe file=/mnt/ssd120/sacer/so/onda1/items-kwt8k28n/.horizon-cache/mod-content/assets/ntm/sounds/tool/stim.ogg stream=false source=7 decoded=Some((39744, 32000))",
+     "sound resolved event=ntm:item.syringe file=/mnt/ssd120/sacer/so/onda1/items-kwt8k28n/.horizon-cache/mod-content/assets/ntm/sounds/tool/stim.ogg stream=false source=7 decoded=Some((39744, 32000))"
+    ]
+   },
+   "setup:audio_ntm:item.radaway": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:audio_ntm:item.unpack": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:audio_ntm:player.gulp": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:audio_ntm:player.groan": {
+    "ok": true,
+    "actual": [
+     "sound resolved event=ntm:player.groan file=/mnt/ssd120/sacer/so/onda1/items-kwt8k28n/.horizon-cache/mod-content/assets/ntm/sounds/player/groan1.ogg stream=false source=7 decoded=Some((10944, 44100))"
+    ]
+   },
+   "setup:audio_ntm:item.techboop": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:audio_instrument_clicks": {
+    "ok": true,
+    "actual": "(dump omitted)"
+   },
+   "setup:unregistered_vomit_has_no_alias": {
+    "ok": true,
+    "actual": "ItemLemon original event stays silent"
+   }
+  }
+ },
+ "report": {
+  "ok": true,
+  "scenario": "items",
+  "game": "/mnt/ssd120/sacer/so/onda1/items-kwt8k28n",
+  "binary": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda1/client-after",
+  "binary_sha256": "e7a999ee9c4e3448c88a1cbc8c3123e281a14a82cfa49aa74998ec8089855d84",
+  "bundle": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda1/dist-head/ntm.hmod",
+  "bundle_sha256": "9edeca8ad77a9d3e62076ec59cd5d8aaa0e20dc2d2c84db501c1a94a1a6d17d1",
+  "phases": [
+   "setup",
+   "capture-state",
+   "check-state"
+  ],
+  "backend_warnings": [
+   "Horizon renderer: temporal anti-aliasing unavailable (Validation Error",
+   "Horizon renderer: temporal anti-aliasing unavailable (Validation Error"
+  ]
+ }
+}
