@@ -78,7 +78,15 @@ def lever(g,c,on):
         g.command(f'tp @s {p[0]+2.5} {p[1]} {p[2]+.5}')
         g.ctl('interact '+pos_text(p)+' east')
         time.sleep(.4)
-    g.check('lever_'+str(on)+'_'+str(len(g.evidence['steps'])),('powered=true' in block(g,p))==on,block(g,p))
+    g.check(nth(g,'lever_'+str(on)),('powered=true' in block(g,p))==on,block(g,p))
+
+
+def nth(g,kind):
+    """`kind_n`, the n-th check of that kind in this phase: a name that does not move with the steps a loaded
+    machine's retries add (it was the step count)."""
+    counters=g.evidence.setdefault('counters',{})
+    counters[kind]=counters.get(kind,0)+1
+    return f'{kind}_{counters[kind]}'
 
 
 def menu_open(g,timeout=20):
@@ -96,13 +104,13 @@ def menu_open(g,timeout=20):
 def open_reactor(g,core):
     g.close();g.command(f'tp @s {core[0]+.5} {core[1]} {core[2]+4.5}')
     p=add(core,(0,1,2));g.ctl('interact '+pos_text(p)+' south');screen=menu_open(g)
-    g.check('reactor_menu_'+str(len(g.evidence['steps'])),screen.get('screen')=='container',screen)
+    g.check(nth(g,'reactor_menu'),screen.get('screen')=='container',screen)
 
 
 def open_tank(g,p):
     g.close();g.command(f'tp @s {p[0]-3.5} {p[1]-1} {p[2]+.5}')
     g.ctl('interact '+pos_text(p)+' west');screen=menu_open(g)
-    g.check('tank_menu_'+str(len(g.evidence['steps'])),screen.get('screen')=='container',screen)
+    g.check(nth(g,'tank_menu'),screen.get('screen')=='container',screen)
 
 
 def type_ports(g,fluid,positions):
@@ -316,7 +324,7 @@ def check(g):
             accepted=(cursor is not None and cursor.get('item')==rod and not cell.get('item')) if carried else (not cursor and cell.get('item')==rod)
             if accepted or time.monotonic()>deadline:break
             time.sleep(.1)
-        g.check('cursor_move_ack_'+str(len(g.evidence['steps'])),accepted,{'cursor':cursor,'slot':cell})
+        g.check(nth(g,'cursor_move_ack'),accepted,{'cursor':cursor,'slot':cell})
     g.check('rod_life_survives_manual_moves',life(g,core)==before,{'before':before,'after':life(g,core)})
     manual_non_fuel(g,core)
     import os
