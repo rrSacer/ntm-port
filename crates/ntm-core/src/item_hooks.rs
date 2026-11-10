@@ -131,7 +131,9 @@ pub fn piece_resistance(p: &Piece) -> f64 {
 }
 /// `HazmatRegistry.getResistance(EntityPlayer)`: a `float` accumulates each
 /// piece's `double` (`res += d` narrows after every addition), then `+0.2F`
-/// while Rad-X is active.
+/// while Rad-X is active. `pieces` must come in the Java's order,
+/// `armorInventory[0..3]`: boots, leggings, chestplate, helmet (the narrowing
+/// makes the order count).
 pub fn player_resistance(pieces: impl IntoIterator<Item = f64>, radx: bool) -> f32 {
     let mut res = 0f32;
     for piece in pieces {
@@ -146,11 +148,6 @@ pub fn player_resistance(pieces: impl IntoIterator<Item = f64>, radx: bool) -> f
 pub fn radiation_mod(res: f32) -> f32 {
     10f64.powf(-f64::from(res)) as f32
 }
-/// The factor of bare pieces (no cladding): `radiation_mod(player_resistance)`.
-pub fn dose_factor<'a>(equipment: impl IntoIterator<Item = &'a str>, radx: bool) -> f64 {
-    f64::from(radiation_mod(player_resistance(equipment.into_iter().map(resistance), radx)))
-}
-
 /// `ArmorRegistry.HazardClass`, plus `Gamma` for the dose path (resistance,
 /// not a class).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -363,8 +360,9 @@ mod tests {
     #[test]
     fn java_protection_has_distinct_gamma_and_filter_paths() {
         // (float) Math.pow(10, -0.24F): the exponent is the float 0.23999999.
-        assert_eq!(dose_factor(["ntm:hazmat_plate"], false), f64::from(0.575_439_93_f32));
-        assert_eq!(dose_factor(["ntm:gas_mask_m65"], false), f64::from(0.803_526_1_f32));
+        let factor = |id| radiation_mod(player_resistance([resistance(id)], false));
+        assert_eq!(factor("ntm:hazmat_plate"), 0.575_439_93_f32);
+        assert_eq!(factor("ntm:gas_mask_m65"), 0.803_526_1_f32);
         assert!(filter_protects(
             "ntm:gas_mask_m65",
             "ntm:gas_mask_filter",
@@ -402,15 +400,18 @@ mod tests {
     /// `res += getResistance(stack)` narrows to float after each piece.
     #[test]
     fn the_player_sum_is_a_float_like_the_java() {
-        let grey = ["ntm:hazmat_helmet_grey", "ntm:hazmat_plate_grey", "ntm:hazmat_legs_grey", "ntm:hazmat_boots_grey"];
+        // armorInventory order: boots first.
+        let grey = ["ntm:hazmat_boots_grey", "ntm:hazmat_legs_grey", "ntm:hazmat_plate_grey", "ntm:hazmat_helmet_grey"];
         assert_eq!(player_resistance(grey.map(resistance), false), 2.0);
         // 10^-2 as a float is 0.00999999977, the float nearest 0.01.
         assert_eq!(radiation_mod(2.0), 0.01_f32);
-        let steel = ["ntm:steel_helmet", "ntm:steel_plate", "ntm:steel_legs", "ntm:steel_boots"];
-        // The float nearest 0.045 is 0.045000002: four double pieces narrowed one by one land on it.
-        assert_eq!(player_resistance(steel.map(resistance), false), 0.045_f32);
-        assert_eq!(radiation_mod(0.045), 0.901_571_15_f32);
-        let yellow = ["ntm:hazmat_helmet", "ntm:hazmat_plate", "ntm:hazmat_legs", "ntm:hazmat_boots"];
+        let steel = ["ntm:steel_boots", "ntm:steel_legs", "ntm:steel_plate", "ntm:steel_helmet"];
+        // Boots first the four narrowings land on 0.044999998 (helmet first they would give 0.045000002).
+        assert_eq!(player_resistance(steel.map(resistance), false), 0.044_999_998_f32);
+        let reversed = ["ntm:steel_helmet", "ntm:steel_plate", "ntm:steel_legs", "ntm:steel_boots"];
+        assert_ne!(player_resistance(reversed.map(resistance), false), 0.044_999_998_f32);
+        assert_eq!(radiation_mod(0.044_999_998), 0.901_571_15_f32);
+        let yellow = ["ntm:hazmat_boots", "ntm:hazmat_legs", "ntm:hazmat_plate", "ntm:hazmat_helmet"];
         let r = player_resistance(yellow.map(resistance), true);
         assert_eq!(r, 0.799_999_95_f32);
         assert_eq!(radiation_mod(r), 0.158_489_33_f32);
@@ -532,4 +533,68 @@ mod tests {
         assert!(has_protection(Some(&piss), LungGas));
     }
 
+    /// tools/hazmat-oracle: the Java bodies of getResistance(EntityPlayer),
+    /// getCladding, calculateRadiationMod and printGeigerData, compiled and run
+    /// on 1503 mixed sets (armorInventory order) and 500 exponents of the pow,
+    /// 150 of them where a powf in float would differ.
+    #[test]
+    fn the_java_oracle_agrees_bit_for_bit() {
+        #[derive(serde::Deserialize)]
+        struct Hfr {
+            value: f64,
+        }
+        #[derive(serde::Deserialize)]
+        struct Slot {
+            id: String,
+            hfr: Option<Hfr>,
+            r#mod: Option<String>,
+        }
+        #[derive(serde::Deserialize)]
+        struct Java {
+            resistance_bits: i32,
+            factor_bits: i32,
+            res: String,
+            koeff: String,
+        }
+        #[derive(serde::Deserialize)]
+        struct Case {
+            radx: bool,
+            slots: Vec<Option<Slot>>,
+            java: Java,
+        }
+        #[derive(serde::Deserialize)]
+        struct Pow {
+            res_bits: i32,
+            factor_bits: i32,
+        }
+        #[derive(serde::Deserialize)]
+        struct Fixture {
+            cases: Vec<Case>,
+            pow: Vec<Pow>,
+        }
+        let fixture: Fixture = serde_json::from_str(include_str!("../../../tools/hazmat-oracle/fixture.json")).unwrap();
+        assert_eq!(fixture.cases.len(), 1503);
+        for (n, c) in fixture.cases.iter().enumerate() {
+            let pieces = c.slots.iter().flatten().map(|s| {
+                // NBTTagCompound.getFloat: the number as float, whatever its tag (Number.floatValue).
+                let hfr = s.hfr.as_ref().map_or(0.0, |h| h.value as f32);
+                piece_resistance(&Piece { id: &s.id, hfr_cladding: hfr, cladding_mod: s.r#mod.as_deref() })
+            });
+            let r = player_resistance(pieces, c.radx);
+            let f = radiation_mod(r);
+            assert_eq!(r.to_bits() as i32, c.java.resistance_bits, "case {n}");
+            assert_eq!(f.to_bits() as i32, c.java.factor_bits, "case {n}");
+            let line = crate::instruments::geiger_lines(&crate::instruments::Readings {
+                dose_millirad: 0,
+                zone_millirad_s: 0,
+                buffer_millirad_s: 0,
+                resistance: r,
+            })[4]
+                .clone();
+            assert!(line.ends_with(&format!("{}% ({})", c.java.res, c.java.koeff)), "case {n}: {line}");
+        }
+        for p in &fixture.pow {
+            assert_eq!(radiation_mod(f32::from_bits(p.res_bits as u32)).to_bits() as i32, p.factor_bits);
+        }
+    }
 }

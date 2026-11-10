@@ -80,6 +80,15 @@ class HazmatTable(unittest.TestCase):
                 self.assertEqual(TABLE['cladding'][IDS[name]]['value'], float(rad), name)
         self.assertEqual(len(rows), 5)
 
+    @unittest.skipUnless(__import__('shutil').which('javac'), 'needs a JDK')
+    def test_the_java_oracle_fixture_is_current(self):
+        import subprocess
+        import tempfile
+        with tempfile.TemporaryDirectory(dir=os.environ.get('HAZMAT_ORACLE_SCRATCH')) as scratch:
+            run = subprocess.run([sys.executable, str(ROOT / 'tools/hazmat-oracle/run.py'), '--scratch', scratch + '/o', '--check'],
+                                 capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+
     def test_a_changed_value_is_caught(self):
         import copy
         import hazmat

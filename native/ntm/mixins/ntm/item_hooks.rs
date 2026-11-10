@@ -1139,8 +1139,9 @@ pub(super) fn transfer_commit(
 /// `HazmatRegistry.getResistance(EntityPlayer)`: the four armor pieces with
 /// their cladding, plus 0.2 while Rad-X is active.
 pub(super) fn player_resistance(game: &Game<'_>) -> f32 {
+    // `armorInventory[0..3]` is boots to helmet, and the float narrows after each piece: the order counts.
     item_hooks::player_resistance(
-        game.armor.iter().flatten().map(worn_resistance),
+        game.armor.iter().rev().flatten().map(worn_resistance),
         game.potions.effects.get("ntm:radx").is_some(),
     )
 }
@@ -1149,15 +1150,21 @@ pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
     f64::from(item_hooks::radiation_mod(player_resistance(game)))
 }
 /// `HazmatRegistry.getResistance(ItemStack)` of a worn stack: the
-/// `hfr_cladding` float (`getFloat` is 0 when absent or of another type) and
+/// `hfr_cladding` number (`getFloat`, any numeric tag) and
 /// the item in the cladding slot of `ntm_armor_mods`.
 pub(super) fn worn_resistance(stack: &ItemStack) -> f64 {
     let data = match stack.data().and_then(|d| d.other("minecraft:custom_data")) {
         Some(Tag::Compound(c)) => Some(c),
         _ => None,
     };
+    // NBTTagCompound.getFloat: any numeric tag (`hasKey(key, 99)`), as float; 0 for anything else.
     let hfr_cladding = match data.and_then(|c| c.get(&JavaString::from("hfr_cladding"))) {
+        Some(Tag::Byte(n)) => f32::from(*n),
+        Some(Tag::Short(n)) => f32::from(*n),
+        Some(Tag::Int(n)) => *n as f32,
+        Some(Tag::Long(n)) => *n as f32,
         Some(Tag::Float(bits)) => f32::from_bits(*bits),
+        Some(Tag::Double(bits)) => f64::from_bits(*bits) as f32,
         _ => 0.0,
     };
     let slot = JavaString::from(format!("mod_slot_{}", item_hooks::CLADDING_SLOT).as_str());
