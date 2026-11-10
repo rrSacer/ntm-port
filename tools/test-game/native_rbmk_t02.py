@@ -72,7 +72,11 @@ def entities(g, prefixes, radius=60):
 
 
 def dial(g, value):
-    reply = ' '.join(g.command(f'ntmrbmk dial dialColumnHeight {value}').get('chat', []))
+    # A height other than 4 asks for `confirmar` until T02-V (the model draws 4 cells): the plain command refuses.
+    plain = ' '.join(g.command(f'ntmrbmk dial dialColumnHeight {value}').get('chat', []))
+    if 'confirmar' in plain:
+        g.note(f'dial_{value}_refused', plain)
+    reply = ' '.join(g.command(f'ntmrbmk dial dialColumnHeight {value} confirmar').get('chat', [])) if 'confirmar' in plain else plain
     g.note(f'dial_{value}', reply)
     return reply
 
@@ -185,7 +189,8 @@ def play(g):
     g.check('a_control_rod_takes_no_lid', inv(g, (LID,)) == 2 and lid(g, c) == 'None', [lid(g, c), inv(g, LIDS)])
     g.command(f'tp @s 50.5 {Y} 20.5')
     time.sleep(.5)
-    floor_items = entities(g, LIDS)
+    # The lids out of the columns: on the floor or picked up (the lid comes off with no pickup delay, as Java's).
+    loose = entities(g, LIDS) + inv(g, LIDS)
     interact(g, (a[0], Y + 1, a[2]), 'ntm:screwdriver', sneak=True)
     g.command(f'tp @s 50.5 {Y} 20.5')
     time.sleep(1)
@@ -193,8 +198,8 @@ def play(g):
     dropped = [e for e in near if e.get('kind') == 'item' and e['item']['item'] == LID]
     g.note('lid_drop', dropped)
     g.ctl('select ntm:screwdriver')
-    g.check('lid_off_one_item_at_the_top_tool_worn', lid(g, a) == 'None' and entities(g, LIDS) == floor_items + 1 and held_damage(g) == 1,
-            [lid(g, a), entities(g, LIDS), held_damage(g), dropped])
+    g.check('lid_off_one_item_at_the_top_tool_worn', lid(g, a) == 'None' and entities(g, LIDS) + inv(g, LIDS) == loose + 1 and held_damage(g) == 1,
+            [lid(g, a), entities(g, LIDS), inv(g, LIDS), loose, held_damage(g), dropped])
     g.command('kill @e[type=minecraft:item]')
     interact(g, (a[0], Y + 1, a[2]), 'ntm:screwdriver', sneak=True)
     g.ctl('select ntm:screwdriver')
@@ -232,6 +237,27 @@ def play(g):
     channel = ' '.join(g.command(f'data get block {ch[0]} {Y} {ch[2]} Items').get('chat', []))
     g.check('storage_top_takes_rods_only', 'rbmk_fuel_ueu' in storage and 'stone' not in storage and 'stone' in hopper_st, [storage, hopper_st])
     g.check('channel_top_shows_no_slot', 'rbmk_fuel_ueu' in hopper_ch and 'rbmk_fuel' not in channel, [hopper_ch, channel])
+    # A middle dummy taken away by a command (review P1-1, `BlockDummyable.breakBlock`): the whole column breaks, its
+    # rod and its lid out once (on the floor or picked up), no column item (nobody harvested it).
+    g.command('kill @e[type=minecraft:item]')
+    dc = (70, Y, 4)
+    g.command('give @s ntm:rbmk_rod 1')
+    place(g, dc, 'ntm:rbmk_rod')
+    g.command('give @s ntm:rbmk_fuel_ueu 1')
+    interact(g, (dc[0], Y + 3, dc[2]), 'ntm:rbmk_fuel_ueu')
+    g.command(f'give @s {LID} 1')
+    interact(g, (dc[0], Y + 3, dc[2]), LID)
+    loaded = held_items(g, dc) == 1 and lid(g, dc) == 'Standard'
+    g.check('channel_with_rod_and_lid', loaded, [held_items(g, dc), lid(g, dc)])
+    g.command('tp @s 66.5 101 10.5')
+    before = {k: entities(g, (k,)) + inv(g, (k,)) for k in ('ntm:rbmk_fuel_ueu', LID, 'ntm:rbmk_rod')}
+    g.command(f'setblock {dc[0]} {Y + 2} {dc[2]} minecraft:air')
+    time.sleep(2)
+    after = {k: entities(g, (k,)) + inv(g, (k,)) for k in ('ntm:rbmk_fuel_ueu', LID, 'ntm:rbmk_rod')}
+    gone = cells(g, dc, 5)
+    g.check('middle_dummy_takes_the_column_rod_and_lid_once',
+            all(c == 'minecraft:air' for c in gone) and after['ntm:rbmk_fuel_ueu'] == before['ntm:rbmk_fuel_ueu'] + 1
+            and after[LID] == before[LID] + 1 and after['ntm:rbmk_rod'] == before['ntm:rbmk_rod'], [gone, before, after])
     g.evidence['heights'] = heights
     g.ctl('save')
 
@@ -253,9 +279,12 @@ def reopen(g):
 
 
 # ----------------------------------------------------------------------------------------------- scenario C
-# All three in chunk (2, 0): the lids' records are that chunk's, cut alike in both worlds.
-A, B, C = (38, Y, 6), (41, Y, 6), (44, Y, 6)
-TOTAL = 3
+# All four in chunk (2, 0): the lids' and the rod's records are that chunk's, cut alike in both worlds. D is a fuel
+# channel with a rod and a lid whose middle dummy a command takes away (review P1-1): the whole column breaks.
+A, B, C, D = (38, Y, 6), (41, Y, 6), (44, Y, 6), (46, Y, 6)
+ROD = 'ntm:rbmk_fuel_ueu'
+COUNTED = (LID, 'ntm:rbmk_fuel_')
+TOTAL = 5
 
 
 def ledger(g):
@@ -264,14 +293,18 @@ def ledger(g):
     return {k: int(v) for k, v in found.items()}
 
 
-def barrel_lids(g, p):
+def held_items(g, p):
+    """Lids and rods a block entity's slots hold (a barrel's, or the channel's rod)."""
     text = ' '.join(g.command(f'data get block {p[0]} {p[1]} {p[2]} Items').get('chat', []))
-    return sum(int(n) for n in re.findall(r'count: ?(\d+)[^{}]*?id: ?"ntm:rbmk_lid"', text))
+    return sum(int(n) for n in re.findall(r'count: ?(\d+)[^{}]*?id: ?"ntm:(?:rbmk_lid|rbmk_fuel_\w+)"', text))
 
 
 def count(g):
-    held = sum(barrel_lids(g, p) for p in (A, B, C)) if VANILLA else sum(lid(g, p) == 'Standard' for p in (A, B, C))
-    return {'columns': held, 'entities': entities(g, (LID,)), 'inventory': inv(g, (LID,)), 'ledger': ledger(g)}
+    if VANILLA:
+        held = sum(held_items(g, p) for p in (A, B, C, D))
+    else:
+        held = sum(lid(g, p) == 'Standard' for p in (A, B, C, D)) + held_items(g, D)
+    return {'columns': held, 'entities': entities(g, COUNTED), 'inventory': inv(g, COUNTED), 'ledger': ledger(g)}
 
 
 def settled(g, timeout=90):
@@ -294,13 +327,19 @@ def prepare(g):
     g.command('clear @s')
     g.command('gamemode survival @s')
     g.command('effect give @s minecraft:resistance infinite 4 true')
-    for p in (A, B, C):
+    for p in (A, B, C, D):
         if VANILLA:
             g.command(f'setblock {p[0]} {p[1]} {p[2]} minecraft:barrel')
         else:
-            g.command('give @s ntm:rbmk_blank 1')
-            place(g, p, 'ntm:rbmk_blank')
-    for p in (B, C):
+            column = 'ntm:rbmk_rod' if p == D else 'ntm:rbmk_blank'
+            g.command(f'give @s {column} 1')
+            place(g, p, column)
+    if VANILLA:
+        g.command(f'item replace block {D[0]} {D[1]} {D[2]} container.1 with {ROD} 1')
+    else:
+        g.command(f'give @s {ROD} 1')
+        interact(g, (D[0], Y + 3, D[2]), ROD)
+    for p in (B, C, D):
         if VANILLA:
             g.command(f'item replace block {p[0]} {p[1]} {p[2]} container.0 with {LID} 1')
         else:
@@ -314,7 +353,7 @@ def prepare(g):
     g.command(f'tp @s 46.5 {Y} 12.5')
     time.sleep(2)
     base = count(g)
-    g.check('base_lids', base['columns'] == 2 and base['inventory'] == 1 and base['entities'] == 0, base)
+    g.check('base_lids_and_rod', base['columns'] == 4 and base['inventory'] == 1 and base['entities'] == 0, base)
     g.evidence['base'] = base
     g.ctl('save')
 
@@ -324,7 +363,7 @@ def act(g):
     g.command(f'tp @s 46.5 {Y} 12.5')
     time.sleep(3)
     before = count(g)
-    g.check('start_with_three', before['columns'] + before['inventory'] == TOTAL, before)
+    g.check('start_with_five', before['columns'] + before['inventory'] == TOTAL, before)
     if VANILLA:
         g.command(f'item replace block {A[0]} {A[1]} {A[2]} container.0 with {LID} 1')
         g.command(f'clear @s {LID} 1')
@@ -332,6 +371,8 @@ def act(g):
         g.command(f'item replace block {B[0]} {B[1]} {B[2]} container.0 with minecraft:air')
         g.command(f'summon minecraft:item {B[0] + .5} {Y + 3.5} {B[2] + .5} {{Item:{{id:"{LID}",count:1}}}}')
         g.command(f'setblock {C[0]} {C[1]} {C[2]} minecraft:air destroy')
+        # D's barrel broken: its rod and its lid out, as the column's core breaks.
+        g.command(f'setblock {D[0]} {D[1]} {D[2]} minecraft:air destroy')
     else:
         # Each use until the column shows it (a click sent before the client sees the cell reaches nothing); a repeat
         # is harmless: a column with a lid takes no other, one without gives nothing to the screwdriver.
@@ -351,12 +392,15 @@ def act(g):
         g.command(f'tp @s {C[0] + .5} {Y} {C[2] + 3.5}')
         g.ctl('select minecraft:iron_pickaxe')
         g.ctl(f'break {C[0]} {C[1]} {C[2]}')
+        # D's middle dummy taken away by a command (`BlockDummyable.breakBlock`): the whole column breaks, its rod and
+        # its lid out.
+        g.command(f'setblock {D[0]} {Y + 2} {D[2]} minecraft:air')
     # Away at once, in both worlds: no pickup before the save.
     g.command(f'tp @s 46.5 {Y} 18.5')
     time.sleep(1.5)
     after = count(g)
     g.evidence['after_act'] = after
-    g.check('one_lid_each_way', after['columns'] == 1 and after['entities'] == 2 and after['inventory'] == 0, after)
+    g.check('each_item_moved_once', after['columns'] == 1 and after['entities'] == 4 and after['inventory'] == 0, after)
     g.save()
     if NO_SAVE:
         return

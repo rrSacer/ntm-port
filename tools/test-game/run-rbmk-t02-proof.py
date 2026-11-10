@@ -20,9 +20,9 @@ t01 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(t01)
 
 t01.SCRIPT = 'native_rbmk_t02.py'
-t01.ITEMS = ('ntm:rbmk_lid',)
+t01.ITEMS = ('ntm:rbmk_lid', 'ntm:rbmk_fuel_')
 t01.DIMS = ('overworld',)
-t01.TOTAL = 3
+t01.TOTAL = 5
 t01.POINTS = ['kill', 'kv_committed', 'players_saved', 'live_chunk:2,0']
 
 
