@@ -142,7 +142,8 @@ fn java_round(v: f64) -> i32 {
 /// `round(13 − health·13)` and its colour `(255 − k) << 16 | k << 8` with `k = round(255 − health·255)`. None: no bar.
 pub fn durability_bar(rod: &RodType, s: &mut RodStack) -> Option<(i32, u32)> {
     let health = s.durability_for_display(rod);
-    if !(health > 0.0) {
+    // `showDurabilityBar`: `health > 0`, so a NaN shows no bar.
+    if health.is_nan() || health <= 0.0 {
         return None;
     }
     let width = java_round(13.0 - health * 13.0);
