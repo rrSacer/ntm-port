@@ -2719,6 +2719,7 @@
   "item.ntm.fluid_barrel_full__titanium_tetrachloride": "Barrel of Titanium Tetrachloride",
   "item.ntm.canister_full__titanium_tetrachloride": "Canister of Titanium Tetrachloride",
   "item.ntm.battery_creative": "Infinite Battery",
+  "item.ntm.broken_item": "Broken Item",
   "block.ntm.machine_excavator": "Large Mining Drill",
   "block.ntm.machine_ore_slopper": "Bedrock Ore Processor",
   "block.ntm.ore_bedrock": "Bedrock Ore",

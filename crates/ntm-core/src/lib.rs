@@ -9,6 +9,7 @@ pub mod anvil;
 pub mod arc_furnace;
 pub mod bedrock;
 pub mod blast;
+pub mod broken;
 pub mod blastfurnace;
 pub mod blockstate;
 pub mod boiler;

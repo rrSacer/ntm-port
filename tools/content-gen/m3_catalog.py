@@ -145,6 +145,11 @@ def build(source=SOURCE, output=ROOT / 'content'):
                  'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png',
                  'names': {loc: tr['item.battery_creative.name'] for loc, tr in translations.items()},
                  'behavior_gap': 'Creative-only infinite battery; server logic owns charging, no crafting recipe in NTM'})
+    name, texture = registration(items, 'broken_item', 'item')
+    rows.append({'id': name, 'source_variable': 'broken_item', 'type': 'item', 'category': 'component',
+                 'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png',
+                 'names': {loc: tr['item.broken_item.name'] for loc, tr in translations.items()},
+                 'behavior_gap': 'The product (id) lives in custom_data {ntm_broken:{id}}; the name and the layered icon of the product (BrokenItem.getItemStackDisplayName/getIcon) are not reproduced'})
     import bedrock_catalog
     rows.extend(bedrock_catalog.build(source))
     import bedrock_processing_catalog
