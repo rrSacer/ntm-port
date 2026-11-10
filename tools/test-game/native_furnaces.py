@@ -105,6 +105,16 @@ def lit_electric(g):
     time.sleep(1)
     inv = g.ctl('inventory').get('counts', {})
     g.check('lit_block_drops_the_unlit_one', inv.get('ntm:machine_electric_furnace_off', 0) >= 1 and not inv.get('ntm:machine_electric_furnace_on'), inv)
+    # The lit brick furnace drops itself: `MachineBrickFurnace` has no `getItemDropped` (only the client's pick block).
+    g.command('clear @s')
+    g.command(f'setblock {x + 4} {y} {z} ntm:machine_furnace_brick_on')
+    time.sleep(1)
+    g.command(f'setblock {x + 4} {y} {z} minecraft:air destroy')
+    time.sleep(1)
+    g.command(f'tp @s {x + 4.5} {y} {z + .5}')
+    time.sleep(1)
+    inv = g.ctl('inventory').get('counts', {})
+    g.check('lit_brick_furnace_drops_itself', inv.get('ntm:machine_furnace_brick_on', 0) >= 1 and not inv.get('ntm:machine_furnace_brick_off'), inv)
 
 
 def iron(g):
