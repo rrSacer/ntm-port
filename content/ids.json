@@ -99361,7 +99361,7 @@
       },
       "category": "decorative",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/door_metal_lower.png",
-      "behavior_gap": "Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance and source metadata/NBT transform differ; no tile entity or invented lock.",
+      "behavior_gap": "Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance, sounds and source metadata/NBT transform differ; no tile entity or invented lock.",
       "source_has_tile": false,
       "source_ancestry": [
         "BlockModDoor",
@@ -99403,7 +99403,7 @@
       },
       "category": "decorative",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/door_office_lower.png",
-      "behavior_gap": "Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance and source metadata/NBT transform differ; no tile entity or invented lock.",
+      "behavior_gap": "Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance, sounds and source metadata/NBT transform differ; no tile entity or invented lock.",
       "source_has_tile": false,
       "source_ancestry": [
         "BlockModDoor",
@@ -99445,7 +99445,7 @@
       },
       "category": "decorative",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/door_bunker_lower.png",
-      "behavior_gap": "Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance and source metadata/NBT transform differ; no tile entity or invented lock.",
+      "behavior_gap": "Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance, sounds and source metadata/NBT transform differ; no tile entity or invented lock.",
       "source_has_tile": false,
       "source_ancestry": [
         "BlockModDoor",
@@ -99487,7 +99487,7 @@
       },
       "category": "decorative",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/door_red_lower.png",
-      "behavior_gap": "Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance and source metadata/NBT transform differ; no tile entity or invented lock.",
+      "behavior_gap": "Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance, sounds and source metadata/NBT transform differ; no tile entity or invented lock.",
       "source_has_tile": false,
       "source_ancestry": [
         "BlockModDoor",

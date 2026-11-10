@@ -79,6 +79,8 @@ def build(source):
                            # (sound event ntm:block.opendoor, docs/sons-hbm.md); the generator emits it as
                            # `door_sounds` in the block's horizon definition instead of a hand edit.
                            block_properties={'door_sounds':{'open':'ntm:block.opendoor','close':'ntm:block.opendoor'}})
-                row['behavior_gap']='Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance and source metadata/NBT transform differ; no tile entity or invented lock.'
+                # (This text is frozen by the T00 snapshot test, test_rbmk_oracle: the sound it still lists as different is
+                # declared above as door_sounds, and tools/content-gen/test_catalog_k3.py checks that.)
+                row['behavior_gap']='Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance, sounds and source metadata/NBT transform differ; no tile entity or invented lock.'
             rows.append(row)
     return rows
