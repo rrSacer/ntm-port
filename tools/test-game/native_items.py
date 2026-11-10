@@ -9,7 +9,7 @@ from pathlib import Path
 from native_game import Game
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection').split(',')
 
 
 FAMILY_RUNS=[]
@@ -65,6 +65,17 @@ def settle(g,done,timeout=8):
             if done(again):return again
         if time.monotonic()>deadline:return screen
         time.sleep(.25)
+
+
+def try_put(g,item,slot):
+    """Carry `item` to table slot `slot`; a refused slot leaves it on the cursor, put back where it was."""
+    g.command(f'give @s {item} 1')
+    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])))
+    source=next(x['slot'] for x in screen.get('slots',[]) if x['slot']<36 and x.get('item')==item)
+    g.ctl(f'click-slot {source}');g.ctl(f'click-slot {300+slot}');time.sleep(.8)
+    screen=g.ctl('screen')
+    if screen.get('carried'):g.ctl(f'click-slot {source}');time.sleep(.3)
+    return table_slot(screen,slot)
 
 
 def put(g,item,count,slot):
@@ -786,9 +797,11 @@ def capture(g):
     g.check('mask_kept_with_filter_wear','777' in inventory_tag(g) and 'hfrFilter' in inventory_tag(g),inventory_tag(g))
     g.command('setblock 24 101 8 ntm:machine_armor_table');g.command('tp @s 24.5 101 11.5');screen=open_table(g)
     g.check('capture_table_open',len(g.slots())==14,screen)
-    put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0)
+    put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0);put(g,'ntm:cladding_lead',1,5)
     g.ctl('click-slot 309 shift');settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet' and not s.get('carried'));g.close();time.sleep(.5)
-    mods=inventory_tag(g);g.check('helmet_worn_with_mod_before_reopen','ntm_armor_mods' in mods and 'attachment_mask' in mods,mods)
+    mods=inventory_tag(g);g.check('helmet_worn_with_mod_before_reopen','ntm_armor_mods' in mods and 'attachment_mask' in mods and 'cladding_lead' in mods,mods)
+    expected,_=resistance_line([0.6*0.2+0.1]);line=geiger_resistance(g)
+    g.check('cladding_counts_before_reopen',line.endswith(expected),{'line':line,'expected':expected})
     # Two doses accumulate treatment time. The invariant detects timer reset,
     # lost dose or replayed treatment across the normal world close/reopen.
     g.command('ntmitem dose 500000')
@@ -832,11 +845,108 @@ def reopened(g):
     g.check('cleared_radaway_stays_zero_after_the_reopen',expected['radaway']==0 and current.get('radaway',0)==0 and current['dose']==expected['dose'],{'before':expected,'after':current})
     tag=inventory_tag(g)
     g.check('filter_wear_and_stack_charge_survive','777' in tag and '123456789' in tag and 'ntm_charge' in tag and 'hfrFilter' in tag,tag)
-    g.check('armor_mods_survive','ntm_armor_mods' in tag and 'attachment_mask' in tag and 'hazmat_helmet' in tag,tag)
+    g.check('armor_mods_survive','ntm_armor_mods' in tag and 'attachment_mask' in tag and 'hazmat_helmet' in tag and 'cladding_lead' in tag,tag)
+    expected,_=resistance_line([0.6*0.2+0.1]);line=geiger_resistance(g)
+    g.check('cladding_still_counts_after_reopen',line.endswith(expected),{'line':line,'expected':expected})
     g.snapshot('items-reopened')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks)]
+def java_float(x):
+    import struct
+    return struct.unpack('f',struct.pack('f',x))[0]
+
+
+def java_resistance(pieces,radx=False):
+    """HazmatRegistry.getResistance(player): a float that narrows after each piece."""
+    res=0.0
+    for piece in pieces:res=java_float(res+piece)
+    if radx:res=java_float(res+java_float(0.2))
+    return res
+
+
+def resistance_line(pieces,radx=False):
+    """The fifth Geiger line, computed here from the Java formulas (not from the port)."""
+    res=java_resistance(pieces,radx);factor=java_float(10**-res)
+    shown=int(10000-factor*10000)/100;koeff=int(res*100)/100
+    # The chat log keeps the text without the § colour codes.
+    return f"Player resistance: {shown}% ({koeff})",factor
+
+
+def geiger_resistance(g):
+    g.command('item replace entity @s hotbar.8 with ntm:geiger_counter');g.ctl('select 9');use(g)
+    lines=[l for l in g.ctl('chat-log 6').get('chat',[]) if 'Player resistance' in l]
+    return lines[-1] if lines else ''
+
+
+def wear(g,pieces):
+    for slot,item in zip(('head','chest','legs','feet'),pieces):
+        g.command(f'item replace entity @s armor.{slot} with {item}')
+
+
+def protection(g):
+    """Onda 1, fatia 1: the whole HazmatRegistry, cladding and the Java armor stats."""
+    hz={'hazmat_grey':[0.4,0.8,0.6,0.2],'steel':[0.045*f for f in (0.2,0.4,0.3,0.1)],'titanium':[0.045*f for f in (0.2,0.4,0.3,0.1)],
+        'alloy':[0.07*f for f in (0.2,0.4,0.3,0.1)],'cobalt':[0.125*f for f in (0.2,0.4,0.3,0.1)],'starmetal':[1.0*f for f in (0.2,0.4,0.3,0.1)],
+        'iron':[0.0225*f for f in (0.2,0.4,0.3,0.1)],'golden':[0.0225*f for f in (0.2,0.4,0.3,0.1)]}
+    sets={'steel':'ntm:steel_{}','titanium':'ntm:titanium_{}','alloy':'ntm:alloy_{}','cobalt':'ntm:cobalt_{}','starmetal':'ntm:starmetal_{}'}
+    parts=['helmet','plate','legs','boots'];vanilla=['helmet','chestplate','leggings','boots']
+    # Every set's Geiger line against the Java float arithmetic.
+    for name,pattern in sets.items():
+        reset(g,'creative');wear(g,[pattern.format(p) for p in parts])
+        expected,_=resistance_line(hz[name]);line=geiger_resistance(g)
+        g.check(f'geiger_resistance_{name}_set',line.endswith(expected),{'line':line,'expected':expected})
+    for name in ('iron','golden'):
+        reset(g,'creative');wear(g,[f'minecraft:{name}_{p}' for p in vanilla])
+        expected,_=resistance_line(hz[name]);line=geiger_resistance(g)
+        g.check(f'geiger_resistance_vanilla_{name}_set',line.endswith(expected),{'line':line,'expected':expected})
+    reset(g,'creative');wear(g,['ntm:hazmat_helmet_grey','ntm:hazmat_plate_grey','ntm:hazmat_legs_grey','ntm:hazmat_boots_grey'])
+    expected,_=resistance_line(hz['hazmat_grey']);line=geiger_resistance(g)
+    g.check('geiger_resistance_grey_hazmat_set',line.endswith(expected) and '99.0% (2.0)' in line,{'line':line,'expected':expected})
+    # ArmorMaterial HBM_STEEL {3, 8, 6, 3}, durability 30: 20 armor points and 16 * 30 = 480 on the plate.
+    reset(g,'creative');wear(g,[sets['steel'].format(p) for p in parts])
+    armor=' '.join(g.command('attribute @s minecraft:armor get').get('chat',[]))
+    g.check('steel_set_has_the_java_armor_points',re.search(r'\b20(\.0)?\b',armor) is not None,armor)
+    # Durability 16 * 30 = 480: a hit takes one point from each piece, so a plate at 478 survives one cactus
+    # hit at 479 and breaks on the next (an off-by-one max_damage changes which hit breaks it).
+    reset(g,'survival');g.command('item replace entity @s armor.chest with ntm:steel_plate[minecraft:damage=478]')
+    g.command('damage @s 1 minecraft:cactus');time.sleep(.6);first=g.ctl('inventory')
+    g.command('effect give @s minecraft:instant_health 1 5 true');g.command('damage @s 1 minecraft:cactus');time.sleep(.6);second=g.ctl('inventory')
+    worn=lambda inv:[s for s in inv.get('armor',[]) if s.get('item')=='ntm:steel_plate']
+    g.check('steel_plate_has_the_java_durability',[s.get('damage') for s in worn(first)]==[479] and not worn(second),{'first':first.get('armor'),'second':second.get('armor')})
+    # The real gamma dose follows the same factor (bare step times the float factor, truncated).
+    reset(g,'survival');give_hand(g,'ntm:ingot_uranium');time.sleep(11)
+    def step():
+        last=state(g)['dose'];steps=[];deadline=time.monotonic()+30
+        while len(steps)<3 and time.monotonic()<deadline:
+            time.sleep(.2);now=state(g)['dose']
+            if now!=last:steps.append(now-last);last=now
+        steps.sort();return steps[len(steps)//2] if steps else 0
+    bare=step();wear(g,[sets['steel'].format(p) for p in parts]);steel=step()
+    _,factor=resistance_line(hz['steel'])
+    g.check('steel_set_reduces_the_real_dose_by_the_java_factor',bare>0 and steel==int(bare*factor),{'bare':bare,'steel':steel,'factor':factor})
+    # hfr_cladding (a float tag) adds to the piece and wins over the cladding slot.
+    reset(g,'creative');g.command('item replace entity @s armor.head with ntm:hazmat_helmet_grey[minecraft:custom_data={hfr_cladding:0.25f}]')
+    expected,_=resistance_line([0.4+java_float(0.25)]);line=geiger_resistance(g)
+    g.check('hfr_cladding_adds_to_the_helmet',line.endswith(expected),{'line':line,'expected':expected})
+    # The cladding goes in slot 5 of the real table, only with an armor piece in it, and counts when worn.
+    g.close();g.command('clear @s');g.command('setblock 24 101 8 ntm:machine_armor_table');g.command('tp @s 24.5 101 11.5')
+    open_table(g)
+    g.check('cladding_refused_without_armor',try_put(g,'ntm:cladding_lead',5) is None,g.slots())
+    put(g,'ntm:hazmat_helmet_grey',1,9)
+    g.check('cladding_refused_in_the_mask_slot',try_put(g,'ntm:cladding_lead',0) is None,g.slots())
+    g.close();time.sleep(.5);g.command('clear @s');g.command('kill @e[type=minecraft:item]');open_table(g)
+    put(g,'ntm:hazmat_helmet_grey',1,9);put(g,'ntm:cladding_lead',1,5)
+    screen=settle(g,lambda s:table_slot(s,5)=='ntm:cladding_lead')
+    g.check('cladding_installed_in_slot_5',table_slot(screen,5)=='ntm:cladding_lead',screen.get('slots'))
+    g.ctl('click-slot 309 shift');settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet_grey' and not s.get('carried'));g.close();time.sleep(.5)
+    tag=inventory_tag(g);g.check('cladding_kept_in_the_helmet_mods','ntm_armor_mods' in tag and 'cladding_lead' in tag,tag)
+    expected,_=resistance_line([0.4+0.1]);line=geiger_resistance(g)
+    g.check('cladding_mod_adds_to_the_worn_helmet',line.endswith(expected),{'line':line,'expected':expected})
+    g.command('item replace entity @s hotbar.4 from entity @s armor.head')
+    reset(g,'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection)]
 
 
 if __name__=='__main__':
