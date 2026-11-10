@@ -9,7 +9,7 @@ from pathlib import Path
 from native_game import Game
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks').split(',')
 
 
 FAMILY_RUNS=[]
@@ -873,15 +873,42 @@ def resistance_line(pieces,radx=False):
     return f"Player resistance: {shown}% ({koeff})",factor
 
 
+GEIGER=[0]
+
+
 def geiger_resistance(g):
-    g.command('item replace entity @s hotbar.8 with ntm:geiger_counter');g.ctl('select 9');use(g)
-    lines=[l for l in g.ctl('chat-log 6').get('chat',[]) if 'Player resistance' in l]
-    return lines[-1] if lines else ''
+    """The resistance line of this click's Geiger report. `chat-log` lists the newest message first
+    (ChatHud.recent_lines), so the reports newer than a fresh marker are the ones before it. On a loaded machine
+    an answer can come many seconds late: every click is counted, and the reading waits until there is one
+    report per click; the newest is then this click's (the server answers in order)."""
+    g.command('item replace entity @s hotbar.8 with ntm:geiger_counter');g.ctl('select 9')
+    GEIGER[0]+=1;mark=f'geiger-mark-{GEIGER[0]}'
+    g.command(f'tellraw @s "{mark}"')
+    clicks=0
+    for _ in range(3):
+        use(g);clicks+=1
+        deadline=time.monotonic()+30
+        while time.monotonic()<deadline:
+            chat=g.ctl('chat-log 60').get('chat',[])
+            at=next((i for i,l in enumerate(chat) if mark in l),None)
+            newer=[l for l in chat[:at] if 'Player resistance' in l] if at is not None else []
+            if len(newer)>=clicks:
+                return newer[0]
+            time.sleep(.5)
+    return ''
 
 
 def wear(g,pieces):
     for slot,item in zip(('head','chest','legs','feet'),pieces):
         g.command(f'item replace entity @s armor.{slot} with {item}')
+    # The worn armor must have reached the player before an instrument reads it.
+    want={part:item.split('[')[0] for part,item in zip(('head','chest','legs','feet'),pieces) if item!='minecraft:air'}
+    deadline=time.monotonic()+20
+    while time.monotonic()<deadline:
+        worn={s.get('part'):s.get('item') for s in g.ctl('inventory').get('armor',[])}
+        if all(worn.get(p)==i for p,i in want.items()):break
+        time.sleep(.3)
+    time.sleep(.5)
 
 
 def protection(g):
@@ -909,7 +936,7 @@ def protection(g):
     g.check('steel_set_has_the_java_armor_points',re.search(r'\b20(\.0)?\b',armor) is not None,armor)
     # Durability 16 * 30 = 480: a hit takes one point from each piece, so a plate at 478 survives one cactus
     # hit at 479 and breaks on the next (an off-by-one max_damage changes which hit breaks it).
-    reset(g,'survival');g.command('item replace entity @s armor.chest with ntm:steel_plate[minecraft:damage=478]')
+    reset(g,'survival');wear(g,['minecraft:air','ntm:steel_plate[minecraft:damage=478]'])
     g.command('damage @s 1 minecraft:cactus');time.sleep(.6);first=g.ctl('inventory')
     g.command('effect give @s minecraft:instant_health 1 5 true');g.command('damage @s 1 minecraft:cactus');time.sleep(.6);second=g.ctl('inventory')
     worn=lambda inv:[s for s in inv.get('armor',[]) if s.get('item')=='ntm:steel_plate']
@@ -928,7 +955,7 @@ def protection(g):
     _,factor=resistance_line(hz['steel'])
     g.check('steel_set_reduces_the_real_dose_by_the_java_factor',bare>0 and steel==int(bare*factor),{'bare':bare,'steel':steel,'factor':factor})
     # hfr_cladding (a float tag) adds to the piece and wins over the cladding slot.
-    reset(g,'creative');g.command('item replace entity @s armor.head with ntm:hazmat_helmet_grey[minecraft:custom_data={hfr_cladding:0.25f}]')
+    reset(g,'creative');wear(g,['ntm:hazmat_helmet_grey[minecraft:custom_data={hfr_cladding:0.25f}]'])
     expected,_=resistance_line([0.4+java_float(0.25)]);line=geiger_resistance(g)
     g.check('hfr_cladding_adds_to_the_helmet',line.endswith(expected),{'line':line,'expected':expected})
     # The cladding goes in slot 5 of the real table, only with an armor piece in it, and counts when worn.
@@ -949,7 +976,72 @@ def protection(g):
     reset(g,'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection)]
+def expose(g,kind,wear):
+    """`/ntmitem expose`: True when the helmet protects (ArmorRegistry.hasProtection)."""
+    return 'true' in ' '.join(g.command(f'ntmitem expose {kind} {wear}').get('chat',[])).lower()
+
+
+def masks(g):
+    """Onda 1, fatia 2: the masks and suits, ArmorRegistry protection and filter wear."""
+    parts=['helmet','plate','legs','boots']
+    # HazmatRegistry and setRadResist: each set's Geiger line against the Java formula.
+    for name,pieces,values in [('paa',[f'ntm:hazmat_paa_{p}' for p in parts],[1.7*f for f in (0.2,0.4,0.3,0.1)]),
+                               ('liquidator',[f'ntm:liquidator_{p}' for p in parts],[2.4*f for f in (0.2,0.4,0.3,0.1)]),
+                               ('gas_mask',['ntm:gas_mask'],[0.07]),('jackt',['minecraft:air','ntm:jackt'],[0.1])]:
+        reset(g,'creative');wear(g,pieces)
+        expected,_=resistance_line(values);line=geiger_resistance(g)
+        g.check(f'geiger_resistance_{name}',line.endswith(expected),{'line':line,'expected':expected})
+    # ArmorLiquidator: knockback 100 (clamped to 1) and speed -0.1 multiplied per piece.
+    reset(g,'survival');wear(g,[f'ntm:liquidator_{p}' for p in parts])
+    knock=' '.join(g.command('attribute @s minecraft:knockback_resistance get').get('chat',[]))
+    speed=' '.join(g.command('attribute @s minecraft:movement_speed get').get('chat',[]))
+    g.check('liquidator_attributes',re.search(r'is 1(\.0)?\b',knock) is not None and re.search(r'is 0\.0(6|59999)',speed) is not None,{'knockback':knock,'speed':speed})
+    # A filter goes in every new IGasMask; the mono mask refuses lung gas even with the combo filter.
+    for mask in ['ntm:gas_mask','ntm:gas_mask_olde','ntm:gas_mask_mono','ntm:hazmat_paa_helmet','ntm:liquidator_helmet']:
+        reset(g,'creative');wear(g,[mask])
+        give_hand(g,'ntm:gas_mask_filter_combo')
+        # A click lost on a loaded machine is clicked again; once installed the hand is empty and a click does nothing.
+        for _ in range(3):
+            use(g)
+            if not counts(g).get('ntm:gas_mask_filter_combo'):break
+        g.check(f'{mask}_takes_a_filter','hfrFilter' in inventory_tag(g) and not counts(g).get('ntm:gas_mask_filter_combo'),inventory_tag(g))
+        before=inventory_tag(g);lung=expose(g,'lung',40)
+        if mask=='ntm:gas_mask_mono':
+            g.check('mono_never_protects_lung_gas',not lung and inventory_tag(g)==before,{'lung':lung,'tag':inventory_tag(g)})
+            co=expose(g,'co',40);g.check('mono_stops_monoxide_and_wears',co and inventory_tag(g)!=before,{'co':co,'tag':inventory_tag(g)})
+        else:
+            g.check(f'{mask}_stops_lung_gas_and_wears',lung and inventory_tag(g)!=before,{'lung':lung,'tag':inventory_tag(g)})
+    # Own classes (ArmorUtil.register): no filter, protection, nothing to wear.
+    for item,kind,expected in [('ntm:mask_rag','coarse',True),('ntm:mask_rag','lung',False),('ntm:mask_piss','lung',True),
+                               ('ntm:goggles','light',True),('ntm:ashglasses','sand',True),('ntm:asbestos_helmet','light',True),
+                               ('ntm:gas_mask_m65','sand',True),('ntm:gas_mask_m65','light',False),('ntm:steel_helmet','sand',False)]:
+        reset(g,'creative');wear(g,[item]);before=inventory_tag(g)
+        got=expose(g,kind,10)
+        g.check(f'{item.split(":")[1]}_{kind}_{"protects" if expected else "does_not_protect"}',got==expected and inventory_tag(g)==before,{'got':got,'tag':inventory_tag(g)})
+    filter_copy_bug(g)
+    reset(g,'creative')
+
+
+def filter_copy_bug(g):
+    """JAVA_FILTER_COPY_BUG (ArmorUtil.java:332-352): an IGasMask helmet without a filter of its own and an
+    attachment mask with one: the exposure is stopped, the worn copy lands in the helmet, the mod keeps its
+    filter, and a sneak-use of the helmet hands the copy out: two filters from one."""
+    reset(g,'survival')
+    module='{id:"ntm:attachment_mask",count:1,components:{"minecraft:custom_data":{hfrFilter:{id:"ntm:gas_mask_filter",count:1}}}}'
+    wear(g,['ntm:hazmat_helmet[minecraft:custom_data={ntm_armor_mods:{mod_slot_0:'+module+'}}]'])
+    before=inventory_tag(g)
+    g.check('copy_bug_setup_one_filter',before.count('gas_mask_filter')==1,before)
+    stopped=expose(g,'lung',40);tag=inventory_tag(g)
+    g.check('copy_bug_protects_through_the_mod',stopped,tag)
+    g.check('copy_bug_writes_the_worn_copy_into_the_helmet',tag.count('gas_mask_filter')==2 and '40' in tag,tag)
+    g.command('item replace entity @s hotbar.0 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air');g.ctl('select 1');time.sleep(.5)
+    g.ctl('key shift down');time.sleep(.4);use(g);g.ctl('key shift up');time.sleep(.6)
+    helmet=components(g,'ntm:hazmat_helmet') or '';loose=counts(g).get('ntm:gas_mask_filter',0)+dropped(g).get('ntm:gas_mask_filter',0)
+    # The copy is out; the helmet keeps only the mod's filter (one, nested in mod_slot_0).
+    g.check('copy_bug_sneak_hands_out_the_copy_and_the_mod_keeps_its_filter',loose==1 and helmet.count('gas_mask_filter')==1 and 'mod_slot_0' in helmet,{'loose':loose,'helmet':helmet})
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks)]
 
 
 if __name__=='__main__':
