@@ -1119,8 +1119,8 @@ def smelt_verify(g, again=False):
     counted(g, 'raw_and_ingots_are_16', {'total': raw + ingots, 'expected': 16, 'items': got}, again)
     g.check('the_furnace_is_alive', machine_present(g, SMELT), got)
     # The burn, the progress and the ash ride with the slots (one compound): whatever cut the world reopens from, they
-    # agree with the coal gone, the ingots made and the ash items. The progress adds one per smelting tick and the
-    # burn falls one per tick but the first of each coal (it is lit in that tick): progress = burned + 1.
+    # agree with the coal gone, the ingots made and the ash items. While it smelts, the progress adds one per tick and
+    # the burn falls one per tick but the first (the coal is lit in that tick): progress = burned + 1.
     st = frozen_state(g, SMELT)
     got = st['_items']
     ingots = got.get('minecraft:iron_ingot', 0)
@@ -1128,7 +1128,11 @@ def smelt_verify(g, again=False):
     burned = 1600 * used - st['burn_time']
     work = 200 * ingots + st['progress']
     ash_items = got.get('ntm:powder_ash__coal', 0)
-    g.check('burn_and_progress_agree', work == burned + 1, {'burned': burned, 'work': work, 'state': st, 'items': got})
+    if got.get('minecraft:raw_iron', 0):
+        g.check('burn_and_progress_agree', work == burned + 1, {'burned': burned, 'work': work, 'state': st, 'items': got})
+    else:
+        # Nothing left to smelt: the burn goes on falling alone, so it is at least what the work took.
+        g.check('burn_and_progress_agree', burned >= work - 1, {'burned': burned, 'work': work, 'state': st, 'items': got})
     g.check('ash_level_and_items_agree', st['ash_coal'] + 2000 * ash_items == 1600 * used, {'state': st, 'items': got})
 
 
@@ -1227,11 +1231,10 @@ def mb_place(g, kind, fire=True):
 
 
 def mb_open(g, kind, core):
-    from native_furnaces import open_core
-    if kind == 'iron':
-        open_core(g, core, 1)
-    else:
-        open_core(g, core, 0, 1)
+    """The screen, through the first cell of the multiblock a player can click from the south."""
+    from native_welders import open_any
+    cells = [(core[0] + dx, core[1] + dy, core[2] + dz) for dy in (1, 0, 2) for dz in (0, 1, -1) for dx in (0, -1, 1)]
+    open_any(g, cells)
 
 
 def mb_fill_fire(g, fire_at):
