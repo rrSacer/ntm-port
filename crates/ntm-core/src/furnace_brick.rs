@@ -41,7 +41,7 @@ pub const STACK: u32 = 64;
 pub fn burn_speed(input: &str) -> u32 {
     match input {
         "minecraft:clay_ball" | "ntm:ball_fireclay" | "minecraft:netherrack" => 4,
-        "minecraft:cobblestone" | "minecraft:sand" => 2,
+        "minecraft:cobblestone" | "minecraft:sand" | "minecraft:red_sand" => 2,
         i if i.starts_with("minecraft:")
             && i.ends_with("_log")
             && !i.starts_with("minecraft:stripped_") =>
@@ -308,6 +308,8 @@ mod tests {
     fn clay_and_logs_cook_faster() {
         assert_eq!(burn_speed("minecraft:clay_ball"), 4);
         assert_eq!(burn_speed("minecraft:sand"), 2);
+        // `Blocks.sand` of any metadata: the red sand too.
+        assert_eq!(burn_speed("minecraft:red_sand"), 2);
         assert_eq!(burn_speed("minecraft:oak_log"), 2);
         assert_eq!(burn_speed("minecraft:raw_iron"), 1);
         let mut f = furnace(Some(("minecraft:raw_iron", 1)), Some(("minecraft:coal", 1)));

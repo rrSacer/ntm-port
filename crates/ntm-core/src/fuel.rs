@@ -42,7 +42,9 @@ fn wood_of(p: &str, suffix: &str) -> bool {
         .is_some_and(|w| WOODS.contains(&w))
 }
 
-/// Blocks of `Material.wood` in 1.7.10 (their furnace value is 300).
+/// Blocks of `Material.wood` in 1.7.10 (their furnace value is 300): the
+/// block items, so not the doors (`ItemDoor` is no `ItemBlock`, it burns 0),
+/// and the stairs and the daylight detector (both `Material.wood`) are in.
 fn wood_block(p: &str) -> bool {
     [
         "_planks",
@@ -52,7 +54,7 @@ fn wood_block(p: &str) -> bool {
         "_hyphae",
         "_fence",
         "_fence_gate",
-        "_door",
+        "_stairs",
         "_trapdoor",
         "_pressure_plate",
     ]
@@ -60,7 +62,13 @@ fn wood_block(p: &str) -> bool {
     .any(|s| wood_of(p, s))
         || matches!(
             p,
-            "crafting_table" | "chest" | "trapped_chest" | "bookshelf" | "jukebox" | "note_block"
+            "crafting_table"
+                | "chest"
+                | "trapped_chest"
+                | "bookshelf"
+                | "jukebox"
+                | "note_block"
+                | "daylight_detector"
         )
 }
 
@@ -217,6 +225,7 @@ pub fn fuels() -> Vec<String> {
         "bookshelf",
         "jukebox",
         "note_block",
+        "daylight_detector",
     ]
     .iter()
     .map(|p| format!("minecraft:{p}"))
@@ -230,7 +239,7 @@ pub fn fuels() -> Vec<String> {
             "hyphae",
             "fence",
             "fence_gate",
-            "door",
+            "stairs",
             "trapdoor",
             "pressure_plate",
             "slab",
@@ -310,6 +319,8 @@ pub fn ash(item: &str) -> Ash {
     if coal && (item.starts_with("ntm:") || p == "coal" || p == "coal_block") {
         return Ash::Coal;
     }
+    // The OreDict names the Java reads: `logWood`, `plankWood`, `slabWood`, `stairWood`, `treeSapling`, `stickWood`.
+    // Fences, gates, trapdoors, plates and the daylight detector have none: misc ash.
     let wood = p == "charcoal"
         || p == "briquette__wood"
         || item.starts_with("minecraft:")
@@ -322,7 +333,9 @@ pub fn ash(item: &str) -> Ash {
                         | "bookshelf"
                         | "jukebox"
                         | "note_block"
+                        | "daylight_detector"
                 )
+                && !["_fence", "_fence_gate", "_trapdoor", "_pressure_plate"].iter().any(|s| wood_of(p, s))
                 || p == "stick"
                 || p.ends_with("_sapling")
                 || wood_of(p, "_slab"));
@@ -348,7 +361,11 @@ mod tests {
         assert_eq!(burn_time("minecraft:blaze_rod"), 2400);
         assert_eq!(burn_time("minecraft:birch_sapling"), 100);
         assert_eq!(burn_time("minecraft:iron_door"), 0);
-        assert_eq!(burn_time("minecraft:oak_door"), 300);
+        // `ItemDoor` is no `ItemBlock` in 1.7.10: a wooden door burns 0.
+        assert_eq!(burn_time("minecraft:oak_door"), 0);
+        assert_eq!(burn_time("minecraft:oak_stairs"), 300);
+        assert_eq!(burn_time("minecraft:cherry_stairs"), 300);
+        assert_eq!(burn_time("minecraft:daylight_detector"), 300);
         assert_eq!(burn_time("minecraft:stone_pressure_plate"), 0);
         assert_eq!(burn_time("minecraft:iron_ingot"), 0);
     }
@@ -426,5 +443,10 @@ mod tests {
         assert_eq!(ash("minecraft:blaze_rod"), Ash::Misc);
         assert_eq!(ash("minecraft:crafting_table"), Ash::Misc);
         assert_eq!(ash("ntm:scrap"), Ash::Misc);
+        // Stairs have the OreDict name `stairWood`; fences, gates, trapdoors, plates and the detector have none.
+        assert_eq!(ash("minecraft:oak_stairs"), Ash::Wood);
+        for misc in ["oak_fence", "oak_fence_gate", "oak_trapdoor", "oak_pressure_plate", "daylight_detector"] {
+            assert_eq!(ash(&format!("minecraft:{misc}")), Ash::Misc, "{misc}");
+        }
     }
 }
