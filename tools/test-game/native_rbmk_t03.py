@@ -86,6 +86,14 @@ def hand(g):
     return None
 
 
+def select_rod(g, timeout=10):
+    """Select the rod once the window has it (a server's `item replace` reaches the window a moment later)."""
+    deadline = time.monotonic() + timeout
+    while hand(g) is None and time.monotonic() < deadline:
+        time.sleep(.2)
+    g.ctl(f'select {UEU}')
+
+
 def hand_text(g):
     s = hand(g)
     return None if s is None else str(s.get('components') or '')
@@ -269,7 +277,7 @@ def play(g):
         g.note('crafted_rod_has_its_tag', {'ok': crafted, 'stack': made})
     # Renamed after crafting (an anvil's `set_name`): Java's crafted rod already has its tag, so the name keeps it alive;
     # the burn below then starts from its full yield.
-    g.ctl(f'select {UEU}')
+    select_rod(g)
     renamed = g.command('item modify entity @s weapon.mainhand {type:"minecraft:set_name",name:"Renamed"}').get('chat')
     after = server_rod(g) or ''
     g.evidence['crafted_renamed'] = {'reply': renamed, 'stack': after, 'window': hand_text(g)}
@@ -312,7 +320,7 @@ def play(g):
     g.check('its_radiation_follows_its_tag', seen and all(v == want for v in seen), {'want': want, 'seen': seen, 'tag': tag})
     tooltip_snapshot(g, 'rbmk-t03-burnt-tooltip')
     # Its xenon counts too: a rod made half spent and 40 % poisoned, carried alone for a moment.
-    g.ctl(f'select {UEU}')
+    select_rod(g)
     g.command(f'item replace block {CHEST[0]} {CHEST[1]} {CHEST[2]} container.1 from entity @s weapon.mainhand')
     g.command('clear @s')
     poisoned = {'yield': 5.0E7, 'xenon': 40.0, 'core': 20.0, 'hull': 20.0}
@@ -327,7 +335,7 @@ def play(g):
     g.command(f'item replace block {CHEST[0]} {CHEST[1]} {CHEST[2]} container.1 with minecraft:air')
     time.sleep(.5)
     # Into a chest and back: the same stack.
-    g.ctl(f'select {UEU}')
+    select_rod(g)
     g.command(f'item replace block {CHEST[0]} {CHEST[1]} {CHEST[2]} container.0 from entity @s weapon.mainhand')
     g.command('clear @s')
     time.sleep(.5)
@@ -362,7 +370,7 @@ def play(g):
     tooltip_snapshot(g, 'rbmk-t03-hot-tooltip')
     # Already burning, into water without the hot rod, then with it: the fire goes out in both (`isWet`). Before the
     # glue checked the water without a visit, the fire came back to 600 with the rod.
-    g.ctl(f'select {UEU}')
+    select_rod(g)
     g.command(f'item replace block {CHEST[0]} {CHEST[1]} {CHEST[2]} container.2 from entity @s weapon.mainhand')
     g.command(f'clear @s {UEU}')
     g.command(f'setblock 58 {Y} 14 minecraft:water')
@@ -523,6 +531,9 @@ def act(g):
     else:
         g.evidence['taken_from'] = slot_rod(g, CP)
         g.evidence['hook'] = g.command(f'ntmtest take {CP[0]} {CP[1]} {CP[2]} drop').get('chat')
+    # A block of chunk (2, 0) changes in both worlds: the engine's `item replace block` does not mark the barrel's chunk
+    # changed (T01's finding), and the cuts by chunk record must land alike.
+    g.command(f'setblock 33 {Y} 13 minecraft:cobblestone')
     # Away at once, in both worlds: no pickup before the save.
     g.command(f'tp @s 40.5 {Y} 13.5')
     time.sleep(1.5)
@@ -567,8 +578,9 @@ def verify(g, again=False):
     g.check('nothing_left_to_spawn', now['ledger'].get('pending') == 0, now['ledger'])
     if VANILLA:
         return
-    # Every ueu rod, wherever the cut left it: its foreign key and lore, a yield no higher than made, xenon and heat
-    # kept (a fresh tag would read yield 1e8, no xenon, 20 °C).
+    # Every ueu rod, wherever the cut left it: its foreign key and lore, a yield no higher than made, its tag not reset
+    # (a fresh one would read yield 1e8, no xenon key, 20 °C core and hull). Burning, its xenon may fall to 0 (a flux
+    # over 25 burns more than it makes, as in Java).
     texts = [block_items(g, p) for p in (CP, CQ)] + [t for t in entity_texts(g) if UEU in t]
     found = []
     for t in texts:
@@ -578,14 +590,15 @@ def verify(g, again=False):
         found.append({'tag': tag, 'foreign': bool(re.search(r'foreign"?: ?7\.0d', t)), 'lore': 'kept' in t})
     g.evidence['rods' + ('_again' if again else '')] = found
     g.check('each_rod_kept_its_state', found and all(r['foreign'] and r['lore'] and set(r['tag']) == set(KEYS)
-                                                     and r['tag']['yield'] <= MADE['yield'] and r['tag']['xenon'] > 0
-                                                     and r['tag']['core'] > 20 and r['tag']['hull'] > 20 for r in found), found)
-    # P's rod, if back in its channel, burns on: its yield only goes down.
+                                                     and r['tag']['yield'] <= MADE['yield']
+                                                     and (r['tag']['core'], r['tag']['hull']) != (20.0, 20.0) for r in found), found)
+    # P's rod, if back in its channel, burns on: its yield never rises (the ReaSim source's streams go in random
+    # directions, so a few seconds may bring it no flux at all).
     first = slot_rod(g, CP)
     if first:
         time.sleep(3)
         later = slot_rod(g, CP)
-        g.check('the_yield_only_goes_down', later is not None and later['yield'] < first['yield'], [first, later])
+        g.check('the_yield_only_goes_down', later is not None and later['yield'] <= first['yield'], [first, later])
 
 
 def drain(g):
