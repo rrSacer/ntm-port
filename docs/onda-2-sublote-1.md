@@ -184,12 +184,50 @@ combustível enquanto há entrada, mesmo com o funil devagar (Java faz isso).
 
 `cargo test -p ntm-core --lib` + 9 alvos de integração: 580 na biblioteca + 47 de integração (627), 0 falhas
 (os dois ignorados são os que já eram; o `save_model` não roda em debug).
-`cargo clippy --workspace --all-targets -- -D warnings`: limpo. 14 mutantes
+`cargo clippy --workspace --all-targets -- -D warnings`: limpo. 15 mutantes
 escolhidos à mão (constantes e ramos de cada máquina; `mutate.py`, resultados em
 `content-gen-evidence/onda2-s1/mutants.txt`): 12 mortos de primeira; 2 sobreviveram
 (o módulo de queima do forno de ferro e a difusão do forno de combinação não tinham
 teste no nível certo) e foram mortos pelos testes novos. Um teste de servidor
 roda cada máquina em um mundo falso com conservação de itens a cada tick.
+
+## Correções da revisão do grupo 1 (APROVADO COM RESSALVAS)
+
+| Achado | O que mudou | Prova |
+| --- | --- | --- |
+| P1: o forno de aço perdia progresso e bônus ao reabrir o mundo | A ponte carrega o estado **antes** de atribuir os slots, então o `lastItems` (`TileEntityFurnaceSteel.java:147-174`, que o Java grava) era lido de slots vazios e o primeiro passo zerava cada linha. O `save_state` agora leva uma marca por linha ("o último item é o do slot") e o primeiro passo a resolve depois que os slots chegam; um save antigo, sem a marca, conserva o progresso. | O corte de gravação `steel-state` mostrou, no jogo, uma segunda camada do mesmo defeito: o mundo reconstrói a máquina reaberta dos próprios dados serializados, onde o `last` também era pulado (`serde(skip)`), e o bônus de 25 % de uma linha se perdia (4 lingotes em vez de 5); o `last` agora vai nos dados da máquina. | 5 testes de unidade na **ordem da ponte** e na dos dados serializados (máquina nova → `load_state` → slots → `step`), um com o caso da revisão (12 666 não pode cair para 5 400); 5 mutantes novos, todos mortos; corte de gravação `steel-state` (abaixo). |
+| P2: o forno de tijolo aceso soltava o `_off` | `MachineBrickFurnace` não sobrescreve `getItemDropped`; só o `getItem` do cliente ("pick block") devolve o `_off`. O aceso agora solta o `_on`; o elétrico aceso continua soltando o `_off` (`MachineElectricFurnace.java:61-64`). | `native_furnaces.py`: `lit_brick_furnace_drops_itself`. |
+| P2: o bônus de minério do aço não aparece com `raw_*` e `deepslate_*` | **Decisão do coordenador, pelo Java: desvio documentado, sem ampliar o OreDict.** O `TileEntityFurnaceSteel.addBonus` (linhas 177-186) conta só os nomes que começam com `ore` (`oreIron`, ...); `raw_iron`, `raw_copper`, `raw_gold` e os minérios de ardósia profunda não existem no 1.7.10 e não têm esses nomes no OreDict exportado. Para o jogador de Horizon, o minério picado dá `raw_*`: o bônus só aparece com o bloco de minério (toque de seda). Ampliar o OreDict (ou o `bonus_of`) para contar os `raw_*` e os `deepslate_*` fica fora: o port segue o 1.7.10 para o qual o mod foi escrito. | Documentado; nenhuma mudança de código. |
+| P2: cortes de gravação só cobriam o tijolo, só contavam itens | Seis cenários novos e um ampliado, todos contra o controle de baú quando há quebra: `furnace-smelt` agora confere a queima, o progresso e a cinza com o carvão gasto, os lingotes e as cinzas; `iron-state`, `steel-state` e `combination-state` conferem o estado com os itens em cada corte (ferro: queima × progresso; aço: o bônus é 25 × (minérios feitos mod 4) e os lingotes são feitos + feitos/4; combinação: carvão + coque = 8 e 100 mB de creosoto por coque); `iron-break`, `steel-break` e `combination-break` quebram o multibloco com itens contra o baú. | Ver a tabela de provas abaixo. |
+| P3: combustíveis | Escadas de madeira e o detector de luz queimam 300; a porta de madeira queima 0 (`ItemDoor` não é `ItemBlock`); cerca, portão, alçapão, placa de pressão e detector de luz deixam cinza `misc`; areia vermelha cozinha ×2 no tijolo. A diferença de madeiras modernas entre o forno de aço/tijolo e o de combinação (P3-8) fica como está: sem regressão. | 4 testes de unidade novos; 3 mutantes novos, mortos. |
+| P3: "14 mutantes" | São 15 (13 do grupo e 2 da soldadora). Com os 7 novos desta correção: 22, todos mortos nesta rodada. | `mutants-regroup.log` em `content-gen-evidence/onda2-s1/`. |
+
+## Provas das correções (grupos 1 e 1b e BrokenItem), em `content-gen-evidence/onda2-s1-recheck/`
+
+Testes de unidade: 597 na biblioteca + 47 de integração (644), 0 falhas; `cargo clippy --workspace --all-targets -- -D warnings`
+limpo; `python3 tools/content-gen/test_welders.py`: 2 testes. Mutantes (todos mortos): 22 dos fornos e dos combustíveis
+(os 15 de antes e 7 novos), 9 da soldadora e da estação (um sobreviveu, o número do slot do identificador, e foi morto por um
+teste novo) e 1 do `last` do forno de aço (`serde(skip)`).
+
+Os pacotes `ntm.hmod` são todos `0ee17b08…4365`. Os clientes release:
+
+| Cliente | SHA-256 | O que rodou nele |
+| --- | --- | --- |
+| B | `b39ac922563f5174471b1846d622f39ce7d8f653b2ff9c68f1a9a5b46c2654ca` | `furnace-brick` 24/24, `furnaces` 24/24, cortes `furnace-smelt`, `iron-state`, `steel-state`, `combination-state`, `iron-break`, `steel-break`, `combination-break`, `furnace-break`: 7 pontos cada, todos ok |
+| D (final) | `b203a6f79399afd4f6371d2dd1c0b8f1d01820d9b1dd94851102e4ea04b015c7` | `welders` 26/26, `broken` 9/9, corte `welder-run` 7/7 |
+
+D difere de B só pelo que a soldadora relata ao mudar o tipo do tanque e pelo `custom_data` que o glue passa dos slots para o
+identificador e o item quebrado; nenhum código de forno mudou entre os dois.
+
+O que cada corte compara (mundo morto em cada fronteira do save, duas reaberturas): `furnace-smelt`, a queima, o progresso e a
+cinza contra o carvão gasto, os lingotes e as cinzas; `iron-state`, o mesmo com o tempo do forno; `steel-state`, o bônus
+(25 × minérios feitos mod 4) e os lingotes (feitos + feitos/4); `combination-state`, carvão + coque = 8 e 100 mB de creosoto
+por coque; os três `-break`, os itens do multibloco quebrado contra o baú de controle, item a item, contados uma vez só.
+O `steel-state` mostrou, no jogo, o que o teste de unidade da ponte não mostrou: o bônus de uma linha se perdia ao reabrir.
+
+Os roteiros caíram em erros do próprio roteiro antes de passar (ponto de clique fora da plataforma, tanque lido antes de o
+dado salvo acompanhar o tick, parser do `Items` com dados aninhados, total-base do corte de quebra), todos corrigidos nos
+roteiros; um deles revelou o defeito real do glue (o identificador chegava à máquina sem o tipo).
 
 ## Soldadora a arco e estação de solda (provadas)
 
@@ -198,8 +236,9 @@ do Java por `arc_welder_recipes.py` (24; as 18 de míssil ficam `skipped` até o
 itens de míssil da Onda 5) e `soldering_recipes.py` (27, com as cadeias de
 upgrade expandidas). `matchesIngredients` na ordem do Java; tempo e consumo com
 `speed/power/overdrive` (`duration - duration·vermelho/6 + duration·azul/3`,
-`consumo·2^preto`); tanque (24 000 / 8 000 mB) que aceita só fluidos de receita;
-o botão de colisão da estação.
+`consumo·2^preto`); tanque (24 000 / 8 000 mB) tipado pelo identificador de fluido
+(`setType(5, slots)` / `setType(8, slots)`); saída que para no `getMaxStackSize` do
+produto; o botão de colisão da estação.
 
 Provas (cliente release `19a89ffb…`, `ntm.hmod` `4321c94f…`, de `d66ad17c` +
 docs, em `content-gen-evidence/onda2-s1/welders/`): `welders` 17 verificações,
@@ -213,15 +252,65 @@ numa bateria criativa, morta em cada fronteira do save): 7 de 7 pontos, placas
 de aço + motores = 40 exato nas duas reaberturas.
 
 Lacunas declaradas: o motor tem um contêiner por máquina, então as listas de slot
-por célula da soldadora (`getAccessibleSlotsFromSide(x,y,z,side)`) viram uma só;
-sem os itens de identificador de fluido (o tanque toma o tipo do primeiro fluido
-que entra, como nos demais); as 18 receitas de míssil.
+por célula da soldadora (`getAccessibleSlotsFromSide(x,y,z,side)`: o núcleo e uma célula
+com o slot 1, duas com o 0, duas com o 2, e a saída em todas) viram uma só, com as três
+entradas e a saída em cada célula-porta. **Pedido ao motor (lacuna nominal):** a política de
+slot recebe slot, item, ação e origem, mas não a célula; listas por célula exigem estender
+`ModSlotFilter::policy` com a posição da célula. Só as 5 células da camada de baixo e o
+núcleo são portas (as 6 de cima dão `{}` no Java e deixaram de ser).
+Carregar a máquina com outra bateria que não a criativa (`Library.java:257-274`, qualquer
+`IBatteryItem`) segue como no resto do projeto: só a bateria criativa carrega (`charge_from_slot`).
+Faltam o som `item.upgradePlug` e o painel de informação das melhorias. As 18 receitas de
+míssil ficam `skipped` até os itens de míssil existirem (Onda 5); a guarda
+`tools/content-gen/test_welders.py` falha quando algum deles entrar no catálogo e a linha
+está no `roadmap-100` (família "Mísseis e lançamento espacial").
+
+## Correções da revisão do grupo 1b (REPROVADO, correções pequenas)
+
+| Achado | O que mudou | Prova |
+| --- | --- | --- |
+| P1: tanque vazio ficava tipado e nunca aceitava outro fluido | O Java tipa o tanque pelo **identificador de fluido** (`ArcWelder.java:84`, `SolderingStation.java:94`) e é só isso que o muda: sem identificador o tanque não aceita nada e outro identificador o esvazia (`FluidTank.java:62-68`). O port agora faz o mesmo (slots 5 e 8, `type_from_identifier` de `combustion.rs`) e a demanda do tanque é "o fluido que o identificador deu". Um tanque que esvazia continua tipado, como no Java; para outro fluido troca-se o identificador. **Desvio do pedido literal:** o teste "oxigênio, esvazia, reformgas" do revisor não vale mais, porque a regra "tanque vazio aceita qualquer fluido" (`refinery.rs:174`) contraria o identificador; o teste novo faz a troca de identificador. | 2 testes de unidade (sem identificador, troca de identificador nos dois modelos), 4 mutantes; em jogo `identifier`. |
+| P2: pilha de saída fixa em 64 | Cada receita leva o `max_stack_size` do produto (de `ids.json`, pelo gerador): 16 receitas da estação com pilha 1 (15 melhorias e `sat_chip`), 2 com 16 (`upgrade_radius`, `upgrade_health`), 9 com 64; a soldadora, 24 com 64. A saída para quando não cabe, como `getMaxStackSize`. | teste de unidade do `sat_chip` e da contagem (16, 2); em jogo `solder-stack`: 3 chips de insumo dão 1 chip e os outros esperam. |
+| P2: funil nas células de cima | As 6 células da camada de cima saíram de `inventory_ports` (o Java dá `{}`, `ArcWelder.java:312-331`); ficam as 5 da camada de baixo e o núcleo. A prova antiga usava a célula de cima; a nova põe um funil sobre ela (não pode mover nada) e outro ao lado de uma célula de baixo (alimenta e solda de novo). Listas por célula são **pedido ao motor**, lacuna nominal (abaixo). | `native_welders.py`: `hopper_over_an_upper_cell_moves_nothing`, `arc_hopper_on_a_port_fed_and_welded_again`. |
+| P3: energia truncada em `i32` no save | Energia, máximo e consumo são salvos como `long` (os 31 bits baixos nos valores de antes, mais três palavras altas); um save antigo ainda lê. | teste de unidade (3,2·10⁹ e 3,2·10¹⁰); 1 mutante. |
+| P3: `allows`, `container`, botão de colisão, mutantes M3, M4, M7 | Testes novos para a regra de mão e de funil (inclusive o gêmeo), a lista do contêiner, o botão com receita de fluido e os números dos slots. | 5 testes; 9 mutantes novos, todos mortos (o do número do slot do identificador sobreviveu e foi morto por um teste novo). |
+| P3: verificações só de colocar item | O roteiro ganhou checagens de resultado: a bateria e a melhoria seguem nos slots, o tanque sem tipo e o tipo de cada identificador, o chip único, as outras receitas esperando, a retirada do chip liberando a próxima. | `native_welders.py`. |
+| P3: carregar a máquina fora da bateria criativa | Lacuna comum ao projeto (só a criativa carrega, `Library.java:257-274`); registrada nas lacunas. | doc. |
+| P3: receitas de míssil sem guarda | A guarda `test_welders.py` e a linha no `roadmap-100` (família "Mísseis e lançamento espacial"). | `python3 tools/content-gen/test_welders.py`: 2 testes. |
+| `build.py` regenera `anvil.json`, `blast_furnace.json` e `radioisotopes.json` diferentes | Restaurados ao commit de base e fora dos commits (`git diff 0e8eda47 -- ` desses três: vazio). | `git diff`. |
+
+## BrokenItem (mini-sublote)
+
+O que a montadora de precisão deixa quando a receita falha (`PrecAssRecipes.registerPair`,
+linhas 222-248) e o que a reciclagem consome.
+
+| Java | Port |
+| --- | --- |
+| `BrokenItem.make(stack)` (`BrokenItem.java:52-63`): item `broken_item` com a **quantidade do produto** e NBT `itemID` (nome do registro) e `itemMeta`; o NBT do produto se perde. | Item `ntm:broken_item` (textura `broken_item`, nomes "Broken Item" / "Item Quebrado") com a quantidade do produto e, no `minecraft:custom_data`, `{ntm_broken:{id:"ntm:upgrade_speed_2"}}`. Um subtipo é parte do id aqui, então não há `itemMeta`; o NBT do produto também não se guarda, como no Java. |
+| `NBTStack(BrokenItem.make(output))` na reciclagem (`PrecAssRecipes.java:244-246`): casa o item quebrado cujo NBT tem o mesmo `itemID`/`itemMeta` e consome a quantidade do produto. | `broken::matches(stack, produto, quantidade)`: o item é o quebrado, o `id` do NBT é o do produto (outras chaves são ignoradas, como `NBTStack`) e a pilha tem ao menos a quantidade. |
+| Pilhas de produtos diferentes não se juntam (NBT diferente). | O `custom_data` diferente impede a pilha; o canônico do SNBT (`snbt.rs`) ignora a ordem das chaves e o espaçamento que o motor usa. |
+
+Código: `crates/ntm-core/src/broken.rs` (`make`, `product`, `matches`; 5 testes). Catálogo:
+`m3_catalog.py` (a linha `broken_item`, gerada com `generate.py`).
+
+Lacunas: o Java mostra o nome do produto ("Upgrade de Velocidade Quebrado") e o ícone do
+produto sob o ícone quebrado (`getItemStackDisplayName`, `getIcon`); aqui o nome é o
+genérico e o ícone o quebrado. Não há aba criativa (o Java também não põe o item em aba).
+A máquina que o produz (`machine_precass`) continua Inert: esta entrega é o item e o seu NBT.
+
+Provas: 5 testes de unidade (`broken.rs`) e o roteiro `native_broken.py` (`run-native-reactors.py broken`, 10 verificações): dois produtos
+(`upgrade_speed_2` ×2 e `upgrade_speed_1` ×1) dados com o NBT, mantidos pelo inventário, postos à mão em dois slots de
+uma máquina, um terceiro item do outro produto (por shift) **não** se junta à pilha do primeiro, o modelo da máquina
+enxerga os produtos (o glue passava o `custom_data` do slot só para barras e pastilhas; agora também para o
+identificador de fluido e o item quebrado), e depois de salvar e reabrir o mundo os slots têm os mesmos itens e dados.
+O "criar, quebrar, reciclar" completo precisa da máquina e fica para a entrega dela; o que este item prova é o formato
+e que ele sobrevive à máquina, ao funil de mão e ao save.
 
 ## Montadora de precisão e fábrica química: o que bloqueia (lido no Java, 10/11)
 
 | Máquina | O que o Java faz | O que falta no port |
 | --- | --- | --- |
-| `machine_precass` | `PrecAssRecipes.registerPair` (linhas 222-248): toda receita rende **o produto com `chance` % ou um `BrokenItem` com o resto**, e cada uma ganha uma receita de reciclagem que consome o item quebrado (`NBTStack`). Com `enable528 = false` (o perfil do port, decisão do coordenador) só existem `crystalcircuit` e as 10 cadeias de upgrade (`addFirstUpgrade`/`addSecondUpgrade`), todas com chance (25 a 75 %). | O item `ntm:broken_item` **não existe no catálogo** (só `block_meteor_broken` e tijolos quebrados) e carrega NBT com o produto original. Sem ele, ou o port entrega só o caminho feliz (infiel) ou perde a falha silenciosamente. Entregar a máquina sem o item seria uma aproximação, não fidelidade. |
+| `machine_precass` | `PrecAssRecipes.registerPair` (linhas 222-248): toda receita rende **o produto com `chance` % ou um `BrokenItem` com o resto**, e cada uma ganha uma receita de reciclagem que consome o item quebrado (`NBTStack`). Com `enable528 = false` (o perfil do port, decisão do coordenador) só existem `crystalcircuit` e as 10 cadeias de upgrade (`addFirstUpgrade`/`addSecondUpgrade`), todas com chance (25 a 75 %). | O item `ntm:broken_item` e o seu NBT agora existem (seção "BrokenItem", abaixo); falta a máquina em si (receitas com chance, reciclagem que consome o item quebrado, a ponte de slots). |
 | `machine_chemical_factory` | Quatro módulos de planta química (`ModuleMachineChemplant`) a velocidade ×2 e potência ×2, cada um com 3 entradas, 3 saídas, 3+3 tanques e o seu próprio botão de receita; água e vapor gasto de 4 000 mB. | O Crafter nativo e o painel de receitas (`native::recipes(block)`, botões `RECIPE_BASE + i`) servem **uma receita por bloco**; quatro seletores independentes exigem estender o painel e o hook de botão do motor, e a ponte de slots (`Layout::Crafter`) não tem quatro linhas. |
 
 Perfil 528: fica como lacuna nominal; não é ativado no port até decisão do usuário.
@@ -250,10 +339,12 @@ lacunas de fuligem e de cinzeiro deste sublote ficam nominais para elas.
 
 | # | ID | Estado |
 | --- | --- | --- |
-| 1, 2 | `machine_furnace_brick_off/on` | pronto para revisão |
-| 3 | `machine_electric_furnace_on` | pronto para revisão |
-| 4 | `furnace_iron` | pronto para revisão |
-| 5 | `furnace_steel` | pronto para revisão |
-| 6 | `furnace_combination` | pronto para revisão |
-| 12, 11 | `machine_arc_welder`, `machine_soldering_station` | pronto para revisão |
-| 7 a 10, 13 | serra, rotativo, lingotamento contínuo, montadora de precisão, fábrica química | Inert; não iniciados |
+| 1, 2 | `machine_furnace_brick_off/on` | pronto para re-revisão |
+| 3 | `machine_electric_furnace_on` | pronto para re-revisão |
+| 4 | `furnace_iron` | pronto para re-revisão |
+| 5 | `furnace_steel` | pronto para re-revisão (P1 corrigido e provado no jogo) |
+| 6 | `furnace_combination` | pronto para re-revisão |
+| 12, 11 | `machine_arc_welder`, `machine_soldering_station` | pronto para re-revisão (P1 e P2 do 1b corrigidos) |
+| `ntm:broken_item` | item e NBT do produto | pronto para revisão (a máquina que o produz segue Inert) |
+| 7 | serra | proposta; espera D1, D2 e D3 (branch `onda2-sawmill-wip`) |
+| 8, 9, 10, 13 | rotativo, lingotamento contínuo, montadora de precisão, fábrica química | Inert; esperam a infraestrutura do `onda2-efeitos-mundo` |
