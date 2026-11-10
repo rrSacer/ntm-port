@@ -18,8 +18,11 @@ Afirmações dos relatórios das frentes que **não valem**:
 | T1 (`gen_rbmk_tables.py`, comentário "the repo is rustfmt-clean") | o repositório estaria limpo | `rbmk/persist.rs` 25, `rbmk/reactor.rs` 2, `rbmk/dials.rs` 1, `rbmk/rods.rs` 1, `tests/rbmk_oracle_parity.rs` 1 e, fora da frente, `server/rbmk_server.rs` 32 e `server/tests/rbmk_tests.rs` 54 |
 
 Os arquivos da T6 (`doors_security.rs`, `tests/doors_security_tests.rs`) estão limpos na edição 2024.
-Nenhum arquivo foi reformatado nesta rodada (reformatar tudo apagaria o histórico de autoria de 1.976 trechos);
-a decisão de adotar o `rustfmt` no repositório inteiro, num commit só, é do dono do projeto.
+Nenhum arquivo foi reformatado e nenhum `rustfmt.toml` foi adotado.
+
+**Decisão pendente do dono do projeto (usuário):** adotar ou não o `rustfmt` no repositório inteiro (um `rustfmt.toml`
+e um commit de reformatação de 1.976 trechos, que muda a autoria de quase todo arquivo `.rs`), ou deixar como está e parar
+de afirmar "rustfmt limpo" nos relatórios. Até lá, vale o que a tabela diz.
 
 ## `bombs`: corrida do lever (corrigida no roteiro)
 
@@ -73,9 +76,30 @@ O que mudou no roteiro, preservando o que cada checagem prova:
   centenas de ticks o roteiro passa de 19 mil ticks, anoitece e um zumbi mata o jogador de sobrevivência.
 - `run-native-reactors.py` aceita `NTM_GAME_SIZE=LxA` (padrão 1280x720, inalterado) para uma janela menor.
 
-Rodada com o código final (`NTM_GAME_WIDE=1`, máquina com carga 18 a 40 de outras frentes): **`items` completo, 187 checagens do
-`setup`, 10 do `capture-state` e 7 do `check-state` (204), todas passam**, e nenhuma das repetições acima foi usada
-(`holds`/`attempts` = 1 em todas).
+Pontos da revisão da integração (todos tratados):
+
+- **`mask_and_hazmat_reduce_gamma` sem poder.** A condição era só `mask < bare` e `hazmat < bare`, com ruído de ~3,5% por causa da janela
+  de 30 s: um mutante sem o fator de armadura passou em 1 de 8 rodadas. Agora é `mask < 0,92 * bare` e `hazmat < 0,75 * bare`
+  (`MASK_RATIO` e `HAZMAT_RATIO`, `dose_rate` no nível do módulo). Medido em jogo, 8 trechos: a armadura real dá `mask/bare` de
+  0,80 a 0,84 e `hazmat/bare` de 0,57 a 0,59 e **passa 8 de 8**; o mutante (o corpo nu medido três vezes, que é o que uma modificação sem o
+  fator lê para máscara, corpo e plastrão) dá razões de 0,97 a 1,03 e **passa 0 de 8** (evidência `scratch/evidence/gamma-mutant`). O mutante
+  é simulado na medida, não num motor alterado: uma mudança no fator dentro do motor produz exatamente esse "mesmo valor medido três
+  vezes".
+- **Maçã de euphemium.** O Java a faz sempre comestível (`setAlwaysEdible`, `gate: food_always` no `consumables.json`); o `starve` que eu tinha
+  posto antes dela escondia essa cobertura. Voltou a ser comida com a barra cheia, e a checagem exige `food_before == 20` (`full_food`)
+  para que a cobertura não suma em silêncio. A falha que me levou ao `starve` era leitura do efeito antes de ele ser aplicado (ainda sem o
+  `used_up`), não defeito do jogo.
+- **Idade dos efeitos (`has_effects`).** `USE_TICK` não é o início do uso (somaria o comprimento do segurar) nem o fim do gesto ou depois do
+  `used_up` (que espera até 3 s por itens que não se gastam, como o cantil, e subestima a idade: com isso o efeito correto do cantil ficou
+  6 ticks mais velho que a janela). É o início do gesto mais o comprimento de uso do item (`ticks` do `consumables.json`): o uso só aplica o
+  que dá depois disso, então é um limite superior verdadeiro da idade e não conta o resto de um segurar mais longo que o uso.
+- **Segundo RadAway.** O comentário dizia que um RadAway não é usado durante o tratamento do anterior, e não é verdade (sonda: o uso é
+  aplicado; o que faltava era esperar o efeito aparecer). Os `ntmitem cure` e a justificativa saíram.
+
+Rodada com o código final (`NTM_GAME_WIDE=1`, carga 17 a 18 de outras frentes): **`items` completo, 187 checagens do `setup`, 10 do
+`capture-state` e 7 do `check-state` (204), todas passam**, e nenhuma das repetições acima foi usada (`holds`/`attempts` = 1 em todas).
+Evidência: `scratch/evidence/items-p2-final2`. Uma execução anterior, com a idade contada do fim do gesto, falhou em `canteen_java_effects`
+(a janela ficou 6 ticks apertada); a correção acima é a que passou.
 
 ## `door_sounds` das quatro portas
 
@@ -83,3 +107,9 @@ Rodada com o código final (`NTM_GAME_WIDE=1`, máquina com carga 18 a 40 de out
 o gerador já aplicava `block_properties` ao bloco. `generate.py` e `visual-gen/generate.py` completos deixam os quatro
 `door_*.json` iguais. `test_catalog_k3.test_simple_doors_keep_the_original_door_sound` confere a declaração e o arquivo do bloco;
 removendo `door_sounds` de qualquer um dos dois o teste quebra.
+
+O teste do contrato T00 (`test_rbmk_oracle`, "toda entrada do T00 continua igual") aceita **só** o campo `door_sounds`
+dentro de `block_properties` nas quatro portas, que o snapshot não pode ter; qualquer outra diferença nessas entradas (outro campo
+de `block_properties`, o `behavior_gap`, o que for) continua falhando. Por isso o texto do `behavior_gap` das portas voltou ao
+do T00 (ele ainda lista o som como diferente, o que já não é verdade; o texto é congelado por esse contrato e o comentário
+em `catalog_k3.py` diz isso).
