@@ -19,6 +19,11 @@ import zipfile
 from native_game import Game
 
 
+# The window of the disposable game (WxH): software rendering on a loaded machine is what makes every call of a
+# script wait tens of ticks, so a smaller one may be asked for; 1280x720 unless NTM_GAME_SIZE says otherwise.
+WIDTH, HEIGHT = os.environ.get('NTM_GAME_SIZE', '1280x720').split('x')
+
+
 def digest(path):
     with path.open('rb') as source:
         return hashlib.file_digest(source, 'sha256').hexdigest()
@@ -103,7 +108,7 @@ def run(args):
     reader, writer = os.pipe()
     with (folder / 'xvfb.log').open('w') as log:
         xvfb = subprocess.Popen(['Xvfb', '-displayfd', str(writer), '-screen', '0',
-                                 '1280x720x24', '-nolisten', 'tcp'],
+                                 f'{WIDTH}x{HEIGHT}x24', '-nolisten', 'tcp'],
                                 pass_fds=(writer,), stdout=log, stderr=subprocess.STDOUT)
     os.close(writer)
     with os.fdopen(reader) as pipe:
@@ -151,8 +156,8 @@ def run(args):
                     else args.scenario.capitalize()[:12] + 'Test')
             command = [str(binary), '--resources', str(args.resources.resolve()),
                        '--dev-mod', str(bundle), '--control-socket', str(folder / 'control.sock'),
-                       '--test-terrain', '--render-distance', '2', '--width', '1280',
-                       '--height', '720', '--name', name, '--world', name, '--creative', '--seed', '1']
+                       '--test-terrain', '--render-distance', '2', '--width', WIDTH,
+                       '--height', HEIGHT, '--name', name, '--world', name, '--creative', '--seed', '1']
             with log_path.open('w') as log:
                 client = subprocess.Popen(command, cwd=folder, env=env, stdout=log, stderr=log)
             deadline = time.monotonic() + 600
