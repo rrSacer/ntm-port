@@ -1493,7 +1493,8 @@ impl ServerHost for Host<'_, '_> {
         if let Some(p)=here {
             let at=horizon_core::geometry::Vec3::new(p.pos[0],p.pos[1],p.pos[2]);
             let feet=self.game.world.block(at.x.floor() as i32,at.y.floor() as i32,at.z.floor() as i32);
-            if self.game.res.facts().get(feet).fluid==horizon_client::blocks::Fluid::Water || self.game.in_rain(at,at.y+1.8) {return;}
+            // The rain at the top of the box needs its real height: the visit below reads it.
+            if self.game.res.facts().get(feet).fluid==horizon_client::blocks::Fluid::Water || self.game.in_rain(at,at.y) {return;}
         }
         self.game.native_visit_player(id,|g| {
             let Some(p)=g.player.as_ref() else {return};
