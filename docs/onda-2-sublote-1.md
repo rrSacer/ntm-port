@@ -158,13 +158,49 @@ antes do de entrada (`transferStackInSlot`), como o Java.
 | Direções das portas de fluido | O motor liga as células do anel como dutos, sem restringir a face de cada uma (`TilePortShapes.comboven` fixa direções). |
 | Modelos 3D | Continua o cubo; ver acima. |
 
+## Provas do grupo 1 (fornos), cliente release `8bfa57b0…`
+
+Cliente `horizon-client` SHA-256 `8bfa57b0df397dd62b7b215f3b0d1b2ab47ff161e76af3d15193fbddc06bc700`,
+pacote `ntm.hmod` `bc085356685f39bd16d13e3e399807ac63b52fe8ce5d031c0ebc7a97af937f51`,
+construídos do código de `abe0262d` (os commits seguintes só acrescentam docs,
+roteiros e a soldadora/estação de solda). Mundos descartáveis em
+`/mnt/ssd120/sacer/so/onda2/`, apagados depois; evidências em
+`content-gen-evidence/onda2-s1/`.
+
+| Prova | Resultado |
+| --- | --- |
+| `run-native-reactors.py furnace-brick` (`native_furnace_brick.py`) | 24 verificações, 0 falhas: atalho com shift (combustível vai ao slot 1, o resto ao 0), 16 lingotes e 2 cinzas de carvão (3 carvões, 4 800 de queima), funil por cima só no slot de entrada, funil lateral só no de combustível (as barras que ele não aceita ficam no funil), funil de baixo tira lingotes sem tirar combustível, e a reabertura do mundo no meio de uma fusão: a queima caiu exatamente o que o progresso subiu (módulo 200) e as cinzas ficaram. |
+| `furnaces` (`native_furnaces.py`) | 23 verificações, 0 falhas: o bloco aceso é máquina, derrete 4 lingotes numa bateria criativa e solta o bloco apagado ao quebrar; o forno de ferro abre pela célula do multibloco, só faz 4 lingotes em 345 ticks com o upgrade de velocidade 3 (sem ele seriam 2) e recebe por um funil numa célula do multibloco; o de aço puxa calor de um fogareiro (100 000), 8 minérios dão 10 lingotes (bônus 25 % × 8 = 200 %) e 4 ferros crus dão 4; o de combinação faz coque e 100 mB de creosoto por carvão. |
+| Corte de gravação `furnace-break` | 7 pontos (`none`, `kill`, `kv_committed`, `save_begin`, `live_chunk:8,0`, `chunks_written`, `entities_written`): um forno de tijolo quebrado com 16 itens conta o mesmo que o baú de controle em cada corte, nas duas reaberturas. |
+| Corte de gravação `furnace-smelt` | 7 pontos (+ `players_saved`): morto durante a fusão, raw iron + lingotes = 16 exato nas duas reaberturas e o forno continua máquina viva. |
+
+Os roteiros caíram em três erros do próprio roteiro antes de passar (ponto de
+colocação sem face visível, funil pegando de uma caixa ao lado e não de cima,
+combustível posto no funil de entrada); todos foram corrigidos no roteiro e nada
+foi afrouxado no jogo. Detalhe real descoberto: o forno de tijolo gasta
+combustível enquanto há entrada, mesmo com o funil devagar (Java faz isso).
+
+## Soldadora a arco e estação de solda (commit `f70abae4`, ainda sem prova em jogo)
+
+`welders.rs`: uma só máquina de receita com os dois modelos. Receitas extraídas
+do Java por `arc_welder_recipes.py` (24; as 18 de míssil ficam `skipped` até os
+itens de míssil da Onda 5) e `soldering_recipes.py` (27, com as cadeias de
+upgrade expandidas). `matchesIngredients` na ordem do Java; tempo e consumo com
+`speed/power/overdrive` (`duration - duration·vermelho/6 + duration·azul/3`,
+`consumo·2^preto`); tanque (24 000 / 8 000 mB) que aceita só fluidos de receita;
+o botão de colisão da estação. Lacunas declaradas: o motor tem um contêiner por
+máquina, então as listas de slot por célula da soldadora (`getAccessibleSlotsFromSide(x,y,z,side)`)
+viram uma só; sem os itens de identificador de fluido (o tanque toma o tipo do
+primeiro fluido que entra, como nos demais).
+
 ## Estado
 
 | # | ID | Estado |
 | --- | --- | --- |
-| 1, 2 | `machine_furnace_brick_off/on` | lógica, receitas, slots, funil, tela e testes prontos; prova em jogo e de corte pendentes |
-| 3 | `machine_electric_furnace_on` | pronto na lógica e testes; prova em jogo pendente |
-| 4 | `furnace_iron` | idem |
-| 5 | `furnace_steel` | idem |
-| 6 | `furnace_combination` | idem |
-| 7 a 13 | demais | Inert; trabalho não iniciado |
+| 1, 2 | `machine_furnace_brick_off/on` | pronto para revisão |
+| 3 | `machine_electric_furnace_on` | pronto para revisão |
+| 4 | `furnace_iron` | pronto para revisão |
+| 5 | `furnace_steel` | pronto para revisão |
+| 6 | `furnace_combination` | pronto para revisão |
+| 12, 11 | `machine_arc_welder`, `machine_soldering_station` | lógica e testes de unidade; prova em jogo e de corte pendentes |
+| 7 a 10, 13 | serra, rotativo, lingotamento contínuo, montadora de precisão, fábrica química | Inert; não iniciados |
