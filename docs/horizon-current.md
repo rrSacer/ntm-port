@@ -924,7 +924,7 @@ motor ser integrado (o coordenador funde a branch do motor e move o pin).
 | 18 colunas adotadas | As dez que eram `Inert` (5 controles, caldeira, outgasser, storage, cooler, aquecedor) viraram `Kind::Rbmk` com `Layout::Native`: tampa, slots do tamanho Java (outgasser 2, storage 12, aquecedor 1) e tamanho da tela por bloco. Só as oito do T01 entram no passo; os slots que o motor já guardava são a verdade da primeira sincronização | `TileEntityRBMKSlottedBase` |
 | Dials | As 25 regras do Java guardadas no estado do mundo (`rbmk_rules`, uma vez por save), criadas no início do servidor como `createDials` (padrões salvo `dialSaveDials`; o cache fica com os valores antigos até um refresh, D2). `/ntmrbmk dial [regra [valor]]` (op 2) faz o que `/gamerule` + `RBMKDials.refresh` fazem; só as 25 regras existentes. O passo do reator passa a ler o cache (antes: padrões) | `RBMKDials.createDials`, `refresh`, `GameRuleHelper.parseInt`, `ModEventHandler.commandEvent` |
 | Altura (D5) | O cache (`clamp(parseInt or 4, 2, 16)`) vai para o motor; só colunas colocadas depois mudam. `/ntmrbmk migrate x y z [x2 y2 z2]` (caixa ≤ 32768) refaz as colunas em pé para o dial: cresce em ar, encolhe tirando dummies do topo; recusa célula ocupada ou não carregada e diz qual. Cada coluna é um único `set_blocks` no seu chunk (uma coluna nunca cruza chunk) | Desvio D5 (o Java relê o dial e deixa partes órfãs) |
-| Órfãos | Dummy cuja sequência não chega a um núcleo vira ar, e o de cima depois (comando, explosão, `setblock`); célula de baixo não carregada: fica | `destroyIfOrphan` (com `checkChunksExist`) |
+| Órfãos e quebra sem jogador | Um dummy que some por comando ou explosão leva a coluna inteira: as células abaixo dele até o núcleo vão a ar e o núcleo quebra como bloco, o conteúdo do BE devido no registro do chunk na mesma publicação (`commit_structural` + `RetainedDrop`) e a tampa pelo caminho de remoção; os de cima vão como órfãos. Núcleo removido: os dummies vão como órfãos. Célula do caminho não carregada: fica | `BlockDummyable.breakBlock:301-326`, `RBMKBase.breakBlock:183-195`, `destroyIfOrphan` (com `checkChunksExist`) |
 | Tampas | Com ou sem shift, `rbmk_lid`/`rbmk_lid_glass` na mão sobre uma coluna sem tampa (qualquer célula): entra, uma sai da mão (não no criativo) na mesma transferência jogador↔BE, som de colocação de pedra/“step.stone” do vidro a 1,0/0,8. Coluna com tampa ou controle (tampa própria): o menu abre. Chave de fenda com shift (sem shift o menu abre antes, como no Java): a tampa sai como item no topo, devida no registro do chunk da coluna junto com a mudança (`RetainedDrop` com nome próprio por remoção) e a ferramenta gasta na mesma publicação; sem tampa: nada, sem desgaste. Coluna quebrada: a tampa cai pelo caminho de remoção de sempre. Os dois drops saem no topo **como o dial diz agora** (`getColumnHeight`), não como a coluna está. O modelo mostra a tampa (valor 0 da tela: 1 tampa, 2 vidro) | `ItemRBMKLid.onItemUse`, `RBMKBase.openInv`, `onScrew`, `breakBlock` |
 | Chave de fenda | `screwdriver` (100 de durabilidade) e `screwdriver_desh` (sem desgaste) saíram do backlog de equipamentos: receitas `ToolRecipes` 139/140, nomes, aba de controle. O export da bigorna ganhou a receita que precisava dela (`AnvilRecipes`:523) | `ItemTooling(SCREWDRIVER, …)` |
 | Proxies e automação | Porta de inventário no topo dos canais e do outgasser, em todos os dummies do storage. Automação: storage aceita só barras e entrega tudo; outgasser entrega só o slot 1; canais e aquecedor não mostram slot. A mão não é restrita aqui (T05) | `createNewTileEntity` + `TileEntityProxyCombo`, `getAccessibleSlotsFromSide`, `canInsertItem`, `canExtractItem` |
@@ -990,3 +990,42 @@ de `rbmk-t02` @ `c3097105` (os commits seguintes só mudam roteiros de prova e d
 
 Desvios registrados (não pendências): D5; drop da tampa pelo dial (como o Java); `/setblock` trocando o núcleo por
 outra coluna mantém os dummies; o pin de `compatibility.json` segue a `ntm-current` até o motor ser integrado.
+
+### Correções da revisão independente (`revisao-rbmk-t02`)
+
+| Achado | Correção |
+| --- | --- |
+| P1-1 | `rbmk_columns::rbmk_breaks`: o dummy que some por comando ou explosão desce a corrente até o núcleo (`BlockDummyable.breakBlock`). O núcleo e os dummies abaixo saem numa única `commit_structural` do chunk da coluna, com o conteúdo do BE como `RetainedDrop` de nome próprio; a tampa cai pelo caminho de remoção, no topo pelo dial. Sem item da coluna (ninguém colheu). O teste que fixava o comportamento antigo foi trocado (`a_dummy_taken_away_takes_the_whole_column_and_drops_its_contents_once`), e a J e o C ganharam um canal com barra e tampa cujo dummy do meio sai por `/setblock`. Explosões: com a resistência Java (18), TNT e creeper não quebram células de coluna, aqui e no Java; uma explosão que quebre um dummy passa pelo mesmo caminho (as bombas são do T16) |
+| P1-1 (achado na reprova J) | A migração encolhendo uma coluna tira dummies do topo: essas escritas são do mod (`set_machine_blocks` com as células como suas, o escopo de blocos próprios do host nativo), não "dummy tirado", senão a corrente do P1-1 quebraria a coluna (a J mostrou 16 → 6 deixando nada). Teste `a_column_is_found_from_any_cell_and_rebuilt_only_on_demand` com as escritas devolvidas como o jogo devolve; a mutação (voltar a `set_blocks`) é pega |
+| P2-1 | A J conta a tampa tirada com a chave em entidades + inventário (a tampa sai sem atraso de coleta, como no Java, e o jogador pode pegá-la). Reexecutada inteira com o pacote atual |
+| P2-2 | **Escolha: confirmação explícita.** `/ntmrbmk dial dialColumnHeight <v>` cuja altura efetiva seja diferente de 4 é recusado com a explicação ("o modelo das colunas ainda desenha 4 células até o ticket T02-V") e só vale com `confirmar` no fim; mesmo assim responde com o aviso. Motivo: mantém o dial do Java disponível (2..16, D5) para quem precisa, sem que alguém o mude por engano e veja um reator enganoso; limitar a 4 tiraria uma regra do Java até o T02-V |
+| P3-1 | **Custo conhecido, sem mudança.** A velocidade já é a do `new EntityItem` do Java (±0,1 horizontal, 0,2 para cima: `dispenser::new_item_motion`). O voo de 3–4 blocos vem de a tampa nascer dentro da célula do topo, que é um cubo sólido (o dummy usa o modelo de barreira): o motor a empurra para fora, como o 1.7.10 faz com `func_145771_j` nas colunas que são cubos normais (o Java tenta −x primeiro). Nos canais (`RBMKRod.isOpaqueCube` falso) o Java não empurra. Igualar exigiria a física de entidade do motor por tipo de coluna; fica registrado |
+| P3-2 | `core_of` de uma célula de coluna desce pela sequência do próprio dummy (`column_core`); a busca dos outros multiblocos volta à altura deles (`rise` sem colunas) |
+| P3-3 | `Registry.column_dummies` (montado no `load`) no lugar de percorrer as definições a cada consulta de funil |
+| P3-4 | Ver P1-1 |
+| P3-5 | Evidências refeitas com o pacote do HEAD (dureza 3/18) |
+
+Pontos de contato com o motor: o segundo commit da `rbmk-t02-engine` (`perf(multiblocks): columns find their core down
+their own run`) mexe só em `mod_multiblocks.rs` (`Registry.column_dummies`/`column_rise`, `load`, `Multiblock::rise`,
+`core_of` → `column_core`, `inventory_core`, `column_port`, testes).
+
+Desvio que fica (comando no núcleo): `/setblock` sobre o **núcleo** segue o `/setblock` moderno do motor, que apaga o
+BE sem derramar (como um baú no vanilla atual); no Java o `breakBlock` derramaria. A tampa cai mesmo assim (caminho de
+remoção do mod). Quebra pelo jogador, explosão e o dummy por comando derramam.
+
+
+### Validação das correções (10/11/2026)
+
+Binário release `horizon-client` SHA-256 `abbd98a934ddf5fbb3a278746ceb87e295c2c101e836a181f57bd3a87433d868`, de
+`rbmk-t02` @ `49842d28` sobre `rbmk-t02-engine` @ `06bf7ffe5c` (`NEXT_REV`); pacote `ntm.hmod`
+`739cc99c6b418c36a2f15c4976de07b1f6a18f06eda918735656f5ef487c0094` (o do HEAD, dureza 3/18). Evidências em
+`.agent-tmp/rbmk-t02/evidence/r2/` e `evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| Motor | 7/7 testes de `mod_multiblocks` (um novo: a busca dos outros multiblocos não cresce com coluna carregada) |
+| NTM debug | lib 522 (2 ignorados) e 47 de integração (todos os alvos menos `save_model`); 9 testes do T02 |
+| `save_model` (release) | 11/11 |
+| Clippy | `ntm-core` todos os alvos `-D warnings`: 0 avisos |
+| Mutações novas | sem a corrente para baixo (P1-1): 2 testes falham; migração com `set_blocks` em vez de escritas próprias: o teste da migração falha |
+| J em jogo | 29/29 e, após reabrir, 4/4; inclui o canal com barra e tampa cujo dummy do meio sai por `/setblock` (coluna inteira some, barra +1, tampa +1, item da coluna 0) e a tampa da chave contada em chão + inventário |
