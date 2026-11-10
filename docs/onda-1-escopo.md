@@ -19,15 +19,27 @@ já estão ativos na main (K2 "onda 1"); esta frente cobre o que ainda falta.
 
 ## Ordem das fatias
 
-1 → 2 → 3 → 5 → 4 → 6. A 4 tem uma decisão de comportamento aberta (zonas de fallout do port contra
-o campo por chunk do Java); enquanto ela não vem, seguem as outras. Cada fatia entra com testes de
+1 → 2 → 3 → 5 → 4 → 6. Fatia 4: o coordenador escolheu (09/11) o campo por chunk fiel ao Java
+(`ChunkRadiationHandlerSimple`, inclusive o bug do `clamp_float`); a troca das zonas de bomba pelos
+blocos de fallout é uma sub-fatia própria, no fim, medida em cratera real antes e depois. Cada fatia entra com testes de
 unidade, mutações, clippy `-D warnings` e prova em jogo.
 
 ## Fora desta onda (registrado, não esquecido)
 
 - Armaduras com poderes (FSB: `security`, `cmb`, `schrabidium`, `euphemium`, `t51`, `ajr`, `hev`, `bj`...)
-  são Onda 4. Seus valores do `HazmatRegistry` entram já na tabela gerada da fatia 1.
+  são Onda 4. Seus valores do `HazmatRegistry` (e do `setRadResist`) e suas classes de perigo
+  (`setHazardClass`) entram já na tabela gerada.
+- `DamageResistanceHandler` (limiar e resistência de dano por categoria, por peça e por conjunto:
+  `jackt`, aço, titânio, liga, cobalto...) é regra de combate: Onda 4, decisão do coordenador de
+  10/11. Lacuna nominal: as armaduras desta onda só têm os pontos de armadura vanilla.
 - Chaminés e fuligem como poluição (`SOOT`) dependem do sistema de poluição.
 - `digamma_diagnostic`, asbestos e black lung dependem de `HbmLivingProps` (digamma/pulmão).
 - Fontes que só existem em famílias Inert (RBMK, Watz, ICF, mísseis) emitem para o campo quando
   forem portadas.
+
+## Defeitos conhecidos fora da frente
+
+- `tools/content-gen/generate.py` na `main` não é idempotente: cada regeneração reescreve
+  `door_metal.json`, `door_bunker.json`, `door_office.json` e `door_red.json` (apaga `door_sounds`).
+  É defeito do gerador; esta frente restaura os quatro arquivos depois de cada geração e não os
+  commita.
