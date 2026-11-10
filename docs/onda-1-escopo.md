@@ -37,9 +37,21 @@ unidade, mutações, clippy `-D warnings` e prova em jogo.
 - Fontes que só existem em famílias Inert (RBMK, Watz, ICF, mísseis) emitem para o campo quando
   forem portadas.
 
+## Riscos
+
+- Anexos de jogador perdidos num crash depois de um save no meio da sessão (defeito do motor,
+  `docs/onda-1-protecao.md`): RadAway, enjoo herbal, cooldowns e a mesa de armadura. A Onda 1 só
+  entra na `main` junto com a correção do motor (`player-attachments-fix`).
+- `filter_exposure` (proteção e desgaste de filtro) só é chamada hoje pelo comando `/ntmitem expose`:
+  nenhuma fonte ambiental do port (gases, poeiras, cinzas) existe ainda; o comportamento em jogo das
+  máscaras contra gases depende dessas famílias.
+
 ## Defeitos conhecidos fora da frente
 
 - `tools/content-gen/generate.py` na `main` não é idempotente: cada regeneração reescreve
   `door_metal.json`, `door_bunker.json`, `door_office.json` e `door_red.json` (apaga `door_sounds`).
   É defeito do gerador; esta frente restaura os quatro arquivos depois de cada geração e não os
   commita.
+- `paneGlass`: o gerador de receitas tinha só o painel comum; o Forge 1.7.10 inclui os 16 painéis
+  coloridos (wildcard). Corrigido nesta frente. `blockGlass` tem o mesmo defeito (sem os vidros
+  coloridos) e fica registrado aqui, sem mudança, porque afeta receitas de outras frentes.

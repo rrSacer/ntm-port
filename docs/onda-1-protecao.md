@@ -132,17 +132,14 @@ Verificação estática da primeira entrega: 517 testes de unidade do `ntm-core`
 tooltip com duas casas, fator alterado na sétima casa, `koeff` arredondado, valor do peitoral de aço
 na tabela); a de controle (equivalente) passa.
 
-Atomicidade da mesa num corte de gravação: cada clique (`armor_table::clicked`) monta numa cópia do
-snapshot do jogador o inventário, a armadura vestida, o cursor e a peça da mesa (attachment
-`ntm:armor_table`) e publica tudo num único `native_commit_player` (`armor_table.rs`, no fim de
-`clicked` e em `closed`); a troca armadura/revestimento não tem publicação parcial. Esse estado vai
-para o arquivo do jogador, salvo inteiro pelo motor. A revisão tentou um corte de gravação da mesa e
-viu o controle vanilla perder tudo nos mesmos cortes, o que torna o resultado inconclusivo. O corte
-de gravação da fatia 2 (`run-filter-copy-proof.py`) passa pelo mesmo `native_commit_player` e conta
-o arquivo do dono (`singleplayer_uuid` do `level.dat`; o mundo de teste guarda um segundo arquivo de
-jogador, que somado dobra a conta e pode explicar o resultado da revisão), contra um controle
-vanilla no mesmo arquivo: os resultados estão na seção da fatia 2. Não há prova de corte específica
-da mesa com cliques de menu.
+Mesa num corte de gravação: cada clique (`armor_table::clicked`) e o fechamento publicam inventário,
+armadura vestida, cursor e a peça da mesa (anexo `ntm:armor_table`) num único `native_commit_player`,
+sem publicação parcial. Isso não basta para a mesa sobreviver a um corte: a revisão
+(`revisao-onda1-fatia1`, re-revisão) mostrou que, depois de um save no meio da sessão, o arquivo do
+dono fica com o inventário novo e sem nenhum anexo, e o anexo da mesa só no arquivo do outro UUID do
+jogador, que a reabertura não lê: a peça e o revestimento somem. A causa é um defeito do motor
+(seção "Defeito do motor: anexos do dono num save no meio da sessão", abaixo). O corte do bug de
+cópia (fatia 2) não cobre a mesa: o filtro é componente de item, que vai com o inventário.
 
 A regressão inteira do roteiro `items` (todas as famílias) não fechou nesta máquina: quatro
 tentativas no mesmo binário pararam em quatro checagens de tempo diferentes e alheias à fatia
@@ -247,3 +244,80 @@ como `all`, sem o bug, mod sem filtro gasta, tag de filtro em capacete comum, `S
 - Tooltips das máscaras (`ArmorUtil.addGasMaskTooltip`, `hazard.neverProtects`).
 - Nenhuma fonte ambiental do port chama ainda `filter_exposure` (gases, poeiras, cinzas): entram com
   as famílias de poluição e gases.
+
+## Fatia 3: descontaminação (`ntm:decon`)
+
+`TileEntityDecon.updateEntity` (servidor, todo tick): as entidades vivas dentro da caixa
+`(x − 0,5, y, z − 0,5) .. (x + 1,5, y + 2, z + 1,5)` perdem 0,5 RAD (`incrementRadiation(e, -0.5F)`,
+sem nenhuma condição: criativo também), o efeito `HbmPotion.radiation` e a lista de contaminação
+(`HbmLivingProps.getCont(e).clear()`).
+
+No port: `radiation::decon_reaches` é o teste de caixa (`getEntitiesWithinAABB`: a caixa do jogador,
+0,6 × 1,8, cruza a do `decon`, estrito nos três eixos) e `decon_cells`, as células que podem alcançar
+um jogador; `Server::decon_tick` (todo tick, antes do `radiation_tick`) conta os `decon` que
+alcançam cada jogador, tira 500 milliRAD por `decon` (vários somam, como no Java, em que cada bloco
+age por si) num commit da dose do jogador, e encerra a irradiação (`zirnox.irradiated`, o equivalente
+do port ao `HbmPotion.radiation`, que o micélio radioativo e os destroços aplicam). Sem dose, nada é
+publicado. O bloco continua `Kind::Inert` no registro: o `TileEntityDecon` não guarda estado, então
+não há entidade de bloco a criar nem a salvar.
+
+Lacunas nominais: mobs não são descontaminados (o port não guarda dose de mobs); a lista de
+contaminação (`ContaminationEffect`) não existe no port; a partícula `townaura` que o cliente emite
+todo tick em cada `decon` carregado (`TileEntityDecon:31-43`, cor 0,8/0,9/1,0 × [0,5, 1]) não é
+emitida: seria preciso conhecer as posições de todos os `decon` carregados, não só dos que estão
+perto de um jogador.
+
+### Correção encontrada pela prova: o micélio radioativo só irradiava com destroços do ZIRNOX
+
+`WasteEarth.onEntityWalking` (`WasteEarth.java:81-92`): pisar no `waste_mycelium` dá
+`HbmPotion.radiation` (30 s, amplificador 3), sempre. No port, essa regra e o tique do efeito
+(`zirnox.irradiated`, `(3 + 1) × 0,05 RAD` por tick) ficavam dentro de `zirnox_debris`, depois do
+`return` antecipado de um mundo sem destroços: sem nenhum destroço do ZIRNOX, o micélio não irradiava
+ninguém, e um efeito já dado parava de doar. Agora `zirnox_irradiation` roda todo tick, depois dos
+efeitos do ZIRNOX (a mesma ordem de antes quando há destroços), e também quando o ZIRNOX tem efeitos
+pendentes. Teste: `mycelium_irradiates_without_debris_and_decon_ends_it`.
+
+## Defeito do motor: anexos do dono num save no meio da sessão
+
+Achado pela re-revisão da fatia 1 e diagnosticado por sonda (anexo `ntm:item_state`, sem a mesa):
+num save no meio da sessão (`ctl save`, autosave, `/save-all`), `save_game_metadata` chama
+`store_owner` (`crates/horizon-client/src/game/lan.rs:1634-1655`), que guarda o registro do hóspede
+dono com os anexos do registro, e não os vivos: estes moram em `Game.guest_attachments[uuid]` e só
+voltam ao registro em `save_guest` (`lan.rs:1427-1440`, `guest_attachments_into`), na saída. O
+arquivo do dono (`players/data/<singleplayer_uuid>.dat`, o que `load_owner` lê) fica sem anexos; os
+atuais vão só para o arquivo do UUID próprio do jogador (`native_player_save_to_file`).
+
+| Momento | Arquivo do dono | Outro arquivo do jogador |
+|---|---|---|
+| save no meio da sessão, e depois `kill -9` | inventário atual, sem `horizon:attachments` | anexo `ntm` atual |
+| saída limpa | anexo `ntm` atual | anexo `ntm` atual |
+
+Efeito hoje, num crash depois de um save no meio da sessão: a dose volta certa só porque, sem o anexo,
+o leitor semeia do espelho legado `WorldState.radiation` (KV); os ticks de tratamento do RadAway, o
+tempo do enjoo herbal, o cooldown e a peça da mesa se perdem (o RadAway consumido fica gravado no
+inventário: perda de item contra o vanilla). Afeta qualquer anexo de jogador de qualquer mod. A Onda 1
+só entra na `main` com a correção do motor (branch `player-attachments-fix`, a partir de `a31497f38`).
+
+### Correção do upstream e prova de corte
+
+O upstream corrigiu o defeito em `61aa03d1a` (#12612). Branch `player-attachments-fix` sobre `a31497f38`:
+só esse cherry-pick, commit `130153a4ac` (adaptação só no teste; detalhes e pontos de contato em
+`docs/horizon-current.md`). O teste do upstream passa no pin com a correção.
+
+Prova em jogo (`tools/test-game/run-player-cut-proof.py`): o mesmo estado, cortado nos pontos do save
+atômico (`none`, `kill`, `save_begin`, `level_saved`, `players_saved`, `world_saved`, `kv_committed`),
+reaberto duas vezes. Mesa: as duas peças clicadas para os slots 9 e 5 com a mesa aberta, contra o
+controle do baú do Ender (as mesmas pilhas, que moram no arquivo do jogador). RadAway e herbal: o item
+consumido tem de vir com o efeito inteiro. A RadAway dá 140 ticks de −1 RAD, então
+`dose − 1000 × ticks restantes = 300000 − 140000`. O herbal tira 100 RAD de uma vez e liga o
+temporizador, então `dose = 200000` com `herbal > 0`.
+
+| Cenário | Antes da correção (`a31497f38`) | Depois (`130153a4ac`) |
+|---|---|---|
+| Mesa | `none`..`level_saved`: as peças voltam ao inventário, como o controle. `players_saved`, `world_saved`, `kv_committed`: **0 de 2**, contra 1 de 1 no baú do Ender | (a medir) |
+| RadAway | Mesmos três cortes: item consumido, efeito visível, **tratamento restante perdido** (dose 300000 ou 270000, contra 160000) | (a medir) |
+| Herbal | Mesmos três cortes: **temporizador da doença perdido**; em `players_saved` a cura de 100 RAD também (dose 300000) | (a medir) |
+
+Evidência: `docs/evidence/onda1-f3/player-cut-before-{table,radaway,herbal}.json`. As rodadas de RadAway e
+herbal usaram uma regra mais fraca (só "efeito presente"), que deixou passar a perda; a regra acima é a do
+runner agora e está aplicada aos mesmos dados (`ok_strict`).

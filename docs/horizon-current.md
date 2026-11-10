@@ -907,3 +907,39 @@ com `max(perda do controle, 0)`, item a item também).
 contexto; (2) o tipo de detrito do T20 precisa estar registrado como invocável; (3) D-c é gate de T09 e T16;
 (4) o bug Java da barra renomeada (`{display}` → `yield` 0) é do T03; (5) `item replace block` sem marcar o chunk, no
 motor, candidato a upstream.
+
+## Motor: anexos do dono num save no meio da sessão (Onda 1, 10/11/2026)
+
+Defeito: enquanto o dono do mundo (um jogador) joga, os anexos dele (`ntm:item_state`, `ntm:armor_table`) ficam em
+`Game::guest_attachments`; `store_owner` gravava a cópia vazia do registro do convidado em
+`players/data/<uuid do singleplayer>.dat`, o arquivo de onde o dono carrega. Um crash depois de um autosave perdia
+RadAway, enjoo herbal, cooldowns e as peças da mesa de armadura; a dose só sobrevivia pelo espelho antigo no KV
+(`docs/onda-1-protecao.md`). O upstream corrigiu em `61aa03d1a` (#12612).
+
+Branch do motor `player-attachments-fix` sobre o pin `a31497f38`: só `git cherry-pick 61aa03d1a`, commit
+`130153a4ac` (refeito depois da queda da máquina de 10/11 07:14, que deixou vazio o primeiro objeto do
+commit; conteúdo igual, conferido contra o upstream). A correção em
+`store_owner` entrou sem conflito. O conflito foi só no teste: o upstream o põe depois de um módulo
+`world_spawn_sync_tests` que o pin não tem, e usa `native_machines::tests::server_game` e
+`world_spawn_sync_tests::host_for`, que também não existem aqui (nem `NetConfig::loopback`, e o `Joined` do pin não tem
+`expected`/`configured`). Adaptação mínima: o módulo `world_spawn_sync_tests` não entra; o teste do upstream entra igual,
+com cópias locais dos dois ajudantes, cortadas ao que ele usa (sem o convidado no Nether; `NetConfig::lan` com
+`bind` em localhost no lugar de `loopback`).
+
+| Ponto | Arquivo | Função | Linha (branch) |
+| --- | --- | --- | --- |
+| Correção | `crates/horizon-client/src/game/lan.rs` | `store_owner`: troca os anexos do registro pelos vivos só durante `playerdata::store` e devolve | 1634, troca em 1653-1663 |
+| Referência (já certo) | `crates/horizon-client/src/game/lan.rs` | `save_guest`: quem sai grava os anexos vivos | 1423 |
+| Única chamada | `crates/horizon-client/src/game.rs` | `save_game_metadata` → `store_owner` | 15375 |
+| Autosave | `crates/horizon-client/src/game.rs` | `save_game_with(false)` no contador de autosave | 7542 |
+| Save da pausa | `crates/horizon-client/src/game/integrated.rs` | `save_game_with(false)` no tick que pausa | 661 |
+| `/save-all` | `crates/horizon-client/src/game/commands/profiles.rs` | `cmd_save_all` → `save_game` | 56 |
+| `horizon-ctl save` | `crates/horizon-client/src/game/control.rs` | `control_save` → `save_game` | 1087 |
+| Save de saída | `crates/horizon-client/src/game/saving.rs` | `poll_closing_save` → `save_game_metadata` | 192 |
+| Leitura | `crates/horizon-client/src/lan/playerdata.rs` | `load_owner` lê o arquivo do dono | 84 |
+| Teste do upstream | `crates/horizon-client/src/game/lan.rs` | `owner_attachment_save_tests::an_autosave_writes_the_owners_live_attachments_to_the_file_it_loads` (`#[ignore]`, precisa de `HORIZON_TEST_RESOURCES`) | 3180 |
+| Ajudantes adaptados | `crates/horizon-client/src/game/lan.rs` | `server_game`, `host_for` (cópias locais) | 3055, 3093 |
+
+Todos os caminhos de save do dono passam pela mesma `store_owner`; o teste do upstream a exercita direto, mas confere
+só o `level.player_extra` em memória. O ida-e-volta pelo arquivo (`Level::write` → `Level::read` → `load_owner`) e a
+saída/volta ao mundo ficam provados em jogo (cortes de save da Onda 1, `docs/onda-1-protecao.md`).
