@@ -10,9 +10,10 @@
 //! battery, 8 the identifier, 9 and 10 upgrades; an 8 000 mB tank; a button
 //! that refuses a fluid the recipe does not use (`collisionPrevention`).
 //!
-//! Left out: the particles and the recipe's output ghost in the screen, and
-//! the identifier items (the tank takes the type of the first fluid that comes
-//! in, as the crafters' tanks do).
+//! The tank is typed by the fluid identifier in its slot, as the Java does
+//! (`tank.setType(5, slots)` / `setType(8, slots)`): without one it takes no
+//! fluid, and another identifier empties it. Left out: the particles and the
+//! recipe's output ghost in the screen.
 
 use crate::{
     energy::{EnergyNode, Role},
@@ -28,6 +29,10 @@ use std::sync::OnceLock;
 pub const ARC: &str = "ntm:machine_arc_welder";
 pub const SOLDER: &str = "ntm:machine_soldering_station";
 const STACK: u32 = 64;
+
+fn default_stack() -> u32 {
+    STACK
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Model {
@@ -74,6 +79,13 @@ impl Model {
             Model::Solder => 0..6,
         }
     }
+    /// The fluid identifier's slot (`setType(5, slots)`, `setType(8, slots)`).
+    pub fn identifier(self) -> usize {
+        match self {
+            Model::Arc => 5,
+            Model::Solder => 8,
+        }
+    }
     fn tank(self) -> u32 {
         match self {
             Model::Arc => 24_000,
@@ -97,6 +109,9 @@ pub struct Ingredient {
 #[derive(Clone, Debug, serde::Deserialize)]
 pub struct Recipe {
     pub out: (String, u32),
+    /// The product's `getMaxStackSize()`: the output slot stops there.
+    #[serde(default = "default_stack")]
+    pub stack: u32,
     pub duration: u32,
     pub power: u64,
     pub fluid: Option<(String, u32)>,
@@ -215,7 +230,7 @@ impl Welder {
             return false;
         }
         match &self.slots[self.model.output()] {
-            Some(o) => o.id == r.out.0 && o.damage == 0 && o.count + r.out.1 <= STACK,
+            Some(o) => o.id == r.out.0 && o.damage == 0 && o.count + r.out.1 <= r.stack,
             None => true,
         }
     }
@@ -262,6 +277,7 @@ impl Welder {
             self.slots[self.model.output()].clone(),
             self.recipe().map(|r| r.out.0.clone()),
         );
+        crate::combustion::type_from_identifier(&mut self.tank, &self.slots, self.model.identifier(), |_| true);
         self.power = charge_from_slot(
             &self.slots,
             self.model.battery(),
@@ -356,21 +372,28 @@ impl Slotted for Welder {
     /// leave the inputs consumed without the output, or the fluid spent twice.
     fn save_state(&self) -> Vec<i32> {
         let id = fluid::get(&self.tank.fluid).map_or(-1, |f| i32::from(f.id));
-        let cap = |v: u64| v.min(i32::MAX as u64) as i32;
+        // The Java keeps these as `long`: the low 31 bits where a save of before kept the capped value,
+        // the rest in three words after the others.
+        let lo = |v: u64| (v & 0x7fff_ffff) as i32;
+        let hi = |v: u64| (v >> 31).min(i32::MAX as u64) as i32;
         vec![
-            cap(self.power),
+            lo(self.power),
             self.progress as i32,
             self.tank.mb as i32,
             id,
             i32::from(self.collision_prevention),
-            cap(self.max_power),
-            cap(self.consumption),
+            lo(self.max_power),
+            lo(self.consumption),
             self.process_time as i32,
+            hi(self.power),
+            hi(self.max_power),
+            hi(self.consumption),
         ]
     }
     fn load_state(&mut self, v: &[i32]) {
-        if let [p, pr, mb, id, cp, mx, c, t, ..] = v {
-            self.power = (*p).max(0) as u64;
+        if let [p, pr, mb, id, cp, mx, c, t, rest @ ..] = v {
+            let wide = |lo: i32, hi: Option<&i32>| (lo.max(0) as u64) | ((hi.copied().unwrap_or(0).max(0) as u64) << 31);
+            self.power = wide(*p, rest.first());
             self.progress = (*pr).max(0) as u32;
             self.tank.fluid = fluid::types()
                 .iter()
@@ -378,8 +401,8 @@ impl Slotted for Welder {
                 .map_or_else(String::new, |f| f.string_id.clone());
             self.tank.mb = (*mb).clamp(0, self.tank.cap as i32) as u32;
             self.collision_prevention = *cp != 0;
-            self.max_power = (*mx).max(0) as u64;
-            self.consumption = (*c).max(0) as u64;
+            self.max_power = wide(*mx, rest.get(1));
+            self.consumption = wide(*c, rest.get(2));
             self.process_time = (*t).max(1) as u32;
         }
     }
@@ -406,12 +429,10 @@ impl FluidNode for Welder {
     fn fluid_offer(&self, _f: &str) -> u64 {
         0
     }
+    /// `getReceivingTanks`: the tank takes the fluid its identifier typed it to
+    /// (an empty tank stays typed; another identifier changes it).
     fn fluid_demand(&self, f: &str) -> u64 {
-        if self.tank.accepts(f)
-            && recipes(self.model)
-                .iter()
-                .any(|r| r.fluid.as_ref().is_some_and(|(x, _)| x == f))
-        {
+        if self.tank.fluid == f {
             u64::from(self.tank.free())
         } else {
             0
@@ -425,13 +446,12 @@ impl FluidNode for Welder {
         }
     }
     fn accepts_any(&self) -> bool {
-        self.tank.mb == 0
+        false
     }
     fn fluid_give(&mut self, f: &str, mb: u64) {
-        if self.tank.mb == 0 {
-            self.tank.set_type(f);
+        if self.tank.fluid == f {
+            self.tank.fill(f, mb.min(u64::from(u32::MAX)) as u32);
         }
-        self.tank.fill(f, mb.min(u64::from(u32::MAX)) as u32);
     }
     fn fluid_take(&mut self, _f: &str, _mb: u64) {}
 }
@@ -533,10 +553,11 @@ pub fn allows(
     })
 }
 
-/// The container: the arc welder lists its slots 1 and 3 on every side
-/// (`getAccessibleSlotsFromSide`), and its multiblock cells split them by
-/// position, which the engine's one container per machine cannot; here every
-/// side reaches all inputs and the output. The soldering station reaches 0..6.
+/// The container: the arc welder lists, per multiblock cell (`getAccessibleSlotsFromSide(x,y,z,side)`),
+/// one input and the output (the core 1, two cells 0, one 1, two 2; the layer above, none), which the
+/// engine's one container per machine cannot split; here every port cell reaches all inputs and the
+/// output, and the cells above the core are no ports (`inventory_ports`). The soldering station
+/// reaches 0..6 on every side.
 pub fn container(block: &str) -> Option<crate::native::Container> {
     let model = Model::of(block)?;
     let (reach, inputs): (Vec<usize>, Vec<usize>) = match model {
@@ -611,6 +632,13 @@ mod tests {
 
     fn put(w: &mut Welder, i: usize, id: &str, n: u32) {
         w.slots[i] = Some(Stack::new(id, n));
+    }
+
+    /// A fluid identifier of `f` in the machine's identifier slot (`{ntm_fluid:"..."}`).
+    fn identify(w: &mut Welder, f: &str) {
+        let mut id = Stack::new("ntm:fluid_identifier_multi", 1);
+        id.custom = Some(format!("{{ntm_fluid:\"{f}\"}}"));
+        w.slots[w.model.identifier()] = Some(id);
     }
 
     #[test]
@@ -704,6 +732,8 @@ mod tests {
         w.step();
         assert_eq!(w.progress, 0, "sem o fluido");
         let (f, mb) = r.fluid.clone().unwrap();
+        identify(&mut w, &f);
+        w.step();
         w.fluid_give(&f, u64::from(mb) + 500);
         for _ in 0..r.duration {
             w.step();
@@ -804,9 +834,172 @@ mod tests {
     }
 
     #[test]
-    fn it_takes_only_the_fluids_its_recipes_use() {
+    fn without_an_identifier_the_tank_takes_no_fluid() {
         let w = arc();
-        assert!(w.fluid_demand("oxygen") > 0);
-        assert_eq!(w.fluid_demand("water"), 0);
+        assert_eq!(w.fluid_demand("oxygen"), 0);
+        assert!(!w.accepts_any());
+        let mut w = arc();
+        w.fluid_give("oxygen", 500);
+        assert_eq!(w.tank.mb, 0, "an untyped tank refuses what is pushed in");
+    }
+
+    #[test]
+    fn the_identifier_types_the_tank_and_another_one_empties_it() {
+        for model in [ARC, SOLDER] {
+            let mut w = Welder::of(model).unwrap();
+            let fluids: Vec<String> = {
+                let mut v: Vec<String> = Vec::new();
+                for r in recipes(w.model) {
+                    if let Some((f, _)) = &r.fluid
+                        && !v.contains(f)
+                    {
+                        v.push(f.clone());
+                    }
+                }
+                v
+            };
+            let (first, second) = (fluids[0].clone(), fluids[1].clone());
+            identify(&mut w, &first);
+            w.step();
+            assert_eq!(w.tank.fluid, first);
+            assert_eq!(w.fluid_demand(&first), u64::from(w.tank.cap));
+            assert_eq!(w.fluid_demand(&second), 0);
+            w.fluid_give(&first, 1_000);
+            assert_eq!(w.tank.mb, 1_000);
+            // The tank runs dry and stays typed, as in the Java: only the identifier changes it.
+            w.tank.drain(1_000);
+            assert_eq!(w.fluid_demand(&second), 0);
+            identify(&mut w, &second);
+            w.step();
+            assert_eq!((w.tank.fluid.as_str(), w.tank.mb), (second.as_str(), 0));
+            assert!(w.fluid_demand(&second) > 0);
+            // With some left, another identifier takes it away (`FluidTank.setType`).
+            w.fluid_give(&second, 300);
+            identify(&mut w, &first);
+            w.step();
+            assert_eq!((w.tank.fluid.as_str(), w.tank.mb), (first.as_str(), 0));
+        }
+    }
+
+    #[test]
+    fn the_output_stops_at_the_products_stack_limit() {
+        let mut w = Welder::of(SOLDER).unwrap();
+        let (n, r) = recipes(Model::Solder)
+            .iter()
+            .enumerate()
+            .find(|(_, r)| r.out.0 == "ntm:sat_chip")
+            .unwrap();
+        let _ = n;
+        assert_eq!(r.stack, 1, "a satellite chip stacks to 1");
+        let fill = |w: &mut Welder| {
+            for (k, g) in r.toppings.iter().enumerate() {
+                put(w, k, &g.ids[0], g.n);
+            }
+            for (k, g) in r.pcb.iter().enumerate() {
+                put(w, 3 + k, &g.ids[0], g.n);
+            }
+            for (k, g) in r.solder.iter().enumerate() {
+                put(w, 5 + k, &g.ids[0], g.n);
+            }
+        };
+        fill(&mut w);
+        w.give(10_000_000);
+        for _ in 0..r.duration {
+            w.step();
+        }
+        assert_eq!(w.slots[6].as_ref().map(|s| (s.id.as_str(), s.count)), Some(("ntm:sat_chip", 1)));
+        fill(&mut w);
+        w.progress = 0;
+        w.step();
+        assert_eq!(w.progress, 0, "the output holds its one chip: the Java stops");
+        for model_stack in recipes(Model::Solder).iter().chain(recipes(Model::Arc)) {
+            assert!(model_stack.stack >= 1);
+        }
+        let singles = recipes(Model::Solder).iter().filter(|r| r.stack == 1).count();
+        let sixteens = recipes(Model::Solder).iter().filter(|r| r.stack == 16).count();
+        assert_eq!((singles, sixteens), (16, 2), "15 upgrades and the chip, and radius and health");
+    }
+
+    #[test]
+    fn the_energy_the_java_keeps_as_a_long_survives_a_save() {
+        let mut w = Welder::of(ARC).unwrap();
+        w.power = 3_200_000_000;
+        w.max_power = 32_000_000_000;
+        w.consumption = 1_600_000_000;
+        let mut g = Welder::of(ARC).unwrap();
+        Slotted::load_state(&mut g, &Slotted::save_state(&w));
+        assert_eq!((g.power, g.max_power, g.consumption), (3_200_000_000, 32_000_000_000, 1_600_000_000));
+        // A save of before (eight values, the energy capped at an i32) still reads.
+        let mut g = Welder::of(ARC).unwrap();
+        Slotted::load_state(&mut g, &[5_000, 17, 700, -1, 0, 9_000, 400, 100]);
+        assert_eq!((g.power, g.max_power, g.consumption), (5_000, 9_000, 400));
+    }
+
+    #[test]
+    fn a_hand_and_a_hopper_follow_the_slot_rules() {
+        let slots = |model: Model| vec![None; model.slots()];
+        // The arc welder: any item by hand in an input, `slot < 3` for a hopper, nothing in the output.
+        let arc_slots = slots(Model::Arc);
+        assert_eq!(allows(ARC, &arc_slots, 0, "minecraft:stone", true, true), Some(true));
+        assert_eq!(allows(ARC, &arc_slots, 2, "minecraft:stone", true, false), Some(true));
+        assert_eq!(allows(ARC, &arc_slots, 3, "ntm:motor", true, true), Some(false));
+        assert_eq!(allows(ARC, &arc_slots, 4, "ntm:battery_creative", true, true), Some(true));
+        assert_eq!(allows(ARC, &arc_slots, 4, "ntm:battery_creative", true, false), Some(false));
+        assert_eq!(allows(ARC, &arc_slots, 6, "ntm:upgrade_speed_1", true, true), Some(true));
+        assert_eq!(allows(ARC, &arc_slots, 6, "ntm:upgrade_speed_1", true, false), Some(false));
+        assert_eq!(allows(ARC, &arc_slots, 6, "minecraft:stone", true, true), Some(false));
+        // Taking: a hand anywhere, a hopper only from the output.
+        assert_eq!(allows(ARC, &arc_slots, 0, "x", false, true), Some(true));
+        assert_eq!(allows(ARC, &arc_slots, 0, "x", false, false), Some(false));
+        assert_eq!(allows(ARC, &arc_slots, 3, "x", false, false), Some(true));
+        assert_eq!(allows("minecraft:chest", &arc_slots, 0, "x", true, true), None);
+        // The soldering station: a topping, a pcb or a solder of its recipes, and never the same item twice in a group.
+        let r = &recipes(Model::Solder)[0];
+        let topping = r.toppings[0].ids[0].as_str();
+        let pcb = r.pcb[0].ids[0].as_str();
+        let mut st = slots(Model::Solder);
+        assert_eq!(allows(SOLDER, &st, 0, "minecraft:stone", true, true), Some(false));
+        assert_eq!(allows(SOLDER, &st, 0, topping, true, true), Some(true));
+        assert_eq!(allows(SOLDER, &st, 3, topping, true, true), Some(false), "a topping is no pcb");
+        assert_eq!(allows(SOLDER, &st, 3, pcb, true, false), Some(true));
+        st[0] = Some(Stack::new(topping, 1));
+        assert_eq!(allows(SOLDER, &st, 1, topping, true, true), Some(false), "the twin of slot 0");
+        assert_eq!(allows(SOLDER, &st, 0, topping, true, true), Some(true), "its own slot is no twin");
+        assert_eq!(allows(SOLDER, &st, 6, topping, true, true), Some(false));
+    }
+
+    #[test]
+    fn the_containers_reach_every_input_and_only_the_output_comes_out() {
+        let arc = container(ARC).unwrap();
+        assert_eq!((arc.slots, arc.inputs.clone(), arc.outputs.clone()), (8, vec![0, 1, 2], vec![3]));
+        assert!(arc.faces.iter().all(|f| *f == vec![0, 1, 2, 3]));
+        let st = container(SOLDER).unwrap();
+        assert_eq!((st.slots, st.inputs.clone(), st.outputs.clone()), (11, vec![0, 1, 2, 3, 4, 5], vec![6]));
+        assert!(st.faces.iter().all(|f| *f == vec![0, 1, 2, 3, 4, 5, 6]));
+        assert!(container("minecraft:chest").is_none());
+    }
+
+    #[test]
+    fn the_collision_button_leaves_a_fluid_recipe_alone() {
+        let mut w = Welder::of(SOLDER).unwrap();
+        let r = recipes(Model::Solder).iter().find(|r| r.fluid.is_some()).unwrap();
+        for (k, g) in r.toppings.iter().enumerate() {
+            put(&mut w, k, &g.ids[0], g.n);
+        }
+        for (k, g) in r.pcb.iter().enumerate() {
+            put(&mut w, 3 + k, &g.ids[0], g.n);
+        }
+        for (k, g) in r.solder.iter().enumerate() {
+            put(&mut w, 5 + k, &g.ids[0], g.n);
+        }
+        let (f, mb) = r.fluid.clone().unwrap();
+        identify(&mut w, &f);
+        w.step();
+        w.fluid_give(&f, u64::from(mb) + 100);
+        w.give(10_000_000);
+        Slotted::button(&mut w, 0);
+        assert!(w.collision_prevention);
+        w.step();
+        assert_eq!(w.progress, 1, "the recipe uses the fluid: nothing to avoid");
     }
 }

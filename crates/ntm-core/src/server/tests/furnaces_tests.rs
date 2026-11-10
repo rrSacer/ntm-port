@@ -283,6 +283,6 @@ fn the_arc_welder_welds_on_a_creative_battery_and_keeps_its_state() {
     assert_eq!(count(&s, &r.out.0) + taken, 3 * r.out.1, "{s:?}");
     assert!(s[..3].iter().all(Option::is_none), "{s:?}");
     let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
-    // The screen's ten values, then the eight saved ones.
-    assert_eq!(data.len(), 10 + 8);
+    // The screen's ten values, then the saved ones (eight, and the high words of the three energy longs).
+    assert_eq!(data.len(), 10 + 11);
 }

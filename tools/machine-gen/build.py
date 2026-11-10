@@ -292,8 +292,11 @@ for name in ('arc_welder', 'soldering'):
     def ing(x):
         return {'ids': x['ids'], 'n': x['count']}
     rows = []
+    # `getMaxStackSize()` of the product: the output slot stops there (`TileEntityMachineArcWelder.java:191`,
+    # `TileEntityMachineSolderingStation.java:166`); the catalog carries it as `max_stack_size`.
+    stacks = {e['id']: e['max_stack_size'] for e in ids['entries'] if e.get('max_stack_size')}
     for r in src['recipes']:
-        row = {'out': r['outputItems'][0], 'duration': r['duration'], 'power': r['power'],
+        row = {'out': r['outputItems'][0], 'stack': stacks.get(r['outputItems'][0][0], 64), 'duration': r['duration'], 'power': r['power'],
                'fluid': r['inputFluids'][0] if r['inputFluids'] else None, 'source': r['source'], 'label': r.get('label', r['name'])}
         if name == 'arc_welder':
             row['in'] = [ing(x) for x in r['inputItems']]

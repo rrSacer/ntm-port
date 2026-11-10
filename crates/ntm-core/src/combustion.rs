@@ -134,7 +134,7 @@ fn identifier_type(stack: &Stack) -> Option<String> {
 /// `FluidTank.setType(slot, slots)`: the identifier in `slot` types the tank
 /// (the content goes with the old type). True when the type changed. `only`
 /// narrows the types the machine takes.
-fn type_from_identifier(
+pub(crate) fn type_from_identifier(
     tank: &mut Tank,
     slots: &Slots,
     slot: usize,

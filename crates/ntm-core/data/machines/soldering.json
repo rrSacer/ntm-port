@@ -31,6 +31,7 @@
 "ntm:circuit__analog",
 1
 ],
+"stack": 64,
 "duration": 100,
 "power": 100,
 "fluid": null,
@@ -72,6 +73,7 @@
 "ntm:circuit__basic",
 1
 ],
+"stack": 64,
 "duration": 200,
 "power": 250,
 "fluid": null,
@@ -107,6 +109,7 @@
 "ntm:circuit__advanced",
 1
 ],
+"stack": 64,
 "duration": 300,
 "power": 1000,
 "fluid": [
@@ -157,6 +160,7 @@
 "ntm:circuit__capacitor_board",
 1
 ],
+"stack": 64,
 "duration": 200,
 "power": 300,
 "fluid": [
@@ -195,6 +199,7 @@
 "ntm:circuit__bismoid",
 1
 ],
+"stack": 64,
 "duration": 400,
 "power": 10000,
 "fluid": [
@@ -252,6 +257,7 @@
 "ntm:circuit__quantum",
 1
 ],
+"stack": 64,
 "duration": 400,
 "power": 100000,
 "fluid": [
@@ -309,6 +315,7 @@
 "ntm:circuit__controller",
 1
 ],
+"stack": 64,
 "duration": 400,
 "power": 15000,
 "fluid": [
@@ -365,6 +372,7 @@
 "ntm:circuit__controller_advanced",
 1
 ],
+"stack": 64,
 "duration": 600,
 "power": 25000,
 "fluid": [
@@ -422,6 +430,7 @@
 "ntm:circuit__controller_quantum",
 1
 ],
+"stack": 64,
 "duration": 600,
 "power": 250000,
 "fluid": [
@@ -478,6 +487,7 @@
 "ntm:sat_chip",
 1
 ],
+"stack": 1,
 "duration": 100,
 "power": 100,
 "fluid": null,
@@ -519,6 +529,7 @@
 "ntm:upgrade_speed_1",
 1
 ],
+"stack": 1,
 "duration": 200,
 "power": 1000,
 "fluid": null,
@@ -559,6 +570,7 @@
 "ntm:upgrade_effect_1",
 1
 ],
+"stack": 1,
 "duration": 200,
 "power": 1000,
 "fluid": null,
@@ -599,6 +611,7 @@
 "ntm:upgrade_power_1",
 1
 ],
+"stack": 1,
 "duration": 200,
 "power": 1000,
 "fluid": null,
@@ -639,6 +652,7 @@
 "ntm:upgrade_fortune_1",
 1
 ],
+"stack": 1,
 "duration": 200,
 "power": 1000,
 "fluid": null,
@@ -679,6 +693,7 @@
 "ntm:upgrade_afterburn_1",
 1
 ],
+"stack": 1,
 "duration": 200,
 "power": 1000,
 "fluid": null,
@@ -719,6 +734,7 @@
 "ntm:upgrade_radius",
 1
 ],
+"stack": 16,
 "duration": 200,
 "power": 1000,
 "fluid": null,
@@ -759,6 +775,7 @@
 "ntm:upgrade_health",
 1
 ],
+"stack": 16,
 "duration": 200,
 "power": 1000,
 "fluid": null,
@@ -799,6 +816,7 @@
 "ntm:upgrade_speed_2",
 1
 ],
+"stack": 1,
 "duration": 300,
 "power": 10000,
 "fluid": null,
@@ -840,6 +858,7 @@
 "ntm:upgrade_speed_3",
 1
 ],
+"stack": 1,
 "duration": 400,
 "power": 25000,
 "fluid": [
@@ -883,6 +902,7 @@
 "ntm:upgrade_effect_2",
 1
 ],
+"stack": 1,
 "duration": 300,
 "power": 10000,
 "fluid": null,
@@ -924,6 +944,7 @@
 "ntm:upgrade_effect_3",
 1
 ],
+"stack": 1,
 "duration": 400,
 "power": 25000,
 "fluid": [
@@ -967,6 +988,7 @@
 "ntm:upgrade_power_2",
 1
 ],
+"stack": 1,
 "duration": 300,
 "power": 10000,
 "fluid": null,
@@ -1008,6 +1030,7 @@
 "ntm:upgrade_power_3",
 1
 ],
+"stack": 1,
 "duration": 400,
 "power": 25000,
 "fluid": [
@@ -1051,6 +1074,7 @@
 "ntm:upgrade_fortune_2",
 1
 ],
+"stack": 1,
 "duration": 300,
 "power": 10000,
 "fluid": null,
@@ -1092,6 +1116,7 @@
 "ntm:upgrade_fortune_3",
 1
 ],
+"stack": 1,
 "duration": 400,
 "power": 25000,
 "fluid": [
@@ -1135,6 +1160,7 @@
 "ntm:upgrade_afterburn_2",
 1
 ],
+"stack": 1,
 "duration": 300,
 "power": 10000,
 "fluid": null,
@@ -1176,6 +1202,7 @@
 "ntm:upgrade_afterburn_3",
 1
 ],
+"stack": 1,
 "duration": 400,
 "power": 25000,
 "fluid": [
