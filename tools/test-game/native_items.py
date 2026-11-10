@@ -11,6 +11,11 @@ from pathlib import Path
 from native_game import Game
 
 
+# How long each item's use lasts, in ticks (`ticks` of the table the mod runs on): a use applies what it gives no earlier than that
+# many ticks after its gesture began.
+USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
+
+
 FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt').split(',')
 
 
@@ -20,7 +25,7 @@ FAMILY_RUNS=[]
 # Every wait below is counted in game ticks (the control socket's `wait`), never in wall time: on a loaded
 # machine the same script then sees the same game. Two things stay in wall time on purpose: `settle`
 # (it polls the synchronized screen) and the deadlines that only bound a hung run.
-USE_TICK=[0]    # the tick at which the last use began (what `has_effects` measures the age of an effect from)
+USE_TICK=[0]    # the earliest tick at which the last use can have applied what it gives (`has_effects` measures the age of an effect from it)
 READ_TICK=[0]   # the tick read right after the effects were last read
 
 
@@ -128,7 +133,13 @@ def used_up(g,item,count,polls=15):
 def use(g,seconds=0):
     g.close();g.ctl('look-at 20 160 8')
     held=g.ctl('inventory').get('held') or {};item,count=held.get('item'),held.get('count',0)
+    # What the use gives is applied no earlier than the item's use length after the gesture began (a click: at once). That tick
+    # is where the age of its effects, cooldowns and counters is counted from, so the age `has_effects` and the others allow
+    # for is a true upper bound of the real one, and not the length of a hold longer than the use, nor a tick later than the
+    # use applied (counting from the end of the gesture, or from after `used_up`, would count too little).
+    began=now(g);USE_TICK[0]=began
     if seconds:
+        USE_TICK[0]=began+min(USE_LENGTH.get(item,0),round(seconds*20))
         # The game holds the button `seconds` and lets it go (`held_use`): a stack of two loses one, whatever
         # the delay of the script's calls.
         try:held_use(g,seconds)
@@ -140,12 +151,6 @@ def use(g,seconds=0):
         # One click, made by the game itself (`use-item`, as the hold above): a `mouse right click` sent from outside
         # is sometimes lost on a slow frame, and a held button repeats the use of an instant item.
         g.ctl('use-item')
-    # The age of what the use gave (effects, cooldowns, counters) is counted from here: the gesture is over, so what it
-    # applied was applied no later than this tick (a use over a hold applies it before the release), and the script's own
-    # calls until the reading are the whole of the age that `has_effects` and the others allow for. Not from the start of
-    # the use, which would add the length of the hold to it, nor from after `used_up`, which waits up to three seconds
-    # for items that are not spent (the canteen) and would count too little.
-    USE_TICK[0]=now(g)
     used_up(g,item,count)
     pause(g,.4)
 
