@@ -1734,22 +1734,20 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
     result
 }
 
-/// The engine's SNBT, as Java's, reads the bare words of a non-finite double (`NaNd`, `Infinityd`) as text: an RBMK
-/// rod's four doubles come back as the doubles they were written as (P2-1), their bits exact (a NaN canonical, as Java's
-/// `writeDouble` keeps it).
-/// `ItemRBMKRod.onCreated` on a crafting grid's result: an RBMK rod without a tag gets the defaults (`setNBTDefaults`:
-/// its full yield, core and hull 20), so a rod renamed after it is crafted keeps them, as in Java.
+/// `ItemRBMKRod.onCreated` on a crafting grid's result: `setNBTDefaults` gives the rod a new tag (its full yield, core
+/// and hull 20), so a rod renamed after it is crafted keeps them, as in Java. A result that had custom data gets the
+/// defaults in its place (Java's `new NBTTagCompound()`); its other components stay (no recipe of the port makes any).
 pub(super) fn rbmk_crafted(result: &mut Option<ItemStack>) {
     let Some(r) = result.as_ref() else { return };
     let Some(rod) = ntm_core::rbmk::persist::rod_of(&r.item) else { return };
     let Some(mut s) = stack(result) else { return };
-    if s.tagged {
-        return;
-    }
     s.custom = ntm_core::rbmk::persist::with_rod_stack(None, &ntm_core::rbmk::rods::RodStack::fresh(rod));
     *result = item(Some(&s), result.take());
 }
 
+/// The engine's SNBT, as Java's, reads the bare words of a non-finite double (`NaNd`, `Infinityd`) as text: an RBMK
+/// rod's four doubles come back as the doubles they were written as (P2-1), their bits exact (a NaN canonical, as Java's
+/// `writeDouble` keeps it).
 fn rod_doubles(tag: &mut Tag) {
     let Tag::Compound(c) = tag else { return };
     for key in ["yield", "xenon", "core", "hull"] {
