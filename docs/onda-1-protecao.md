@@ -76,4 +76,26 @@ modelo vanilla); a fórmula de dano por armadura é a do motor moderno (a mesma 
 
 ### Prova
 
-(preenchida com os hashes e números da rodada)
+Binário `horizon-client` `c9388c3c84286cca…` (release, motor no pin de `compatibility.json`, sem
+mudança no motor) e pacote `ntm.hmod` `4a28877f908bed71…`, o mesmo par em todas as fases
+(`docs/evidence/onda1-f1/summary.json`).
+
+| Fase do roteiro `items` (família `protection`) | Checagens |
+|---|---|
+| `setup`: linha de resistência do Geiger dos conjuntos de aço, titânio, liga, cobalto, estelar, ferro e ouro vanilla e hazmat cinza, contra a fórmula do Java calculada no roteiro (soma `float` e `(float) pow`); 20 pontos de armadura do aço; durabilidade 480 do peitoral (a 478 sobrevive a um golpe de cacto e quebra no seguinte); dose real com aço `int(350 × 0,90157115) = 315`; `hfr_cladding` 0,25; revestimento recusado sem armadura e no slot da máscara, aceito no slot 5, mantido nos mods e somado no capacete vestido | 19/19 |
+| `capture-state`: capacete hazmat com máscara e revestimento de chumbo, conta antes de fechar | 12/12 |
+| `check-state`: depois de fechar e reabrir o mundo, os mods (máscara e revestimento) continuam no capacete e o Geiger dá 39,74% (0,21) | 8/8 |
+
+Verificação estática: 517 testes de unidade do `ntm-core`, os 9 arquivos de integração em debug e
+`save_model` (11) em release; Clippy `-D warnings` do `ntm-core` e da cópia transformada do motor
+(`horizon-client --lib`); `test_hazmat.py` (6) e `hazmat.py --check`. Mutações: 10 de 10 mortas
+(soma em `double`, Rad-X 0,25, precedência e limite do `hfr_cladding`, slot 4, máscara no peitoral,
+tooltip com duas casas, fator alterado na sétima casa, `koeff` arredondado, valor do peitoral de aço
+na tabela); a de controle (equivalente) passa.
+
+A regressão inteira do roteiro `items` (todas as famílias) não fechou nesta máquina: quatro
+tentativas no mesmo binário pararam em quatro checagens de tempo diferentes e alheias à fatia
+(`syringe_count_and_container`, `thrown_container_waits_its_pickup_delay`,
+`coffee_radium_adds_five_hundred_rad`, `cancel_does_not_consume`), com carga entre 37 e 66. Três delas passaram em outra tentativa; `coffee_radium` (um gole de 32
+ticks segurado por 1,8 s reais) não chegou a passar em nenhuma, porque a quarta parou antes dele.
+Fica pendente repetir com a máquina livre.
