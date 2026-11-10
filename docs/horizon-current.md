@@ -1094,9 +1094,8 @@ Pendências honestas (fora do T03 ou adaptações):
   chamas pode regravar o fogo.
 - **Mobs** segurando barras (`updateLivingInventory`) não pegam fogo nem radiação: o port não tem esse caminho para item
   nenhum.
-- **Proteção contra fogo:** o motor usa o atributo moderno `burning_time` (−15% por nível, somado entre as peças); o
-  `EnchantmentProtection.func_92093_a` do 1.7.10 tira 15% por nível do **maior** nível entre as peças. Igual com uma
-  peça encantada; com várias, o moderno encurta mais o fogo. Vale para todo fogo do motor, não só o HOT.
+- **Proteção contra fogo:** resolvida no HOT na revisão (P2-1, `7d9cb26d`: o maior nível da armadura, como o
+  1.7.10). O resto do fogo do motor usa o atributo moderno `burning_time`, que soma as peças: lacuna nominal da Onda 4.
 
 **Validação (10/11/2026).** Commits do T03 na `rbmk-t03`: `4341a3c2` (codec e `onCreated`), `199586c5` (tooltip),
 `0f0a2e97` (barra de durabilidade), `87c6f96b` (radiação e HOT), `2ae9c805` e `52d7bb62` (HOT e água), `5e79136a`
@@ -1159,6 +1158,48 @@ cursor do T05). (2) Os critérios do roteiro: o xenônio cai a 0 com fluxo forte
 passar segundos sem acertar P; a checagem passou a ser "a tag não volta ao estado de fábrica" e "o rendimento nunca
 sobe". Numa rodada, o save do controle vanilla não respondeu ("server thread did not answer within 10 s"); a rodada foi
 refeita inteira.
+
+### Revisão do T03 (a1102939): aprovado com ressalvas, correções
+
+Relatório em `artifacts/revisao-rbmk-t03/index.md`. Sem P0 nem P1. Corrigido em commits pequenos:
+
+| Achado | O quê | Commit |
+| --- | --- | --- |
+| P2-1 | O HOT acende como o `setFire` do 1.7.10: `t − floor(t · nível · 0.15F)` com o **maior** nível de Proteção contra Fogo da armadura (`getMaxEnchantmentLevel` sobre `getLastActiveItems`, que no jogador é só a armadura, conferido no `EntityPlayer` decompilado do 1.7.10), o maior entre o que resta e o novo, gravado com `set_remaining_fire_ticks` (sem o `burning_time` do motor, que soma as peças). Teste: 0, IV (240), II (420); J: duas peças de IV dão 240 ticks | `7d9cb26d`, `c02fa6b3` |
+| P2-2 | A linha de radiação da barra sai do nível em float, como o `HazardTypeRadiation`: nada abaixo de `1e-5`, `Math.floor(level·1000)/1000` com o produto em float e `Double.toString`, a linha `Stack:` igual, NaN como `NaN`. Teste com os 999 estados de depleção da UEU, a 0,998 (6.189) e a balefire gasta (`1.2…E8`, sem o teto de `u32`) | `e94e6651` |
+| P3-1 | O nome completo em cinza itálico (`§7§o`), o `§7` que o `GuiScreen.renderToolTip` põe em toda linha depois da primeira | `2b762bc3` |
+| P3-3 | O doc de `rod_doubles` volta para cima dela | `01474f20` |
+| P3-4 | Sem visita, só a água e a chuva **nos pés**; a chuva no topo fica para a visita, que lê a caixa real | `3a2d1abe` |
+| P3-5 | A J espera o servidor ter a barra na mão (`data get entity @s SelectedItem`) depois do `select` | `c02fa6b3` |
+| P3-6 | O `onCreated` sempre dá os defaults ao `custom_data` do resultado, como o `new NBTTagCompound()` do `setNBTDefaults` (os outros componentes ficam; nenhuma receita do port os faz) | `01474f20` |
+
+Também da J pós-revisão: a água da prova do HOT virou um poço 1×1 cercado no meio do piso (`a9f16771`). A primeira J
+depois da revisão leu o fogo aceso na água porque a corrente levava o jogador para fora da borda do piso, a 4 blocos,
+até o chão natural 22 blocos abaixo, seco e com o fogo aceso corretamente (a altura dos pés, agora gravada com cada
+leitura, mostrou 78 onde o piso fica em 101). Explica também o "1 de 6 = 600" das rodadas anteriores.
+
+**Provas depois da revisão.** Binário `horizon-client` SHA-256
+`08072ff65eac49a4d4b3b17c41754254bccc5a7cb9e510ba668eeb8017ccba17` (NTM `c02fa6b3`, motor `00454b508a`), pacote
+`4276ef60…`. **J: 22 de 22** (17 + 5), evidências em `.agent-tmp/rbmk-t03/evidence/j-r2/`: as 21 de antes, mais
+`fire_protection_takes_the_highest_piece` (duas peças de IV: 240, 240, 240 ticks). Na água, as 8 leituras de cada
+etapa apagadas, os pés em 101. O nome sai em cinza itálico, e a radiação, truncada como no Java (`2.135RAD/s` para um
+nível de 2,1359…). **C nos cortes `kill`, `players_saved` e `live_chunk:2,0`: 3 de 3**, NTM = controle (3/3/3, 3/3/3
+e 2/2/2, este o resíduo vanilla), todos os veredictos do R7c verdadeiros e cada barra com a chave alheia, a lore e a
+tag; relatório em `.agent-tmp/rbmk-t03/evidence/c-r2/report.json`. Testes: lib 532 (2 ignorados) e 47 de integração; `save_model` em release
+11/11; clippy `-D warnings` de `ntm-core` com todos os alvos e da glue (stage de `00454b508a`): 0 avisos.
+
+Registrado, sem mudança de código:
+
+- **P3-2, barra de durabilidade:** o Forge 1.7.10 (`RenderItem.renderItemOverlayIntoGUI`, conferido no decompilado)
+  desenha três quads: preto 13×2, uma faixa 12×1 na cor `(255−k)/4 << 16 | 0x3F00` e a barra `j1`×1. O gancho
+  `item_bar` do motor (API 60) só aceita largura e cor: a faixa escura não sai. Adaptação; contato de motor enviado ao
+  agente do Horizon (um campo de cor de faixa na API).
+- **P2-3, fogo na água:** o contorno do NTM (`52d7bb62`) basta e não é P1 (decisão da revisão). Contatos de motor
+  enviados ao agente do Horizon: o `tick_remaining_fire` aplica o dano antes de a água apagar
+  (`crates/horizon-client/src/motion/environment.rs:37-45`; no 1.7.10, o `handleWaterMovement` zera o fogo antes do
+  dano) e a regravação do fogo pela visita por tick. Deixa de estar na lista de bloqueio do T03.
+- **Proteção contra Fogo fora do HOT:** o resto do fogo do motor continua somando as peças (`burning_time`). Lacuna
+  nominal da Onda 4 (regra de armadura), decisão do coordenador; não bloqueia o T03.
 
 ### Contatos de motor do RBMK (todos os commits a portar para o motor novo)
 
