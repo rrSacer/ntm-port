@@ -74,7 +74,11 @@ def build(source):
                 row.update(template='minecraft:oak_door',source_item_variable=var,
                            door_textures={'bottom':'src/main/resources/assets/hbm/textures/blocks/'+name+'_lower.png',
                                           'top':'src/main/resources/assets/hbm/textures/blocks/'+name+'_upper.png'},
-                           item_texture='src/main/resources/assets/hbm/textures/items/'+name+'.png')
-                row['behavior_gap']='Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance, sounds and source metadata/NBT transform differ; no tile entity or invented lock.'
+                           item_texture='src/main/resources/assets/hbm/textures/items/'+name+'.png',
+                           # BlockModDoor plays the original HBM door sound for both halves of the swing
+                           # (sound event ntm:block.opendoor, docs/sons-hbm.md); the generator emits it as
+                           # `door_sounds` in the block's horizon definition instead of a hand edit.
+                           block_properties={'door_sounds':{'open':'ntm:block.opendoor','close':'ntm:block.opendoor'}})
+                row['behavior_gap']='Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance and source metadata/NBT transform differ; no tile entity or invented lock.'
             rows.append(row)
     return rows
