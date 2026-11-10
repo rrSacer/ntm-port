@@ -29,6 +29,21 @@ MACHINES=tuple(v for v in ('rbmk_rod','rbmk_rod_mod','rbmk_rod_reasim','rbmk_rod
     'rbmk_terminal','rbmk_autoloader','rbmk_loader','rbmk_steam_inlet','rbmk_steam_outlet'))
 
 
+# The keys ItemRBMKRod.addInformation resolves (I18nUtil.resolveKey): its traits, the DRX's, the neutron types and the
+# cooling hint.
+TOOLTIP_KEYS=re.compile(r'^(trait\.rbm[kx]\.[\w.]+|desc\.item\.wasteCooling)$')
+
+
+def tooltip_lang(source, languages):
+    """The rods' tooltip keys in both languages, as the source has them (pt_br falls back to en_us, as the game's
+    language fallback does)."""
+    tr={loc:lang(source/f'{ASSETS}lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]}
+    for key,value in tr['en_us'].items():
+        if TOOLTIP_KEYS.match(key):
+            languages['en_us'][key]=value
+            languages['pt_br'][key]=tr['pt_br'].get(key,value)
+
+
 # The eighteen columns (RBMKBase): their strength is the base class's, unless ModBlocks sets another.
 COLUMNS=MACHINES[:18]
 

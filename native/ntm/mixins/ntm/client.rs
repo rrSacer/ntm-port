@@ -43,6 +43,18 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         lines.push((Text::literal(line),u32::MAX));
     }
     let native=crate::game::ntm_glue::stack(&Some(stack.clone()));
+    // An RBMK rod (`ItemRBMKRod.addInformation`): its state read from the stack's tag, the Java's keys translated here.
+    if let Some(rod)=ntm_core::rbmk::persist::rod_of(&stack.item) {
+        let mut state=native.as_ref().map(ntm_core::rbmk::persist::stack_rod).unwrap_or_default();
+        for line in ntm_core::rbmk::tooltip::lines(rod,&mut state) {
+            let args:Vec<Text>=line.args.iter().map(|a|match a.strip_prefix("§key:") { Some(k)=>Text::translate(k,&[]), None=>Text::legacy(a) }).collect();
+            let text=match &line.key {
+                Some(k)=>Text::legacy(line.style).append(Text::translate(k,&args)),
+                None=>Text::legacy(&format!("{}{}",line.style,line.args[0])),
+            };
+            lines.push((text,u32::MAX));
+        }
+    }
     if let Some(p)=ntm_core::radioisotopes::pellet(&stack.item) {
         let life=native.as_ref().map_or(p.lifespan_ticks,ntm_core::radioisotopes::life);
         lines.push((Text::legacy(&format!("Calor: {} TU/t",p.heat_tu.decay_enabled)),u32::MAX));
