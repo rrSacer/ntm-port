@@ -2,7 +2,7 @@
 // through the existing block-entity update tag; inventories stay server-only.
 use horizon_client::{
     containers::BlockEntity,
-    sound_engine::{Attenuation, InstanceId, SoundEngine, SoundInstance, Sounds, Ticking},
+    sound_engine::{Attenuation, InstanceId, SoundInstance, Sounds, Ticking},
 };
 use horizon_core::random::RandomSource;
 use horizon_world::nbt::{JavaString, Tag};
@@ -118,7 +118,7 @@ fn tick(game: &mut crate::game::Game<'_>, client: &mut Client) {
             // A long one-shot belongs to this world too: retain its handle
             // until completion or owner teardown, just like the machine loops.
             let event = "ntm:weapon.nuclearexplosion";
-            let sound = SoundInstance::at(event, 4, 10_000., 1., SoundEngine::unseeded(), *position);
+            let sound = SoundInstance::at(event, 4, 10_000., 1., horizon_client::random_source::create(), *position);
             *game.audio.heard.entry(event.into()).or_default() += 1;
             nuclear.push(game.audio.play_instance(sound, true).0);
             false
@@ -149,13 +149,13 @@ fn tick(game: &mut crate::game::Game<'_>, client: &mut Client) {
         let p = client.playing.entry(key).or_insert_with(|| Playing {
             id: None,
             event: spec.event.clone(),
-            motion: Motion::new(SoundEngine::unseeded().next_long()),
+            motion: Motion::new(horizon_client::random_source::create().next_long()),
             retry: 0,
         });
         if p.event != spec.event {
             stop(game, p);
             p.event = spec.event.clone();
-            p.motion = Motion::new(SoundEngine::unseeded().next_long());
+            p.motion = Motion::new(horizon_client::random_source::create().next_long());
         }
         let position = [0, 1, 2].map(|i| f64::from(key.0[i]) + spec.offset[i]);
         let distance = (0..3)
@@ -203,12 +203,12 @@ fn tick(game: &mut crate::game::Game<'_>, client: &mut Client) {
                 source,
                 volume,
                 pitch,
-                SoundEngine::unseeded(),
+                horizon_client::random_source::create(),
                 position,
             );
             instance.looping = true;
             instance.attenuation = Attenuation::None;
-            instance.ticking = Ticking::External;
+            instance.ticking = Ticking::Native;
             instance.can_start_silent = true;
             p.id = Some(game.audio.play_instance(instance, true).0);
             if diagnostic() { eprintln!("ntm audio owner key={key:?} instance={:?} event={}", p.id, p.event); }

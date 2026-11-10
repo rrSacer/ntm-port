@@ -167,16 +167,19 @@ def dug(g, x):
 
 def restart_arm(g):
     """The second session's start: a nuke and a balefire of radius 80 set off, their craters still being dug when the
-    world is saved and closed (the runner quits): the least fuel a tick allows makes them last minutes."""
+    world is saved and closed (the runner quits): at the least fuel a tick allows, the nuke's crater takes 917 ticks."""
     g.evidence['phase'] = 'restart-arm'
     g.command('gamemode creative')
     g.command('ntmbomba config mundo raiomax 80')
     g.command('ntmbomba config mundo fuel 4')
-    start = len(log(g))
-    for kind, (x, suffix) in RESTART.items():
+    # Both areas are loaded before either goes off: the nuke's crater takes a fixed 917 ticks (~46 s), and a
+    # forceload wait under load, between the two, ate them before the save.
+    for x, _ in RESTART.values():
         g.ground(x, 100, 0, width=4, height=4)
         g.command(f'forceload add {x-80} -80 {x+80} 80')
-        time.sleep(3)
+    time.sleep(3)
+    start = len(log(g))
+    for kind, (x, suffix) in RESTART.items():
         g.command(f'tp @s {x + .5} 100 0.5')
         result = g.command('ntmbomba teste 80' + suffix)
         g.check(f'{kind}_set_off', any('detonada' in line for line in result.get('chat', [])), result)
@@ -190,6 +193,10 @@ def restart_arm(g):
     status = digging()
     g.evidence['restart_arm'] = {'ids': ids, 'status': status, 'dug': {k: dug(g, x) for k, (x, _) in RESTART.items()}}
     g.check('both_still_digging_after_the_save', all(i in status for i in ids.values()), g.evidence['restart_arm'])
+    # Still in its crater (not yet in its fallout, which comes back read): what the reopened world checks.
+    phase = re.search(r'%s (\w+) R=' % ids['nuke'], status)
+    g.check('the_nuke_still_in_its_crater_at_the_save', phase and phase.group(1) in ('Planning', 'Writing', 'Waiting'),
+            g.evidence['restart_arm'])
     (g.folder / 'bombs-restart.json').write_text(json.dumps(g.evidence['restart_arm']))
 
 

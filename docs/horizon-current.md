@@ -8,8 +8,8 @@ suas configurações antigas são migradas para o otimizado sem apagar as demais
 
 - Projeto: `/mnt/ssd120/sacer/horizon-ntm`.
 - Motor: `engine/horizon-ntm-next`, branch `ntm-current`.
-- Upstream incorporado: `fc02103818c212920fd24aa34a2b2f91ba49e56f` (snapshot congelado de 03/11/2026).
-- Motor de integração (pin): `f22df7b8127ae90f2cbd66dcfe5f58be70a9032b`.
+- Upstream incorporado: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (snapshot congelado de 09/11/2026; ver a sexta atualização).
+- Motor de integração (pin): `b7db6d9856fd67180cc916b2997fc3a3707d82c5`.
 - Pins do motor, mixins e Recipes: `native/ntm/compatibility.json`.
 - K3 e energia solar/Stirling foram integrados nesta base; a antiga branch
   `ntm-next` continua preservada. Não usar seus pins antigos para novos desenvolvimentos.
@@ -1232,3 +1232,354 @@ defeito real desse caminho era o do `01e5147ef5`, que tem teste de unidade puro 
 prova J lê o inventário do lado do servidor (`data get entity`): barra feita na mesa pelo anfitrião sai com a tag,
 renomeada continua viva; a cópia da janela fica na evidência.
 
+
+## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
+
+Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
+após `fc0210381` (o estudo de 05/11 previa 2.980; o upstream andou mais 6.400 até a fusão). Branch do motor
+`upstream-a3bf653` sobre `ntm-current` `a31497f38`: fusão `03704788f` e quatro commits locais (`7d447bcb8` exemplos com
+o campo `mod_models`, `95a737da9` testes fundidos com os campos locais de menu, `b7db6d985` interruptor de teste da
+gravação eager, `a8dc3409f` um `if` dobrado que o Clippy da cópia transformada pedia). Branch NTM `ntm-upstream-a3bf653` sobre `main` `0e8eda47`. `SKIP_UPSTREAM_CHECK=1` só para este
+snapshot. Pins: motor `a8dc3409f`, horizon-mixins `5a64af938` (o pin do launcher oficial; antes `ddd9700`), Recipes
+`d16065094` (main do horizon-mods; o bundle Recipes não mudou entre os dois pins, só a compatibilidade).
+
+A fusão teve 21 arquivos e ~67 trechos em conflito. O upstream dividiu `game.rs` em muitos módulos (`use_hand`,
+`saving`, `autosave`, `inventory_slots`, `menu_clicks`, `creative_screen`, `world_update`, `loading_window`...) e
+moveu os testes de `hub.rs` e `native_hooks.rs` para arquivos próprios. Cada mudança local que estava num trecho movido
+foi reaplicada no destino; uma verificação linha a linha das adições locais (`fc0210381..a31497f38`) contra a árvore
+fundida só aponta as substituições intencionais da tabela abaixo.
+
+| Extensão local | Decisão | Motivo e composição com o oficial |
+| --- | --- | --- |
+| `Ticking::External` (loops de máquina do NTM) | **Substituída** pelo oficial `Ticking::Native` (#8924) | Mesmo contrato (o dono atualiza ganho/pitch/posição; stop e release explícitos); a variante local foi removida e o teste local (categorias + duas instâncias) foi adaptado a `Native`. NTM: `sounds.rs` usa `Native` e `random_source::create` (o `SoundEngine::unseeded` saiu do upstream). |
+| Leitor único de conteúdo (`content.rs`) | **Substituído** pelo oficial (`reader_of`) | O oficial tem a mesma meta (um leitor para todo o índice). Mantido só `door_sounds`, sem equivalente. |
+| `recursion_limit`/`json!` aninhado (`lib.rs`, `creatures.rs`) | **Substituído** pelo oficial (#8169) | O upstream adotou a mesma solução. |
+| Trouxa: `Slot.allowModification` (`lan/menu.rs`) | **Oficial** | Código idêntico ao local; ficou o comentário oficial. |
+| Troca (teclas 1–9/F) com divisão por `slot_max` e slot desocupado | Mantida | O oficial acrescentou só `mayPickup` no slot clicado, que a versão local já exige. |
+| `container_accepts` (#9225) × política de slot (`ModSlotFilter::policy`) | Mantida; as duas compõem | O oficial só recusa inserção de funil/dropper/`native_insert_item`, no servidor; não cobre extração, origem manual/automação nem a previsão de menu. No funil, a inserção parcial em slot de mod (sem perder o excedente) foi mantida e o comportamento vanilla (consome tudo) segue para os demais. |
+| `host-bridge` (#9222) × `native_players`/CAS de jogador | Mantidas | Helpers para mods de trait (`dyn Host`); não fazem consulta/ação em lote por UUID nem commit conjunto. |
+| `machine-breaking` (#9223) × multibloco | Mantida | É quebra por ferramenta de máquina (útil ao NTM no futuro); não resolve célula→núcleo nem quebra conjunta. |
+| `chunk-tickets` (#9226) × descarga com o chunk no lugar | Mantida | Tickets mantêm chunks carregados; não dão acesso ao chunk que sai antes de ser gravado. |
+| Identidade de BE × `asleep` oficial | Mantida, composta | `put` renova a identidade só fora de `take`/`put`, e acorda o BE. |
+| Contêiner exato × `Kind::Mod` oficial | Mantida, composta | Um tipo de menu declarado usa `Kind::Mod`; sem tipo declarado, `Kind::NativeContainer(n)`. Aplicada em `slots()` e no novo `slot_count()`, que precisam andar juntos. |
+| Dados i32 de menu × `extra` oficial (API 401) | Mantidos, compostos | `OpenNativeScreen` tem `wide_data` e `extra`; `open_container` passa `extra`. |
+| Modelos OBJ × quadro HDR oficial | Mantidos, adaptados | O pipeline dos modelos desenha no formato do quadro (`frame_format`) com a constante `HDR_WRITE_LIGHT`, como as entidades; sem isso não casaria com o passe. Não recebe a deformação `world_warp` nem as marcas HDR das entidades (limite registrado). |
+| Painel de receitas | Mantido | O upstream passou a desenhá-lo depois do item carregado; a ordem local (painel sob o cursor) foi mantida e a chamada duplicada saiu. |
+| Demais (multiblocos, valores i64, `native_world_access`, `visit_level`, assets, `use_block`, `screen_event`, Flash, save atômico, hooks de item) | Mantidas | Sem equivalente novo; reaplicadas nos módulos novos. `native_world_access` passa `command=false` ao novo `place_state` (o ramo estrito não o usa). |
+
+### Gravação eager de chunks (nova no upstream) e o save atômico
+
+O upstream trouxe `ChunkMap.saveChunksEagerly` (`Game::save_chunks_eagerly`): a cada tick — no meio dele, antes dos
+BEs e do fim de tick do NTM, e também com `/tick freeze` — grava até 20 chunks sujos cujo último save tem mais de
+10 s, **sem passar por `save_game_with`**, logo sem o gancho `world_saving`. Isso reabria a classe do N1/R7-2: um
+bloco mudado entre ticks (um comando, um tick congelado) podia ter o chunk tomado antes do `native_settle`.
+
+| Extensão local | Razão e composição com o oficial |
+| --- | --- |
+| Uma passada eager que vá gravar ≥ 1 chunk ouve `native_world_saving(false)` antes de tomar o conjunto sujo (`ModifiedChunks::eager_due`) | Mantém o invariante "nada é tomado antes do settle" sem divergir do upstream no autosave. Custo só nos ticks com chunk vencido. Decisão do coordenador (opção A). Testes: `an_eager_pass_is_heard_before_it_takes_a_chunk` (falha se a chamada sumir ou mudar de lugar) e `eager_due_answers_for_the_pass_that_follows`. Candidata a PR upstream junto com `world_saving`. |
+| `HORIZON_NO_EAGER_SAVE` (só teste; desligado por padrão) | Desliga a gravação eager nos dois mundos das provas, reproduzindo as condições exatas do R7c. |
+
+Limite honesto: a passada eager do upstream grava só regiões, não os arquivos de entidades. Numa morte logo depois,
+o conteúdo derramado pelo settle (entidades) se perde como o de um baú vanilla, então em jogo nenhum cenário atual
+distingue o gancho; ele fica coberto pelo teste de estrutura. Quando houver um cenário que o distinga, acrescentá-lo.
+
+**Mudança de critério do oráculo das provas** (commit isolado `81b10729`, para revisão independente). O critério
+"morte fora de um save = exatamente o último save" pressupunha que nada fosse gravado entre saves. O motor novo, como o
+vanilla 1.21+, grava; e o momento da passada difere entre o mundo do mod e o controle (o chunk de uma máquina fica sujo
+a cada tick, o de um baú só quando muda). Agora, num ponto `kill`/`kv_committed`: se nenhum mundo gravou região ou
+entidades fora do save, vale o critério original, inalterado; se gravou, o ponto é julgado item a item por (L) nada
+some que o controle guarde, (D) nenhum item com mais cópias que na base ou no controle, as duas reaberturas iguais aos
+arquivos e o armazenamento sem obrigações. L e D não foram relaxados. Cada resultado registra o critério usado, o
+motivo e se o mod ficou melhor que o controle.
+
+### Adaptações do NTM (branch `ntm-upstream-a3bf653`)
+
+| Commit | Mudança |
+| --- | --- |
+| `fe42e7d6` | Pins; `sounds.rs` usa `Ticking::Native` e `random_source::create`; itens derramados usam `spawn_item_own` (o item tira o próprio movimento do seu random, como o vanilla; `dispenser::new_item_motion` saiu do upstream); `armor_table.rs` passa os campos novos de `Env` e o `extra` de `open_container`; o céu do End é amostrado por `Sample`. |
+| `96c982f6` | Pin do motor com o interruptor de teste. |
+| `8db857f6` | `native_stations.py`: o misturador é colocado de um bloco ao lado; do ponto antigo o raio até o chão passava exatamente pela aresta do duto, e o raio do motor novo conta a aresta como acerto. |
+| `81b10729` | Critério do oráculo (acima), isolado para revisão. |
+| `650133d0` | O glue pergunta as teclas Shift por `HeldKeys::raw` (o upstream proíbe `contains`, que era só um apelido; o Java usa `isShiftKeyDown`, as teclas físicas) e o pin vai a `a8dc3409f`. |
+
+Para o revisor independente, os dois commits de roteiro ficam isolados: `81b10729` (critério do oráculo) e
+`8db857f6` (geometria do `stations`).
+
+Nenhuma mudança no `ntm-core`. Os dez scripts locais do usuário continuam byte a byte iguais e fora dos commits.
+
+### Verificação
+
+As provas e medições rodaram no release `horizon-client` SHA-256
+`45e273b01484bbaa23a53cfc28b7d5dca9e87470c45848d6f9379dfd7ed131b8` (motor `b7db6d985`, mixins `5a64af938`, Recipes
+`d16065094`). O release final, nos pins finais (motor `a8dc3409f`, NTM `650133d0`; as duas mudanças não alteram
+comportamento), é `26c81d42f8a1a513484a2f21f093dc49b9ea0ba95f18936deb78404d7c5823c6`. A bateria de confirmação nele **não
+passou inteira**: sob carga média de 30 a 100 (CPUs divididas com as outras frentes), items, dims, bombs e pile deram
+rc=1 na primeira rodada paralela; em série, items e dims de novo; o controle do `frozen-break kv_committed` estrito não
+completou a ação (`player/chunks not ready`). Uma por vez com `NTM_GAME_WIDE=1`: dims, bombs, stations, mining e o
+`frozen-break kv_committed` passaram; items, pile e zirnox falharam, cada execução num check diferente, e o **R7c
+falhou nos três** nas mesmas condições, alternado com o novo (items no mesmo `thrown_container_waits_its_pickup_delay`,
+pile no parser de status, zirnox no enchimento do tanque). Classificação: tempo/carga, nos dois binários; não regressão.
+A seção "Correções da revisão" registra a bateria refeita. Pacote `dist/ntm.hmod` `9ab18eac…3cee0aa`, reempacotado com o
+`cargo-horizon-mod` desse release e idêntico byte a byte ao do R7c (o conteúdo não mudou).
+
+| Grupo | Resultado |
+| --- | --- |
+| Motor, `horizon-client-lib` | `lan::menu` 30, `menu::tests` 67, `lan::hub` 33, `lan::containers` 4, `block_entities` 3, `save::` 84, `world::` 3, `native_` 26, `mod_` 83, som 49, `conditional_policy` 4; `lan_bot` 22. |
+| Motor, `horizon-client` | `native_` 233, `mod_` 37, `machines` 27, som 16, `world::` 7, `lan::` 13, `menu::tests` 17; ordem do save (`a_save_is_heard_before_it_takes_anything`, `an_eager_pass_is_heard_before_it_takes_a_chunk`) e telas de mod; `mod_api_hooks` 17. |
+| Motor, render/mods/world | render 2.075 de 2.080 (as 5 falhas estão em arquivos sem diff local: duas de pilha de crash, que exigem debuginfo, desligado para caber no disco, e três de GPU por software) + 72 dos módulos locais (identidade, `eager_due`, som, modelos); mods 41; world 126 (multiblocos, updates pós-commit, nível). |
+| Clippy | `-D warnings` em `horizon-client-render`, `horizon-client-lib`, `horizon-client`, `horizon-mods`, `horizon-world` (lib e testes): limpo. Cópia transformada pelos mixins (motor `a8dc3409f` + bundles NTM e Recipes), `horizon-client-lib` e `horizon-client`: limpo, sem isenções, depois de `a8dc3409f` e `650133d0`. `rustfmt --check` limpo. |
+| NTM | 559 testes em debug (512 unitários + 47 de integração) e o verificador do save (`save_model`, 11) em release. |
+| Build | Release do cliente com o bundle NTM e o Recipes: ok (9m39s). |
+
+**Regressão em jogo** (mesmo binário e pacote, mundos descartáveis): items, zirnox, inventory-proxy, radioisotopes,
+bombs, pile, pile-meltdown, dims, mining, solar, combustion, catalog, comparator, stations, recipes, sounds e
+rbmk-t00 passaram. Na primeira rodada paralela (4 jogos + compilações) pile e items falharam e passaram na
+reexecução; items teve uma vez um pânico de teardown do wgpu (`SurfaceId` ao derrubar o renderer GL/llvmpipe no
+fechamento), que não se repetiu. stations passou depois da correção do roteiro. **audio-lifecycle**: ver pendências.
+
+**Provas do save, modo estrito** (`HORIZON_NO_EAGER_SAVE=1` nos dois mundos, critério original intacto):
+`original` 8/8 (`kill`, `kv_committed`, `live_chunk:2,0`/`3,0`, `region_record:1`/`2` com pareamento de cortes,
+`entities_written`, `players_saved`), `frozen-unload` 3/3, `frozen-break` 8/9. O nono, `region_record:1` (ponto
+acrescentado nesta rodada, fora do conjunto padrão do cenário), é um corte por índice que caiu em chunks diferentes:
+o NTM não gravou o chunk das hastes (12/12), o controle gravou (2/2); sem perda nem duplicação, mas o roteiro de
+`frozen-break` não tem o pareamento de cortes do `original`.
+
+**Modo eager — evidência, não prova** (comportamento real, critério novo): o resultado L/D depende do instante em que a
+passada de cada mundo rodou, então **não prova** nada sobre o save; a prova é o modo estrito acima. Observado:
+`kill`/`kv_committed` em `original` 2 = 2, `frozen-unload` 12 = 12 e `frozen-break` 12/12 contra 2/12 do controle (a
+passada eager pegou o chunk da máquina antes da quebra, ficando em cooldown, e o do baú depois; não é efeito do gancho).
+Relatórios por ponto em `crash/eager-reports/*.points.jsonl`. Os cortes dentro do save
+(`save_begin`, `live_chunk`, `region_record`, `entities_written`) não são comparáveis com eager ligado: a passada do
+controle já gravou o chunk do baú, o `live_chunk` nunca dispara no controle e o índice de registro cai em outros
+chunks. Em nenhum deles o NTM teve menos itens que o controle ou mais que a base. Esses cortes ficam provados no modo
+estrito.
+
+Evidências em `.agent-tmp/upstream-update/` (relatórios em `crash/strict-reports`, `crash/eager-reports`, logs em
+`crash/`, `regress/`, `perf/`). Mundos aprovados apagados após guardar os relatórios.
+
+**Custo do gancho na passada eager — meltdown** (`pile-meltdown`, `HORIZON_SPIKES`, pior tick por rodada em ms). A
+janela quieta foi cancelada (todas as frentes em paralelo); para os dois binários verem o mesmo ruído, cada par rodou
+**ao mesmo tempo**, R7c (`98a85002…`, motor `a31497f38`) e o novo (`45e273b0…`), com o mesmo pacote. Carga média de 1
+minuto entre 22 e 29 em todas as rodadas.
+
+| Execução | Rodadas (pior tick) | Carga início → fim |
+| --- | --- | --- |
+| R7c, par 1 | 540/109/50/55/67/72 | 28,6 → 24,1 |
+| novo, par 1 | 2/29/42/100/16/49 | 28,6 → 23,5 |
+| R7c, par 2 | 23/57/86/43/51/44 | 23,5 → 22,1 |
+| novo, par 2 | 21/48/93/27/51/78 | 23,5 → 23,9 |
+
+Doze rodadas por binário: pior tick mediana **45 ms** (novo) contra **56 ms** (R7c), máximo 100 contra 540; média da
+janela de pico 18 contra 19 ms. Nenhum cresce por rodada. O novo não é pior que o R7c fora do ruído. Os números
+absolutos não se comparam aos do R7c medidos com as frentes paradas (até 32 ms).
+
+Limite desta medição: os dois binários rodaram em pares simultâneos, disputando as mesmas CPUs entre si e com as
+outras frentes, sob carga média de 22 a 29. Isso iguala o ruído entre eles e mostra que o novo não é pior, mas não
+mede o custo absoluto do gancho; a mediana de 6 rodadas por execução e o máximo isolado (540 ms na primeira rodada do
+R7c) são sensíveis a picos de outras tarefas. O critério do R7c (pior tick < ~35 ms com as frentes paradas) fica por
+medir numa janela quieta.
+
+**`audio-lifecycle`**: alternando os dois binários três vezes cada sob a mesma carga (24–54), **R7c 0/3 e novo 0/3**.
+As falhas do novo foram `arc_lid_slot_creates_channel` (o canal da tampa é criado e parado antes de o mixer de
+diagnóstico tocar uma amostra), `active_pitch_changes_on_same_channel` e `message_receipt_precedes_nuclear_playback`; as
+do R7c, a tampa. Dois desses checks tinham erro do roteiro (revisor, P3-1): o log nuclear era lido antes de o som tocar,
+e a rampa do pitch (0,51 → 1,0 em 25 ticks) já podia estar no topo na primeira amostra. Corrigidos em `99eef2b5`.
+
+### Correções da revisão independente (`3b7a7174`, reprovado → correções)
+
+Branch do motor `upstream-a3bf653-fix` sobre `a8dc3409f`, em commits atômicos:
+
+| Achado | Commit | Correção e prova |
+| --- | --- | --- |
+| **P1-1** `/forceload add` descarregava colunas sem gravar e sem o gancho (código novo do upstream) | `d93271e38` | O tratamento das colunas descarregadas do quadro virou `retire_unloaded` (gancho E2, LOD, entidades, BEs, `save_later` das sujas) e o laço de espera do `/forceload` o usa, além de tirar as malhas das colunas do renderer e enfileirar as novas. Teste `no_streaming_pass_drops_the_columns_it_unloads` (falha com a correção tirada). **Em jogo** (`confirm/forceload_probe.py`, gravação eager desligada para isolar o caminho): chunk A mantido só por `/forceload`, com uma bateria NTM e um baú vanilla (controle) com uma pilha gravada e outra posta depois do save; uma função de datapack faz `forceload remove A` + `forceload add` de 169 chunks distantes no mesmo comando (a varredura cai no laço de espera); salvar, fechar, reabrir, ler A. Sem a correção (`26c81d42`), quatro execuções: `probe-bug-7` e `probe-bug-8` **perderam a bateria e o baú inteiros**; `probe-bug-5` não conclui (A nunca carregou, timeout); `probe-bug-6` conservou, mas rodou com a versão anterior da sonda, que relia A na mesma sessão, onde a BE órfã ainda estava na memória. Por isso a sonda passou a salvar, fechar e reabrir (a partir da bug-7). Com a sonda final: sem a correção, **2/2 perderam**; com ela (`fd1125ad`, `probe-fix-1`/`-2`, e o release `1d8d074b`, #26), **3/3 conservaram as duas pilhas** de cada um (`confirm/probe-*.out`). |
+| **P2-1** o gancho eager perguntava diferente da passada | `5ab19be7d` | `ModifiedChunks::save_eagerly_heard`: a própria passada chama o gancho uma vez, logo antes do primeiro chunk que vai gravar, com o mesmo `now`, `available()` (prazo do tick e fila do escritor) e luz. Sem tempo, com a fila cheia, nada vencido ou só colunas sem luz, o gancho não roda; nenhum chunk é gravado sem ele. O que os mods sujam ao ouvi-lo volta ao conjunto sujo. |
+| **P2-2** teste só textual | `5ab19be7d`, `7cba121ec` | `an_eager_pass_is_heard_once_before_the_first_chunk_it_saves` (rastreador: ordem, uma vez, e nenhum gancho sem tempo, sem nada vencido ou com coluna sem luz) e `an_eager_pass_is_heard_by_the_mods_only_when_it_saves` (jogo real com um mod contador, processo próprio: ouvido uma vez, sem espera, pela passada que grava; não ouvido sem nada sujo, sem tempo no tick, em cooldown). O teste textual agora lê só código (uma chamada comentada o reprova). Mutantes (cada um compilado e rodado, código restaurado depois; `confirm/mutants.log`): m1 gancho trocado por um no-op e m2 chamada comentada reprovam o teste de jogo e o textual; m3 condição invertida (ouvido quando a passada não tem tempo, não antes de gravar) reprova o teste de jogo e o do rastreador. A linha de base passa nos três. |
+| **P3-2** `mod_browser_closed` | `ec056cf3f` | Restaurado no fechamento pela tecla de inventário e no fechamento atrás das opções de depuração; teste `every_creative_close_lets_go_of_the_mod_browser`. |
+| **P3-3** contrato de `world_saving` | `4676522e0` | Documentado: uma passada eager o emite com `wait` falso e sem `world_saved` em seguida; um mod não deve contar com o par. |
+| **P3-4** `region_record` contava escritas eager | `dce43d298` | Failpoint armado implica sem gravação eager. |
+| **P3-8** `t.slots` × tamanho do BE | `7c6f44d08` | `slots()` e `slot_count()` usam os slots do tipo de menu declarado, como a previsão. |
+| **P3-1** roteiro do `audio-lifecycle` | NTM `99eef2b5` | Releitura do log nuclear depois do canal; pitch julgado a partir do início do canal registrado pelo mixer. |
+| **P3-5** oráculo | NTM `39f983f9` (isolado) | Com eager, cortes iguais exigem igualdade com o controle; o resultado L/D sai marcado `proof: false`. |
+
+Também `621642528` (só formatação de `hub_tests.rs`, que a fusão moveu e o `rustfmt` de `horizon-client-lib` pedia).
+
+Depois da correção, na mesma branch (cabeça `6a79054fa9`, pin do NTM em `0aec3c33`):
+
+| Commit | Origem | O que é |
+| --- | --- | --- |
+| `10ae4aa43d` | Onda 1, `player-attachments-fix` `b22f1fbef1` | Teste `the_owner_reopened_after_an_autosave_loads_its_live_attachments`: grava o dono por `store_owner`, lê o arquivo de volta e o carrega com `load_owner`, como na reabertura depois de um crash. Adaptado aos fixtures do motor novo (`native_machines::tests::server_game`, `world_spawn_sync_tests::host_for`). |
+| `88d6b88a2d` | RBMK, `rbmk-t02-engine` `01e5147ef5` | `Hashed::matches` (o `HashedStack.matches` do vanilla): o clique só concorda com a previsão do cliente se item, quantidade, componentes adicionados (mesmo hash) e removidos forem iguais; componente que o servidor não sabe hashear conta como diferente e o slot é reenviado. `lan/containers.rs` `hashed_matches` passa a usá-lo. Teste `item::hash::tests::a_claim_matches_only_the_same_components`. |
+| `6a79054fa9` | RBMK, `rbmk-t02-engine` `93359657aa` | A retirada do slot 200 do próprio anfitrião (`menu_clicks.rs`, laço do `ResultSlot`) passa o resultado por `native_prepare_item_craft` (`host_prepared_craft` em `inventory_slots.rs`): grade 2x2 do inventário (`pos` None) ou da mesa, cada pilha de um shift-click; nada é retirado se o mod deixar o resultado vazio. O slot continua mostrando o resultado vanilla. No upstream o laço saiu de `game.rs` para `menu_clicks.rs`. |
+
+**Verificação no motor corrigido** (`7cba121ec`; `621642528` só muda um arquivo de teste). Release `horizon-client`
+`1d8d074b397e8ba9da80c4cc4dcf3ef464f64cbb89e0efccee66a748a273e724`, mesmo pacote `9ab18eac…`.
+
+- Motor: `horizon-client-lib` `native_` 26, `menu::tests` 67, `lan::` 382, `save::` 84, `mod_` 83, som 49,
+  `conditional_policy` 4; `horizon-client` `native_` 235, `machines` 27, `mod_` 38, `world::` 7, os testes novos (ordem do
+  save, eager, `/forceload`, fechamento do criativo) e o de jogo `an_eager_pass_is_heard_by_the_mods_only_when_it_saves`;
+  `lan_bot` 22; render 72 dos módulos locais. Clippy `-D warnings` limpo nas cinco bibliotecas e na cópia transformada;
+  `rustfmt` limpo.
+- **Provas do save, modo estrito, critério original** (uma por vez, `NTM_GAME_WIDE=1`): `original` **8/8** (`kill`,
+  `kv_committed`, `live_chunk:2,0`/`3,0`, `region_record:1`/`2`, `entities_written`, `players_saved`; todos iguais ao
+  controle item a item, os cortes por índice agora sem pareamento porque o failpoint desliga a passada eager),
+  `frozen-break` **8/8** (`none`, `kill`, `kv_committed`, `save_begin`, `live_chunk:2,0`, `chunks_written`,
+  `entities_written`, `players_saved`), `frozen-unload` **3/3**.
+- **Bateria limpa, uma por vez, `NTM_GAME_WIDE=1`** (carga média 23–33 das outras frentes): dims, pile, stations,
+  `audio-lifecycle` (roteiro corrigido; ciclo de vida, pitch, tampa e trabalho do forno a arco, porta, nuclear e
+  fechamento) e **items** passaram inteiros; o `items` limpo é o primeiro no motor novo. O primeiro `items` da fila
+  falhou em `real_eating_started` (check de relógio real). Um reinício do host às 02:20 e um travamento da máquina às
+  07:14 cortaram filas no meio; o que estava em andamento foi descartado e refeito.
+- **`bombs`** (uma por vez, `NTM_GAME_WIDE=1`, carga 20–50): no corrigido 2 passaram inteiros (#28, #39), 1 caiu na
+  preparação (`player/chunks not ready`) e 3 (#30, #34, #36) falharam no mesmo check do reinício,
+  `the_nukes_crater_stops_with_the_world`. Nos 3, o log da primeira sessão termina com `crater done after 917 ticks` e
+  `fallout starts after 939 ticks`, gravados antes do fim do `restart-arm`. A cratera da nuke de raio 80 acabou ainda na
+  primeira sessão, e o save do fechamento gravou a explosão já no fallout. Na reabertura ela volta como fallout
+  (`EntityFalloutRain` guarda o `scale`; `drop_craters` só descarta a fase `crater`), e o check, que espera "a cratera
+  para com o mundo", não vê essa linha. O roteiro supõe que, com `fuel 4`, a cratera dura minutos, mas sob carga ela
+  acabou entre o save do `restart-arm` (status `Planning`, 264/1012 setores) e o fechamento. É uma corrida do roteiro,
+  sem perda: a balefire voltou e terminou nos três, e o mundo reaberto segue o que foi gravado. Falhas no `final`
+  (`26c81d42`): 1 passou (#3); #32 na preparação, #35 `substring not found`, #38 `physical_lever_powered`. No R7c: #33
+  `substring not found`. Sem a gravação eager (`HORIZON_NO_EAGER_SAVE`, #40): `physical_lever_powered` na preparação.
+  Nenhum dos dois binários antigos chegou a esse check mais de uma vez, então não há prova de que o motor não mude a
+  frequência. Na bisseção (`ec056cf3ff`, só P1-1 e o navegador de mods; binário `f3397b67…`), #44 falhou igual (o status
+  depois do save já dizia `Fallout`) e #45 caiu na preparação. A cratera leva sempre **917 ticks** (cerca de 46 s:
+  `first_write=88 crater=917` em todas as execuções), e o roteiro detonava a nuke antes de esperar o `/forceload` da área
+  da balefire. Sob carga essa espera consumia a cratera. Se o P1-1 alonga essa espera (ele agora enfileira as malhas
+  das colunas carregadas durante a espera), a corrida fica mais frequente, mas não há perda: o mundo reaberto segue o
+  que foi gravado. Roteiro corrigido em `5b58dfa6`: as duas áreas carregam antes das duas detonações, e um check depois
+  do save exige a nuke ainda na cratera (`Planning`/`Writing`/`Waiting`), para que uma execução lenta falhe como
+  corrida de preparação, e não como o check do reinício. Com o roteiro corrigido, no binário final: **2/2 inteiros**
+  (#50, #52).
+- Sonda do `/forceload` no release corrigido: conservou tudo.
+
+**Verificação na cabeça final** (`6a79054fa9`: os três commits acima sobre `7cba121ec`/`621642528`). Release
+`horizon-client` `458581ca7d7f7ca00730ac76b2c6dcfcd91a72999e2e5d9b326ac614d46a3072`, pacote igual `9ab18eac…` (o pin
+não entra no pacote).
+
+- Motor: `horizon-protocol` `item::hash` 9; `horizon-client-lib` `lan::` 382, `menu::tests` 67, `native_` 26, `mod_` 83,
+  `save::` 84, `craft` 41, som 49, `conditional_policy` 4; `horizon-client` `native_` 235, `machines` 27, `mod_` 38,
+  `world::` 7, `craft` 32, `lan::` 13, `menu` 36 e os testes novos (eager, `/forceload`, fechamento do criativo, ordem do
+  save); `lan_bot` 22; render 72. Clippy `-D warnings` limpo em seis bibliotecas (com `horizon-protocol`), `rustfmt`
+  limpo. Os dois testes dos anexos do dono passam (A/B abaixo).
+- Em jogo, uma por vez, `NTM_GAME_WIDE=1` (carga 30–42): stations, dims, prova de save `original` `kill` (estrita, igual
+  ao controle), bombs (roteiro `5b58dfa6`) passaram. `items` 0/3 inteiros no binário final: duas vezes
+  `cancel_does_not_consume` (#46, #53) e uma `thrown_container_waits_its_pickup_delay` (#51), ambos checks de relógio
+  real da preparação (o roteiro segura o botão 0,45 s e solta; comer leva 32 ticks, e sob travadas do servidor o
+  soltar chega tarde). São as mesmas falhas do `final` `26c81d42` (#1, #10) e do R7c (#9). O `items` inteiro no motor
+  novo é o #27 (`1d8d074b`). As provas estritas completas (8/8, 8/8, 3/3) e a sonda
+  do `/forceload` foram feitas em `1d8d074b` (`7cba121ec`). Os commits seguintes não tocam o save, o streaming nem o
+  `/forceload`: um teste, a concordância do clique LAN e a grade do anfitrião.
+
+**Anexos do dono em saves no meio da sessão** (achado da Onda 1 no pin `a31497f38`): no motor novo já está corrigido
+pelo upstream, `61aa03d1a` ("Single-player owner: autosaves keep its live player attachments", 08/11, #12612):
+`store_owner` grava os anexos vivos de `guest_attachments`. O teste do upstream
+`an_autosave_writes_the_owners_live_attachments_to_the_file_it_loads` e o da Onda 1 trazido para cá
+(`the_owner_reopened_after_an_autosave_loads_its_live_attachments`, `10ae4aa43d`) passam no motor corrigido. Num mutante
+com o comportamento de `a31497f38` (`store_owner` sem os anexos vivos, worktree descartável), os dois falham
+(`lan.rs:4767` e `:4821`; `confirm/attach-ab3.log`).
+
+Lacunas que ficam registradas (sem correção nesta rodada):
+
+- **P3-6** a medição do meltdown não mede o custo do gancho nem prova "não é pior" com força (p ≈ 0,09; 0,22 sem a rodada
+  de aquecimento). Falta medir o span `ntm_world_saving` em máquina quieta, com e sem o gancho. Com P2-1 o gancho deixou
+  de rodar nos ticks atrasados.
+- **P3-7** a quebra por máquina do upstream (#9223, `native_machine_destroy_block`) não resolve multibloco: quebrar um
+  dummy deixa o núcleo com buraco, quebrar o núcleo deixa dummies órfãos (sem perda nem duplicação; os dummies não têm
+  loot). Nada chama isso hoje; resolver o núcleo como `break_block_as_player` antes de usar.
+- **P3-9** com uma passada eager vencida no tick, o settle do NTM roda no meio do tick (antes das entidades): itens de
+  uma máquina quebrada entram na passada de entidades desse tick, e não do seguinte. Diferença de um tick, mais perto do
+  Java (que derrama na hora); sem perda nem duplicação.
+- **P3-10** `frozen-break` sem pareamento de cortes por índice; os três testes de render por GPU de software não foram
+  comparados com o `a3bf6531e` puro; o save em etapas (`game/saving.rs`, controle `save` sem servidor integrado) não
+  passa por `save_game_with` (preexistente, igual em `a31497f38`; o texto da Onda 0 que diz "todo save passa por
+  `save_game_with`" fica corrigido aqui).
+
+### Re-revisão (`cf7685c2`): aprovada com ressalvas
+
+A `ntm-current` do motor foi para `6a79054fa9`. Ressalvas, sem bloqueio, registradas como pendências nominais:
+
+- **P2-1** a guarda do P1-1 (`no_streaming_pass_drops_the_columns_it_unloads`) é textual e aceita a chamada comentada.
+  Falta um teste comportamental: uma passada de `/forceload` que descarrega uma coluna suja e a encontra gravada.
+- **P2-2** bombs: mesmo com `5b58dfa6`, a cratera pode acabar entre a leitura do status (depois do save) e o
+  fechamento, que grava de novo. Fechar a janela: ler `dug`/status antes do save e fechar logo, ou congelar o tick
+  até o fechamento.
+- **P2-3** a contagem da sonda do `/forceload` omitia `probe-bug-5` e `probe-bug-6`. Corrigida acima.
+- **P3** `items` julga por relógio real (`time.sleep` entre apertar e soltar, `cancel_does_not_consume`,
+  `real_eating_started`, `thrown_container_waits_its_pickup_delay`). Converter para ticks do servidor, como o roteiro da
+  Onda 1 faz.
+- **P3** o teste de `hash.rs` do commit `01e5147ef5` da `rbmk-t02-engine` não passa no `cargo fmt` deste motor (o porte
+  `88d6b88a2d` saiu formatado). O RBMK formatou em `00454b508a`; a tabela "Contatos de motor do RBMK" da `rbmk-t03`
+  foi atualizada.
+- **P3** `host_prepared_craft`: o gancho `prepare_item_craft` roda antes de saber se a retirada cabe. Num shift-click
+  sem espaço, ou com o cursor ocupado por outro item, o mod já ouviu (e pode ter feito efeitos colaterais) uma
+  retirada que é recusada. O RBMK manteve essa ordem de propósito e a documentou em `host_prepared_craft`: é o contrato
+  da grade do convidado (`lan_crafting` pergunta a cada mudança da grade), ou seja, o resultado preparado, não a
+  retirada. A glue do NTM não tem efeito colateral ali. No mesmo laço, empilhar no cursor comparava só o item
+  (`c.item == result.item`), e um resultado com componentes do mod se juntava a uma pilha sem eles. Corrigido na
+  `rbmk-t02-engine` em `00454b508a` (`same_item_same_components`; o mesmo commit formata o teste de `hash.rs`).
+  **Falta portar** para a `ntm-current` (`menu_clicks.rs`, perto da l. 784). Fica para a próxima mudança de pin,
+  com revisão.
+
+### Merge da `main` (`27380b26`)
+
+Merge sem rebase em `73e5a45e`, sem conflitos (a `main` não toca em `native/`; o pin continua `6a79054fa9`). Depois do
+merge: `cargo test --workspace` verde (`ntm-core` 514 e as suítes de integração, entre elas portas, rede de energia e
+Watz/PWR), `cargo clippy --workspace --all-targets -- -D warnings` limpo. `cargo fmt --check` acusa 122 arquivos, nenhum
+tocado por esta branch: o NTM não segue o rustfmt na `main`. A cópia transformada foi regenerada contra
+`6a79054fa9` e o release compilou: `horizon-client` `b84aac6a25fc5c200aa59662a51743d3357edbf058ddf2bd932fc38a01e7a4da`,
+pacote de conteúdo novo `ntm.hmod` `483392a4d3640aa4444926f1ca6d44956577d7aefa5143e6764cad94325959a9` (a `main` mudou o
+conteúdo). Em jogo, uma por vez, `NTM_GAME_WIDE=1`: stations, dims e a prova de save `original` `kill` passaram (#55–#57).
+Clippy `-D warnings` da cópia transformada (`horizon-client-lib`, `horizon-client`, com a glue do NTM) limpo.
+
+### Merge da `main` (`8ecff5d8`)
+
+A `main` andou para `8ecff5d8` (integração T2–T8: gamma, items em ticks, `door_sounds`, bombs). Merge sem rebase em
+`ec3e633a`, sem conflitos: `content/` e `native_items.py` ficaram iguais aos da `main` (o roteiro de items em ticks é o
+dela). `native_bombs.py` fundiu sozinho: ficou com a leitura da alavanca da `main` e o `restart_arm` de `5b58dfa6`.
+
+- **Geradores como checagem**, na ordem de `16659f63`, no lugar: `generate.py`, `bulk.py`, `generate.py --ids-only` e
+  `visual-gen/generate.py`, com `PYTHONHASHSEED=1`, `NTM_SRC` e `HORIZON_RESOURCES`. **Nenhum arquivo mudou**, e as
+  quatro portas mantêm o `door_sounds`. (Uma primeira tentativa sem `NTM_SRC` parou no `hazard-gen` antes das abas
+  criativas e tirou os títulos das abas das traduções. Os dois arquivos foram restaurados e a rodada refeita.)
+- `content-gen`: `test_rbmk_oracle` (contrato T00, só `door_sounds`) passa, e a suíte inteira tem **290 testes OK**
+  com `PYTHONHASHSEED` 1 e 42. Os testes leem a fonte em `ROOT.parent/ntm-src`, então foi preciso um link temporário no
+  worktree, removido depois.
+- `cargo test --workspace` verde (`ntm-core` 514 e as integrações), clippy `--all-targets -D warnings` limpo. A cópia
+  transformada foi regenerada contra `6a79054fa9`, e o clippy dela está limpo.
+- Release `horizon-client` `b84aac6a25fc5c200aa59662a51743d3357edbf058ddf2bd932fc38a01e7a4da` (igual ao do merge
+  anterior: a glue não mudou). Pacote `ntm.hmod` `483392a4d3640aa4444926f1ca6d44956577d7aefa5143e6764cad94325959a9`,
+  empacotado do conteúdo regenerado sem diferença. É igual ao anterior: entre `27380b26` e `8ecff5d8`, em `content/`,
+  só `ids.json` mudou, e ele não entra no pacote.
+- Em jogo, uma por vez, `NTM_GAME_WIDE=1`: stations, dims e a prova de save `original` `kill` passaram (#60–#62).
+
+### Limitações e pendências
+
+- **Modo eager:** os cortes dentro de um save (`save_begin`, `live_chunk`, `region_record`, `entities_written`) não são
+  comparáveis com a gravação eager ligada (o controle grava o chunk antes, o `live_chunk` nunca dispara nele, o índice
+  de registro cai em outros chunks). Ficam provados no modo estrito.
+- O roteiro de `frozen-break` não pareia cortes por índice como o `original`; `region_record:1`, acrescentado nesta
+  rodada, ficou sem par (NTM 12/12, controle 2/12).
+- O gancho na passada eager não é distinguível em jogo hoje (a passada não grava entidades); coberto pelo teste de
+  estrutura.
+- `audio-lifecycle` em máquina quieta, com os dois binários.
+- O pipeline dos modelos OBJ não recebe a deformação `world_warp` nem as marcas de luz HDR das entidades.
+- Cinco testes do render falham neste ambiente sem diff local: dois de pilha de crash (sem debuginfo, desligado para
+  caber no disco) e três de GPU por software; não comparados com o upstream puro.
+- O teardown do renderer GL/llvmpipe entrou em pânico uma vez (`SurfaceId`) ao fechar o `items`; não se repetiu.
+- Upstream continuou andando depois de `a3bf6531e`; o próximo snapshot fica para a próxima rodada.
+- Achado do RBMK T03 (10/11, pin `a31497f38`, não verificado nem corrigido nesta rodada): visitar um convidado LAN a cada
+  tick com `native_visit_player` (`enter_guest`/`leave_guest`) enquanto ele queima e entra na água traz o fogo de volta
+  (`Fire` 600 nas leituras seguintes; -20 sem a visita). Suspeita: a ida e volta da troca de estado regrava um
+  `fire_ticks` antigo por cima do da cópia de movimento do convidado (`MotionWorld`, `lan_actions.rs`), onde a água
+  apaga. Vale para qualquer mod que visite por tick. O NTM contorna em `rbmk-t03` `52d7bb62` (não visita na água).
+  Continua sem diagnóstico: caso a verificar.
+- Outros contatos de motor do RBMK T03 (revisão do T03, não reproduzidos em jogo, sem correção nesta rodada):
+  - Em `motion/environment.rs` (l. 37–45), `tick_remaining_fire` aplica o dano de fogo antes de a água apagar. Um fogo
+    de 600 no tick em que se entra na água custa 1 de dano (600 % 20 == 0). No 1.7.10, `handleWaterMovement` zera o
+    fogo antes do dano do `onEntityUpdate`.
+  - O atributo `burning_time` soma a Proteção contra Fogo das peças. O 1.7.10 usa o maior nível da armadura
+    (`EnchantmentProtection.getFireTimeForEntity`). O HOT do NTM calcula como no 1.7.10 (`set_remaining_fire_ticks`),
+    mas os outros fogos do motor seguem somando. Lacuna nominal da Onda 4 (regra de armadura).
+  - Barra de durabilidade: o Forge 1.7.10 desenha preto 13×2, uma faixa 12×1 na cor `(255−k)/4 << 16 | 0x3F00` e a
+    barra. O gancho `item_bar` (API 60) só dá largura e cor, então a faixa escura não sai. Falta um campo de cor da
+    faixa na API.

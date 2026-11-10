@@ -705,7 +705,7 @@ fn ledger_add(game: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3
 fn spawn_items(g: &mut crate::game::Game<'_>, pos: [i32; 3], items: &[String]) {
     for item in items {
         match horizon_world::nbt::parse_snbt(item).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t)) {
-            Some(stack) => g.spawn_item(stack, pos.map(|v| f64::from(v) + 0.5), crate::game::dispenser::new_item_motion(), 0),
+            Some(stack) => { g.spawn_item_own(stack, pos.map(|v| f64::from(v) + 0.5), 0); }
             None => eprintln!("ntm: invalid owed item NBT {item:?}"),
         }
     }
@@ -1226,13 +1226,13 @@ impl ServerHost for Host<'_, '_> {
         if self.game.native_loaded_block(dim,pos).is_none(){return false;}
         let items:Option<Vec<_>>=items.iter().map(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t))).collect();
         let Some(items)=items else{eprintln!("ntm: invalid retained item NBT at {dim} {pos:?}");return false};
-        in_place(self.game,dim,|g|for i in items{g.spawn_item(i,pos.map(|v|f64::from(v)+0.5),crate::game::dispenser::new_item_motion(),0);}).is_some()
+        in_place(self.game,dim,|g|for i in items{g.spawn_item_own(i,pos.map(|v|f64::from(v)+0.5),0);}).is_some()
     }
     fn drop_items(&mut self,dim:&str,p:[i32;3],items:&[(String,u32)])->bool {
         if self.game.native_loaded_block(dim,p).is_none(){return false;}
         let at=p.map(|v|f64::from(v)+0.5);
         in_place(self.game,dim,|g|{
-            for (id,n) in items {g.spawn_item(ItemStack::new(id,*n),at,crate::game::dispenser::new_item_motion(),0);}
+            for (id,n) in items {g.spawn_item_own(ItemStack::new(id,*n),at,0);}
         }).is_some()
     }
     fn apply_items(&mut self,id:u64,dim:&str,p:[i32;3],items:&[(String,u32)],owners:&[(String,[i32;3])])->bool{
@@ -1317,7 +1317,7 @@ impl ServerHost for Host<'_, '_> {
         let darken = match dimension {
             Dim::Nether => 11,
             Dim::End => {
-                let sky = self.game.res.end_environment().sample(world.day_time,None,None);
+                let sky = self.game.res.end_environment().sample(&horizon_client::environment::Sample{day_time:world.day_time,..Default::default()});
                 (15.0 - 15.0 * sky.sky_light_level).round() as i32
             }
             Dim::Overworld => {

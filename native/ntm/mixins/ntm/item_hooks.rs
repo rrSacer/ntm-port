@@ -311,7 +311,7 @@ fn pipette(game: &mut Game<'_>, stack: &ItemStack, say: impl Fn(&mut Game<'_>, &
         return;
     }
     let capacity = short(&data, "capacity").unwrap_or(max);
-    let sneaking = game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft);
+    let sneaking = game.keys.raw(&winit::keyboard::KeyCode::ShiftLeft);
     let next = ins::pipette_capacity(&stack.item, capacity, sneaking);
     let slot = game.held_slot();
     let done = patch_stack(game, slot, stack, |d| {
@@ -454,7 +454,7 @@ fn remove_filter(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     // `keys` holds the logical sneak (the mapping of `key.sneak`, however it is
     // bound or toggled); the physical keys are `physical_keys`. A guest's turn
     // maps its sneaking into it, as `Game::use_hand` reads it.
-    if !game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft) {
+    if !game.keys.raw(&winit::keyboard::KeyCode::ShiftLeft) {
         return false;
     }
     let installed = custom(stack)
