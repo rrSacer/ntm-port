@@ -5,7 +5,7 @@
 //! outputs.
 
 use crate::{
-    furnaces::{STACK, fits, key},
+    furnaces::{STACK, fits, key, pull_heat},
     machine::{Logic, fill_level},
     recipes,
     server::container_bridge::{Slots, Slotted, Stack},
@@ -69,21 +69,7 @@ impl Steel {
     /// difference, rounded up; otherwise it cools by a thousandth. Returns
     /// the heat taken from the source.
     pub fn pull_heat(&mut self, source: Option<u32>) -> u32 {
-        if self.heat >= MAX_HEAT {
-            return 0;
-        }
-        if let Some(s) = source {
-            if s == self.heat {
-                return 0;
-            }
-            if s > self.heat {
-                let diff = (f64::from(s - self.heat) * DIFFUSION).ceil() as u32;
-                self.heat = (self.heat + diff).min(MAX_HEAT);
-                return diff;
-            }
-        }
-        self.heat = self.heat.saturating_sub((self.heat / 1000).max(1));
-        0
+        pull_heat(&mut self.heat, MAX_HEAT, DIFFUSION, source)
     }
 
     /// `canSmelt(index)` (lines 220-229).

@@ -169,6 +169,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_furnace_brick_on", Layout::Native),
     ("ntm:furnace_iron", Layout::Native),
     ("ntm:furnace_steel", Layout::Native),
+    ("ntm:furnace_combination", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
@@ -401,6 +402,8 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 /// that join the core's fluid networks as ducts. A chain of them reaches the
 /// core: the blast furnace's ports up its front reach it down its column.
 pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
+    // TilePortShapes.comboven: the ring round the core on its two layers.
+    ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),
     // MachineExcavator.getAllPorts: (±1, 1, 3) and (±3, 1, 0). The whole
     // layer above the core holds them and reaches the core through the cell

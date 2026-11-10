@@ -104,10 +104,12 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         return crate::furnaces::filters(block);
     }
     if is_brick_furnace(block) {
-        // The fuel rule is `slot_allows`' (a list of fuels would be every item id).
+        // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
+        // slot 1 first and then slot 0, anything else into slot 0 only: the
+        // two slots are visited last to first, slot 1 taking fuels alone.
         return vec![
-            SlotFilter::default(),
-            SlotFilter::default(),
+            SlotFilter { quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_move: Some(crate::fuel::fuels()), quick_reverse: true, ..Default::default() },
             SlotFilter { output: true, ..Default::default() },
             SlotFilter { output: true, ..Default::default() },
         ];
@@ -149,12 +151,14 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
         return allowed;
     }
     if is_brick_furnace(block) {
-        // `isItemValidForSlot`: any input, only a fuel in slot 1, nothing in
-        // the outputs; `canExtractItem`: the automation takes slots 2 and 3.
+        // The plain slots 0 and 1 take anything from a hand (1.7.10's
+        // `Slot.isItemValid`); a hopper asks `isItemValidForSlot`: any input,
+        // only a fuel in slot 1, nothing in the outputs; `canExtractItem`:
+        // the automation takes slots 2 and 3.
         return match action {
             SlotAction::Insert => match slot {
                 crate::furnace_brick::INPUT => true,
-                crate::furnace_brick::FUEL => crate::fuel::burn_time(&item.id) > 0,
+                crate::furnace_brick::FUEL => origin == SlotOrigin::Manual || crate::fuel::burn_time(&item.id) > 0,
                 _ => false,
             },
             SlotAction::Extract => origin == SlotOrigin::Manual || slot >= crate::furnace_brick::OUTPUT,
@@ -558,7 +562,7 @@ mod tests {
         let allows = |slot, item: &Stack, action, origin| slot_allows(b, &s, slot, item, action, origin);
         use crate::native::{SlotAction::*, SlotOrigin::*};
         assert!(allows(0, &stone, Insert, Manual) && allows(0, &stone, Insert, Automation));
-        assert!(allows(1, &coal, Insert, Manual) && !allows(1, &stone, Insert, Manual) && !allows(1, &stone, Insert, Automation));
+        assert!(allows(1, &coal, Insert, Manual) && allows(1, &stone, Insert, Manual) && !allows(1, &stone, Insert, Automation));
         assert!(!allows(2, &ingot, Insert, Manual) && !allows(3, &coal, Insert, Automation));
         assert!(allows(0, &stone, Extract, Manual) && !allows(0, &stone, Extract, Automation));
         assert!(!allows(1, &coal, Extract, Automation) && allows(1, &coal, Extract, Manual));

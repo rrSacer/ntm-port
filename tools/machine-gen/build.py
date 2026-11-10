@@ -269,6 +269,19 @@ if hm.is_dir():
     p.write_text(json.dumps(files, ensure_ascii=False, indent=0, sort_keys=True) + '\n')
     print(f"machine_files: {len(files)} máquinas → {p.relative_to(root)}")
 
+# The combination oven: an item (or an OreDict name's items) into an item and
+# a fluid; `dict` rows are the second pass of `getOutput`, after the exact item.
+if (root / 'content/machine-recipes/combination.json').exists():
+    src = json.loads((root / 'content/machine-recipes/combination.json').read_text())
+    rows = [{'ids': r['in']['ids'], **({'dict': r['in']['dict']} if 'dict' in r['in'] else {}),
+             'item': r['outputItems'][0] if r['outputItems'] else None,
+             'fluid': r['outputFluids'][0] if r['outputFluids'] else None, 'source': r['source'], 'label': r.get('label', r['name'])}
+            for r in src['recipes']]
+    data = {'source': 'content/machine-recipes/combination.json', 'config': src['machine_config'], 'recipes': rows}
+    p = root / 'crates/ntm-core/data/machines/combination.json'
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
+    print(f"combination: {len(rows)} receitas → {p.relative_to(root)}")
+
 # Stateful reactor data is exported once by recipe-gen.
 (root / 'crates/ntm-core/data/reactors_simple.json').write_text((root / 'content/machine-recipes/reactors_simple.json').read_text())
 

@@ -141,8 +141,38 @@ def steel(g):
     ingots = count(slots, 'minecraft:iron_ingot')
     g.check('steel_took_heat_from_the_firebox', heat is not None and heat > 0, state)
     g.check('steel_smelted', ingots > 0, slots)
-    g.check('steel_conserves', ores + ingots >= 12 or ores + ingots > 0, slots)
+    g.check('steel_conserves', ores + ingots + count(slots, 'minecraft:raw_iron') <= 12 and ores + ingots > 0, slots)
     g.snapshot('furnaces-steel')
+    g.close()
+
+
+def combination(g):
+    x, y, z = X + 36, 100, Z
+    g.close()
+    g.ground(x, y, z, width=8)
+    g.command('clear @s')
+    g.command('give @s ntm:furnace_combination 1')
+    g.ctl(f'place {x} {y + 1} {z} --item ntm:furnace_combination')
+    time.sleep(1.5)
+    core = core_of(g, (x, y + 1, z), '"Combination"')
+    fire = (core[0], core[1] - 1, core[2])
+    g.command(f'setblock {fire[0]} {fire[1]} {fire[2]} ntm:heater_firebox[facing=north]')
+    time.sleep(1)
+    open_core(g, fire)
+    g.put('minecraft:coal', 16, 0)
+    g.close()
+    open_core(g, core)
+    g.put('minecraft:coal', 4, 0)
+    g.put('minecraft:bucket', 2, 2)
+    sprint(g, 3000)
+    slots = g.slots()
+    state = machine_state(g, core)
+    coke = count(slots, 'ntm:coke__coal')
+    g.check('combination_made_coke', coke > 0, slots)
+    g.check('combination_conserves_coal', count(slots, 'minecraft:coal') + coke == 4, slots)
+    mb = first_int(state, r'"mb":(\d+)')
+    g.check('combination_fluid_in_the_tank_or_buckets', mb is not None, state)
+    g.snapshot('furnaces-combination')
     g.close()
 
 
@@ -152,6 +182,6 @@ if __name__ == '__main__':
     g.evidence['phase'] = mode
     g.ctl('wait-ready 120')
     {'lit-electric': lit_electric, 'iron': iron, 'steel': steel,
-     'all': lambda g: (lit_electric(g), iron(g), steel(g))}[mode](g)
+     'combination': combination, 'all': lambda g: (lit_electric(g), iron(g), steel(g), combination(g))}[mode](g)
     g.evidence['ok'] = True
     g.save()

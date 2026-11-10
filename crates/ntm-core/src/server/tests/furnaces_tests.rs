@@ -177,3 +177,84 @@ fn the_steel_furnace_smelts_on_the_heat_of_the_firebox_under_it() {
     };
     assert!(f.heat > 0, "não puxou calor");
 }
+
+/// The combination oven on a firebox: coal becomes coke and creosote; the
+/// creosote leaves through a duct into a barrel, and items are conserved.
+#[test]
+fn the_combination_oven_makes_coke_and_sends_its_fluid_down_a_duct() {
+    let mut g = game();
+    let (fire, top, duct, barrel) = (
+        AT,
+        [AT[0], AT[1] + 1, AT[2]],
+        [AT[0] + 1, AT[1] + 1, AT[2]],
+        [AT[0] + 2, AT[1] + 1, AT[2]],
+    );
+    g.place(fire, "ntm:heater_firebox[facing=north,honey_level=0]");
+    g.world
+        .borrow_mut()
+        .engine
+        .insert((OW.to_string(), fire), (vec![None; 2], Vec::new()));
+    g.place(top, "ntm:furnace_combination[facing=north,honey_level=0]");
+    g.world
+        .borrow_mut()
+        .engine
+        .insert((OW.to_string(), top), (vec![None; 4], Vec::new()));
+    g.place(duct, "ntm:fluid_duct_neo");
+    g.place(barrel, "ntm:barrel_steel[facing=north,honey_level=0]");
+    g.run(2);
+    g.type_duct(duct, "coalcreosote");
+    let slots_of = |g: &Game, at: Pos| g.world.borrow().engine[&(OW.to_string(), at)].0.clone();
+    g.world
+        .borrow_mut()
+        .engine
+        .get_mut(&(OW.to_string(), fire))
+        .unwrap()
+        .0[0] = Some(Stack::new("minecraft:coal", 16));
+    g.world
+        .borrow_mut()
+        .engine
+        .get_mut(&(OW.to_string(), top))
+        .unwrap()
+        .0[0] = Some(Stack::new("minecraft:coal", 6));
+    let mut coke = 0;
+    for t in 0..4000 {
+        g.run(1);
+        let s = slots_of(&g, top);
+        assert_eq!(
+            count(&s, "minecraft:coal") + count(&s, "ntm:coke__coal") + coke,
+            6,
+            "tick {t}"
+        );
+        if t % 333 == 5
+            && let Some(o) = g
+                .world
+                .borrow_mut()
+                .engine
+                .get_mut(&(OW.to_string(), top))
+                .unwrap()
+                .0[1]
+                .take()
+        {
+            coke += o.count;
+        }
+    }
+    let s = slots_of(&g, top);
+    assert!(
+        count(&s, "ntm:coke__coal") + coke >= 1,
+        "nunca coqueificou: {s:?}"
+    );
+    let Data::FluidStore(b) = g.machine(barrel).data else {
+        panic!()
+    };
+    let Data::Furnace(f) = g.machine(top).data else {
+        panic!()
+    };
+    let crate::furnaces::Furnace::Combination(f) = *f else {
+        panic!()
+    };
+    // Each coal gives 100 mB: what is not in the oven's tank is in the barrel.
+    let made = (count(&s, "ntm:coke__coal") + coke) * 100;
+    assert_eq!(f.tank.mb + b.tank.mb, made);
+    assert_eq!(b.tank.fluid, "coalcreosote");
+    assert!(b.tank.mb > 0, "o creosoto não saiu pelo duto");
+}

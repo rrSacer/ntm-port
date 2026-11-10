@@ -28,6 +28,7 @@ pub mod fuel;
 pub mod oredict;
 pub mod upgrades;
 pub mod furnace_brick;
+pub mod furnace_combination;
 pub mod furnace_steel;
 pub mod furnaces;
 pub mod foundry;

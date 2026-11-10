@@ -265,7 +265,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:furnace_combination",
-        kind: Kind::Inert,
+        kind: Kind::Furnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1699,9 +1699,22 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
-    if spec.kind == Kind::Zirnox { return vec![vec![]]; }
-    if spec.id == "ntm:pile_device__vent" { return facing.and_then(facing_dir).map(|d| vec![vec![d]]).unwrap_or_default(); }
-    if spec.id == "ntm:machine_solar_boiler" { return vec![vec![[0,-1,0]]]; }
+    if spec.kind == Kind::Zirnox {
+        return vec![vec![]];
+    }
+    if spec.id == "ntm:pile_device__vent" {
+        return facing
+            .and_then(facing_dir)
+            .map(|d| vec![vec![d]])
+            .unwrap_or_default();
+    }
+    if spec.id == "ntm:machine_solar_boiler" {
+        return vec![vec![[0, -1, 0]]];
+    }
+    // The combination oven's `comboven` ports: its ring of cells (`container_bridge::FLUID_PROXIES`) and the core.
+    if spec.id == "ntm:furnace_combination" {
+        return vec![crate::energy::DIRS.to_vec()];
+    }
     match spec.kind {
         Kind::FluidStore
         | Kind::Crafter

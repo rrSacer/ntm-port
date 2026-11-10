@@ -4,6 +4,7 @@
 
 use crate::{
     fuel::{self, Family, Module},
+    furnace_combination::{self, Combination},
     furnace_steel::{self, Steel},
     machine::{Logic, fill_level},
     recipes,
@@ -18,12 +19,14 @@ pub const STACK: u32 = 64;
 
 pub const IRON: &str = "ntm:furnace_iron";
 pub const STEEL: &str = "ntm:furnace_steel";
+pub const COMBINATION: &str = "ntm:furnace_combination";
 
 /// Every block this file runs.
 pub fn of(block: &str) -> Option<Furnace> {
     match block {
         IRON => Some(Furnace::Iron(Iron::default())),
         STEEL => Some(Furnace::Steel(Steel::default())),
+        COMBINATION => Some(Furnace::Combination(Box::default())),
         _ => None,
     }
 }
@@ -37,6 +40,7 @@ pub fn is_furnace(block: &str) -> bool {
 pub enum Furnace {
     Iron(Iron),
     Steel(Steel),
+    Combination(Box<Combination>),
 }
 
 impl Furnace {
@@ -44,12 +48,21 @@ impl Furnace {
         match self {
             Furnace::Iron(m) => m,
             Furnace::Steel(m) => m,
+            Furnace::Combination(m) => &mut **m,
         }
     }
     fn logic(&self) -> &dyn Logic {
         match self {
             Furnace::Iron(m) => m,
             Furnace::Steel(m) => m,
+            Furnace::Combination(m) => &**m,
+        }
+    }
+    fn logic_mut(&mut self) -> &mut dyn Logic {
+        match self {
+            Furnace::Iron(m) => m,
+            Furnace::Steel(m) => m,
+            Furnace::Combination(m) => &mut **m,
         }
     }
 }
@@ -59,7 +72,11 @@ impl Logic for Furnace {
         match self {
             Furnace::Iron(m) => m.step(),
             Furnace::Steel(m) => m.step(),
+            Furnace::Combination(m) => m.step(),
         }
+    }
+    fn fluid(&mut self) -> Option<&mut dyn crate::fluid::FluidNode> {
+        self.logic_mut().fluid()
     }
     fn level(&self, max: u8) -> u8 {
         self.logic().level(max)
@@ -67,6 +84,28 @@ impl Logic for Furnace {
     fn view(&self) -> ViewModel {
         self.logic().view()
     }
+}
+
+/// `tryPullHeat` of the furnaces that sit on a heat source: full, it takes
+/// none; a hotter source gives `diffusion` of the difference, rounded up;
+/// otherwise it cools by a thousandth, at least 1. Returns what the source
+/// gave up.
+pub(crate) fn pull_heat(heat: &mut u32, max: u32, diffusion: f64, source: Option<u32>) -> u32 {
+    if *heat >= max {
+        return 0;
+    }
+    if let Some(s) = source {
+        if s == *heat {
+            return 0;
+        }
+        if s > *heat {
+            let diff = (f64::from(s - *heat) * diffusion).ceil() as u32;
+            *heat = (*heat + diff).min(max);
+            return diff;
+        }
+    }
+    *heat = heat.saturating_sub((*heat / 1000).max(1));
+    0
 }
 
 pub(crate) fn key(s: &Option<Stack>) -> Option<(String, u32)> {
@@ -280,109 +319,97 @@ impl Logic for Iron {
     }
 }
 
-/// `isItemValidForSlot` and `canExtractItem` of the iron furnace, which
-/// the slots' rules and the automation share; `None` when `block` is not
-/// one of these furnaces.
+/// What a hand and a hopper may do with a slot of these furnaces; `None` when
+/// `block` is not one of them. The plain `Slot`s of the containers take any
+/// item from a hand (1.7.10's `Slot.isItemValid` is true; the outputs are
+/// `SlotSmelting`/`SlotCraftingOutput`, the upgrade `SlotUpgrade`); a hopper
+/// asks `isItemValidForSlot` and `canExtractItem` of the tile entity.
 pub fn allows(block: &str, slot: usize, item: &str, insert: bool, manual: bool) -> Option<bool> {
-    match block {
-        IRON => Some(if insert {
-            match slot {
-                iron::INPUT => recipes::furnace().smelt(item).is_some(),
-                s if iron::FUELS.contains(&s) => IRON_MODULE.burn_time(item) > 0,
-                // `SlotUpgrade.isItemValid`: the hand only; the automation's
-                // `isItemValidForSlot` has no case for it.
-                iron::UPGRADE => manual && upgrades::is_upgrade(item),
-                _ => false,
-            }
-        } else {
-            manual || slot == iron::OUTPUT
-        }),
-        STEEL => Some(if insert {
-            // `isItemValidForSlot`: the three inputs take what smelts.
-            furnace_steel::INPUTS.contains(&slot) && recipes::furnace().smelt(item).is_some()
-        } else {
-            manual || furnace_steel::OUTPUTS.contains(&slot)
-        }),
-        _ => None,
-    }
+    let smelts = || recipes::furnace().smelt(item).is_some();
+    let rule = match block {
+        IRON if insert => match slot {
+            iron::INPUT => manual || smelts(),
+            s if iron::FUELS.contains(&s) => manual || IRON_MODULE.burn_time(item) > 0,
+            iron::UPGRADE => manual && upgrades::is_upgrade(item),
+            _ => false,
+        },
+        IRON => manual || slot == iron::OUTPUT,
+        STEEL if insert => furnace_steel::INPUTS.contains(&slot) && (manual || smelts()),
+        STEEL => manual || furnace_steel::OUTPUTS.contains(&slot),
+        COMBINATION if insert => match slot {
+            furnace_combination::INPUT => manual || furnace_combination::output(item).is_some(),
+            furnace_combination::CONTAINER_IN => manual,
+            _ => false,
+        },
+        COMBINATION => manual || slot == furnace_combination::OUTPUT,
+        _ => return None,
+    };
+    Some(rule)
 }
 
-/// The container of a furnace block: every slot on every side
-/// (`getAccessibleSlotsFromSide` lists them all), the fuels, the input and
-/// the output by what `isItemValidForSlot`/`canExtractItem` say.
+/// The container of a furnace block (`getAccessibleSlotsFromSide`).
 pub fn container(block: &str) -> Option<crate::native::Container> {
-    match block {
-        IRON => {
-            let all: Vec<usize> = (0..iron::SLOTS).collect();
-            Some(crate::native::Container {
-                slots: iron::SLOTS,
-                faces: std::array::from_fn(|_| all.clone()),
-                inputs: vec![iron::INPUT, 1, 2],
-                outputs: vec![iron::OUTPUT],
-                menu: Some("minecraft:generic_9x3"),
-            })
-        }
-        STEEL => {
-            let all: Vec<usize> = (0..furnace_steel::SLOTS).collect();
-            Some(crate::native::Container {
-                slots: furnace_steel::SLOTS,
-                faces: std::array::from_fn(|_| all.clone()),
-                inputs: vec![0, 1, 2],
-                outputs: vec![3, 4, 5],
-                menu: Some("minecraft:generic_9x3"),
-            })
-        }
-        _ => None,
-    }
+    let (slots, reach, inputs, outputs): (usize, Vec<usize>, Vec<usize>, Vec<usize>) = match block {
+        IRON => (
+            iron::SLOTS,
+            vec![0, 1, 2, 3],
+            vec![0, 1, 2],
+            vec![iron::OUTPUT],
+        ),
+        STEEL => (
+            furnace_steel::SLOTS,
+            (0..6).collect(),
+            vec![0, 1, 2],
+            vec![3, 4, 5],
+        ),
+        COMBINATION => (
+            furnace_combination::SLOTS,
+            vec![0, 1],
+            vec![0],
+            vec![furnace_combination::OUTPUT],
+        ),
+        _ => return None,
+    };
+    Some(crate::native::Container {
+        slots,
+        faces: std::array::from_fn(|_| reach.clone()),
+        inputs,
+        outputs,
+        menu: Some("minecraft:generic_9x3"),
+    })
 }
 
-/// The static rules of its slots (the conditional ones are [`allows`]).
+/// The static rules of its slots (the conditional ones are [`allows`]); the
+/// containers' `transferStackInSlot` merges a shift-click into slot 0 first,
+/// so nothing narrows it.
 pub fn filters(block: &str) -> Vec<crate::native::SlotFilter> {
     use crate::native::SlotFilter;
+    let plain = SlotFilter::default();
+    let output = SlotFilter {
+        output: true,
+        ..Default::default()
+    };
     match block {
-        IRON => {
-            let mut smeltable: Vec<String> =
-                recipes::furnace().inputs().map(str::to_string).collect();
-            smeltable.sort();
-            vec![
-                SlotFilter {
-                    accept: Some(smeltable),
-                    ..Default::default()
-                },
-                SlotFilter::default(),
-                SlotFilter::default(),
-                SlotFilter {
-                    output: true,
-                    ..Default::default()
-                },
-                SlotFilter {
-                    accept: Some(upgrades::ITEMS.iter().map(|s| s.to_string()).collect()),
-                    max: Some(1),
-                    ..Default::default()
-                },
-            ]
-        }
-        STEEL => {
-            let mut smeltable: Vec<String> =
-                recipes::furnace().inputs().map(str::to_string).collect();
-            smeltable.sort();
-            let input = SlotFilter {
-                accept: Some(smeltable),
+        IRON => vec![
+            plain.clone(),
+            plain.clone(),
+            plain,
+            output,
+            SlotFilter {
+                accept: Some(upgrades::ITEMS.iter().map(|s| s.to_string()).collect()),
+                max: Some(1),
                 ..Default::default()
-            };
-            let output = SlotFilter {
-                output: true,
-                ..Default::default()
-            };
-            vec![
-                input.clone(),
-                input.clone(),
-                input,
-                output.clone(),
-                output.clone(),
-                output,
-            ]
-        }
+            },
+        ],
+        STEEL => vec![
+            plain.clone(),
+            plain.clone(),
+            plain,
+            output.clone(),
+            output.clone(),
+            output,
+        ],
+        COMBINATION => vec![plain.clone(), output.clone(), plain, output],
         _ => Vec::new(),
     }
 }
@@ -482,19 +509,31 @@ mod tests {
     }
 
     #[test]
-    fn its_rules_are_the_sided_inventorys() {
+    fn its_rules_are_the_slots_and_the_sided_inventorys() {
         let a = |slot, item, insert, manual| allows(IRON, slot, item, insert, manual);
-        assert_eq!(a(0, "minecraft:raw_iron", true, true), Some(true));
-        assert_eq!(a(0, "minecraft:diamond", true, true), Some(false));
+        // A hand puts anything in the plain slots; a hopper only what fits them.
+        assert_eq!(a(0, "minecraft:diamond", true, true), Some(true));
+        assert_eq!(a(0, "minecraft:diamond", true, false), Some(false));
+        assert_eq!(a(0, "minecraft:raw_iron", true, false), Some(true));
         assert_eq!(a(1, "minecraft:coal", true, false), Some(true));
-        assert_eq!(a(2, "minecraft:stone", true, true), Some(false));
+        assert_eq!(a(2, "minecraft:stone", true, false), Some(false));
+        assert_eq!(a(2, "minecraft:stone", true, true), Some(true));
         assert_eq!(a(3, "minecraft:iron_ingot", true, true), Some(false));
         assert_eq!(a(4, "ntm:upgrade_speed_1", true, true), Some(true));
         assert_eq!(a(4, "ntm:upgrade_speed_1", true, false), Some(false));
+        assert_eq!(a(4, "minecraft:stone", true, true), Some(false));
         assert_eq!(a(0, "x", false, false), Some(false));
         assert_eq!(a(3, "x", false, false), Some(true));
         assert_eq!(a(0, "x", false, true), Some(true));
         assert_eq!(allows("ntm:machine_press", 0, "x", true, true), None);
+        let c = |slot, item, insert, manual| allows(COMBINATION, slot, item, insert, manual);
+        assert_eq!(c(0, "minecraft:coal", true, false), Some(true));
+        assert_eq!(c(0, "minecraft:stone", true, false), Some(false));
+        assert_eq!(c(2, "minecraft:bucket", true, true), Some(true));
+        assert_eq!(c(2, "minecraft:bucket", true, false), Some(false));
+        assert_eq!(c(3, "minecraft:bucket", true, true), Some(false));
+        assert_eq!(c(1, "x", false, false), Some(true));
+        assert_eq!(c(2, "x", false, false), Some(false));
     }
 
     #[test]

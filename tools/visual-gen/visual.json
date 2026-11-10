@@ -36495,7 +36495,231 @@
     },
     "ntm:furnace_combination": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFurnaceCombo, GUIFurnaceCombo 176x186 (processing/gui_furnace_combination.png): input (26,36), output (89,36), empty container (136,18), full container (136,54); the progress and heat bars and the 16x52 tank at (118,18); FurnaceCombination.getDimensions {1,0,1,1,1,1} offset 1, TileEntityProxyCombo().inventory().fluid(): every dummy cell reaches the inventory and the fluids",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 36
+          },
+          {
+            "x": 89,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 136,
+            "y": 18
+          },
+          {
+            "x": 136,
+            "y": 54,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 5,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -1,
+              0,
+              -1
+            ],
+            [
+              -1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              1
+            ],
+            [
+              -1,
+              1,
+              -1
+            ],
+            [
+              -1,
+              1,
+              0
+            ],
+            [
+              -1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              -1
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              -1
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              0,
+              -1
+            ],
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1
+            ],
+            [
+              1,
+              1,
+              -1
+            ],
+            [
+              1,
+              1,
+              0
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_furnace_combination.png",
+        "texture_from": "textures/gui/processing/gui_furnace_combination.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          92
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max_value": 20000,
+            "rect": [
+              45,
+              37,
+              38,
+              5
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 1,
+            "max_value": 100000,
+            "rect": [
+              45,
+              46,
+              37,
+              5
+            ],
+            "uv": [
+              176,
+              5
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              118,
+              18,
+              16,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              44,
+              36,
+              39,
+              7
+            ],
+            "lines": [
+              "{0} / 20000 TU"
+            ]
+          },
+          {
+            "rect": [
+              44,
+              45,
+              39,
+              7
+            ],
+            "lines": [
+              "{1} / 100000 TU"
+            ]
+          },
+          {
+            "rect": [
+              118,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_sawmill": {
       "auto": false,

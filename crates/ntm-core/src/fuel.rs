@@ -201,6 +201,95 @@ impl Module {
     }
 }
 
+/// Every item that burns in a furnace (`burn_time > 0`), for the shift-click
+/// of a menu that moves fuel to its fuel slot (`TileEntityFurnace.isItemFuel`).
+pub fn fuels() -> Vec<String> {
+    let mut out: Vec<String> = [
+        "coal",
+        "charcoal",
+        "coal_block",
+        "stick",
+        "blaze_rod",
+        "lava_bucket",
+        "crafting_table",
+        "chest",
+        "trapped_chest",
+        "bookshelf",
+        "jukebox",
+        "note_block",
+    ]
+    .iter()
+    .map(|p| format!("minecraft:{p}"))
+    .collect();
+    for w in WOODS {
+        for suffix in [
+            "planks",
+            "log",
+            "wood",
+            "stem",
+            "hyphae",
+            "fence",
+            "fence_gate",
+            "door",
+            "trapdoor",
+            "pressure_plate",
+            "slab",
+            "sapling",
+        ] {
+            out.push(format!("minecraft:{w}_{suffix}"));
+            if matches!(suffix, "log" | "wood" | "stem" | "hyphae") {
+                out.push(format!("minecraft:stripped_{w}_{suffix}"));
+            }
+        }
+    }
+    for tool in ["sword", "pickaxe", "axe", "shovel", "hoe"] {
+        out.push(format!("minecraft:wooden_{tool}"));
+    }
+    for p in [
+        "solid_fuel",
+        "solid_fuel_presto",
+        "solid_fuel_presto_triplet",
+        "solid_fuel_bf",
+        "solid_fuel_presto_bf",
+        "solid_fuel_presto_triplet_bf",
+        "rocket_fuel",
+        "biomass",
+        "biomass_compressed",
+        "powder_coal",
+        "scrap",
+        "dust",
+        "block_scrap",
+        "powder_fire",
+        "lignite",
+        "powder_lignite",
+        "coke__coal",
+        "coke__lignite",
+        "coke__petroleum",
+        "block_coke__coal",
+        "block_coke__lignite",
+        "block_coke__petroleum",
+        "book_guide",
+        "coal_infernal",
+        "coal_eternal",
+        "crystal_coal",
+        "powder_sawdust",
+        "briquette__coal",
+        "briquette__lignite",
+        "briquette__wood",
+        "powder_ash__wood",
+        "powder_ash__misc",
+        "powder_ash__soot",
+        "powder_ash__coal",
+        "powder_ash__fly",
+    ] {
+        out.push(format!("ntm:{p}"));
+    }
+    out.retain(|i| burn_time(i) > 0);
+    out.sort();
+    out.dedup();
+    out
+}
+
 /// `getContainerItem` of a fuel that has used up its last item.
 pub fn container_item(item: &str) -> Option<&'static str> {
     (item == "minecraft:lava_bucket").then_some("minecraft:bucket")
@@ -302,6 +391,25 @@ mod tests {
                 .burn_time("minecraft:oak_slab"),
             187
         );
+    }
+
+    #[test]
+    fn the_fuel_list_is_what_burns() {
+        let all = fuels();
+        assert!(all.len() > 60, "{}", all.len());
+        assert!(all.iter().all(|i| burn_time(i) > 0));
+        for i in [
+            "minecraft:coal",
+            "minecraft:oak_planks",
+            "minecraft:oak_slab",
+            "ntm:coke__coal",
+            "ntm:solid_fuel",
+            "minecraft:lava_bucket",
+            "minecraft:wooden_axe",
+        ] {
+            assert!(all.contains(&i.to_string()), "{i}");
+        }
+        assert!(!all.contains(&"minecraft:iron_door".to_string()));
     }
 
     #[test]

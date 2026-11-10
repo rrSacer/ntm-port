@@ -1,0 +1,95 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_furnace_combination.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    92
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max_value": 20000,
+      "rect": [
+        45,
+        37,
+        38,
+        5
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 1,
+      "max_value": 100000,
+      "rect": [
+        45,
+        46,
+        37,
+        5
+      ],
+      "uv": [
+        176,
+        5
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        118,
+        18,
+        16,
+        52
+      ],
+      "color": 4,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        44,
+        36,
+        39,
+        7
+      ],
+      "lines": [
+        "{0} / 20000 TU"
+      ]
+    },
+    {
+      "rect": [
+        44,
+        45,
+        39,
+        7
+      ],
+      "lines": [
+        "{1} / 100000 TU"
+      ]
+    },
+    {
+      "rect": [
+        118,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{2} / {3} mB"
+      ]
+    }
+  ]
+}

@@ -45,7 +45,7 @@ impl Server {
                 r.loaded.get(*k) == Some(&true)
                     && match &m.data {
                         Data::Boiler(_) | Data::Coker(_) => true,
-                        Data::Furnace(f) => matches!(**f, crate::furnaces::Furnace::Steel(_)),
+                        Data::Furnace(f) => matches!(**f, crate::furnaces::Furnace::Steel(_) | crate::furnaces::Furnace::Combination(_)),
                         Data::SolarStirling(s) => matches!(**s, crate::solar_stirling::SolarStirling::Stirling(_)),
                         Data::Firebox(f) => f.oven,
                         Data::Heater(h) => matches!(**h, Heater::Electric(_)),
@@ -64,6 +64,7 @@ impl Server {
                 Some(Data::Coker(c)) => c.pull_heat(source),
                 Some(Data::Furnace(f)) => match &mut **f {
                     crate::furnaces::Furnace::Steel(s) => s.pull_heat(source),
+                    crate::furnaces::Furnace::Combination(s) => s.pull_heat(source),
                     _ => 0,
                 },
                 Some(Data::Firebox(f)) => f.pull_heat(source),
