@@ -1223,7 +1223,7 @@ def mb_place(g, kind, fire=True):
     from native_furnaces import core_of as find_core
     x, y, z = MB_AT
     g.close()
-    g.ground(x - 3, y, z, width=10)
+    g.ground(x - 3, y, z, width=10, depth=10)
     g.command('clear @s')
     item, marker = MB_BLOCK[kind]
     g.command(f'give @s {item} 1')
@@ -1380,7 +1380,7 @@ def mb_break_prepare(g):
     if VANILLA:
         x, y, z = MB_AT
         g.close()
-        g.ground(x - 3, y, z, width=10)
+        g.ground(x - 3, y, z, width=10, depth=10)
         g.command('clear @s')
         g.command(f'setblock {x} {y} {z} minecraft:chest')
         for n, (item, count, _) in enumerate(loads):
