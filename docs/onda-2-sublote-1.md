@@ -204,6 +204,24 @@ máquina, então as listas de slot por célula da soldadora (`getAccessibleSlots
 viram uma só; sem os itens de identificador de fluido (o tanque toma o tipo do
 primeiro fluido que entra, como nos demais).
 
+## Serra: recorte proposto (sem a API de entidades)
+
+`TileEntitySawmill.java` mistura três coisas. O que dá para entregar agora, fiel
+ao Java, e o que fica como lacuna nominal:
+
+| Parte | Linhas | Recorte |
+| --- | --- | --- |
+| Calor do bloco de baixo (`tryPullHeat`, 10 % do calor guardado, vira zero a cada tick), progresso `calor/10` por tick acima de 100 de calor, 600 de tempo, as 4 receitas (tronco → 6 tábuas, tábua → 6 gravetos, graveto → serragem, muda → 1 graveto) e a serragem com 50 % / 10 % | 63-97, 190-244 | **Entregue** (mesma infraestrutura de calor dos fornos de aço e de combinação). |
+| Clique no bloco: pôr um item, recolher as saídas, repor a lâmina (`ntm:sawblade`) | `MachineSawmill.onBlockActivated` 83-130 | **Entregue** pela mesma regra de slots (só entra 1 item por vez e só com os três slots vazios, `isItemValidForSlot` 190-193). |
+| Sobrevelocidade: calor > 300 por mais de 60 ticks avisa (som), por mais de 300 ticks tira a lâmina e explode (`newExplosion` de força 5) | 99-128 | **Entregue** a explosão, a perda da lâmina e o aviso pelos helpers de explosão que o port já usa; a lâmina vira o item `ntm:sawblade` caído no chão (o `EntitySawblade.interactFirst` devolve exatamente esse item ao jogador). |
+| Lâmina como entidade que voa e mata (`EntitySawblade`, dano `rubble` 1000, giblets) e o dano `turbofan` 100 a qualquer ser vivo na caixa da lâmina enquanto serra (81-95) | 81-95, `EntitySawblade` | **Lacuna nominal** até a API de entidades: nenhuma entidade é ferida nem a lâmina voa. |
+| Bloco sem lâmina (`ItemStack` com dano 1) | `MachineSawmill.onBlockPlacedBy`, `getDrops` | **Lacuna nominal**: o port não tem variante por metadado; um bloco sem lâmina solta o bloco comum. |
+
+Confirmado no `roadmap-100`: a poluição/fuligem está registrada como sistema
+inexistente (linha "Poluição", 4 tipos Java: SOOT, POISON, HEAVYMETAL, FALLOUT) e
+a Onda 1 traz "ashpit/fuligem básica", a Onda 3 "resíduos/gases/poluição"; as
+lacunas de fuligem e de cinzeiro deste sublote ficam nominais para elas.
+
 ## Estado
 
 | # | ID | Estado |
