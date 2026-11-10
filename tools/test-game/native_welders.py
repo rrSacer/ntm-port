@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""The arc welder and the soldering station (docs/onda-2-sublote-1.md) on a disposable native world.
+
+arc        two steel plates and two dense red-copper wires into two motors (100 ticks, 400 HE a tick) on a
+           creative battery; with a speed-3 upgrade it takes 50 ticks, so 60 ticks make the motors and the
+           output is taken by shift-click; a hopper over a dummy cell feeds the inputs;
+solder     an analog circuit board from 3 vacuum tubes + 2 capacitors, 4 pcb and 4 lead wires; a hand cannot
+           put a stone in a topping slot (`SlotNonRetarded` asks `isItemValidForSlot`).
+Time passes with `tick sprint`; no machine state is injected.
+"""
+import os
+import re
+import sys
+import time
+from native_game import Game
+from native_combustion import machine_state
+
+X, Z = 40, 8
+
+
+def count(slots, item):
+    return sum(s.get('count', 0) for s in slots if s.get('item') == item)
+
+
+def sprint(g, ticks):
+    g.command(f'tick sprint {ticks}')
+    deadline = time.monotonic() + 600
+    while time.monotonic() < deadline:
+        if 'sprint' not in ' '.join(g.command('tick query').get('chat', [])).lower():
+            return
+        time.sleep(.5)
+
+
+def core_of(g, around, marker):
+    x0, y0, z0 = around
+    for dx in range(-2, 3):
+        for dy in range(-1, 3):
+            for dz in range(-2, 3):
+                if marker in machine_state(g, (x0 + dx, y0 + dy, z0 + dz)):
+                    return (x0 + dx, y0 + dy, z0 + dz)
+    raise AssertionError('no machine with ' + marker)
+
+
+def open_any(g, cells):
+    """Opens the screen through the first of `cells` (dummy cells of the multiblock) a player can click."""
+    g.close()
+    for cell in cells:
+        g.command(f'tp @s {cell[0] + .5} 100 {cell[2] + 3.5}')
+        time.sleep(1)
+        for _ in range(2):
+            g.ctl(f'interact {cell[0]} {cell[1]} {cell[2]} south')
+            deadline = time.monotonic() + 4
+            while time.monotonic() < deadline:
+                if g.ctl('screen').get('screen') == 'container':
+                    return cell
+                time.sleep(.4)
+            g.close()
+    raise AssertionError('no cell opened the screen: ' + str(cells))
+
+
+def place(g, block, marker, x, y, z):
+    g.close()
+    g.ground(x, y, z, width=8)
+    g.command('clear @s')
+    g.command(f'give @s {block} 1')
+    time.sleep(.5)
+    g.ctl(f'place {x} {y} {z} --item {block}')
+    time.sleep(1.5)
+    return core_of(g, (x, y, z), marker)
+
+
+def arc(g):
+    core = place(g, 'ntm:machine_arc_welder', '"Arc"', X, 100, Z)
+    cells = [(core[0] + dx, core[1] + dy, core[2] + dz) for dy in (1, 0) for dz in (1, 0) for dx in (0, -1, 1)]
+    cell = open_any(g, cells)
+    g.check('arc_menu_open', True, {'core': core, 'cell': cell})
+    g.put('ntm:plate_steel', 2, 0)
+    g.put('ntm:wire_dense__red_copper', 2, 1)
+    g.put('ntm:battery_creative', 1, 4)
+    g.put('ntm:upgrade_speed_3', 1, 6)
+    g.snapshot('welders-arc-loaded')
+    sprint(g, 60)
+    slots = g.slots()
+    # 100 ticks without the upgrade; 50 with speed 3: only the upgrade makes the motors in 60.
+    g.check('arc_two_motors_with_the_upgrade', count(slots, 'ntm:motor') == 2, slots)
+    g.check('arc_inputs_consumed', count(slots, 'ntm:plate_steel') == 0 and count(slots, 'ntm:wire_dense__red_copper') == 0, slots)
+    g.ctl('click-slot 303 shift')
+    g.close()
+    inv = g.ctl('inventory').get('counts', {})
+    g.check('arc_motors_taken', inv.get('ntm:motor') == 2, inv)
+    # A hopper over the cell above the core feeds the inputs (`isItemValidForSlot`: slot < 3).
+    top = (core[0], core[1] + 2, core[2])
+    g.command(f'setblock {top[0]} {top[1]} {top[2]} minecraft:hopper[facing=down]')
+    g.command(f'setblock {top[0]} {top[1] + 1} {top[2]} minecraft:chest')
+    g.command(f'item replace block {top[0]} {top[1] + 1} {top[2]} container.0 with ntm:plate_steel 2')
+    g.command(f'item replace block {top[0]} {top[1] + 1} {top[2]} container.1 with ntm:wire_dense__red_copper 2')
+    sprint(g, 200)
+    open_any(g, cells)
+    slots = g.slots()
+    g.check('arc_hopper_fed_and_welded_again', count(slots, 'ntm:motor') == 2, slots)
+    g.close()
+
+
+def solder(g):
+    x = X + 14
+    core = place(g, 'ntm:machine_soldering_station', '"Solder"', x, 100, Z)
+    cells = [(core[0] + dx, core[1], core[2] + dz) for dz in (1, 0) for dx in (0, -1)]
+    open_any(g, cells)
+    # A stone is no topping: the hand is refused in the first topping slot.
+    g.command('give @s minecraft:stone 1')
+    time.sleep(.5)
+    screen = g.ctl('screen')
+    src = next(s['slot'] for s in screen['slots'] if s['slot'] < 36 and s.get('item') == 'minecraft:stone')
+    g.ctl(f'click-slot {src}')
+    g.ctl('click-slot 300')
+    screen = g.ctl('screen')
+    g.check('stone_refused_in_a_topping_slot', not any(s['slot'] == 300 and s.get('item') for s in screen['slots']), screen)
+    g.ctl(f'click-slot {src}')
+    g.command('clear @s minecraft:stone')
+    g.put('ntm:circuit__vacuum_tube', 3, 0)
+    g.put('ntm:circuit__capacitor', 2, 1)
+    g.put('ntm:circuit__pcb', 4, 3)
+    g.put('ntm:wire_fine__lead', 4, 5)
+    g.put('ntm:battery_creative', 1, 7)
+    g.snapshot('welders-solder-loaded')
+    sprint(g, 130)
+    slots = g.slots()
+    g.check('solder_one_analog_board', count(slots, 'ntm:circuit__analog') == 1, slots)
+    g.check('solder_inputs_consumed', count(slots, 'ntm:circuit__pcb') == 0 and count(slots, 'ntm:wire_fine__lead') == 0, slots)
+    g.close()
+
+
+if __name__ == '__main__':
+    g = Game(sys.argv[1], 'welders-' + sys.argv[2])
+    mode = sys.argv[2]
+    g.evidence['phase'] = mode
+    g.ctl('wait-ready 120')
+    {'arc': arc, 'solder': solder, 'all': lambda g: [f(g) for n, f in (('arc', arc), ('solder', solder)) if n in os.environ.get('NTM_WELDERS_ONLY', 'arc,solder').split(',')]}[mode](g)
+    g.evidence['ok'] = True
+    g.save()

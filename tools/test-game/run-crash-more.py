@@ -58,6 +58,8 @@ HIDDEN = {'frozen-break': 12, 'frozen-unload': 12}
 def items_of(scenario):
     if scenario == 'furnace-smelt':
         return ('minecraft:raw_iron', 'minecraft:iron_ingot')
+    if scenario == 'welder-run':
+        return ('ntm:plate_steel', 'ntm:motor')
     if scenario in EMITTING:
         return EMITTING[scenario][0]
     return ('ntm:niter',) if scenario in BROKEN and scenario not in HIDDEN else ('ntm:pile_rod',)
@@ -85,6 +87,7 @@ DEFAULT_POINTS = {
     # The mixer's chunk first (`live_chunk`): a cut after the first record of a batch hits another chunk in the control.
     'break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'furnace-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'welder-run': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'furnace-smelt': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'replace': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'frozen-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'chunks_written', 'entities_written'],

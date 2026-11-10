@@ -1120,6 +1120,54 @@ def smelt_verify(g, again=False):
     g.check('the_furnace_is_alive', machine_present(g, SMELT), got)
 
 
+# `welder-run`: an arc welder making motors on a creative battery, killed at a boundary of a save while it works:
+# steel plates + motors stay the 40 that went in (each weld turns 2 plates and 2 wires into 2 motors).
+WELD = (140, 100, 8)
+
+
+def weld_prepare(g):
+    from native_welders import place, open_any
+    g.ctl('wait-ready 120')
+    g.close()
+    core = place(g, 'ntm:machine_arc_welder', '"Arc"', *WELD)
+    cells = [(core[0] + dx, core[1] + dy, core[2] + dz) for dy in (1, 0) for dz in (1, 0) for dx in (0, -1, 1)]
+    open_any(g, cells)
+    g.put('ntm:plate_steel', 40, 0)
+    g.put('ntm:wire_dense__red_copper', 40, 1)
+    g.put('ntm:battery_creative', 1, 4)
+    g.close()
+    sprint(g, 250)
+    got = smelt_counts(g, core)
+    g.check('welding_before_the_base_save', got.get('ntm:motor', 0) > 0 and got.get('ntm:plate_steel', 0) > 0, got)
+    g.evidence['core'] = list(core)
+    g.ctl('save')
+
+
+def weld_core(g):
+    import json as _json
+    return tuple(_json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['core'])
+
+
+def weld_act(g):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 300)
+    g.evidence['after_act'] = smelt_counts(g, weld_core(g))
+    save_expecting_death(g)
+
+
+def weld_verify(g, again=False):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    core = weld_core(g)
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
+    quiet(g, 6)
+    got = smelt_counts(g, core)
+    plates, motors = got.get('ntm:plate_steel', 0), got.get('ntm:motor', 0)
+    counted(g, 'plates_and_motors_are_40', {'total': plates + motors, 'expected': 40, 'items': got}, again)
+    g.check('the_welder_is_alive', machine_present(g, core), got)
+
+
 def drain(g):
     g.ctl('wait-ready 120')
     g.ctl('save')
@@ -1144,6 +1192,7 @@ STEPS = {
     'break': (break_prepare, break_act, break_verify),
     'furnace-break': (break_prepare, break_act, break_verify),
     'furnace-smelt': (smelt_prepare, smelt_act, smelt_verify),
+    'welder-run': (weld_prepare, weld_act, weld_verify),
     'frozen-break': (frozen_break_prepare, frozen_break_act, frozen_break_verify),
     'frozen-unload': (frozen_break_prepare, frozen_unload_act, frozen_break_verify),
     'replace': (break_prepare, break_act, break_verify),
