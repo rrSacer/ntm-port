@@ -1400,7 +1400,7 @@ impl ServerHost for Host<'_, '_> {
             };
             if cell.as_ref().filter(|s|s.count>0&&&*s.item!="minecraft:air").map(item_snbt)!=e.expected{return false;}
             let old=cell.take();
-            *cell=item(e.desired.as_ref(),old.or_else(||e.desired.as_ref().and_then(&template)));
+            *cell=item(e.desired.as_ref(),old.or_else(||e.desired.as_ref().and_then(template)));
         }
         let mut drops=Vec::new();
         for (s,mode) in &t.drops{
