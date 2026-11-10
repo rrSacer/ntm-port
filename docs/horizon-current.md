@@ -1026,6 +1026,7 @@ Binário release `horizon-client` SHA-256 `abbd98a934ddf5fbb3a278746ceb87e295c2c
 | Motor | 7/7 testes de `mod_multiblocks` (um novo: a busca dos outros multiblocos não cresce com coluna carregada) |
 | NTM debug | lib 522 (2 ignorados) e 47 de integração (todos os alvos menos `save_model`); 9 testes do T02 |
 | `save_model` (release) | 11/11 |
-| Clippy | `ntm-core` todos os alvos `-D warnings`: 0 avisos |
+| Clippy | `ntm-core` todos os alvos `-D warnings`, glue (`horizon-client`, `horizon-client-lib`, release, no stage de `06bf7ffe5c`) e `horizon-world` lib+testes: 0 avisos |
 | Mutações novas | sem a corrente para baixo (P1-1): 2 testes falham; migração com `set_blocks` em vez de escritas próprias: o teste da migração falha |
 | J em jogo | 29/29 e, após reabrir, 4/4; inclui o canal com barra e tampa cujo dummy do meio sai por `/setblock` (coluna inteira some, barra +1, tampa +1, item da coluna 0) e a tampa da chave contada em chão + inventário |
+| C em jogo, duas execuções | `kill`, `kv_committed`, `players_saved`, `live_chunk:2,0`: 4/4 em cada, NTM igual ao controle item a item nas duas reaberturas: 5 = 5 (4 tampas, 1 barra) em `kill` e `players_saved`; 4 = 4 em `kv_committed` e 2 = 2 em `live_chunk:2,0` (a última escrita que o vanilla também perde). O ato agora inclui o canal D com barra e tampa cujo dummy do meio sai por `/setblock` (no controle, o barril quebrado com `destroy`) |
