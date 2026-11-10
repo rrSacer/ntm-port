@@ -170,5 +170,38 @@
    }
   ]
  },
- "note": "The harness waits in wall-clock time; run3 took 26 min under load and its snapshots fall later (more barrels emptied, 14 depleted rods instead of 11). Run2 equals the references on every reference-constant check."
+ "note": "The harness waits in wall-clock time; run3 took 26 min under load and its snapshots fall later (more barrels emptied, 14 depleted rods instead of 11). Run2 equals the references on every reference-constant check.",
+ "checks_per_run_note": "checks_per_run counts the names in each run (136 each); 183 was the union of names over the seven runs",
+ "state_wait_run": {
+  "commit": "e91d5eb3",
+  "checks": 136,
+  "all_ok": true,
+  "reference_constant": 84,
+  "differ": [
+   "setup:insert_ntm:fluid_barrel_full__water_2",
+   "automation:automation_has_active_and_naturally_converted_rods",
+   "automation:automation_hopper_menu",
+   "automation:automation_only_converted_rods_extracted",
+   "automation:automation_rod_conservation",
+   "capture-state:still_running_at_close"
+  ],
+  "debris": {
+   "survivor_delta": [
+    20,
+    10,
+    10,
+    10,
+    13,
+    0
+   ],
+   "created_delta": [
+    20,
+    10,
+    10,
+    10,
+    20,
+    2
+   ]
+  }
+ }
 }

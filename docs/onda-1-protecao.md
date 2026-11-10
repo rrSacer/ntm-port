@@ -280,7 +280,8 @@ pendentes. Teste: `mycelium_irradiates_without_debris_and_decon_ends_it`.
 ### Regressão do ZIRNOX (commit `68102b17` e motor corrigido)
 
 Três rodadas completas do cenário `zirnox` com o binário "depois" (motor `130153a4ac`, NTM com `68102b17`), comparadas
-checagem por checagem com quatro rodadas de referência de outras frentes. As 183 checagens passam nas três. Das 85
+checagem por checagem com quatro rodadas de referência de outras frentes. Cada rodada tem 136 checagens (183 nomes
+na união das sete, porque alguns nomes levam o número do passo); as 136 passam nas três. Das 85
 checagens que dão o mesmo valor nas quatro referências, a rodada 2 é igual em todas, a rodada 1 difere só no número de
 barris que o tanque já tinha esvaziado no instante do retrato, e a rodada 3 (26 minutos sob carga, contra 7 a 8) difere em
 11, todas consequência de retratar instantes mais tardios (mais barris vazios, 14 barras esgotadas em vez de 11). O harness
@@ -292,6 +293,11 @@ preparação, conversão e automação) e uma parou ao ler a vida da barra do sl
 guardado: causa não determinada (um clique perdido deixaria a barra no cursor). Pendência nominal: se reaparecer,
 investigar com o log, que o loop agora guarda. Evidência: `docs/evidence/onda1-f3/zirnox-regression.json`.
 
+Com a espera por estado (decisão do coordenador, `e91d5eb3`: menu aberto em vez de 0,7 s fixos, e a transferência
+do funil em ticks), a primeira tentativa fechou completa: 136 de 136. Das 84 checagens constantes nas referências, 6
+diferem, todas do instante do retrato (barris esvaziados, barras esgotadas na automação, calor no fechamento), como na
+rodada lenta; destroços criados `[20, 10, 10, 10, 20, 2]` e não destrutivos `20, 10, 10, 10` exatos.
+
 ### Famílias em jogo no binário final e regressão completa de `items`
 
 No binário final (motor `130153a4ac`, bundle no `HEAD` da branch), as famílias desta frente passam:
@@ -299,12 +305,16 @@ No binário final (motor `130153a4ac`, bundle no `HEAD` da branch), as famílias
 filtro porque os três cliques de instalação se perderam sob carga (filtro ainda na mão, sem erro no log); repetida, passou.
 Evidência: `docs/evidence/onda1-f3/items-families-final.json`.
 
-**Pendência nominal: a regressão completa de `items` não fechou.** Três tentativas com carga de 25 a 48 pararam em
-checagens de tempo dos consumíveis da `main`, antes de chegar às famílias desta frente: `cancel_does_not_consume`
-(inventário lido vazio antes da sincronização; depois, o algodão-doce consumido porque o servidor completou os 32 ticks
-antes de receber o botão solto, que o harness solta 0,45 s depois) e `vegan_schnitzel_java_effects` (os três efeitos
-certos, lidos 97 ticks depois do consumo contra uma tolerância de 80). Repetir com a máquina mais livre, ou o
-coordenador decide se o harness desses consumíveis passa a esperar em ticks.
+**Pendência nominal: a regressão completa de `items` não fechou.** Decisão do coordenador (10/11): as checagens
+de tempo dos consumíveis esperam em ticks do servidor, não em tempo de parede. Feito em `bb52e814`: os
+cancelamentos (algodão-doce, lata, BDCL) seguram por uma contagem de ticks com o servidor a 5 ticks por segundo,
+porque o controlador espera a thread do cliente, que sob carga leva mais de 1 s por comando, e repetem a tentativa
+cuja soltura chegou depois que o uso podia terminar. A checagem de comida espera a comida baixar. Os efeitos do
+algodão-doce são lidos do servidor, porque o cliente conta a 20 ticks por segundo enquanto o servidor anda a 5. O
+schnitzel vegano é comido por ticks e comparado à duração do Java menos os ticks passados. `use(segundos)` segura
+segundos × 20 ticks. Tolerância explícita: `SYNC_TICKS = 10`. Essas checagens passam (cancelamento com 17 ticks
+segurando, comida com 45). A regressão completa ainda para em outras esperas de parede de famílias da `main` (a
+lata vazia que cai do último RadAway, lida 0,8 s depois do clique). Converter o restante é decisão do coordenador.
 
 ### Contrato do catálogo do T00 (RBMK) e os stats de armadura
 
