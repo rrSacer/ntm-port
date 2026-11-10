@@ -99,7 +99,7 @@ def dictionary(resolver):
 def export(source, output, rows):
     resolver = ShredderResolver(source, rows); ores, ore_sources = dictionary(resolver)
     text = clean((source / RECIPE_PATH).read_text()); start = text.index('public void registerDefaults()'); end = text.index('public static ItemStack getDustByName', start)
-    enum_values = enums(source / 'src/main/java/com/hbm'); skipped = []; collisions = []; exact = {}; wildcard = {}
+    enum_values = enums(source / 'src/main/java/com/hbm'); skipped = []; no_output = []; collisions = []; exact = {}; wildcard = {}
     def put(ident, result, origin, phase, **extra):
         row = {'name': 'shredder.' + ident.replace(':', '.'), 'input': {'ids': [ident], 'count': 1}, 'outputs': [list(result)], 'source': origin, 'phase': phase, **extra}
         table = wildcard if extra.get('wildcard_fallback') else exact
@@ -163,7 +163,8 @@ def export(source, output, rows):
             # Default preferredOutputMod=[hbm]: first NTM output, otherwise first registration.
             dust = next((ident for ident in candidates if ident.startswith('ntm:')), candidates[0] if candidates else None)
             if dust is None or dust == 'ntm:scrap':
-                skipped.append({'phase': 'post', 'ore_key': key, 'source': RECIPE_PATH + ':38-95', 'reason': 'getDustByName returns scrap: no available dust registration', 'inputs': matches})
+                # Java getDustByName returns scrap and putIfValid never runs: the source emits no recipe.
+                no_output.append({'phase': 'post', 'ore_key': key, 'source': RECIPE_PATH + ':38-95', 'reason': 'getDustByName returns scrap: no dust<Material> OreDict entry, so the source emits no recipe', 'inputs': matches})
                 continue
             count = 2 if prefix == 'ore' else 9 if prefix == 'block' and (ores.get('ingot' + material) or ores.get('gem' + material)) else 4 if prefix == 'block' else 1
             result = (dust, count)
@@ -187,8 +188,8 @@ def export(source, output, rows):
         blades.append({'id': resolver.row(var), 'durability': int(match[1]), 'unbreakable': match[1] == '0', 'source': 'src/main/java/com/hbm/items/ModItems.java:' + str(items[:match.start()].count('\n') + 1)})
     body = {'schema': 1, 'machine': 'shredder', 'profile': {'external_mods': [], 'preferred_output_mod': ['ntm'], 'modern_vanilla_ore_variants': False},
             'precedence': 'registerDefaults then registerPost; first insertion per source key wins (setRecipe:417-420); exact metadata lookup precedes wildcard fallback (getShredderResult)',
-            'fallback_output': ['ntm:scrap', 1], 'blades': blades, 'coverage': {'emitted': len(exact), 'explicit_calls': calls_seen, 'ore_keys': len(ores), 'skipped': len(skipped), 'collisions_kept_first': len(collisions)},
-            'recipes': sorted(exact.values(), key=lambda row: row['input']['ids'][0]), 'skipped': skipped, 'collisions': collisions}
+            'fallback_output': ['ntm:scrap', 1], 'blades': blades, 'coverage': {'emitted': len(exact), 'explicit_calls': calls_seen, 'ore_keys': len(ores), 'skipped': len(skipped), 'no_output': len(no_output), 'collisions_kept_first': len(collisions)},
+            'recipes': sorted(exact.values(), key=lambda row: row['input']['ids'][0]), 'skipped': skipped, 'no_output': no_output, 'collisions': collisions}
     target = output / 'machine-recipes/shredder.json'; target.parent.mkdir(parents=True, exist_ok=True)
     # This large table is generated for machine ingestion, including full
     # provenance/collision records; compact JSON avoids repeating indentation.

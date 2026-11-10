@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "ntm:m1_gneiss_asbestos",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 1,
+    "separation": 0,
+    "salt": 2167306,
+    "spread_type": "linear"
+  }
+}

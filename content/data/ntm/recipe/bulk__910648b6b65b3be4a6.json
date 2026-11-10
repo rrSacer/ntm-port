@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:barbed_wire_ultradeath",
+    "count": 4
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BCB",
+    "CIC",
+    "BCB"
+  ],
+  "key": {
+    "B": "ntm:barbed_wire",
+    "C": "ntm:powder_yellowcake",
+    "I": "ntm:nuclear_waste"
+  }
+}

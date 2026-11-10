@@ -1079,7 +1079,10 @@
    "translate": null
   },
   "renderer": "RenderFan",
-  "tile_entity": "TileEntityFan"
+  "tile_entity": "TileEntityFan",
+  "unread": [
+   "case 2 turns about x or z"
+  ]
  },
  "ntm:fire_door": {
   "class": "BlockDoorGeneric",
@@ -2176,6 +2179,7 @@
   "renderer": "RenderDemonLamp",
   "tile_entity": "TileEntityDemonLamp",
   "unread": [
+   "case 2 turns about x or z",
    "model or texture not in ResourceManager"
   ]
  },
@@ -10908,6 +10912,7 @@
   "renderer": "RenderPipeAnchor",
   "tile_entity": "TileEntityFluidPipeAnchor",
   "unread": [
+   "case 2 turns about x or z",
    "model or texture not in ResourceManager"
   ]
  },
@@ -10916,6 +10921,7 @@
   "renderer": "RenderPipeAnchor",
   "tile_entity": "TileEntityPipeExhaustAnchor",
   "unread": [
+   "case 2 turns about x or z",
    "model or texture not in ResourceManager"
   ]
  },
@@ -10924,6 +10930,7 @@
   "renderer": "RenderPipeAnchor",
   "tile_entity": "TileEntityPneumaticPipeAnchor",
   "unread": [
+   "case 2 turns about x or z",
    "model or texture not in ResourceManager"
   ]
  },
@@ -10942,7 +10949,10 @@
    "translate": null
   },
   "renderer": "RenderPistonInserter",
-  "tile_entity": "TileEntityPistonInserter"
+  "tile_entity": "TileEntityPistonInserter",
+  "unread": [
+   "case 2 turns about x or z"
+  ]
  },
  "ntm:plushie": {
   "class": "BlockPlushie",
@@ -12414,7 +12424,10 @@
    "translate": null
   },
   "renderer": "RenderConnector",
-  "tile_entity": "TileEntityConnector"
+  "tile_entity": "TileEntityConnector",
+  "unread": [
+   "case 2 turns about x or z"
+  ]
  },
  "ntm:red_connector_super": {
   "class": "ConnectorRedWireSuper",
@@ -12428,7 +12441,10 @@
    "translate": null
   },
   "renderer": "RenderConnectorSuper",
-  "tile_entity": "TileEntityConnectorSuper"
+  "tile_entity": "TileEntityConnectorSuper",
+  "unread": [
+   "case 2 turns about x or z"
+  ]
  },
  "ntm:red_pylon": {
   "class": "PylonRedWire",

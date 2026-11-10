@@ -1622,6 +1622,42 @@
       }
     },
     {
+      "id": "ntm:bulk__e37077692f22eacda9",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:445",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:barbed_wire",
+        "count": 16
+      }
+    },
+    {
+      "id": "ntm:bulk__4762a11c7f1e43166c",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:446",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:barbed_wire_fire",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__57613dcf241605bf93",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:447",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:barbed_wire_poison",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__910648b6b65b3be4a6",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:450",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:barbed_wire_ultradeath",
+        "count": 4
+      }
+    },
+    {
       "id": "ntm:bulk__775506d104d10211e6",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:458",
       "type": "minecraft:crafting_shaped",
@@ -1835,6 +1871,15 @@
       "result": {
         "id": "ntm:crystal_horn",
         "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__8574e743b4c58e8671",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:568",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:fluid_duct_neo",
+        "count": 8
       }
     },
     {
@@ -2501,6 +2546,294 @@
       "result": {
         "id": "ntm:rbmk_blank",
         "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__4188138020a5600259",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:793",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_sturdy",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__5522cf8180fd7ce906",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:794",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_gold",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__46d510e55333197655",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:795",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_copper",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__18e2e45b017b31ebd1",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:796",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_titanium",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__d874fdc09ed68f909a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:797",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:ladder_steel",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__866ba81095706b1053",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:804",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:deco_pipe",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__97c85b8e1dc52ab228",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:805",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:deco_pipe",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__9cd747400889295c99",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:806",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:deco_pipe",
+        "count": 1
+      }
+    },
+    {
+      "id": "ntm:bulk__3b847dd9c4afcd0784",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:808",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__309fde6856aca18893",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:809",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad",
+        "count": 4
+      }
+    },
+    {
+      "id": "ntm:bulk__2306860b65586edd5f",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:810",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__3d775eeddae44c4fa0",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:811",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__c1808664b6dee558ed",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:813",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__76b066b57f10c3db75",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:814",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__b262084d152314e69d",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:815",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__2d93e517fb77ce7eae",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:816",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__81ba673c46a155d165",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:817",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_green",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__2fe0e54cf51617441a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:818",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_green",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__0a4a5c65966f36473b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:819",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_green",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__801a26f3b61fc53b8a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:820",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_green",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__440048f8e138cc3124",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:821",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_green_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__8f32276c47202c0978",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:822",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_green_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__8f833c26c333fd587b",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:823",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_green_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__3053020d71ac3a695c",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:824",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_green_rusted",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__44539e5971df76d8f5",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:825",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__ecd85e94fb695412f7",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:826",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__5939b080445c0eb964",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:827",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__66f8838a68042860ca",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:828",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_red",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__62c8daaa2632a2f90e",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:829",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_marked",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__c77d62c245ef54e115",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:830",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_rim_marked",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__36dbf85783316c1e81",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:831",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_quad_marked",
+        "count": 8
+      }
+    },
+    {
+      "id": "ntm:bulk__23b282c955f0d64d5a",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:832",
+      "type": "minecraft:crafting_shaped",
+      "result": {
+        "id": "ntm:deco_pipe_framed_marked",
+        "count": 8
       }
     },
     {
@@ -8381,7 +8714,7 @@
       }
     }
   ],
-  "generated_count": 931,
+  "generated_count": 968,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -9080,40 +9413,16 @@
       "expression": "new ItemStack(ModBlocks.floodlight, 2), new Object[] { \"CSC\", \"TST\", \"G G\", 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.CAPACITOR), 'S', STEEL.plate(), 'T', ModItems.coil_tungsten, 'G', KEY_ANYPANE }"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:445",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire",
-      "expression": "new ItemStack(ModBlocks.barbed_wire, 16), new Object[] { \"AIA\", \"I I\", \"AIA\", 'A', STEEL.wireFine(), 'I', IRON.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:446",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_fire",
-      "expression": "new ItemStack(ModBlocks.barbed_wire_fire, 8), new Object[] { \"BBB\", \"BIB\", \"BBB\", 'B', ModBlocks.barbed_wire, 'I', P_RED.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:447",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_poison",
-      "expression": "new ItemStack(ModBlocks.barbed_wire_poison, 8), new Object[] { \"BBB\", \"BIB\", \"BBB\", 'B', ModBlocks.barbed_wire, 'I', ModItems.powder_poison }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:448",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_acid",
+      "reason": "dynamic/unsupported metadata Fluids.PEROXIDE.getID()",
       "expression": "new ItemStack(ModBlocks.barbed_wire_acid, 8), new Object[] { \"BBB\", \"BIB\", \"BBB\", 'B', ModBlocks.barbed_wire, 'I', new ItemStack(ModItems.fluid_tank_full, 1, Fluids.PEROXIDE.getID()) }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:449",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_wither",
+      "reason": "unsupported vanilla metadata Items.skull:1",
       "expression": "new ItemStack(ModBlocks.barbed_wire_wither, 8), new Object[] { \"BBB\", \"BIB\", \"BBB\", 'B', ModBlocks.barbed_wire, 'I', new ItemStack(Items.skull, 1, 1) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:450",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item barbed_wire_ultradeath",
-      "expression": "new ItemStack(ModBlocks.barbed_wire_ultradeath, 4), new Object[] { \"BCB\", \"CIC\", \"BCB\", 'B', ModBlocks.barbed_wire, 'C', ModItems.powder_yellowcake, 'I', ModItems.nuclear_waste }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:452",
@@ -9450,12 +9759,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item crystal_pulsar",
       "expression": "new ItemStack(ModBlocks.crystal_pulsar, 32), new Object[] { \"STS\", \"THT\", \"STS\", 'S', ModItems.cell_uf6, 'T', AL.dust(), 'H', ModItems.crystal_charred }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:568",
-      "callee": "addRecipeAuto",
-      "reason": "missing subtype fluid_duct_neo:0",
-      "expression": "new ItemStack(ModBlocks.fluid_duct_neo, 8, 0), new Object[] { \"SAS\", \"   \", \"SAS\", 'S', STEEL.plate(), 'A', AL.plate() }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:569",
@@ -10064,36 +10367,6 @@
       "expression": "new ItemStack(ModItems.rtty_designator, 1), new Object[] {\"R\", \"C\", \"T\", 'R', ModBlocks.radio_torch_reader, 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.ANALOG), 'T', ModItems.rangefinder}"
     },
     {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:793",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_sturdy",
-      "expression": "new ItemStack(ModBlocks.ladder_sturdy, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', KEY_PLANKS }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:794",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_gold",
-      "expression": "new ItemStack(ModBlocks.ladder_gold, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', GOLD.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:795",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_copper",
-      "expression": "new ItemStack(ModBlocks.ladder_copper, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', CU.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:796",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_titanium",
-      "expression": "new ItemStack(ModBlocks.ladder_titanium, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', TI.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:797",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item ladder_steel",
-      "expression": "new ItemStack(ModBlocks.ladder_steel, 8), new Object[] { \"LLL\", \"L#L\", \"LLL\", 'L', Blocks.ladder, '#', STEEL.ingot() }"
-    },
-    {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:799",
       "callee": "addShapelessAuto",
       "reason": "missing vanilla 26.3 item trapdoor",
@@ -10108,170 +10381,8 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:803",
       "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe",
+      "reason": "unresolved ore dictionary STEEL.pipe()",
       "expression": "new ItemStack(ModBlocks.deco_pipe, 6), new Object[] { \"PP\", 'P', STEEL.pipe() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:804",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe",
-      "expression": "new ItemStack(ModBlocks.deco_pipe, 1), new Object[] { ModBlocks.deco_pipe_rim }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:805",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe",
-      "expression": "new ItemStack(ModBlocks.deco_pipe, 1), new Object[] { ModBlocks.deco_pipe_framed }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:806",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe",
-      "expression": "new ItemStack(ModBlocks.deco_pipe, 1), new Object[] { ModBlocks.deco_pipe_quad }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:808",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', STEEL.plate() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:809",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad, 4), new Object[] { \"PP\", \"PP\", 'P', ModBlocks.deco_pipe }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:810",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', Blocks.iron_bars }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:811",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim, 'C', Blocks.iron_bars }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:813",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:814",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:815",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:816",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:817",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_green",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_green, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:818",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_green",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_green, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:819",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_green",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_green, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:820",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_green",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_green, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:821",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_green_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_green_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_green, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:822",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_green_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_green_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim_green, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:823",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_green_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_green_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad_green, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:824",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_green_rusted",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_green_rusted, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed_green, 'C', IRON.dust() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:825",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_red",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_red, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe, 'C', KEY_RED }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:826",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_red",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_red, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim, 'C', KEY_RED }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:827",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_red",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_red, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad, 'C', KEY_RED }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:828",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_red",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_red, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed, 'C', KEY_RED }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:829",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_marked",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_green, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:830",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_rim_marked",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_rim_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_rim_green, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:831",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_quad_marked",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_quad_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_quad_green, 'C', KEY_GREEN }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:832",
-      "callee": "addRecipeAuto",
-      "reason": "unregistered/ambiguous source item deco_pipe_framed_marked",
-      "expression": "new ItemStack(ModBlocks.deco_pipe_framed_marked, 8), new Object[] { \"PPP\", \"PCP\", \"PPP\", 'P', ModBlocks.deco_pipe_framed_green, 'C', KEY_GREEN }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:837",
@@ -10858,13 +10969,13 @@
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:1067",
       "callee": "addRecipeAuto",
-      "reason": "missing subtype cm_flux:0",
+      "reason": "unsupported recipe ingredient array",
       "expression": "new ItemStack(ModBlocks.cm_flux, 1, 0), \"NNN\", \"ZCZ\", \"NNN\", 'Z', ZR.plateCast(), 'N', ModItems.neutron_reflector, 'C', ModItems.reactor_core"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:1068",
       "callee": "addRecipeAuto",
-      "reason": "missing subtype cm_heat:0",
+      "reason": "unsupported recipe ingredient array",
       "expression": "new ItemStack(ModBlocks.cm_heat, 1, 0), \"PCP\", \"PCP\", \"PCP\", 'P', ModItems.plate_polymer, 'C', CU.ingot()"
     },
     {

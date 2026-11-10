@@ -4,14 +4,16 @@ import argparse,collections,hashlib,importlib.util,json,os,socket,subprocess,tem
 from pathlib import Path
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parents[1];E=ROOT/'content-gen-evidence/worldgen';E.mkdir(parents=True,exist_ok=True)
 spec=importlib.util.spec_from_file_location('scan',HERE/'world-scan.py');scan=importlib.util.module_from_spec(spec);spec.loader.exec_module(scan)
-PACKER='/home/sacer/Games/horizon/target/release/cargo-horizon-mod'
+PACKER=os.environ.get('HORIZON_MOD','/home/sacer/.cache/ntm-native-main/target/release/cargo-horizon-mod')
 def request(root,line,label):
  with socket.socket(socket.AF_UNIX) as sock:
   sock.settimeout(45);sock.connect(str(root/'ctl.sock'));sock.sendall((line+'\n').encode());reply=json.loads(sock.makefile().readline())
  with (E/(label+'-control.jsonl')).open('a') as f:f.write(json.dumps({'command':line,'reply':reply})+'\n')
  return reply
 
-def server(label,package):
+DIMENSIONS={'overworld':('','dimensions/minecraft/overworld'),'nether':('execute in minecraft:the_nether run ','dimensions/minecraft/the_nether')}
+
+def server(label,package,dimension='overworld'):
  root=Path(tempfile.mkdtemp(prefix='ntm-m1-'+label+'-'))
  for name in ['game','launcher','data','config']:(root/name).mkdir()
  for options in [root/'options.txt',root/'game/options.txt']:options.write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\n')
@@ -19,18 +21,18 @@ def server(label,package):
  (root/'server.properties').write_text('online-mode=false\nserver-port=25731\nlevel-seed=1768123\nview-distance=2\nsimulation-distance=2\nspawn-chunk-radius=0\nhorizon-pregen=true\npause-when-empty-seconds=0\n')
  (E/(label+'-home.txt')).write_text(str(root)+'\n')
  env=os.environ|{'HORIZON_HOME':str(root/'game'),'HORIZON_LAUNCHER_HOME':str(root/'launcher'),'XDG_DATA_HOME':str(root/'data'),'XDG_CONFIG_HOME':str(root/'config'),'HORIZON_NO_AUDIO':'1','HORIZON_NO_UPDATE_CHECK':'1','HORIZON_LAUNCHER_NO_SELF_UPDATE':'1'}
- args=['/home/sacer/Games/horizon/target/release/horizon-client','--resources','/home/sacer/Games/horizon/.local/horizon-client/26.3','--dev-mod',str(package),'--control-socket',str(root/'ctl.sock'),'--dedicated','--nogui']
+ args=['/home/sacer/.cache/ntm-native-main/target/release/horizon-client','--resources','/home/sacer/Games/horizon/.local/horizon-client/26.3','--dev-mod',str(package),'--control-socket',str(root/'ctl.sock'),'--dedicated','--nogui']
  with (E/(label+'.log')).open('w') as log:
   process=subprocess.Popen(args,cwd=root,env=env,stdout=log,stderr=subprocess.STDOUT)
   try:
-   for _ in range(240):
+   for _ in range(3600):
     if process.poll() is not None:raise RuntimeError(f'{label} server exited {process.returncode}')
     if (root/'ctl.sock').exists():
      try:request(root,'server-status',label);break
      except (OSError,ValueError):pass
     time.sleep(.5)
    else:raise TimeoutError('server start')
-   print(label,request(root,'console pregen start 128 square 0 0',label),flush=True)
+   print(label,request(root,'console '+DIMENSIONS[dimension][0]+'pregen start 128 square 0 0',label),flush=True)
    for _ in range(300):
     time.sleep(1);reply=request(root,'console pregen status',label)
     if 'No pregeneration' in str(reply) or '100%' in str(reply) or 'not running' in str(reply).lower():break
@@ -40,7 +42,7 @@ def server(label,package):
    if process.returncode:raise RuntimeError(f'{label}: exit {process.returncode}')
   finally:
    if process.poll() is None:process.terminate();process.wait(timeout=30)
- return root/'world/dimensions/minecraft/overworld'
+ return root/'world'/DIMENSIONS[dimension][1]
 
 def summarize(world,label):
  ores,chunks=scan.ore_map(world,(-4,4,-4,4));entries=sorted([list(p)+[n] for p,n in ores.items()]);counts=dict(collections.Counter(ores.values()))
@@ -81,9 +83,26 @@ def diagnostic(batch):
  (E/f'target-bands-{batch}.json').write_text(json.dumps(bands,indent=2)+'\n')
  return dest/'target/horizon-mod/ntm.hmod',bands
 
+def dimension_check(dimension,package):
+ import worldgen
+ if dimension=='nether':specs=[s for s in worldgen.EXTRA if s['material'].startswith('nether_')]
+ else:specs=json.loads((HERE/'m1.json').read_text())['worldgen']+[s for s in worldgen.EXTRA if s['material'].startswith('gneiss_')]
+ world=server(f'{dimension}-check',package,dimension);ores,chunks=scan.ore_map(world,(-4,4,-4,4))
+ rows=[]
+ for spec in specs:
+  ys=[y for (x,y,z),n in ores.items() if n==spec['block']]
+  inside=sum(1 for y in ys if spec['min_y']-spec['size']<=y<=spec['max_y']+spec['size'])
+  rows.append({'block':spec['block'],'blocks':len(ys),'blocks_per_chunk':round(len(ys)/max(1,len(chunks)),3),'declared_attempts':spec['attempts_per_chunk'],'size':spec['size'],'y_declared':[spec['min_y'],spec['max_y']],'y_observed':[min(ys),max(ys)] if ys else None,'within_y_tolerance':inside==len(ys)})
+ declared={s['block'] for s in specs}
+ result={'dimension':dimension,'seed':1768123,'chunks':len(chunks),'rows':rows,'ntm_ores_not_declared':sorted({n for n in ores.values() if n not in declared}),'pass':all(r['within_y_tolerance'] for r in rows)}
+ (E/f'{dimension}-check.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
+ return result
+
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('--diagnostic',action='store_true');args=parser.parse_args()
- if args.diagnostic:
+ parser=argparse.ArgumentParser();parser.add_argument('--diagnostic',action='store_true');parser.add_argument('--dimension',choices=['overworld','nether']);parser.add_argument('--package',type=Path,default=ROOT/'content/target/horizon-mod/ntm.hmod');args=parser.parse_args()
+ if args.dimension:
+  if not dimension_check(args.dimension,args.package)['pass']:raise RuntimeError(f'{args.dimension} check failed')
+ elif args.diagnostic:
   materials=['stone','deepslate','dirt','andesite','bedrock','air']
   counts={m:collections.Counter() for m in materials};outside=[];total_chunks=0
   for batch in range(4):

@@ -51,6 +51,7 @@
     "ntm:rod_zirnox_thorium_fuel_depleted",
     "ntm:rod_zirnox_zfb_mox_depleted",
     "ntm:solid_fuel_bf",
-    "ntm:solid_fuel_presto_triplet_bf"
+    "ntm:solid_fuel_presto_triplet_bf",
+    "ntm:waste_plate_ra226be"
   ]
 }

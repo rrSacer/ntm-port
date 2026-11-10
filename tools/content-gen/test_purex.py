@@ -121,21 +121,21 @@ class PurexContracts(unittest.TestCase):
         self.assertEqual(self.purex['machine'], 'purex')
         cov = self.purex['coverage']
         self.assertEqual(cov['scanned_source_calls'], 59)
-        self.assertEqual(cov['emitted'], 37)
-        self.assertEqual(cov['skipped_source_calls'], 22)
+        self.assertEqual(cov['emitted'], 54)
+        self.assertEqual(cov['skipped_source_calls'], 5)
         self.assertEqual(
             cov['by_family'],
             {
                 'synthesis': {'emitted': 3, 'skipped': 0},
                 'pile': {'emitted': 4, 'skipped': 0},
-                'zirnox': {'emitted': 0, 'skipped': 9},
-                'plate': {'emitted': 0, 'skipped': 7},
+                'zirnox': {'emitted': 9, 'skipped': 0},
+                'plate': {'emitted': 7, 'skipped': 0},
                 'pwr': {'emitted': 15, 'skipped': 0},
                 'molten_salt': {'emitted': 1, 'skipped': 0},
                 'watz': {'emitted': 10, 'skipped': 2},
                 'icf': {'emitted': 1, 'skipped': 0},
                 'vitrification': {'emitted': 0, 'skipped': 3},
-                'schrabidium': {'emitted': 3, 'skipped': 1},
+                'schrabidium': {'emitted': 4, 'skipped': 0},
             },
         )
 
@@ -250,15 +250,8 @@ class PurexContracts(unittest.TestCase):
 
         # Verify that duplicate outputs (like zirnoxles listing nuclear_waste_tiny twice)
         # remain two separate entries rather than being merged, when the input item exists.
-        synthetic_rows = list(self.rows.values()) + [
-            {
-                'id': 'ntm:waste_schrabidium',
-                'source_variable': 'waste_schrabidium',
-                'type': 'item',
-                'category': 'component',
-                'names': {'en_us': 'Depleted Schrabidium ZIRNOX Rod', 'pt_br': 'Haste ZIRNOX de Schrabídio Esgotada'},
-            }
-        ]
+        # waste_schrabidium is a real catalog identity now (catalog_t4), so no synthetic row is needed.
+        synthetic_rows = list(self.rows.values())
         with tempfile.TemporaryDirectory(prefix='ntm-purex-dup-') as tmp:
             synthetic = export(SOURCE, Path(tmp), synthetic_rows)
             zirnoxles = next(r for r in synthetic['recipes'] if r['name'] == 'purex.zirnoxles')
