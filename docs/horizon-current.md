@@ -987,8 +987,14 @@ Nenhuma mudança no `ntm-core`. Os dez scripts locais do usuário continuam byte
 As provas e medições rodaram no release `horizon-client` SHA-256
 `45e273b01484bbaa23a53cfc28b7d5dca9e87470c45848d6f9379dfd7ed131b8` (motor `b7db6d985`, mixins `5a64af938`, Recipes
 `d16065094`). O release final, nos pins finais (motor `a8dc3409f`, NTM `650133d0`; as duas mudanças não alteram
-comportamento), é `26c81d42f8a1a513484a2f21f093dc49b9ea0ba95f18936deb78404d7c5823c6`; nele foi repetida uma bateria de
-confirmação (abaixo). Pacote `dist/ntm.hmod` `9ab18eac…3cee0aa`, reempacotado com o
+comportamento), é `26c81d42f8a1a513484a2f21f093dc49b9ea0ba95f18936deb78404d7c5823c6`. A bateria de confirmação nele **não
+passou inteira**: sob carga média de 30 a 100 (CPUs divididas com as outras frentes), items, dims, bombs e pile deram
+rc=1 na primeira rodada paralela; em série, items e dims de novo; o controle do `frozen-break kv_committed` estrito não
+completou a ação (`player/chunks not ready`). Uma por vez com `NTM_GAME_WIDE=1`: dims, bombs, stations, mining e o
+`frozen-break kv_committed` passaram; items, pile e zirnox falharam, cada execução num check diferente, e o **R7c
+falhou nos três** nas mesmas condições, alternado com o novo (items no mesmo `thrown_container_waits_its_pickup_delay`,
+pile no parser de status, zirnox no enchimento do tanque). Classificação: tempo/carga, nos dois binários; não regressão.
+A seção "Correções da revisão" registra a bateria refeita. Pacote `dist/ntm.hmod` `9ab18eac…3cee0aa`, reempacotado com o
 `cargo-horizon-mod` desse release e idêntico byte a byte ao do R7c (o conteúdo não mudou).
 
 | Grupo | Resultado |
@@ -1013,9 +1019,11 @@ acrescentado nesta rodada, fora do conjunto padrão do cenário), é um corte po
 o NTM não gravou o chunk das hastes (12/12), o controle gravou (2/2); sem perda nem duplicação, mas o roteiro de
 `frozen-break` não tem o pareamento de cortes do `original`.
 
-**Provas do save, modo eager** (comportamento real, critério novo): `kill`/`kv_committed` passam em `original`
-(2 = 2, iguais ao controle), `frozen-unload` (12 = 12) e `frozen-break` (**12/12 contra 2/12 do controle: melhor que o
-controle**, porque a passada eager pegou o chunk da máquina antes da quebra e o do baú depois). Os cortes dentro do save
+**Modo eager — evidência, não prova** (comportamento real, critério novo): o resultado L/D depende do instante em que a
+passada de cada mundo rodou, então **não prova** nada sobre o save; a prova é o modo estrito acima. Observado:
+`kill`/`kv_committed` em `original` 2 = 2, `frozen-unload` 12 = 12 e `frozen-break` 12/12 contra 2/12 do controle (a
+passada eager pegou o chunk da máquina antes da quebra, ficando em cooldown, e o do baú depois; não é efeito do gancho).
+Relatórios por ponto em `crash/eager-reports/*.points.jsonl`. Os cortes dentro do save
 (`save_begin`, `live_chunk`, `region_record`, `entities_written`) não são comparáveis com eager ligado: a passada do
 controle já gravou o chunk do baú, o `live_chunk` nunca dispara no controle e o índice de registro cai em outros
 chunks. Em nenhum deles o NTM teve menos itens que o controle ou mais que a base. Esses cortes ficam provados no modo
@@ -1046,11 +1054,11 @@ mede o custo absoluto do gancho; a mediana de 6 rodadas por execução e o máxi
 R7c) são sensíveis a picos de outras tarefas. O critério do R7c (pior tick < ~35 ms com as frentes paradas) fica por
 medir numa janela quieta.
 
-**`audio-lifecycle`**: alternando os dois binários três vezes cada sob a mesma carga (24–54), **R7c 0/3 e novo 0/3**,
-quase sempre no mesmo check (`arc_lid_slot_creates_channel`: o canal da tampa do forno a arco é criado e parado antes
-de o mixer de diagnóstico tocar uma amostra, porque a tampa fica em movimento um só tick de cliente entre consultas).
-Sob carga o cenário não distingue os binários; os checks anteriores de ciclo de vida (centrífuga criada, pitch no mesmo
-canal, destruída, motores) passaram com `Ticking::Native`. Falta repeti-lo numa máquina quieta.
+**`audio-lifecycle`**: alternando os dois binários três vezes cada sob a mesma carga (24–54), **R7c 0/3 e novo 0/3**.
+As falhas do novo foram `arc_lid_slot_creates_channel` (o canal da tampa é criado e parado antes de o mixer de
+diagnóstico tocar uma amostra), `active_pitch_changes_on_same_channel` e `message_receipt_precedes_nuclear_playback`; as
+do R7c, a tampa. Dois desses checks tinham erro do roteiro (revisor, P3-1): o log nuclear era lido antes de o som tocar,
+e a rampa do pitch (0,51 → 1,0 em 25 ticks) já podia estar no topo na primeira amostra. Corrigidos em `99eef2b5`.
 
 ### Limitações e pendências
 
