@@ -306,6 +306,17 @@ antes de receber o botão solto, que o harness solta 0,45 s depois) e `vegan_sch
 certos, lidos 97 ticks depois do consumo contra uma tolerância de 80). Repetir com a máquina mais livre, ou o
 coordenador decide se o harness desses consumíveis passa a esperar em ticks.
 
+### Contrato do catálogo do T00 (RBMK) e os stats de armadura
+
+A fatia 1 mudou de propósito 20 entradas do catálogo que já existiam na foto do T00 (`81a210d4`): as peças de
+`steel`, `titanium`, `alloy`, `cobalt` e `starmetal`, nos campos `components`, `equipment_gap` e `max_damage` (pontos de
+armadura, durabilidade e lacuna de equipamento do Java). O teste
+`test_rbmk_oracle.test_catalog_identity_stack_and_previous_content_are_unchanged` exigia o `ids.json` igual à foto.
+Decisão do coordenador (10/11, opção A): toda entrada da foto continua presente e na mesma ordem relativa; as identidades
+do próprio RBMK (as 105 que `rbmk_catalog.build` gera: colunas, consoles, painéis, destroços, barras e pastilhas) continuam
+idênticas. A foto não foi atualizada e o gerador não mudou. Mutações: mudar o nome de `ntm:rbmk_rod` falha, tirar
+`ntm:deco_rbmk` falha, mudar a durabilidade de `ntm:steel_plate` passa.
+
 ## Defeito do motor: anexos do dono num save no meio da sessão
 
 Achado pela re-revisão da fatia 1 e diagnosticado por sonda (anexo `ntm:item_state`, sem a mesa):

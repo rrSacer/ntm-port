@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 
+import rbmk_catalog
 import reactors_rbmk
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -198,10 +199,24 @@ class ExecutableRbmkOracle(unittest.TestCase):
         self.assertTrue(smooth['enabled_default_profile'])
 
     def test_catalog_identity_stack_and_previous_content_are_unchanged(self):
-        for relative in ('content/ids.json', 'tools/content-gen/rbmk_catalog.py'):
-            before = subprocess.check_output(['git', 'show', '81a210d4:' + relative], cwd=ROOT)
-            self.assertEqual(before, (ROOT / relative).read_bytes(), relative)
+        # Coordinator's decision of 10/11/2026 (option A): the catalog may grow and other fronts may
+        # correct entries outside the RBMK; Onda 1 slice 1 set the Java armor points, durability and
+        # equipment gap of the steel, titanium, alloy, cobalt and starmetal sets on purpose. Every entry
+        # of the T00 snapshot stays present and in the same relative order; the RBMK's own identities
+        # (rbmk_catalog.build: columns, consoles, panels, debris, rods, pellets) stay identical.
+        before = json.loads(subprocess.check_output(['git', 'show', '81a210d4:content/ids.json'], cwd=ROOT))['entries']
         entries = json.loads((ROOT / 'content/ids.json').read_text())['entries']
+        remaining = iter(e['id'] for e in entries)
+        for old in before:
+            self.assertIn(old['id'], remaining, old['id'])
+        rbmk = {r['id'] if ':' in r['id'] else 'ntm:' + r['id'] for r in rbmk_catalog.build(SOURCE)}
+        now = {e['id']: e for e in entries}
+        kept = [old for old in before if old['id'] in rbmk]
+        self.assertEqual(len(kept), 105)
+        for old in kept:
+            self.assertEqual(old, now[old['id']], old['id'])
+        before_bytes = subprocess.check_output(['git', 'show', '81a210d4:tools/content-gen/rbmk_catalog.py'], cwd=ROOT)
+        self.assertEqual(before_bytes, (ROOT / 'tools/content-gen/rbmk_catalog.py').read_bytes())
         for rod in self.exported['rods']:
             entry = next(r for r in entries if r['id'] == rod['item'])
             self.assertEqual(entry['max_stack_size'], rod['max_stack_size'])
