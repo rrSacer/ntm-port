@@ -66,6 +66,10 @@
       "value": 0.05,
       "source": "handler/HazmatRegistry.java:124"
     },
+    "ntm:gas_mask": {
+      "value": 0.07,
+      "source": "handler/HazmatRegistry.java:110"
+    },
     "ntm:gas_mask_m65": {
       "value": 0.095,
       "source": "handler/HazmatRegistry.java:111"
@@ -106,6 +110,22 @@
       "value": 0.3,
       "source": "handler/HazmatRegistry.java:75"
     },
+    "ntm:hazmat_paa_boots": {
+      "value": 0.17,
+      "source": "handler/HazmatRegistry.java:95"
+    },
+    "ntm:hazmat_paa_helmet": {
+      "value": 0.34,
+      "source": "handler/HazmatRegistry.java:92"
+    },
+    "ntm:hazmat_paa_legs": {
+      "value": 0.51,
+      "source": "handler/HazmatRegistry.java:94"
+    },
+    "ntm:hazmat_paa_plate": {
+      "value": 0.68,
+      "source": "handler/HazmatRegistry.java:93"
+    },
     "ntm:hazmat_plate": {
       "value": 0.24,
       "source": "handler/HazmatRegistry.java:69"
@@ -117,6 +137,30 @@
     "ntm:hazmat_plate_red": {
       "value": 0.4,
       "source": "handler/HazmatRegistry.java:74"
+    },
+    "ntm:jackt": {
+      "value": 0.1,
+      "source": "handler/HazmatRegistry.java:107"
+    },
+    "ntm:jackt2": {
+      "value": 0.1,
+      "source": "handler/HazmatRegistry.java:108"
+    },
+    "ntm:liquidator_boots": {
+      "value": 0.24,
+      "source": "handler/HazmatRegistry.java:86"
+    },
+    "ntm:liquidator_helmet": {
+      "value": 0.48,
+      "source": "handler/HazmatRegistry.java:83"
+    },
+    "ntm:liquidator_legs": {
+      "value": 0.72,
+      "source": "handler/HazmatRegistry.java:85"
+    },
+    "ntm:liquidator_plate": {
+      "value": 0.96,
+      "source": "handler/HazmatRegistry.java:84"
     },
     "ntm:starmetal_boots": {
       "value": 0.1,
@@ -169,26 +213,6 @@
   },
   "unported": [
     {
-      "java": "ModItems.liquidator_helmet",
-      "value": 0.48,
-      "source": "handler/HazmatRegistry.java:83"
-    },
-    {
-      "java": "ModItems.liquidator_plate",
-      "value": 0.96,
-      "source": "handler/HazmatRegistry.java:84"
-    },
-    {
-      "java": "ModItems.liquidator_legs",
-      "value": 0.72,
-      "source": "handler/HazmatRegistry.java:85"
-    },
-    {
-      "java": "ModItems.liquidator_boots",
-      "value": 0.24,
-      "source": "handler/HazmatRegistry.java:86"
-    },
-    {
       "java": "ModItems.paa_plate",
       "value": 0.68,
       "source": "handler/HazmatRegistry.java:88"
@@ -202,26 +226,6 @@
       "java": "ModItems.paa_boots",
       "value": 0.17,
       "source": "handler/HazmatRegistry.java:90"
-    },
-    {
-      "java": "ModItems.hazmat_paa_helmet",
-      "value": 0.34,
-      "source": "handler/HazmatRegistry.java:92"
-    },
-    {
-      "java": "ModItems.hazmat_paa_plate",
-      "value": 0.68,
-      "source": "handler/HazmatRegistry.java:93"
-    },
-    {
-      "java": "ModItems.hazmat_paa_legs",
-      "value": 0.51,
-      "source": "handler/HazmatRegistry.java:94"
-    },
-    {
-      "java": "ModItems.hazmat_paa_boots",
-      "value": 0.17,
-      "source": "handler/HazmatRegistry.java:95"
     },
     {
       "java": "ModItems.security_helmet",
@@ -242,21 +246,6 @@
       "java": "ModItems.security_boots",
       "value": 0.0825,
       "source": "handler/HazmatRegistry.java:100"
-    },
-    {
-      "java": "ModItems.jackt",
-      "value": 0.1,
-      "source": "handler/HazmatRegistry.java:107"
-    },
-    {
-      "java": "ModItems.jackt2",
-      "value": 0.1,
-      "source": "handler/HazmatRegistry.java:108"
-    },
-    {
-      "java": "ModItems.gas_mask",
-      "value": 0.07,
-      "source": "handler/HazmatRegistry.java:110"
     },
     {
       "java": "ModItems.cmb_helmet",
@@ -317,6 +306,271 @@
       "java": "ModItems.euphemium_boots",
       "value": 1.0,
       "source": "handler/HazmatRegistry.java:156"
+    },
+    {
+      "java": "ModItems.t51_helmet",
+      "value": 0.2,
+      "source": "items/ModItemsArmor.java:124 (setRadResist)"
+    },
+    {
+      "java": "ModItems.t51_plate",
+      "value": 0.4,
+      "source": "items/ModItemsArmor.java:133 (setRadResist)"
+    },
+    {
+      "java": "ModItems.t51_legs",
+      "value": 0.3,
+      "source": "items/ModItemsArmor.java:134 (setRadResist)"
+    },
+    {
+      "java": "ModItems.t51_boots",
+      "value": 0.1,
+      "source": "items/ModItemsArmor.java:135 (setRadResist)"
+    },
+    {
+      "java": "ModItems.steamsuit_helmet",
+      "value": 0.26,
+      "source": "items/ModItemsArmor.java:139 (setRadResist)"
+    },
+    {
+      "java": "ModItems.steamsuit_plate",
+      "value": 0.52,
+      "source": "items/ModItemsArmor.java:145 (setRadResist)"
+    },
+    {
+      "java": "ModItems.steamsuit_legs",
+      "value": 0.39,
+      "source": "items/ModItemsArmor.java:146 (setRadResist)"
+    },
+    {
+      "java": "ModItems.steamsuit_boots",
+      "value": 0.13,
+      "source": "items/ModItemsArmor.java:147 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ajr_helmet",
+      "value": 0.26,
+      "source": "items/ModItemsArmor.java:163 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ajr_plate",
+      "value": 0.52,
+      "source": "items/ModItemsArmor.java:173 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ajr_legs",
+      "value": 0.39,
+      "source": "items/ModItemsArmor.java:174 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ajr_boots",
+      "value": 0.13,
+      "source": "items/ModItemsArmor.java:175 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ajro_helmet",
+      "value": 0.26,
+      "source": "items/ModItemsArmor.java:177 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ajro_plate",
+      "value": 0.52,
+      "source": "items/ModItemsArmor.java:187 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ajro_legs",
+      "value": 0.39,
+      "source": "items/ModItemsArmor.java:188 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ajro_boots",
+      "value": 0.13,
+      "source": "items/ModItemsArmor.java:189 (setRadResist)"
+    },
+    {
+      "java": "ModItems.rpa_helmet",
+      "value": 0.4,
+      "source": "items/ModItemsArmor.java:191 (setRadResist)"
+    },
+    {
+      "java": "ModItems.rpa_plate",
+      "value": 0.8,
+      "source": "items/ModItemsArmor.java:202 (setRadResist)"
+    },
+    {
+      "java": "ModItems.rpa_legs",
+      "value": 0.6,
+      "source": "items/ModItemsArmor.java:203 (setRadResist)"
+    },
+    {
+      "java": "ModItems.rpa_boots",
+      "value": 0.2,
+      "source": "items/ModItemsArmor.java:204 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ncrpa_helmet",
+      "value": 0.34,
+      "source": "items/ModItemsArmor.java:206 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ncrpa_plate",
+      "value": 0.68,
+      "source": "items/ModItemsArmor.java:217 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ncrpa_legs",
+      "value": 0.51,
+      "source": "items/ModItemsArmor.java:218 (setRadResist)"
+    },
+    {
+      "java": "ModItems.ncrpa_boots",
+      "value": 0.17,
+      "source": "items/ModItemsArmor.java:219 (setRadResist)"
+    },
+    {
+      "java": "ModItems.bj_helmet",
+      "value": 0.2,
+      "source": "items/ModItemsArmor.java:223 (setRadResist)"
+    },
+    {
+      "java": "ModItems.bj_plate",
+      "value": 0.4,
+      "source": "items/ModItemsArmor.java:237 (setRadResist)"
+    },
+    {
+      "java": "ModItems.bj_plate_jetpack",
+      "value": 0.4,
+      "source": "items/ModItemsArmor.java:238 (setRadResist)"
+    },
+    {
+      "java": "ModItems.bj_legs",
+      "value": 0.3,
+      "source": "items/ModItemsArmor.java:239 (setRadResist)"
+    },
+    {
+      "java": "ModItems.bj_boots",
+      "value": 0.1,
+      "source": "items/ModItemsArmor.java:240 (setRadResist)"
+    },
+    {
+      "java": "ModItems.envsuit_helmet",
+      "value": 0.2,
+      "source": "items/ModItemsArmor.java:244 (setRadResist)"
+    },
+    {
+      "java": "ModItems.envsuit_plate",
+      "value": 0.4,
+      "source": "items/ModItemsArmor.java:250 (setRadResist)"
+    },
+    {
+      "java": "ModItems.envsuit_legs",
+      "value": 0.3,
+      "source": "items/ModItemsArmor.java:251 (setRadResist)"
+    },
+    {
+      "java": "ModItems.envsuit_boots",
+      "value": 0.1,
+      "source": "items/ModItemsArmor.java:252 (setRadResist)"
+    },
+    {
+      "java": "ModItems.hev_helmet",
+      "value": 0.45999999999999996,
+      "source": "items/ModItemsArmor.java:256 (setRadResist)"
+    },
+    {
+      "java": "ModItems.hev_plate",
+      "value": 0.9199999999999999,
+      "source": "items/ModItemsArmor.java:264 (setRadResist)"
+    },
+    {
+      "java": "ModItems.hev_legs",
+      "value": 0.69,
+      "source": "items/ModItemsArmor.java:265 (setRadResist)"
+    },
+    {
+      "java": "ModItems.hev_boots",
+      "value": 0.22999999999999998,
+      "source": "items/ModItemsArmor.java:266 (setRadResist)"
+    },
+    {
+      "java": "ModItems.fau_helmet",
+      "value": 0.8,
+      "source": "items/ModItemsArmor.java:273 (setRadResist)"
+    },
+    {
+      "java": "ModItems.fau_plate",
+      "value": 1.6,
+      "source": "items/ModItemsArmor.java:284 (setRadResist)"
+    },
+    {
+      "java": "ModItems.fau_legs",
+      "value": 1.2,
+      "source": "items/ModItemsArmor.java:285 (setRadResist)"
+    },
+    {
+      "java": "ModItems.fau_boots",
+      "value": 0.4,
+      "source": "items/ModItemsArmor.java:286 (setRadResist)"
+    },
+    {
+      "java": "ModItems.dns_helmet",
+      "value": 1.0,
+      "source": "items/ModItemsArmor.java:290 (setRadResist)"
+    },
+    {
+      "java": "ModItems.dns_plate",
+      "value": 2.0,
+      "source": "items/ModItemsArmor.java:304 (setRadResist)"
+    },
+    {
+      "java": "ModItems.dns_legs",
+      "value": 1.5,
+      "source": "items/ModItemsArmor.java:305 (setRadResist)"
+    },
+    {
+      "java": "ModItems.dns_boots",
+      "value": 0.5,
+      "source": "items/ModItemsArmor.java:306 (setRadResist)"
+    },
+    {
+      "java": "ModItems.taurun_helmet",
+      "value": 0.025,
+      "source": "items/ModItemsArmor.java:310 (setRadResist)"
+    },
+    {
+      "java": "ModItems.taurun_plate",
+      "value": 0.05,
+      "source": "items/ModItemsArmor.java:316 (setRadResist)"
+    },
+    {
+      "java": "ModItems.taurun_legs",
+      "value": 0.0375,
+      "source": "items/ModItemsArmor.java:317 (setRadResist)"
+    },
+    {
+      "java": "ModItems.taurun_boots",
+      "value": 0.0125,
+      "source": "items/ModItemsArmor.java:318 (setRadResist)"
+    },
+    {
+      "java": "ModItems.trenchmaster_helmet",
+      "value": 0.2,
+      "source": "items/ModItemsArmor.java:321 (setRadResist)"
+    },
+    {
+      "java": "ModItems.trenchmaster_plate",
+      "value": 0.4,
+      "source": "items/ModItemsArmor.java:331 (setRadResist)"
+    },
+    {
+      "java": "ModItems.trenchmaster_legs",
+      "value": 0.3,
+      "source": "items/ModItemsArmor.java:332 (setRadResist)"
+    },
+    {
+      "java": "ModItems.trenchmaster_boots",
+      "value": 0.1,
+      "source": "items/ModItemsArmor.java:333 (setRadResist)"
     }
   ],
   "cladding": {
@@ -341,5 +595,337 @@
       "source": "items/ModItems.java:2860"
     }
   },
-  "cladding_unported": []
+  "cladding_unported": [],
+  "classes": {
+    "ntm:asbestos_helmet": {
+      "classes": [
+        "SAND",
+        "LIGHT"
+      ],
+      "source": "util/ArmorUtil.java:55"
+    },
+    "ntm:ashglasses": {
+      "classes": [
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:51"
+    },
+    "ntm:attachment_mask": {
+      "classes": [
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:53"
+    },
+    "ntm:gas_mask": {
+      "classes": [
+        "SAND",
+        "LIGHT"
+      ],
+      "source": "util/ArmorUtil.java:45"
+    },
+    "ntm:gas_mask_filter": {
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "GAS_BLISTERING",
+        "BACTERIA"
+      ],
+      "source": "util/ArmorUtil.java:39"
+    },
+    "ntm:gas_mask_filter_combo": {
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "GAS_BLISTERING",
+        "BACTERIA",
+        "GAS_MONOXIDE"
+      ],
+      "source": "util/ArmorUtil.java:41"
+    },
+    "ntm:gas_mask_filter_mono": {
+      "classes": [
+        "PARTICLE_COARSE",
+        "GAS_MONOXIDE"
+      ],
+      "source": "util/ArmorUtil.java:40"
+    },
+    "ntm:gas_mask_filter_piss": {
+      "classes": [
+        "PARTICLE_COARSE",
+        "GAS_LUNG"
+      ],
+      "source": "util/ArmorUtil.java:43"
+    },
+    "ntm:gas_mask_filter_rag": {
+      "classes": [
+        "PARTICLE_COARSE"
+      ],
+      "source": "util/ArmorUtil.java:42"
+    },
+    "ntm:gas_mask_m65": {
+      "classes": [
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:46"
+    },
+    "ntm:goggles": {
+      "classes": [
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:50"
+    },
+    "ntm:hazmat_helmet": {
+      "classes": [
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:57"
+    },
+    "ntm:hazmat_helmet_grey": {
+      "classes": [
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:59"
+    },
+    "ntm:hazmat_helmet_red": {
+      "classes": [
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:58"
+    },
+    "ntm:hazmat_paa_helmet": {
+      "classes": [
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:60"
+    },
+    "ntm:liquidator_helmet": {
+      "classes": [
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:61"
+    },
+    "ntm:mask_piss": {
+      "classes": [
+        "PARTICLE_COARSE",
+        "GAS_LUNG"
+      ],
+      "source": "util/ArmorUtil.java:48"
+    },
+    "ntm:mask_rag": {
+      "classes": [
+        "PARTICLE_COARSE"
+      ],
+      "source": "util/ArmorUtil.java:47"
+    }
+  },
+  "classes_unported": [
+    {
+      "java": "ModItems.schrabidium_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:63"
+    },
+    {
+      "java": "ModItems.euphemium_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "util/ArmorUtil.java:64"
+    },
+    {
+      "java": "ModItems.t51_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:124 (setHazardClass FULL_NO_LIGHT)"
+    },
+    {
+      "java": "ModItems.steamsuit_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:139 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.ajr_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:163 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.ajro_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:177 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.rpa_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:191 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.ncrpa_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:206 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.envsuit_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:244 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.hev_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:256 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.fau_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:273 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.dns_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:290 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.taurun_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:310 (setHazardClass FULL_PACKAGE)"
+    },
+    {
+      "java": "ModItems.trenchmaster_helmet",
+      "classes": [
+        "PARTICLE_COARSE",
+        "PARTICLE_FINE",
+        "GAS_LUNG",
+        "BACTERIA",
+        "GAS_BLISTERING",
+        "GAS_MONOXIDE",
+        "LIGHT",
+        "SAND"
+      ],
+      "source": "items/ModItemsArmor.java:321 (setHazardClass FULL_PACKAGE)"
+    }
+  ],
+  "filters": [
+    "ntm:gas_mask_filter",
+    "ntm:gas_mask_filter_combo",
+    "ntm:gas_mask_filter_mono",
+    "ntm:gas_mask_filter_piss",
+    "ntm:gas_mask_filter_rag"
+  ]
 }

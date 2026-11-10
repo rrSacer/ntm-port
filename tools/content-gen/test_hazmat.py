@@ -49,8 +49,26 @@ class HazmatTable(unittest.TestCase):
         if 'jackt' not in IDS:
             self.assertEqual(unported['ModItems.jackt'], 0.1)
 
+    def test_the_hazard_classes(self):
+        # ArmorUtil.java:39-64 by item, then setHazardClass (external) for FSB helmets.
+        self.assertEqual(TABLE['classes']['ntm:gas_mask_filter_mono']['classes'], ['PARTICLE_COARSE', 'GAS_MONOXIDE'])
+        self.assertEqual(TABLE['classes']['ntm:mask_piss']['classes'], ['PARTICLE_COARSE', 'GAS_LUNG'])
+        self.assertEqual(TABLE['classes']['ntm:liquidator_helmet']['classes'], ['LIGHT', 'SAND'])
+        self.assertEqual(TABLE['classes']['ntm:gas_mask_m65']['classes'], ['SAND'])
+        self.assertEqual(len(TABLE['classes']) + len(TABLE['classes_unported']),
+                         len(re.findall(r'ArmorRegistry\.registerHazard\(ModItems\.', (JAVA / 'util/ArmorUtil.java').read_text()))
+                         + len(re.findall(r'\.setHazardClass\(', (JAVA / 'items/ModItemsArmor.java').read_text())))
+        self.assertEqual(TABLE['filters'], sorted(IDS[n] for n in re.findall(r'(\w+) = new ItemFilter\(', (JAVA / 'items/ModItems.java').read_text())))
+
+    def test_full_set_resistance_follows_clone_stats(self):
+        # ModItemsArmor.java: setRadResist(1D) on t51_helmet, cloned by the other three pieces.
+        unported = {u['java']: u['value'] for u in TABLE['unported']}
+        if 't51_plate' not in IDS:
+            self.assertEqual(unported['ModItems.t51_plate'], 1.0 * 0.4)
+            self.assertEqual(unported['ModItems.t51_boots'], 1.0 * 0.1)
+
     def test_nothing_the_catalog_has_is_left_unported(self):
-        for row in TABLE['unported'] + TABLE['cladding_unported']:
+        for row in TABLE['unported'] + TABLE['cladding_unported'] + TABLE['classes_unported']:
             self.assertNotIn(row['java'].split('.')[1], IDS, row['java'])
 
     def test_the_claddings(self):
