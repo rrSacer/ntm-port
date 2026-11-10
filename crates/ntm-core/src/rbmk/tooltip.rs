@@ -12,7 +12,8 @@ pub struct Line {
     pub args: Vec<String>,
 }
 
-const ITALIC: &str = "§o";
+/// The full name: `§o`, and the `§7` `GuiScreen.renderToolTip` puts before every line after the first.
+const GRAY_ITALIC: &str = "§7§o";
 const DARK_GREEN: &str = "§2";
 const GREEN: &str = "§a";
 const YELLOW: &str = "§e";
@@ -107,7 +108,7 @@ pub fn lines(rod: &RodType, s: &mut RodStack) -> Vec<Line> {
     let (t, x, degrees) = if drx { ("trait.rbmx", ".x", "m") } else { ("trait.rbmk", "", "°C") };
     let key = |k: &str| Some(format!("{t}.{k}"));
     let line = |style: &'static str, key: Option<String>, arg: String| Line { style, key, args: vec![arg] };
-    let mut out = vec![Line { style: ITALIC, key: None, args: vec![rod.full_name.to_string()] }];
+    let mut out = vec![Line { style: GRAY_ITALIC, key: None, args: vec![rod.full_name.to_string()] }];
     if s.hull_heat(rod) >= 50.0 || s.core_heat(rod) >= 50.0 {
         out.push(Line { style: GOLD, key: Some("desc.item.wasteCooling".into()), args: Vec::new() });
     }
@@ -204,7 +205,7 @@ mod tests {
         let mut s = RodStack::bare();
         let l = lines(rod, &mut s);
         // Fresh: no cooling hint (20 °C), no self-ignition (LOG_TEN, no self rate), 0 % depleted.
-        assert_eq!(l[0], Line { style: ITALIC, key: None, args: vec![rod.full_name.into()] });
+        assert_eq!(l[0], Line { style: GRAY_ITALIC, key: None, args: vec![rod.full_name.into()] });
         assert_eq!(l[1].key.as_deref(), Some("trait.rbmk.depletion"));
         assert_eq!(l[1].args, vec!["0.0%".to_string()]);
         assert_eq!(l[2].args, vec!["0.0%".to_string()]);
