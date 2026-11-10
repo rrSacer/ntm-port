@@ -117,23 +117,31 @@ fn item(slots: &Slots, i: usize) -> Option<&str> {
     slots.get(i).and_then(|s| s.as_ref()).map(|s| s.id.as_str())
 }
 
-/// `ItemFluidIDMulti`'s type in the stack's `custom_data` (`ntm_fluid`).
+/// `ItemFluidIDMulti`'s type in the stack's `custom_data` (`ntm_fluid`): `None` for a stack that is not an
+/// identifier, and for one that is the type it names, `""` (no fluid, `Fluids.NONE`) when it names none, an
+/// unknown fluid, or nothing at all (a bare identifier's `getType` is NONE).
 fn identifier_type(stack: &Stack) -> Option<String> {
     if stack.id != IDENTIFIER {
         return None;
     }
-    let custom = stack.custom.as_deref()?;
-    let rest = &custom[custom.find("ntm_fluid")? + "ntm_fluid".len()..];
-    let rest = &rest[rest.find('"')? + 1..];
-    let name = &rest[..rest.find('"')?];
-    fluid::get(name)
-        .filter(|t| t.id != 0)
-        .map(|t| t.string_id.clone())
+    let named = stack.custom.as_deref().and_then(|custom| {
+        let rest = &custom[custom.find("ntm_fluid")? + "ntm_fluid".len()..];
+        let rest = &rest[rest.find('"')? + 1..];
+        Some(&rest[..rest.find('"')?])
+    });
+    Some(
+        named
+            .and_then(fluid::get)
+            .filter(|t| t.id != 0)
+            .map(|t| t.string_id.clone())
+            .unwrap_or_default(),
+    )
 }
 
 /// `FluidTank.setType(slot, slots)`: the identifier in `slot` types the tank
-/// (the content goes with the old type). True when the type changed. `only`
-/// narrows the types the machine takes.
+/// (the content goes with the old type; an identifier of no type leaves the
+/// tank untyped and empty). True when the type changed. `only` narrows the
+/// types the machine takes (the gas turbine's combustible gases: NONE is not one).
 pub(crate) fn type_from_identifier(
     tank: &mut Tank,
     slots: &Slots,
@@ -1300,5 +1308,65 @@ mod tests {
             "the steam only leaves"
         );
         assert!(Combustion::of("ntm:machine_press").is_none());
+    }
+
+    /// An identifier stack, `custom` being its `custom_data` (`None`: a bare item).
+    fn identifier(custom: Option<&str>) -> Option<Stack> {
+        let mut id = Stack::new(IDENTIFIER, 1);
+        id.custom = custom.map(str::to_owned);
+        Some(id)
+    }
+
+    /// `FluidTank.setType(slot, slots)` takes the identifier's type even when it is NONE: `ItemFluidIDMulti.getType` of
+    /// an item with no NBT is `Fluids.NONE`, so the tank is emptied and left untyped; an unknown name is NONE too.
+    #[test]
+    fn an_identifier_of_no_type_empties_and_unsets_the_tank() {
+        for custom in [None, Some("{ntm_fluid:\"none\"}"), Some("{ntm_fluid:\"nonsense\"}"), Some("{}")] {
+            let mut d = Diesel::default();
+            d.slots = vec![None; 4];
+            d.tank.fill("diesel", 700);
+            d.slots[3] = identifier(custom);
+            d.step();
+            assert_eq!((d.tank.fluid.as_str(), d.tank.mb), ("", 0), "diesel {custom:?}");
+
+            let mut e = Engine::default();
+            e.slots = vec![None; 5];
+            e.tank.fill("diesel", 700);
+            e.tenth = 7;
+            e.slots[4] = identifier(custom);
+            e.step();
+            assert_eq!((e.tank.fluid.as_str(), e.tank.mb, e.tenth), ("", 0, 0), "engine {custom:?}");
+
+            let mut t = Turbofan::default();
+            t.slots = vec![None; 5];
+            t.tank.fill("kerosene", 700);
+            t.slots[4] = identifier(custom);
+            t.step();
+            assert_eq!((t.tank.fluid.as_str(), t.tank.mb), ("", 0), "turbofan {custom:?}");
+        }
+    }
+
+    /// The gas turbine only takes the identifier of a combustible gas (`TurbineGas.java:107-112`): NONE is not one.
+    #[test]
+    fn the_gas_turbine_ignores_an_identifier_of_no_type() {
+        for custom in [None, Some("{ntm_fluid:\"none\"}")] {
+            let mut t = GasTurbine::default();
+            t.gas.set_type("syngas");
+            t.gas.fill("syngas", 700);
+            t.slots = vec![None; 2];
+            t.slots[1] = identifier(custom);
+            t.step();
+            assert_eq!((t.gas.fluid.as_str(), t.gas.mb), ("syngas", 700), "{custom:?}");
+        }
+    }
+
+    #[test]
+    fn what_is_not_an_identifier_does_not_touch_the_tank() {
+        let mut d = Diesel::default();
+        d.slots = vec![None; 4];
+        d.tank.fill("diesel", 700);
+        d.slots[3] = stack("minecraft:stick", 1);
+        d.step();
+        assert_eq!((d.tank.fluid.as_str(), d.tank.mb), ("diesel", 700));
     }
 }
