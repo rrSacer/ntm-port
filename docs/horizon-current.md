@@ -1037,3 +1037,21 @@ Binário release `horizon-client` SHA-256 `abbd98a934ddf5fbb3a278746ceb87e295c2c
 | Mutações novas | sem a corrente para baixo (P1-1): 2 testes falham; migração com `set_blocks` em vez de escritas próprias: o teste da migração falha |
 | J em jogo | 29/29 e, após reabrir, 4/4; inclui o canal com barra e tampa cujo dummy do meio sai por `/setblock` (coluna inteira some, barra +1, tampa +1, item da coluna 0) e a tampa da chave contada em chão + inventário |
 | C em jogo, duas execuções | `kill`, `kv_committed`, `players_saved`, `live_chunk:2,0`: 4/4 em cada, NTM igual ao controle item a item nas duas reaberturas: 5 = 5 (4 tampas, 1 barra) em `kill` e `players_saved`; 4 = 4 em `kv_committed` e 2 = 2 em `live_chunk:2,0` (a última escrita que o vanilla também perde). O ato agora inclui o canal D com barra e tampa cujo dummy do meio sai por `/setblock` (no controle, o barril quebrado com `destroy`) |
+
+## RBMK T03 — barras, xenônio e hazards dinâmicos (em andamento, 09/11/2026)
+
+Branch `rbmk-t03` (a partir de `rbmk-t02` @ `5582ece5`). Escopo do plano: codec de stack, queima, nove curvas e cinco
+depleções, coeficiente térmico, core/hull/transfer, tooltips e radiação/HOT. Aceitação: U cada barra e função em
+entradas nulas/limites/NaN admitidos, yield/poison e sequência de calor, defaults NBT; J retirar/reinserir barra entre
+inventários e reabrir, observar hazard e tooltip do mesmo stack; C yield só reduz conforme o Java, componentes alheios
+preservados, retirar não zera calor/poison. Depende de T00/T01, D2/D3/D6.
+
+| Item | Fonte Java | Situação de partida |
+| --- | --- | --- |
+| Codec definitivo da pilha: `stackTagCompound` existe quando a pilha tem **qualquer** dado do 1.7.10 (nome, lore, encantamentos, `RepairCost`, `custom_data`), não só `custom_data`; sem tag, `setNBTDefaults` (yield = máximo, core/hull 20, xenônio ausente → 0) na primeira leitura ou escrita; com tag e chave ausente, `getDouble` → 0 | `ItemRBMKRod.getDouble/setDouble/setNBTDefaults` (571-598) | Provisório do T01 (`persist::rod_stack`) só olha `custom_data` |
+| **Bug da barra renomeada:** um nome (ou lore, ou encantamento) cria o `stackTagCompound` sem `yield`, que lê 0: a barra fica morta | `getDouble` (579-585) | Hoje funciona (desvio a corrigir) |
+| `onCreated` (feitio): `setNBTDefaults` no resultado da receita | `onCreated` (600) | Ausente |
+| Queima, curvas, depleções, xenônio, coeficiente térmico, `updateHeat`/`provideHeat`, `rectify` | `burn`, `updateHeat`, `provideHeat`, `reactivityFunc`, `reactivityModByEnrichment` | Núcleo puro com paridade de oráculo (`rods.rs`); ligar ao codec definitivo |
+| Barra de durabilidade: mostrada quando `1 − enrichment > 0`, valor `1 − enrichment` | `showDurabilityBar`, `getDurabilityForDisplay` (562-569) | Ausente |
+| Tooltip dinâmico (as duas variantes, RBMK e DRX/rbmx): nome completo, resfriando (≥ 50 °C), fonte, depleção, xenônio, n/r, função de fluxo e tipo, xenônio gen/burn, calor, difusão, casco, núcleo, fusão, com os arredondamentos Java | `addInformation` (447-516), `getFuncDescription` | Tooltip estático do T00 |
+| Hazards dinâmicos: radiação pela depleção (linear ou `1 − e²`) + Xe135 pelo veneno; HOT `int(min(ceil((hull − 100)/10), 60))`; pellets pelos cinco graus e veneno | `HazardModifierRBMKRadiation`, `HazardModifierRBMKHot`, `HazardRegistry` | Taxas estáticas por id (`radiation.rs`) |
