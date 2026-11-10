@@ -294,10 +294,14 @@ def eager_verdict(outcome, control):
     }
     same = {r: (total(outcome, r), total(control, r)) for r in ('first_reopen', 'second_reopen')}
     better = all(a is not None and b is not None and a > b for a, b in same.values())
+    if crash_proof.cut(outcome) == crash_proof.cut(control):
+        # Both worlds wrote the same chunks: they must hold the same, item by item, as without eager saves.
+        checks['same_items'] = all(a is not None and a == b for a, b in same.values()) and all(
+            outcome.get(r) == control.get(r) for r in crash_proof.REOPENS)
     ok = outcome['ok'] and control['ok'] and all(checks.values())
     return {**outcome, 'control': control, 'against_control': same, 'item_checks': checks, 'ok': ok,
             'criterion': 'L/D', 'criterion_reason': crash_proof.criterion(outcome['point'], outcome, control)[1],
-            'better_than_control': better}
+            'proof': False, 'better_than_control': better}
 
 
 def main():

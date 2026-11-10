@@ -195,7 +195,9 @@ def criterion(point, *plays):
     if point not in KILLS:
         return 'cut', 'a cut inside a save: compared with the control at the same cut'
     if wrote_outside_a_save(*plays):
-        return 'L/D', 'files written outside a save (eager chunk saves): L and D item by item, as the files, storage clean'
+        return 'L/D', ('files written outside a save (eager chunk saves): L and D item by item, as the files, storage '
+                       'clean; the result depends on when each world\'s pass ran, so it is evidence, not proof: the proof '
+                       'is the strict mode (HORIZON_NO_EAGER_SAVE)')
     return 'last_save', 'nothing written outside a save: both worlds are the last save, exactly'
 
 
@@ -217,10 +219,15 @@ def emission_verdict(outcome, control, expected, control_expected, exact=False):
     verdict['same_cut'] = outcome['point'] in ('none', *KILLS) or (cut(outcome) is not None and cut(outcome) == cut(control))
     compare(verdict, outcome, control)
     verdict['criterion'], verdict['criterion_reason'] = criterion(outcome['point'], outcome, control)
+    verdict['proof'] = verdict['criterion'] != 'L/D'
     if exact and verdict['criterion'] == 'L/D':
         exact = False
         # Not a weaker check: L and D are judged item by item below (`judge`). Record how the mod compared.
         verdict['better_than_control'] = (first is not None and control_first is not None and first > control_first)
+        # Both worlds wrote the same chunks: then they must hold the same, item by item, as without eager saves.
+        if cut(outcome) == cut(control):
+            verdict['as_the_control'] = (first == control_first
+                                         and all(outcome.get(r) == control.get(r) for r in REOPENS))
     if exact:
         # A death outside any save's records: both worlds are the last save, exactly, item by item.
         verdict['as_the_last_save'] = (first == expected and control_first == control_expected
