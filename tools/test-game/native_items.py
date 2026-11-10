@@ -858,9 +858,10 @@ def java_float(x):
 
 
 def java_resistance(pieces,radx=False):
-    """HazmatRegistry.getResistance(player): a float that narrows after each piece."""
+    """HazmatRegistry.getResistance(player): a float that narrows after each piece, summed over
+    `armorInventory[0..3]`, boots first; `pieces` is given as worn, helmet first."""
     res=0.0
-    for piece in pieces:res=java_float(res+piece)
+    for piece in reversed(pieces):res=java_float(res+piece)
     if radx:res=java_float(res+java_float(0.2))
     return res
 
@@ -927,6 +928,18 @@ def protection(g):
         reset(g,'creative');wear(g,[f'minecraft:{name}_{p}' for p in vanilla])
         expected,_=resistance_line(hz[name]);line=geiger_resistance(g)
         g.check(f'geiger_resistance_vanilla_{name}_set',line.endswith(expected),{'line':line,'expected':expected})
+    # Mixed sets, where the order of the float sum shows: the expected line is the Java oracle's
+    # (tools/hazmat-oracle/fixture.json, cases 0 and 1), not a recomputation here.
+    oracle=json.loads((Path(__file__).resolve().parents[1]/'hazmat-oracle/fixture.json').read_text())['cases']
+    for n,worn in [(0,['minecraft:iron_helmet','ntm:steel_plate','ntm:cobalt_legs','ntm:hazmat_boots_red']),
+                   (1,['minecraft:iron_helmet[minecraft:custom_data={ntm_armor_mods:{mod_slot_5:{id:"ntm:cladding_desh",count:1}}}]','ntm:steel_plate','ntm:cobalt_legs','ntm:hazmat_boots_grey'])]:
+        java=oracle[n]['java'];expected=f"Player resistance: {java['res']}% ({java['koeff']})"
+        reset(g,'creative');wear(g,worn);line=geiger_resistance(g)
+        g.check(f'geiger_resistance_mixed_set_{n}_as_the_java_oracle',line.endswith(expected),{'line':line,'expected':expected})
+    # NBTTagCompound.getFloat reads any numeric tag: a double hfr_cladding counts as the float one does.
+    reset(g,'creative');wear(g,['ntm:hazmat_helmet_grey[minecraft:custom_data={hfr_cladding:0.25d}]'])
+    expected,_=resistance_line([0.4+java_float(0.25)]);line=geiger_resistance(g)
+    g.check('hfr_cladding_double_tag_counts',line.endswith(expected),{'line':line,'expected':expected})
     reset(g,'creative');wear(g,['ntm:hazmat_helmet_grey','ntm:hazmat_plate_grey','ntm:hazmat_legs_grey','ntm:hazmat_boots_grey'])
     expected,_=resistance_line(hz['hazmat_grey']);line=geiger_resistance(g)
     g.check('geiger_resistance_grey_hazmat_set',line.endswith(expected) and '99.0% (2.0)' in line,{'line':line,'expected':expected})
