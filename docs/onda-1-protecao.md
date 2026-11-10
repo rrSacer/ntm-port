@@ -277,6 +277,21 @@ ninguém, e um efeito já dado parava de doar. Agora `zirnox_irradiation` roda t
 efeitos do ZIRNOX (a mesma ordem de antes quando há destroços), e também quando o ZIRNOX tem efeitos
 pendentes. Teste: `mycelium_irradiates_without_debris_and_decon_ends_it`.
 
+### Regressão do ZIRNOX (commit `68102b17` e motor corrigido)
+
+Três rodadas completas do cenário `zirnox` com o binário "depois" (motor `130153a4ac`, NTM com `68102b17`), comparadas
+checagem por checagem com quatro rodadas de referência de outras frentes. As 183 checagens passam nas três. Das 85
+checagens que dão o mesmo valor nas quatro referências, a rodada 2 é igual em todas, a rodada 1 difere só no número de
+barris que o tanque já tinha esvaziado no instante do retrato, e a rodada 3 (26 minutos sob carga, contra 7 a 8) difere em
+11, todas consequência de retratar instantes mais tardios (mais barris vazios, 14 barras esgotadas em vez de 11). O harness
+espera em tempo real, não em ticks. Destroços: criados `[20, 10, 10, 10, 20, 2]` e sobreviventes não destrutivos
+`20, 10, 10, 10` exatos em todas; os tipos 4 e 5 são destrutivos e aleatórios (fora da checagem): 11, 13, 14 e 2, 1, 2,
+contra 14, 14, 12, 13 e 0, 0, 0, 2 nas referências. Nenhum número aprovado mudou. Sob carga alta (25 a 48), antes das três
+rodadas completas, cinco tentativas pararam num menu que não abriu em 0,7 s (espera fixa do harness; nas fases de
+preparação, conversão e automação) e uma parou ao ler a vida da barra do slot 0 do reator ("missing life"), sem log
+guardado: causa não determinada (um clique perdido deixaria a barra no cursor). Pendência nominal: se reaparecer,
+investigar com o log, que o loop agora guarda. Evidência: `docs/evidence/onda1-f3/zirnox-regression.json`.
+
 ## Defeito do motor: anexos do dono num save no meio da sessão
 
 Achado pela re-revisão da fatia 1 e diagnosticado por sonda (anexo `ntm:item_state`, sem a mesa):
