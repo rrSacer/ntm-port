@@ -72,12 +72,24 @@ fn the_dials_are_created_kept_and_set_as_java_game_rules() {
     assert_eq!(height(&g), Some(4));
     // `getClampedInt(2, 16)`: `Integer.parseInt` or the default 4, clamped.
     for (value, h) in [("6", 6), ("1", 2), ("-3", 2), ("99", 16), ("+7", 7), ("abc", 4), ("6.0", 4), ("", 4), ("16", 16), ("2", 2)] {
-        assert!(command(&mut g, &format!("ntmrbmk dial dialColumnHeight {value}")).is_ok() || value.is_empty());
-        if !value.is_empty() {
-            assert_eq!(height(&g), Some(h), "{value:?}");
+        if value.is_empty() {
+            assert!(command(&mut g, "ntmrbmk dial dialColumnHeight").is_ok());
+            continue;
         }
+        // A height other than 4 asks for `confirmar` (the model draws 4 cells until T02-V): refused, nothing set.
+        let before = (height(&g), g.ready().world.rbmk_rules.string("dialColumnHeight").to_string());
+        let plain = command(&mut g, &format!("ntmrbmk dial dialColumnHeight {value}"));
+        if h != 4 {
+            assert!(plain.as_ref().is_err_and(|e| e.contains("T02-V") && e.contains("confirmar")), "{value:?}: {plain:?}");
+            assert_eq!((height(&g), g.ready().world.rbmk_rules.string("dialColumnHeight").to_string()), before, "{value:?}");
+            let reply = command(&mut g, &format!("ntmrbmk dial dialColumnHeight {value} confirmar")).unwrap();
+            assert!(reply.contains("T02-V"), "{reply}");
+        } else {
+            assert!(plain.is_ok(), "{value:?}");
+        }
+        assert_eq!(height(&g), Some(h), "{value:?}");
     }
-    command(&mut g, "ntmrbmk dial dialColumnHeight 6").unwrap();
+    command(&mut g, "ntmrbmk dial dialColumnHeight 6 confirmar").unwrap();
     assert_eq!(command(&mut g, "ntmrbmk dial dialColumnHeight").unwrap(), "dialColumnHeight = 6");
     // Kept with the world: the server opened again reads 6.
     reopen(&mut g);
@@ -108,7 +120,7 @@ fn a_column_is_found_from_any_cell_and_rebuilt_only_on_demand() {
     assert_eq!(rbmk_columns::column_core(&mut g.sh, OW, [0, Y + 6, 0]), None, "air");
     assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [2, Y, 0]), 16);
     // The dial changes the columns placed from then on, never the standing ones.
-    command(&mut g, "ntmrbmk dial dialColumnHeight 6").unwrap();
+    command(&mut g, "ntmrbmk dial dialColumnHeight 6 confirmar").unwrap();
     assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [0, Y, 0]), 4);
     // The 4 high column cannot grow into the column above it: refused, nothing written.
     let reply = command(&mut g, &format!("ntmrbmk migrate 0 {Y} 0")).unwrap();
@@ -134,7 +146,7 @@ fn a_column_is_found_from_any_cell_and_rebuilt_only_on_demand() {
 }
 
 #[test]
-fn an_orphaned_dummy_goes_up_to_the_end_of_its_run() {
+fn a_core_taken_away_takes_its_dummies_up_to_the_end_of_its_run() {
     let mut g = game();
     stand(&mut g, [0, Y, 0], "rbmk_blank", 6);
     stand(&mut g, [3, Y, 0], "rbmk_blank", 6);
@@ -146,19 +158,79 @@ fn an_orphaned_dummy_goes_up_to_the_end_of_its_run() {
     for y in Y + 1..Y + 6 {
         assert_eq!(g.world.borrow().get(OW, [0, y, 0]), "minecraft:air", "y {y}");
     }
-    // A middle dummy taken away: the run above it goes, the column below stands, shorter.
-    g.place([3, Y + 2, 0], "minecraft:air");
-    g.run(2);
-    assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [3, Y, 0]), 2);
-    for y in Y + 3..Y + 6 {
-        assert_eq!(g.world.borrow().get(OW, [3, y, 0]), "minecraft:air", "y {y}");
-    }
-    // A column whose dummies stand on another column's top: they are not orphans.
+    // A column standing on another one's top: the lower one's top dummy taken away takes the lower column (below), and
+    // the upper one, on its own core, stays whole.
     stand(&mut g, [6, Y + 4, 0], "rbmk_rod", 2);
     g.place([6, Y + 3, 0], "minecraft:air");
-    g.run(2);
+    settle(&mut g);
+    for y in Y..Y + 4 {
+        assert_eq!(g.world.borrow().get(OW, [6, y, 0]), "minecraft:air", "y {y}");
+    }
     assert_eq!(g.world.borrow().get(OW, [6, Y + 5, 0]), DUMMY);
-    assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [6, Y, 0]), 3);
+    assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [6, Y + 4, 0]), 2);
+}
+
+/// The server's block writes made, each change told to it as the game's block change hook does, until none is left.
+fn settle(g: &mut Game) {
+    for _ in 0..40 {
+        g.server.native_record_events(&mut g.sh);
+        let writes = std::mem::take(&mut g.world.borrow_mut().writes);
+        if writes.is_empty() {
+            break;
+        }
+        for (d, p, s) in writes {
+            let old = g.world.borrow().get(&d, p);
+            g.world.borrow_mut().set(&d, p, &s);
+            g.server.native_block_changed(&d, p, &old, &s);
+        }
+    }
+    g.run(2);
+}
+
+#[test]
+fn a_dummy_taken_away_takes_the_whole_column_and_drops_its_contents_once() {
+    let mut g = game();
+    let core = [0, Y, 0];
+    stand(&mut g, core, "rbmk_rod", 6);
+    stand(&mut g, [0, Y + 6, 0], "rbmk_blank", 3);
+    g.run(2);
+    hold(&mut g, "ntm:rbmk_fuel_ueu", 1, false);
+    assert!(g.server.native_rbmk_use(&mut g.sh, OW, core, core, "p1"));
+    hold(&mut g, "ntm:rbmk_lid", 1, false);
+    assert!(g.server.native_rbmk_lid(&mut g.sh, OW, core, core, "p1"));
+    g.run(2);
+    // A middle dummy taken away by a command or an explosion (`BlockDummyable.breakBlock`): the cells down to the core
+    // go, the core breaks with its rod and its lid (at the top, as the dial reads: 4), the dummies above as orphans; the
+    // column standing on it stays whole.
+    g.place([0, Y + 3, 0], "minecraft:air");
+    settle(&mut g);
+    for y in Y..Y + 6 {
+        assert_eq!(g.world.borrow().get(OW, [0, y, 0]), "minecraft:air", "y {y}");
+    }
+    assert_eq!(rbmk_columns::standing_height(&mut g.sh, OW, [0, Y + 6, 0]), 3);
+    let mut dropped = dropped(&g);
+    dropped.sort();
+    assert_eq!(dropped, vec![format!("{OW} 0 {} 0 ntm:rbmk_fuel_ueu 1", Y), format!("{OW} 0 {} 0 ntm:rbmk_lid 1", Y + 3)]);
+    assert!(!g.ready().world.machines.contains_key(&(OW.to_string(), core)), "the column's machine went with it");
+    g.run(5);
+    assert_eq!(self::dropped(&g).len(), 2, "once");
+    // The top dummy of a column taken away: the same, the whole column.
+    stand(&mut g, [3, Y, 0], "rbmk_blank", 4);
+    g.run(2);
+    g.place([3, Y + 3, 0], "minecraft:air");
+    settle(&mut g);
+    for y in Y..Y + 4 {
+        assert_eq!(g.world.borrow().get(OW, [3, y, 0]), "minecraft:air", "y {y}");
+    }
+    // A cell on the way not loaded: the column stays (`checkChunksExist`). Here the cell under the dummy taken away is
+    // in a chunk not loaded only in the test's world (a column never crosses a chunk in the game).
+    stand(&mut g, [20, Y, 20], "rbmk_blank", 4);
+    g.run(2);
+    g.world.borrow_mut().unloaded.insert((OW.into(), 1, 1));
+    g.server.native_block_changed(OW, [20, Y + 2, 20], DUMMY, "minecraft:air");
+    settle(&mut g);
+    g.world.borrow_mut().unloaded.clear();
+    assert_eq!(g.world.borrow().get(OW, [20, Y, 20]), column("rbmk_blank"));
 }
 
 #[test]
@@ -215,7 +287,7 @@ fn a_lid_goes_on_by_hand_and_comes_off_with_a_screwdriver_once() {
     assert_eq!(dropped(&g).last().unwrap(), &format!("{OW} 0 {} 0 ntm:rbmk_lid_glass 1", Y + 3));
     assert_eq!(dropped(&g).len(), 2);
     // The drop goes where the dial says now, not where the column ends (Java's `getColumnHeight`).
-    command(&mut g, "ntmrbmk dial dialColumnHeight 9").unwrap();
+    command(&mut g, "ntmrbmk dial dialColumnHeight 9 confirmar").unwrap();
     hold(&mut g, "ntm:rbmk_lid", 1, false);
     assert!(g.server.native_rbmk_lid(&mut g.sh, OW, core, core, "p1"));
     hold(&mut g, "ntm:screwdriver", 1, false);
@@ -237,7 +309,7 @@ fn a_broken_column_drops_its_lid_once_at_the_top_as_the_dial_reads() {
     g.run(2);
     hold(&mut g, "ntm:rbmk_lid", 1, false);
     assert!(g.server.native_rbmk_lid(&mut g.sh, OW, core, core, "p1"));
-    command(&mut g, "ntmrbmk dial dialColumnHeight 5").unwrap();
+    command(&mut g, "ntmrbmk dial dialColumnHeight 5 confirmar").unwrap();
     g.break_block(core);
     g.run(3);
     assert_eq!(dropped(&g), vec![format!("{OW} 0 {} 0 ntm:rbmk_lid 1", Y + 4)]);

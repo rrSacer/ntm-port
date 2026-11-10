@@ -393,6 +393,8 @@ struct Ready {
     rbmk_dials: crate::rbmk::dials::DialState,
     /// Cells above a column's cell that changed: an orphaned dummy there goes (`rbmk_columns`).
     rbmk_orphans: Vec<(String, Pos)>,
+    /// Cells whose dummy went: the column's cells under it go down to its core, which breaks (`rbmk_columns`).
+    rbmk_breaks: Vec<(String, Pos)>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.

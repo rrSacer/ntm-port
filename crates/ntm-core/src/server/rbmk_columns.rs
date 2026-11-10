@@ -7,8 +7,10 @@
 //! - The dials are Java's game rules (`RBMKDials`), one set for the save, kept with the world's state; the server
 //!   creates them as `createDials` does when it starts, and `/ntmrbmk dial` sets one as `/gamerule` does, then
 //!   refreshes the cache (`ModEventHandler.commandEvent`).
-//! - A dummy whose run no longer reaches a core goes, as `BlockDummyable.destroyIfOrphan` takes it away, the next above
-//!   it then: a column broken any other way than by a player (a command, an explosion) leaves no dummy behind.
+//! - A dummy that goes any other way than by a player's break (a command, an explosion) takes the column with it, as
+//!   `BlockDummyable.breakBlock` does: the cells under it down to the core go, and the core breaks as a block, its
+//!   contents and lid dropped (`RBMKBase.breakBlock`), all in one publication of the column's chunk; the dummies above
+//!   it, orphans then, go as `destroyIfOrphan` takes them, the next above each.
 //! - Lids (`ItemRBMKLid`, `RBMKBase.onScrew`, `RBMKBase.breakBlock`): one goes on a column that has none, the hand
 //!   giving it in the same transfer; a screwdriver takes it off as an item, owed in the column's own chunk record with
 //!   the change; a broken column drops it. Both drops are where Java puts them: at the top as the dial reads now
@@ -24,6 +26,12 @@ use crate::{
 
 /// The most cells a column has (`dialColumnHeight` clamps to 2..16).
 pub const TALLEST: i32 = 16;
+
+/// The dial of the columns' height.
+const HEIGHT_RULE: &str = "dialColumnHeight";
+
+/// The word a height other than 4 needs after it, the columns' model drawing 4 cells until T02-V.
+const CONFIRM: &str = "confirmar";
 
 /// The core of the column one of whose cells is at `pos` (`BlockDummyable.findCore` down its run of dummies): None
 /// when the cell is no column's, its run reaches no core, or a cell on the way is unknown.
@@ -128,17 +136,27 @@ impl Server {
         match args {
             [] => Ok(KEYS.iter().map(|k| format!("{} = {}", k.rule, rules.string(k.rule))).collect::<Vec<_>>().join("\n")),
             [rule] => KEYS.iter().find(|k| k.rule == *rule).map(|k| format!("{} = {}", k.rule, rules.string(k.rule))).ok_or_else(|| format!("Regra desconhecida: {rule}")),
-            [rule, value] => {
+            [rule, value] | [rule, value, CONFIRM] => {
                 // `CommandGameRule`: only a rule the world has (`createDials` made the 25).
                 let Some(key) = KEYS.iter().find(|k| k.rule == *rule) else { return Err(format!("Regra desconhecida: {rule}")) };
-                self.ready.world.rbmk_rules.set(key.rule, value);
+                let mut next = (*self.ready.world.rbmk_rules).clone();
+                next.set(key.rule, value);
+                let height = crate::rbmk::dials::Dials::refresh(&next, self.ready.rbmk_dials.config_528_reasim).column_height + 1;
+                // Until T02-V the columns' model draws 4 cells whatever their height: another height asks for it twice.
+                if key.rule == HEIGHT_RULE && height != 4 && args.len() == 2 {
+                    return Err(format!(
+                        "{value} dá colunas de {height} blocos, mas o modelo das colunas ainda desenha 4 células até o ticket T02-V: o reator vai parecer diferente do que é. Para usar mesmo assim: /ntmrbmk dial {rule} {value} {CONFIRM}"
+                    ));
+                }
+                *self.ready.world.rbmk_rules = next;
                 self.ready.rbmk_dials.rules = (*self.ready.world.rbmk_rules).clone();
                 self.ready.rbmk_dials.refresh();
                 let height = self.rbmk_dials().column_height + 1;
                 host.set_column_height(height);
-                Ok(format!("{} = {value}; colunas novas: {height} blocos (as de pé mudam só com /ntmrbmk migrate)", key.rule))
+                let warning = if height != 4 { " Aviso: o modelo ainda desenha 4 células (T02-V)." } else { "" };
+                Ok(format!("{} = {value}; colunas novas: {height} blocos (as de pé mudam só com /ntmrbmk migrate).{warning}", key.rule))
             }
-            _ => Err("Uso: /ntmrbmk dial [regra [valor]]".into()),
+            _ => Err(format!("Uso: /ntmrbmk dial [regra [valor [{CONFIRM}]]]")),
         }
     }
 
@@ -191,17 +209,69 @@ impl Server {
     }
 
     /// A block changed: when it was a column's cell, the cell above may be an orphaned dummy now
-    /// (`BlockDummyable.onNeighborBlockChange`).
+    /// (`BlockDummyable.onNeighborBlockChange`); when it was a dummy, the column under it breaks
+    /// (`BlockDummyable.breakBlock`).
     pub(super) fn rbmk_note_change(&mut self, dim: &str, pos: Pos, old: &str, new: &str) {
         let (old, new) = (blockstate::id_of(old), blockstate::id_of(new));
         if old != new && (old == persist::DUMMY || persist::is_column(old)) {
             self.ready.rbmk_orphans.push((dim.to_string(), [pos[0], pos[1] + 1, pos[2]]));
         }
+        if old == persist::DUMMY && new != persist::DUMMY {
+            self.ready.rbmk_breaks.push((dim.to_string(), pos));
+        }
+    }
+
+    /// The columns whose dummy went: the cells under it, down to the core, go to air, and the core's block entity's
+    /// contents are owed in its chunk's record with the change (`BlockDummyable.breakBlock`: each cell toward the core
+    /// set to air, the core's `breakBlock` spilling its inventory; the lid then drops as any broken column's). A cell
+    /// on the way not loaded: the column stays (`checkChunksExist`). A publication refused (a cell changed since it was
+    /// read) is tried again next time.
+    fn rbmk_breaks(&mut self, host: &mut impl ServerHost) {
+        let mut again = Vec::new();
+        while let Some((dim, pos)) = self.ready.rbmk_breaks.pop() {
+            let (mut under, mut core) = (Vec::new(), None);
+            for dy in 1..TALLEST {
+                let at = [pos[0], pos[1] - dy, pos[2]];
+                let Some(b) = host.get_block(&dim, at) else { break };
+                match blockstate::id_of(&b) {
+                    persist::DUMMY => under.push(at),
+                    id if persist::is_column(id) => {
+                        core = Some((at, id.to_string()));
+                        break;
+                    }
+                    _ => break,
+                }
+            }
+            let Some((core, block)) = core else { continue };
+            let key = (dim.clone(), core);
+            let guard = match self.ready.world.machines.get(&key) {
+                Some(m) => CellGuard::machine(&key, m),
+                None => CellGuard { dim: dim.clone(), pos: core, generation: self.ready.world.generations.get(&key).copied().unwrap_or(0), state: block },
+            };
+            let mut cells = Vec::new();
+            let mut drops = Vec::new();
+            let mut known = true;
+            for (at, g) in std::iter::once((core, guard.clone())).chain(under.iter().map(|&at| (at, CellGuard { dim: dim.clone(), pos: at, generation: 0, state: persist::DUMMY.into() }))) {
+                let Some(expected) = host.cell_snapshot(&dim, at) else {
+                    known = false;
+                    break;
+                };
+                if at == core && !expected.items.is_empty() {
+                    drops.push(RetainedDrop { origin: guard.clone(), items: expected.items.clone(), id: Some(self.batch_serial()) });
+                }
+                cells.push(CellWrite { notify: true, guard: g, expected, desired: "minecraft:air".into(), destroy: false, initial: None });
+            }
+            if known && !host.commit_structural(&cells, &drops, &[]) {
+                again.push((dim, pos));
+            }
+        }
+        self.ready.rbmk_breaks = again;
     }
 
     /// The orphaned dummies go, each to air (its removal notes the one above it: the run goes up to its end). A dummy
     /// with a cell below it not loaded stays (`checkChunksExist`).
     pub(super) fn rbmk_orphans(&mut self, host: &mut impl ServerHost) {
+        self.rbmk_breaks(host);
         while let Some((dim, pos)) = self.ready.rbmk_orphans.pop() {
             let Some(b) = host.get_block(&dim, pos) else { continue };
             if blockstate::id_of(&b) != persist::DUMMY {

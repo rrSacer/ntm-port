@@ -151,8 +151,18 @@ impl Kv for SHost {
 
 impl ServerHost for SHost {
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
-            if !drops.is_empty(){return false;}
+            // Retained drops only from an RBMK column's block entity (the cells `cell_snapshot` gives items for).
+            if drops.iter().any(|d|!crate::rbmk::persist::is_column(blockstate::id_of(&d.origin.state))){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
+            for d in drops{
+                let mut w=self.world.borrow_mut();
+                for item in &d.items{
+                    let f=crate::snbt::fields(item).expect("an item compound");
+                    let p=d.origin.pos;
+                    w.dropped.push(format!("{} {} {} {} {} {}",d.origin.dim,p[0],p[1],p[2],f["id"].trim_matches('"'),f["count"]));
+                }
+                w.engine.remove(&(d.origin.dim.clone(),d.origin.pos));
+            }
             let dims:BTreeSet<_>=cells.iter().map(|c|c.guard.dim.clone()).collect();
             if dims.len()>1{return false;}
             let Some(dim)=dims.first()else{return true};
@@ -228,6 +238,16 @@ impl ServerHost for SHost {
         true
     }
     fn set_column_height(&mut self,height:i32){self.world.borrow_mut().column_height=Some(height);}
+    /// An RBMK column's block entity holds its engine slots, as SNBT stacks (the native host's `cell_snapshot`); the
+    /// other blocks' tests read cells without contents, as before.
+    fn cell_snapshot(&mut self,dim:&str,p:Pos)->Option<CellSnapshot>{
+        let state=self.get_block(dim,p)?;
+        let w=self.world.borrow();
+        let items=if crate::rbmk::persist::is_column(blockstate::id_of(&state)){
+            w.engine.get(&(dim.to_string(),p)).map(|e|e.0.iter().flatten().map(|s|format!("{{id:\"{}\",count:{}}}",s.id,s.count)).collect()).unwrap_or_default()
+        }else{Vec::new()};
+        Some(CellSnapshot{state,entity:None,items})
+    }
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
         let mut w=self.world.borrow_mut();
         if w.refuse_commits{return false;}
