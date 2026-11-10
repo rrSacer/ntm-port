@@ -1009,6 +1009,9 @@ Pontos de contato com o motor: o segundo commit da `rbmk-t02-engine` (`perf(mult
 their own run`) mexe só em `mod_multiblocks.rs` (`Registry.column_dummies`/`column_rise`, `load`, `Multiblock::rise`,
 `core_of` → `column_core`, `inventory_core`, `column_port`, testes).
 
+O T03 acrescentou um terceiro commit à `rbmk-t02-engine` (`93359657aa`, `feat(mods): the host's crafting grid asks
+prepare_item_craft too`): ver a tabela única "Contatos de motor do RBMK" no fim do T03.
+
 ### Ressalvas da re-revisão (P3, registradas)
 
 | Achado | Registro |
@@ -1038,7 +1041,7 @@ Binário release `horizon-client` SHA-256 `abbd98a934ddf5fbb3a278746ceb87e295c2c
 | J em jogo | 29/29 e, após reabrir, 4/4; inclui o canal com barra e tampa cujo dummy do meio sai por `/setblock` (coluna inteira some, barra +1, tampa +1, item da coluna 0) e a tampa da chave contada em chão + inventário |
 | C em jogo, duas execuções | `kill`, `kv_committed`, `players_saved`, `live_chunk:2,0`: 4/4 em cada, NTM igual ao controle item a item nas duas reaberturas: 5 = 5 (4 tampas, 1 barra) em `kill` e `players_saved`; 4 = 4 em `kv_committed` e 2 = 2 em `live_chunk:2,0` (a última escrita que o vanilla também perde). O ato agora inclui o canal D com barra e tampa cujo dummy do meio sai por `/setblock` (no controle, o barril quebrado com `destroy`) |
 
-## RBMK T03 — barras, xenônio e hazards dinâmicos (em andamento, 09/11/2026)
+## RBMK T03 — barras, xenônio e hazards dinâmicos (pronto para revisão, 10/11/2026)
 
 Branch `rbmk-t03` (a partir de `rbmk-t02` @ `5582ece5`). Escopo do plano: codec de stack, queima, nove curvas e cinco
 depleções, coeficiente térmico, core/hull/transfer, tooltips e radiação/HOT. Aceitação: U cada barra e função em
@@ -1055,3 +1058,132 @@ preservados, retirar não zera calor/poison. Depende de T00/T01, D2/D3/D6.
 | Barra de durabilidade: mostrada quando `1 − enrichment > 0`, valor `1 − enrichment` | `showDurabilityBar`, `getDurabilityForDisplay` (562-569) | Ausente |
 | Tooltip dinâmico (as duas variantes, RBMK e DRX/rbmx): nome completo, resfriando (≥ 50 °C), fonte, depleção, xenônio, n/r, função de fluxo e tipo, xenônio gen/burn, calor, difusão, casco, núcleo, fusão, com os arredondamentos Java | `addInformation` (447-516), `getFuncDescription` | Tooltip estático do T00 |
 | Hazards dinâmicos: radiação pela depleção (linear ou `1 − e²`) + Xe135 pelo veneno; HOT `int(min(ceil((hull − 100)/10), 60))`; pellets pelos cinco graus e veneno | `HazardModifierRBMKRadiation`, `HazardModifierRBMKHot`, `HazardRegistry` | Taxas estáticas por id (`radiation.rs`) |
+
+**Estado em 10/11/2026 (antes da revisão).** Feito, item por item da tabela acima:
+
+| Item | Como ficou | Prova de unidade |
+| --- | --- | --- |
+| Codec da pilha | `Stack::tagged` marca o `stackTagCompound` do 1.7.10 (nome, lore, encantamentos, custo de reparo ou `custom_data`); `persist::stack_rod` lê as chaves com os defaults do Java (sem tag: `setNBTDefaults`; com tag e sem a chave: 0). A glue marca `tagged` nos três caminhos (slots de máquina, inventário do jogador lido pelo servidor, cliente) | `a_stack_with_a_tag_but_no_key_reads_a_dead_rod_as_java` |
+| Barra renomeada (bug Java) | Uma barra só com nome lê `yield` 0: morta no reator, radiação no alvo, barra de durabilidade cheia | o mesmo teste, `a_rod_goes_towards_its_target…` e o de radiação do servidor |
+| `onCreated` | O resultado da receita sai com `setNBTDefaults` (gancho `prepare_item_craft`, injeção `rbmk-rod-crafted`) | prova J |
+| Queima/curvas/calor | Já no núcleo (`rods.rs`, paridade de oráculo do T00/T01), agora lendo o codec definitivo | testes do T00/T01 |
+| Barra de durabilidade | `tooltip::durability_bar`: mostrada quando `1 − enrichment > 0`, largura e cor como o Forge 1.7.10 as desenha (`round(13 − 13·h)`, cor de `round(255 − 255·h)`); gancho `item_bar` (injeção `rbmk-rod-bar`) | `the_bar_is_forges_for_1_minus_the_enrichment` |
+| Tooltip | `tooltip::lines`: as linhas de `addInformation` nas duas variantes, com `Double.toString` e os truncamentos do Java; as chaves de idioma do Java nos dois idiomas | testes de `tooltip.rs` |
+| Radiação dinâmica | `rbmk::hazards::radiation_rate`: `level + (target − level)·depleção` (linear ou `1 − e²`), floats e doubles como o Java, `+ xe135·veneno`; o extrator de hazards exporta `target`, `linear`, `hot`, `xe135` e `nugget` de cada `registerRBMK*`. Entra na soma por segundo do servidor e no tooltip | `a_rod_goes_towards_its_target_as_it_depletes_plus_its_xenon`, `carried_pellet_rate_uses_custom_long…` |
+| HOT | `rbmk::hazards::hot_level` (`(int) min(ceil((casco − 100)/10), 60)`); a cada tick o servidor acende o jogador pelo maior nível que ele carrega (`setFire`, o maior entre o que resta e o novo, menos a proteção contra fogo), salvo molhado (água ou chuva nos pés ou no topo) ou com um `reacher` no inventário; tooltip `[trait.hot]` em dourado, depois da radiação, como o Java registra | `a_rod_is_hot_from_its_hull`, `a_hot_rod_sets_its_holder_on_fire_unless_they_carry_a_reacher` |
+
+Pendências honestas (fora do T03 ou adaptações):
+
+- **Pellets** (graus pela `metadata` 0–9 e o xenônio): o port não tem subtipos de pellet (32 ids, sem metadata). A
+  radiação deles fica a fresca. Vão com o T14 (a desmontagem é o que os produz), que tem de decidir como o grau vive na
+  pilha.
+- **Digamma da barra DRX (1/3) e cegueira:** o port não tem os sistemas `DIGAMMA` e `BLINDING` de hazard (nenhum item
+  os aplica). Pendência do sistema de hazards geral, não do RBMK.
+- **`reacher` na radiação** (`BobMathUtil.squirt` da taxa): o sistema de radiação geral do port não o considera; só o
+  HOT o considera. Mesma pendência geral.
+- **NaN:** um `level` NaN não contamina (como o Java, `level > 0` é falso), mas o tooltip Java ainda escreveria
+  `[Radioactive] NaNRAD/s`; o port não mostra linha. Só alcançável com uma tag NaN.
+- **Cadência:** a radiação segue a soma por segundo do port (o Java aplica por tick; a dose é a mesma); o HOT é por tick,
+  como o Java. O inventário lido inclui a mão secundária, que o 1.7.10 não tem, como a radiação já fazia.
+- **Molhado (contato de motor):** visitar a cada tick (`native_visit_player`) um convidado que já está em chamas e
+  entra na água trazia o fogo de volta (a água apagava uma vez; depois as leituras davam 600). Sem visita, o fogo
+  ficava apagado. A glue agora lê "molhado" (água no bloco dos pés ou chuva) pela posição publicada do jogador, sem
+  visitar, e só visita um jogador seco para acendê-lo (`52d7bb62`; antes, `2ae9c805` só somava a água dos pés). A
+  prova J checa as duas coisas: em chamas e com a barra, apaga na água. A causa no motor (a troca de estado da visita
+  contra a cópia do movimento do convidado) fica para o agente do Horizon: qualquer visita por tick a um convidado em
+  chamas pode regravar o fogo.
+- **Mobs** segurando barras (`updateLivingInventory`) não pegam fogo nem radiação: o port não tem esse caminho para item
+  nenhum.
+- **Proteção contra fogo:** o motor usa o atributo moderno `burning_time` (−15% por nível, somado entre as peças); o
+  `EnchantmentProtection.func_92093_a` do 1.7.10 tira 15% por nível do **maior** nível entre as peças. Igual com uma
+  peça encantada; com várias, o moderno encurta mais o fogo. Vale para todo fogo do motor, não só o HOT.
+
+**Validação (10/11/2026).** Commits do T03 na `rbmk-t03`: `4341a3c2` (codec e `onCreated`), `199586c5` (tooltip),
+`0f0a2e97` (barra de durabilidade), `87c6f96b` (radiação e HOT), `2ae9c805` e `52d7bb62` (HOT e água), `5e79136a`
+(cores do tooltip), `bc7fa29c` (componentes da pilha que sai de uma máquina), `431a00af`/`14100a59` (provas),
+`35650ea6`/`bf5c19a4` (clippy). No motor, `rbmk-t02-engine`: `93359657aa`, `01e5147ef5`, `00454b508a` (tabela abaixo).
+NTM em debug: 530 testes da lib (2 ignorados) e 47 de integração; `save_model` em release 11/11; Clippy `-D warnings`
+de `ntm-core` com todos os alvos: 0 avisos; glue (`horizon-client`, `horizon-client-lib`, release, no stage de
+`00454b508a`): 0 avisos; `horizon-protocol` lib+testes: 0 avisos; `item::hash` 9/9. Binário final `567a72b9f30bdde7a145d3559efcea41e882262854b037562a51126693f6560c`
+(NTM `bf5c19a4`, motor `00454b508a`). As provas J e C rodaram no `82c16afe…` (NTM `bc7fa29c`, motor `01e5147ef5`); o
+que veio depois não está no caminho delas: dois ajustes de clippy sem mudança de comportamento (o da glue gera o mesmo
+código) e o `00454b508a`, que só toca a retirada do anfitrião local (sem `serving`); a janela das provas é cliente do
+próprio servidor integrado e usa `lan_crafting`.
+
+**Prova J (`tools/test-game/run-rbmk-t03-proof.py --play` + `native_rbmk_t03.py`, 10/11/2026).** Binário
+`horizon-client` SHA-256 `82c16afe3177663a9aefb2bf6717977d22986fcd9bef542e89bff18d6ddaafbc` (NTM `bc7fa29c`, motor
+`rbmk-t02-engine` @ `01e5147ef5`), pacote `ntm.hmod` `4276ef60dd0358297990bac69d9e506c5e4556dd25247edfa3334be9095cdf61`.
+Evidências em `.agent-tmp/rbmk-t03/evidence/j/` (JSON das duas aberturas e os três prints de tooltip). **21 de 21
+checagens passaram** (16 na primeira abertura, 5 na reabertura):
+
+| Checagem | Resultado |
+| --- | --- |
+| Barra feita na mesa pelo anfitrião sai com a tag (lida no servidor) e a janela também a recebe | ok (`yield` 1e8, `core`/`hull` 20) |
+| Renomeada depois de feita, continua viva | ok (nome e as três chaves) |
+| Queima ao lado de uma fonte Po-210/Be: rendimento cai, calor sobe | ok (xenônio fica em 0: com fluxo acima de 25 a queima de xenônio vence a geração, como no Java) |
+| Retirada (gota lançada, apanhada) com a tag; parada fora do reator, não queima | ok |
+| Radiação carregada = `HazardModifierRBMKRadiation` da tag (mRAD/s) | ok (2 435 = 2 435 mRAD/s; com 40 % de xenônio, 1 400 350) |
+| No baú: a mesma tag bit a bit; nenhuma radiação vinda do baú | ok |
+| HOT: com `reacher` não pega fogo; na água não pega; seco pega (600 ticks) | ok |
+| Já em chamas, apaga na água, sem e com a barra | ok (6 de 6 e 6 de 6 apagadas). Na rodada anterior, com o mesmo código do HOT (binário `cb092d09…`), 1 de 6 leituras deu 600: intermitente, ver "Molhado (contato de motor)" acima |
+| Renomeada (tag sem chaves): radiação no alvo, não queima no canal | ok (1 200 000 mRAD/s; `yield` 0, núcleo 20) |
+| Depois de reabrir: a barra do baú igual, carregada com a mesma radiação; num canal isolado, rendimento e xenônio iguais, calor segue | ok |
+
+Os prints mostram as linhas nas cores do Java (verde, roxo, azul, amarelo, dourado, vermelho; `[Pyrophoric / Hot]` em
+dourado 255,170,0) e os números como o Java os escreve. A primeira rodada achou o defeito de cor (`5e79136a`). Os prints
+das barras de 1 200 e 1 400 RAD/s ficaram de fora: na tela de inventário de sobrevivência a radiação mata em um
+segundo; as linhas delas são testadas em `tooltip.rs`.
+
+**Prova C (`tools/test-game/run-rbmk-t03-proof.py` + `native_rbmk_t03.py` `prepare/act/verify/again/drain`,
+10/11/2026).** Binário `horizon-client` SHA-256 `82c16afe3177663a9aefb2bf6717977d22986fcd9bef542e89bff18d6ddaafbc` (NTM
+`bc7fa29c`, motor `01e5147ef5`), pacote `4276ef60…`. Mundo: no chunk (2, 0), um canal P ao lado de uma fonte ReaSim de
+Po-210/Be (S) e um canal Q mais longe; as barras de P e Q feitas por comando com um estado (`yield` 6e7, `xenon` 12,5,
+`core` 300, `hull` 250), uma chave alheia (`foreign`) e uma lore, postas pela mão. O ato tira a barra de P como gota
+lançada (`ntmtest take`) e o save é cortado. Controle vanilla: barris nos mesmos lugares e a mesma pilha invocada como
+item; um bloco do chunk (2, 0) muda nos dois mundos (o `item replace` do motor não marca o chunk, achado do T01).
+Relatório em `.agent-tmp/rbmk-t03/evidence/c/report.json`; mundos apagados.
+
+| Corte | Barras no disco e nas duas reaberturas (NTM = controle) | Estado de cada barra (NTM) |
+| --- | --- | --- |
+| `kill` | 3 = 3 | chave alheia, lore, as quatro chaves, `yield` ≤ 6e7, calor não zerado; P, de volta ao canal, nunca sobe |
+| `kv_committed` | 3 = 3 | idem |
+| `players_saved` | 3 = 3 (a gota no chão nos dois) | idem, a gota com a lore |
+| `live_chunk:2,0` | 2 = 2 | resíduo vanilla: o canal (ou o barril) gravado vazio e a gota não, nos dois; a barra restante íntegra |
+
+Veredictos do R7c em todos: nada duplicado, nada pior que o vanilla, armazenamento sem item, as duas reaberturas iguais.
+Antes de passar, a prova achou dois defeitos: (1) a gota de uma barra tirada do canal voltava **sem a lore** no
+`players_saved`, porque a glue montava a gota só com o `Stack` da ponte (id, quantidade, `custom_data`); corrigido em
+`bc7fa29c` (o que sai de um slot de máquina na mesma transferência usa a pilha do próprio slot como modelo, todos os
+componentes, como o `ItemStack.copy()`); vale também para a pilha que um slot do jogador recebe de uma máquina (o
+cursor do T05). (2) Os critérios do roteiro: o xenônio cai a 0 com fluxo forte (como no Java) e a fonte ReaSim pode
+passar segundos sem acertar P; a checagem passou a ser "a tag não volta ao estado de fábrica" e "o rendimento nunca
+sobe". Numa rodada, o save do controle vanilla não respondeu ("server thread did not answer within 10 s"); a rodada foi
+refeita inteira.
+
+### Contatos de motor do RBMK (todos os commits a portar para o motor novo)
+
+Branch `rbmk-t02-engine`, a partir de `ntm-current` @ `a31497f38`. Cada linha é reaplicada sobre o upstream novo
+(`a3bf6531e`, branch `upstream-a3bf653`), com os testes do motor e as provas J/C do ticket repetidos no binário novo.
+Já portados pelo agente do Horizon (10/11): `01e5147ef5` como `88d6b88a2d` e `93359657aa` como `6a79054fa9` na
+`ntm-current` nova (`6a79054fa9`); `00454b508a` veio da re-revisão desse porte e falta portar. Quem fundir a
+`rbmk-t02-engine` roda `cargo fmt` (o `native_hooks.rs` já vinha com diferenças de formatação de antes).
+
+| Commit | Ticket | Arquivo | Função / trecho (no motor atual) | No upstream `a3bf6531e` | O quê |
+| --- | --- | --- | --- | --- | --- |
+| `5b9d6ee175` `feat(multiblocks): columns as tall as each was placed` | T02 | `crates/horizon-world/src/mod_multiblocks.rs` | `Multiblock.column`, `Column`, `ColumnPorts`, `parse` (`column`), `Registry.column_heights`, `set_column_height`, `placed`/`placed_in`, `standing`, `with_height`, `rise`, `core_of`, `inventory_core` → `column_port`, testes | mesmo arquivo | A altura das colunas lida do mundo, colocação na altura do mod, portas `top`/`all` |
+| `5b9d6ee175` | T02 | `crates/horizon-world/src/level/place.rs` | `place`, bloco de multibloco de mod: `placed(&def)` | mesmo arquivo | Colocação com a altura do mod |
+| `5b9d6ee175` | T02 | `crates/horizon-client/src/game/multiblocks.rs` | `machine_multiblock`, `multiblock_outline` | mesmo arquivo | Volume em pé no contorno e no núcleo |
+| `06bf7ffe5c` `perf(multiblocks): columns find their core down their own run` | T02 | `crates/horizon-world/src/mod_multiblocks.rs` | `Registry.column_dummies`/`column_rise`, `load`, `rise`, `core_of` → `column_core`, `inventory_core`, `column_port`, testes | mesmo arquivo | Busca do núcleo descendo a própria coluna |
+| `93359657aa` `feat(mods): the host's crafting grid asks prepare_item_craft too` | T03 | `crates/horizon-client/src/game.rs` | nova `host_prepared_craft` (l. 9115, antes de `craft_result`); no clique do slot 200 (`ResultSlot`, l. 10668) o `while let` passa o resultado por ela antes de entregá-lo | `crates/horizon-client/src/game/menu_clicks.rs`, laço do slot 200 (l. 784); a nova função vai junto de `craft_result`, agora em `game/inventory_slots.rs` (l. 324) | O anfitrião do mundo integrado também chama `native_prepare_item_craft` (API 290) ao pegar o resultado (inventário 2x2: `pos` None; mesa: a posição dela), em cada pilha do shift-click; sem resultado do mod, nada é pego; o que não cabe é recusado como antes. Antes só os convidados de LAN e o servidor dedicado chamavam. Usado pelo `onCreated` da barra RBMK |
+| `01e5147ef5` `fix(lan): a click agrees only on the same components` | T03 | `crates/horizon-protocol/src/item/hash.rs` (novo `Hashed::matches`, teste `a_claim_matches_only_the_same_components`) e `crates/horizon-client/src/lan/containers.rs` (`hashed_matches`, l. 509) | `hashed_matches` usa `Hashed::matches` com os registros do hub (`SyncedNames`) | mesmo comparador em `lan/containers.rs:630`; `hash.rs` igual | `HashedStack.matches` do vanilla: item, quantidade e componentes. Antes só item e quantidade: uma mudança de componente feita pelo servidor num clique (a tag do `onCreated` da barra, vinda do gancho no resultado) nunca chegava ao cliente que previu o vanilla. Componente que o servidor não sabe hashear conta como diferente (o slot é reenviado). Agente do Horizon avisado (10/11) |
+| `00454b508a` `fix(mods): a crafted result joins the cursor only with its components` | T03 (re-revisão do porte) | `crates/horizon-client/src/game.rs` | no laço do slot 200 do anfitrião, o cursor só empilha o resultado com `same_item_same_components` (antes, só o item); doc de `host_prepared_craft`; `cargo fmt` do teste de `01e5147ef5` em `hash.rs` | `game/menu_clicks.rs`, mesmo laço (l. 784) | Um resultado que o mod preparou (com `custom_data`) não se junta a uma pilha sem ele no cursor (`ItemStack.isSameItemSameComponents`). O gancho é perguntado antes de se saber se a retirada cabe, como na grade de um convidado (perguntado a cada mudança): é o resultado preparado, não a retirada; a glue do NTM não tem efeito colateral nele |
+
+Testes dos commits do T03. `93359657aa`: o motor não tem harness de `Game` para cliques de menu, e o despacho da API
+de mods (`contract: replace`) só substitui um resultado vazio, então um teste de `dispatch_prepare_item_craft` não
+exercita o caminho que o NTM usa (a injeção no início de `native_prepare_item_craft`). Esse commit vale para o modo local
+(janela sem `serving`); no jogo das provas a janela é cliente do próprio servidor integrado e o craft do anfitrião passa
+por `lan_crafting_click`, que já chamava o gancho (12 chamadas, uma por clique, vistas com um log temporário da glue). O
+defeito real desse caminho era o do `01e5147ef5`, que tem teste de unidade puro no protocolo (9/9 em `item::hash`). A
+prova J lê o inventário do lado do servidor (`data get entity`): barra feita na mesa pelo anfitrião sai com a tag,
+renomeada continua viva; a cópia da janela fica na evidência.
+
