@@ -328,7 +328,20 @@ de mutação.
 | todo `use(g, segundos)` | segura segundos × 20 ticks | `use_short` (pega em `can_leaves_ring_pull_and_empty_can`) |
 | menus do reator, tanque e funil (ZIRNOX) | espera o menu abrir (prazo de 20 s); a transferência do funil em 240 ticks | `menu_never` |
 
-Tolerâncias explícitas no roteiro: `SYNC_TICKS = 10`, `SLOW_RATE = 1`, `EAT_TICKS = 32`. A primeira mutação do
+Tolerâncias explícitas no roteiro: `SYNC_TICKS = 10`, `SLOW_RATE = 1`, `EAT_TICKS = 32`.
+
+Ajustes da re-revisão (10/11): a gama exige 281 (M65) e 201 (placa hazmat) de 350, porque a janela é exata; o
+expoente pela metade daria 313 (`d2225961`). O schnitzel limita pelos ticks desde o fim do consumo
+(`elapsed − EAT_TICKS`) e exige as diferenças do Java entre os efeitos (400 e 3400), dados no mesmo tick; a mutação
+encurta a cegueira a 160 ticks, o mais perto de 170 que o `/effect` aceita em segundos inteiros (`d4d04c22`). O
+atraso de coleta é provado congelado, `tick step 30` (ainda no chão) e mais 15 (de volta): 40, e não 60 nem 80;
+a mutação põe `PickupDelay` 60 no item caído (`4ac63533`).
+
+Lacunas registradas: `settle_ticks` relê até 40 ticks, então uma queda de item que o servidor fizesse mais tarde que
+isso também reprovaria a checagem do RadAway (é o mesmo veredito, com prazo); e os nomes das checagens repetidas do
+ZIRNOX levavam o número de passos, que as releituras de uma máquina carregada aumentam: agora contam o próprio tipo
+na fase (`reactor_menu_n`, `tank_menu_n`, `lever_<on>_n`, `cursor_move_ack_n`). Nas rodadas de
+referência antigas esses nomes têm o número de passos e não casam com os novos. A primeira mutação do
 algodão-doce não foi pega: o `cancel_use` repunha a pilha também depois da última tentativa e escondia o consumo;
 corrigido (não repõe na última) e refeita.
 
