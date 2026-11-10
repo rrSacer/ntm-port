@@ -1475,6 +1475,14 @@ impl ServerHost for Host<'_, '_> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {custom:c.custom_data,..Stack::new(&c.item,c.count)}).collect())
     }
     fn set_fire_unless_wet(&mut self,id:&str,seconds:i32) {
+        // Wet from where the player is published, without a visit: visiting a burning guest each tick while the
+        // water puts them out brought their fire back (the J proof's `burning_into_water`, an engine contact).
+        let here=self.game.native_players().into_iter().find(|p|p.uuid==id).filter(|p|dim_of(&p.dimension)==Some(self.game.dim));
+        if let Some(p)=here {
+            let at=horizon_core::geometry::Vec3::new(p.pos[0],p.pos[1],p.pos[2]);
+            let feet=self.game.world.block(at.x.floor() as i32,at.y.floor() as i32,at.z.floor() as i32);
+            if self.game.res.facts().get(feet).fluid==horizon_client::blocks::Fluid::Water || self.game.in_rain(at,at.y+1.8) {return;}
+        }
         self.game.native_visit_player(id,|g| {
             let Some(p)=g.player.as_ref() else {return};
             // `Entity.isWet`: in water, or rain at the feet or the top of the box. The water at the feet counts too
