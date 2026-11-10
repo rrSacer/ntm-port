@@ -30,14 +30,16 @@ pub fn product(stack: &Stack) -> Option<String> {
     let inner = snbt::fields(stack.custom.as_deref()?)?.remove(KEY)?;
     let id = snbt::fields(&inner)?.remove("id")?;
     let id = id.strip_prefix('"')?.strip_suffix('"')?;
-    (!id.is_empty()).then(|| id.to_string())
+    // An escaped quote or backslash is no id `make` writes (it refuses them) nor a real one: not a product.
+    (!id.is_empty() && !id.contains('\\')).then(|| id.to_string())
 }
 
 /// `NBTStack.matchesRecipe` for the recycling input `BrokenItem.make(product)`:
-/// the item is the broken one, its tag holds the product's id (extra tags
-/// are ignored) and the stack is at least as big as the product's count.
+/// the item is the broken one with meta 0 (`ComparableStack` compares it), its
+/// tag holds the product's id (extra tags are ignored) and the stack is at
+/// least as big as the product's count.
 pub fn matches(stack: &Stack, product_id: &str, count: u32) -> bool {
-    stack.count >= count && product(stack).as_deref() == Some(product_id)
+    stack.damage == 0 && stack.count >= count && product(stack).as_deref() == Some(product_id)
 }
 
 #[cfg(test)]
@@ -81,6 +83,23 @@ mod tests {
         assert!(product(&bare).is_none());
         assert!(!matches(&bare, "ntm:a", 1));
         assert!(make("", 1).is_none() && make("a\"b", 1).is_none());
+        // Another item carrying the tag is no broken item (the item check of `product`).
+        let mut other = make("ntm:a", 1).unwrap();
+        other.id = "ntm:upgrade_speed_2".into();
+        assert!(product(&other).is_none());
+        assert!(!matches(&other, "ntm:a", 1));
+        // An escaped id (someone's command with a malformed tag) is no product.
+        let mut escaped = make("ntm:a", 1).unwrap();
+        escaped.custom = Some("{ntm_broken:{id:\"ntm:a\\\"b\"}}".into());
+        assert!(product(&escaped).is_none());
+    }
+
+    #[test]
+    fn the_recycling_wants_meta_zero() {
+        let mut s = make("ntm:a", 1).unwrap();
+        assert!(matches(&s, "ntm:a", 1));
+        s.damage = 7;
+        assert!(!matches(&s, "ntm:a", 1), "the NBTStack's meta is 0");
     }
 
     #[test]
