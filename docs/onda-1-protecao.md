@@ -292,6 +292,20 @@ preparação, conversão e automação) e uma parou ao ler a vida da barra do sl
 guardado: causa não determinada (um clique perdido deixaria a barra no cursor). Pendência nominal: se reaparecer,
 investigar com o log, que o loop agora guarda. Evidência: `docs/evidence/onda1-f3/zirnox-regression.json`.
 
+### Famílias em jogo no binário final e regressão completa de `items`
+
+No binário final (motor `130153a4ac`, bundle no `HEAD` da branch), as famílias desta frente passam:
+`protection` inteira (27 checagens) e `masks` + `decon` (35 de 35). Numa primeira rodada, a mono não recebeu o
+filtro porque os três cliques de instalação se perderam sob carga (filtro ainda na mão, sem erro no log); repetida, passou.
+Evidência: `docs/evidence/onda1-f3/items-families-final.json`.
+
+**Pendência nominal: a regressão completa de `items` não fechou.** Três tentativas com carga de 25 a 48 pararam em
+checagens de tempo dos consumíveis da `main`, antes de chegar às famílias desta frente: `cancel_does_not_consume`
+(inventário lido vazio antes da sincronização; depois, o algodão-doce consumido porque o servidor completou os 32 ticks
+antes de receber o botão solto, que o harness solta 0,45 s depois) e `vegan_schnitzel_java_effects` (os três efeitos
+certos, lidos 97 ticks depois do consumo contra uma tolerância de 80). Repetir com a máquina mais livre, ou o
+coordenador decide se o harness desses consumíveis passa a esperar em ticks.
+
 ## Defeito do motor: anexos do dono num save no meio da sessão
 
 Achado pela re-revisão da fatia 1 e diagnosticado por sonda (anexo `ntm:item_state`, sem a mesa):
