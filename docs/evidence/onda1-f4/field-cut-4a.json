@@ -1,0 +1,183 @@
+{
+ "ok": true,
+ "binary_sha256": "d25547c44bace78a8594fc66a5c54f2713930b9dfe40be4c8ef4f283f8ba6b22",
+ "bundle_sha256": "dca249694fb01df23c3fcd05f995eb844d4a2af4ea3954c22962579bd47f265e",
+ "note": "Summary of run-player-cut-proof.py field: per point, the commit the storage holds at the first reopen (last: the commit before the act; new: the act save), the source chunk 1,0 [last commit, map right before the save, first reopen store, second reopen store], chunks over their bound (none), the Ender chest control at the first reopen, and the chunk count of each store.",
+ "points": [
+  {
+   "point": "none",
+   "ok": true,
+   "killed_at_the_point": null,
+   "commit": "new",
+   "source_1_0": [
+    6012.827,
+    100000.0,
+    56616.83,
+    12351.347
+   ],
+   "over_bound": {},
+   "chunks_in_store": {
+    "last_commit": 97,
+    "first_reopen": 98,
+    "second_reopen": 98
+   },
+   "chunks_probed_before_cut": 648,
+   "control_ender_first_reopen": {
+    "ntm:hazmat_helmet_grey": 1,
+    "ntm:cladding_lead": 1
+   },
+   "control_coherent": true,
+   "early_exits": 0
+  },
+  {
+   "point": "kill",
+   "ok": true,
+   "killed_at_the_point": null,
+   "commit": "last",
+   "source_1_0": [
+    6012.827,
+    58008.3671875,
+    6012.827,
+    3138.2324
+   ],
+   "over_bound": {},
+   "chunks_in_store": {
+    "last_commit": 97,
+    "first_reopen": 97,
+    "second_reopen": 98
+   },
+   "chunks_probed_before_cut": 479,
+   "control_ender_first_reopen": {
+    "ntm:hazmat_helmet_grey": 0,
+    "ntm:cladding_lead": 0
+   },
+   "control_coherent": true,
+   "early_exits": 0
+  },
+  {
+   "point": "save_begin",
+   "ok": true,
+   "killed_at_the_point": true,
+   "commit": "last",
+   "source_1_0": [
+    6012.827,
+    100000.0,
+    6012.827,
+    3138.2324
+   ],
+   "over_bound": {},
+   "chunks_in_store": {
+    "last_commit": 97,
+    "first_reopen": 97,
+    "second_reopen": 98
+   },
+   "chunks_probed_before_cut": 479,
+   "control_ender_first_reopen": {
+    "ntm:hazmat_helmet_grey": 0,
+    "ntm:cladding_lead": 0
+   },
+   "control_coherent": true,
+   "early_exits": 0
+  },
+  {
+   "point": "level_saved",
+   "ok": true,
+   "killed_at_the_point": true,
+   "commit": "last",
+   "source_1_0": [
+    6012.827,
+    100000.0,
+    6012.827,
+    3138.2324
+   ],
+   "over_bound": {},
+   "chunks_in_store": {
+    "last_commit": 97,
+    "first_reopen": 97,
+    "second_reopen": 98
+   },
+   "chunks_probed_before_cut": 479,
+   "control_ender_first_reopen": {
+    "ntm:hazmat_helmet_grey": 0,
+    "ntm:cladding_lead": 0
+   },
+   "control_coherent": true,
+   "early_exits": 0
+  },
+  {
+   "point": "players_saved",
+   "ok": true,
+   "killed_at_the_point": true,
+   "commit": "last",
+   "source_1_0": [
+    6012.827,
+    100000.0,
+    6012.827,
+    3138.2324
+   ],
+   "over_bound": {},
+   "chunks_in_store": {
+    "last_commit": 97,
+    "first_reopen": 97,
+    "second_reopen": 98
+   },
+   "chunks_probed_before_cut": 479,
+   "control_ender_first_reopen": {
+    "ntm:hazmat_helmet_grey": 1,
+    "ntm:cladding_lead": 1
+   },
+   "control_coherent": true,
+   "early_exits": 0
+  },
+  {
+   "point": "world_saved",
+   "ok": true,
+   "killed_at_the_point": true,
+   "commit": "new",
+   "source_1_0": [
+    6012.827,
+    100000.0,
+    56782.41,
+    12565.974
+   ],
+   "over_bound": {},
+   "chunks_in_store": {
+    "last_commit": 97,
+    "first_reopen": 98,
+    "second_reopen": 98
+   },
+   "chunks_probed_before_cut": 479,
+   "control_ender_first_reopen": {
+    "ntm:hazmat_helmet_grey": 1,
+    "ntm:cladding_lead": 1
+   },
+   "control_coherent": true,
+   "early_exits": 0
+  },
+  {
+   "point": "kv_committed",
+   "ok": true,
+   "killed_at_the_point": true,
+   "commit": "new",
+   "source_1_0": [
+    6012.827,
+    100000.0,
+    56782.41,
+    12565.974
+   ],
+   "over_bound": {},
+   "chunks_in_store": {
+    "last_commit": 97,
+    "first_reopen": 98,
+    "second_reopen": 98
+   },
+   "chunks_probed_before_cut": 479,
+   "control_ender_first_reopen": {
+    "ntm:hazmat_helmet_grey": 1,
+    "ntm:cladding_lead": 1
+   },
+   "control_coherent": true,
+   "early_exits": 0
+  }
+ ]
+}

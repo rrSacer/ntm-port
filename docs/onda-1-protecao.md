@@ -744,3 +744,140 @@ Lacunas da 5d:
   sem pausa de invulnerabilidade (`EntityChemical:153`); o item glitch, 1000 (`ItemGlitch:49`); os 100 de dano na
   transformação do creeper (`EntityEffectHandler:196`, com a dose em mobs); e a imunidade do creeper nuclear a esse
   dano (`EntityCreeperNuclear:53`).
+
+## Fatia 4: a radiação do mundo por chunk (`ChunkRadiationHandlerSimple`)
+
+O Java guarda, por mundo, um `HashMap<ChunkCoordIntPair, Float>`. Fonte: `ChunkRadiationHandlerSimple`, com o
+`ChunkRadiationManager` como proxy padrão. Entregue em sub-fatias: 4a (o campo), 4b (o jogador e as leituras), 4c
+(neblina e destruição do mundo), 4d (as fontes do port) e 4e (as zonas de bomba trocadas pelo campo).
+
+### 4a: o campo, a cadência e o save
+
+Comportamento, com as linhas do Java:
+
+- `getRadiation` (`:33-43`) lê o valor do chunk preso a 0..100 000. `setRadiation` (`:46-58`) grava preso a
+  0..100 000, mas só num chunk carregado (`world.blockExists`). `incrementRad` e `decrementRad` (`:61-68`) passam
+  pelos dois.
+- `updateSystem` (`:71-122`) roda a cada 20 ticks do servidor. O `eggTimer` do `ChunkRadiationManager:42-55` conta
+  desde a criação do servidor, no `Phase.END`. O mapa é copiado e limpo. Cada chunk da cópia diferente de 0 dá 0,6 a si
+  mesmo, 0,075 a cada lado e 0,025 a cada canto.
+  - Um vizinho que está na cópia soma a parte e decai por `clamp_float(0F, x × 0,99 − 0,05, 100 000)`. Os argumentos
+    estão trocados, então a conta vira `max(0, x)` e não tem teto.
+  - Um vizinho fora da cópia recebe só a parte, e a última escrita vence.
+  - As duas regras dependem da ordem em que a cópia é percorrida, que é a do `java.util.HashMap`. O port a reproduz
+    (`chunk_radiation::ChunkMap`): o hash do `ChunkCoordIntPair` (o `agu` do bytecode 1.7.10), o espalhamento
+    `h ^ h>>>16`, a divisão dos baldes no resize, o tamanho da cópia `new HashMap<>(m)`, o `clear` que mantém a
+    tabela, e as árvores rubro-negras em que vira um balde de 9 numa tabela de 64 ou mais. Na árvore, a raiz vai para
+    a frente, cada nó novo entra logo depois do pai, um resize divide a árvore, e uma metade de 6 ou menos volta a ser
+    lista.
+- `receiveChunkLoad` (`:148-157`) põe no mapa o valor gravado do chunk, por cima do que o mapa tinha. Um chunk sem
+  valor gravado entra com 0, porque `getFloat` de chave ausente dá 0.
+- `receiveChunkUnload` (`:174-183`, a remoção na `:180`) tem um bug: chama `radiation.remove(event.getChunk())`, passando o `Chunk` num
+  mapa cuja chave é `ChunkCoordIntPair`, e não remove nada. O port mantém o bug (decisão D1 (A) do coordenador):
+  - o chunk descarregado continua no mapa, espalhando e decaindo;
+  - o spread também cria entradas em chunks nunca carregados;
+  - o valor gravado do chunk é o da descarga, e ao recarregar ele volta por cima do que o mapa tinha.
+
+  A memória não cresce sem limite. O mapa é limpo a cada atualização e só recebe de volta o que um chunk diferente de
+  0 espalha, então um chunk em 0 sai sozinho. A frente de valores minúsculos para quando o float chega a 0, depois de
+  cerca de 40 atualizações.
+- `CommandRadiation` (`/ntmrad set <0..100000>` e `/ntmrad clear`, o `clearSystem` da `:125-131`), com os textos do Java e o nível 4 do
+  `CommandBase`. Entrou na 4a como a forma fiel de pôr campo para as provas. É a única fonte nesta sub-fatia; as
+  outras ficam para a 4d.
+
+O save (decisão D1 (A)): o valor de cada chunk vai para o armazenamento do NTM no mundo, numa chave própria
+(`chunk_radiation`) com carimbo próprio, como a `sickness`. No Java ele vai no NBT do chunk
+(`hfr_simple_radiation`), e o motor não dá a um mod dados próprios por chunk. Daí vêm duas diferenças:
+
+- Grava-se mais do que o Java. O Java grava o valor quando grava o chunk: o `receiveChunkSave` (`:160-171`) roda no
+  save de cada chunk que o save grava. No autosave, isso são os chunks marcados com `isModified`, e quem marca é o
+  `setRadiation` (`:55`), não o spread. Na descarga, é sempre. O port grava todos os chunks carregados em todo save e o chunk
+  que descarrega na descarga. Consequência: nenhum valor se perde. Só se regrava um valor que o Java talvez não
+  regravasse, e nesse caso o Java voltaria, depois de uma queda, a um valor mais velho do chunk.
+- A atomicidade. O NBT do Java vai junto com os blocos do chunk. Aqui, o armazenamento é gravado depois das regiões:
+  um corte entre as duas gravações deixa os chunks deste save com os valores do último commit do armazenamento. A
+  prova de corte está abaixo.
+
+Lacuna: dois chunks com o mesmo hash inteiro na mesma árvore. O Java os ordena por `System.identityHashCode`, que
+muda de uma execução para outra, então nenhum oráculo repete essa ordem. O port põe o novo à esquerda, que é o que o
+Java faz quando o hash de identidade do novo é o menor. O caso exige um balde de 9 numa tabela de 64 ou mais e,
+dentro dele, dois `ChunkCoordIntPair` de hash inteiro igual.
+
+Prova da 4a, no núcleo:
+
+- Oráculo Java executável (`tools/chunk-radiation-oracle`). Os cinco métodos são recortados literais do
+  `ChunkRadiationHandlerSimple` e rodam no `java.util.HashMap` real. São 20 execuções:
+  - sementes aleatórias;
+  - baldes forçados a colidir, perto da origem e longe dela, onde o hash passa de 2^31 e a comparação com sinal da
+    árvore conta;
+  - árvores fundas de 47 nós;
+  - uma área grande.
+
+  Ao todo são 630 retratos do mapa, e o port bate bit a bit, ordem e valor (`chunk_radiation::tests`). O
+  `tools/content-gen/test_chunk_radiation_oracle.py` confere que o fixture continua sendo o que o Java dá.
+- Mutantes no núcleo do campo: 35 rodados, 29 mortos. Sobreviveram cinco equivalentes e o desempate por
+  `identityHashCode`, que é a lacuna acima:
+  - as duas rotações "espelhadas": se `pp.left == p`, então `pp.right != p`;
+  - as duas rotações internas puladas: o laço refaz o mesmo zigue-zague pelo outro lado e chega à mesma árvore, com a
+    mesma ordem e o mesmo número de rotações;
+  - o piso do `decrementRad`: o `setRadiation` já prende em 0.
+
+  Na integração com o servidor, foram 11 mutantes, todos mortos (`server::tests::chunk_radiation_tests`).
+- Custo (condição 1 do coordenador; teste `chunk_radiation_cost`, ignorado por padrão, em release). A carga: 15 × 15
+  chunks carregados, mantidos a 100 000 por uma fonte antes de cada atualização (o mapa mais largo possível, estável
+  em cerca de 5 800 chunks), 50 mil gerações de bloco no estado do mundo, 50 mil atualizações (um milhão de ticks) e
+  um save do campo a cada 45 atualizações. A máquina estava dividida com as compilações de outras frentes.
+
+  | Trecho | Chunks no mapa | Tick que atualiza: mediana / p99 / máx | Save do campo: mediana / máx |
+  |---|---|---|---|
+  | até 100 | 5 059 | 1,17 / 1,35 / 1,36 ms | 0,065 / 0,096 ms |
+  | até 1 000 | 4 260 | 1,40 / 1,91 / 2,31 ms | 0,076 / 0,082 ms |
+  | até 10 000 | 5 966 | 1,40 / 1,96 / 4,51 ms | 0,063 / 0,119 ms |
+  | até 50 000 | 5 802 | 1,41 / 1,96 / 3,00 ms | 0,064 / 0,133 ms |
+
+  O custo não cresce com as atualizações nem com as gerações. O tick que atualiza é 1 em cada 20; nos outros, o campo
+  custa só o contador, e a média dá cerca de 0,07 ms por tick. A chave gravada tem 3,6 KB. É o perfil do Java: um pico
+  por segundo, com a cópia do mapa e 9 `put` por chunk. O coordenador aceitou este perfil como linha de base (decisão
+  (B)). A otimização da emulação só volta se uma medição representativa, ou um orçamento explícito, mostrar problema.
+
+Corte de save (condição 3 do coordenador; `run-player-cut-proof.py field`; resumo em
+`docs/evidence/onda1-f4/field-cut-4a.json`). Binário `d25547c4…`, pacote `dca24969…`.
+
+O roteiro:
+1. O preparo põe `/ntmrad set 100000` no chunk 1,0, espera 6 s e salva. O último commit fica com 97 chunks; o chunk
+   1,0 tem 6 012,8.
+2. A ação reabre, espera 4 s, põe o chunk de novo a 100 000, lê o mapa com `ntmtest rad` e salva no ponto de corte.
+3. Depois de cada corte, o mundo é reaberto duas vezes. Lê-se a chave no disco antes de a sessão salvar.
+
+O critério: nenhum chunk da chave pode passar do maior entre três valores, comparados em f32:
+- o do último commit;
+- o do mapa logo antes do save;
+- o que a próxima atualização daria, porque uma atualização pode cair entre a leitura e o save.
+
+Além disso, o chunk-fonte nunca se perde. O controle é o vanilla: as duas peças vão para o baú do Ender.
+
+| Ponto | Chave do campo na reabertura | Chunk 1,0 (commit anterior → antes do save → 1ª reabertura) | Controle (peças no baú do Ender) |
+|---|---|---|---|
+| `none` | nova | 6 012,8 → 100 000 → 56 616,8 | sim |
+| `kill` | último commit | 6 012,8 → 58 008,4 → 6 012,8 | não |
+| `save_begin` | último commit | 6 012,8 → 100 000 → 6 012,8 | não |
+| `level_saved` | último commit | 6 012,8 → 100 000 → 6 012,8 | não |
+| `players_saved` | último commit | 6 012,8 → 100 000 → 6 012,8 | sim |
+| `world_saved` | nova | 6 012,8 → 100 000 → 56 782,4 | sim |
+| `kv_committed` | nova | 6 012,8 → 100 000 → 56 782,4 | sim |
+
+O resultado:
+- Os sete pontos passaram, e o controle está coerente em todos.
+- Nenhum chunk ficou acima do seu limite, e o chunk-fonte esteve presente nas duas reaberturas de todos os pontos.
+- A diferença de atomicidade aparece em `level_saved` e `players_saved`. Ali as regiões, e em `players_saved` também
+  o arquivo do jogador, como mostra o controle, já estão gravadas. O campo volta ao último commit, que é o
+  armazenamento do NTM, gravado depois. No Java, o valor iria junto com o NBT do chunk. Aqui volta um valor de um save
+  anterior. Isso pode ser mais alto ou mais baixo que o do instante do corte, mas nunca é um valor que o campo não
+  teve.
+
+Na primeira rodada, a prova falhou duas vezes por defeitos dela mesma, não do campo:
+- a sonda lia um raio de 2 chunks, e o spread dos segundos da ação vai mais longe. Agora o raio é 16, e a sonda
+  lista só os chunks do mapa;
+- o armazenamento grava cada f32 pelo decimal mais curto, e o corredor o comparava como double. Agora compara em f32.
+
+A rodada registrada é a seguinte, com o mesmo binário.
