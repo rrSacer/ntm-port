@@ -74,6 +74,7 @@ pub(super) fn world(open: bool) {
         lock(&LEDGERS).clear();
         lock(&OWING).clear();
         lock(&ARRIVED).clear();
+        lock(&RAD_CHUNKS).clear();
         KV_ITEMS.store(0, std::sync::atomic::Ordering::Relaxed);
         lock(&LOADED_AT).clear();
     }
@@ -324,6 +325,20 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
         return true;
     }
     if line.split_whitespace().next()==Some("ntmtest"){return test_hook(game,player,line);}
+    if line.split_whitespace().next()==Some("ntmrad"){
+        let mut guard=lock(&SERVER);
+        let mut host=Host{game,buttons:Vec::new()};
+        let (server,_)=guard.get_or_insert_with(||(Server::native(&mut host,0),0));
+        reconcile(server,&mut host);
+        arrived(server);
+        if let Some(reply)=server.native_radiation_command(&player.dimension,player.position,line){
+            match reply{
+                Ok(text)=>host.game.native_feedback(horizon_client::text::Text::literal(text)),
+                Err(text)=>host.game.native_feedback(horizon_client::text::Text::literal(format!("\u{a7}c{text}"))),
+            }
+        }
+        return true;
+    }
     if line.split_whitespace().next()!=Some("ntmbomba"){return false;}
     let who=PlayerInfo{id:game.native_actor_uuid().unwrap_or_else(||player.uuid.to_string()),name:player.name.clone(),dim:player.dimension.clone(),pos:player.position,creative:player.game_mode==1};
     let mut guard=lock(&SERVER);
@@ -352,6 +367,16 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let mut host=Host{game,buttons:Vec::new()};
     let Some((server,_))=guard.as_mut() else{return true};
     reconcile(server,&mut host);
+    // `ntmtest rad <cx> <cz> [r]`: the world's radiation map around a chunk, one `x,z:raw:next` per chunk (`raw` the
+    // map's value as its float bits, `none` when not in it; `next` what the next update gives it), and the ticks since
+    // the last update.
+    if w.first()==Some(&"rad") && let (Some(x),Some(z))=(n(1),n(2)){
+        let (timer,chunks)=server.native_chunk_radiation_probe(&dim,[x as i32,z as i32],n(3).unwrap_or(0.0) as i32);
+        let list:Vec<String>=chunks.iter().map(|(c,raw,next)|format!("{},{}:{}:{}",c[0],c[1],raw.map_or("none".to_string(),|r|r.to_bits().to_string()),next.to_bits())).collect();
+        let reply=format!("ntmtest ok=true timer={timer} rad={}",list.join(";"));
+        host.game.native_feedback(horizon_client::text::Text::literal(reply));
+        return true;
+    }
     let at=match (n(1),n(2),n(3)){(Some(x),Some(y),Some(z))=>Some([x as i32,y as i32,z as i32]),_=>None};
     let result:Result<(),&str>=match (w.first().copied(),at){
         (Some("eject"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>if server.native_test_eject(&dim,p,[x,y,z]){Ok(())}else{Err("no rod to put out")},_=>Err("usage")},
@@ -830,8 +855,19 @@ fn store_obligations(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2
 type Arrived = (String, [i32; 2], Vec<ntm_core::persist::Removal>, Vec<ntm_core::server::CommittedEffects>, std::collections::BTreeSet<ntm_core::persist::Obligation>);
 static ARRIVED: Mutex<Vec<Arrived>> = Mutex::new(Vec::new());
 
-/// What the chunks loaded since owe, given to the server.
+/// Chunks loaded (true) and unloaded (false) since the server last took them, in their order, for the world's
+/// radiation by chunk (`Server::native_chunk_radiation_loaded`/`_unloaded`).
+static RAD_CHUNKS: Mutex<Vec<(String, [i32; 2], bool)>> = Mutex::new(Vec::new());
+
+/// What the chunks loaded since owe, and the chunks loaded and unloaded since, given to the server.
 fn arrived(server: &mut Server) {
+    for (dim, chunk, loaded) in std::mem::take(&mut *lock(&RAD_CHUNKS)) {
+        if loaded {
+            server.native_chunk_radiation_loaded(&dim, chunk);
+        } else {
+            server.native_chunk_radiation_unloaded(&dim, chunk);
+        }
+    }
     for (dim, chunk, removals, batches, migrated) in std::mem::take(&mut *lock(&ARRIVED)) {
         server.native_obligations_loaded(&dim, chunk, removals, batches, migrated);
     }
@@ -842,6 +878,7 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
     if dim_of(dim) != Some(game.dim) {
         return;
     }
+    lock(&RAD_CHUNKS).push((dim.to_string(), chunk, true));
     let key = chunk_key(dim, chunk);
     lock(&LOADED_AT).insert(key.clone(), game.ticks);
     let ledger = ledger_load(game, chunk);
@@ -860,6 +897,8 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
 /// a removed machine's contents out into the entities that leave with it, and what each chunk owes is in its record
 /// before that record is written (R7-2).
 pub(super) fn chunk_unloaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {
+    // Before the server takes the block changes: the chunk's value is saved as it leaves.
+    lock(&RAD_CHUNKS).push((dim.to_string(), chunk, false));
     if let Ok(mut guard) = SERVER.try_lock() && let Some((server, _)) = guard.as_mut() {
         let mut host = Host { game, buttons: Vec::new() };
         feed_changes(server, &mut host);
