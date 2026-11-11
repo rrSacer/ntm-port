@@ -3424,6 +3424,7 @@
   "effect.ntm.death": "Astolfização",
   "effect.ntm.potion_sickness": "Enjoo de Poção",
   "effect.ntm.taint": "Maculado",
+  "death.attack.radiation": "%1$s morreu por envenenamento por radiação.",
   "block.ntm.dummy_machine": "Máquina (parte)",
   "itemGroup.ntm.parts": "Recursos e Peças do NTM",
   "itemGroup.ntm.control": "Componentes do NTM",

@@ -328,6 +328,8 @@ def generate(src,out,rows,distributions,max_damage=True):
   languages['pt_br']['container.ntm.armor_table']='Mesa de Modificação de Armadura'
  import mob_effects
  mob_effects.generate(src,emit,emit_bytes,languages,transform_png,{loc:lang(src/f'src/main/resources/assets/hbm/lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]})
+ import damage_types
+ damage_types.generate(emit,languages,{loc:lang(src/f'src/main/resources/assets/hbm/lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]})
  for loc,value in languages.items():
   # Preserve visual-gen's dummy_machine lang key across content regenerations when dummy_machine is active.
   existing_lang=out/f'assets/ntm/lang/{loc}.json'

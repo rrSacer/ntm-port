@@ -12461,6 +12461,8 @@
   "bulk-recipe-coverage.json",
   "data/minecraft/tags/block/mineable/pickaxe.json",
   "data/minecraft/tags/block/needs_iron_tool.json",
+  "data/minecraft/tags/damage_type/bypasses_armor.json",
+  "data/ntm/damage_type/radiation.json",
   "data/ntm/horizon/block/ancient_scrap.json",
   "data/ntm/horizon/block/anvil_arsenic_bronze.json",
   "data/ntm/horizon/block/anvil_bismuth_bronze.json",
