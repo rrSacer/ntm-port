@@ -1227,6 +1227,33 @@ dela). `native_bombs.py` fundiu sozinho: ficou com a leitura da alavanca da `mai
   só `ids.json` mudou, e ele não entra no pacote.
 - Em jogo, uma por vez, `NTM_GAME_WIDE=1`: stations, dims e a prova de save `original` `kill` passaram (#60–#62).
 
+### Pin `eb5d3eed58`: contatos de motor da RBMK T03 (10/11)
+
+A branch de atualização `upstream-a3bf653-fix` avançou por fast-forward de `6a79054fa9` para `643e359566` (a ponta da
+`rbmk-t03-engine`):
+
+- `56fbb210a7`: colunas tão altas quanto cada uma foi posta (= `5b9d6ee175`).
+- `3b96e2d998`: o `column_core` acha o núcleo descendo pela própria coluna (= `06bf7ffe5c`).
+- `643e359566`: o resultado do craft só se junta ao cursor com os mesmos componentes (= `00454b508a`, portado à mão).
+
+Por cima entra `eb5d3eed58` (P3-3 da revisão do merge do T03): o slot 302 da fornalha (`FurnaceResultSlot`) também só
+se junta ao cursor com `same_item_same_components`. Nenhuma outra fusão no cursor compara só o item
+(`pad_craft.rs:97` compara para reconhecer a receita). Nem `643e` nem `eb5d` têm teste comportamental: o clique em
+slot só existe atrás do renderer e da posição do cursor (`click_inventory`), e um teste pediria extrair esse caminho.
+Fica como lacuna nominal.
+
+Pin do NTM movido em `ab5bf359` (branch `ntm-pin-rbmk-t03`, a partir da `main` `e4aa8b2c`; nada fundido na `main`).
+Verificação (`confirm/pin-verify.log`):
+
+- Testes: `horizon-world` `mod_multiblocks` 7; `item::hash` 9; client-lib `menu::tests` 67, `lan::` 382, `craft` 41,
+  `native_` 26, `mod_` 83, `save::` 84; client `craft` 32, `menu` 36, `lan::` 13, `native_` 235, `machines` 27,
+  `mod_` 38; `lan_bot` 22.
+- Clippy `-D warnings` limpo em seis bibliotecas, `rustfmt` limpo.
+- A cópia transformada foi regenerada contra `eb5d3eed58`, e o clippy dela está limpo.
+- Release `horizon-client` `d3ae3ad109083249c0a722ae15d9cdb8bc1003d3bf970a6770ec2d6baaeac038`. Pacote `ntm.hmod`
+  `483392a4d3640aa4444926f1ca6d44956577d7aefa5143e6764cad94325959a9` (o conteúdo não mudou).
+- Em jogo, uma por vez, `NTM_GAME_WIDE=1`: stations, dims e a prova de save `original` `kill` passaram (#64–#66).
+
 ### Limitações e pendências
 
 - **Modo eager:** os cortes dentro de um save (`save_begin`, `live_chunk`, `region_record`, `entities_written`) não são
