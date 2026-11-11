@@ -45,6 +45,21 @@ fn air(id: &str) -> bool {
     matches!(id, "minecraft:air" | "minecraft:cave_air" | "minecraft:void_air")
 }
 
+/// `BlockFallout` is 0.125 high (`setBlockBounds(0, 0, 0, 1, 0.125, 1)`) and never stacks; the port's fallout is a
+/// snow layer (`layers` 1..8, standing `(layers - 1) / 8` above its cell). Over a fallout cell the feet are taken at
+/// the Java's height: those of a player standing on it are its cell + 0.125, and a jump adds to that.
+pub fn java_feet(ground: &mut impl Ground, feet: [f64; 3]) -> [f64; 3] {
+    let column = feet[1].floor() as i32;
+    for y in [column, column - 1] {
+        let block = ground.block([feet[0].floor() as i32, y, feet[2].floor() as i32]);
+        if id(&block) == "ntm:fallout" && feet[1] >= f64::from(y) {
+            let layers = block.split("layers=").nth(1).and_then(|s| s.trim_end_matches(']').split(',').next()?.parse::<u32>().ok()).unwrap_or(1);
+            return [feet[0], feet[1] - f64::from(layers.saturating_sub(1)) / 8.0 + 0.125, feet[2]];
+        }
+    }
+    feet
+}
+
 /// The block a step at the feet `feet` lands on: the cell of `floor(feet.y - 0.2)`, or the fence, wall or gate below.
 pub fn step_cell(ground: &mut impl Ground, feet: [f64; 3]) -> ([i32; 3], String) {
     let cell = [feet[0].floor() as i32, (feet[1] - 0.200_000_002_980_232_24).floor() as i32, feet[2].floor() as i32];
@@ -69,7 +84,8 @@ pub fn advance(walk: &mut Walk, dim: &str, to: [f64; 3], blocked: bool, ground: 
     if dx * dx + dy * dy + dz * dz > 100.0 || blocked {
         return None;
     }
-    let (cell, block) = step_cell(ground, to);
+    let feet = java_feet(ground, to);
+    let (cell, block) = step_cell(ground, feet);
     if id(&block) != "minecraft:ladder" {
         dy = 0.0;
     }
