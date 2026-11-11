@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:cladding_desh",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DPD",
+    "PRP",
+    "DPD"
+  ],
+  "key": {
+    "R": "ntm:cladding_lead",
+    "P": "ntm:plate_desh",
+    "D": "ntm:ducttape"
+  }
+}

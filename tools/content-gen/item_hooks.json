@@ -1247,6 +1247,1089 @@
       "max_stack_size": 64,
       "behavior": "native item_hooks: ItemHot cooling",
       "behavior_gap": "heatUp is called by the anvil and foundry recipes with NBT, which are not ported"
+    },
+    {
+      "id": "cladding_paint",
+      "source_variable": "cladding_paint",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)"
+    },
+    {
+      "id": "cladding_rubber",
+      "source_variable": "cladding_rubber",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)"
+    },
+    {
+      "id": "cladding_lead",
+      "source_variable": "cladding_lead",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)"
+    },
+    {
+      "id": "cladding_desh",
+      "source_variable": "cladding_desh",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)"
+    },
+    {
+      "id": "cladding_ghiorsium",
+      "source_variable": "cladding_ghiorsium",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_ingot",
+      "max_stack_size": 1,
+      "behavior": "ArmorModHandler cladding: native item_hooks (hazmat.json)"
+    },
+    {
+      "id": "steel_helmet",
+      "source_variable": "steel_helmet",
+      "type": "item",
+      "max_damage": 330,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 30, reduction {3, 8, 6, 3} (MainRegistry.java:135); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "steel_plate",
+      "source_variable": "steel_plate",
+      "type": "item",
+      "max_damage": 480,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 30, reduction {3, 8, 6, 3} (MainRegistry.java:135); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "steel_legs",
+      "source_variable": "steel_legs",
+      "type": "item",
+      "max_damage": 450,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 30, reduction {3, 8, 6, 3} (MainRegistry.java:135); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "steel_boots",
+      "source_variable": "steel_boots",
+      "type": "item",
+      "max_damage": 390,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 30, reduction {3, 8, 6, 3} (MainRegistry.java:135); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "alloy_helmet",
+      "source_variable": "alloy_helmet",
+      "type": "item",
+      "max_damage": 440,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 40, reduction {3, 8, 6, 3} (MainRegistry.java:136); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "alloy_plate",
+      "source_variable": "alloy_plate",
+      "type": "item",
+      "max_damage": 640,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 40, reduction {3, 8, 6, 3} (MainRegistry.java:136); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "alloy_legs",
+      "source_variable": "alloy_legs",
+      "type": "item",
+      "max_damage": 600,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 40, reduction {3, 8, 6, 3} (MainRegistry.java:136); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "alloy_boots",
+      "source_variable": "alloy_boots",
+      "type": "item",
+      "max_damage": 520,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 40, reduction {3, 8, 6, 3} (MainRegistry.java:136); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "titanium_helmet",
+      "source_variable": "titanium_helmet",
+      "type": "item",
+      "max_damage": 275,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 25, reduction {3, 8, 6, 3} (MainRegistry.java:138); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "titanium_plate",
+      "source_variable": "titanium_plate",
+      "type": "item",
+      "max_damage": 400,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 25, reduction {3, 8, 6, 3} (MainRegistry.java:138); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "titanium_legs",
+      "source_variable": "titanium_legs",
+      "type": "item",
+      "max_damage": 375,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 25, reduction {3, 8, 6, 3} (MainRegistry.java:138); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "titanium_boots",
+      "source_variable": "titanium_boots",
+      "type": "item",
+      "max_damage": 325,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 25, reduction {3, 8, 6, 3} (MainRegistry.java:138); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "cobalt_helmet",
+      "source_variable": "cobalt_helmet",
+      "type": "item",
+      "max_damage": 770,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 70, reduction {3, 8, 6, 3} (MainRegistry.java:143); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "cobalt_plate",
+      "source_variable": "cobalt_plate",
+      "type": "item",
+      "max_damage": 1120,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 70, reduction {3, 8, 6, 3} (MainRegistry.java:143); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "cobalt_legs",
+      "source_variable": "cobalt_legs",
+      "type": "item",
+      "max_damage": 1050,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 70, reduction {3, 8, 6, 3} (MainRegistry.java:143); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "cobalt_boots",
+      "source_variable": "cobalt_boots",
+      "type": "item",
+      "max_damage": 910,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 70, reduction {3, 8, 6, 3} (MainRegistry.java:143); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "starmetal_helmet",
+      "source_variable": "starmetal_helmet",
+      "type": "item",
+      "max_damage": 1650,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 150, reduction {3, 8, 6, 3} (MainRegistry.java:144); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "starmetal_plate",
+      "source_variable": "starmetal_plate",
+      "type": "item",
+      "max_damage": 2400,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 150, reduction {3, 8, 6, 3} (MainRegistry.java:144); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "starmetal_legs",
+      "source_variable": "starmetal_legs",
+      "type": "item",
+      "max_damage": 2250,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 150, reduction {3, 8, 6, 3} (MainRegistry.java:144); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "starmetal_boots",
+      "source_variable": "starmetal_boots",
+      "type": "item",
+      "max_damage": 1950,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "equipment_gap": {
+        "source_stats": "ArmorMaterial durability 150, reduction {3, 8, 6, 3} (MainRegistry.java:144); ItemArmor max damage = {11, 16, 15, 13}[type] * durability",
+        "differences": [
+          "enchantability",
+          "repair material",
+          "equipped armor appearance uses vanilla template"
+        ],
+        "reason": "durability and armor points follow the Java (HazmatRegistry resistance in crates/ntm-core/data/hazmat.json); the content API has no enchantability, repair material or armor texture"
+      }
+    },
+    {
+      "id": "gas_mask",
+      "source_variable": "gas_mask",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 165,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ArmorGasMask: ArmorMaterial.IRON, type 0 (ModItemsArmor.java:27-30)"
+    },
+    {
+      "id": "gas_mask_mono",
+      "source_variable": "gas_mask_mono",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 165,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ArmorGasMask: ArmorMaterial.IRON, type 0 (ModItemsArmor.java:27-30)"
+    },
+    {
+      "id": "gas_mask_olde",
+      "source_variable": "gas_mask_olde",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 165,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ArmorGasMask: ArmorMaterial.IRON, type 0 (ModItemsArmor.java:27-30)"
+    },
+    {
+      "id": "goggles",
+      "source_variable": "goggles",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 165,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ArmorModel/ArmorAshGlasses: ArmorMaterial.IRON, type 0 (ModItemsArmor.java:25-26)"
+    },
+    {
+      "id": "ashglasses",
+      "source_variable": "ashglasses",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 165,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 2,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ArmorModel/ArmorAshGlasses: ArmorMaterial.IRON, type 0 (ModItemsArmor.java:25-26)"
+    },
+    {
+      "id": "mask_rag",
+      "source_variable": "mask_rag",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 1650,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ModArmor(aMatRags 150, {1, 1, 1, 1}), type 0 (ModItemsArmor.java:22,31-32)"
+    },
+    {
+      "id": "mask_piss",
+      "source_variable": "mask_piss",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 1650,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ModArmor(aMatRags 150, {1, 1, 1, 1}), type 0 (ModItemsArmor.java:22,31-32)"
+    },
+    {
+      "id": "hazmat_paa_helmet",
+      "source_variable": "hazmat_paa_helmet",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 825,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ArmorHazmat(Mask)(aMatPaa 75, {3, 8, 6, 3}) (MainRegistry.java:139, ModItems.java:4266-4270)"
+    },
+    {
+      "id": "hazmat_paa_plate",
+      "source_variable": "hazmat_paa_plate",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 1200,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "source_stats": "ArmorHazmat(Mask)(aMatPaa 75, {3, 8, 6, 3}) (MainRegistry.java:139, ModItems.java:4266-4270)"
+    },
+    {
+      "id": "hazmat_paa_legs",
+      "source_variable": "hazmat_paa_legs",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 1125,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "source_stats": "ArmorHazmat(Mask)(aMatPaa 75, {3, 8, 6, 3}) (MainRegistry.java:139, ModItems.java:4266-4270)"
+    },
+    {
+      "id": "hazmat_paa_boots",
+      "source_variable": "hazmat_paa_boots",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 975,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "source_stats": "ArmorHazmat(Mask)(aMatPaa 75, {3, 8, 6, 3}) (MainRegistry.java:139, ModItems.java:4266-4270)"
+    },
+    {
+      "id": "liquidator_helmet",
+      "source_variable": "liquidator_helmet",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 8250,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "head"
+          },
+          {
+            "type": "minecraft:knockback_resistance",
+            "id": "ntm:liquidator.head",
+            "amount": 100.0,
+            "operation": "add_value",
+            "slot": "head"
+          },
+          {
+            "type": "minecraft:movement_speed",
+            "id": "ntm:liquidator.head",
+            "amount": -0.1,
+            "operation": "add_multiplied_base",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ArmorLiquidator(Mask)(HBM_LIQUIDATOR 750, {3, 8, 6, 3}) (ModItems.java:4272-4280); getItemAttributeModifiers knockback 100 (op 0) and speed -0.1 (op 1) (ArmorLiquidator.java:55-56)"
+    },
+    {
+      "id": "liquidator_plate",
+      "source_variable": "liquidator_plate",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 12000,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          },
+          {
+            "type": "minecraft:knockback_resistance",
+            "id": "ntm:liquidator.chest",
+            "amount": 100.0,
+            "operation": "add_value",
+            "slot": "chest"
+          },
+          {
+            "type": "minecraft:movement_speed",
+            "id": "ntm:liquidator.chest",
+            "amount": -0.1,
+            "operation": "add_multiplied_base",
+            "slot": "chest"
+          }
+        ]
+      },
+      "source_stats": "ArmorLiquidator(Mask)(HBM_LIQUIDATOR 750, {3, 8, 6, 3}) (ModItems.java:4272-4280); getItemAttributeModifiers knockback 100 (op 0) and speed -0.1 (op 1) (ArmorLiquidator.java:55-56)"
+    },
+    {
+      "id": "liquidator_legs",
+      "source_variable": "liquidator_legs",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 11250,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 6,
+            "operation": "add_value",
+            "slot": "legs"
+          },
+          {
+            "type": "minecraft:knockback_resistance",
+            "id": "ntm:liquidator.legs",
+            "amount": 100.0,
+            "operation": "add_value",
+            "slot": "legs"
+          },
+          {
+            "type": "minecraft:movement_speed",
+            "id": "ntm:liquidator.legs",
+            "amount": -0.1,
+            "operation": "add_multiplied_base",
+            "slot": "legs"
+          }
+        ]
+      },
+      "source_stats": "ArmorLiquidator(Mask)(HBM_LIQUIDATOR 750, {3, 8, 6, 3}) (ModItems.java:4272-4280); getItemAttributeModifiers knockback 100 (op 0) and speed -0.1 (op 1) (ArmorLiquidator.java:55-56)"
+    },
+    {
+      "id": "liquidator_boots",
+      "source_variable": "liquidator_boots",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:iron_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 9750,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "feet"
+          },
+          {
+            "type": "minecraft:knockback_resistance",
+            "id": "ntm:liquidator.feet",
+            "amount": 100.0,
+            "operation": "add_value",
+            "slot": "feet"
+          },
+          {
+            "type": "minecraft:movement_speed",
+            "id": "ntm:liquidator.feet",
+            "amount": -0.1,
+            "operation": "add_multiplied_base",
+            "slot": "feet"
+          }
+        ]
+      },
+      "source_stats": "ArmorLiquidator(Mask)(HBM_LIQUIDATOR 750, {3, 8, 6, 3}) (ModItems.java:4272-4280); getItemAttributeModifiers knockback 100 (op 0) and speed -0.1 (op 1) (ArmorLiquidator.java:55-56)"
+    },
+    {
+      "id": "asbestos_helmet",
+      "source_variable": "asbestos_helmet",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_helmet",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 220,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.head",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "head"
+          }
+        ]
+      },
+      "source_stats": "ArmorFSB(aMatAsbestos 20, {1, 4, 3, 1}) (MainRegistry.java:137, ModItemsArmor.java:86-89)"
+    },
+    {
+      "id": "asbestos_plate",
+      "source_variable": "asbestos_plate",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 320,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 4,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "source_stats": "ArmorFSB(aMatAsbestos 20, {1, 4, 3, 1}) (MainRegistry.java:137, ModItemsArmor.java:86-89)"
+    },
+    {
+      "id": "asbestos_legs",
+      "source_variable": "asbestos_legs",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_leggings",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 300,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.legs",
+            "amount": 3,
+            "operation": "add_value",
+            "slot": "legs"
+          }
+        ]
+      },
+      "source_stats": "ArmorFSB(aMatAsbestos 20, {1, 4, 3, 1}) (MainRegistry.java:137, ModItemsArmor.java:86-89)"
+    },
+    {
+      "id": "asbestos_boots",
+      "source_variable": "asbestos_boots",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_boots",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 260,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.feet",
+            "amount": 1,
+            "operation": "add_value",
+            "slot": "feet"
+          }
+        ]
+      },
+      "source_stats": "ArmorFSB(aMatAsbestos 20, {1, 4, 3, 1}) (MainRegistry.java:137, ModItemsArmor.java:86-89)"
+    },
+    {
+      "id": "jackt",
+      "source_variable": "jackt",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 480,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "source_stats": "ModArmor(aMatSteel 30, {3, 8, 6, 3}), type 1 (ModItemsArmor.java:267-269)"
+    },
+    {
+      "id": "jackt2",
+      "source_variable": "jackt2",
+      "type": "item",
+      "category": "equipment",
+      "template": "minecraft:leather_chestplate",
+      "max_stack_size": 1,
+      "behavior": "native item_hooks",
+      "max_damage": 480,
+      "components": {
+        "minecraft:attribute_modifiers": [
+          {
+            "type": "minecraft:armor",
+            "id": "minecraft:armor.chest",
+            "amount": 8,
+            "operation": "add_value",
+            "slot": "chest"
+          }
+        ]
+      },
+      "source_stats": "ModArmor(aMatSteel 30, {3, 8, 6, 3}), type 1 (ModItemsArmor.java:267-269)"
     }
   ]
 }

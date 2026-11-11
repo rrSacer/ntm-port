@@ -1,0 +1,259 @@
+{
+ "binary": "client-after (engine 130153a4ac, NTM 311c2030 with 68102b17)",
+ "bundle_sha256": "42525a6b6a5e1d1ec3329a0d98bab80fdc703aff924a511ddefa1cd1ef75d43e",
+ "references": [
+  "fixes/scratch/zirnox-91ej127y",
+  "fixes/scratch/zirnox-6j9vs1ng",
+  "itemhooks/evidence/zirnox-hqapatrk",
+  "rtg/zirnox-6c_txicv"
+ ],
+ "all_checks_ok": [
+  true,
+  true,
+  true
+ ],
+ "checks_per_run": [
+  136,
+  136,
+  136
+ ],
+ "reference_constant_checks": 85,
+ "differs_from_references": {
+  "run1": [
+   "setup:insert_ntm:fluid_barrel_full__water_2"
+  ],
+  "run2": [],
+  "run3": [
+   "automation:automation_has_active_and_naturally_converted_rods",
+   "automation:automation_hopper_menu",
+   "automation:automation_only_converted_rods_extracted",
+   "automation:automation_rod_conservation",
+   "capture-state:still_running_at_close",
+   "convert:lithium_to_tritium",
+   "convert:reactor_survives_conversion",
+   "convert:thorium_to_fuel",
+   "convert:zfb_natural_depletion",
+   "failure:destroyed_reactor_replaces_core",
+   "setup:insert_ntm:fluid_barrel_full__water_2"
+  ]
+ },
+ "debris": {
+  "approved_check": "created == [20,10,10,10,20,2] and survivors[:4] == created[:4]; kinds 4 and 5 are destructive and random (not checked)",
+  "mine": [
+   {
+    "survivor_delta": [
+     20,
+     10,
+     10,
+     10,
+     11,
+     2
+    ],
+    "created_delta": [
+     20,
+     10,
+     10,
+     10,
+     20,
+     2
+    ]
+   },
+   {
+    "survivor_delta": [
+     20,
+     10,
+     10,
+     10,
+     13,
+     1
+    ],
+    "created_delta": [
+     20,
+     10,
+     10,
+     10,
+     20,
+     2
+    ]
+   },
+   {
+    "survivor_delta": [
+     20,
+     10,
+     10,
+     10,
+     14,
+     2
+    ],
+    "created_delta": [
+     20,
+     10,
+     10,
+     10,
+     20,
+     2
+    ]
+   }
+  ],
+  "references": [
+   {
+    "survivor_delta": [
+     20,
+     10,
+     10,
+     10,
+     14,
+     0
+    ],
+    "created_delta": [
+     20,
+     10,
+     10,
+     10,
+     20,
+     2
+    ]
+   },
+   {
+    "survivor_delta": [
+     20,
+     10,
+     10,
+     10,
+     14,
+     0
+    ],
+    "created_delta": [
+     20,
+     10,
+     10,
+     10,
+     20,
+     2
+    ]
+   },
+   {
+    "survivor_delta": [
+     20,
+     10,
+     10,
+     10,
+     12,
+     0
+    ],
+    "created_delta": [
+     20,
+     10,
+     10,
+     10,
+     20,
+     2
+    ]
+   },
+   {
+    "survivor_delta": [
+     20,
+     10,
+     10,
+     10,
+     13,
+     2
+    ],
+    "created_delta": [
+     20,
+     10,
+     10,
+     10,
+     20,
+     2
+    ]
+   }
+  ]
+ },
+ "note": "The harness waits in wall-clock time; run3 took 26 min under load and its snapshots fall later (more barrels emptied, 14 depleted rods instead of 11). Run2 equals the references on every reference-constant check.",
+ "checks_per_run_note": "checks_per_run counts the names in each run (136 each); 183 was the union of names over the seven runs",
+ "state_wait_run": {
+  "commit": "e91d5eb3",
+  "checks": 136,
+  "all_ok": true,
+  "reference_constant": 84,
+  "differ": [
+   "setup:insert_ntm:fluid_barrel_full__water_2",
+   "automation:automation_has_active_and_naturally_converted_rods",
+   "automation:automation_hopper_menu",
+   "automation:automation_only_converted_rods_extracted",
+   "automation:automation_rod_conservation",
+   "capture-state:still_running_at_close"
+  ],
+  "debris": {
+   "survivor_delta": [
+    20,
+    10,
+    10,
+    10,
+    13,
+    0
+   ],
+   "created_delta": [
+    20,
+    10,
+    10,
+    10,
+    20,
+    2
+   ]
+  }
+ },
+ "final_harness_run": {
+  "commit": "6dd6f59a",
+  "checks": 136,
+  "all_ok": true,
+  "reference_constant": 84,
+  "differ": [
+   "setup:insert_ntm:fluid_barrel_full__water_2",
+   "failure:destroyed_reactor_replaces_core"
+  ],
+  "debris": {
+   "survivor_delta": [
+    20,
+    10,
+    10,
+    10,
+    16,
+    1
+   ],
+   "created_delta": [
+    20,
+    10,
+    10,
+    10,
+    20,
+    2
+   ]
+  }
+ },
+ "review_run": {
+  "commit": "df59a34f",
+  "checks": 136,
+  "all_ok": true,
+  "debris": {
+   "survivor_delta": [
+    20,
+    10,
+    10,
+    10,
+    11,
+    0
+   ],
+   "created_delta": [
+    20,
+    10,
+    10,
+    10,
+    20,
+    2
+   ]
+  },
+  "names": "repeated checks named by kind (P3-5)"
+ }
+}

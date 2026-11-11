@@ -1,0 +1,184 @@
+{
+ "ok": true,
+ "binary_sha256": "41424521bf6974cd49131e1c0798d13af7cac24712564a33a6b035d9fe90fb6b",
+ "bundle_sha256": "42525a6b6a5e1d1ec3329a0d98bab80fdc703aff924a511ddefa1cd1ef75d43e",
+ "base_disk": 1,
+ "points": [
+  {
+   "point": "none",
+   "ok": true,
+   "as_the_file": true,
+   "same_as_control": true,
+   "within_the_java": true,
+   "exact": true,
+   "mod": {
+    "disk": 2,
+    "first_reopen": 2,
+    "second_reopen": 2,
+    "second_reopen_disk": 2,
+    "killed_at_the_point": null
+   },
+   "control": {
+    "disk": 2,
+    "first_reopen": 2,
+    "second_reopen": 2,
+    "second_reopen_disk": 2,
+    "killed_at_the_point": null
+   }
+  },
+  {
+   "point": "kill",
+   "ok": true,
+   "as_the_file": true,
+   "same_as_control": true,
+   "within_the_java": true,
+   "exact": true,
+   "mod": {
+    "disk": 1,
+    "first_reopen": 1,
+    "second_reopen": 1,
+    "second_reopen_disk": 1,
+    "killed_at_the_point": null
+   },
+   "control": {
+    "disk": 1,
+    "first_reopen": 1,
+    "second_reopen": 1,
+    "second_reopen_disk": 1,
+    "killed_at_the_point": null
+   }
+  },
+  {
+   "point": "save_begin",
+   "ok": true,
+   "as_the_file": true,
+   "same_as_control": true,
+   "within_the_java": true,
+   "exact": true,
+   "mod": {
+    "disk": 1,
+    "first_reopen": 1,
+    "second_reopen": 1,
+    "second_reopen_disk": 1,
+    "killed_at_the_point": true
+   },
+   "control": {
+    "disk": 1,
+    "first_reopen": 1,
+    "second_reopen": 1,
+    "second_reopen_disk": 1,
+    "killed_at_the_point": true
+   }
+  },
+  {
+   "point": "chunks_written",
+   "ok": true,
+   "as_the_file": true,
+   "same_as_control": true,
+   "within_the_java": true,
+   "exact": true,
+   "mod": {
+    "disk": 1,
+    "first_reopen": 1,
+    "second_reopen": 1,
+    "second_reopen_disk": 1,
+    "killed_at_the_point": true
+   },
+   "control": {
+    "disk": 1,
+    "first_reopen": 1,
+    "second_reopen": 1,
+    "second_reopen_disk": 1,
+    "killed_at_the_point": true
+   }
+  },
+  {
+   "point": "level_saved",
+   "ok": true,
+   "as_the_file": true,
+   "same_as_control": true,
+   "within_the_java": true,
+   "exact": true,
+   "mod": {
+    "disk": 1,
+    "first_reopen": 1,
+    "second_reopen": 1,
+    "second_reopen_disk": 1,
+    "killed_at_the_point": true
+   },
+   "control": {
+    "disk": 1,
+    "first_reopen": 1,
+    "second_reopen": 1,
+    "second_reopen_disk": 1,
+    "killed_at_the_point": true
+   }
+  },
+  {
+   "point": "players_saved",
+   "ok": true,
+   "as_the_file": true,
+   "same_as_control": true,
+   "within_the_java": true,
+   "exact": true,
+   "mod": {
+    "disk": 2,
+    "first_reopen": 2,
+    "second_reopen": 2,
+    "second_reopen_disk": 2,
+    "killed_at_the_point": true
+   },
+   "control": {
+    "disk": 2,
+    "first_reopen": 2,
+    "second_reopen": 2,
+    "second_reopen_disk": 2,
+    "killed_at_the_point": true
+   }
+  },
+  {
+   "point": "world_saved",
+   "ok": true,
+   "as_the_file": true,
+   "same_as_control": true,
+   "within_the_java": true,
+   "exact": true,
+   "mod": {
+    "disk": 2,
+    "first_reopen": 2,
+    "second_reopen": 2,
+    "second_reopen_disk": 2,
+    "killed_at_the_point": true
+   },
+   "control": {
+    "disk": 2,
+    "first_reopen": 2,
+    "second_reopen": 2,
+    "second_reopen_disk": 2,
+    "killed_at_the_point": true
+   }
+  },
+  {
+   "point": "kv_committed",
+   "ok": true,
+   "as_the_file": true,
+   "same_as_control": true,
+   "within_the_java": true,
+   "exact": true,
+   "mod": {
+    "disk": 2,
+    "first_reopen": 2,
+    "second_reopen": 2,
+    "second_reopen_disk": 2,
+    "killed_at_the_point": true
+   },
+   "control": {
+    "disk": 2,
+    "first_reopen": 2,
+    "second_reopen": 2,
+    "second_reopen_disk": 2,
+    "killed_at_the_point": true
+   }
+  }
+ ]
+}

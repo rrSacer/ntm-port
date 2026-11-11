@@ -1,0 +1,204 @@
+{
+ "rule": "each converted wait has a mutant (NTM_ITEMS_MUTANT / NTM_ZIRNOX_MUTANT) that must fail at the check it protects",
+ "final": [
+  {
+   "mutant": "food_not_eaten",
+   "expected": "setup:food_and_saturation_apply",
+   "result": "CAUGHT(setup:food_and_saturation_apply)"
+  },
+  {
+   "mutant": "no_wither",
+   "expected": "setup:java_food_effects",
+   "result": "CAUGHT(setup:java_food_effects)"
+  },
+  {
+   "mutant": "mask_unprotective",
+   "expected": "setup:mask_and_hazmat_reduce_gamma",
+   "result": "CAUGHT(setup:mask_and_hazmat_reduce_gamma)"
+  },
+  {
+   "mutant": "second_one_too",
+   "expected": "setup:full_food_consumes_one",
+   "result": "CAUGHT(setup:full_food_consumes_one)"
+  },
+  {
+   "mutant": "pickup_delay_run_out",
+   "expected": "setup:thrown_container_waits_its_pickup_delay",
+   "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+  },
+  {
+   "mutant": "radaway_container_lost",
+   "expected": "setup:full_last_radaway_drops_container",
+   "result": "CAUGHT(setup:full_last_radaway_drops_container)"
+  },
+  {
+   "mutant": "use_short",
+   "expected": "ANY",
+   "result": "CAUGHT(setup:can_leaves_ring_pull_and_empty_can)"
+  },
+  {
+   "mutant": "late_release:ntm:can_smart",
+   "expected": "setup:can_cancel_keeps_it",
+   "result": "CAUGHT(setup:can_cancel_keeps_it)"
+  },
+  {
+   "mutant": "late_release:ntm:bdcl",
+   "expected": "setup:cancelled_bdcl_stops_its_gulps",
+   "result": "CAUGHT(setup:cancelled_bdcl_stops_its_gulps)"
+  },
+  {
+   "mutant": "second_one_too_energy",
+   "expected": "setup:bdcl_is_consumed_without_a_container",
+   "result": "CAUGHT(setup:bdcl_is_consumed_without_a_container)"
+  },
+  {
+   "mutant": "schnitzel_short_blindness",
+   "expected": "setup:vegan_schnitzel_java_effects",
+   "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+  },
+  {
+   "mutant": "late_release:ntm:cotton_candy",
+   "expected": "setup:cancel_does_not_consume",
+   "result": "CAUGHT(setup:cancel_does_not_consume)"
+  },
+  {
+   "mutant": "menu_never",
+   "expected": "zirnox",
+   "result": "CAUGHT(AssertionError: setup:tank_menu_288: {'buttons': [], 'screen': 'playing'})"
+  }
+ ],
+ "first_pass_not_caught": [
+  {
+   "mutant": "late_release:ntm:cotton_candy",
+   "expected": "setup:cancel_does_not_consume",
+   "result": "NOT-CAUGHT(got:setup:chocolate_milk_kills_a_survival_drinker)"
+  }
+ ],
+ "fix": "cancel_use restocked the stack after its last try too, hiding the consumption; it no longer does",
+ "review": {
+  "commit": "df59a34f",
+  "final": [
+   {
+    "mutant": "pickup_delay_60",
+    "expected_or_result": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "pickup_delay_run_out",
+    "expected_or_result": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "half_exponent_binary",
+    "expected_or_result": "AssertionError:",
+    "result": "setup:mask_and_hazmat_reduce_gamma: {'mask': 313, 'bare': 350, 'hazmat': 265}"
+   },
+   {
+    "mutant": "schnitzel_short_blindness",
+    "expected_or_result": "setup:vegan_schnitzel_java_effects",
+    "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+   }
+  ],
+  "stopped_earlier_by_timing": [
+   {
+    "mutant": "schnitzel_short_blindness",
+    "detail": "setup:vegan_schnitzel_java_effects NOT-CAUGHT(got:setup:loop_stew_leaves_a_bowl_in_the_slot)"
+   },
+   {
+    "mutant": "schnitzel_short_blindness",
+    "detail": "setup:vegan_schnitzel_java_effects NOT-CAUGHT(got:setup:loop_stew_java_effects)"
+   },
+   {
+    "mutant": "half_exponent_binary",
+    "detail": "first run stopped at setup:filter_installed_once (a lost click, before the gamma check)"
+   }
+  ],
+  "half_exponent_binary": "native glue radiation_factor with player_resistance(game) / 2.0, built from 130153a4ac as a throwaway binary (not committed): mask 313, hazmat 265 instead of 281 and 201"
+ },
+ "merge": {
+  "commit": "ff8c6049",
+  "binary": "engine 6a79054fa9",
+  "note": "main's harness is the base; these are the Onda 1 checks kept on it",
+  "final": [
+   {
+    "mutant": "pickup_delay_60",
+    "expected": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "pickup_delay_run_out",
+    "expected": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "mask_unprotective",
+    "expected": "setup:mask_and_hazmat_reduce_gamma",
+    "result": "CAUGHT(setup:mask_and_hazmat_reduce_gamma)"
+   },
+   {
+    "mutant": "schnitzel_short_blindness",
+    "expected": "setup:vegan_schnitzel_java_effects",
+    "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+   }
+  ]
+ },
+ "merge_review_p3": {
+  "commit": "3166845a",
+  "binary": "engine 6a79054fa9",
+  "run": "setup with NTM_FAMILIES=foods: the pickup delay and the schnitzel pass; audio_ntm:player.gulp fails only because the narrowed run leaves out the energy family that plays it",
+  "pickup": {
+   "early": 0,
+   "late": 1,
+   "age_when_frozen": 3,
+   "attempts": 1,
+   "dropped": {}
+  },
+  "schnitzel": {
+   "effects": {
+    "slow_falling": [
+     0,
+     2320
+    ],
+    "fire_resistance": [
+     0,
+     2328
+    ],
+    "blindness": [
+     0,
+     179
+    ],
+    "nausea": [
+     0,
+     579
+    ],
+    "hunger": [
+     4,
+     3579
+    ],
+    "wither": [
+     0,
+     39
+    ]
+   },
+   "age": 26
+  },
+  "mutants": [
+   {
+    "mutant": "pickup_frozen_late",
+    "expected": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "schnitzel_uniform_80",
+    "expected": "setup:vegan_schnitzel_java_effects",
+    "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+   },
+   {
+    "mutant": "schnitzel_short_blindness",
+    "expected": "setup:vegan_schnitzel_java_effects",
+    "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+   }
+  ],
+  "note": "schnitzel_uniform_80 lowers the three durations read by 80 ticks in the script: /effect gives whole seconds and a player's effects cannot be edited with /data"
+ }
+}

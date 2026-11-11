@@ -218,7 +218,7 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             } else {
                 let seed = legacy(game).unwrap_or_default();
                 let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
-                let (zone, resistance) = (zone_rate(game), -radiation_factor(game).log10());
+                let (zone, resistance) = (zone_rate(game), player_resistance(game));
                 ins::geiger_lines(&ins::Readings { dose_millirad: dose, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance })
             };
             lines.iter().for_each(|l| say(game, l));
@@ -1136,12 +1136,49 @@ pub(super) fn transfer_commit(
     let benefits = NativePlayerBenefits { drops, silent_equipment: true, ..Default::default() };
     game.native_commit_player(&STATE, expected, desired, benefits)
 }
-pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
-    // HazmatRegistry.getResistance: the armor plus 0.2 while Rad-X is active.
-    item_hooks::dose_factor(
-        game.armor.iter().flatten().map(|s| s.item.as_ref()),
+/// `HazmatRegistry.getResistance(EntityPlayer)`: the four armor pieces with
+/// their cladding, plus 0.2 while Rad-X is active.
+pub(super) fn player_resistance(game: &Game<'_>) -> f32 {
+    // `armorInventory[0..3]` is boots to helmet, and the float narrows after each piece: the order counts.
+    item_hooks::player_resistance(
+        game.armor.iter().rev().flatten().map(worn_resistance),
         game.potions.effects.get("ntm:radx").is_some(),
     )
+}
+/// `ContaminationUtil.calculateRadiationMod` for the acting player.
+pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
+    f64::from(item_hooks::radiation_mod(player_resistance(game)))
+}
+/// `HazmatRegistry.getResistance(ItemStack)` of a worn stack: the
+/// `hfr_cladding` number (`getFloat`, any numeric tag) and
+/// the item in the cladding slot of `ntm_armor_mods`.
+pub(super) fn worn_resistance(stack: &ItemStack) -> f64 {
+    let data = match stack.data().and_then(|d| d.other("minecraft:custom_data")) {
+        Some(Tag::Compound(c)) => Some(c),
+        _ => None,
+    };
+    // NBTTagCompound.getFloat: any numeric tag (`hasKey(key, 99)`), as float; 0 for anything else.
+    let hfr_cladding = match data.and_then(|c| c.get(&JavaString::from("hfr_cladding"))) {
+        Some(Tag::Byte(n)) => f32::from(*n),
+        Some(Tag::Short(n)) => f32::from(*n),
+        Some(Tag::Int(n)) => *n as f32,
+        Some(Tag::Long(n)) => *n as f32,
+        Some(Tag::Float(bits)) => f32::from_bits(*bits),
+        Some(Tag::Double(bits)) => f64::from_bits(*bits) as f32,
+        _ => 0.0,
+    };
+    let slot = JavaString::from(format!("mod_slot_{}", item_hooks::CLADDING_SLOT).as_str());
+    let cladding_mod = data
+        .and_then(|c| match c.get(&JavaString::from("ntm_armor_mods")) {
+            Some(Tag::Compound(mods)) => mods.get(&slot),
+            _ => None,
+        })
+        .and_then(item_from_nbt);
+    item_hooks::piece_resistance(&item_hooks::Piece {
+        id: &stack.item,
+        hfr_cladding,
+        cladding_mod: cladding_mod.as_ref().map(|m| m.item.as_ref()),
+    })
 }
 
 /// Atomic stack custom-data edit. The caller supplies the complete expected
@@ -1229,43 +1266,86 @@ fn install_filter(game: &mut Game<'_>, filter: &ItemStack) -> bool {
 
 /// Exposure-specific filter wear, in the same CAS as protection state. Gamma
 /// uses HazmatRegistry independently and never spends a particle filter.
+/// A stack and what `getProtectionFromItem` reads of it, owned.
+struct OwnedWorn {
+    id: String,
+    filter: Option<String>,
+    mods: Vec<OwnedWorn>,
+}
+impl OwnedWorn {
+    fn of(stack: &ItemStack) -> Self {
+        let data = custom(stack).unwrap_or_default();
+        let filter = data.get(&JavaString::from("hfrFilter")).and_then(item_from_nbt).map(|f| f.item.to_string());
+        let mods = match data.get(&JavaString::from("ntm_armor_mods")) {
+            Some(Tag::Compound(mods)) => (0..9)
+                .filter_map(|i| mods.get(&JavaString::from(format!("mod_slot_{i}").as_str())).and_then(item_from_nbt))
+                .map(|m| OwnedWorn::of(&m))
+                .collect(),
+            _ => Vec::new(),
+        };
+        OwnedWorn { id: stack.item.to_string(), filter, mods }
+    }
+    fn view(&self) -> item_hooks::Worn<'_> {
+        item_hooks::Worn { id: &self.id, filter: self.filter.as_deref(), mods: self.mods.iter().map(OwnedWorn::view).collect() }
+    }
+}
+/// A gas or particle source meeting the acting player, as the Java writes it:
+/// `if(ArmorRegistry.hasProtection(entity, 3, clazz)) ArmorUtil.damageGasMaskFilter(entity, wear)`.
+/// True when the helmet protects (by itself, by a filter or by a mod); the
+/// filter, when there is one, is worn in the same commit and removed past
+/// 20000. A helmet that protects without an `IGasMask` filter (the rag masks,
+/// goggles) wears nothing.
 pub(super) fn filter_exposure(game: &mut Game<'_>, hazard: Hazard, wear: u32) -> bool {
     let Some(expected) = game.native_player_snapshot(&STATE) else {
         return false;
     };
+    let Some(worn) = expected.armor[0].as_ref().map(OwnedWorn::of) else {
+        return false;
+    };
+    if !item_hooks::has_protection(Some(&worn.view()), hazard) {
+        return false;
+    }
     let mut desired = expected.clone();
     let Some(helmet) = desired.armor[0].as_mut() else {
         return false;
     };
-    let Some(mut mask) = mask_of(helmet) else {
-        return false;
+    let module = mod0(helmet);
+    let module_mask = module.as_ref().filter(|m| item_hooks::is_gas_mask(&m.item));
+    let target = item_hooks::filter_wear(
+        item_hooks::is_gas_mask(&helmet.item),
+        filter_of(helmet).is_some(),
+        module_mask.is_some(),
+        module_mask.and_then(filter_of).is_some(),
+    );
+    // ArmorUtil.damageGasMaskFilter(mask): +damage, and past the filter's max
+    // damage `removeFilter(mask)` on the stack it writes to.
+    let worn = |mut f: ItemStack| {
+        f.damage = f.damage.saturating_add(wear);
+        (f.damage <= 20_000).then_some(f)
     };
-    let Some(Tag::Compound(mut data)) = mask
-        .data()
-        .and_then(|d| d.other("minecraft:custom_data"))
-        .cloned()
-    else {
-        return false;
-    };
-    let Some(mut filter) = data
-        .get(&JavaString::from("hfrFilter"))
-        .and_then(item_from_nbt)
-    else {
-        return false;
-    };
-    if !item_hooks::filter_protects(&mask.item, &filter.item, hazard) {
-        return false;
-    }
-    filter.damage = filter.damage.saturating_add(wear);
-    if filter.damage > 20_000 {
-        data.remove(&JavaString::from("hfrFilter"));
-    } else {
-        data.insert("hfrFilter".into(), item_to_nbt(&filter));
-    }
-    mask.data_mut()
-        .set_other("minecraft:custom_data", Some(Tag::Compound(data)));
-    if !put_mask(helmet, mask) {
-        return false;
+    match target {
+        item_hooks::FilterWear::None => return true,
+        item_hooks::FilterWear::Helmet => {
+            let Some(f) = filter_of(helmet) else { return false };
+            if set_filter(helmet, worn(f)).is_none() {
+                return false;
+            }
+        }
+        item_hooks::FilterWear::Mod => {
+            let (Some(mut m), Some(f)) = (module.clone(), module_mask.and_then(filter_of)) else { return false };
+            if set_filter(&mut m, worn(f)).is_none() || set_mod0(helmet, &m).is_none() {
+                return false;
+            }
+        }
+        item_hooks::FilterWear::CopyIntoHelmet => {
+            // JAVA_FILTER_COPY_BUG: the worn copy goes into the helmet, the mod keeps its filter
+            // (ArmorUtil.java:335-351); a copy past its max damage is "removed" from the
+            // helmet, which had none, so nothing changes.
+            let Some(f) = module_mask.and_then(filter_of) else { return false };
+            if set_filter(helmet, worn(f)).is_none() {
+                return false;
+            }
+        }
     }
     game.native_commit_player(
         &STATE,
@@ -1276,6 +1356,42 @@ pub(super) fn filter_exposure(game: &mut Game<'_>, hazard: Hazard, wear: u32) ->
             ..Default::default()
         },
     )
+}
+/// `ArmorUtil.getGasMaskFilter`: the `hfrFilter` stack of a mask.
+fn filter_of(stack: &ItemStack) -> Option<ItemStack> {
+    custom(stack)?.get(&JavaString::from("hfrFilter")).and_then(item_from_nbt)
+}
+/// `installGasMaskFilter` (Some) or `removeFilter` (None) on a stack.
+fn set_filter(stack: &mut ItemStack, filter: Option<ItemStack>) -> Option<()> {
+    let mut data = custom(stack)?;
+    match filter {
+        Some(f) => {
+            data.insert("hfrFilter".into(), item_to_nbt(&f));
+        }
+        None => {
+            data.remove(&JavaString::from("hfrFilter"));
+        }
+    }
+    stack.data_mut().set_other("minecraft:custom_data", Some(Tag::Compound(data)));
+    Some(())
+}
+/// Write the `helmet_only` mod back into an existing `ntm_armor_mods`.
+fn set_mod0(helmet: &mut ItemStack, module: &ItemStack) -> Option<()> {
+    let mut data = custom(helmet)?;
+    let Tag::Compound(mods) = data.get_mut(&JavaString::from("ntm_armor_mods"))? else {
+        return None;
+    };
+    mods.insert("mod_slot_0".into(), item_to_nbt(module));
+    helmet.data_mut().set_other("minecraft:custom_data", Some(Tag::Compound(data)));
+    Some(())
+}
+/// The stack in the `helmet_only` mod slot (`ArmorModHandler.helmet_only` = 0).
+fn mod0(helmet: &ItemStack) -> Option<ItemStack> {
+    let data = custom(helmet)?;
+    let Tag::Compound(mods) = data.get(&JavaString::from("ntm_armor_mods"))? else {
+        return None;
+    };
+    item_from_nbt(mods.get(&JavaString::from("mod_slot_0"))?)
 }
 fn trace(game: &Game<'_>, event: &str, item: &str) {
     if std::env::var_os("NTM_TRACE_ITEMS").is_some() {
@@ -1347,6 +1463,9 @@ pub(super) fn command(game: &mut Game<'_>, line: &str) -> bool {
                     "bacteria" => Some(Hazard::Bacteria),
                     "gamma" => Some(Hazard::Gamma),
                     "co" => Some(Hazard::CarbonMonoxide),
+                    "inert" => Some(Hazard::InertGas),
+                    "sand" => Some(Hazard::Sand),
+                    "light" => Some(Hazard::Light),
                     _ => None,
                 };
                 if let Some(hazard) = hazard {

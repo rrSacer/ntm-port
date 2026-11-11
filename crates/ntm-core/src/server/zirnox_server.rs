@@ -89,6 +89,60 @@ impl Server {
         }
     }
     pub(super) fn zirnox_effects(&mut self, host: &mut impl ServerHost) {
+        self.zirnox_world_effects(host);
+        self.zirnox_irradiation(host);
+    }
+    /// The radiation potion (`HbmPotion.radiation`, here `zirnox.irradiated`):
+    /// glowing mycelium under the feet gives it, and every tick it doses its
+    /// players. It runs every tick, with or without ZIRNOX debris or effects
+    /// in flight (it used to sit after `zirnox_debris`'s early return, so the
+    /// mycelium irradiated nobody in a world without debris).
+    fn zirnox_irradiation(&mut self, host: &mut impl ServerHost) {
+        // WasteEarth.onEntityWalking: glowing mycelium gives radiation
+        // amplifier 3 for 30 seconds. Source spreading is off by default.
+        for p in self.players.iter().filter(|p| !p.creative) {
+            let below = [
+                p.pos[0].floor() as i32,
+                (p.pos[1] - 0.05).floor() as i32,
+                p.pos[2].floor() as i32,
+            ];
+            if host
+                .get_block(&p.dim, below)
+                .is_some_and(|b| blockstate::id_of(&b) == "ntm:waste_mycelium")
+            {
+                self.ready.world.zirnox.irradiate(&p.id, 600, 3);
+            }
+        }
+        // Read first: a mutable borrow stamps the kept part, which an idle world must not rewrite.
+        if self.ready.world.zirnox.irradiated.is_empty() {
+            return;
+        }
+        for (id, (remaining, level)) in &mut self.ready.world.zirnox.irradiated {
+            if let Some(p) = self.players.iter().find(|p| p.id == *id) {
+                if !p.creative {
+                    let expected=host.player_dose(id,&self.ready.world.radiation.get(id).cloned().unwrap_or_default());
+                    if let Some(expected)=expected {
+                        let mut desired=expected.clone();
+                        crate::radiation::add_dose(&mut desired,((u64::from(*level)+1) as f64*50.0*host.radiation_factor(id)) as u64);
+                        if host.commit_player_dose(id,&expected,&desired){self.ready.world.radiation.insert(id.clone(),desired);}
+                    }
+                    let rate = self
+                        .ready
+                        .zirnox_radiation_rate
+                        .entry(id.clone())
+                        .or_default();
+                    *rate = rate.saturating_add((u32::from(*level) + 1) * 1000);
+                }
+                *remaining = remaining.saturating_sub(1);
+            }
+        }
+        self.ready
+            .world
+            .zirnox
+            .irradiated
+            .retain(|_, (n, _)| *n > 0);
+    }
+    fn zirnox_world_effects(&mut self, host: &mut impl ServerHost) {
         if self.ready.world.machine_effects.iter().any(|b|b.owners.iter().any(|k| self.ready.world.machines.get(k).is_some_and(|m|matches!(m.data,Data::Zirnox(_))))) {return;}
 
         // Read first: taking stamps the kept part, which an idle world must not rewrite.
@@ -427,45 +481,6 @@ impl Server {
         }
         debris.retain(|d| !d.removed && (d.permanent || d.age < d.lifetime));
         self.ready.world.zirnox.debris = debris;
-        // WasteEarth.onEntityWalking: glowing mycelium gives radiation
-        // amplifier 3 for 30 seconds. Source spreading is off by default.
-        for p in self.players.iter().filter(|p| !p.creative) {
-            let below = [
-                p.pos[0].floor() as i32,
-                (p.pos[1] - 0.05).floor() as i32,
-                p.pos[2].floor() as i32,
-            ];
-            if host
-                .get_block(&p.dim, below)
-                .is_some_and(|b| blockstate::id_of(&b) == "ntm:waste_mycelium")
-            {
-                self.ready.world.zirnox.irradiate(&p.id, 600, 3);
-            }
-        }
-        for (id, (remaining, level)) in &mut self.ready.world.zirnox.irradiated {
-            if let Some(p) = self.players.iter().find(|p| p.id == *id) {
-                if !p.creative {
-                    let expected=host.player_dose(id,&self.ready.world.radiation.get(id).cloned().unwrap_or_default());
-                    if let Some(expected)=expected {
-                        let mut desired=expected.clone();
-                        crate::radiation::add_dose(&mut desired,((u64::from(*level)+1) as f64*50.0*host.radiation_factor(id)) as u64);
-                        if host.commit_player_dose(id,&expected,&desired){self.ready.world.radiation.insert(id.clone(),desired);}
-                    }
-                    let rate = self
-                        .ready
-                        .zirnox_radiation_rate
-                        .entry(id.clone())
-                        .or_default();
-                    *rate = rate.saturating_add((u32::from(*level) + 1) * 1000);
-                }
-                *remaining = remaining.saturating_sub(1);
-            }
-        }
-        self.ready
-            .world
-            .zirnox
-            .irradiated
-            .retain(|_, (n, _)| *n > 0);
     }
 }
 

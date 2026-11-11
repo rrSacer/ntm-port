@@ -1,0 +1,113 @@
+{
+ "scenario": "radaway",
+ "engine": "130153a4ac (player-attachments-fix)",
+ "binary": "client-after",
+ "rule": "dose - 1000*radaway_left == 300000 - 140000 once the RadAway left the inventory",
+ "points": [
+  {
+   "point": "none",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 0
+    },
+    "state": {
+     "dose": 160000,
+     "radaway": 0,
+     "effects": []
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "kill",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": []
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "save_begin",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": []
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "level_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "nausea",
+      "weakness"
+     ]
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "players_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 0
+    },
+    "state": {
+     "dose": 160000,
+     "radaway": 0,
+     "effects": []
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "world_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 0
+    },
+    "state": {
+     "dose": 160000,
+     "radaway": 0,
+     "effects": []
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "kv_committed",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 0
+    },
+    "state": {
+     "dose": 160000,
+     "radaway": 0,
+     "effects": []
+    }
+   },
+   "control": null
+  }
+ ]
+}

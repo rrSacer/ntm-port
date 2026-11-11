@@ -17,6 +17,7 @@ use horizon_world::{
     attachments::{AttachmentCodec, AttachmentError, AttachmentType},
     nbt::{Compound, JavaString, Tag},
 };
+use ntm_core::item_hooks;
 use std::{collections::HashMap, sync::Mutex};
 const BLOCK: &str = "ntm:machine_armor_table";
 const MENU: &str = "ntm:armor_table";
@@ -151,13 +152,13 @@ fn policy(
         return true;
     }
     if slot < 9 {
-        return slot == 0
-            && &*item.item == "ntm:attachment_mask"
-            && slots.get(9).and_then(Option::as_ref).is_some_and(|armor| {
-                lock(&ARMOR)
-                    .iter()
-                    .any(|(id, i)| id == armor.item.as_ref() && *i == 0)
-            });
+        let armor_type = slots.get(9).and_then(Option::as_ref).and_then(|armor| {
+            lock(&ARMOR)
+                .iter()
+                .find(|(id, _)| id == armor.item.as_ref())
+                .map(|(_, i)| *i)
+        });
+        return item_hooks::mod_fits(armor_type, slot, &item.item);
     }
     true
 }
@@ -176,11 +177,12 @@ pub(super) fn filters(game: &Game<'_>) -> Vec<ModSlotFilter> {
         .map(|slot| ModSlotFilter {
             max: Some(1),
             accept: Some(if slot < 9 {
-                if slot == 0 {
-                    vec!["ntm:attachment_mask".into()]
-                } else {
-                    Vec::new()
-                }
+                game.items()
+                    .items
+                    .values()
+                    .filter(|i| item_hooks::armor_mod(&i.id).is_some_and(|m| m.slot == slot))
+                    .map(|i| i.id.to_string())
+                    .collect()
             } else {
                 armor
                     .iter()
@@ -376,8 +378,8 @@ fn quick(game: &Game<'_>, m: &mut Menu, slot: usize) {
         move_to(game, m, slot, (N..N + 36).rev());
     } else if armor_index(game, &stack).is_some() {
         move_to(game, m, slot, [9]);
-    } else if &*stack.item == "ntm:attachment_mask" {
-        move_to(game, m, slot, [0]);
+    } else if let Some(armor_mod) = item_hooks::armor_mod(&stack.item) {
+        move_to(game, m, slot, [armor_mod.slot]);
     }
 }
 pub(super) fn clicked(
@@ -557,6 +559,38 @@ pub(super) fn tick(game: &mut Game<'_>) {
         close_items(game);
     }
 }
+/// ModEventHandlerClient "ARMOR MODS": an armor stack with mods shows "Hold <LSHIFT>..." or, with shift held,
+/// "Mods:" and each `ItemArmorMod.addDesc` of slots 0..7 (the battery slot 8 is not listed). Inside the armor table
+/// the Java lists them without shift; the tooltip hook does not know the open screen, so the port asks for shift there
+/// too (docs/onda-1-protecao.md).
+pub(super) fn mods_tooltip(game: &Game<'_>, stack: &ItemStack, lines: &mut Vec<(Text, u32)>) {
+    if armor_index(game, stack).is_none() {
+        return;
+    }
+    let Some(data) = custom(stack) else { return };
+    if !matches!(data.get(&JavaString::from("ntm_armor_mods")), Some(Tag::Compound(_))) {
+        return;
+    }
+    if !game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft) {
+        lines.push((Text::legacy("§8§oHold <§e§oLSHIFT§8§o> to display installed armor mods"), u32::MAX));
+        return;
+    }
+    lines.push((Text::legacy("§eMods:"), u32::MAX));
+    for module in mods(stack).unwrap_or_default().into_iter().take(8).flatten() {
+        let name = Text::translate(&format!("item.{}", module.item.replace(':', ".")), &[]);
+        let line = if let Some(rad) = item_hooks::cladding_rad(&module.item) {
+            // ItemModCladding.addDesc
+            Text::legacy("§e  ").append(name).append(Text::legacy(&format!(" (+{} radiation resistance)", ntm_core::instruments::java_f64(rad))))
+        } else if &*module.item == "ntm:attachment_mask" {
+            // ItemModGasmask.addDesc (its filter lines are not ported)
+            Text::legacy("§a  ").append(name).append(Text::legacy(" (gas protection)"))
+        } else {
+            // ItemArmorMod.addDesc
+            name
+        };
+        lines.push((line, u32::MAX));
+    }
+}
 pub(super) fn screen() -> horizon_client::mod_api::NativeScreen {
     horizon_client::mod_api::NativeScreen {
         width: 198.,
@@ -603,24 +637,33 @@ pub(super) fn draw(game: &Game<'_>, batch: &mut horizon_client::hud::HudBatch, [
         .and_then(|p| game.world.block_entities.get(&p))
     {
         let slots = entity.slots();
-        if slots.get(9).is_some_and(Option::is_some) {
+        let armor_type = slots.get(9).and_then(Option::as_ref).and_then(|a| armor_index(game, a));
+        // GUIArmorTable.drawGuiContainerBackgroundLayer: 176,74 with an ItemArmor in the table, 176,52 with
+        // anything else, and 176,52 blinking (half of every second) while it is empty.
+        let empty_blink = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .is_ok_and(|t| t.as_millis() % 1000 < 500);
+        let frame = match (slots.get(9).and_then(Option::as_ref), armor_type) {
+            (Some(_), Some(_)) => Some(74.),
+            (Some(_), None) => Some(52.),
+            (None, _) => empty_blink.then_some(52.),
+        };
+        if let Some(v) = frame {
             game.native_sprite(
                 batch,
                 sprite,
-                [176., 74., 22., 22.],
+                [176., v, 22., 22.],
                 [x + 63., y + 60., 22., 22.],
             );
         }
         let positions = screen().slots;
         for (i, slot) in slots.iter().take(9).enumerate() {
-            if slot.is_some()
+            if let Some(module) = slot
                 && let Some([sx, sy]) = positions[i]
             {
-                let applicable = i == 0
-                    && slots
-                        .get(9)
-                        .and_then(Option::as_ref)
-                        .is_some_and(|a| armor_index(game, a) == Some(0));
+                // drawIndicator: ArmorModHandler.isApplicable(armor, mod), the mod's armor types only.
+                let applicable = armor_type.zip(item_hooks::armor_mod(&module.item))
+                    .is_some_and(|(t, m)| m.applies.get(t).copied().unwrap_or(false));
                 game.native_sprite(
                     batch,
                     sprite,

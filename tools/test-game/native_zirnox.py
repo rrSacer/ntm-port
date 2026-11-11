@@ -6,6 +6,7 @@ simulation for the source's 20,000/50,000-life breeding/depletion checks.
 Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|automation|failure|soils
 """
 import json
+import os
 import re
 import sys
 import time
@@ -77,19 +78,39 @@ def lever(g,c,on):
         g.command(f'tp @s {p[0]+2.5} {p[1]} {p[2]+.5}')
         g.ctl('interact '+pos_text(p)+' east')
         time.sleep(.4)
-    g.check('lever_'+str(on)+'_'+str(len(g.evidence['steps'])),('powered=true' in block(g,p))==on,block(g,p))
+    g.check(nth(g,'lever_'+str(on)),('powered=true' in block(g,p))==on,block(g,p))
+
+
+def nth(g,kind):
+    """`kind_n`, the n-th check of that kind in this phase: a name that does not move with the steps a loaded
+    machine's retries add (it was the step count)."""
+    counters=g.evidence.setdefault('counters',{})
+    counters[kind]=counters.get(kind,0)+1
+    return f'{kind}_{counters[kind]}'
+
+
+def menu_open(g,timeout=20):
+    """The screen once a menu is open (coordinator, 10/11: wait on the state, not a fixed 0.7 s; a loaded
+    machine answers the click late), or the last screen seen when `timeout` seconds pass without one."""
+    deadline=time.monotonic()+timeout
+    while True:
+        # A deliberate failure for the mutation run (a menu that never opens); never set otherwise.
+        if os.environ.get('NTM_ZIRNOX_MUTANT')=='menu_never':g.close()
+        screen=g.ctl('screen')
+        if screen.get('screen')=='container' or time.monotonic()>=deadline:return screen
+        time.sleep(.1)
 
 
 def open_reactor(g,core):
     g.close();g.command(f'tp @s {core[0]+.5} {core[1]} {core[2]+4.5}')
-    p=add(core,(0,1,2));g.ctl('interact '+pos_text(p)+' south');time.sleep(.7)
-    g.check('reactor_menu_'+str(len(g.evidence['steps'])),g.ctl('screen').get('screen')=='container',g.ctl('screen'))
+    p=add(core,(0,1,2));g.ctl('interact '+pos_text(p)+' south');screen=menu_open(g)
+    g.check(nth(g,'reactor_menu'),screen.get('screen')=='container',screen)
 
 
 def open_tank(g,p):
     g.close();g.command(f'tp @s {p[0]-3.5} {p[1]-1} {p[2]+.5}')
-    g.ctl('interact '+pos_text(p)+' west');time.sleep(.7)
-    g.check('tank_menu_'+str(len(g.evidence['steps'])),g.ctl('screen').get('screen')=='container',g.ctl('screen'))
+    g.ctl('interact '+pos_text(p)+' west');screen=menu_open(g)
+    g.check(nth(g,'tank_menu'),screen.get('screen')=='container',screen)
 
 
 def type_ports(g,fluid,positions):
@@ -303,7 +324,7 @@ def check(g):
             accepted=(cursor is not None and cursor.get('item')==rod and not cell.get('item')) if carried else (not cursor and cell.get('item')==rod)
             if accepted or time.monotonic()>deadline:break
             time.sleep(.1)
-        g.check('cursor_move_ack_'+str(len(g.evidence['steps'])),accepted,{'cursor':cursor,'slot':cell})
+        g.check(nth(g,'cursor_move_ack'),accepted,{'cursor':cursor,'slot':cell})
     g.check('rod_life_survives_manual_moves',life(g,core)==before,{'before':before,'after':life(g,core)})
     manual_non_fuel(g,core)
     import os
@@ -340,11 +361,13 @@ def automation(g):
     g.command('fill '+pos_text(add(core,(-1,-4,-1)))+' '+pos_text(add(core,(1,-4,3)))+' minecraft:stone')
     g.command('fill '+pos_text(low)+' '+pos_text(high)+' minecraft:air')
     g.command('setblock '+pos_text(hopper)+' minecraft:hopper[facing=down]')
-    # A hopper moves one item per eight ticks. Give all 24 slots ample time.
-    time.sleep(12)
+    # A hopper moves one item per eight ticks. Give all 24 slots ample time, counted in game ticks (the
+    # 12 s it was, at 20 ticks a second).
+    start=game_time(g)
+    while game_time(g)<start+240:time.sleep(.2)
     g.command('clear @s')
     g.command(f'tp @s {hopper[0]+.5} {hopper[1]-2} {hopper[2]+2.5}')
-    g.ctl('interact '+pos_text(hopper)+' south');time.sleep(.7)
+    g.ctl('interact '+pos_text(hopper)+' south');menu_open(g)
     g.check('automation_hopper_menu',len(g.slots())==5,g.ctl('screen'))
     received=Counter()
     for s in g.slots():

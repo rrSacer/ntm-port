@@ -1,0 +1,377 @@
+{
+ "binary": "client-after (engine 130153a4ac)",
+ "binary_sha256": "e7a999ee9c4e3448c88a1cbc8c3123e281a14a82cfa49aa74998ec8089855d84",
+ "bundle_sha256": "9edeca8ad77a9d3e62076ec59cd5d8aaa0e20dc2d2c84db501c1a94a1a6d17d1",
+ "runs": [
+  {
+   "families": "protection,masks,decon",
+   "note": "protection complete (all ok); stopped at gas_mask_mono_takes_a_filter: three install clicks lost under load, filter still in hand",
+   "checks": {
+    "setup:geiger_resistance_steel_set": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 9.84% (0.04)",
+      "expected": "Player resistance: 9.84% (0.04)"
+     }
+    },
+    "setup:geiger_resistance_titanium_set": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 9.84% (0.04)",
+      "expected": "Player resistance: 9.84% (0.04)"
+     }
+    },
+    "setup:geiger_resistance_alloy_set": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 14.88% (0.07)",
+      "expected": "Player resistance: 14.88% (0.07)"
+     }
+    },
+    "setup:geiger_resistance_cobalt_set": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 25.01% (0.12)",
+      "expected": "Player resistance: 25.01% (0.12)"
+     }
+    },
+    "setup:geiger_resistance_starmetal_set": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 89.99% (1.0)",
+      "expected": "Player resistance: 89.99% (1.0)"
+     }
+    },
+    "setup:geiger_resistance_vanilla_iron_set": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 5.04% (0.02)",
+      "expected": "Player resistance: 5.04% (0.02)"
+     }
+    },
+    "setup:geiger_resistance_vanilla_golden_set": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 5.04% (0.02)",
+      "expected": "Player resistance: 5.04% (0.02)"
+     }
+    },
+    "setup:geiger_resistance_mixed_set_0_as_the_java_oracle": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 30.81% (0.16)",
+      "expected": "Player resistance: 30.81% (0.16)"
+     }
+    },
+    "setup:geiger_resistance_mixed_set_1_as_the_java_oracle": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 65.32% (0.45)",
+      "expected": "Player resistance: 65.32% (0.45)"
+     }
+    },
+    "setup:hfr_cladding_double_tag_counts": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 77.61% (0.64)",
+      "expected": "Player resistance: 77.61% (0.64)"
+     }
+    },
+    "setup:geiger_resistance_grey_hazmat_set": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 99.0% (2.0)",
+      "expected": "Player resistance: 99.0% (2.0)"
+     }
+    },
+    "setup:steel_set_has_the_java_armor_points": {
+     "ok": true,
+     "actual": "The value of attribute Armor for entity ItemsTest is 20.0"
+    },
+    "setup:steel_plate_has_the_java_durability": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:steel_set_reduces_the_real_dose_by_the_java_factor": {
+     "ok": true,
+     "actual": {
+      "bare": 350,
+      "steel": 315,
+      "factor": 0.9015711545944214
+     }
+    },
+    "setup:hfr_cladding_adds_to_the_helmet": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 77.61% (0.64)",
+      "expected": "Player resistance: 77.61% (0.64)"
+     }
+    },
+    "setup:cladding_refused_without_armor": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:insert_ntm:hazmat_helmet_grey_9": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:cladding_refused_in_the_mask_slot": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:insert_ntm:cladding_lead_5": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:cladding_installed_in_slot_5": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:cladding_kept_in_the_helmet_mods": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:cladding_mod_adds_to_the_worn_helmet": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 68.37% (0.5)",
+      "expected": "Player resistance: 68.37% (0.5)"
+     }
+    },
+    "setup:geiger_resistance_paa": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 98.0% (1.7)",
+      "expected": "Player resistance: 98.0% (1.7)"
+     }
+    },
+    "setup:geiger_resistance_liquidator": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 99.6% (2.39)",
+      "expected": "Player resistance: 99.6% (2.39)"
+     }
+    },
+    "setup:geiger_resistance_gas_mask": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 14.88% (0.07)",
+      "expected": "Player resistance: 14.88% (0.07)"
+     }
+    },
+    "setup:geiger_resistance_jackt": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 20.56% (0.1)",
+      "expected": "Player resistance: 20.56% (0.1)"
+     }
+    },
+    "setup:liquidator_attributes": {
+     "ok": true,
+     "actual": {
+      "knockback": "The value of attribute Knockback Resistance for entity ItemsTest is 1.0",
+      "speed": "The value of attribute Speed for entity ItemsTest is 0.060000000894069656"
+     }
+    },
+    "setup:ntm:gas_mask_takes_a_filter": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:gas_mask_stops_lung_gas_and_wears": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:gas_mask_olde_takes_a_filter": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:gas_mask_olde_stops_lung_gas_and_wears": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:gas_mask_mono_takes_a_filter": {
+     "ok": false,
+     "actual": "(dump omitted)"
+    }
+   }
+  },
+  {
+   "families": "masks,decon",
+   "note": "rerun of the two families the first run did not finish",
+   "checks": {
+    "setup:geiger_resistance_paa": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 98.0% (1.7)",
+      "expected": "Player resistance: 98.0% (1.7)"
+     }
+    },
+    "setup:geiger_resistance_liquidator": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 99.6% (2.39)",
+      "expected": "Player resistance: 99.6% (2.39)"
+     }
+    },
+    "setup:geiger_resistance_gas_mask": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 14.88% (0.07)",
+      "expected": "Player resistance: 14.88% (0.07)"
+     }
+    },
+    "setup:geiger_resistance_jackt": {
+     "ok": true,
+     "actual": {
+      "line": "Player resistance: 20.56% (0.1)",
+      "expected": "Player resistance: 20.56% (0.1)"
+     }
+    },
+    "setup:liquidator_attributes": {
+     "ok": true,
+     "actual": {
+      "knockback": "The value of attribute Knockback Resistance for entity ItemsTest is 1.0",
+      "speed": "The value of attribute Speed for entity ItemsTest is 0.060000000894069656"
+     }
+    },
+    "setup:ntm:gas_mask_takes_a_filter": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:gas_mask_stops_lung_gas_and_wears": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:gas_mask_olde_takes_a_filter": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:gas_mask_olde_stops_lung_gas_and_wears": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:gas_mask_mono_takes_a_filter": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:mono_never_protects_lung_gas": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:mono_stops_monoxide_and_wears": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:hazmat_paa_helmet_takes_a_filter": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:hazmat_paa_helmet_stops_lung_gas_and_wears": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:liquidator_helmet_takes_a_filter": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ntm:liquidator_helmet_stops_lung_gas_and_wears": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:mask_rag_coarse_protects": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:mask_rag_lung_does_not_protect": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:mask_piss_lung_protects": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:goggles_light_protects": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:ashglasses_sand_protects": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:asbestos_helmet_light_protects": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:gas_mask_m65_sand_protects": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:gas_mask_m65_light_does_not_protect": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:steel_helmet_sand_does_not_protect": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:copy_bug_setup_one_filter": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:copy_bug_protects_through_the_mod": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:copy_bug_writes_the_worn_copy_into_the_helmet": {
+     "ok": true,
+     "actual": "(dump omitted)"
+    },
+    "setup:copy_bug_sneak_hands_out_the_copy_and_the_mod_keeps_its_filter": {
+     "ok": true,
+     "actual": {
+      "loose": 1,
+      "helmet": "{\"minecraft:custom_data\":{ntm_armor_mods:{mod_slot_0:{components:{\"minecraft:custom_data\":{hfrFilter:{count:1,id:\"ntm:gas_mask_filter\"}}},count:1,id:\"ntm:attachment_mask\"}}}}"
+     }
+    },
+    "setup:one_decon_takes_half_a_rad_a_tick": {
+     "ok": true,
+     "actual": {
+      "drop": 24500
+     }
+    },
+    "setup:decon_works_in_creative": {
+     "ok": true,
+     "actual": {
+      "dose": 211500
+     }
+    },
+    "setup:two_decons_take_a_rad_a_tick": {
+     "ok": true,
+     "actual": {
+      "drop": 116000
+     }
+    },
+    "setup:out_of_the_box_nothing": {
+     "ok": true,
+     "actual": {
+      "dose": 257000
+     }
+    },
+    "setup:mycelium_irradiation_keeps_growing_the_dose": {
+     "ok": true,
+     "actual": {
+      "growth": 8000
+     }
+    },
+    "setup:decon_ends_the_irradiation": {
+     "ok": true,
+     "actual": {
+      "growth_after": 0
+     }
+    }
+   }
+  }
+ ],
+ "protection_ok": true,
+ "masks_decon_ok": true
+}

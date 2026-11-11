@@ -1285,3 +1285,49 @@ Verificação (`confirm/pin-verify.log`):
   - Barra de durabilidade: o Forge 1.7.10 desenha preto 13×2, uma faixa 12×1 na cor `(255−k)/4 << 16 | 0x3F00` e a
     barra. O gancho `item_bar` (API 60) só dá largura e cor, então a faixa escura não sai. Falta um campo de cor da
     faixa na API.
+
+## Motor: anexos do dono num save no meio da sessão (Onda 1, 10/11/2026)
+
+Defeito: enquanto o dono do mundo (um jogador) joga, os anexos dele (`ntm:item_state`, `ntm:armor_table`) ficam em
+`Game::guest_attachments`; `store_owner` gravava a cópia vazia do registro do convidado em
+`players/data/<uuid do singleplayer>.dat`, o arquivo de onde o dono carrega. Um crash depois de um autosave perdia
+RadAway, enjoo herbal, cooldowns e as peças da mesa de armadura; a dose só sobrevivia pelo espelho antigo no KV
+(`docs/onda-1-protecao.md`). O upstream corrigiu em `61aa03d1a` (#12612).
+
+Branch do motor `player-attachments-fix` sobre o pin `a31497f38`: só `git cherry-pick 61aa03d1a`, commit
+`130153a4ac` (refeito depois da queda da máquina de 10/11 07:14, que deixou vazio o primeiro objeto do
+commit; conteúdo igual, conferido contra o upstream). A correção em
+`store_owner` entrou sem conflito. O conflito foi só no teste: o upstream o põe depois de um módulo
+`world_spawn_sync_tests` que o pin não tem, e usa `native_machines::tests::server_game` e
+`world_spawn_sync_tests::host_for`, que também não existem aqui (nem `NetConfig::loopback`, e o `Joined` do pin não tem
+`expected`/`configured`). Adaptação mínima: o módulo `world_spawn_sync_tests` não entra; o teste do upstream entra igual,
+com cópias locais dos dois ajudantes, cortadas ao que ele usa (sem o convidado no Nether; `NetConfig::lan` com
+`bind` em localhost no lugar de `loopback`).
+
+| Ponto | Arquivo | Função | Linha (branch) |
+| --- | --- | --- | --- |
+| Correção | `crates/horizon-client/src/game/lan.rs` | `store_owner`: troca os anexos do registro pelos vivos só durante `playerdata::store` e devolve | 1634, troca em 1653-1663 |
+| Referência (já certo) | `crates/horizon-client/src/game/lan.rs` | `save_guest`: quem sai grava os anexos vivos | 1423 |
+| Única chamada | `crates/horizon-client/src/game.rs` | `save_game_metadata` → `store_owner` | 15375 |
+| Autosave | `crates/horizon-client/src/game.rs` | `save_game_with(false)` no contador de autosave | 7542 |
+| Save da pausa | `crates/horizon-client/src/game/integrated.rs` | `save_game_with(false)` no tick que pausa | 661 |
+| `/save-all` | `crates/horizon-client/src/game/commands/profiles.rs` | `cmd_save_all` → `save_game` | 56 |
+| `horizon-ctl save` | `crates/horizon-client/src/game/control.rs` | `control_save` → `save_game` | 1087 |
+| Save de saída | `crates/horizon-client/src/game/saving.rs` | `poll_closing_save` → `save_game_metadata` | 192 |
+| Leitura | `crates/horizon-client/src/lan/playerdata.rs` | `load_owner` lê o arquivo do dono | 84 |
+| Teste do upstream | `crates/horizon-client/src/game/lan.rs` | `owner_attachment_save_tests::an_autosave_writes_the_owners_live_attachments_to_the_file_it_loads` (`#[ignore]`, precisa de `HORIZON_TEST_RESOURCES`) | 3180 |
+| Teste extra (`b22f1fbef1`) | `crates/horizon-client/src/game/lan.rs` | `owner_attachment_save_tests::the_owner_reopened_after_an_autosave_loads_its_live_attachments` | 3216 |
+| Ajudantes adaptados | `crates/horizon-client/src/game/lan.rs` | `server_game`, `host_for` (cópias locais) | 3055, 3093 |
+
+Todos os caminhos de save do dono passam pela mesma `store_owner`; o teste do upstream a exercita direto, mas confere
+só o `level.player_extra` em memória. Por isso há um segundo commit na branch, `b22f1fbef1`, com um teste meu no mesmo
+módulo (`the_owner_reopened_after_an_autosave_loads_its_live_attachments`): `store_owner` → `Level::write` →
+`Level::read` → `load_owner`, o dono reabrindo depois de um crash. Os dois passam (`--ignored`, com
+`HORIZON_TEST_RESOURCES`); com a correção revertida (mutação) os dois falham (`None` em vez de `Some(7)`); clippy
+`-p horizon-client --lib --tests -D warnings` limpo. Hash e teste enviados ao agente do Horizon (1c5fa695). A saída e
+volta ao mundo também ficam provadas em jogo (cortes de save da Onda 1, `docs/onda-1-protecao.md`).
+
+**Depois (10/11):** a `main` `e4aa8b2c` passou ao pin `6a79054fa9` (upstream `a3bf6531e`), que já contém
+`61aa03d1a` com o `store_owner` idêntico byte a byte ao de `130153a4ac` e o teste extra como `10ae4aa43d`
+(confirmado pelo agente do Horizon). A branch `player-attachments-fix` não entra no pin; ela fica como prova
+da correção sobre `a31497f38`.

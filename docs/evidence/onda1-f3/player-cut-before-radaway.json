@@ -1,0 +1,131 @@
+{
+ "scenario": "radaway",
+ "engine": "a31497f38 (before the fix)",
+ "binary": "client-before",
+ "rule": "dose - 1000*radaway_left == 300000 - 140000 once the RadAway left the inventory; ok is the first (weaker) rule the run used, ok_strict the one the runner uses now",
+ "points": [
+  {
+   "point": "none",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 0
+    },
+    "state": {
+     "dose": 185000,
+     "radaway": 25,
+     "effects": [
+      "radaway"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": true
+  },
+  {
+   "point": "kill",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "nausea",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": true
+  },
+  {
+   "point": "save_begin",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "nausea",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": true
+  },
+  {
+   "point": "level_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "nausea",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": true
+  },
+  {
+   "point": "players_saved",
+   "ok": false,
+   "mod": {
+    "items": {
+     "ntm:radaway": 0
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "radaway"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": false
+  },
+  {
+   "point": "world_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 0
+    },
+    "state": {
+     "dose": 270000,
+     "effects": [
+      "radaway"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": false
+  },
+  {
+   "point": "kv_committed",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:radaway": 0
+    },
+    "state": {
+     "dose": 270000,
+     "effects": [
+      "radaway"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": false
+  }
+ ]
+}

@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon').split(',')
 
 
 FAMILY_RUNS=[]
@@ -88,26 +88,6 @@ def short_hold(g,seconds,setup,attempts=8):
     raise AssertionError(f'no use was seen running in {attempts} holds of {seconds} s')
 
 
-# What the armor must take off the gamma dose, as fractions of the bare rate. The rate is measured over thirty seconds, where one
-# whole-second increment more or less is 3.3%, so the ratio of two measurements of the very same rate falls between about 0.93 and
-# 1.07 (read in game, `scratch/evidence/gamma-mutant`); a mutant that left the armor factor out, with a ratio of 1, therefore
-# cannot pass either threshold, and the real armor, at 0.8 (mask) and 0.6 (hazmat plate), passes both with a margin.
-MASK_RATIO=0.92
-HAZMAT_RATIO=0.75
-
-
-def dose_rate(g):
-    """The gamma dose gained per second. The dose is added once a second. Single increments cannot be told apart when the
-    script's own calls take more than a second of game time, so the rate is the dose gained between two readings thirty
-    seconds (600 ticks) apart over the server ticks that passed between them, the tick read right after each dose, per
-    second: the delay of the calls cancels out of the difference, and one increment more or less in the window (the dose is
-    added in whole seconds) is 3% of it."""
-    d0=state(g)['dose'];t0=now(g)
-    pause(g,30)
-    d1=state(g)['dose'];t1=now(g)
-    return (d1-d0)*20/(t1-t0)
-
-
 def counts(g):
     return g.ctl('inventory')['counts']
 
@@ -131,6 +111,7 @@ def used_up(g,item,count,polls=15):
 
 
 def use(g,seconds=0):
+    """Use the held item: a click, or held for `seconds` of game time (20 server ticks a second)."""
     g.close();g.ctl('look-at 20 160 8')
     held=g.ctl('inventory').get('held') or {};item,count=held.get('item'),held.get('count',0)
     # What the use gives is applied no earlier than the item's use length after the gesture began (a click: at once). That tick
@@ -153,6 +134,18 @@ def use(g,seconds=0):
         g.ctl('use-item')
     used_up(g,item,count)
     pause(g,.4)
+
+
+# A deliberate failure for one Onda 1 check (the proof that it still catches what it should): see each use of
+# MUTANT. Never set outside a mutation run.
+MUTANT=os.environ.get('NTM_ITEMS_MUTANT','')
+
+
+def item_age(g):
+    """The nearest dropped item's `Age` (ticks since it was thrown), read from the server; None if there is none."""
+    text=' '.join(g.command('data get entity @e[type=item,distance=..8,sort=nearest,limit=1] Age').get('chat',[]))
+    found=re.search(r'entity data:\s*(-?\d+)s',text)
+    return int(found.group(1)) if found else None
 
 
 def give_hand(g,item,count=1,slot=0):
@@ -182,9 +175,21 @@ def settle(g,done,timeout=8):
         time.sleep(.25)
 
 
+def try_put(g,item,slot):
+    """Carry `item` to table slot `slot`; a refused slot leaves it on the cursor, put back where it was."""
+    g.command(f'give @s {item} 1')
+    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])),timeout=20)
+    source=next(x['slot'] for x in screen.get('slots',[]) if x['slot']<36 and x.get('item')==item)
+    g.ctl(f'click-slot {source}');g.ctl(f'click-slot {300+slot}');time.sleep(.8)
+    screen=g.ctl('screen')
+    if screen.get('carried'):g.ctl(f'click-slot {source}');time.sleep(.3)
+    return table_slot(screen,slot)
+
+
 def put(g,item,count,slot):
     g.command(f'give @s {item} {count}')
-    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])))
+    # A loaded machine syncs the given stack late: wait longer than the click answers.
+    screen=settle(g,lambda s:any(x['slot']<36 and x.get('item')==item for x in s.get('slots',[])),timeout=20)
     source=next((x['slot'] for x in screen.get('slots',[]) if x['slot']<36 and x.get('item')==item),None)
     if source is None:raise AssertionError(f'item not received: {item}')
     g.ctl(f'click-slot {source}');g.ctl(f'click-slot {300+slot}')
@@ -251,10 +256,21 @@ def setup(g):
     before=worn;g.command('ntmitem expose blister 100');g.check('mask_blacklist_refuses_blister',inventory_tag(g)==before,inventory_tag(g))
     # Real gamma dose uses the same equipped-armor resolver as other sources.
     g.command('gamemode survival @s');give_hand(g,'ntm:ingot_uranium');pause(g,11)
-    mask=dose_rate(g)
-    g.command('item replace entity @s armor.head with minecraft:air');bare=dose_rate(g)
-    g.command('item replace entity @s armor.chest with ntm:hazmat_plate');hazmat=dose_rate(g)
-    g.check('mask_and_hazmat_reduce_gamma',0<mask<MASK_RATIO*bare and 0<hazmat<HAZMAT_RATIO*bare,{'mask':mask,'bare':bare,'hazmat':hazmat,'mask_ratio':mask/bare,'hazmat_ratio':hazmat/bare})
+    def rate_sample():
+        # The dose is added every RATE_EVERY (20) ticks of the NTM server, which ticks only while the world runs:
+        # frozen, stepped 200 ticks and frozen again, the window holds exactly ten increments, so the rate is exact
+        # and the values themselves are required (Onda 1 review), not a ratio bound.
+        g.command('tick freeze');before=state(g)['dose'];start=now(g);g.command('tick step 200')
+        while now(g)<start+200:time.sleep(.2)
+        after=state(g)['dose'];g.command('tick unfreeze')
+        return (after-before)//10
+    if MUTANT=='mask_unprotective':g.command('item replace entity @s armor.head with minecraft:leather_helmet')
+    mask=rate_sample()
+    g.command('item replace entity @s armor.head with minecraft:air');bare=rate_sample()
+    g.command('item replace entity @s armor.chest with ntm:hazmat_plate');hazmat=rate_sample()
+    # 350 a second bare; the M65 helmet's 0.095 makes 281 and the hazmat plate's 0.24 makes 201 (radiation_mod,
+    # 10^-resistance, in Java float); a halved exponent gives 313.
+    g.check('mask_and_hazmat_reduce_gamma',0<mask<bare and 0<hazmat<bare and mask==281 and hazmat==201,{'mask':mask,'bare':bare,'hazmat':hazmat})
     g.command('gamemode creative @s');g.command('clear @s');g.command('ntmitem dose 200000')
     give_hand(g,'ntm:radaway');use(g);pause(g,7.5)
     g.check('radaway_exact_java_total',state(g)['dose']==60000,state(g))
@@ -314,23 +330,39 @@ def full_inventory(g):
     full(g,'ntm:syringe_metal_medx',2);use(g);actual=counts(g);away=dropped(g)
     effects=g.ctl('state')['player']['effects']
     g.check('full_stacked_syringe_drops_container',actual.get('ntm:syringe_metal_medx')==1 and not actual.get('ntm:syringe_metal_empty') and away.get('ntm:syringe_metal_empty')==1 and any(e['id'].endswith('resistance') and e['amplifier']==2 for e in effects),{'counts':actual,'dropped':away,'effects':effects})
-    # `Player.drop(stack, false)`: pickup delay 40, so a slot freed at once does
-    # not take the syringe back yet; it does after the delay.
-    # The delay of 40 ticks runs from the throw, not from the freed slot: the reading called "early" must be
-    # taken within 36 ticks of the click that throws the syringe (the script's calls in between take ticks, more
-    # on a loaded machine, so the throw is repeated from a full inventory until one fits), the "late" one more
-    # than 40 after it.
+    # `Player.drop(stack, false)`: pickup delay 40. The syringe is thrown from a full inventory until it is seen on
+    # the ground, then the level is frozen (`/tick freeze` ticks only the players) and its own age read (`Age`, the
+    # ticks since the throw): stepped to age 30 it is still on the ground, 15 ticks later it is back in the freed
+    # slot. That proves 40, and neither 60 nor 80 (Onda 1 review).
     for attempt in range(8):
         full(g,'ntm:syringe_metal_medx',2)
-        g.close();g.ctl('look-at 20 160 8');start=now(g);g.ctl('mouse right click')
+        g.close();g.ctl('look-at 20 160 8');g.ctl('mouse right click')
         for _ in range(30):
             if dropped(g).get('ntm:syringe_metal_empty'):break
             g.ticks(1)
-        g.command('item replace entity @s inventory.26 with minecraft:air')
-        early=counts(g).get('ntm:syringe_metal_empty',0);early_age=now(g)-start
-        if early_age<=36:break
-    pause(g,2.1);late=counts(g).get('ntm:syringe_metal_empty',0)
-    g.check('thrown_container_waits_its_pickup_delay',early==0 and late==1 and early_age<=36,{'early':early,'late':late,'early_age_ticks':early_age,'attempts':attempt+1,'dropped':dropped(g)})
+        if MUTANT=='pickup_frozen_late':g.ticks(40)
+        g.command('tick freeze');age=item_age(g)
+        if age is not None and age<=30:break
+        g.command('tick unfreeze')
+    else:
+        # No throw was frozen at age 30 or less in eight tries: the check fails, it is never judged on a later age.
+        g.check('thrown_container_waits_its_pickup_delay',False,{'age_when_frozen':age,'attempts':8})
+    g.command('item replace entity @s inventory.26 with minecraft:air')
+    if MUTANT=='pickup_delay_run_out':g.command('tick unfreeze');g.ticks(50);g.command('tick freeze')
+    if MUTANT=='pickup_delay_60':g.command('data merge entity @e[type=item,distance=..8,sort=nearest,limit=1] {PickupDelay:60s}')
+    def stepped(n):
+        if n>0:
+            start=now(g);g.command(f'tick step {n}')
+            while now(g)<start+n:time.sleep(.2)
+        # Frozen again, the server holds still and only the client's copy may trail: read until it repeats a
+        # second apart (a wall-clock bound is safe here, nothing ticks).
+        deadline=time.monotonic()+10;last=None
+        while True:
+            cur=counts(g).get('ntm:syringe_metal_empty',0)
+            if cur==last or time.monotonic()>deadline:return cur
+            last=cur;time.sleep(1)
+    early=stepped(30-age);late=stepped(15);g.command('tick unfreeze')
+    g.check('thrown_container_waits_its_pickup_delay',age<=30 and early==0 and late==1,{'early':early,'late':late,'age_when_frozen':age,'attempts':attempt+1,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSimpleConsumable.doRadaway: the emptied slot is still taken while the
     # container is added, so even the last RadAway drops its iv_empty.
@@ -679,8 +711,19 @@ def foods(g):
     reset(g);g.check('ptsd_needs_hunger_at_full_food',refused(g,'ntm:med_ptsd',1),counts(g))
     reset(g);starve(g);hold(g,'ntm:med_ipecac',1.8);effects=effect_map(g)
     g.check('ipecac_when_hungry_induces_hunger',has_effects(effects,{'hunger':(49,50)}) and not counts(g),effects)
-    reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true');hold(g,'ntm:schnitzel_vegan',1.8);effects=effect_map(g)
-    g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)}),effects)
+    reset(g);starve(g);g.command('effect give @s minecraft:slow_falling 120 0 true');g.command('effect give @s minecraft:fire_resistance 120 0 true');hold(g,'ntm:schnitzel_vegan',1.8)
+    # 160 ticks: the nearest whole-second duration to a 170-tick blindness that the Onda 1 review asked to kill.
+    if MUTANT=='schnitzel_short_blindness':g.command('effect clear @s minecraft:blindness');g.command('effect give @s minecraft:blindness 8 0 true')
+    effects=effect_map(g)
+    # The Onda 1 review's mutant: the three 80 ticks short, which /effect (whole seconds) cannot give a player.
+    if MUTANT=='schnitzel_uniform_80':effects={k:(a,d-80) if k in ('blindness','nausea','hunger') else (a,d) for k,(a,d) in effects.items()}
+    # Their age without `has_effects`' 80-tick floor: USE_TICK is the gesture plus the 32-tick use length, so a uniform
+    # shortfall is caught; and given in one tick, the three keep the Java's differences exactly.
+    age=READ_TICK[0]-USE_TICK[0]+4
+    remaining=lambda k:effects.get(k,(0,0))[1]
+    g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)})
+            and all(java-age<=remaining(k)<=java for k,java in (('blindness',200),('nausea',600),('hunger',3600)))
+            and remaining('nausea')-remaining('blindness')==400 and remaining('hunger')-remaining('blindness')==3400,{'effects':effects,'age':age})
     extinguish(g)
     # ItemAppleEuphemium.setAlwaysEdible (and `gate: food_always`): eaten with the food bar full, which is how it is made sure to start.
     reset(g);full_food(g);food_before=g.ctl('state')['player']['food'];hold(g,'ntm:apple_euphemium',1.8);effects=effect_map(g)
@@ -941,9 +984,11 @@ def capture(g):
     g.check('mask_kept_with_filter_wear','777' in inventory_tag(g) and 'hfrFilter' in inventory_tag(g),inventory_tag(g))
     g.command('setblock 24 101 8 ntm:machine_armor_table');g.command('tp @s 24.5 101 11.5');screen=open_table(g)
     g.check('capture_table_open',len(g.slots())==14,screen)
-    put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0)
+    put(g,'ntm:hazmat_helmet',1,9);put(g,'ntm:attachment_mask',1,0);put(g,'ntm:cladding_lead',1,5)
     g.ctl('click-slot 309 shift');settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet' and not s.get('carried'));g.close();pause(g,.5)
-    mods=inventory_tag(g);g.check('helmet_worn_with_mod_before_reopen','ntm_armor_mods' in mods and 'attachment_mask' in mods,mods)
+    mods=inventory_tag(g);g.check('helmet_worn_with_mod_before_reopen','ntm_armor_mods' in mods and 'attachment_mask' in mods and 'cladding_lead' in mods,mods)
+    expected,_=resistance_line([0.6*0.2+0.1]);line=geiger_resistance(g)
+    g.check('cladding_counts_before_reopen',line.endswith(expected),{'line':line,'expected':expected})
     # Two doses accumulate treatment time. The invariant detects timer reset,
     # lost dose or replayed treatment across the normal world close/reopen.
     g.command('ntmitem dose 500000')
@@ -987,11 +1032,252 @@ def reopened(g):
     g.check('cleared_radaway_stays_zero_after_the_reopen',expected['radaway']==0 and current.get('radaway',0)==0 and current['dose']==expected['dose'],{'before':expected,'after':current})
     tag=inventory_tag(g)
     g.check('filter_wear_and_stack_charge_survive','777' in tag and '123456789' in tag and 'ntm_charge' in tag and 'hfrFilter' in tag,tag)
-    g.check('armor_mods_survive','ntm_armor_mods' in tag and 'attachment_mask' in tag and 'hazmat_helmet' in tag,tag)
+    g.check('armor_mods_survive','ntm_armor_mods' in tag and 'attachment_mask' in tag and 'hazmat_helmet' in tag and 'cladding_lead' in tag,tag)
+    expected,_=resistance_line([0.6*0.2+0.1]);line=geiger_resistance(g)
+    g.check('cladding_still_counts_after_reopen',line.endswith(expected),{'line':line,'expected':expected})
     g.snapshot('items-reopened')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks)]
+def java_float(x):
+    import struct
+    return struct.unpack('f',struct.pack('f',x))[0]
+
+
+def java_resistance(pieces,radx=False):
+    """HazmatRegistry.getResistance(player): a float that narrows after each piece, summed over
+    `armorInventory[0..3]`, boots first; `pieces` is given as worn, helmet first."""
+    res=0.0
+    for piece in reversed(pieces):res=java_float(res+piece)
+    if radx:res=java_float(res+java_float(0.2))
+    return res
+
+
+def resistance_line(pieces,radx=False):
+    """The fifth Geiger line, computed here from the Java formulas (not from the port)."""
+    res=java_resistance(pieces,radx);factor=java_float(10**-res)
+    shown=int(10000-factor*10000)/100;koeff=int(res*100)/100
+    # The chat log keeps the text without the § colour codes.
+    return f"Player resistance: {shown}% ({koeff})",factor
+
+
+GEIGER=[0]
+
+
+def geiger_resistance(g):
+    """The resistance line of this click's Geiger report. `chat-log` lists the newest message first
+    (ChatHud.recent_lines), so the reports newer than a fresh marker are the ones before it. On a loaded machine
+    an answer can come many seconds late: every click is counted, and the reading waits until there is one
+    report per click; the newest is then this click's (the server answers in order)."""
+    g.command('item replace entity @s hotbar.8 with ntm:geiger_counter');g.ctl('select 9')
+    GEIGER[0]+=1;mark=f'geiger-mark-{GEIGER[0]}'
+    g.command(f'tellraw @s "{mark}"')
+    clicks=0
+    for _ in range(3):
+        use(g);clicks+=1
+        deadline=time.monotonic()+30
+        while time.monotonic()<deadline:
+            chat=g.ctl('chat-log 60').get('chat',[])
+            at=next((i for i,l in enumerate(chat) if mark in l),None)
+            newer=[l for l in chat[:at] if 'Player resistance' in l] if at is not None else []
+            if len(newer)>=clicks:
+                return newer[0]
+            time.sleep(.5)
+    return ''
+
+
+def wear(g,pieces):
+    for slot,item in zip(('head','chest','legs','feet'),pieces):
+        g.command(f'item replace entity @s armor.{slot} with {item}')
+    # The worn armor must have reached the player before an instrument reads it.
+    want={part:item.split('[')[0] for part,item in zip(('head','chest','legs','feet'),pieces) if item!='minecraft:air'}
+    deadline=time.monotonic()+20
+    while time.monotonic()<deadline:
+        worn={s.get('part'):s.get('item') for s in g.ctl('inventory').get('armor',[])}
+        if all(worn.get(p)==i for p,i in want.items()):break
+        time.sleep(.3)
+    time.sleep(.5)
+
+
+def protection(g):
+    """Onda 1, fatia 1: the whole HazmatRegistry, cladding and the Java armor stats."""
+    hz={'hazmat_grey':[0.4,0.8,0.6,0.2],'steel':[0.045*f for f in (0.2,0.4,0.3,0.1)],'titanium':[0.045*f for f in (0.2,0.4,0.3,0.1)],
+        'alloy':[0.07*f for f in (0.2,0.4,0.3,0.1)],'cobalt':[0.125*f for f in (0.2,0.4,0.3,0.1)],'starmetal':[1.0*f for f in (0.2,0.4,0.3,0.1)],
+        'iron':[0.0225*f for f in (0.2,0.4,0.3,0.1)],'golden':[0.0225*f for f in (0.2,0.4,0.3,0.1)]}
+    sets={'steel':'ntm:steel_{}','titanium':'ntm:titanium_{}','alloy':'ntm:alloy_{}','cobalt':'ntm:cobalt_{}','starmetal':'ntm:starmetal_{}'}
+    parts=['helmet','plate','legs','boots'];vanilla=['helmet','chestplate','leggings','boots']
+    # Every set's Geiger line against the Java float arithmetic.
+    for name,pattern in sets.items():
+        reset(g,'creative');wear(g,[pattern.format(p) for p in parts])
+        expected,_=resistance_line(hz[name]);line=geiger_resistance(g)
+        g.check(f'geiger_resistance_{name}_set',line.endswith(expected),{'line':line,'expected':expected})
+    for name in ('iron','golden'):
+        reset(g,'creative');wear(g,[f'minecraft:{name}_{p}' for p in vanilla])
+        expected,_=resistance_line(hz[name]);line=geiger_resistance(g)
+        g.check(f'geiger_resistance_vanilla_{name}_set',line.endswith(expected),{'line':line,'expected':expected})
+    # Mixed sets, where the order of the float sum shows: the expected line is the Java oracle's
+    # (tools/hazmat-oracle/fixture.json, cases 0 and 1), not a recomputation here.
+    oracle=json.loads((Path(__file__).resolve().parents[1]/'hazmat-oracle/fixture.json').read_text())['cases']
+    for n,worn in [(0,['minecraft:iron_helmet','ntm:steel_plate','ntm:cobalt_legs','ntm:hazmat_boots_red']),
+                   (1,['minecraft:iron_helmet[minecraft:custom_data={ntm_armor_mods:{mod_slot_5:{id:"ntm:cladding_desh",count:1}}}]','ntm:steel_plate','ntm:cobalt_legs','ntm:hazmat_boots_grey'])]:
+        java=oracle[n]['java'];expected=f"Player resistance: {java['res']}% ({java['koeff']})"
+        reset(g,'creative');wear(g,worn);line=geiger_resistance(g)
+        g.check(f'geiger_resistance_mixed_set_{n}_as_the_java_oracle',line.endswith(expected),{'line':line,'expected':expected})
+    # NBTTagCompound.getFloat reads any numeric tag: a double hfr_cladding counts as the float one does.
+    reset(g,'creative');wear(g,['ntm:hazmat_helmet_grey[minecraft:custom_data={hfr_cladding:0.25d}]'])
+    expected,_=resistance_line([0.4+java_float(0.25)]);line=geiger_resistance(g)
+    g.check('hfr_cladding_double_tag_counts',line.endswith(expected),{'line':line,'expected':expected})
+    reset(g,'creative');wear(g,['ntm:hazmat_helmet_grey','ntm:hazmat_plate_grey','ntm:hazmat_legs_grey','ntm:hazmat_boots_grey'])
+    expected,_=resistance_line(hz['hazmat_grey']);line=geiger_resistance(g)
+    g.check('geiger_resistance_grey_hazmat_set',line.endswith(expected) and '99.0% (2.0)' in line,{'line':line,'expected':expected})
+    # ArmorMaterial HBM_STEEL {3, 8, 6, 3}, durability 30: 20 armor points and 16 * 30 = 480 on the plate.
+    reset(g,'creative');wear(g,[sets['steel'].format(p) for p in parts])
+    armor=' '.join(g.command('attribute @s minecraft:armor get').get('chat',[]))
+    g.check('steel_set_has_the_java_armor_points',re.search(r'\b20(\.0)?\b',armor) is not None,armor)
+    # Durability 16 * 30 = 480: a hit takes one point from each piece, so a plate at 478 survives one cactus
+    # hit at 479 and breaks on the next (an off-by-one max_damage changes which hit breaks it).
+    reset(g,'survival');wear(g,['minecraft:air','ntm:steel_plate[minecraft:damage=478]'])
+    g.command('damage @s 1 minecraft:cactus');time.sleep(.6);first=g.ctl('inventory')
+    g.command('effect give @s minecraft:instant_health 1 5 true');g.command('damage @s 1 minecraft:cactus');time.sleep(.6);second=g.ctl('inventory')
+    worn=lambda inv:[s for s in inv.get('armor',[]) if s.get('item')=='ntm:steel_plate']
+    g.check('steel_plate_has_the_java_durability',[s.get('damage') for s in worn(first)]==[479] and not worn(second),{'first':first.get('armor'),'second':second.get('armor')})
+    # The real gamma dose follows the same factor (bare step times the float factor, truncated).
+    reset(g,'survival');give_hand(g,'ntm:ingot_uranium');time.sleep(11)
+    def step():
+        # The dose grows once a second; on a slow machine two seconds can land between samples,
+        # so the smallest increment is the one-second step (a merged one is a multiple of it).
+        last=state(g)['dose'];steps=[];deadline=time.monotonic()+30
+        while len(steps)<4 and time.monotonic()<deadline:
+            time.sleep(.2);now=state(g)['dose']
+            if now!=last:steps.append(now-last);last=now
+        return min(steps) if steps else 0
+    bare=step();wear(g,[sets['steel'].format(p) for p in parts]);steel=step()
+    _,factor=resistance_line(hz['steel'])
+    g.check('steel_set_reduces_the_real_dose_by_the_java_factor',bare>0 and steel==int(bare*factor),{'bare':bare,'steel':steel,'factor':factor})
+    # hfr_cladding (a float tag) adds to the piece and wins over the cladding slot.
+    reset(g,'creative');wear(g,['ntm:hazmat_helmet_grey[minecraft:custom_data={hfr_cladding:0.25f}]'])
+    expected,_=resistance_line([0.4+java_float(0.25)]);line=geiger_resistance(g)
+    g.check('hfr_cladding_adds_to_the_helmet',line.endswith(expected),{'line':line,'expected':expected})
+    # The cladding goes in slot 5 of the real table, only with an armor piece in it, and counts when worn.
+    g.close();g.command('clear @s');g.command('setblock 24 101 8 ntm:machine_armor_table');g.command('tp @s 24.5 101 11.5')
+    open_table(g)
+    g.check('cladding_refused_without_armor',try_put(g,'ntm:cladding_lead',5) is None,g.slots())
+    put(g,'ntm:hazmat_helmet_grey',1,9)
+    g.check('cladding_refused_in_the_mask_slot',try_put(g,'ntm:cladding_lead',0) is None,g.slots())
+    g.close();time.sleep(.5);g.command('clear @s');g.command('kill @e[type=minecraft:item]');open_table(g)
+    put(g,'ntm:hazmat_helmet_grey',1,9);put(g,'ntm:cladding_lead',1,5)
+    screen=settle(g,lambda s:table_slot(s,5)=='ntm:cladding_lead')
+    g.check('cladding_installed_in_slot_5',table_slot(screen,5)=='ntm:cladding_lead',screen.get('slots'))
+    g.ctl('click-slot 309 shift');settle(g,lambda s:table_slot(s,10)=='ntm:hazmat_helmet_grey' and not s.get('carried'));g.close();time.sleep(.5)
+    tag=inventory_tag(g);g.check('cladding_kept_in_the_helmet_mods','ntm_armor_mods' in tag and 'cladding_lead' in tag,tag)
+    expected,_=resistance_line([0.4+0.1]);line=geiger_resistance(g)
+    g.check('cladding_mod_adds_to_the_worn_helmet',line.endswith(expected),{'line':line,'expected':expected})
+    g.command('item replace entity @s hotbar.4 from entity @s armor.head')
+    reset(g,'creative')
+
+
+def expose(g,kind,wear):
+    """`/ntmitem expose`: True when the helmet protects (ArmorRegistry.hasProtection)."""
+    return 'true' in ' '.join(g.command(f'ntmitem expose {kind} {wear}').get('chat',[])).lower()
+
+
+def masks(g):
+    """Onda 1, fatia 2: the masks and suits, ArmorRegistry protection and filter wear."""
+    parts=['helmet','plate','legs','boots']
+    # HazmatRegistry and setRadResist: each set's Geiger line against the Java formula.
+    for name,pieces,values in [('paa',[f'ntm:hazmat_paa_{p}' for p in parts],[1.7*f for f in (0.2,0.4,0.3,0.1)]),
+                               ('liquidator',[f'ntm:liquidator_{p}' for p in parts],[2.4*f for f in (0.2,0.4,0.3,0.1)]),
+                               ('gas_mask',['ntm:gas_mask'],[0.07]),('jackt',['minecraft:air','ntm:jackt'],[0.1])]:
+        reset(g,'creative');wear(g,pieces)
+        expected,_=resistance_line(values);line=geiger_resistance(g)
+        g.check(f'geiger_resistance_{name}',line.endswith(expected),{'line':line,'expected':expected})
+    # ArmorLiquidator: knockback 100 (clamped to 1) and speed -0.1 multiplied per piece.
+    reset(g,'survival');wear(g,[f'ntm:liquidator_{p}' for p in parts])
+    knock=' '.join(g.command('attribute @s minecraft:knockback_resistance get').get('chat',[]))
+    speed=' '.join(g.command('attribute @s minecraft:movement_speed get').get('chat',[]))
+    g.check('liquidator_attributes',re.search(r'is 1(\.0)?\b',knock) is not None and re.search(r'is 0\.0(6|59999)',speed) is not None,{'knockback':knock,'speed':speed})
+    # A filter goes in every new IGasMask; the mono mask refuses lung gas even with the combo filter.
+    for mask in ['ntm:gas_mask','ntm:gas_mask_olde','ntm:gas_mask_mono','ntm:hazmat_paa_helmet','ntm:liquidator_helmet']:
+        reset(g,'creative');wear(g,[mask])
+        give_hand(g,'ntm:gas_mask_filter_combo')
+        # A click lost on a loaded machine is clicked again; once installed the hand is empty and a click does nothing.
+        for _ in range(3):
+            use(g)
+            if not counts(g).get('ntm:gas_mask_filter_combo'):break
+        g.check(f'{mask}_takes_a_filter','hfrFilter' in inventory_tag(g) and not counts(g).get('ntm:gas_mask_filter_combo'),inventory_tag(g))
+        before=inventory_tag(g);lung=expose(g,'lung',40)
+        if mask=='ntm:gas_mask_mono':
+            g.check('mono_never_protects_lung_gas',not lung and inventory_tag(g)==before,{'lung':lung,'tag':inventory_tag(g)})
+            co=expose(g,'co',40);g.check('mono_stops_monoxide_and_wears',co and inventory_tag(g)!=before,{'co':co,'tag':inventory_tag(g)})
+        else:
+            g.check(f'{mask}_stops_lung_gas_and_wears',lung and inventory_tag(g)!=before,{'lung':lung,'tag':inventory_tag(g)})
+    # Own classes (ArmorUtil.register): no filter, protection, nothing to wear.
+    for item,kind,expected in [('ntm:mask_rag','coarse',True),('ntm:mask_rag','lung',False),('ntm:mask_piss','lung',True),
+                               ('ntm:goggles','light',True),('ntm:ashglasses','sand',True),('ntm:asbestos_helmet','light',True),
+                               ('ntm:gas_mask_m65','sand',True),('ntm:gas_mask_m65','light',False),('ntm:steel_helmet','sand',False)]:
+        reset(g,'creative');wear(g,[item]);before=inventory_tag(g)
+        got=expose(g,kind,10)
+        g.check(f'{item.split(":")[1]}_{kind}_{"protects" if expected else "does_not_protect"}',got==expected and inventory_tag(g)==before,{'got':got,'tag':inventory_tag(g)})
+    filter_copy_bug(g)
+    reset(g,'creative')
+
+
+def filter_copy_bug(g):
+    """JAVA_FILTER_COPY_BUG (ArmorUtil.java:332-352): an IGasMask helmet without a filter of its own and an
+    attachment mask with one: the exposure is stopped, the worn copy lands in the helmet, the mod keeps its
+    filter, and a sneak-use of the helmet hands the copy out: two filters from one."""
+    reset(g,'survival')
+    module='{id:"ntm:attachment_mask",count:1,components:{"minecraft:custom_data":{hfrFilter:{id:"ntm:gas_mask_filter",count:1}}}}'
+    wear(g,['ntm:hazmat_helmet[minecraft:custom_data={ntm_armor_mods:{mod_slot_0:'+module+'}}]'])
+    before=inventory_tag(g)
+    g.check('copy_bug_setup_one_filter',before.count('gas_mask_filter')==1,before)
+    stopped=expose(g,'lung',40);tag=inventory_tag(g)
+    g.check('copy_bug_protects_through_the_mod',stopped,tag)
+    g.check('copy_bug_writes_the_worn_copy_into_the_helmet',tag.count('gas_mask_filter')==2 and '40' in tag,tag)
+    g.command('item replace entity @s hotbar.0 from entity @s armor.head');g.command('item replace entity @s armor.head with minecraft:air');g.ctl('select 1');time.sleep(.5)
+    g.ctl('key shift down');time.sleep(.4);use(g);g.ctl('key shift up');time.sleep(.6)
+    helmet=components(g,'ntm:hazmat_helmet') or '';loose=counts(g).get('ntm:gas_mask_filter',0)+dropped(g).get('ntm:gas_mask_filter',0)
+    # The copy is out; the helmet keeps only the mod's filter (one, nested in mod_slot_0).
+    g.check('copy_bug_sneak_hands_out_the_copy_and_the_mod_keeps_its_filter',loose==1 and helmet.count('gas_mask_filter')==1 and 'mod_slot_0' in helmet,{'loose':loose,'helmet':helmet})
+
+
+def dose_drop(g,seconds=2.0):
+    before=state(g)['dose'];time.sleep(seconds);return before-state(g)['dose']
+
+
+def decon(g):
+    """Onda 1, fatia 3: TileEntityDecon, -0.5 RAD a tick for each decontaminator whose box reaches the player,
+    and the end of the radiation potion (HbmPotion.radiation, the port's irradiation)."""
+    g.ground(20,101,8,width=12,height=8)
+    under='20 100 11'
+    # One under the feet: the dose falls by half a RAD per tick, so by a multiple of 500 milliRAD.
+    reset(g,'survival',dose=300000);g.command(f'setblock {under} ntm:decon');time.sleep(.5)
+    drop=dose_drop(g)
+    g.check('one_decon_takes_half_a_rad_a_tick',drop>0 and drop%500==0 and drop<=500*20*6,{'drop':drop})
+    # Creative too: incrementRadiation asks nothing.
+    reset(g,'creative',dose=300000);g.command(f'setblock {under} ntm:decon');time.sleep(.5)
+    g.check('decon_works_in_creative',dose_drop(g)>0,state(g))
+    # Two decontaminators whose boxes both reach a player standing on their border take twice as much.
+    reset(g,'survival',dose=300000);g.command(f'setblock {under} ntm:decon');g.command('setblock 21 100 11 ntm:decon')
+    g.command('tp @s 21.0 101 11.5');time.sleep(.5)
+    two=dose_drop(g)
+    g.check('two_decons_take_a_rad_a_tick',two>0 and two%1000==0,{'drop':two})
+    g.command('setblock 21 100 11 minecraft:stone')
+    # Off the box (the decontaminator one block beyond the reach) nothing changes.
+    reset(g,'survival',dose=300000);g.command(f'setblock {under} ntm:decon');g.command('tp @s 22.4 101 11.5');time.sleep(.5)
+    g.check('out_of_the_box_nothing',dose_drop(g)==0,state(g))
+    # Glowing mycelium irradiates (600 ticks of the radiation potion); the decontaminator ends it, so once off it
+    # the dose no longer grows.
+    reset(g,'survival',dose=0);g.command(f'setblock {under} ntm:waste_mycelium');time.sleep(2.5)
+    g.command(f'setblock {under} minecraft:stone');g.command('tp @s 25.5 101 11.5');time.sleep(.5)
+    growing=-dose_drop(g,1.5)
+    g.check('mycelium_irradiation_keeps_growing_the_dose',growing>0,{'growth':growing})
+    g.command('setblock 25 100 11 ntm:decon');time.sleep(1.5);g.command('setblock 25 100 11 minecraft:stone');time.sleep(.5)
+    after=-dose_drop(g,2.0)
+    g.check('decon_ends_the_irradiation',after==0,{'growth_after':after})
+    g.command(f'setblock {under} minecraft:stone');reset(g,'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon)]
 
 
 if __name__=='__main__':

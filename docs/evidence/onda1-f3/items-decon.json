@@ -1,0 +1,50 @@
+{
+ "report": {
+  "ok": true,
+  "scenario": "items",
+  "binary_sha256": "80b17f1aaad036af5cf705054085ba4e424b4c0602b5707bc9630925b20522c8",
+  "bundle_sha256": "42525a6b6a5e1d1ec3329a0d98bab80fdc703aff924a511ddefa1cd1ef75d43e",
+  "phases": [
+   "setup"
+  ]
+ },
+ "family": "decon",
+ "checks": {
+  "setup:one_decon_takes_half_a_rad_a_tick": {
+   "ok": true,
+   "actual": {
+    "drop": 23500
+   }
+  },
+  "setup:decon_works_in_creative": {
+   "ok": true,
+   "actual": {
+    "dose": 252000
+   }
+  },
+  "setup:two_decons_take_a_rad_a_tick": {
+   "ok": true,
+   "actual": {
+    "drop": 47000
+   }
+  },
+  "setup:out_of_the_box_nothing": {
+   "ok": true,
+   "actual": {
+    "dose": 284500
+   }
+  },
+  "setup:mycelium_irradiation_keeps_growing_the_dose": {
+   "ok": true,
+   "actual": {
+    "growth": 7400
+   }
+  },
+  "setup:decon_ends_the_irradiation": {
+   "ok": true,
+   "actual": {
+    "growth_after": 0
+   }
+  }
+ }
+}

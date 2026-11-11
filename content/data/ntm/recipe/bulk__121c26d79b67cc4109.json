@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:liquidator_boots",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "IBI"
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotanyrubber",
+    "C": "ntm:cladding_lead",
+    "B": "ntm:hazmat_boots_grey"
+  }
+}
