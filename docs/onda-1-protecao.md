@@ -629,6 +629,17 @@ motor no pin sem mudança. Família `irradiation` 8/8. Corte `migration` com con
 millirad numa gravação): sete de sete na primeira rodada; o pior ponto, `players_saved`, soma 312 + 43 = 355. `cargo
 test` 556 + 118, clippy limpo.
 
+Re-revisão 3: RR3-1 (regressão do RR-1): num tick não assentado (a poção sendo dada, no micélio ou pelos detritos), a
+leitura do motor virava a referência, e um `/effect give` dado ali só descia depois e se perdia. Agora, num tick não
+assentado em que o NTM põe a poção, a referência é o efeito que ele pôs; e crescer exige mais que o tick de folga da
+repostagem. Testes: `an_effect_given_on_the_mycelium_is_taken_in`, `an_effect_given_in_the_tick_the_potion_is_given_is_taken_in`,
+`a_guest_held_still_then_loaded_doses_the_same_total` (os três do revisor); mutantes mortos: sem a folga no
+crescimento, referência pela leitura num tick não assentado, sem a condição de crescimento. Em jogo, na família
+`irradiation`: dado no micélio, o anexo fica com o nível 9 (efeito `[9, 346]`, anexo `[343, 9]`). RR3-2: no corte
+`migration`, uma poção que acabou só é aceita na segunda reabertura, depois de a primeira tê-la mostrado. Rodada
+(`docs/evidence/onda1-f5/irradiation-5c-rereview3.json`): binário `5358d52f…`, pacote `36eb93fa…`; família 9/9; corte
+`migration` com controle 7/7, `G0` = 626; `cargo test` 559 + 118, clippy limpo.
+
 Ordem combinada: depois da 5c, a 5d (fontes da poção com bloco no port: `BlockFallout:57`, `BlockSellafield:49`, e a
 regra de dose do fallout), com plano e revisão próprios.
 
