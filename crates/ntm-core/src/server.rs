@@ -23,6 +23,9 @@ pub trait ServerHost: Kv {
 
     fn block_resistance(&mut self,dim:&str,p:Pos)->Option<f32> {self.get_block(dim,p).map(|b|crate::blast::vanilla::resistance(&b).max(0.))}
 
+    /// Native explosion with explicit Java strength/fire/block flags. Refusal publishes nothing; the ledger retries.
+    fn explode(&mut self, _dim: &str, _at: [f64; 3], _power: f32, _fire: bool, _breaks: bool) -> bool { false }
+
     /// Native explosion (power 12, fire and block destruction) in its own level.
     fn zirnox_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { false }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String>;
@@ -742,3 +745,6 @@ pub use transaction::{CommittedEffects,EntitySpawn,Survivor,WorldEffect,Prepared
 
 #[cfg(test)]
 mod generation_tests;
+
+#[cfg(test)]
+mod machine_effects_tests;

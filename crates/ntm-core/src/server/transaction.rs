@@ -21,6 +21,8 @@ pub enum WorldEffect {
         items: Vec<(String, u32)>,
     },
     EncodedItems { dim: String, pos: Pos, items: Vec<String> },
+    /// Generic native explosion; unlike `PileExplosion`, its Java flags are explicit.
+    Explosion { dim: String, at: [f64; 3], power: f32, fire: bool, breaks: bool },
     PileExplosion {
         dim: String,
         pos: [f64; 3],
@@ -198,6 +200,10 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
     }
     fn spawn_entities(&mut self, d: &str, p: Pos, entities: &[EntitySpawn]) -> bool {
         self.critical.push_back(WorldEffect::Entities { dim: d.into(), pos: p, entities: entities.to_vec() });
+        true
+    }
+    fn explode(&mut self, dim: &str, at: [f64; 3], power: f32, fire: bool, breaks: bool) -> bool {
+        self.critical.push_back(WorldEffect::Explosion { dim: dim.into(), at, power, fire, breaks });
         true
     }
     fn pile_explode(&mut self, d: &str, p: [f64; 3]) -> bool {
@@ -394,7 +400,7 @@ impl Server {
                 // What a chunk owes is played only while it is loaded: its record then follows every step.
                 if let Some(h)=batch.home()&&!host.home_loaded(&h.0,[h.1,h.2]){self.ready.world.machine_effects.rotate_left(1);break;}
                 let Some(mut effect)=batch.effects.front().cloned() else{self.ready.world.machine_effects.pop_front();break};
-                let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::PileExplosion{dim,..}|WorldEffect::Entities{dim,..}=>dim};
+                let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::Explosion{dim,..}|WorldEffect::PileExplosion{dim,..}|WorldEffect::Entities{dim,..}=>dim};
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
                 let (effect_id,replayed)={let b=self.ready.world.machine_effects.front().unwrap();(crate::ledger::effect_id(b.serial,b.done),b.replayed)};
                 let mut wait=false;
@@ -442,7 +448,7 @@ impl Server {
                 self.ready.world.machine_effects.front_mut().unwrap().effects[0]=effect.clone();
                 if host.trace_effects(){
                     let b=self.ready.world.machine_effects.front().unwrap();
-                    let kind=match &effect{WorldEffect::Blocks{blocks,..}=>format!("blocks {}",blocks.len()),WorldEffect::Items{pos,items,..}=>format!("items {pos:?} {items:?}"),WorldEffect::EncodedItems{pos,items,..}=>format!("encoded {pos:?} {}",items.len()),WorldEffect::PileExplosion{..}=>"explosion".into(),WorldEffect::Entities{pos,entities,..}=>format!("entities {pos:?} {}",entities.len())};
+                    let kind=match &effect{WorldEffect::Blocks{blocks,..}=>format!("blocks {}",blocks.len()),WorldEffect::Items{pos,items,..}=>format!("items {pos:?} {items:?}"),WorldEffect::EncodedItems{pos,items,..}=>format!("encoded {pos:?} {}",items.len()),WorldEffect::Explosion{at,power,fire,breaks,..}=>format!("explosion {at:?} power={power} fire={fire} breaks={breaks}"),WorldEffect::PileExplosion{..}=>"explosion".into(),WorldEffect::Entities{pos,entities,..}=>format!("entities {pos:?} {}",entities.len())};
                     host.log(&format!("effect {}.{} {kind} owners={} origins={}",b.serial,b.done,b.owners.len(),b.origins.len()));
                 }
                 let done=match &effect {
@@ -453,6 +459,7 @@ impl Server {
                     },
                     WorldEffect::Items{dim,pos,items}=>host.apply_items(effect_id,dim,*pos,items,&self.ready.world.machine_effects.front().unwrap().owners),
                     WorldEffect::EncodedItems{dim,pos,items}=>host.apply_encoded_items(effect_id,dim,*pos,items,&self.ready.world.machine_effects.front().unwrap().owners),
+                    WorldEffect::Explosion{dim,at,power,fire,breaks}=>host.explode(dim,*at,*power,*fire,*breaks),
                     WorldEffect::PileExplosion{dim,pos}=>host.pile_explode(dim,*pos),
                     WorldEffect::Entities{dim,pos,entities}=>host.apply_entities(effect_id,dim,*pos,entities,&self.ready.world.machine_effects.front().unwrap().owners),
                 };
