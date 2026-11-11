@@ -138,7 +138,7 @@ pub enum Harm {
 /// (decision D2 of slice 5; `tools/content-gen/damage_types.py`), which armor does not stop and Resistance does.
 pub const RADIATION_DAMAGE: &str = "ntm:radiation";
 
-/// At 1000 RAD radiation kills (`EntityEffectHandler.handleRadiationEffect:224-227`:
+/// At 1000 RAD radiation kills (`EntityEffectHandler.handleRadiationEffect:223-226`:
 /// `attackEntityFrom(ModDamageSource.radiation, 1000F)`, then the dose is 0, whatever the attack did).
 pub fn death(dose: &mut Dose) -> Option<Harm> {
     if dose.millirad < 1_000_000 {
