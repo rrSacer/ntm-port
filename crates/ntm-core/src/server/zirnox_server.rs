@@ -113,6 +113,7 @@ impl Server {
             // Cured earlier in the tick (the milk drunk before the step on the mycelium): the new potion starts afresh.
             if self.potion_cured(host, id, stored) {
                 base.potion = (0, 0);
+                base.milkproof = false;
             }
             let (mut desired, taken) = crate::zirnox::absorb(base, pending);
             if desired.potion.0 == 0 {
@@ -211,6 +212,7 @@ impl Server {
                     }
                     if stored.potion.0 > 0 && !stored.milkproof && settled && read == Some(None) {
                         base.potion = (0, 0);
+                        base.milkproof = false;
                     } else if settled
                         && let (Some(Some((ticks, amplifier))), Some((was, was_level))) = (read, reference)
                         && (amplifier > was_level || amplifier == was_level && ticks > was + 1)
@@ -235,6 +237,7 @@ impl Server {
             }
             if desired.potion.0 == 0 {
                 desired.potion = (0, 0);
+                desired.milkproof = false;
             }
             match stored {
                 Some(stored) => {
@@ -1745,6 +1748,29 @@ mod tests {
         tick(&mut h, &mut s, 301);
         let stored = h.irradiation.as_ref().unwrap()["p"];
         assert_eq!((stored.potion, stored.milkproof), ((599, 3), true));
+    }
+
+    /// Review R2: a fallout potion that ran out leaves no milkproof behind: the mycelium's next one is cured by milk.
+    #[test]
+    fn a_milkproof_potion_that_ran_out_leaves_no_mark() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.attached.insert("p".into(), 0);
+        s.blasts.entered.insert("p".into(), 0);
+        h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (2, 0), migrated: (0, 0), milkproof: true });
+        off_mycelium(&mut s);
+        for t in 300..304 {
+            tick(&mut h, &mut s, t);
+        }
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], crate::zirnox::StoredPotion::default(), "ran out, no mark");
+        on_mycelium(&mut h, &mut s);
+        tick(&mut h, &mut s, 304);
+        h.stepping = false;
+        off_mycelium(&mut s);
+        tick(&mut h, &mut s, 305);
+        h.effects.clear();
+        tick(&mut h, &mut s, 306);
+        assert_eq!(potion(&h), (0, 0), "milk cured the mycelium's potion");
     }
 
     /// Sellafield level 5 gives amplifier 10, to creative players too.

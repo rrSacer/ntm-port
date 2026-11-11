@@ -278,5 +278,14 @@ mod tests {
             l.0.insert([0, y, 0], "minecraft:ladder[facing=north]".into());
         }
         assert_eq!(walk(&mut l, &up, false), [1, 9, 17]);
+        // Only `Blocks.ladder` (`ajn.ap`, offset 1656): a vine or a scaffolding climbs with no distance (review R1).
+        for climbable in ["minecraft:vine[east=true]", "minecraft:scaffolding[bottom=false]"] {
+            let mut v = World::default();
+            for y in 60..90 {
+                v.0.insert([0, y, 0], climbable.into());
+            }
+            assert!(walk(&mut v, &up, false).is_empty(), "{climbable}");
+        }
     }
+
 }
