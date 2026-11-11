@@ -521,6 +521,16 @@ Rodada (`docs/evidence/onda1-f5/ruin-dose-r1.json`): binário `de5a93cf…`, pac
 mudança; ZIRNOX 140/140 em três rodadas (as 136 de antes e as 4 da ruína), pilha 85/85, fusão da pilha 32/32; `cargo
 test` 539 + 118 de integração, `save_model` 11/11, clippy limpo.
 
+Re-revisão 2, R2-1: a ruína (`TileEntityZirnoxDestroyed.radiate:89`) e a poção de radiação (`HbmPotion:123`) doseiam
+por `ContaminationUtil.contaminate`, que pula os primeiros 200 ticks do jogador (`:287`, `ticksExisted < 200`). Agora
+as duas usam a carência que o port já tinha (`blasts.entered`, `GRACE_TICKS`): quem entra ou renasce perto da ruína não
+recebe dose por 200 ticks. A poção continua contando o tempo e o Geiger continua ouvindo as duas. O renascimento
+recomeça a carência porque o host só lista os vivos, e o morto sai de `entered`. Teste
+`the_ruin_and_the_potion_spare_a_players_first_200_ticks` (entrada e renascimento); mutantes mortos: sem a carência na
+ruína, sem a carência na poção. Em jogo (`ruin-dose-check`): depois de renascer ao lado da ruína em chamas, o jogador
+está vivo com dose 0 aos 60 ticks e morre 204 ticks depois; o cliente anterior (sem a carência) morre antes dos 60.
+Rodada: binário `88837ca0…`, pacote `87f5e937…`, ZIRNOX 142/142, `cargo test` 540 + 118.
+
 ### Lacunas nominais da fatia 5
 
 - Dose em mobs e as transformações do `handleRadiationEffect` (creeper → creeper nuclear, vaca → mooshroom, aldeão →
