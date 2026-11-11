@@ -33,6 +33,8 @@ spec.loader.exec_module(crash_proof)
 disk_count = crash_proof.disk_count
 
 FILTER = 'ntm:gas_mask_filter'
+# The migration's potion budget (doses given + ticks left), from the prepare's evidence.
+BUDGET = [None]
 RADAWAY_MILLIRAD = 140 * 1000
 HERBAL_MILLIRAD = 100 * 1000
 # The cuts that touch the player's file or come before it, and the two deaths outside a save's stages.
@@ -107,11 +109,14 @@ def coherent(scenario, c, base):
         shown = 'radiation' in st.get('effects', [])
         attached = st.get('irradiated', 0) > 0 and st.get('irradiated_level') == 3 and shown
         if scenario == 'migration':
-            # Every dose the potion gave (0.2 RAD a tick, since before the cut) plus the ticks it has left is at most
-            # its 600 ticks, and the few ticks the prepare stood on the mycelium (which gives it again each tick): a
-            # potion taken in twice would give its time again (review P2-1).
+            # Every dose the potion gave (0.2 RAD a tick) plus the ticks it has left is at most its budget G0, measured
+            # at the end of the prepare (re-review RR-3): a potion taken in twice would give its time again (review
+            # P2-1). The first 200 ticks of a reopening count down without a dose, so the sum only falls; a potion
+            # that ran out on the way (0 ticks, no effect) is within it too.
             given = (st.get('dose', base) - base) // 200
-            return attached and given + st.get('irradiated', 0) <= 600 + 40
+            left = st.get('irradiated', 0)
+            ended = left == 0 and not shown
+            return BUDGET[0] is not None and (attached or ended) and given + left <= BUDGET[0]
         # Before 5c the potion lives in the world's storage, its dose in the player's file; since, both in one
         # attachment. Either way the potion and the dose it gave go together: both or neither.
         potion = attached or any(level == 3 for _, level in st.get('kv_irradiated', []))
@@ -198,6 +203,11 @@ def main():
             world.script('prepare')
             world.quit()
             args.binary = binary
+            if args.scenario == 'migration' and not c:
+                prepared = json.loads((where / 'native-player-cut-migration-prepare.json').read_text())
+                BUDGET[0] = (prepared.get('budget') or {}).get('g0')
+                report['budget'] = prepared.get('budget')
+                print(json.dumps({'budget': report['budget']}), flush=True)
         for point in args.points or POINTS:
             played = {c: play(args, bases[c], scratch, homed(scratch / ('point-' + point + ('-vanilla' if c else '')), c), point, c)
                       for c in controls}

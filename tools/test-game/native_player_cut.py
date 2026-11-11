@@ -123,6 +123,16 @@ def prepare(g):
             # The binary before 5c keeps this potion in the world's storage.
             time.sleep(12)  # past the first 200 ticks, so the potion also doses
             step_on_mycelium(g)
+            time.sleep(1)
+            # The potion's whole budget (re-review RR-3): the doses it gave plus its ticks left, from one save, where
+            # the world's storage holds both the potion and the dose's mirror of the same instant. Off the mycelium and
+            # past the first 200 ticks, every tick moves one from left to given: the sum holds until the potion ends.
+            g.ctl('save')
+            store = ntm_store.value(g.folder / 'saves')
+            potions = list(((store.get('zirnox') or {}).get('irradiated') or {}).values())
+            doses = [d['millirad'] for d in (store.get('radiation') or {}).values()]
+            g.evidence['budget'] = {'potions': potions, 'doses': doses,
+                                    'g0': (doses[0] - 300000) // 200 + potions[0][0] if len(potions) == 1 and len(doses) == 1 else None}
     else:
         g.command('ntmitem dose 300000')
         g.command(f'item replace entity @s hotbar.0 with {USED[SCENARIO]} 1')
