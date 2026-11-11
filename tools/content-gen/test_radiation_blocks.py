@@ -73,6 +73,12 @@ class SellafieldLevels(unittest.TestCase):
                                      for c, s in zip((r, g, b), (16, 8, 0))) + (a,)
                     self.assertEqual(port.getpixel((x, y)), expected, (n, x, y))
 
+    def test_each_level_ticks_randomly(self):
+        self.assertIn('this.needsRandomTick = true;', SELLAFIELD)
+        for n in range(6):
+            block = json.loads((CONTENT / f'data/ntm/horizon/block/{level_id(n).split(":")[1]}.json').read_text())
+            self.assertTrue(block['properties'].get('random_ticks'), n)
+
     def test_inventory_radiation_by_level(self):
         registry = (JAVA / 'hazard/HazardRegistry.java').read_text()
         java = {int(m): float(v) for m, v in re.findall(r'new ItemStack\(ModBlocks\.sellafield, 1, (\d)\), makeData\(RADIATION, ([\d.]+)F\)', registry)}

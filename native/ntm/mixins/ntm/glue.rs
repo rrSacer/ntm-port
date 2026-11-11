@@ -1428,6 +1428,28 @@ impl ServerHost for Host<'_, '_> {
     fn commit_player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose,expected:ntm_core::zirnox::StoredPotion,desired:ntm_core::zirnox::StoredPotion)->bool{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::write_irradiation(g,legacy,expected,desired)).unwrap_or(false)
     }
+    /// `Entity.moveEntity` takes no step "onGround && isSneaking()" for a player, nor while `ridingEntity` is set
+    /// (Onda 1, slice 5d, D3). The one place the NTM reads these, and the engine's API (NativePlayerInfo) does not
+    /// carry them: engine fields read directly, at the pin of compatibility.json (`eb5d3eed58`):
+    /// - a LAN guest: `lan::guest::Guest::{on_ground, sneaking, vehicle}` (crates/horizon-client/src/lan/guest.rs);
+    /// - the player in place: `Player::ground.on_ground`, `Game::keys.held(Action::Sneak)` and `Game::riding`.
+    ///
+    /// A pin that renames or drops them breaks this build, never silently. Asked of the engine as API for later
+    /// (docs/onda-1-protecao.md, slice 5d).
+    fn step_blocked(&mut self,id:&str)->bool{
+        let Ok(uuid)=u128::from_str_radix(&id.replace('-',""),16) else{return false};
+        let game=&*self.game;
+        if let Some(g)=game.lan.iter().flat_map(|h|h.hub.guests.iter()).find(|g|g.placed&&g.uuid==uuid){
+            let guest:&horizon_client::lan::guest::Guest=g;
+            return guest.on_ground&&guest.sneaking||guest.vehicle.is_some();
+        }
+        if game.level.player_uuid.map(horizon_client::lan::playerdata::ints_uuid)==Some(uuid){
+            let on_ground:bool=game.player.as_ref().is_some_and(|p|p.ground.on_ground);
+            let riding:&Option<u32>=&game.riding;
+            return on_ground&&game.keys.held(horizon_client::actions::Action::Sneak)||riding.is_some();
+        }
+        false
+    }
     fn effect_state(&mut self,id:&str,effect:&str)->Option<Option<(u32,u8)>>{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::effect_state(g,effect))
     }

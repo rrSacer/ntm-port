@@ -39,10 +39,12 @@ def rows():
             'id': 'sellafield' if level == 0 else f'sellafield__{level}',
             'source_variable': 'sellafield', 'type': 'block', 'category': 'decorative', 'source_class': 'BlockSellafield',
             'template': 'minecraft:stone', 'metadata': level, 'subtype_kind': 'level',
+            # `needsRandomTick = true` (BlockSellafield's constructor): updateTick goes down a level (slice 5d).
+            'block_properties': {'random_ticks': True},
             'source_texture': BASE,
             'tint': {'light': light, 'dark': dark, 'source_light': source_light, 'source_dark': source_dark},
             'names': {loc: table[f'tile.sellafield.{level}.name'] for loc, table in translations.items()},
-            'behavior_gap': 'Walking potion and random-tick decay in ntm-core (slice 5d); the chunk radiation of updateTick '
+            'behavior_gap': 'Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick '
                             '(incrementRad) waits for slice 4; the four position texture variants are reduced to the first',
         })
     return out

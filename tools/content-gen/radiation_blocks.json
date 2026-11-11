@@ -10,6 +10,9 @@
       "template": "minecraft:stone",
       "metadata": 0,
       "subtype_kind": "level",
+      "block_properties": {
+        "random_ticks": true
+      },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png",
       "tint": {
         "light": "4C7939",
@@ -21,7 +24,7 @@
         "en_us": "Sellafite",
         "pt_br": "Sellafita"
       },
-      "behavior_gap": "Walking potion and random-tick decay in ntm-core (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
+      "behavior_gap": "Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
     },
     {
       "id": "sellafield__1",
@@ -32,6 +35,9 @@
       "template": "minecraft:stone",
       "metadata": 1,
       "subtype_kind": "level",
+      "block_properties": {
+        "random_ticks": true
+      },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png",
       "tint": {
         "light": "418223",
@@ -43,7 +49,7 @@
         "en_us": "Hot Sellafite",
         "pt_br": "Sellafita Quente"
       },
-      "behavior_gap": "Walking potion and random-tick decay in ntm-core (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
+      "behavior_gap": "Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
     },
     {
       "id": "sellafield__2",
@@ -54,6 +60,9 @@
       "template": "minecraft:stone",
       "metadata": 2,
       "subtype_kind": "level",
+      "block_properties": {
+        "random_ticks": true
+      },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png",
       "tint": {
         "light": "338C0E",
@@ -65,7 +74,7 @@
         "en_us": "Boiling Sellafite",
         "pt_br": "Sellafita Fervente"
       },
-      "behavior_gap": "Walking potion and random-tick decay in ntm-core (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
+      "behavior_gap": "Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
     },
     {
       "id": "sellafield__3",
@@ -76,6 +85,9 @@
       "template": "minecraft:stone",
       "metadata": 3,
       "subtype_kind": "level",
+      "block_properties": {
+        "random_ticks": true
+      },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png",
       "tint": {
         "light": "1C9E00",
@@ -87,7 +99,7 @@
         "en_us": "Blazing Sellafite",
         "pt_br": "Sellafita Incandescente"
       },
-      "behavior_gap": "Walking potion and random-tick decay in ntm-core (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
+      "behavior_gap": "Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
     },
     {
       "id": "sellafield__4",
@@ -98,6 +110,9 @@
       "template": "minecraft:stone",
       "metadata": 4,
       "subtype_kind": "level",
+      "block_properties": {
+        "random_ticks": true
+      },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png",
       "tint": {
         "light": "02B200",
@@ -109,7 +124,7 @@
         "en_us": "Infernal Sellafite",
         "pt_br": "Sellafita Infernal"
       },
-      "behavior_gap": "Walking potion and random-tick decay in ntm-core (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
+      "behavior_gap": "Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
     },
     {
       "id": "sellafield__5",
@@ -120,6 +135,9 @@
       "template": "minecraft:stone",
       "metadata": 5,
       "subtype_kind": "level",
+      "block_properties": {
+        "random_ticks": true
+      },
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/sellafield_slaked.png",
       "tint": {
         "light": "00D300",
@@ -131,7 +149,7 @@
         "en_us": "Sellafite-Corium",
         "pt_br": "Sellafita-Cório"
       },
-      "behavior_gap": "Walking potion and random-tick decay in ntm-core (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
+      "behavior_gap": "Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
     }
   ]
 }

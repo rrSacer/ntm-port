@@ -42,7 +42,7 @@ fn codec(value: &Compound) -> Result<Compound, AttachmentError> {
     if !value.is_empty() && value.get(&JavaString::from("schema")) != Some(&Tag::Int(1)) {
         return Err(AttachmentError::Decode);
     }
-    for key in ["dose", "radaway", "sickness", "herbal", "irradiated", "irradiated_level", "irradiated_migrated", "irradiated_migrated_level"] {
+    for key in ["dose", "radaway", "sickness", "herbal", "irradiated", "irradiated_level", "irradiated_migrated", "irradiated_migrated_level", "irradiated_milkproof"] {
         if let Some(value) = value.get(&JavaString::from(key)) {
             match value {
                 Tag::Long(n) if *n >= 0 => {}
@@ -621,14 +621,25 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             desired.armor[index] = Some(ItemStack::new(&id, 1));
         }
     }
-    // `clearActivePotions` takes the radaway potion and the herbal sickness
-    // along; a list of `removePotionEffect` takes the ones it names.
+    // `clearActivePotions` takes the radaway potion, the herbal sickness and the radiation potion along; a list of
+    // `removePotionEffect` takes the ones it names. The radiation potion is ended here, in its storage (slice 5d):
+    // the fallout's has no curative items, so its effect gone is no cure the server would see (milk).
     match &spec.cure {
         Some(item_hooks::Cure::All) => {
-            for key in ["radaway", "herbal"] {
+            for key in ["radaway", "herbal", "irradiated", "irradiated_level", "irradiated_milkproof"] {
                 if number(&desired.state, key) > 0 {
                     set(&mut desired.state, key, 0);
                 }
+            }
+        }
+        Some(item_hooks::Cure::Effects(ids)) if ids.iter().any(|id| id == ntm_core::radiation::RADIATION_EFFECT) => {
+            for key in ["irradiated", "irradiated_level", "irradiated_milkproof"] {
+                if number(&desired.state, key) > 0 {
+                    set(&mut desired.state, key, 0);
+                }
+            }
+            if ids.iter().any(|id| id == SICKNESS) && number(&desired.state, "herbal") > 0 {
+                set(&mut desired.state, "herbal", 0);
             }
         }
         Some(item_hooks::Cure::Effects(ids))
@@ -1142,6 +1153,7 @@ pub(super) fn write_irradiation(game: &mut Game<'_>, legacy: &Dose, before: Stor
         set(&mut desired.state, ticks, u64::from(n));
         set(&mut desired.state, level, if n == 0 { 0 } else { u64::from(a) });
     }
+    set(&mut desired.state, "irradiated_milkproof", u64::from(after.milkproof && after.potion.0 > 0));
     game.native_commit_player(&STATE, &expected, desired, Default::default())
 }
 fn read_state(s: &NativePlayerSnapshot) -> StoredPotion {
@@ -1150,7 +1162,12 @@ fn read_state(s: &NativePlayerSnapshot) -> StoredPotion {
         let a = u8::try_from(number(&s.state, level)).unwrap_or(u8::MAX);
         if n == 0 { (0, 0) } else { (n, a) }
     };
-    StoredPotion { potion: pair("irradiated", "irradiated_level"), migrated: pair("irradiated_migrated", "irradiated_migrated_level") }
+    let potion = pair("irradiated", "irradiated_level");
+    StoredPotion {
+        potion,
+        migrated: pair("irradiated_migrated", "irradiated_migrated_level"),
+        milkproof: potion.0 > 0 && number(&s.state, "irradiated_milkproof") > 0,
+    }
 }
 /// The player's status effect `effect`: (ticks left, amplifier), None when they don't have it.
 pub(super) fn effect_state(game: &Game<'_>, effect: &str) -> Option<(u32, u8)> {
