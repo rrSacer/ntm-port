@@ -707,6 +707,14 @@ mudança. `items` 301/301 (as 284 de antes e 17 da 5d), ZIRNOX 142/142, cortes d
 do baú do Ender; a poção dada andando) e `migration` 7/7 (`G0` = 614), `cargo test` 578 + 118, conteúdo 312,
 `save_model` 11/11, clippy limpo.
 
+Revisão final da 5d: o teleporte do jogador local no mesmo tick de um passo (uma pérola caindo enquanto ele anda)
+passa a ser visto: o deslocamento horizontal maior que o crescimento de `moveDist + flyDist` dividido por 0,6 é
+teleporte (`walking::teleported_by_distance`, P3-1); testes para o teleporte que não mexe nos contadores e para o fallout
+achado uma célula abaixo do pé (P3-2); as citações de linha (P3-3). O controle vanilla do corte saía antes de abrir o
+socket sob carga, em `players_saved` e `kv_committed` (três sessões): o roteiro agora espera e o reinicia até três
+vezes, registrando cada saída (P3-4). Rodada (`docs/evidence/onda1-f5/fallout-sellafield-5d-final.json`): binário
+`93144e73…`, família `fallout` 14/14, corte `irradiation` 7/7 com o controle, nenhuma saída antecipada.
+
 Lacunas da 5d:
 
 - `/effect clear` não encerra a poção do fallout (revisão P3-2): no Java, `clearActivePotions` tira tudo; no port, o
