@@ -1254,6 +1254,15 @@ Verificação (`confirm/pin-verify.log`):
   `483392a4d3640aa4444926f1ca6d44956577d7aefa5143e6764cad94325959a9` (o conteúdo não mudou).
 - Em jogo, uma por vez, `NTM_GAME_WIDE=1`: stations, dims e a prova de save `original` `kill` passaram (#64–#66).
 
+Depois a `main` foi para `71f92459` (Onda 1), e ela entrou nesta branch por merge sem rebase em `ce5a29ca`, sem
+conflitos. Os geradores rodados como checagem (ordem de `16659f63`) não mudaram nenhum arquivo; `test_hazmat` 9 e
+`test_rbmk_oracle` 14 passam. O clippy da cópia transformada recusou `HeldKeys::contains` no tooltip dos mods de
+armadura que a Onda 1 trouxe (`armor_table.rs:574`, `872dfd7f`, escrito no motor antigo). Trocado por `raw` em
+`55198727`: é o mesmo teste (`contains` só repassa) e o do Java (a tecla LSHIFT literal). A própria `main` `71f92459`
+falha nesse clippy sem essa troca. Release `horizon-client` `5db4d5f48527e176bc0215b89f6d33d148bff3350b8f4fc5f37aa56dac9205ea`,
+pacote `ntm.hmod` `8aad9aaa6307cd044e86f7c90d8d52f7f8814d61c6eabc613bd0e01174597a7b` (conteúdo da Onda 1). Clippy da
+cópia transformada limpo; em jogo, stations, dims e a prova `kill` (#68–#70) e stations de novo no binário final (#72).
+
 ### Limitações e pendências
 
 - **Modo eager:** os cortes dentro de um save (`save_begin`, `live_chunk`, `region_record`, `entities_written`) não são
