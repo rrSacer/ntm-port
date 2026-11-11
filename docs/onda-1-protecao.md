@@ -643,10 +643,86 @@ crescimento, referência pela leitura num tick não assentado, sem a condição 
 Ordem combinada: depois da 5c, a 5d (fontes da poção com bloco no port: `BlockFallout:57`, `BlockSellafield:49`, e a
 regra de dose do fallout), com plano e revisão próprios.
 
+### 5d: as fontes da poção com bloco no port (fallout e sellafield)
+
+Decisões do coordenador: D1 (A) os níveis 0..5 do sellafield; D2 (A) a poção do fallout que o leite não cura
+(`irradiated_milkproof`); D3 (A) a poção dada num passo, como o `Entity.moveEntity` do 1.7.10.
+
+- Conteúdo (bloco 1): o conteúdo não tem estados de bloco próprios, então cada nível do `BlockSellafield` é um bloco,
+  como todo metadado do port: `ntm:sellafield` (nível 0, o id que os mundos já têm) e `ntm:sellafield__1`..`__5`. Nomes
+  `tile.sellafield.<n>.name`; textura pela tinta do Java em tempo de execução (`RGBMutatorInterpolatedComponentRemap
+  (0x858384, 0x434343, clara, escura)` sobre `sellafield_slaked`), conferida pixel a pixel; perigos de inventário 0,5 /
+  1 / 2,5 / 4 / 5 / 10 RAD/s (`HazardRegistry:222-227`); aba "Minérios e Blocos" (o `blockTab` do construtor); drop de
+  si mesmo; as receitas de triturador dos níveis 1-5 (`ShredderRecipes:295-299`) passaram a existir; tick aleatório
+  (`needsRandomTick`).
+- O passo (D3, `crate::walking`), conferido no bytecode de `sa.d(DDD)V` (offsets 1498-1886):
+  1. só sem agachar no chão (`onGround && isSneaking()`, a variável 20, calculada no começo do método) e sem montar
+     (`ridingEntity == null`);
+  2. o bloco é `(floor x, floor(posY − 0,2 − yOffset), floor z)` (o `EntityPlayerMP` zera o `yOffset`: o pé menos
+     0,2), ou o de baixo quando este tem tipo de render 11, 32 ou 21 (cerca, muro, portão);
+  3. `dy = 0` fora de escada (só `Blocks.ladder`, `ajn.ap`; trepadeira e andaime não);
+  4. `Q += (float) sqrt(dx² + dy² + dz²) × 0,6`, somado em double e guardado em float;
+  5. passo quando `Q > (float) nextStepDistance` e o material do bloco não é ar; então `nextStepDistance = (int) Q + 1`
+     e `onEntityWalking`.
+  Os contadores começam em 0 com a entidade (entrada, renascimento) e não são salvos. `tools/step-oracle` compila a
+  conta transcrita e o port dá os mesmos passos e o mesmo float, bit a bit, em 2000 movimentos de 4 caminhadas.
+- Teleporte: `setPositionAndUpdate` (comando, pérola, portal) não passa por `moveEntity`: nenhum teleporte dá passo,
+  de qualquer distância (revisão P2-1). Andar é preciso, inclusive nas provas em jogo.
+- Agachar, montar e teleportar vêm de campos do motor que a API nativa (`NativePlayerInfo`) não traz; a cola os lê num
+  único ponto (`glue.rs`, `step_blocked` e `teleported`), com tipos explícitos, para que um pin que os mude quebre a
+  compilação: o convidado de LAN (`lan::guest::Guest::{on_ground, sneaking, vehicle, teleport_counter,
+  awaiting_teleport, landing}`) e o jogador local (`Player::ground.on_ground`, a tecla `Action::Sneak`, `Game::riding`,
+  e `Player::steps`, o `moveDist`/`flyDist` que só a física faz crescer). **Pedido ao motor para depois (B):** expor
+  em `NativePlayerInfo` os três campos `on_ground`, `sneaking` e `vehicle` (e um sinal de teleporte).
+- As poções ao pisar: micélio 600 ticks nível 3 (criativo incluso, `WasteEarth:83-91`); fallout 12000 ticks nível 0,
+  sem itens de cura, fora do criativo (`BlockFallout:51-59`); sellafield 600 ticks nível `meta < 5 ? meta : meta × 2`
+  (criativo incluso, `BlockSellafield:28-33`). Parado em cima não há passo, e a poção desconta, como no Java.
+- O fallout tem 0,125 de altura no Java e não empilha; o do port é uma camada de neve (1 a 8). No passo, sobre uma
+  célula de fallout, o pé é tomado na altura do Java (revisão P3-4): andar no plano, com qualquer número de camadas, pisa
+  no bloco de baixo; só um passo no ar mais de 0,075 acima da camada (um pulo) pisa no fallout. No 1.7.10 é igual:
+  andando no plano, `floor(pé − 0,2)` é o bloco de baixo.
+- `milkproof` (D2): ligado quando a poção nasce do fallout; o `combine` fica com a lista da primeira poção (a do micélio
+  continua curável sob o fallout; a do fallout continua imune quando o nível 3 do micélio assume). O leite do motor tira
+  todos os efeitos: o efeito sumido de uma poção `milkproof` é reposto, como no herbal. O que no Java a encerra por id ou
+  por `clearActivePotions` (iodo, bolsa médica, antídoto, descontaminador) zera o anexo direto. O `milkproof` é limpo
+  quando a poção acaba (revisão P3-3).
+- Decadência: no tick aleatório, com 1/25 no nível 0 (vira `sellafield_slaked`) e 1/15 nos outros (desce um nível),
+  `BlockSellafield.updateTick:36-46`. O sorteio é por hash da célula e do `Level.randValue` (os mods não têm aleatório
+  próprio): a chance é a do Java, a sequência não.
+
+Provas. Unidade: `crate::walking` (passo, cerca, escada, trepadeira e andaime, ar, teleporte, fallout com camadas, o
+oráculo, as poções dos blocos, a chance da decadência em 4 desvios-padrão) e o servidor (o micélio dá a poção nos passos
+e não parado; agachar e montar; o fallout sobrevive ao leite e o descontaminador o encerra; a lista da primeira poção;
+leite e passo no mesmo tick; o `milkproof` que acaba não sobra; o teleporte curto sobre o micélio). Mutantes mortos no
+núcleo e no passo, inclusive os dois do revisor (trepadeira como escada; `milkproof` velho) — o segundo ficou
+equivalente depois da correção, porque a bandeira não sobra mais. Em jogo, famílias `sellafield_levels` e `fallout`
+(14/14): no plano sobre o fallout nada; pulando, a poção `milkproof` (nível 0, ~12000 ticks); o leite não cura e a dose
+segue; o iodo cura; o criativo é poupado; sellafield 3 e 5 dão os níveis 3 e 10; parado em cima a poção desconta;
+agachado (devagar) e montado (um porco movido pela faixa) não há passo, andando há; teleportando sobre o micélio nada,
+andando a poção; o tick aleatório desce os níveis até `slaked`. O cliente anterior ao sinal de teleporte falha na
+checagem do teleporte (a poção vem).
+
+Rodada (`docs/evidence/onda1-f5/fallout-sellafield-5d.json`): binário `b456388f…`, pacote `dca24969…`, motor no pin sem
+mudança. `items` 301/301 (as 284 de antes e 17 da 5d), ZIRNOX 142/142, cortes de save `irradiation` 7/7 (com o controle
+do baú do Ender; a poção dada andando) e `migration` 7/7 (`G0` = 614), `cargo test` 578 + 118, conteúdo 312,
+`save_model` 11/11, clippy limpo.
+
+Lacunas da 5d:
+
+- `/effect clear` não encerra a poção do fallout (revisão P3-2): no Java, `clearActivePotions` tira tudo; no port, o
+  comando tira o efeito do motor e a poção `milkproof` o repõe (como o herbal). A cola não vê o comando do jogador local
+  (o gancho de comandos do motor é só de convidados, e o `clear` usa seletores).
+- O fallout do port é uma camada de neve: ao perder o apoio ela se solta e **dropa o item** (60 RAD/s no inventário);
+  o `BlockFallout` do Java vira ar sem drop (`func_150155_m`, `setBlockToAir`). Também empilha camadas (o Java não). O
+  passo já usa a altura do Java; o drop e o empilhamento são do conteúdo, para uma frente de blocos.
+- O `incrementRad` do `updateTick` do sellafield espera a radiação por chunk (fatia 4); o clique no fallout
+  (`addCont`) espera a lista de contaminação do jogador; as quatro variantes de textura por posição do sellafield ficam
+  na primeira; a masmorra `Barrel` (onde o Java põe sellafield) não existe no port.
+
 ### Lacunas nominais da fatia 5
 
-- As outras fontes de `HbmPotion.radiation` (a 5c tem o micélio e os detritos do ZIRNOX). Na 5d: `BlockFallout:57`,
-  `BlockSellafield:49`. Sem bloco ou entidade no port ainda: `BlockOre:156-165`, `BarbedWire:75`, `Balefire:159`,
+- As outras fontes de `HbmPotion.radiation` (a 5c tem o micélio e os detritos do ZIRNOX; a 5d, o fallout e o
+  sellafield). Sem bloco ou entidade no port ainda: `BlockOre:156-165`, `BarbedWire:75`, `Balefire:159`,
   `BlockGasRadonDense:42`, `BlockGasMeltdown:40`, `EntityRBMKDebris:105`, `EntityTaintCrab:53`, `ModEventHandler:1015`.
 - Dose em mobs e as transformações do `handleRadiationEffect` (creeper → creeper nuclear, vaca → mooshroom, aldeão →
   zumbi, pato → quackos): o port só guarda dose de jogadores. Sugerido para a Onda 4 ou a frente de mobs.
