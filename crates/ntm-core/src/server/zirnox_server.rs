@@ -178,15 +178,20 @@ impl Server {
             let (mut desired, taken) = match stored {
                 Some(stored) => {
                     let mut base = stored;
-                    // Read every tick, acted on once settled: the reading before is what "grew" is measured against.
+                    // "Grew" is measured against the reference: the last settled reading, or what the NTM itself put
+                    // on the player in an unsettled tick (re-review RR3-1); one tick more is the spare tick of the
+                    // repost (an effect held still at the storage's time + 1 is no growth, re-review RR-1).
                     let read = host.effect_state(&p.id, crate::radiation::RADIATION_EFFECT);
-                    let before = read.and_then(|now| self.ready.radiation_effect_read.insert(p.id.clone(), now.unwrap_or((0, 0))));
+                    let reference = self.ready.radiation_effect_read.get(&p.id).copied();
                     let settled = self.potion_effect_settled(&p.id);
+                    if let Some(now) = read {
+                        self.ready.radiation_effect_read.insert(p.id.clone(), now.unwrap_or((0, 0)));
+                    }
                     if stored.potion.0 > 0 && settled && read == Some(None) {
                         base.potion = (0, 0);
                     } else if settled
-                        && let (Some(Some((ticks, amplifier))), Some((was, was_level))) = (read, before)
-                        && (amplifier > was_level || amplifier == was_level && ticks > was)
+                        && let (Some(Some((ticks, amplifier))), Some((was, was_level))) = (read, reference)
+                        && (amplifier > was_level || amplifier == was_level && ticks > was + 1)
                         && (amplifier > base.potion.1 || amplifier == base.potion.1 && ticks > base.potion.0)
                     {
                         // An effect that grew without the storage (`/effect give`): the Java's potion is that effect.
@@ -220,6 +225,11 @@ impl Server {
                     }
                     if desired.potion.0 > 0 {
                         host.effect(&p.id, crate::radiation::RADIATION_EFFECT, desired.potion.0 + 1, desired.potion.1);
+                    }
+                    if desired.potion.0 > 0 && !self.potion_effect_settled(&p.id) {
+                        // Unsettled: what the engine shows now may be the NTM's own potion on its way; the reference is
+                        // the effect just put on the player.
+                        self.ready.radiation_effect_read.insert(p.id.clone(), (desired.potion.0 + 1, desired.potion.1));
                     }
                 }
                 None if desired.potion.0 > 0 => {
@@ -1499,6 +1509,71 @@ mod tests {
         }
         assert_eq!(potion(&h), (0, 0));
         assert_eq!(h.attached["p"], 30 * 200);
+    }
+
+    /// Re-review RR3-1: `/effect give` at amplifier 9 while the player stands on the mycelium (the potion is given
+    /// every tick, so no tick is settled); then they step off. In the Java `combine` keeps amplifier 9.
+    #[test]
+    fn an_effect_given_on_the_mycelium_is_taken_in() {
+        let (mut h, mut s) = prepare();
+        on_mycelium(&mut h, &mut s);
+        for t in 300..305 {
+            tick(&mut h, &mut s, t);
+        }
+        h.effects.insert(("p".into(), RAD.into()), (400, 9));
+        for t in 305..310 {
+            tick(&mut h, &mut s, t);
+        }
+        off_mycelium(&mut s);
+        for t in 310..320 {
+            tick(&mut h, &mut s, t);
+        }
+        assert_eq!(potion(&h).1, 9, "the amplifier 9 application reached the storage");
+    }
+
+    /// Re-review RR3-1: `/effect give` in the very tick the mycelium gives the potion, then off.
+    #[test]
+    fn an_effect_given_in_the_tick_the_potion_is_given_is_taken_in() {
+        let (mut h, mut s) = prepare();
+        on_mycelium(&mut h, &mut s);
+        h.effects.insert(("p".into(), RAD.into()), (400, 9));
+        tick(&mut h, &mut s, 300);
+        off_mycelium(&mut s);
+        for t in 301..320 {
+            tick(&mut h, &mut s, t);
+        }
+        assert_eq!(potion(&h).1, 9);
+    }
+
+    /// Re-review RR3-1 with RR-1: a joining guest held still for 30 ticks (its first tick unsettled), then the
+    /// engine as usual: the same total as without the stop.
+    #[test]
+    fn a_guest_held_still_then_loaded_doses_the_same_total() {
+        let total = |frozen: u64| {
+            let (mut h, mut s) = prepare();
+            h.irradiation = Some(BTreeMap::new());
+            h.attached.insert("p".into(), 0);
+            h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (1000, 3), migrated: (0, 0) });
+            h.effects.insert(("p".into(), RAD.into()), (1001, 3));
+            off_mycelium(&mut s);
+            for t in 300..2000 {
+                if t < 300 + frozen {
+                    // Held still: no countdown; the queue reaches the effect by the engine's `update`.
+                    s.native_tick(&mut h, t);
+                    for (k, (n, a)) in std::mem::take(&mut h.queued) {
+                        let e = h.effects.entry(k).or_insert((0, 0));
+                        if e.0 == 0 || a > e.1 || a == e.1 && n > e.0 {
+                            *e = (n, a);
+                        }
+                    }
+                } else {
+                    tick(&mut h, &mut s, t);
+                }
+            }
+            h.attached["p"]
+        };
+        assert_eq!(total(30), total(0));
+        assert_eq!(total(0), 160_000);
     }
 
     /// Review P3-4: a refused write gives no dose and counts nothing; the potion still gives its 600 doses.
