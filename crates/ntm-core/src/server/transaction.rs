@@ -1123,7 +1123,7 @@ mod dose_tests {
         let mut host = Attached::default();
         let mut step = staged(&mut host);
         let legacy = Dose::default();
-        let at = |potion| crate::zirnox::StoredPotion { potion, migrated: (0, 0) };
+        let at = |potion| crate::zirnox::StoredPotion { potion, migrated: (0, 0), milkproof: false };
         assert!(step.commit_player_irradiation("p", &legacy, at((0, 0)), at((600, 3))));
         assert_eq!(step.player_irradiation("p", &legacy), Some(at((600, 3))));
         assert!(step.commit_player_irradiation("p", &legacy, at((600, 3)), at((1200, 4))));

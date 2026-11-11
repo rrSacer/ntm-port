@@ -151,6 +151,8 @@ pub trait ServerHost: Kv {
     fn effect_state(&mut self,_id:&str,_effect:&str)->Option<Option<(u32,u8)>>{None}
     /// Takes status effect `effect` from player `id` (`removePotionEffect`).
     fn remove_effect(&mut self,_id:&str,_effect:&str){}
+    /// Whether player `id` takes no step this tick (`Entity.moveEntity`): sneaking on the ground, or riding.
+    fn step_blocked(&mut self,_id:&str)->bool{false}
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
@@ -393,6 +395,8 @@ struct Ready {
     /// The `ntm:radiation` effect each player had at the last reading ((0, 0): none): only an effect that grew since
     /// counts as an application (`/effect give`); one the engine holds still (a guest not loaded yet) does not.
     radiation_effect_read: BTreeMap<String, (u32, u8)>,
+    /// Each player's step counters (`distanceWalkedOnStepModified`, `nextStepDistance`): an entity's, not saved.
+    walks: BTreeMap<String, crate::walking::Walk>,
     /// RBMK columns whose meltdown is due and already logged (once per column and state; T16 runs it).
     rbmk_melting: BTreeSet<Key>,
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a

@@ -289,6 +289,8 @@ mod tests {
         // Past the player's first 200 ticks (`ContaminationUtil:287`).
         s.blasts.entered.insert("p".into(),0);s.tick=radiation::GRACE_TICKS;
         assert!(s.ready.world.zirnox.debris.is_empty());
+        // A step on the mycelium (crate::walking): the step counters half a block behind.
+        s.ready.walks.insert("p".into(),crate::walking::Walk{dim:"minecraft:overworld".into(),at:[0.0,64.,0.5],walked:0.0,next_step:0});
         s.zirnox_world_effects(&mut h);s.zirnox_irradiation(&mut h);
         assert_eq!(s.ready.world.zirnox.irradiated.get("p"),Some(&(599,3)));
         assert_eq!(h.dose.as_ref().unwrap().millirad,200);

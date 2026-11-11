@@ -33,6 +33,17 @@ fn roll(s: u64, n: u64) -> u64 {
     crate::hash::mix(s) % n
 }
 
+/// The world under a player's feet, for the step (crate::walking): a cell not loaded reads as air (no step).
+struct HostGround<'a, H> {
+    host: &'a mut H,
+    dim: &'a str,
+}
+impl<H: ServerHost> crate::walking::Ground for HostGround<'_, H> {
+    fn block(&mut self, cell: [i32; 3]) -> String {
+        self.host.get_block(self.dim, cell).unwrap_or_else(|| "minecraft:air".into())
+    }
+}
+
 impl Server {
     pub(super) fn zirnox_tick(&mut self, host: &mut impl ServerHost) {
         let keys: Vec<_> = self
@@ -91,17 +102,22 @@ impl Server {
     /// `addPotionEffect(new PotionEffect(HbmPotion.radiation.id, duration, amplifier))` on player `id`. The potion
     /// lives in the player's own storage (Onda 1, slice 5c, D3) and shows as the `ntm:radiation` effect; a host
     /// without player storage keeps it in the world's map. An entry of the world's map still waiting for the
-    /// storage (a world from before 5c) joins it on the way, once ([`crate::zirnox::absorb`]).
-    pub(super) fn irradiate_player(&mut self, host: &mut impl ServerHost, id: &str, duration: u32, amplifier: u8) {
+    /// storage (a world from before 5c) joins it on the way, once ([`crate::zirnox::absorb`]). `milkproof`: an effect
+    /// with no curative items (`BlockFallout`), which only an application to no potion carries (`PotionEffect.combine`
+    /// keeps the first effect's list).
+    pub(super) fn irradiate_player(&mut self, host: &mut impl ServerHost, id: &str, duration: u32, amplifier: u8, milkproof: bool) {
         let legacy = self.player_dose(id);
         if let Some(stored) = host.player_irradiation(id, &legacy) {
             let pending = self.ready.world.zirnox.irradiated.get(id).copied();
             let mut base = stored;
             // Cured earlier in the tick (the milk drunk before the step on the mycelium): the new potion starts afresh.
-            if self.potion_cured(host, id, stored.potion) {
+            if self.potion_cured(host, id, stored) {
                 base.potion = (0, 0);
             }
             let (mut desired, taken) = crate::zirnox::absorb(base, pending);
+            if desired.potion.0 == 0 {
+                desired.milkproof = milkproof;
+            }
             crate::zirnox::combine(&mut desired.potion, duration, amplifier);
             if host.commit_player_irradiation(id, &legacy, stored, desired) {
                 if taken {
@@ -120,10 +136,13 @@ impl Server {
     fn potion_effect_settled(&self, id: &str) -> bool {
         self.blasts.entered.get(id).is_some_and(|t| *t != self.tick) && !self.ready.irradiated_now.contains(id)
     }
-    /// Whether something took the potion's effect from player `id` with time left in their storage (`potion`):
-    /// milk, the antidote, an iodine pill, a med bag, `/effect clear`.
-    fn potion_cured(&self, host: &mut impl ServerHost, id: &str, potion: crate::zirnox::Irradiation) -> bool {
-        potion.0 > 0
+    /// Whether something took the potion's effect from player `id` with time left in their storage: milk, the
+    /// antidote, an iodine pill, a med bag, `/effect clear`. Not for a milkproof potion: the engine's milk takes every
+    /// effect, so its effect is put back, as the herbal sickness's; what ends it in the Java (`removePotionEffect`,
+    /// `clearActivePotions`) writes the storage to 0 itself.
+    fn potion_cured(&self, host: &mut impl ServerHost, id: &str, stored: crate::zirnox::StoredPotion) -> bool {
+        stored.potion.0 > 0
+            && !stored.milkproof
             && self.potion_effect_settled(id)
             && host.effect_state(id, crate::radiation::RADIATION_EFFECT) == Some(None)
     }
@@ -133,7 +152,7 @@ impl Server {
         let legacy = self.player_dose(id);
         let pending = self.ready.world.zirnox.irradiated.get(id).copied();
         if let Some(stored) = host.player_irradiation(id, &legacy) {
-            let desired = crate::zirnox::StoredPotion { potion: (0, 0), migrated: pending.unwrap_or(stored.migrated) };
+            let desired = crate::zirnox::StoredPotion { potion: (0, 0), migrated: pending.unwrap_or(stored.migrated), milkproof: false };
             if desired != stored {
                 if !host.commit_player_irradiation(id, &legacy, stored, desired) {
                     return;
@@ -155,20 +174,23 @@ impl Server {
     /// `removePotionEffect` does in the Java. A stronger or longer effect than the storage's (`/effect give`) is an
     /// `addPotionEffect` of its own. The potion is written before its dose: a refused write gives no dose.
     pub(super) fn zirnox_irradiation(&mut self, host: &mut impl ServerHost) {
-        // WasteEarth.onEntityWalking: glowing mycelium gives radiation
-        // amplifier 3 for 30 seconds. Source spreading is off by default.
-        let walking: Vec<String> = self
-            .players
-            .iter()
-            .filter(|p| !p.creative)
-            .filter(|p| {
-                let below = [p.pos[0].floor() as i32, (p.pos[1] - 0.05).floor() as i32, p.pos[2].floor() as i32];
-                host.get_block(&p.dim, below).is_some_and(|b| blockstate::id_of(&b) == "ntm:waste_mycelium")
-            })
-            .map(|p| p.id.clone())
-            .collect();
-        for id in walking {
-            self.irradiate_player(host, &id, 600, 3);
+        // `Block.onEntityWalking` on a step (`Entity.moveEntity`, crate::walking): glowing mycelium, fallout and
+        // sellafield give the potion. Source spreading is off by default.
+        let online: Vec<String> = self.players.iter().map(|p| p.id.clone()).collect();
+        self.ready.walks.retain(|id, _| online.contains(id));
+        let mut walked = Vec::new();
+        for p in self.players.clone() {
+            let blocked = host.step_blocked(&p.id);
+            let walk = self.ready.walks.entry(p.id.clone()).or_insert_with(|| crate::walking::Walk { dim: p.dim.clone(), at: p.pos, ..Default::default() });
+            let mut ground = HostGround { host: &mut *host, dim: &p.dim };
+            if let Some((_, block)) = crate::walking::advance(walk, &p.dim, p.pos, blocked, &mut ground)
+                && let Some(potion) = crate::walking::on_entity_walking(&block, p.creative)
+            {
+                walked.push((p.id.clone(), potion));
+            }
+        }
+        for (id, potion) in walked {
+            self.irradiate_player(host, &id, potion.ticks, potion.amplifier, potion.milkproof);
         }
         for p in self.players.clone() {
             let legacy = self.player_dose(&p.id);
@@ -187,7 +209,7 @@ impl Server {
                     if let Some(now) = read {
                         self.ready.radiation_effect_read.insert(p.id.clone(), now.unwrap_or((0, 0)));
                     }
-                    if stored.potion.0 > 0 && settled && read == Some(None) {
+                    if stored.potion.0 > 0 && !stored.milkproof && settled && read == Some(None) {
                         base.potion = (0, 0);
                     } else if settled
                         && let (Some(Some((ticks, amplifier))), Some((was, was_level))) = (read, reference)
@@ -204,7 +226,7 @@ impl Server {
                     if let Some((n, a)) = pending {
                         crate::zirnox::combine(&mut potion, n, a);
                     }
-                    (crate::zirnox::StoredPotion { potion, migrated: (0, 0) }, pending.is_some())
+                    (crate::zirnox::StoredPotion { potion, migrated: (0, 0), milkproof: false }, pending.is_some())
                 }
             };
             let potion = desired.potion;
@@ -583,7 +605,7 @@ impl Server {
                     .map(|p| p.id.clone())
                     .collect();
                 for id in near {
-                    self.irradiate_player(host, &id, 1200, level);
+                    self.irradiate_player(host, &id, 1200, level, false);
                 }
             }
             if self.tick.is_multiple_of(5) {
@@ -697,6 +719,11 @@ mod tests {
         effects: BTreeMap<(String, String), (u32, u8)>,
         /// Effects given this tick: the engine queues them and applies them at the end of the tick.
         queued: Vec<((String, String), (u32, u8))>,
+        /// The players take a step every tick (`tick` sets their step counters half a block behind): standing on the
+        /// mycelium, every tick is a `onEntityWalking`, as before slice 5d.
+        stepping: bool,
+        /// `step_blocked` for every player (sneaking on the ground, or riding).
+        blocked: bool,
         carried: BTreeMap<String, Vec<Stack>>,
         shields: BTreeMap<Key, f32>,
     }
@@ -740,6 +767,9 @@ mod tests {
         }
         fn effect_state(&mut self, id: &str, effect: &str) -> Option<Option<(u32, u8)>> {
             Some(self.effects.get(&(id.into(), effect.into())).copied())
+        }
+        fn step_blocked(&mut self, _: &str) -> bool {
+            self.blocked
         }
         fn effect(&mut self, id: &str, effect: &str, ticks: u32, amplifier: u8) {
             self.queued.push(((id.into(), effect.into()), (ticks, amplifier)));
@@ -1269,6 +1299,9 @@ mod tests {
     /// step, then the queued effects reach the players by the engine's `update` (a higher amplifier replaces, the
     /// same amplifier keeps the longer duration).
     fn tick(h: &mut Host, s: &mut Server, tick: u64) {
+        if h.stepping {
+            step_every_tick(s);
+        }
         h.effects.retain(|_, (n, _)| {
             *n -= 1;
             *n > 0
@@ -1281,12 +1314,20 @@ mod tests {
             }
         }
     }
+    /// Each player's step counters half a block behind, at 0: the next tick is a step on the block at their feet.
+    fn step_every_tick(s: &mut Server) {
+        for p in s.players.clone() {
+            let at = [p.pos[0] - 0.5, p.pos[1], p.pos[2]];
+            s.ready.walks.insert(p.id.clone(), crate::walking::Walk { dim: p.dim.clone(), at, walked: 0.0, next_step: 0 });
+        }
+    }
     fn potion(h: &Host) -> crate::zirnox::Irradiation {
         h.irradiation.as_ref().unwrap().get("p").copied().unwrap_or_default().potion
     }
     /// A player standing on glowing mycelium, past their first 200 ticks, with a host that keeps the potion in
     /// the player's storage.
     fn on_mycelium(h: &mut Host, s: &mut Server) {
+        h.stepping = true;
         h.irradiation = Some(BTreeMap::new());
         h.attached.insert("p".into(), 0);
         h.blocks.insert((DIM.into(), [0, 99, 0]), "ntm:waste_mycelium".into());
@@ -1361,7 +1402,7 @@ mod tests {
     fn a_potion_given_right_after_a_cure_starts_afresh() {
         let (mut h, mut s) = prepare();
         on_mycelium(&mut h, &mut s);
-        h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (900, 3), migrated: (0, 0) });
+        h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (900, 3), migrated: (0, 0), milkproof: false });
         h.effects.insert(("p".into(), RAD.into()), (900, 3));
         tick(&mut h, &mut s, 300);
         assert_eq!(potion(&h), (899, 3), "still standing: the longer one stays");
@@ -1500,7 +1541,7 @@ mod tests {
         h.attached.insert("p".into(), 0);
         s.blasts.entered.insert("p".into(), 0);
         off_mycelium(&mut s);
-        h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (30, 3), migrated: (0, 0) });
+        h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (30, 3), migrated: (0, 0), milkproof: false });
         h.effects.insert(("p".into(), RAD.into()), (31, 3));
         for t in 300..400 {
             // No engine tick for this guest: the effect stays, the queue does not reach it.
@@ -1553,7 +1594,7 @@ mod tests {
             let (mut h, mut s) = prepare();
             h.irradiation = Some(BTreeMap::new());
             h.attached.insert("p".into(), 0);
-            h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (1000, 3), migrated: (0, 0) });
+            h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (1000, 3), migrated: (0, 0), milkproof: false });
             h.effects.insert(("p".into(), RAD.into()), (1001, 3));
             off_mycelium(&mut s);
             for t in 300..2000 {
@@ -1574,6 +1615,148 @@ mod tests {
         };
         assert_eq!(total(30), total(0));
         assert_eq!(total(0), 160_000);
+    }
+
+    /// Slice 5d, D3: the mycelium gives the potion on a step (`Entity.moveEntity`), not every tick: walking across a
+    /// strip it is given at the steps; standing still on it, it counts down; sneaking (or riding) there is no step.
+    #[test]
+    fn the_mycelium_gives_the_potion_on_a_step() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.attached.insert("p".into(), 0);
+        for x in 0..40 {
+            h.blocks.insert((DIM.into(), [x, 99, 0]), "ntm:waste_mycelium".into());
+        }
+        s.blasts.entered.insert("p".into(), 0);
+        let at = |x: f64| vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [x, 100., 0.5], creative: false }];
+        s.set_players(at(0.5));
+        tick(&mut h, &mut s, 300);
+        assert_eq!(potion(&h), (0, 0), "no step on the first tick");
+        // 0.3 a tick: distance 0.18 a tick, a step when it passes 1, 2, ... (tick 301 passes 0).
+        let mut given = Vec::new();
+        for (i, t) in (301..340).enumerate() {
+            s.set_players(at(0.5 + 0.3 * (i + 1) as f64));
+            tick(&mut h, &mut s, t);
+            if potion(&h).0 >= 599 {
+                given.push(t);
+            }
+        }
+        assert_eq!(given, [301, 306, 312, 317, 323, 328, 334, 339]);
+        // Standing still on it: no step, the potion counts down.
+        let left = potion(&h).0;
+        for t in 340..350 {
+            tick(&mut h, &mut s, t);
+        }
+        assert_eq!(potion(&h).0, left - 10);
+    }
+
+    /// Sneaking on the ground or riding (`ServerHost::step_blocked`): no step, no potion.
+    #[test]
+    fn no_step_while_sneaking_or_riding() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.attached.insert("p".into(), 0);
+        h.blocked = true;
+        on_mycelium(&mut h, &mut s);
+        h.stepping = false;
+        s.blasts.entered.insert("p".into(), 0);
+        for (i, t) in (300..340).enumerate() {
+            s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5 + 0.01 * i as f64, 100., 0.5], creative: false }]);
+            tick(&mut h, &mut s, t);
+        }
+        assert_eq!(potion(&h), (0, 0));
+    }
+
+    /// `BlockFallout`: 10 min at amplifier 0, no curative items. Milk (the engine takes every effect) does not end it:
+    /// the effect is put back and the dose goes on; the decontaminator ends it. Not in creative.
+    #[test]
+    fn the_fallout_potion_survives_milk() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.attached.insert("p".into(), 0);
+        h.blocks.insert((DIM.into(), [0, 100, 0]), "ntm:fallout[layers=1]".into());
+        h.stepping = true;
+        s.blasts.entered.insert("p".into(), 0);
+        // Feet 0.3 above the layer's cell (a jump): the step lands on the fallout.
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100.3, 0.5], creative: false }]);
+        tick(&mut h, &mut s, 300);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], crate::zirnox::StoredPotion { potion: (11999, 0), migrated: (0, 0), milkproof: true });
+        h.stepping = false;
+        off_mycelium(&mut s);
+        tick(&mut h, &mut s, 301);
+        h.effects.clear();
+        tick(&mut h, &mut s, 302);
+        tick(&mut h, &mut s, 303);
+        assert_eq!(potion(&h), (11996, 0), "milk took the effect, not the potion");
+        assert!(h.effects.contains_key(&("p".into(), RAD.into())), "and its effect is back");
+        assert_eq!(h.attached["p"], 4 * 50);
+        h.blocks.insert((DIM.into(), [0, 99, 40]), crate::radiation::DECON.into());
+        tick(&mut h, &mut s, 304);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"].potion, (0, 0));
+        assert!(!h.irradiation.as_ref().unwrap()["p"].milkproof);
+        // Creative: no fallout potion.
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.blocks.insert((DIM.into(), [0, 100, 0]), "ntm:fallout[layers=1]".into());
+        h.stepping = true;
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100.3, 0.5], creative: true }]);
+        tick(&mut h, &mut s, 300);
+        assert_eq!(potion(&h), (0, 0));
+    }
+
+    /// `PotionEffect.combine` keeps the first effect's curative items: the mycelium's (curable) potion stays curable
+    /// under the fallout's; the fallout's (milkproof) stays milkproof when the mycelium's amplifier 3 takes over.
+    #[test]
+    fn the_first_potion_keeps_its_curative_items() {
+        for (first, second, milkproof, after) in [("ntm:waste_mycelium", "ntm:fallout[layers=1]", false, (598, 3)), ("ntm:fallout[layers=1]", "ntm:waste_mycelium", true, (599, 3))] {
+            let (mut h, mut s) = prepare();
+            h.irradiation = Some(BTreeMap::new());
+            h.attached.insert("p".into(), 0);
+            h.stepping = true;
+            s.blasts.entered.insert("p".into(), 0);
+            let on = |block: &str| if block.starts_with("ntm:fallout") { ([0, 100, 0], [0.5, 100.3, 0.5]) } else { ([0, 99, 0], [0.5, 100., 0.5]) };
+            for (t, block) in [(300, first), (301, second)] {
+                h.blocks.retain(|k, _| k.1 != [0, 100, 0] && k.1 != [0, 99, 0]);
+                let (cell, feet) = on(block);
+                h.blocks.insert((DIM.into(), cell), block.into());
+                s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: feet, creative: false }]);
+                tick(&mut h, &mut s, t);
+            }
+            let stored = h.irradiation.as_ref().unwrap()["p"];
+            assert_eq!((stored.potion, stored.milkproof), (after, milkproof), "{first} then {second}");
+        }
+    }
+
+    /// Milk and then a step on the mycelium in the same tick, with the fallout's potion: milk does not end that potion,
+    /// so the mycelium's amplifier 3 takes over by `combine` and the potion stays milkproof (its first list).
+    #[test]
+    fn milk_before_a_step_does_not_end_a_milkproof_potion() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.attached.insert("p".into(), 0);
+        s.blasts.entered.insert("p".into(), 0);
+        h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (5000, 0), migrated: (0, 0), milkproof: true });
+        h.blocks.insert((DIM.into(), [0, 99, 0]), "ntm:waste_mycelium".into());
+        h.stepping = true;
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100., 0.5], creative: false }]);
+        // The effect was there, and milk took it before the step.
+        tick(&mut h, &mut s, 300);
+        h.effects.clear();
+        tick(&mut h, &mut s, 301);
+        let stored = h.irradiation.as_ref().unwrap()["p"];
+        assert_eq!((stored.potion, stored.milkproof), ((599, 3), true));
+    }
+
+    /// Sellafield level 5 gives amplifier 10, to creative players too.
+    #[test]
+    fn sellafield_gives_its_levels_potion() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.blocks.insert((DIM.into(), [0, 99, 0]), "ntm:sellafield__5".into());
+        h.stepping = true;
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100., 0.5], creative: true }]);
+        tick(&mut h, &mut s, 300);
+        assert_eq!(potion(&h), (599, 10));
     }
 
     /// Review P3-4: a refused write gives no dose and counts nothing; the potion still gives its 600 doses.

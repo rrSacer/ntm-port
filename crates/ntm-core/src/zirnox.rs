@@ -57,6 +57,9 @@ pub fn combine(state: &mut Irradiation, duration: u32, amplifier: u8) {
 pub struct StoredPotion {
     pub potion: Irradiation,
     pub migrated: Irradiation,
+    /// The potion's effect has no curative items (`BlockFallout`: `setCurativeItems(new ArrayList())`): milk does not
+    /// end it. `PotionEffect.combine` keeps the first effect's list, so it is set only by an application to no potion.
+    pub milkproof: bool,
 }
 
 /// `stored` with the world's entry `pending` taken in: by [`combine`] the first time, dropped once its mark is
@@ -68,7 +71,7 @@ pub fn absorb(stored: StoredPotion, pending: Option<Irradiation>) -> (StoredPoti
         Some((n, a)) => {
             let mut potion = stored.potion;
             combine(&mut potion, n, a);
-            (StoredPotion { potion, migrated: (n, a) }, true)
+            (StoredPotion { potion, migrated: (n, a), milkproof: stored.milkproof && stored.potion.0 > 0 }, true)
         }
     }
 }
@@ -520,11 +523,11 @@ mod tests {
     fn a_worlds_potion_is_taken_in_once() {
         let fresh = StoredPotion::default();
         let (once, done) = absorb(fresh, Some((600, 3)));
-        assert_eq!((once, done), (StoredPotion { potion: (600, 3), migrated: (600, 3) }, true));
+        assert_eq!((once, done), (StoredPotion { potion: (600, 3), migrated: (600, 3), milkproof: false }, true));
         let used = StoredPotion { potion: (156, 3), ..once };
         assert_eq!(absorb(used, Some((600, 3))), (used, true), "the same entry again: dropped, not summed");
         assert_eq!(absorb(used, None), (used, false));
-        assert_eq!(absorb(used, Some((900, 3))).0, StoredPotion { potion: (900, 3), migrated: (900, 3) });
+        assert_eq!(absorb(used, Some((900, 3))).0, StoredPotion { potion: (900, 3), migrated: (900, 3), milkproof: false });
     }
     /// same amplifier keeps the longer duration, a lower amplifier changes nothing; none takes the new one.
     #[test]
