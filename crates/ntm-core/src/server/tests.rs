@@ -495,7 +495,7 @@ fn radiation_from_what_a_player_carries() {
     g.world.borrow_mut().carried.insert("p1".into(), vec![("ntm:ingot_uranium".into(), 64)]);
     g.ready().world.radiation.get_mut("p1").unwrap().millirad = 999_999;
     g.run(40);
-    assert!(g.world.borrow().hurts.iter().any(|h| h.2 == "minecraft:generic_kill"), "{:?}", g.world.borrow().hurts);
+    assert!(g.world.borrow().hurts.iter().any(|h| h.2 == "ntm:radiation"), "{:?}", g.world.borrow().hurts);
     assert!(value(&g, KEY_DOSE).unwrap() < 999_999);
     // Creative: the rate, no dose.
     g.server.set_players(vec![player()]);

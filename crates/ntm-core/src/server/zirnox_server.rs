@@ -559,6 +559,8 @@ mod tests {
         buttons: Vec<(String, String, Pos, u32)>,
         shows: Vec<String>,
         hurt: Vec<(String, f32)>,
+        /// The radiation deaths (`ntm:radiation`), apart from the ruin's own damage.
+        radiation_deaths: Vec<String>,
         carried: BTreeMap<String, Vec<Stack>>,
         shields: BTreeMap<Key, f32>,
     }
@@ -655,8 +657,12 @@ mod tests {
         fn inventory_stacks(&mut self, id: &str) -> Option<Vec<Stack>> {
             self.carried.get(id).cloned()
         }
-        fn hurt(&mut self, id: &str, n: f32, _: &str) {
-            self.hurt.push((id.into(), n));
+        fn hurt(&mut self, id: &str, n: f32, kind: &str) {
+            if kind == crate::radiation::RADIATION_DAMAGE {
+                self.radiation_deaths.push(id.into());
+            } else {
+                self.hurt.push((id.into(), n));
+            }
         }
         fn block_resistance(&mut self, dim: &str, at: Pos) -> Option<f32> {
             Some(self.shields.get(&(dim.into(), at)).copied().unwrap_or(0.))
@@ -943,6 +949,9 @@ mod tests {
         s.native_tick(&mut h, 3);
         assert_eq!(h.hurt.len(), 1);
         assert!(!z(&s).on_fire);
+        // The ruin gave "same" over 1000 RAD on tick 2: on tick 3 radiation kills them (EntityEffectHandler, slice 5b),
+        // before the ruin, a tile entity, doses them again in the same tick.
+        assert_eq!(h.radiation_deaths, ["same"]);
     }
     #[test]
     fn player_inventory_nbt_drives_the_real_radiation_rate() {

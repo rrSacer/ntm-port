@@ -134,14 +134,18 @@ pub enum Harm {
     Hurt { amount: f32, kind: &'static str },
 }
 
-/// At 1000 RAD radiation kills (`EntityEffectHandler.handleRadiationEffect`:
-/// `attackEntityFrom(ModDamageSource.radiation, 1000F)`, then the dose is 0).
+/// `ModDamageSource.radiation`, `new DamageSource("radiation").setDamageBypassesArmor()`: the content damage type
+/// (decision D2 of slice 5; `tools/content-gen/damage_types.py`), which armor does not stop and Resistance does.
+pub const RADIATION_DAMAGE: &str = "ntm:radiation";
+
+/// At 1000 RAD radiation kills (`EntityEffectHandler.handleRadiationEffect:224-227`:
+/// `attackEntityFrom(ModDamageSource.radiation, 1000F)`, then the dose is 0, whatever the attack did).
 pub fn death(dose: &mut Dose) -> Option<Harm> {
     if dose.millirad < 1_000_000 {
         return None;
     }
     dose.millirad = 0;
-    Some(Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" })
+    Some(Harm::Hurt { amount: 1000.0, kind: RADIATION_DAMAGE })
 }
 
 /// One tick of `EntityEffectHandler.handleRadiationEffect:221-258` for a
@@ -349,7 +353,7 @@ mod tests {
         d.millirad = 999_999;
         assert_eq!(death(&mut d), None);
         d.millirad = 1000000;
-        assert_eq!(death(&mut d), Some(Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }));
+        assert_eq!(death(&mut d), Some(Harm::Hurt { amount: 1000.0, kind: "ntm:radiation" }));
         assert_eq!(d.millirad, 0);
     }
 
@@ -397,10 +401,16 @@ mod tests {
             .collect();
         for case in fixture["cases"].as_array().unwrap() {
             let mut r = JavaRandom::new(case["seed"].as_i64().unwrap());
-            let mut seen = Vec::new();
+            let (mut seen, mut attacks) = (Vec::new(), Vec::new());
             for (tick, &rad) in doses.iter().enumerate() {
-                let millirad = rad * 1000;
-                for h in sickness_roll(&Dose { millirad }, &mut r) {
+                let mut dose = Dose { millirad: rad * 1000 };
+                // The Java's chain: from 1000 RAD the attack and nothing drawn, below it the band's rolls.
+                if let Some(Harm::Hurt { amount, kind }) = death(&mut dose) {
+                    assert_eq!((kind, dose.millirad), (RADIATION_DAMAGE, 0));
+                    attacks.push(serde_json::json!([tick, "attack:radiation", amount]));
+                    continue;
+                }
+                for h in sickness_roll(&dose, &mut r) {
                     if let Harm::Effect { id, amplifier, ticks } = h {
                         seen.push(serde_json::json!([tick, id, ticks, amplifier]));
                     }
@@ -409,6 +419,7 @@ mod tests {
             let expected: Vec<serde_json::Value> = case["effects"].as_array().unwrap().clone();
             assert!(!expected.is_empty());
             assert_eq!(seen, expected, "seed {}", case["seed"]);
+            assert_eq!(&attacks, case["attacks"].as_array().unwrap(), "seed {}", case["seed"]);
         }
     }
 

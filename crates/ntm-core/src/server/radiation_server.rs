@@ -1,8 +1,8 @@
 //! Radiation on the players (docs/radiacao.md, stage L4): once a second
 //! each player's rate is what they carry plus the fallout zones where they
 //! stand. Past the joining grace the dose grows by what they carry (the
-//! zones' dose is the bombs', `bomb_server.rs`), sickness acts, and their
-//! client's Geiger reads both values.
+//! zones' dose is the bombs', `bomb_server.rs`) and their client's Geiger
+//! reads both values. Sickness and death act every tick (`sickness_tick`).
 use super::*;
 use crate::radiation::{self, Harm};
 
@@ -44,15 +44,20 @@ impl Server {
         let amount=(amount as f64*factor) as u64;
         self.update_player_dose(host,id,|dose|radiation::add_dose(dose,amount));
     }
-    /// `EntityEffectHandler.handleRadiationEffect:221-258`, every tick: each non-creative player between 200 and
-    /// 1000 RAD rolls their band's effects (`radiation::sickness_roll`) on the world's sickness random (decision D1 of
-    /// slice 5). It is seeded from the world's seed the first time someone is sick; a tick with nobody in a band draws
-    /// nothing and writes nothing. The Java has no joining grace here (that is `contaminate`'s `ticksExisted`).
+    /// `EntityEffectHandler.handleRadiationEffect:221-258`, every tick, for each non-creative player: from 1000 RAD
+    /// radiation kills them (`radiation::death`, decision D2 of slice 5) and draws nothing; between 200 and 1000 they
+    /// roll their band's effects (`radiation::sickness_roll`) on the world's sickness random (decision D1). It is
+    /// seeded from the world's seed the first time someone is sick; a tick with nobody in a band draws nothing and
+    /// writes nothing. The Java has no joining grace here (that is `contaminate`'s `ticksExisted`).
     pub(super) fn sickness_tick(&mut self, host: &mut impl ServerHost) {
         let mut sick = Vec::new();
-        for p in self.players.iter().filter(|p| !p.creative) {
+        for p in self.players.clone().iter().filter(|p| !p.creative) {
             let Some(dose) = host.player_dose(&p.id, &self.player_dose(&p.id)) else { continue };
-            if (200_000..1_000_000).contains(&dose.millirad) {
+            if dose.millirad >= 1_000_000 {
+                if let Some(Some(Harm::Hurt { amount, kind })) = self.update_player_dose(host, &p.id, radiation::death) {
+                    host.hurt(&p.id, amount, kind);
+                }
+            } else if dose.millirad >= 200_000 {
                 sick.push((p.id.clone(), dose));
             }
         }
@@ -112,8 +117,8 @@ impl Server {
             let zones = self.ready.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add);
             let grace = self.blasts.entered.get(&p.id).is_none_or(|t| tick.saturating_sub(*t) < radiation::GRACE_TICKS);
             let protected = (f64::from(held)*host.radiation_factor(&p.id)) as u32;
-            let Some(harms) = self.update_player_dose(host,&p.id,|dose| {
-                if p.creative || grace {Vec::new()} else {radiation::accumulate(dose,protected);radiation::death(dose).into_iter().collect::<Vec<_>>()}
+            let Some(()) = self.update_player_dose(host,&p.id,|dose| {
+                if !(p.creative || grace) {radiation::accumulate(dose,protected);}
             }) else {continue};
             let dose = &self.ready.world.radiation[&p.id];
             // `radBuf = radEnv; radEnv = 0` once a second: the continuous
@@ -121,12 +126,6 @@ impl Server {
             let events = self.radiation_env.remove(&p.id).unwrap_or(0);
             let continuous = i64::from(held.saturating_add(zones).saturating_add(self.ready.zirnox_radiation_rate.get(&p.id).copied().unwrap_or(0)));
             let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), continuous.saturating_add(events));
-            for h in harms {
-                match h {
-                    Harm::Effect { id, amplifier, ticks } => host.effect(&p.id, id, ticks, amplifier),
-                    Harm::Hurt { amount, kind } => host.hurt(&p.id, amount, kind),
-                }
-            }
             let last = self.radiation_shown.get(&p.id).copied();
             if last.map(|l| l.0) != Some(shown.0) {
                 host.set_player_value(&p.id, radiation::KEY_DOSE, shown.0);
