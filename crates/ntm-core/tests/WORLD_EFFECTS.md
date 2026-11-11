@@ -106,3 +106,37 @@ seguinte). Reproduzir com `python3 crates/ntm-core/tests/mutate_world_effects.py
 
 As provas finais e números são enviados ao coordenador após rodar; ter código e oráculos preparados não é conclusão.
 O bloqueio da marca de destino da fatia 4 continua valendo para consumidores que combinarem explosão e item/entidade.
+
+## Evidências da rodada de núcleo (11/11/2026)
+
+Código verificado no HEAD `f11dde1d`; os commits posteriores desta seção são somente documentação. Execuções por
+`agent-run`, `QUEUE=cargo`, `CARGO_BUILD_JOBS=10`, `SKIP_UPSTREAM_CHECK=1`, com target próprio no SSD.
+
+- Unidades do núcleo: **591 passaram**, 3 ignorados herdados, nenhuma falha.
+- Integração fora do `save_model`: **118 passaram** em 12 suítes. Um primeiro comando de shell falhou antes de iniciar
+  testes por expansão de variáveis do `systemd-run`; a execução refeita com argumentos estruturados passou integralmente.
+- `cargo clippy --all-targets -- -D warnings`: passou. Uma execução anterior apontou clone desnecessário no teste;
+  corrigido em `f11dde1d` e Clippy refeito sem isenções.
+- Verificador `save_model` release completo antes da fatia 3, cujo modelo antigo permaneceu sem mudanças: **12/12**.
+  Caso principal depth 9: **188.661.834** estados visitados, **12.399.394** distintos, **8.361.560.872** sequências;
+  migração depth 8: **696.858.131** sequências para remoção e **691.838.579** para lote; 60.000 passos aleatórios.
+  A extensão nova nessa rodada ainda era a versão anterior da prova R3, depth 9.
+- Extensão R3 atual com `Server` real, rodando isolada em release no código final: depth **10**, **41.797** estados
+  distintos, **148.039.146** sequências. Essa prova exige o contrato de marcador de destino e não valida a cola atual.
+- Mutantes compilados e mortos por asserções: fatia 1 **3/3**; fatia 2 **3/3**, incluindo `ReplayWithoutOrderGuard`
+  morto tanto por teste unitário quanto pelo verificador, e `HostWithoutLoadedMarker` morto pelo verificador; fatia 3
+  **4/4**, incluindo `PublishNextTick` com fila realmente drenada apenas no tick seguinte. Erros de compilação e
+  timeouts não contam como mutante morto. Logs são mantidos pelo Traycer (SHA-256 abaixo).
+- `rustfmt --check` passou para os três módulos novos; `git diff --check` passou. `cargo fmt --all -- --check` continua
+  falhando em arquivos preexistentes, como registrado na fatia 1. Nenhuma formatação massiva foi aplicada.
+- Não houve prova em jogo nem corte contra baú nesta rodada, conforme a delimitação explícita das fatias 1–3. A prova
+  em jogo com corte e o conserto dos marcadores são bloqueantes antes do piloto, nas fatias 4–5.
+
+| Log do Traycer | SHA-256 | Conteúdo |
+| --- | --- | --- |
+| `13061341-0626-4d25-aa61-a1fa70cd7201/output.log` | `2b00ac277c61ffb6e63b09657a1c59267cf6ff9c841e94afbb1efc62a6d5be60` | checker completo anterior, mutantes da 2; termina com o primeiro Clippy recusado |
+| `a7696b27-843c-49f9-90b6-3e3916a4af3f/output.log` | `eb9b2f7544e3387675550885697eab1e13496a60c3b4ffecc53cf0715ee96d60` | 591 unidades, R3 depth 10, mutantes da 3 e Clippy limpo |
+| `f48db00d-9643-43fa-baee-d60b50f22c25/output.log` | `afd78e2c943537264eab27a51ffce5c603da7f9ed8e4bfce64ddbc33730d6b95` | erro inicial do comando e segunda execução, com 118 integrações verdes |
+
+Os logs de mutação imprimem a falha de asserção esperada de cada variante; esses erros pertencem aos mutantes, não ao
+código nominal. A conclusão de infraestrutura não autoriza o consumidor enquanto a marca de destino da cola faltar.
