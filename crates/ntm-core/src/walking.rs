@@ -93,6 +93,14 @@ pub fn advance(walk: &mut Walk, dim: &str, to: [f64; 3], blocked: bool, teleport
     accumulate(walk, [dx, dy, dz], !air(id(&block))).then_some((cell, block))
 }
 
+/// Whether a move of the player in place was (in part) a teleport, from the engine's own step distance: its
+/// `moveDist` + `flyDist` grow by 0.6 x the distance the physics moved them, so a horizontal move longer than that
+/// growth / 0.6 (less a margin for the float) was not the physics': a position set this tick, with or without a
+/// walk in the same tick (review 5d P3-1).
+pub fn teleported_by_distance(horizontal: f64, steps_grew: f32) -> bool {
+    horizontal > f64::from(steps_grew.max(0.0)) / 0.6 + 1.0e-3
+}
+
 /// The arithmetic of the step (tools/step-oracle checks it against the Java's): `Q` grows by
 /// `(float) sqrt(d²) * 0.6` in double, kept as float; a step when `Q > (float) nextStepDistance` on a block that is
 /// not air, and then `nextStepDistance = (int) Q + 1`.
@@ -313,6 +321,17 @@ mod tests {
         assert_eq!(advance(&mut s, "o", [0.5, 64.0, 0.5], false, true, &mut w), None);
         assert_eq!((s.walked, s.at), (0.0, [0.5, 64.0, 0.5]));
         assert!(advance(&mut s, "o", [0.5, 64.0, 0.9], false, false, &mut w).is_some(), "the next move steps");
+    }
+
+    /// Walking moves the player 1/0.6 of what their step distance grew; a longer move is a teleport, also when it
+    /// comes in a tick of walking (review P3-1).
+    #[test]
+    fn a_move_longer_than_the_step_distance_is_a_teleport() {
+        assert!(!teleported_by_distance(0.0, 0.0));
+        assert!(!teleported_by_distance(0.2158, 0.2158 * 0.6));
+        assert!(teleported_by_distance(0.3, 0.0), "a short /tp standing");
+        assert!(teleported_by_distance(5.2158, 0.2158 * 0.6), "a pearl landing while walking");
+        assert!(!teleported_by_distance(0.0, 0.5), "a climb grows the distance without a horizontal move");
     }
 
     /// The fallout at the Java's 0.125 whatever its layers (review P3-4): standing on 1 or 4 layers the step lands

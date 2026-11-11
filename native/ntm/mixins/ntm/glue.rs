@@ -1455,8 +1455,9 @@ impl ServerHost for Host<'_, '_> {
     /// - a LAN guest: `Guest::teleport_counter` (the id of the last position the server set), `awaiting_teleport` and
     ///   `landing` (moves ignored until the client takes the new position);
     /// - the player in place: `Player::steps` (`MovementDistances::{movement, flight}`, `Entity.moveDist` and
-    ///   `flyDist`), which only a move by the physics grows: the feet moved across with neither grown is a teleport
-    ///   (a fall moves no step distance either way, and rides are blocked).
+    ///   `flyDist`), which grow by 0.6 x what the physics moved them: a horizontal move longer than that is a teleport,
+    ///   also in a tick of walking (`walking::teleported_by_distance`; a fall moves no step distance either way, and
+    ///   rides are blocked).
     ///
     /// Remembers each player's last mark; asked once a tick for each player.
     fn teleported(&mut self,id:&str)->bool{
@@ -1475,10 +1476,10 @@ impl ServerHost for Host<'_, '_> {
             && let Some(p)=game.player.as_ref()
         {
             let steps:horizon_world::movement_emission::MovementDistances=p.steps;
-            let walked=u64::from((steps.movement+steps.flight).to_bits());
+            let walked=steps.movement+steps.flight;
             let (x,z)=(p.position.x,p.position.z);
-            let last=seen.insert(uuid,(walked,x,z));
-            return last.is_some_and(|(w,lx,lz)|w==walked&&((x-lx).abs()>1e-9||(z-lz).abs()>1e-9));
+            let last=seen.insert(uuid,(u64::from(walked.to_bits()),x,z));
+            return last.is_some_and(|(w,lx,lz)|ntm_core::walking::teleported_by_distance(((x-lx).powi(2)+(z-lz).powi(2)).sqrt(),walked-f32::from_bits(w as u32)));
         }
         false
     }
