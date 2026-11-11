@@ -113,9 +113,6 @@ impl Server {
         self.read_legacy(host);
         phases.mark("events");
         if self.ready.facts_pending{self.keep_world(host);self.sync_obligations(host);return;}
-        // World.updateEntities runs the entities (a player's EntityEffectHandler) before the tile entities: the
-        // sickness sees the dose as the last tick left it, before this tick's machines and ruins add to it.
-        self.sickness_tick(host);
         self.flush_machine_effects(host);
         self.settle_ghosts(host);
         phases.mark("effects");
@@ -171,7 +168,13 @@ impl Server {
         self.radiation_tick(host);
         phases.mark("radiation");
         if !frozen.is_empty(){self.ready.topo_dirty=true;self.ready.world.machines.append(&mut frozen);}
-        self.zirnox_effects(host);
+        // A player's EntityEffectHandler runs in NetHandlerPlayServer.processPlayer, during the network tick that
+        // MinecraftServer.updateTimeLightAndEntities opens after every world's tile entities: the sickness and the death
+        // see this tick's machines, ruins, decontaminators and inventory dose (PlayerTickEvent comes first), and come
+        // before the radiation potion's dose (updatePotionEffects, later in the player's update).
+        self.zirnox_world_effects(host);
+        self.sickness_tick(host);
+        self.zirnox_irradiation(host);
         phases.mark("zirnox");
         self.native_save(host, true);
         phases.mark("save");

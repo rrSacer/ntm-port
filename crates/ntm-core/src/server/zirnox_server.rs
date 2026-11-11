@@ -88,16 +88,12 @@ impl Server {
             self.ready.world.machines.insert(key, m);
         }
     }
-    pub(super) fn zirnox_effects(&mut self, host: &mut impl ServerHost) {
-        self.zirnox_world_effects(host);
-        self.zirnox_irradiation(host);
-    }
     /// The radiation potion (`HbmPotion.radiation`, here `zirnox.irradiated`):
     /// glowing mycelium under the feet gives it, and every tick it doses its
     /// players. It runs every tick, with or without ZIRNOX debris or effects
     /// in flight (it used to sit after `zirnox_debris`'s early return, so the
     /// mycelium irradiated nobody in a world without debris).
-    fn zirnox_irradiation(&mut self, host: &mut impl ServerHost) {
+    pub(super) fn zirnox_irradiation(&mut self, host: &mut impl ServerHost) {
         // WasteEarth.onEntityWalking: glowing mycelium gives radiation
         // amplifier 3 for 30 seconds. Source spreading is off by default.
         for p in self.players.iter().filter(|p| !p.creative) {
@@ -142,7 +138,7 @@ impl Server {
             .irradiated
             .retain(|_, (n, _)| *n > 0);
     }
-    fn zirnox_world_effects(&mut self, host: &mut impl ServerHost) {
+    pub(super) fn zirnox_world_effects(&mut self, host: &mut impl ServerHost) {
         if self.ready.world.machine_effects.iter().any(|b|b.owners.iter().any(|k| self.ready.world.machines.get(k).is_some_and(|m|matches!(m.data,Data::Zirnox(_))))) {return;}
 
         // Read first: taking stamps the kept part, which an idle world must not rewrite.
@@ -561,6 +557,10 @@ mod tests {
         hurt: Vec<(String, f32)>,
         /// The radiation deaths (`ntm:radiation`), apart from the ruin's own damage.
         radiation_deaths: Vec<String>,
+        /// Every dose written through the host, in order, as (player, the dose read, the dose written). The ruin's own
+        /// dose is written inside its machine step (the transaction's host keeps it in the world's mirror): what it gave
+        /// is the dose a death in the same tick reads.
+        doses: Vec<(String, u64, u64)>,
         carried: BTreeMap<String, Vec<Stack>>,
         shields: BTreeMap<Key, f32>,
     }
@@ -576,6 +576,10 @@ mod tests {
         }
     }
     impl ServerHost for Host {
+        fn commit_player_dose(&mut self, id: &str, expected: &crate::radiation::Dose, desired: &crate::radiation::Dose) -> bool {
+            self.doses.push((id.into(), expected.millirad, desired.millirad));
+            true
+        }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
@@ -942,16 +946,20 @@ mod tests {
             },
         ]);
         s.native_tick(&mut h, 2);
-        assert!(s.ready.world.radiation["same"].millirad > 0);
+        // The death read what the ruin gave, over 1000 RAD, and wrote 0.
+        let death = h.doses.iter().find(|(id, ..)| id == "same").map(|d| (d.1, d.2));
+        assert!(death.is_some_and(|(given, left)| given >= 1_000_000 && left == 0), "{:?}", h.doses);
+        assert!(!h.doses.iter().any(|(id, ..)| id == "other"));
         assert!(!s.ready.world.radiation.contains_key("other"));
         assert_eq!(h.hurt.len(), 1);
+        // The ruin, a tile entity, took "same" over 1000 RAD: radiation kills them in that same tick, the player's
+        // update coming after the tile entities (EntityEffectHandler, slice 5b), and the tick ends at 0.
+        assert_eq!(h.radiation_deaths, ["same"]);
+        assert_eq!(s.ready.world.radiation["same"].millirad, 0);
         zm(&mut s).on_fire = false;
         s.native_tick(&mut h, 3);
         assert_eq!(h.hurt.len(), 1);
         assert!(!z(&s).on_fire);
-        // The ruin gave "same" over 1000 RAD on tick 2: on tick 3 radiation kills them (EntityEffectHandler, slice 5b),
-        // before the ruin, a tile entity, doses them again in the same tick.
-        assert_eq!(h.radiation_deaths, ["same"]);
     }
     #[test]
     fn player_inventory_nbt_drives_the_real_radiation_rate() {
@@ -983,7 +991,16 @@ mod tests {
             h.shields.insert((DIM.into(), [wall_x, 64, 0]), 100.);
             s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [eye_x, 62.88, 0.5], creative: false }]);
             s.native_tick(&mut h, 2);
-            assert_eq!(s.ready.world.radiation["p"].millirad, expected, "eye={eye_x}, wall={wall_x}");
+            // Below 1000 RAD the tick ends at the ruin's dose; from 1000 the player's update, after the ruin, kills in the
+            // same tick: its write read the ruin's dose and left 0.
+            if expected < 1_000_000 {
+                assert_eq!(s.ready.world.radiation["p"].millirad, expected, "eye={eye_x}, wall={wall_x}");
+                assert!(h.radiation_deaths.is_empty());
+            } else {
+                assert_eq!(h.doses, [("p".to_string(), expected, 0)], "eye={eye_x}, wall={wall_x}");
+                assert_eq!(h.radiation_deaths, ["p"]);
+                assert_eq!(s.ready.world.radiation["p"].millirad, 0);
+            }
         }
     }
     #[test]

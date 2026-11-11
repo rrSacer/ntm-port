@@ -464,7 +464,7 @@ padrão da binomial (por exemplo, 39 náuseas para 40 esperadas a 300 RAD).
 
 ### 5b: a morte por radiação e o tipo de dano (D2)
 
-`EntityEffectHandler.handleRadiationEffect:224-227`: de 1000 RAD, `attackEntityFrom(ModDamageSource.radiation,
+`EntityEffectHandler.handleRadiationEffect:223-226`: de 1000 RAD, `attackEntityFrom(ModDamageSource.radiation,
 1000F)` e a dose volta a 0, seja qual for o efeito do ataque; nada é sorteado nesse tick. Agora isso é checado a cada
 tick, como no Java (antes, uma vez por segundo e só depois da carência do port, que o Java não tem). A D2 ficou na opção
 A: o motor aceita tipos de dano de conteúdo sem mudança nele (`damage_source::Catalog::with_packs` acrescenta ao
@@ -474,11 +474,15 @@ idioma do Java, "%1$s died from radiation poisoning." / "%1$s morreu por envenen
 (`setDamageBypassesArmor` zera a fome), escala `never` (`difficultyScaled` é falso), e a tag `minecraft:bypasses_armor`:
 a armadura não segura, a Resistência segura. Saiu o `generic_kill`.
 
-A ordem no tick também segue o Java: `World.updateEntities` roda as entidades (o `EntityEffectHandler` do jogador)
-antes dos tile entities, então a doença e a morte (`sickness_tick`) correm antes dos efeitos de máquina e de ruína do
-tick, e veem a dose como o tick anterior a deixou. Dois testes de outras frentes mudaram por isso: na ruína do ZIRNOX, o
-jogador que recebe mais de 1000 RAD morre de radiação no tick seguinte (agora o teste o verifica); na Little Boy, a dose
-da bomba pode matar e zerar, e o teste aceita a dose ou a morte por radiação.
+A ordem no tick também segue o Java: o `EntityEffectHandler` do jogador corre em
+`NetHandlerPlayServer.processPlayer`, no tick de rede que `MinecraftServer.updateTimeLightAndEntities` abre depois dos
+tile entities de todos os mundos. Então a doença e a morte (`sickness_tick`) vêm depois das máquinas, dos
+descontaminadores, da ruína do ZIRNOX e da dose do inventário do tick (o `PlayerTickEvent` vem antes), e antes da dose
+da poção de radiação (`updatePotionEffects`, mais adiante na atualização do jogador). Consequências testadas: com
+1000,2 RAD em cima de um descontaminador, o jogador perde 0,5 RAD antes da checagem e vive com 999,7; na ruína do
+ZIRNOX, o jogador que passa de 1000 RAD morre de radiação no mesmo tick, com a dose zerada; na Little Boy, a dose da
+bomba mata no tick da explosão e a dose volta a 0. Há um limiar só (`radiation::death`): a 999,999 RAD sorteia a faixa
+de 800 e vive; a 1000 morre sem sortear.
 
 Prova: o oráculo da 5a também compara os ataques (tick, fonte e 1000), 20 nos quatro casos. Mutações mortas: tipo
 `minecraft:magic`, dose mantida, limiar 999 RAD, dano 100, sorteio na faixa da morte. Em jogo (família
