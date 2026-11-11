@@ -340,9 +340,13 @@ def full_inventory(g):
         for _ in range(30):
             if dropped(g).get('ntm:syringe_metal_empty'):break
             g.ticks(1)
+        if MUTANT=='pickup_frozen_late':g.ticks(40)
         g.command('tick freeze');age=item_age(g)
         if age is not None and age<=30:break
         g.command('tick unfreeze')
+    else:
+        # No throw was frozen at age 30 or less in eight tries: the check fails, it is never judged on a later age.
+        g.check('thrown_container_waits_its_pickup_delay',False,{'age_when_frozen':age,'attempts':8})
     g.command('item replace entity @s inventory.26 with minecraft:air')
     if MUTANT=='pickup_delay_run_out':g.command('tick unfreeze');g.ticks(50);g.command('tick freeze')
     if MUTANT=='pickup_delay_60':g.command('data merge entity @e[type=item,distance=..8,sort=nearest,limit=1] {PickupDelay:60s}')
@@ -358,7 +362,7 @@ def full_inventory(g):
             if cur==last or time.monotonic()>deadline:return cur
             last=cur;time.sleep(1)
     early=stepped(30-age);late=stepped(15);g.command('tick unfreeze')
-    g.check('thrown_container_waits_its_pickup_delay',early==0 and late==1,{'early':early,'late':late,'age_when_frozen':age,'attempts':attempt+1,'dropped':dropped(g)})
+    g.check('thrown_container_waits_its_pickup_delay',age<=30 and early==0 and late==1,{'early':early,'late':late,'age_when_frozen':age,'attempts':attempt+1,'dropped':dropped(g)})
     g.command('effect clear @s')
     # ItemSimpleConsumable.doRadaway: the emptied slot is still taken while the
     # container is added, so even the last RadAway drops its iv_empty.
@@ -711,10 +715,15 @@ def foods(g):
     # 160 ticks: the nearest whole-second duration to a 170-tick blindness that the Onda 1 review asked to kill.
     if MUTANT=='schnitzel_short_blindness':g.command('effect clear @s minecraft:blindness');g.command('effect give @s minecraft:blindness 8 0 true')
     effects=effect_map(g)
-    # Given in one tick, the three keep the Java's differences exactly, whatever age `has_effects` allows for.
+    # The Onda 1 review's mutant: the three 80 ticks short, which /effect (whole seconds) cannot give a player.
+    if MUTANT=='schnitzel_uniform_80':effects={k:(a,d-80) if k in ('blindness','nausea','hunger') else (a,d) for k,(a,d) in effects.items()}
+    # Their age without `has_effects`' 80-tick floor: USE_TICK is the gesture plus the 32-tick use length, so a uniform
+    # shortfall is caught; and given in one tick, the three keep the Java's differences exactly.
+    age=READ_TICK[0]-USE_TICK[0]+4
     remaining=lambda k:effects.get(k,(0,0))[1]
     g.check('vegan_schnitzel_java_effects',has_effects(effects,{'blindness':(0,200),'nausea':(0,600),'hunger':(4,3600)})
-            and remaining('nausea')-remaining('blindness')==400 and remaining('hunger')-remaining('blindness')==3400,effects)
+            and all(java-age<=remaining(k)<=java for k,java in (('blindness',200),('nausea',600),('hunger',3600)))
+            and remaining('nausea')-remaining('blindness')==400 and remaining('hunger')-remaining('blindness')==3400,{'effects':effects,'age':age})
     extinguish(g)
     # ItemAppleEuphemium.setAlwaysEdible (and `gate: food_always`): eaten with the food bar full, which is how it is made sure to start.
     reset(g);full_food(g);food_before=g.ctl('state')['player']['food'];hold(g,'ntm:apple_euphemium',1.8);effects=effect_map(g)
