@@ -482,6 +482,16 @@ def ruin_dose_check(g):
     saved=json.loads((g.folder/'zirnox-ruin-dose.json').read_text())['dose'];time.sleep(2)
     got=dose(g)
     g.check('ruin_dose_survives_reopening',saved>0 and got==saved,{'saved':saved,'reopened':got})
+    # Unshielded, six blocks from the ruin (115,101,6), its dose (500000 or 75000 / distance², in RAD) passes 1000 at
+    # once: the player's update, after the ruin's tick, kills them with `ModDamageSource.radiation` and leaves 0.
+    g.command('fill 112 101 -1 118 105 5 minecraft:air');g.command('fill 114 100 -1 116 100 1 minecraft:obsidian')
+    g.command('tp @s 115.5 101 0.5 0 0');g.command('ntmitem dose 0');g.command('gamemode survival');time.sleep(1.5)
+    p=g.ctl('state')['player'];chat=' | '.join(g.ctl('chat-log 12').get('chat',[]))
+    dead=p.get('death_time') is not None or p['health']<=0
+    g.check('ruin_kills_with_radiation',dead and 'died from radiation poisoning' in chat,{'player':p,'chat':chat[:300]})
+    if dead:
+        g.command('gamemode creative');g.ctl('respawn');g.ctl('wait-ready 60');g.command('tp @s 138.5 101 2.5');time.sleep(1)
+    g.check('ruin_death_leaves_the_storage_at_zero',dose(g)==0,dose(g))
 
 
 def soils(g):
