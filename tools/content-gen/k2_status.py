@@ -22,8 +22,6 @@ NEEDS = {
     'ntm:syringe_metal_stimpak': HIT, 'ntm:syringe_metal_medx': HIT, 'ntm:syringe_metal_psycho': HIT, 'ntm:syringe_metal_super': HIT,
     'ntm:syringe_taint': HIT + '; `HbmPotion.taint.performEffect` (a cada 2 ticks, com chance 1/40 por tentativa: `(amplificador + 1)` de dano `taint`, exceto em `EntityCreeperTainted` e `EntityTaintCrab`; mais a trilha de blocos taint sob `ENTITY_TAINT_TRAILS`) não tem tick de efeito de conteúdo: o efeito `ntm:taint` existe, passivo',
     'ntm:syringe_antidote': HIT, 'ntm:syringe_poison': HIT, 'ntm:syringe_awesome': HIT,
-    'ntm:med_bag': '`HbmPotion.radiation` (efeito que contamina) não existe: a dose vive no attachment do jogador',
-    'ntm:pill_iodine': '`HbmPotion.radiation` não existe (idem med_bag)',
     'ntm:siox': '`HbmLivingProps.asbestos` e `blackLung` (sistema de doenças do pulmão)',
     'ntm:xanax': '`HbmLivingProps.digamma` (sistema digamma do jogador)',
     'ntm:fmn': '`HbmLivingProps.digamma` (a cegueira de 60 ticks está portada)',

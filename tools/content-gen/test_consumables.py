@@ -187,7 +187,13 @@ class CanteenMangoBdcl(unittest.TestCase):
         self.assertEqual(entry('bdcl')['ticks'], ticks)
 
 
-REMOVE = re.compile(r'removePotionEffect\(Potion\.(\w+)\.id\)')
+REMOVE = re.compile(r'removePotionEffect\((?:Hbm)?Potion\.(\w+)\.id\)')
+# HbmPotion fields that are content effects (`Potion` has no field of these names).
+HBM_POTION = {'radiation': 'ntm:radiation'}
+
+
+def cure_ids(body):
+    return [POTION.get(m) or HBM_POTION[m] for m in REMOVE.findall(body)]
 
 
 def method(text, signature, end):
@@ -225,7 +231,7 @@ class Pills(unittest.TestCase):
             row = TABLE[item]
             body = self.body.get(name, '')
             self.assertEqual(table_effects(row), effects(body), name)
-            cure = [POTION[m] for m in REMOVE.findall(body)]
+            cure = cure_ids(body)
             self.assertEqual(row.get('cure', {}).get('effects', []), cure, name)
             harm = re.search(r'for\(int i = 0; i < (\d+); i\+\+\)\s*player\.attackEntityFrom\([^,]*\?[^,]*:[^,]*,\s*(\d+)\)', body)
             roll = re.search(r'if\(rand\.nextInt\((\d+)\) == 0\) \{\s*player\.attackEntityFrom\(ModDamageSource\.overdose, (\d+)\)', body)
@@ -268,7 +274,7 @@ class Syringes(unittest.TestCase):
             if name == 'med_bag':
                 self.assertIn('player.setHealth(player.getMaxHealth())', body)
                 self.assertGreaterEqual(row['heal'], 100)
-                self.assertEqual(row['cure']['effects'], [POTION[m] for m in REMOVE.findall(body)])
+                self.assertEqual(row['cure']['effects'], cure_ids(body))
             else:
                 self.assertEqual(row.get('heal', 0), int(heal.group(1)) if heal else 0, name)
             self.assertEqual(row.get('sickness_gate', False), 'hasPotionSickness' in self.text[self.text.index('this == ModItems.' + name):].split('{')[0], name)

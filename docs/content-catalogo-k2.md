@@ -88,7 +88,7 @@ as provas históricas acima dizem respeito à importação do catálogo.
 
 <!-- k2-status:start -->
 
-Resumo dos 116 itens: 59 ativo, 19 dependente, 38 parcial.
+Resumo dos 116 itens: 61 ativo, 19 dependente, 36 parcial.
 
 | Item | Classe Java | Estado | Origem Java | Dependências nominais |
 |---|---|---|---|---|
@@ -166,7 +166,7 @@ Resumo dos 116 itens: 59 ativo, 19 dependente, 38 parcial.
 | `ntm:loot_misc` | ItemLootCrate | parcial | ItemLootCrate.onItemRightClick loot_misc, ModItems.java:3805 | itens Java ausentes do port: `mp_thruster_15_solid_hexdecuple`, `mp_thruster_15_balefire_large_rad`, `mp_stability_10_space`, `mp_stability_15_soyuz` |
 | `ntm:man_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick man_kit, ModItems.java:3787 | - |
 | `ntm:matchstick` | ItemMatch | ativo | `ItemMatch.onItemUse` | - |
-| `ntm:med_bag` | ItemSyringe | parcial | ItemSyringe.onItemRightClick med_bag, ModItems.java:2827: setHealth(getMaxHealth()), no sound, no container | `HbmPotion.radiation` (efeito que contamina) não existe: a dose vive no attachment do jogador |
+| `ntm:med_bag` | ItemSyringe | ativo | ItemSyringe.onItemRightClick med_bag:116-128, ModItems.java:2827: setHealth(getMaxHealth()), removes the bad effects and HbmPotion.radiation (ntm:radiation), no sound, no container | - |
 | `ntm:med_ipecac` | ItemLemon | ativo | ItemLemon(0, 0, false), ModItems.java:3622: NOT alwaysEdible (the constructor compares ModItems.med_ipecac before the field is assigned, so setAlwaysEdible never runs); the vomit particle packet has no mode and count 0, so only the sound shows | - |
 | `ntm:med_ptsd` | ItemLemon | ativo | ItemLemon(0, 0, false), ModItems.java:3623: NOT alwaysEdible (the constructor compares ModItems.med_ptsd before the field is assigned, so setAlwaysEdible never runs); the vomit particle packet has no mode and count 0, so only the sound shows | - |
 | `ntm:mike_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick mike_kit, ModItems.java:3788 | - |
@@ -181,7 +181,7 @@ Resumo dos 116 itens: 59 ativo, 19 dependente, 38 parcial.
 | `ntm:particle_digamma` | ItemDigamma | dependente | `ItemDigamma`, ModItems.java:2713 | `onEntityItemUpdate` (efeito ao cair no chão): sem gancho de tick de item solto (`ItemEntity.tick`, `onGround`, remover/trocar) no motor fixado; `EntityQuasar`; `onUpdate` contamina com digamma (sem sistema) |
 | `ntm:peas` | ItemPeas | parcial | ItemPeas, ModItems.java:3635: despawns EntityQuackos in 50 blocks, which the port does not have | `EntityQuackos` (entidade de mod) |
 | `ntm:pellet_antimatter` | ItemDrop | dependente | `ItemDrop`, ModItems.java:2721 | `onEntityItemUpdate` (efeito ao cair no chão): sem gancho de tick de item solto (`ItemEntity.tick`, `onGround`, remover/trocar) no motor fixado; `ExplosionVNT(20).makeAmat()` |
-| `ntm:pill_iodine` | ItemPill | parcial | ItemPill, ModItems.java:2834: removes the bad effects; HbmPotion.radiation is not an effect in the port | `HbmPotion.radiation` não existe (idem med_bag) |
+| `ntm:pill_iodine` | ItemPill | ativo | ItemPill:36-46, ModItems.java:2834: removes the bad effects and HbmPotion.radiation (ntm:radiation) | - |
 | `ntm:pill_red` | ItemPill | parcial | ItemPill, ModItems.java:2836: Astolfization one hour | o `PermaSyncHandler` só desenha uma marca no cliente; o efeito `ntm:death` existe, passivo, 1 hora |
 | `ntm:plan_c` | ItemPill | ativo | ItemPill, ModItems.java:2835: ten attackEntityFrom(euthanizedSelf, 1000); armor only is bypassed, Resistance still absorbs: minecraft:magic | - |
 | `ntm:plastic_bag` | ItemPlasticBag | dependente | `ItemPlasticBag`, ModItems.java:3358 | menu de inventário ligado à pilha (`InventoryPlasticBag`, 1 slot) |
