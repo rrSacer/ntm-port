@@ -550,8 +550,8 @@ Rodada: binário `88837ca0…`, pacote `87f5e937…`, ZIRNOX 142/142, `cargo tes
   dada (o motor aplica o efeito no fim do tick) nem no primeiro tick do jogador no mundo; e o leite bebido antes do passo
   no micélio, no mesmo tick, faz a poção nova começar do zero, sem somar com a velha.
 - Migração única: uma entrada de `zirnox.irradiated` de um mundo anterior à 5c entra no anexo (pela mesma regra de
-  soma) quando o jogador está no mundo, e sai do mapa só depois da gravação no anexo. Gravação recusada: o tick que
-  doseou é descontado no mapa e o anexo o recebe depois. Jogador fora do mundo: a entrada espera.
+  soma) quando o jogador está no mundo, e sai do mapa só depois da gravação no anexo. Jogador fora do mundo: a entrada
+  espera.
 
 Provas. Testes de unidade (anexo, efeito enfileirado como no motor, curas, confiança no tick dado e na entrada, leite e
 micélio no mesmo tick, descontaminador, migração com recusa e ida e volta por `WorldState::load`, criativo, `Deferred`,
@@ -567,10 +567,45 @@ Corte de save (`run-player-cut-proof.py`, sete pontos do save, duas reaberturas)
 | Cenário | Antes da 5c (binário `88837ca0…`) | Com a 5c (`59f23f19…`) |
 |---|---|---|
 | `irradiation`, com o controle do baú do Ender | `players_saved`: **a dose ficou (310,8 RAD), a poção sumiu** (estava no KV do mundo, não gravado); os outros seis coerentes | Os sete cortes: a poção e a dose andam juntas, como o controle |
-| `migration` (mundo preparado pelo binário anterior) | — | Os sete cortes: a poção está no anexo, nível 3, com o efeito. Entre a gravação do jogador e o commit do KV, a entrada antiga ainda está no disco e se junta pela regra de soma: a poção pode recuperar os ticks da sessão cortada, nunca se perde |
+| `migration` (mundo preparado pelo binário anterior) | — | Os sete cortes: a poção está no anexo, nível 3, com o efeito (a rodada da entrega; ver a correção P2-1 abaixo) |
 
 Rodada: binário `59f23f19…`, pacote `36eb93fa…`, motor no pin sem mudança; `items` 283/283 (as 276 de antes e 7 da
 `irradiation`), ZIRNOX 142/142. Evidência em `docs/evidence/onda1-f5/irradiation-5c.json`.
+
+Correções da revisão da 5c (APROVADO COM RESSALVAS):
+
+- P2-1, dose dupla no corte da migração. O save grava o arquivo do jogador antes do KV do mundo: num corte entre os
+  dois, o disco ficava com o anexo da sessão (a poção já descontada e a dose que ela deu) e com a entrada antiga do KV
+  (a poção cheia), e a reabertura as somava de novo: os ticks já doseados doseavam outra vez (na sonda do revisor, 156
+  ticks viraram 452, cerca de 72 RAD a mais). Agora o anexo guarda a entrada que absorveu (`irradiated_migrated`,
+  `irradiated_migrated_level`, chaves `Long` do mesmo formato), na mesma escrita por CAS da poção
+  (`zirnox::absorb`): a mesma entrada achada de novo é descartada, não somada. O descontaminador que encerra uma
+  entrada ainda não absorvida também a marca. Testes: `a_save_cut_during_the_migration_doses_nothing_twice` (o corte em
+  três momentos, sempre 600 doses), `a_decontaminated_worlds_potion_does_not_come_back_after_a_cut`,
+  `a_worlds_potion_is_taken_in_once`. Em jogo: o corte `migration`, com o ato de 16 s fora da carência e o controle do
+  baú do Ender, exige que as doses dadas mais o tempo restante não passem da poção.
+- P3-2, a poção migrada perdia o último tick. O motor desconta os efeitos antes do passo do NTM: o efeito agora é
+  reposto com um tick de folga (`tempo + 1`), em qualquer caminho. O host de teste passou a imitar o motor (desconto
+  antes do passo, fila aplicada pelo `update`). Teste: `a_migrated_potion_doses_all_its_ticks` (exatos 120 000).
+- P3-3, `/effect give @s ntm:radiation` não doseava. Um efeito mais forte ou mais longo que o do anexo (lido por
+  `effect_state`) entra como uma aplicação, pela regra de soma. Teste: `a_given_radiation_effect_doses_as_the_potion`.
+- P3-4, a gravação recusada. A poção é gravada antes da dose; recusada, o tick não doseia nem desconta nada, e o
+  próximo tenta de novo. Teste: `refused_writes_give_no_dose_and_lose_no_tick`.
+- P3-5, divergências anteriores à fatia, registradas para depois: o micélio aplica a poção a cada tick e pula o
+  criativo, mas no Java `onEntityWalking` só vem num passo (`Entity.moveEntity`, depois de `nextStepDistance`) e
+  `WasteEarth:83-91` e `EntityZirnoxDebris:118-124` não excluem o criativo; e o descontaminador roda antes dos detritos,
+  mas no Java as entidades vêm antes das tile entities, e ele tira a poção que o detrito acabou de dar. Para a 5d: os
+  itens de cura por instância do Forge (`BlockFallout:58` esvazia a lista: o leite não cura essa poção) pedem um campo no
+  anexo, como o `herbal`; e o `update` do motor guarda efeitos ocultos (amplificador maior e mais curto), que o 1.7.10
+  não tem.
+
+Rodada das correções (`docs/evidence/onda1-f5/irradiation-5c-review.json`): binário `d0c35f1e…`, pacote `36eb93fa…`,
+motor no pin sem mudança. Família `irradiation` 8/8 (o `/effect give` nível 9 doseia 0,5 RAD por tick e entra no
+anexo). Corte `migration` com controle: os sete coerentes; em `players_saved`, com a entrada antiga `[539, 3]` ainda no
+KV, a poção fica em 125 ticks (antes da correção, o cliente da entrega `59f23f19…` volta a 468 ticks com 234 doses já
+dadas e falha). Corte `irradiation` com controle: sete de sete. `items` 284/284, ZIRNOX 142/142, `cargo test` 555 +
+118, `save_model` 11/11, clippy limpo; 15 mutantes do núcleo mortos (os 13 da entrega, mais a marca ignorada e o
+descontaminador sem marca).
 
 Ordem combinada: depois da 5c, a 5d (fontes da poção com bloco no port: `BlockFallout:57`, `BlockSellafield:49`, e a
 regra de dose do fallout), com plano e revisão próprios.
