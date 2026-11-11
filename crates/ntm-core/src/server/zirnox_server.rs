@@ -88,58 +88,131 @@ impl Server {
             self.ready.world.machines.insert(key, m);
         }
     }
-    /// The radiation potion (`HbmPotion.radiation`, here `zirnox.irradiated`):
-    /// glowing mycelium under the feet gives it, and every tick it doses its
-    /// players. It runs every tick, with or without ZIRNOX debris or effects
-    /// in flight (it used to sit after `zirnox_debris`'s early return, so the
-    /// mycelium irradiated nobody in a world without debris).
+    /// `addPotionEffect(new PotionEffect(HbmPotion.radiation.id, duration, amplifier))` on player `id`. The potion
+    /// lives in the player's own storage (Onda 1, slice 5c, D3) and shows as the `ntm:radiation` effect; a host
+    /// without player storage keeps it in the world's map. An entry of the world's map still waiting for the
+    /// storage (a world from before 5c) joins it on the way.
+    pub(super) fn irradiate_player(&mut self, host: &mut impl ServerHost, id: &str, duration: u32, amplifier: u8) {
+        let legacy = self.player_dose(id);
+        if let Some(stored) = host.player_irradiation(id, &legacy) {
+            let pending = self.ready.world.zirnox.irradiated.get(id).copied();
+            // Cured earlier in the tick (the milk drunk before the step on the mycelium): the new potion starts afresh.
+            let mut desired = if self.potion_cured(host, id, stored) { (0, 0) } else { stored };
+            if let Some((n, a)) = pending {
+                crate::zirnox::combine(&mut desired, n, a);
+            }
+            crate::zirnox::combine(&mut desired, duration, amplifier);
+            if host.commit_player_irradiation(id, &legacy, stored, desired) {
+                if pending.is_some() {
+                    self.ready.world.zirnox.irradiated.remove(id);
+                }
+                self.ready.irradiated_now.insert(id.into());
+                host.effect(id, crate::radiation::RADIATION_EFFECT, desired.0, desired.1);
+                return;
+            }
+        }
+        // No storage, or it changed under the write: the world's map keeps it until the storage takes it.
+        self.ready.world.zirnox.irradiate(id, duration, amplifier);
+    }
+    /// Whether something took the potion's effect from player `id` with time left in their storage (`stored`):
+    /// milk, the antidote, an iodine pill, a med bag, `/effect clear`. Not on the tick the potion was given, nor on
+    /// the player's first tick in the world: the effect reaches them at the end of that tick.
+    fn potion_cured(&self, host: &mut impl ServerHost, id: &str, stored: crate::zirnox::Irradiation) -> bool {
+        stored.0 > 0
+            && self.blasts.entered.get(id).is_some_and(|t| *t != self.tick)
+            && !self.ready.irradiated_now.contains(id)
+            && host.has_effect(id, crate::radiation::RADIATION_EFFECT) == Some(false)
+    }
+    /// `TileEntityDecon` and the like: `removePotionEffect(HbmPotion.radiation.id)`.
+    pub(super) fn end_irradiation(&mut self, host: &mut impl ServerHost, id: &str) {
+        let legacy = self.player_dose(id);
+        if let Some(stored) = host.player_irradiation(id, &legacy)
+            && stored.0 > 0
+        {
+            if !host.commit_player_irradiation(id, &legacy, stored, (0, 0)) {
+                return;
+            }
+            host.remove_effect(id, crate::radiation::RADIATION_EFFECT);
+        }
+        if self.ready.world.zirnox.irradiated.contains_key(id) {
+            self.ready.world.zirnox.irradiated.remove(id);
+        }
+    }
+    /// The radiation potion (`HbmPotion.radiation`): glowing mycelium under the feet gives it, and every tick
+    /// (`updatePotionEffects`) it doses its players and counts down. It runs every tick, with or without ZIRNOX
+    /// debris or effects in flight. From the player's storage, the effect is a flag: put back every tick with the
+    /// time left, and gone with time left (milk, the antidote, an iodine pill, a med bag, `/effect clear`) it ends the
+    /// potion, as `removePotionEffect` does in the Java.
     pub(super) fn zirnox_irradiation(&mut self, host: &mut impl ServerHost) {
         // WasteEarth.onEntityWalking: glowing mycelium gives radiation
         // amplifier 3 for 30 seconds. Source spreading is off by default.
-        for p in self.players.iter().filter(|p| !p.creative) {
-            let below = [
-                p.pos[0].floor() as i32,
-                (p.pos[1] - 0.05).floor() as i32,
-                p.pos[2].floor() as i32,
-            ];
-            if host
-                .get_block(&p.dim, below)
-                .is_some_and(|b| blockstate::id_of(&b) == "ntm:waste_mycelium")
-            {
-                self.ready.world.zirnox.irradiate(&p.id, 600, 3);
+        let walking: Vec<String> = self
+            .players
+            .iter()
+            .filter(|p| !p.creative)
+            .filter(|p| {
+                let below = [p.pos[0].floor() as i32, (p.pos[1] - 0.05).floor() as i32, p.pos[2].floor() as i32];
+                host.get_block(&p.dim, below).is_some_and(|b| blockstate::id_of(&b) == "ntm:waste_mycelium")
+            })
+            .map(|p| p.id.clone())
+            .collect();
+        for id in walking {
+            self.irradiate_player(host, &id, 600, 3);
+        }
+        for p in self.players.clone() {
+            let legacy = self.player_dose(&p.id);
+            let stored = host.player_irradiation(&p.id, &legacy);
+            // Read first: a mutable borrow stamps the kept part, which an idle world must not rewrite.
+            let pending = self.ready.world.zirnox.irradiated.get(&p.id).copied();
+            let mut state = stored.unwrap_or((0, 0));
+            if let Some((n, a)) = pending {
+                crate::zirnox::combine(&mut state, n, a);
             }
-        }
-        // Read first: a mutable borrow stamps the kept part, which an idle world must not rewrite.
-        if self.ready.world.zirnox.irradiated.is_empty() {
-            return;
-        }
-        let graced: Vec<String> = self.players.iter().filter(|p| self.in_grace(&p.id)).map(|p| p.id.clone()).collect();
-        for (id, (remaining, level)) in &mut self.ready.world.zirnox.irradiated {
-            if let Some(p) = self.players.iter().find(|p| p.id == *id) {
+            if state.0 == 0 {
+                continue;
+            }
+            if stored.is_some_and(|s| self.potion_cured(host, &p.id, s)) {
+                state = (0, 0);
+            } else {
+                let level = state.1;
                 if !p.creative {
                     // `HbmPotion.radiation` doses through `contaminate`, which skips the first 200 ticks of a player
                     // (`ContaminationUtil:287`); the effect still counts down and the Geiger still hears it.
-                    let expected=if graced.contains(id){None}else{host.player_dose(id,&self.ready.world.radiation.get(id).cloned().unwrap_or_default())};
-                    if let Some(expected)=expected {
-                        let mut desired=expected.clone();
-                        crate::radiation::add_dose(&mut desired,((u64::from(*level)+1) as f64*50.0*host.radiation_factor(id)) as u64);
-                        if host.commit_player_dose(id,&expected,&desired){self.ready.world.radiation.insert(id.clone(),desired);}
+                    if !self.in_grace(&p.id)
+                        && let Some(expected) = host.player_dose(&p.id, &legacy)
+                    {
+                        let mut desired = expected.clone();
+                        crate::radiation::add_dose(&mut desired, ((u64::from(level) + 1) as f64 * 50.0 * host.radiation_factor(&p.id)) as u64);
+                        if host.commit_player_dose(&p.id, &expected, &desired) {
+                            self.ready.world.radiation.insert(p.id.clone(), desired);
+                        }
                     }
-                    let rate = self
-                        .ready
-                        .zirnox_radiation_rate
-                        .entry(id.clone())
-                        .or_default();
-                    *rate = rate.saturating_add((u32::from(*level) + 1) * 1000);
+                    let rate = self.ready.zirnox_radiation_rate.entry(p.id.clone()).or_default();
+                    *rate = rate.saturating_add((u32::from(level) + 1) * 1000);
                 }
-                *remaining = remaining.saturating_sub(1);
+                state.0 -= 1;
+            }
+            match stored {
+                Some(stored) if host.commit_player_irradiation(&p.id, &legacy, stored, state) => {
+                    if pending.is_some() {
+                        self.ready.world.zirnox.irradiated.remove(&p.id);
+                    }
+                    if state.0 > 0 {
+                        host.effect(&p.id, crate::radiation::RADIATION_EFFECT, state.0, state.1);
+                    }
+                }
+                // No storage, or it refused the write: the tick that dosed is counted in the world's map, and the
+                // storage takes it on a later tick.
+                _ if state.0 > 0 => {
+                    self.ready.world.zirnox.irradiated.insert(p.id.clone(), state);
+                }
+                _ => {
+                    if pending.is_some() {
+                        self.ready.world.zirnox.irradiated.remove(&p.id);
+                    }
+                }
             }
         }
-        self.ready
-            .world
-            .zirnox
-            .irradiated
-            .retain(|_, (n, _)| *n > 0);
     }
     pub(super) fn zirnox_world_effects(&mut self, host: &mut impl ServerHost) {
         if self.ready.world.machine_effects.iter().any(|b|b.owners.iter().any(|k| self.ready.world.machines.get(k).is_some_and(|m|matches!(m.data,Data::Zirnox(_))))) {return;}
@@ -459,12 +532,14 @@ impl Server {
             }
             if matches!(d.kind, 1 | 3) {
                 let level = if d.kind == 1 { 7 } else { 4 };
-                for p in self.players.iter().filter(|p| {
-                    p.dim == d.dim
-                        && !p.creative
-                        && (0..3).all(|k| (p.pos[k] - d.pos[k]).abs() <= 2.5)
-                }) {
-                    self.ready.world.zirnox.irradiate(&p.id, 1200, level);
+                let near: Vec<String> = self
+                    .players
+                    .iter()
+                    .filter(|p| p.dim == d.dim && !p.creative && (0..3).all(|k| (p.pos[k] - d.pos[k]).abs() <= 2.5))
+                    .map(|p| p.id.clone())
+                    .collect();
+                for id in near {
+                    self.irradiate_player(host, &id, 1200, level);
                 }
             }
             if self.tick.is_multiple_of(5) {
@@ -571,6 +646,13 @@ mod tests {
         attached: BTreeMap<String, u64>,
         /// The armor's share of the radiation that gets through (`ContaminationUtil.calculateRadiationMod`).
         factor: Option<f64>,
+        /// The radiation potion in the player's storage (`Some` map: the host has one).
+        irradiation: Option<BTreeMap<String, crate::zirnox::Irradiation>>,
+        refuse_irradiation: bool,
+        /// The status effects the players have: (player, effect) → (ticks, amplifier).
+        effects: BTreeMap<(String, String), (u32, u8)>,
+        /// Effects given this tick: the engine queues them and applies them at the end of the tick.
+        queued: Vec<((String, String), (u32, u8))>,
         carried: BTreeMap<String, Vec<Stack>>,
         shields: BTreeMap<Key, f32>,
     }
@@ -599,6 +681,27 @@ mod tests {
         }
         fn radiation_factor(&mut self, _: &str) -> f64 {
             self.factor.unwrap_or(1.0)
+        }
+        fn player_irradiation(&mut self, id: &str, _: &crate::radiation::Dose) -> Option<crate::zirnox::Irradiation> {
+            self.irradiation.as_ref().map(|m| m.get(id).copied().unwrap_or((0, 0)))
+        }
+        fn commit_player_irradiation(&mut self, id: &str, _: &crate::radiation::Dose, expected: crate::zirnox::Irradiation, desired: crate::zirnox::Irradiation) -> bool {
+            let refuse = self.refuse_irradiation;
+            let Some(m) = self.irradiation.as_mut() else { return false };
+            if refuse || m.get(id).copied().unwrap_or((0, 0)) != expected {
+                return false;
+            }
+            m.insert(id.into(), desired);
+            true
+        }
+        fn has_effect(&mut self, id: &str, effect: &str) -> Option<bool> {
+            Some(self.effects.contains_key(&(id.into(), effect.into())))
+        }
+        fn effect(&mut self, id: &str, effect: &str, ticks: u32, amplifier: u8) {
+            self.queued.push(((id.into(), effect.into()), (ticks, amplifier)));
+        }
+        fn remove_effect(&mut self, id: &str, effect: &str) {
+            self.effects.remove(&(id.into(), effect.into()));
         }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
@@ -1116,6 +1219,160 @@ mod tests {
         assert_eq!(h.attached["p"], first, "a respawn is spared its first 200 ticks too");
         s.native_tick(&mut h, back + crate::radiation::GRACE_TICKS);
         assert!(h.attached["p"] > first);
+    }
+    const RAD: &str = crate::radiation::RADIATION_EFFECT;
+    /// A server tick and the end of the engine's tick, where the queued effects reach the players.
+    fn tick(h: &mut Host, s: &mut Server, tick: u64) {
+        s.native_tick(h, tick);
+        for (k, v) in std::mem::take(&mut h.queued) {
+            h.effects.insert(k, v);
+        }
+    }
+    /// A player standing on glowing mycelium, past their first 200 ticks, with a host that keeps the potion in
+    /// the player's storage.
+    fn on_mycelium(h: &mut Host, s: &mut Server) {
+        h.irradiation = Some(BTreeMap::new());
+        h.attached.insert("p".into(), 0);
+        h.blocks.insert((DIM.into(), [0, 99, 0]), "ntm:waste_mycelium".into());
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100., 0.5], creative: false }]);
+        s.blasts.entered.insert("p".into(), 0);
+    }
+    fn off_mycelium(s: &mut Server) {
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100., 40.5], creative: false }]);
+    }
+
+    /// Slice 5c, D3: the radiation potion lives in the player's storage and shows as the `ntm:radiation` effect.
+    /// `WasteEarth.onEntityWalking` gives it (600 ticks, amplifier 3); `updatePotionEffects` doses 0.2 RAD that same
+    /// tick and counts down. The world's map stays empty.
+    #[test]
+    fn the_radiation_potion_lives_in_the_players_storage() {
+        let (mut h, mut s) = prepare();
+        on_mycelium(&mut h, &mut s);
+        tick(&mut h, &mut s, 300);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (599, 3));
+        assert_eq!(h.effects[&("p".into(), RAD.into())], (599, 3), "shown, with the time left at the end of the tick");
+        assert_eq!(h.attached["p"], 200);
+        assert!(s.ready.world.zirnox.irradiated.is_empty());
+        off_mycelium(&mut s);
+        for t in 301..311 {
+            tick(&mut h, &mut s, t);
+        }
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (589, 3));
+        assert_eq!(h.effects[&("p".into(), RAD.into())], (589, 3), "put back with the time left");
+        assert_eq!(h.attached["p"], 2_200);
+        assert!(s.ready.world.zirnox.irradiated.is_empty());
+    }
+
+    /// Whatever takes the effect away with time left (milk, the antidote, an iodine pill, a med bag, `/effect
+    /// clear`) ends the potion, as `removePotionEffect` does: no dose from the next tick on.
+    #[test]
+    fn taking_the_effect_away_ends_the_potion() {
+        let (mut h, mut s) = prepare();
+        on_mycelium(&mut h, &mut s);
+        tick(&mut h, &mut s, 300);
+        off_mycelium(&mut s);
+        tick(&mut h, &mut s, 301);
+        let dose = h.attached["p"];
+        h.effects.clear();
+        tick(&mut h, &mut s, 302);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (0, 0));
+        assert_eq!(h.attached["p"], dose, "no dose once cured");
+        tick(&mut h, &mut s, 303);
+        assert!(h.effects.is_empty(), "not put back");
+        assert_eq!(h.attached["p"], dose);
+    }
+
+    /// On the tick it is given, and on a player's first tick in the world, the effect is not there yet (it reaches
+    /// the player at the end of the tick, or was not saved with them): that is no cure.
+    #[test]
+    fn a_missing_effect_is_no_cure_on_the_tick_it_is_given_or_on_joining() {
+        let (mut h, mut s) = prepare();
+        on_mycelium(&mut h, &mut s);
+        tick(&mut h, &mut s, 300);
+        h.effects.clear();
+        // Joins again: the storage holds the potion, the effect is not there.
+        s.set_players(Vec::new());
+        tick(&mut h, &mut s, 301);
+        off_mycelium(&mut s);
+        tick(&mut h, &mut s, 302);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (598, 3), "the first tick back is trusted");
+        assert_eq!(h.effects[&("p".into(), RAD.into())], (598, 3), "and the effect is back");
+    }
+
+    /// Milk drunk before the step on the mycelium, in the same tick: the old potion is gone and the new one starts
+    /// afresh (600 ticks), not summed with what the old one had left.
+    #[test]
+    fn a_potion_given_right_after_a_cure_starts_afresh() {
+        let (mut h, mut s) = prepare();
+        on_mycelium(&mut h, &mut s);
+        h.irradiation.as_mut().unwrap().insert("p".into(), (900, 3));
+        h.effects.insert(("p".into(), RAD.into()), (900, 3));
+        tick(&mut h, &mut s, 300);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (899, 3), "still standing: the longer one stays");
+        h.effects.clear();
+        tick(&mut h, &mut s, 301);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (599, 3));
+        assert_eq!(h.effects[&("p".into(), RAD.into())], (599, 3));
+    }
+
+    /// The decontaminator (`TileEntityDecon:27`) ends the potion in the storage and takes the effect.
+    #[test]
+    fn the_decontaminator_ends_the_potion_in_the_storage() {
+        let (mut h, mut s) = prepare();
+        on_mycelium(&mut h, &mut s);
+        tick(&mut h, &mut s, 300);
+        off_mycelium(&mut s);
+        h.blocks.insert((DIM.into(), [0, 99, 40]), crate::radiation::DECON.into());
+        tick(&mut h, &mut s, 301);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (0, 0));
+        assert!(h.effects.is_empty());
+    }
+
+    /// The one-time move of a world from before 5c: a `zirnox.irradiated` entry joins the player's storage (by
+    /// `PotionEffect.combine`) once the storage takes the write, and leaves the world's map then. A refused write
+    /// keeps the entry; a player who is not in the world keeps it until they come. Saved and opened again, the
+    /// storage still has it and the map does not.
+    #[test]
+    fn the_worlds_potions_move_to_the_players_storage_once() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.attached.insert("p".into(), 0);
+        s.ready.world.zirnox.irradiate("p", 300, 2);
+        s.ready.world.zirnox.irradiate("away", 900, 5);
+        s.blasts.entered.insert("p".into(), 0);
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100., 40.5], creative: false }]);
+        h.refuse_irradiation = true;
+        tick(&mut h, &mut s, 300);
+        assert_eq!(s.ready.world.zirnox.irradiated["p"], (299, 2), "a refused write keeps the entry, counted down");
+        assert_eq!(h.attached["p"], 150);
+        h.refuse_irradiation = false;
+        tick(&mut h, &mut s, 301);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (298, 2));
+        assert!(!s.ready.world.zirnox.irradiated.contains_key("p"));
+        assert_eq!(s.ready.world.zirnox.irradiated["away"], (900, 5), "waits for its player");
+        assert_eq!(h.attached["p"], 300, "one dose a tick, refused or not");
+        s.native_save(&mut h, true);
+        s.keep_world(&mut h);
+        let back = WorldState::load(&mut h);
+        assert!(!back.zirnox.irradiated.contains_key("p"));
+        assert_eq!(back.zirnox.irradiated["away"], (900, 5));
+        let mut reopened = Server::native(&mut h, 302);
+        reopened.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100., 40.5], creative: false }]);
+        reopened.blasts.entered.insert("p".into(), 0);
+        tick(&mut h, &mut reopened, 302);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (297, 2), "the storage carried it through the reopening");
+    }
+
+    /// Creative players: the potion still counts down (`updatePotionEffects`), `contaminate` gives no dose.
+    #[test]
+    fn a_creative_players_potion_counts_down_without_dose() {
+        let (mut h, mut s) = prepare();
+        on_mycelium(&mut h, &mut s);
+        tick(&mut h, &mut s, 300);
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100., 40.5], creative: true }]);
+        tick(&mut h, &mut s, 301);
+        assert_eq!(h.irradiation.as_ref().unwrap()["p"], (598, 3));
+        assert_eq!(h.attached["p"], 200);
     }
     #[test]
     fn extraction_contract_exposes_conditional_rod_outputs() {

@@ -106,6 +106,7 @@ impl Server {
         let mut phases = Phases::new(host.trace_phases());
         self.ready.frozen.clear();
         self.ready.zirnox_radiation_rate.clear();
+        self.ready.irradiated_now.clear();
         if let Some(players) = host.players() {
             self.players = players;
         }

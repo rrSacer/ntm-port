@@ -137,6 +137,8 @@ pub enum Harm {
 /// `ModDamageSource.radiation`, `new DamageSource("radiation").setDamageBypassesArmor()`: the content damage type
 /// (decision D2 of slice 5; `tools/content-gen/damage_types.py`), which armor does not stop and Resistance does.
 pub const RADIATION_DAMAGE: &str = "ntm:radiation";
+/// `HbmPotion.radiation` as a status effect: the flag a player sees while the potion runs.
+pub const RADIATION_EFFECT: &str = "ntm:radiation";
 
 /// At 1000 RAD radiation kills (`EntityEffectHandler.handleRadiationEffect:223-226`:
 /// `attackEntityFrom(ModDamageSource.radiation, 1000F)`, then the dose is 0, whatever the attack did).

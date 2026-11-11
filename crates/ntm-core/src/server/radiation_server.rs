@@ -90,7 +90,7 @@ impl Server {
     /// `TileEntityDecon.updateEntity`, every tick: each decontaminator whose
     /// box reaches a player takes 0.5 RAD from them (creative too:
     /// `incrementRadiation` asks nothing), ends their radiation potion
-    /// (`HbmPotion.radiation`: the port's `zirnox.irradiated`) and clears their
+    /// (`HbmPotion.radiation`, `removePotionEffect`) and clears their
     /// contamination list (`HbmLivingProps.getCont`, which the port has not).
     /// Mobs are not reached: the port keeps no dose for them.
     pub(super) fn decon_tick(&mut self, host: &mut impl ServerHost) {
@@ -105,9 +105,7 @@ impl Server {
             if self.player_dose(&p.id).millirad > 0 || host.player_dose(&p.id, &self.player_dose(&p.id)).is_some_and(|d| d.millirad > 0) {
                 self.update_player_dose(host, &p.id, |dose| radiation::decontaminate(dose, n));
             }
-            if self.ready.world.zirnox.irradiated.contains_key(&p.id) {
-                self.ready.world.zirnox.irradiated.remove(&p.id);
-            }
+            self.end_irradiation(host, &p.id);
         }
     }
     pub(super) fn radiation_tick(&mut self, host: &mut impl ServerHost) {

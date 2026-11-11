@@ -140,6 +140,16 @@ pub trait ServerHost: Kv {
     fn player_dose(&mut self, _id:&str, legacy:&crate::radiation::Dose)->Option<crate::radiation::Dose>{Some(legacy.clone())}
     fn commit_player_dose(&mut self,_id:&str,_expected:&crate::radiation::Dose,_desired:&crate::radiation::Dose)->bool{true}
     fn radiation_factor(&mut self,_id:&str)->f64{1.0}
+    /// The radiation potion (`HbmPotion.radiation`) in player `id`'s own storage: (ticks left, amplifier), (0, 0)
+    /// for none. `legacy` seeds a storage that has no dose yet. None: the host has no player storage, and the
+    /// world's map (`zirnox.irradiated`) is the state.
+    fn player_irradiation(&mut self,_id:&str,_legacy:&crate::radiation::Dose)->Option<crate::zirnox::Irradiation>{None}
+    /// Writes it if the storage still holds `expected`.
+    fn commit_player_irradiation(&mut self,_id:&str,_legacy:&crate::radiation::Dose,_expected:crate::zirnox::Irradiation,_desired:crate::zirnox::Irradiation)->bool{false}
+    /// Whether player `id` has status effect `effect` (None: the host can't tell).
+    fn has_effect(&mut self,_id:&str,_effect:&str)->Option<bool>{None}
+    /// Takes status effect `effect` from player `id` (`removePotionEffect`).
+    fn remove_effect(&mut self,_id:&str,_effect:&str){}
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
@@ -376,6 +386,9 @@ struct Ready {
     /// The redstone signal batteries and bombs received this tick.
     native_signal: BTreeMap<Key, u8>,
     zirnox_radiation_rate: BTreeMap<String,u32>,
+    /// Players given the radiation potion this tick: its effect reaches them at the end of the tick, so its absence
+    /// now is no cure.
+    irradiated_now: BTreeSet<String>,
     /// RBMK columns whose meltdown is due and already logged (once per column and state; T16 runs it).
     rbmk_melting: BTreeSet<Key>,
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
