@@ -98,7 +98,7 @@ def play(args, base, scratch, env, point, control):
     return result
 
 
-def coherent(scenario, c, base):
+def coherent(scenario, c, base, may_have_ended=False):
     """No item gone without its effect (radaway/herbal), each table piece held once."""
     if c is None:
         return False
@@ -111,11 +111,12 @@ def coherent(scenario, c, base):
         if scenario == 'migration':
             # Every dose the potion gave (0.2 RAD a tick) plus the ticks it has left is at most its budget G0, measured
             # at the end of the prepare (re-review RR-3): a potion taken in twice would give its time again (review
-            # P2-1). The first 200 ticks of a reopening count down without a dose, so the sum only falls; a potion
-            # that ran out on the way (0 ticks, no effect) is within it too.
+            # P2-1). The first 200 ticks of a reopening count down without a dose, so the sum only falls. A potion that
+            # ran out (0 ticks, no effect) is accepted only at the second reopening, after the first showed it
+            # (re-review RR3-2): a migration that threw the potion away must not pass for one that ran out.
             given = (st.get('dose', base) - base) // 200
             left = st.get('irradiated', 0)
-            ended = left == 0 and not shown
+            ended = may_have_ended and left == 0 and not shown
             return BUDGET[0] is not None and (attached or ended) and given + left <= BUDGET[0]
         # Before 5c the potion lives in the world's storage, its dose in the player's file; since, both in one
         # attachment. Either way the potion and the dose it gave go together: both or neither.
@@ -136,7 +137,8 @@ def coherent(scenario, c, base):
 def verdict(scenario, mine, control):
     point = mine['point']
     out = {'point': point, 'mod': mine, 'control': control}
-    out['coherent'] = all(coherent(scenario, mine.get(r), 300000) for r in ('first_reopen', 'second_reopen'))
+    first = coherent(scenario, mine.get('first_reopen'), 300000)
+    out['coherent'] = first and coherent(scenario, mine.get('second_reopen'), 300000, may_have_ended=first)
     out['reopens_agree'] = mine.get('first_reopen', {}) and (mine['first_reopen'] or {}).get('items') == (mine.get('second_reopen') or {}).get('items')
     if control is not None:
         # The control is the table's: the two stacks moved into the Ender chest, each held once.

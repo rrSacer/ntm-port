@@ -1383,6 +1383,12 @@ def irradiation(g):
     reset(g,'survival');g.command('effect give @s ntm:radiation 20 9');pause(g,.3)
     d0=state(g)['dose'];t0=now(g);pause(g,2);d1=state(g)['dose'];t1=now(g);left=potion()
     g.check('a_given_radiation_effect_doses',left[1]==9 and left[0]>0 and abs((d1-d0)-500*(t1-t0))<=500*6,{'dose':d1-d0,'ticks':t1-t0,'attachment':left})
+    # Given while the mycelium gives the potion (re-review RR3-1): in the Java `combine` keeps amplifier 9.
+    reset(g,'survival');g.command(f'setblock {under} ntm:waste_mycelium');g.command('tp @s 22.5 101 11.5');pause(g,.5)
+    g.command('effect give @s ntm:radiation 20 9');pause(g,.5)
+    g.command('tp @s 20.5 101 11.5');g.command(f'setblock {under} minecraft:stone');pause(g,1)
+    shown=effect_map(g).get('radiation');left=potion()
+    g.check('an_effect_given_on_the_mycelium_reaches_the_attachment',left[1]==9 and shown is not None and shown[0]==9,{'effect':shown,'attachment':left})
     cures=[('milk',lambda:hold(g,'minecraft:milk_bucket',2)),('iodine_pill',lambda:hold(g,'ntm:pill_iodine',.9)),
            ('med_bag',lambda:hold(g,'ntm:med_bag',0)),('antidote',lambda:hold(g,'ntm:syringe_antidote',0)),
            ('effect_clear',lambda:g.command('effect clear @s'))]
