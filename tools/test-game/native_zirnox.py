@@ -490,8 +490,20 @@ def ruin_dose_check(g):
     p=g.ctl('state')['player'];chat=' | '.join(g.ctl('chat-log 12').get('chat',[]))
     dead=p.get('death_time') is not None or p['health']<=0
     g.check('ruin_kills_with_radiation',dead and 'died from radiation poisoning' in chat,{'player':p,'chat':chat[:300]})
-    if dead:
-        g.command('gamemode creative');g.ctl('respawn');g.ctl('wait-ready 60');g.command('tp @s 138.5 101 2.5');time.sleep(1)
+    if not dead:return
+    # Respawned at the ruin, the player is spared its first 200 ticks (`ContaminationUtil.contaminate:287`), then dies.
+    g.ctl('respawn');back=game_time(g);g.ctl('wait-ready 60');g.command('tp @s 115.5 101 0.5 0 0')
+    while game_time(g)<back+60:time.sleep(.2)
+    p=g.ctl('state')['player'];spared=dose(g)
+    g.check('ruin_spares_a_respawn_for_200_ticks',p.get('death_time') is None and p['health']>0 and spared==0,{'player':p,'dose':spared})
+    deadline=time.monotonic()+30
+    while time.monotonic()<deadline:
+        p=g.ctl('state')['player']
+        if p.get('death_time') is not None or p['health']<=0:break
+        time.sleep(.2)
+    died_at=game_time(g)-back
+    g.check('ruin_kills_after_the_200_ticks',(p.get('death_time') is not None or p['health']<=0) and 180<=died_at<=260,{'ticks_after_respawn':died_at,'player':p})
+    g.command('gamemode creative');g.ctl('respawn');g.ctl('wait-ready 60');g.command('tp @s 138.5 101 2.5');time.sleep(1)
     g.check('ruin_death_leaves_the_storage_at_zero',dose(g)==0,dose(g))
 
 
