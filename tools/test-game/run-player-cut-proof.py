@@ -24,6 +24,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 
 here = Path(__file__).resolve().parent
 sys.path.insert(0, str(here))
@@ -42,6 +43,21 @@ POINTS = ['none', 'kill', 'save_begin', 'level_saved', 'players_saved', 'world_s
 
 
 class Copy(crash_proof.World):
+    def launch(self, failpoint=None):
+        """A client may exit before it opens its socket when the machine is loaded, right after the one a cut killed
+        (review 5d P3-4: the vanilla control at players_saved and kv_committed). Wait and start it again, up to three
+        times; each early exit is kept for the report with the end of its log."""
+        self.early_exits = getattr(self, 'early_exits', [])
+        for attempt in range(3):
+            try:
+                return super().launch(failpoint)
+            except RuntimeError as error:
+                if 'before opening its socket' not in str(error) or attempt == 2:
+                    raise
+                tail = self.log.read_text(errors='replace')[-400:] if self.log.exists() else ''
+                self.early_exits.append({'failpoint': failpoint, 'attempt': attempt + 1, 'log_tail': tail})
+                time.sleep(5 * (attempt + 1))
+
     def script(self, mode, check=True, extra=None):
         return subprocess.run([sys.executable, str(here / 'native_player_cut.py'), str(self.folder), mode],
                               cwd=self.folder, env=dict(self.env, **(extra or {})), check=check, timeout=1200).returncode
@@ -90,7 +106,9 @@ def play(args, base, scratch, env, point, control):
             if failed:
                 raise AssertionError(key + ' failed; see its evidence')
         result['ok'] = True
+        result['early_exits'] = getattr(world, 'early_exits', [])
     except Exception as error:
+        result['early_exits'] = getattr(world, 'early_exits', [])
         result['error'] = repr(error)
         if getattr(world, 'client', None) is not None and world.client.poll() is None:
             world.client.kill()
