@@ -390,6 +390,9 @@ struct Ready {
     /// Players given the radiation potion this tick: its effect reaches them at the end of the tick, so its absence
     /// now is no cure.
     irradiated_now: BTreeSet<String>,
+    /// The `ntm:radiation` effect each player had at the last reading ((0, 0): none): only an effect that grew since
+    /// counts as an application (`/effect give`); one the engine holds still (a guest not loaded yet) does not.
+    radiation_effect_read: BTreeMap<String, (u32, u8)>,
     /// RBMK columns whose meltdown is due and already logged (once per column and state; T16 runs it).
     rbmk_melting: BTreeSet<Key>,
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a

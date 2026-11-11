@@ -178,13 +178,18 @@ impl Server {
             let (mut desired, taken) = match stored {
                 Some(stored) => {
                     let mut base = stored;
-                    if self.potion_cured(host, &p.id, stored.potion) {
+                    // Read every tick, acted on once settled: the reading before is what "grew" is measured against.
+                    let read = host.effect_state(&p.id, crate::radiation::RADIATION_EFFECT);
+                    let before = read.and_then(|now| self.ready.radiation_effect_read.insert(p.id.clone(), now.unwrap_or((0, 0))));
+                    let settled = self.potion_effect_settled(&p.id);
+                    if stored.potion.0 > 0 && settled && read == Some(None) {
                         base.potion = (0, 0);
-                    } else if self.potion_effect_settled(&p.id)
-                        && let Some(Some((ticks, amplifier))) = host.effect_state(&p.id, crate::radiation::RADIATION_EFFECT)
+                    } else if settled
+                        && let (Some(Some((ticks, amplifier))), Some((was, was_level))) = (read, before)
+                        && (amplifier > was_level || amplifier == was_level && ticks > was)
                         && (amplifier > base.potion.1 || amplifier == base.potion.1 && ticks > base.potion.0)
                     {
-                        // An effect the storage did not give (`/effect give`): the Java's potion is that effect.
+                        // An effect that grew without the storage (`/effect give`): the Java's potion is that effect.
                         crate::zirnox::combine(&mut base.potion, ticks, amplifier);
                     }
                     crate::zirnox::absorb(base, pending)
@@ -200,6 +205,9 @@ impl Server {
             let potion = desired.potion;
             if potion.0 > 0 {
                 desired.potion.0 -= 1;
+            }
+            if desired.potion.0 == 0 {
+                desired.potion = (0, 0);
             }
             match stored {
                 Some(stored) => {
@@ -1471,6 +1479,26 @@ mod tests {
         assert!(s.ready.world.zirnox.irradiated.is_empty());
         h.blocks.remove(&(DIM.into(), [0, 99, 40]));
         assert_eq!(run_out(&mut h, &mut s, 301, Some((301, (600, 3)))), 0);
+    }
+
+    /// Re-review RR-1: a guest the engine has not loaded yet keeps its effects still (they don't count down), and
+    /// the NTM sees the guest already: an effect held still is no application, and the potion gives exactly its ticks.
+    #[test]
+    fn an_effect_held_still_is_no_application() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.attached.insert("p".into(), 0);
+        s.blasts.entered.insert("p".into(), 0);
+        off_mycelium(&mut s);
+        h.irradiation.as_mut().unwrap().insert("p".into(), crate::zirnox::StoredPotion { potion: (30, 3), migrated: (0, 0) });
+        h.effects.insert(("p".into(), RAD.into()), (31, 3));
+        for t in 300..400 {
+            // No engine tick for this guest: the effect stays, the queue does not reach it.
+            s.native_tick(&mut h, t);
+            h.queued.clear();
+        }
+        assert_eq!(potion(&h), (0, 0));
+        assert_eq!(h.attached["p"], 30 * 200);
     }
 
     /// Review P3-4: a refused write gives no dose and counts nothing; the potion still gives its 600 doses.
