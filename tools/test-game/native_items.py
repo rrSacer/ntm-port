@@ -1310,7 +1310,7 @@ def sickness(g):
 
 
 def radiation_death(g):
-    """Onda 1, fatia 5b: `EntityEffectHandler.handleRadiationEffect:224-227`. From 1000 RAD the player takes
+    """Onda 1, fatia 5b: `EntityEffectHandler.handleRadiationEffect:223-226`. From 1000 RAD the player takes
     `ModDamageSource.radiation` 1000 (`ntm:radiation`, decision D2: armor does not stop it, Resistance does) and the
     dose goes back to 0 whatever the attack did; the death message is the Java's `death.attack.radiation`. Creative
     players are skipped."""
@@ -1333,6 +1333,15 @@ def radiation_death(g):
     g.command('ntmitem dose 1000000');pause(g,1)
     alive=not died()
     g.check('resistance_survives_radiation_but_the_dose_resets',alive and state(g)['dose']==0,{'alive':alive,'state':state(g)})
+    if not alive:come_back()
+    # `setDamageBypassesArmor` is the `minecraft:bypasses_armor` tag: the armor neither absorbs nor wears. With Resistance
+    # V and a diamond chestplate the player lives, and the chestplate keeps its durability (without the tag the 1000
+    # would wear it by 1000 / 4 = 250).
+    reset(g,'survival');g.command('effect give @s minecraft:resistance 60 4 true')
+    g.command('item replace entity @s armor.chest with minecraft:diamond_chestplate')
+    g.command('ntmitem dose 1000000');pause(g,1)
+    alive=not died();plate=[s for s in g.ctl('inventory').get('armor',[]) if s.get('item')=='minecraft:diamond_chestplate']
+    g.check('radiation_does_not_wear_the_armor',alive and len(plate)==1 and not plate[0].get('damage') and state(g)['dose']==0,{'alive':alive,'plate':plate,'state':state(g)})
     if not alive:come_back()
     # Creative: the handler returns before anything.
     reset(g,'creative');g.command('ntmitem dose 1000000');pause(g,1)
