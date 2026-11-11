@@ -323,6 +323,17 @@ mod tests {
         assert!(advance(&mut s, "o", [0.5, 64.0, 0.9], false, false, &mut w).is_some(), "the next move steps");
     }
 
+    /// A teleport leaves the step counters as they were (`setPositionAndUpdate` does not touch them, review M1): with
+    /// `Q` at 0.9 and `nextStepDistance` at 1, a teleport and then 0.2 of walking steps as without the teleport.
+    #[test]
+    fn a_teleport_keeps_the_step_counters() {
+        let mut w = floor("minecraft:stone");
+        let mut s = Walk { dim: "o".into(), at: [0.5, 64.0, 0.5], walked: 0.9, next_step: 1 };
+        assert_eq!(advance(&mut s, "o", [5.5, 64.0, 0.5], false, true, &mut w), None);
+        assert_eq!((s.walked, s.next_step), (0.9, 1));
+        assert!(advance(&mut s, "o", [5.7, 64.0, 0.5], false, false, &mut w).is_some());
+    }
+
     /// Walking moves the player 1/0.6 of what their step distance grew; a longer move is a teleport, also when it
     /// comes in a tick of walking (review P3-1).
     #[test]
@@ -347,6 +358,12 @@ mod tests {
             let feet = java_feet(&mut w, [0.5, standing + 0.1, 0.5]);
             assert_eq!(step_cell(&mut w, feet).0, [0, 64, 0], "{layers} jumping");
         }
+        // The top of a high jump over eight layers (standing 0.875 up, then 0.35 higher): the feet are in the cell above
+        // the fallout's, which is found one below them (review M2); the Java's feet 0.475 up land on the fallout.
+        let mut w = floor("minecraft:stone");
+        w.0.insert([0, 64, 0], "ntm:fallout[layers=8]".into());
+        let feet = java_feet(&mut w, [0.5, 65.225, 0.5]);
+        assert_eq!(step_cell(&mut w, feet), ([0, 64, 0], "ntm:fallout[layers=8]".into()));
         let mut w = floor("minecraft:stone");
         assert_eq!(java_feet(&mut w, [0.5, 64.0, 0.5]), [0.5, 64.0, 0.5], "no fallout, no change");
         // Walking flat on four layers (standing 0.375 above the cell): every step lands on the stone below.
