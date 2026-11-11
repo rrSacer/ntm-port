@@ -571,7 +571,7 @@ pub(super) fn mods_tooltip(game: &Game<'_>, stack: &ItemStack, lines: &mut Vec<(
     if !matches!(data.get(&JavaString::from("ntm_armor_mods")), Some(Tag::Compound(_))) {
         return;
     }
-    if !game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft) {
+    if !game.keys.raw(&winit::keyboard::KeyCode::ShiftLeft) {
         lines.push((Text::legacy("§8§oHold <§e§oLSHIFT§8§o> to display installed armor mods"), u32::MAX));
         return;
     }
