@@ -47,7 +47,7 @@ impl<H: ServerHost> crate::explosion::Store for &Engine<'_, H> {
 fn show(host: &mut impl ServerHost, dim: &str, shows: Vec<visuals::Show>) {
     for s in shows {
         match s {
-            visuals::Show::Effect { player, id, seconds, amplifier } => host.effect(&player, id, seconds, amplifier),
+            visuals::Show::Effect { player, id, seconds, amplifier } => host.effect(&player, id, seconds * 20, amplifier),
             other => host.show(dim, &other),
         }
     }

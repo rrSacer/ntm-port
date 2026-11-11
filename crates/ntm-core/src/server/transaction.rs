@@ -206,9 +206,9 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         let (p, k) = (p.to_string(), k.to_string());
         self.effects.push((self.origins.clone(),Box::new(move |h| h.hurt(&p, a, &k))));
     }
-    fn effect(&mut self, p: &str, e: &str, s: u32, a: u8) {
+    fn effect(&mut self, p: &str, e: &str, t: u32, a: u8) {
         let (p, e) = (p.to_string(), e.to_string());
-        self.effects.push((self.origins.clone(),Box::new(move |h| h.effect(&p, &e, s, a))));
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.effect(&p, &e, t, a))));
     }
     fn show(&mut self, d: &str, s: &crate::blast::visuals::Show) {
         let (d, s) = (d.to_string(), s.clone());

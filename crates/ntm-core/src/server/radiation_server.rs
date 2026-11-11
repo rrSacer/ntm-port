@@ -44,6 +44,36 @@ impl Server {
         let amount=(amount as f64*factor) as u64;
         self.update_player_dose(host,id,|dose|radiation::add_dose(dose,amount));
     }
+    /// `EntityEffectHandler.handleRadiationEffect:221-258`, every tick: each non-creative player between 200 and
+    /// 1000 RAD rolls their band's effects (`radiation::sickness_roll`) on the world's sickness random (decision D1 of
+    /// slice 5). It is seeded from the world's seed the first time someone is sick; a tick with nobody in a band draws
+    /// nothing and writes nothing. The Java has no joining grace here (that is `contaminate`'s `ticksExisted`).
+    pub(super) fn sickness_tick(&mut self, host: &mut impl ServerHost) {
+        let mut sick = Vec::new();
+        for p in self.players.iter().filter(|p| !p.creative) {
+            let Some(dose) = host.player_dose(&p.id, &self.player_dose(&p.id)) else { continue };
+            if (200_000..1_000_000).contains(&dose.millirad) {
+                sick.push((p.id.clone(), dose));
+            }
+        }
+        if sick.is_empty() {
+            return;
+        }
+        let mut rng = match &*self.ready.world.sickness {
+            Some(s) => s.rng(),
+            None => crate::rbmk::jrandom::JavaRandom::new(host.world_seed()),
+        };
+        for (id, dose) in sick {
+            for h in radiation::sickness_roll(&dose, &mut rng) {
+                if let Harm::Effect { id: effect, amplifier, ticks } = h {
+                    host.effect(&id, effect, ticks, amplifier);
+                }
+            }
+        }
+        let mut kept = radiation::SicknessRng { seed: 0, gaussian: None };
+        kept.set_rng(&rng);
+        *self.ready.world.sickness = Some(kept);
+    }
     /// `TileEntityDecon.updateEntity`, every tick: each decontaminator whose
     /// box reaches a player takes 0.5 RAD from them (creative too:
     /// `incrementRadiation` asks nothing), ends their radiation potion
@@ -83,7 +113,7 @@ impl Server {
             let grace = self.blasts.entered.get(&p.id).is_none_or(|t| tick.saturating_sub(*t) < radiation::GRACE_TICKS);
             let protected = (f64::from(held)*host.radiation_factor(&p.id)) as u32;
             let Some(harms) = self.update_player_dose(host,&p.id,|dose| {
-                if p.creative || grace {Vec::new()} else {radiation::accumulate(dose,protected);radiation::sickness(dose)}
+                if p.creative || grace {Vec::new()} else {radiation::accumulate(dose,protected);radiation::death(dose).into_iter().collect::<Vec<_>>()}
             }) else {continue};
             let dose = &self.ready.world.radiation[&p.id];
             // `radBuf = radEnv; radEnv = 0` once a second: the continuous
@@ -93,7 +123,7 @@ impl Server {
             let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), continuous.saturating_add(events));
             for h in harms {
                 match h {
-                    Harm::Effect { id, amplifier, seconds } => host.effect(&p.id, id, seconds, amplifier),
+                    Harm::Effect { id, amplifier, ticks } => host.effect(&p.id, id, ticks, amplifier),
                     Harm::Hurt { amount, kind } => host.hurt(&p.id, amount, kind),
                 }
             }

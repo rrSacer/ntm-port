@@ -248,8 +248,8 @@ impl ServerHost for SHost {
     fn hurt(&mut self, id: &str, amount: f32, kind: &str) {
         self.world.borrow_mut().hurts.push((id.into(), amount, kind.into()));
     }
-    fn effect(&mut self, id: &str, effect: &str, seconds: u32, amplifier: u8) {
-        self.world.borrow_mut().effects.push((id.into(), effect.into(), seconds, amplifier));
+    fn effect(&mut self, id: &str, effect: &str, ticks: u32, amplifier: u8) {
+        self.world.borrow_mut().effects.push((id.into(), effect.into(), ticks, amplifier));
     }
     fn show(&mut self, dim: &str, show: &crate::blast::visuals::Show) {
         self.world.borrow_mut().shown.push((dim.into(), show.clone()));
@@ -476,15 +476,23 @@ fn radiation_from_what_a_player_carries() {
     g.run(40);
     assert_eq!(value(&g, KEY_RATE), Some(64 * 350), "a taxa aparece já na carência");
     assert_eq!(value(&g, KEY_DOSE), Some(0), "nada de dose na carência");
+    assert_eq!(*g.ready().world.sickness, None, "nobody sick yet: no random kept");
     g.run(GRACE_TICKS as usize + 20 * 10);
     let dose = value(&g, KEY_DOSE).unwrap();
     assert!((9 * 64 * 350..=12 * 64 * 350).contains(&dose), "{dose}");
-    // 200 RAD: nausea and weakness, every second.
+    // 300 RAD, nothing carried: every tick nausea one time in 300 and weakness one in 500, for 100 ticks each
+    // (EntityEffectHandler:250-252), drawn from the world's sickness random.
+    g.world.borrow_mut().carried.clear();
     g.ready().world.radiation.get_mut("p1").unwrap().millirad = 300_000;
-    g.run(20);
+    g.world.borrow_mut().effects.clear();
+    g.run(6000);
     let effects = g.world.borrow().effects.clone();
-    assert!(effects.iter().any(|e| e.1 == "weakness" && e.3 == 0), "{effects:?}");
+    assert!(effects.iter().all(|e| (e.1 == "nausea" || e.1 == "weakness") && e.2 == 100 && e.3 == 0), "{effects:?}");
+    let count = |name: &str| effects.iter().filter(|e| e.1 == name).count();
+    assert!(count("nausea") > count("weakness") && count("weakness") > 0, "{effects:?}");
+    assert!(g.ready().world.sickness.is_some(), "the random is kept once someone was sick");
     // 1000 RAD: death, and the dose starts again.
+    g.world.borrow_mut().carried.insert("p1".into(), vec![("ntm:ingot_uranium".into(), 64)]);
     g.ready().world.radiation.get_mut("p1").unwrap().millirad = 999_999;
     g.run(40);
     assert!(g.world.borrow().hurts.iter().any(|h| h.2 == "minecraft:generic_kill"), "{:?}", g.world.borrow().hurts);

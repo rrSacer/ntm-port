@@ -126,41 +126,69 @@ pub fn add_dose(dose: &mut Dose, millirad: u64) {
 
 pub const MAX_DOSE: u64 = 2_500_000;
 
-/// What radiation sickness does to a player: an effect for some seconds,
-/// or damage of a kind.
+/// What radiation sickness does to a player: an effect for some ticks, or
+/// damage of a kind.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Harm {
-    Effect { id: &'static str, amplifier: u8, seconds: u32 },
+    Effect { id: &'static str, amplifier: u8, ticks: u32 },
     Hurt { amount: f32, kind: &'static str },
 }
 
-/// How long each sickness effect lasts: it outlives the second between
-/// doses, so it stays on while the dose is high.
-pub const SICKNESS_SECONDS: u32 = 5;
-
-/// Deterministic approximation of NTM's random sickness rolls, once a
-/// second: effects by the dose's band, damage above 800 RAD, death at
-/// 1000 RAD (the dose starts again from zero). Effects expire by
-/// themselves; nothing clears effects from other sources. The host skips
-/// creative and spectator players.
-pub fn sickness(dose: &mut Dose) -> Vec<Harm> {
-    let rad = dose.millirad;
-    if rad >= 1_000_000 {
-        dose.millirad = 0;
-        return vec![Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }];
+/// At 1000 RAD radiation kills (`EntityEffectHandler.handleRadiationEffect`:
+/// `attackEntityFrom(ModDamageSource.radiation, 1000F)`, then the dose is 0).
+pub fn death(dose: &mut Dose) -> Option<Harm> {
+    if dose.millirad < 1_000_000 {
+        return None;
     }
-    let effects: &[(&'static str, u8)] = match rad {
-        800_000.. => &[("nausea", 0), ("slowness", 2), ("weakness", 2), ("poison", 2), ("wither", 1)],
-        600_000.. => &[("nausea", 0), ("slowness", 2), ("weakness", 2), ("poison", 1)],
-        400_000.. => &[("nausea", 0), ("slowness", 0), ("weakness", 1)],
-        200_000.. => &[("nausea", 0), ("weakness", 0)],
+    dose.millirad = 0;
+    Some(Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" })
+}
+
+/// One tick of `EntityEffectHandler.handleRadiationEffect:221-258` for a
+/// player between 200 and 1000 RAD: each effect of the dose's band is rolled
+/// with `world.rand.nextInt(n) == 0`, in the Java order, every call made
+/// whatever the earlier ones gave (`addPotionEffect(new PotionEffect(id,
+/// ticks, amplifier))`). Outside the bands nothing is drawn.
+pub fn sickness_roll(dose: &Dose, rng: &mut crate::rbmk::jrandom::JavaRandom) -> Vec<Harm> {
+    // (bound, effect, ticks, amplifier), as the Java lists them.
+    let rolls: &[(i32, &'static str, u32, u8)] = match dose.millirad {
+        1_000_000.. => &[],
+        800_000.. => &[(300, "nausea", 5 * 30, 0), (300, "slowness", 10 * 20, 2), (300, "weakness", 10 * 20, 2), (500, "poison", 3 * 20, 2), (700, "wither", 3 * 20, 1)],
+        600_000.. => &[(300, "nausea", 5 * 30, 0), (300, "slowness", 10 * 20, 2), (300, "weakness", 10 * 20, 2), (500, "poison", 3 * 20, 1)],
+        400_000.. => &[(300, "nausea", 5 * 30, 0), (500, "slowness", 5 * 20, 0), (300, "weakness", 5 * 20, 1)],
+        200_000.. => &[(300, "nausea", 5 * 20, 0), (500, "weakness", 5 * 20, 0)],
         _ => &[],
     };
-    let mut out: Vec<Harm> = effects.iter().map(|&(id, amplifier)| Harm::Effect { id, amplifier, seconds: SICKNESS_SECONDS }).collect();
-    if rad >= 800_000 {
-        out.push(Harm::Hurt { amount: 1.0, kind: "minecraft:magic" });
+    rolls
+        .iter()
+        .filter(|&&(bound, ..)| rng.next_int(bound) == 0)
+        .map(|&(_, id, ticks, amplifier)| Harm::Effect { id, amplifier, ticks })
+        .collect()
+}
+
+/// The sickness rolls' `java.util.Random` (decision D1 of slice 5, the shape of the RBMK's D3): one per world, seeded
+/// from the world's seed the first time someone is sick, by its seed and cached gaussian.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SicknessRng {
+    pub seed: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gaussian: Option<u64>,
+}
+
+impl SicknessRng {
+    pub fn seeded(world_seed: i64) -> Self {
+        let mut s = SicknessRng { seed: 0, gaussian: None };
+        s.set_rng(&crate::rbmk::jrandom::JavaRandom::new(world_seed));
+        s
     }
-    out
+    pub fn rng(&self) -> crate::rbmk::jrandom::JavaRandom {
+        crate::rbmk::jrandom::JavaRandom::from_state(self.seed, self.gaussian.map(f64::from_bits))
+    }
+    pub fn set_rng(&mut self, rng: &crate::rbmk::jrandom::JavaRandom) {
+        let (seed, gaussian) = rng.state();
+        self.seed = seed;
+        self.gaussian = gaussian.map(f64::to_bits);
+    }
 }
 
 /// The decontaminator (`BlockDecon`, `TileEntityDecon`).
@@ -315,14 +343,73 @@ mod tests {
             accumulate(&mut d, 22400);
         }
         assert_eq!(d.millirad, 224000);
-        assert!(sickness(&mut d).iter().any(|h| matches!(h, Harm::Effect { id: "weakness", .. })));
         accumulate(&mut d, 0);
         assert_eq!(d.millirad, 224000, "no natural player-dose decay in NTM");
-        d.millirad = 810000;
-        assert!(sickness(&mut d).contains(&Harm::Hurt { amount: 1.0, kind: "minecraft:magic" }));
+        assert_eq!(death(&mut d), None);
+        d.millirad = 999_999;
+        assert_eq!(death(&mut d), None);
         d.millirad = 1000000;
-        assert_eq!(sickness(&mut d), [Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }]);
+        assert_eq!(death(&mut d), Some(Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }));
         assert_eq!(d.millirad, 0);
+    }
+
+    /// Below 200 RAD and from 1000 nothing is drawn: the random is where it was.
+    #[test]
+    fn sickness_draws_only_in_its_bands() {
+        use crate::rbmk::jrandom::JavaRandom;
+        for millirad in [0, 199_999, 1_000_000, 2_500_000] {
+            let mut r = JavaRandom::new(7);
+            assert!(sickness_roll(&Dose { millirad }, &mut r).is_empty());
+            assert_eq!(r.state(), JavaRandom::new(7).state(), "{millirad}");
+        }
+        // Each band draws once per effect it lists, whatever the draws gave.
+        let bands: [(u64, &[i32]); 5] = [
+            (200_000, &[300, 500]),
+            (400_000, &[300, 500, 300]),
+            (600_000, &[300, 300, 300, 500]),
+            (800_000, &[300, 300, 300, 500, 700]),
+            (999_999, &[300, 300, 300, 500, 700]),
+        ];
+        for (millirad, bounds) in bands {
+            let mut r = JavaRandom::new(7);
+            sickness_roll(&Dose { millirad }, &mut r);
+            let mut expected = JavaRandom::new(7);
+            for &b in bounds {
+                expected.next_int(b);
+            }
+            assert_eq!(r.state(), expected.state(), "{millirad}");
+        }
+    }
+
+    /// The rolls against the Java's own `handleRadiationEffect`, compiled and run with the same seed over the same
+    /// doses (`tools/sickness-oracle`): the same effects on the same ticks, with their lengths and amplifiers.
+    #[test]
+    fn sickness_rolls_as_the_java_oracle() {
+        use crate::rbmk::jrandom::JavaRandom;
+        let fixture: serde_json::Value =
+            serde_json::from_str(include_str!("../../../tools/sickness-oracle/fixture.json")).unwrap();
+        // The doses tick by tick: each (RAD, ticks) of the schedule held in turn.
+        let doses: Vec<u64> = fixture["schedule"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .flat_map(|s| std::iter::repeat_n(s[0].as_u64().unwrap(), s[1].as_u64().unwrap() as usize))
+            .collect();
+        for case in fixture["cases"].as_array().unwrap() {
+            let mut r = JavaRandom::new(case["seed"].as_i64().unwrap());
+            let mut seen = Vec::new();
+            for (tick, &rad) in doses.iter().enumerate() {
+                let millirad = rad * 1000;
+                for h in sickness_roll(&Dose { millirad }, &mut r) {
+                    if let Harm::Effect { id, amplifier, ticks } = h {
+                        seen.push(serde_json::json!([tick, id, ticks, amplifier]));
+                    }
+                }
+            }
+            let expected: Vec<serde_json::Value> = case["effects"].as_array().unwrap().clone();
+            assert!(!expected.is_empty());
+            assert_eq!(seen, expected, "seed {}", case["seed"]);
+        }
     }
 
     /// TileEntityDecon's box against a 0.6 x 1.8 player.

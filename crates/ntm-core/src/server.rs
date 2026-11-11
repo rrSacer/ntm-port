@@ -143,8 +143,12 @@ pub trait ServerHost: Kv {
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
-    /// A status effect on player `id` (`poison`).
-    fn effect(&mut self, _id: &str, _effect: &str, _seconds: u32, _amplifier: u8) {}
+    /// A status effect on player `id` (`poison`) for `ticks`.
+    fn effect(&mut self, _id: &str, _effect: &str, _ticks: u32, _amplifier: u8) {}
+    /// The world's seed (`World.getSeed`): it seeds the sickness rolls' random (radiation::SicknessRng).
+    fn world_seed(&mut self) -> i64 {
+        0
+    }
     /// Particles or a sound in `dim` (`crate::blast::visuals::Show`, not
     /// its effects).
     fn show(&mut self, _dim: &str, _show: &crate::blast::visuals::Show) {}

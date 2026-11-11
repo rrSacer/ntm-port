@@ -1433,10 +1433,18 @@ impl ServerHost for Host<'_, '_> {
             eprintln!("ntm: hurt {id}: {e}");
         }
     }
-    fn effect(&mut self, id: &str, effect: &str, seconds: u32, amplifier: u8) {
-        if let Err(e) = self.game.native_effect(id, effect, seconds * 20, amplifier, true) {
+    fn effect(&mut self, id: &str, effect: &str, ticks: u32, amplifier: u8) {
+        // The test runs count the sickness rolls by band from this line (tools/test-game/native_items.py).
+        static TRACE: OnceLock<bool> = OnceLock::new();
+        if *TRACE.get_or_init(|| std::env::var_os("NTM_TRACE_ITEMS").is_some()) {
+            eprintln!("ntm trace effect {}", serde_json::json!({"tick": self.game.world.game_time, "player": id, "effect": effect, "ticks": ticks, "amplifier": amplifier}));
+        }
+        if let Err(e) = self.game.native_effect(id, effect, ticks, amplifier, true) {
             eprintln!("ntm: effect {id}: {e}");
         }
+    }
+    fn world_seed(&mut self) -> i64 {
+        self.game.level.seed
     }
     /// Particles and sounds in the dimension in play (`native_send_particles`,
     /// API 11; `native_play_sound`, API 32).

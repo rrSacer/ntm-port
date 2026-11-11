@@ -112,6 +112,9 @@ pub struct Kept {
     pub bombs: crate::blast::BombWorld,
     #[serde(default)]
     pub zirnox: crate::zirnox::Remnants,
+    /// The sickness rolls' random, once someone has been sick here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sickness: Option<crate::radiation::SicknessRng>,
     #[serde(default)]
     pub ticks: u64,
     /// Batches of effects named so far (`CommittedEffects::serial`).
@@ -205,6 +208,9 @@ pub struct WorldState {
     pub cables: BTreeSet<(String, Pos)>,
     pub bombs: Tracked<crate::blast::BombWorld>,
     pub zirnox: Tracked<crate::zirnox::Remnants>,
+    /// The sickness rolls' `java.util.Random` (radiation::SicknessRng): seeded from the world's seed the first time
+    /// someone is sick, so a world nobody was sick in never writes it.
+    pub sickness: Tracked<Option<crate::radiation::SicknessRng>>,
     /// Each RBMK layer's simulation state, by dimension and base Y. It holds no item: a crash between the regions and
     /// this storage sets it back to the save before while the columns are as the regions left them (docs).
     pub rbmk: Tracked<BTreeMap<(String, i32), crate::rbmk::persist::Layer>>,
@@ -230,6 +236,7 @@ impl WorldState {
             radiation: kept.radiation.into(),
             bombs: kept.bombs.into(),
             zirnox: kept.zirnox.into(),
+            sickness: kept.sickness.into(),
             rbmk: Tracked::new(
                 kv.get(RBMK_KEY)
                     .and_then(|b| serde_json::from_slice::<Vec<((String, i32), crate::rbmk::persist::Layer)>>(&b).ok())
@@ -251,7 +258,7 @@ impl WorldState {
             Tracked::stamp(&self.effect_serial),
             Tracked::stamp(&self.legacy),
             Tracked::stamp(&self.generations),
-            0,
+            Tracked::stamp(&self.sickness),
             0,
             Tracked::stamp(&self.prepared_retentions),
             0,
@@ -286,6 +293,8 @@ impl WorldState {
             radiation: &'a BTreeMap<String, crate::radiation::Dose>,
             bombs: &'a crate::blast::BombWorld,
             zirnox: &'a crate::zirnox::Remnants,
+            #[serde(skip_serializing_if = "Option::is_none")]
+            sickness: &'a Option<crate::radiation::SicknessRng>,
             ticks: u64,
             #[serde(skip_serializing_if = "is_zero")]
             effect_serial: &'a u64,
@@ -302,6 +311,7 @@ impl WorldState {
             radiation: &self.radiation,
             bombs: &self.bombs,
             zirnox: &self.zirnox,
+            sickness: &self.sickness,
             ticks,
             effect_serial: &self.effect_serial,
             // Receipts and survivors are the session's: every save confirms them before the storage is written.
@@ -322,6 +332,7 @@ impl WorldState {
             radiation: (*self.radiation).clone(),
             bombs: (*self.bombs).clone(),
             zirnox: (*self.zirnox).clone(),
+            sickness: (*self.sickness).clone(),
             ticks,
             effect_serial: *self.effect_serial,
             removals: (*self.removals).clone(),
