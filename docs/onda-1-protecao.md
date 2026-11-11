@@ -455,6 +455,29 @@ nível trocado, ordem trocada, parar no primeiro acerto, borda 600 → 601. Em j
 12000 ticks com `tick sprint`; cada efeito com a duração e o nível do Java, e as contagens dentro de quatro desvios
 padrão da binomial (por exemplo, 39 náuseas para 40 esperadas a 300 RAD).
 
+### 5b: a morte por radiação e o tipo de dano (D2)
+
+`EntityEffectHandler.handleRadiationEffect:224-227`: de 1000 RAD, `attackEntityFrom(ModDamageSource.radiation,
+1000F)` e a dose volta a 0, seja qual for o efeito do ataque; nada é sorteado nesse tick. Agora isso é checado a cada
+tick, como no Java (antes, uma vez por segundo e só depois da carência do port, que o Java não tem). A D2 ficou na opção
+A: o motor aceita tipos de dano de conteúdo sem mudança nele (`damage_source::Catalog::with_packs` acrescenta ao
+registro os `damage_type` do mod e resolve as tags depois), então `ModDamageSource.radiation` é o tipo `ntm:radiation`,
+gerado por `tools/content-gen/damage_types.py`: `message_id` `radiation` (a mensagem `death.attack.radiation` do
+idioma do Java, "%1$s died from radiation poisoning." / "%1$s morreu por envenenamento por radiação."), exaustão 0
+(`setDamageBypassesArmor` zera a fome), escala `never` (`difficultyScaled` é falso), e a tag `minecraft:bypasses_armor`:
+a armadura não segura, a Resistência segura. Saiu o `generic_kill`.
+
+A ordem no tick também segue o Java: `World.updateEntities` roda as entidades (o `EntityEffectHandler` do jogador)
+antes dos tile entities, então a doença e a morte (`sickness_tick`) correm antes dos efeitos de máquina e de ruína do
+tick, e veem a dose como o tick anterior a deixou. Dois testes de outras frentes mudaram por isso: na ruína do ZIRNOX, o
+jogador que recebe mais de 1000 RAD morre de radiação no tick seguinte (agora o teste o verifica); na Little Boy, a dose
+da bomba pode matar e zerar, e o teste aceita a dose ou a morte por radiação.
+
+Prova: o oráculo da 5a também compara os ataques (tick, fonte e 1000), 20 nos quatro casos. Mutações mortas: tipo
+`minecraft:magic`, dose mantida, limiar 999 RAD, dano 100, sorteio na faixa da morte. Em jogo (família
+`radiation_death`): sem armadura e com armadura de diamante completa, o jogador morre com "ItemsTest died from
+radiation poisoning." e volta com dose 0; com Resistência V sobrevive e a dose é 0; no criativo, nada.
+
 ### Lacunas nominais da fatia 5
 
 - Dose em mobs e as transformações do `handleRadiationEffect` (creeper → creeper nuclear, vaca → mooshroom, aldeão →

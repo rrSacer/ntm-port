@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1309,7 +1309,38 @@ def sickness(g):
     g.command('ntmitem dose 0');g.command('effect clear @s');reset(g,'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness)]
+def radiation_death(g):
+    """Onda 1, fatia 5b: `EntityEffectHandler.handleRadiationEffect:224-227`. From 1000 RAD the player takes
+    `ModDamageSource.radiation` 1000 (`ntm:radiation`, decision D2: armor does not stop it, Resistance does) and the
+    dose goes back to 0 whatever the attack did; the death message is the Java's `death.attack.radiation`. Creative
+    players are skipped."""
+    def died():
+        p=g.ctl('state')['player'];return p.get('death_time') is not None or p['health']<=0
+    def come_back():
+        g.ctl('respawn');g.ctl('wait-ready 60');g.close();g.command('tp @s 20.5 101 11.5');pause(g,1)
+    # Bare, then in full diamond armor: both die (bypasses_armor), with the Java's message.
+    for armor in ([],['minecraft:diamond_helmet','minecraft:diamond_chestplate','minecraft:diamond_leggings','minecraft:diamond_boots']):
+        reset(g,'survival')
+        for slot,item in zip(('head','chest','legs','feet'),armor):g.command(f'item replace entity @s armor.{slot} with {item}')
+        name='armored' if armor else 'bare'
+        g.command('ntmitem dose 1000000');pause(g,1)
+        dead=died();chat=chat_lines(g)
+        g.check(f'radiation_kills_{name}',dead and 'died from radiation poisoning' in chat,{'dead':dead,'chat':chat[:300]})
+        if dead:come_back()
+        g.check(f'radiation_death_resets_the_dose_{name}',state(g)['dose']==0,state(g))
+    # Resistance V absorbs the 1000: the player lives, and the dose is still 0 (setRadiation after the attack).
+    reset(g,'survival');g.command('effect give @s minecraft:resistance 60 4 true')
+    g.command('ntmitem dose 1000000');pause(g,1)
+    alive=not died()
+    g.check('resistance_survives_radiation_but_the_dose_resets',alive and state(g)['dose']==0,{'alive':alive,'state':state(g)})
+    if not alive:come_back()
+    # Creative: the handler returns before anything.
+    reset(g,'creative');g.command('ntmitem dose 1000000');pause(g,1)
+    g.check('creative_is_not_killed_by_radiation',not died() and state(g)['dose']==1000000,state(g))
+    g.command('ntmitem dose 0');reset(g,'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death)]
 
 
 if __name__=='__main__':
