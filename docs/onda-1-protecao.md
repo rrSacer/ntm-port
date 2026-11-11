@@ -419,3 +419,44 @@ Evidência: `docs/evidence/onda1-f3/player-cut-{before,after}-{table,radaway,her
 só o motor muda). As rodadas de RadAway e
 herbal usaram uma regra mais fraca (só "efeito presente"), que deixou passar a perda; a regra acima é a do
 runner agora e está aplicada aos mesmos dados (`ok_strict`).
+
+## Fatia 5: doença da radiação e `HbmPotion.radiation`
+
+Decisões do coordenador (10/11): D1 (A) um `java.util.Random` por mundo para a doença, semeado pela semente do mundo e
+guardado no KV, na forma da D3 do RBMK; D2 (A) um tipo de dano `ntm:radiation` se o motor aceitar um tipo de conteúdo
+que ignore armadura, senão `minecraft:magic` (nunca `generic_kill`); D3 (A) o efeito no anexo do jogador, visível como
+`ntm:radiation`. Entregue em três partes: 5a (doença e D1), 5b (morte e D2), 5c (anexo e D3).
+
+### 5a: os sorteios da doença
+
+`EntityEffectHandler.handleRadiationEffect:221-258`, a cada tick, para cada jogador fora do criativo entre 200 e
+1000 RAD: os efeitos da faixa sorteados com `world.rand.nextInt(n) == 0`, na ordem do Java, todos os sorteios feitos
+seja qual for o resultado dos anteriores.
+
+| Faixa (RAD) | Efeito: chance, duração em ticks, nível |
+| --- | --- |
+| 800 a 999 | náusea 1/300, 150, I; lentidão 1/300, 200, III; fraqueza 1/300, 200, III; veneno 1/500, 60, III; wither 1/700, 60, II |
+| 600 a 799 | náusea 1/300, 150, I; lentidão 1/300, 200, III; fraqueza 1/300, 200, III; veneno 1/500, 60, II |
+| 400 a 599 | náusea 1/300, 150, I; lentidão 1/500, 100, I; fraqueza 1/300, 100, II |
+| 200 a 399 | náusea 1/300, 100, I; fraqueza 1/500, 100, I |
+
+Antes era uma aproximação determinística: uma vez por segundo, todos os efeitos da faixa por 5 s, mais 1 de dano
+"magic" por segundo acima de 800 RAD, que não existe no Java (saiu). O sorteio usa o `JavaRandom` do mundo
+(`WorldState.sickness`, no KV), semeado pela semente do mundo (`ServerHost::world_seed`) na primeira vez que alguém
+fica doente; um mundo sem ninguém doente não o grava. O Java não tem carência aqui (a regra dos 200 ticks é do
+`contaminate`, parte da 5c). Os efeitos passam ao host em ticks (`ServerHost::effect`), porque a náusea dura 150 ticks
+(7,5 s). A morte a 1000 RAD fica como estava até a 5b.
+
+Prova: oráculo Java (`tools/sickness-oracle`), o `handleRadiationEffect` recortado inteiro, compilado com stubs e
+rodado com `java.util.Random` de quatro sementes sobre um cronograma que passa por todas as faixas e bordas: 519
+efeitos; `radiation::tests::sickness_rolls_as_the_java_oracle` exige a mesma sequência (tick, efeito, duração, nível).
+`test_sickness_oracle.py` confere que a fixture é a do Java. Mutações mortas: chance 700 → 701, duração 150 → 100,
+nível trocado, ordem trocada, parar no primeiro acerto, borda 600 → 601. Em jogo (família `sickness`): em cada faixa,
+12000 ticks com `tick sprint`; cada efeito com a duração e o nível do Java, e as contagens dentro de quatro desvios
+padrão da binomial (por exemplo, 39 náuseas para 40 esperadas a 300 RAD).
+
+### Lacunas nominais da fatia 5
+
+- Dose em mobs e as transformações do `handleRadiationEffect` (creeper → creeper nuclear, vaca → mooshroom, aldeão →
+  zumbi, pato → quackos): o port só guarda dose de jogadores. Sugerido para a Onda 4 ou a frente de mobs.
+- As conquistas `achRadPoison` e `achRadDeath`: o port não tem conquistas.

@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1277,7 +1277,39 @@ def decon(g):
     g.command(f'setblock {under} minecraft:stone');reset(g,'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon)]
+def sickness(g):
+    """Onda 1, fatia 5a: `EntityEffectHandler.handleRadiationEffect:221-258`, rolled every tick. The dose is held in
+    one band at a time while the server sprints N ticks; every effect the sickness gives is counted from the
+    `ntm trace effect` lines. Each must be one of the band's with the Java's length and amplifier, and each effect's
+    count must fall within four standard deviations of N/bound (a binomial), and be at least one."""
+    import math
+    N=12000
+    bands=[(300,{'nausea':(100,0,300),'weakness':(100,0,500)}),
+           (500,{'nausea':(150,0,300),'slowness':(100,0,500),'weakness':(100,1,300)}),
+           (700,{'nausea':(150,0,300),'slowness':(200,2,300),'weakness':(200,2,300),'poison':(60,1,500)}),
+           (900,{'nausea':(150,0,300),'slowness':(200,2,300),'weakness':(200,2,300),'poison':(60,2,500),'wither':(60,1,700)})]
+    log=lambda:(g.folder/'client-first.log').read_text(errors='replace')
+    reset(g,'survival')
+    # Resistance V: the wither and the poison it rolls must not end the player during the sprint.
+    g.command('effect give @s minecraft:resistance 1000000 4 true');g.command('effect give @s minecraft:saturation 1000000 0 true')
+    for rad,expected in bands:
+        g.command(f'ntmitem dose {rad*1000}');mark=len(log());start=now(g)
+        g.command(f'tick sprint {N}')
+        deadline=time.monotonic()+600
+        while now(g)<start+N and time.monotonic()<deadline:time.sleep(.5)
+        events=[json.loads(m) for m in re.findall(r'ntm trace effect (\{.*?\})',log()[mark:])]
+        events=[e for e in events if e['effect'] not in ('resistance','saturation')]
+        wrong=[e for e in events if e['effect'] not in expected or (e['ticks'],e['amplifier'])!=expected[e['effect']][:2]]
+        counts={k:sum(1 for e in events if e['effect']==k) for k in expected}
+        bounds={}
+        for k,(_,_,b) in expected.items():
+            mean=N/b;sd=math.sqrt(N*(1/b)*(1-1/b));bounds[k]=(max(1,math.floor(mean-4*sd)),math.ceil(mean+4*sd))
+        ok=not wrong and all(bounds[k][0]<=counts[k]<=bounds[k][1] for k in expected)
+        g.check(f'sickness_band_{rad}_rolls_as_the_java',ok,{'counts':counts,'bounds':bounds,'wrong':wrong[:5],'ticks':now(g)-start,'state':state(g)})
+    g.command('ntmitem dose 0');g.command('effect clear @s');reset(g,'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness)]
 
 
 if __name__=='__main__':
