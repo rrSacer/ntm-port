@@ -121,8 +121,9 @@ def catalog(src, manifest):
  return result
 
 
-def transform_png(raw, light=None, dark=None, background=None, crop=None, multiply=None):
- """NTM's RGB component remap, using stdlib PNG decoding (8-bit, noninterlaced)."""
+def transform_png(raw, light=None, dark=None, background=None, crop=None, multiply=None, source_light='FFFFFF', source_dark='505050'):
+ """NTM's RGB component remap (`RGBMutatorInterpolatedComponentRemap`: each component from the source's light..dark
+ to the target's), using stdlib PNG decoding (8-bit, noninterlaced). The source bounds default to the materials'."""
  pos=8; chunks={}; compressed=b''
  while pos<len(raw):
   size=struct.unpack('>I',raw[pos:pos+4])[0]; kind=raw[pos+4:pos+8]; data=raw[pos+8:pos+8+size];pos+=size+12
@@ -133,6 +134,7 @@ def transform_png(raw, light=None, dark=None, background=None, crop=None, multip
  if depth!=8 or interlace:raise ValueError('Transform needs 8-bit noninterlaced PNG')
  bpp={0:1,2:3,3:1,4:2,6:4}[ctype]; stride=width*bpp; decoded=zlib.decompress(compressed)
  prior=bytearray(stride); output=bytearray(); lo=[int(light[i:i+2],16) for i in (0,2,4)] if light else None;hi=[int(dark[i:i+2],16) for i in (0,2,4)] if dark else None
+ sl=[int(source_light[i:i+2],16) for i in (0,2,4)];sd=[int(source_dark[i:i+2],16) for i in (0,2,4)]
  for y in range(height):
   offset=y*(stride+1); filt=decoded[offset]; row=bytearray(decoded[offset+1:offset+1+stride])
   for x in range(stride):
@@ -148,7 +150,7 @@ def transform_png(raw, light=None, dark=None, background=None, crop=None, multip
    elif ctype==3:
     index=pix[0];r,g,b=chunks[b'PLTE'][index*3:index*3+3]; alpha=chunks.get(b'tRNS',b'')[index] if index<len(chunks.get(b'tRNS',b'')) else 255
    else:r=g=b=pix[0];alpha=pix[1] if ctype==4 else 255
-   rgb=[int(lo[i]+((val-255)/(80-255))*(hi[i]-lo[i]))&255 for i,val in enumerate((r,g,b))] if lo else [r,g,b]
+   rgb=[int(lo[i]+((val-sl[i])/(sd[i]-sl[i]))*(hi[i]-lo[i]))&255 for i,val in enumerate((r,g,b))] if lo else [r,g,b]
    if multiply:rgb=[v*int(multiply[i*2:i*2+2],16)//255 for i,v in enumerate(rgb)]
    output.extend(rgb+[alpha])
   prior=row
@@ -366,11 +368,11 @@ def main():
   m3_catalog.build(args.source,args.output)
  manifest=json.loads(args.catalog.read_text())
  if args.catalog.resolve()==(HERE/'m1.json').resolve() and (HERE/'bulk.json').exists():
-  for extension in ('bulk.json','bombs.json','m3.json','item_hooks.json'):
+  for extension in ('bulk.json','bombs.json','m3.json','item_hooks.json','radiation_blocks.json'):
    if not (HERE/extension).exists():continue
    bulk=json.loads((HERE/extension).read_text())
    original_ids={e['id'] for e in manifest['entries']}
-   if extension in ('bombs.json','m3.json','item_hooks.json'):
+   if extension in ('bombs.json','m3.json','item_hooks.json','radiation_blocks.json'):
     for spec in bulk['entries']:
      previous=next((r for r in manifest['entries'] if r['id']==spec['id']),None)
      if previous:

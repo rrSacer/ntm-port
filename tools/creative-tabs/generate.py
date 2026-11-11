@@ -72,6 +72,12 @@ def source_tabs(ntm_src: Path):
         if tab and tab[1] in BY_SOURCE:
             for var in re.findall(r'ModItems\.(\w+)\s*=\s*new ItemSimpleConsumable\(',text):
                 out[var]=(BY_SOURCE[tab[1]][1],order);order+=1
+    # BlockSellafield assigns its tab in the constructor too (Onda 1, slice 5d): its six levels go where the Java's
+    # getSubBlocks puts them.
+    sellafield=(ntm_src/'src/main/java/com/hbm/blocks/generic/BlockSellafield.java').read_text()
+    match=re.search(r'setCreativeTab\(MainRegistry\.(\w+)\)',sellafield)
+    if match and match[1] in BY_SOURCE:
+        out['sellafield']=(BY_SOURCE[match[1]][1],order);order+=1
     return out
 
 
