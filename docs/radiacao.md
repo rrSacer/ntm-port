@@ -122,10 +122,12 @@ até `probes::UNACKED_TICKS` (1200) mais o tempo de envio. Largar a pilha zera a
 leitura confirmada; a dose permanece. Os primeiros 10 segundos após entrada
 protegem o jogador, e criativo/espectador não recebem exposição.
 
-A doença usa efeitos vanilla determinísticos de 5 s nos mesmos limiares do
-NTM, renovados a cada leitura. A partir de 800 RAD também dá 1 ponto de dano
-mágico por segundo; em 1000 RAD dá 1000 `generic_kill` e zera a dose. Essa é
-uma aproximação deliberada dos sorteios/partículas/vômito do NTM. Efeitos de
+A doença é a do `EntityEffectHandler.handleRadiationEffect` (Onda 1, fatia 5a):
+a cada tick, sem carência, cada efeito da faixa é sorteado com as chances,
+durações e níveis do Java, num `java.util.Random` do mundo semeado pela semente
+do mundo e guardado na chave própria `sickness` do KV (docs/onda-1-protecao.md).
+A morte em 1000 RAD e o seu tipo de dano são da fatia 5b. As partículas e o
+vômito do NTM continuam fora. Efeitos de
 outras origens não são limpos. Armaduras hazmat, reacher, medicamentos e
 proteção de outros mods ainda não estão implementados, pois não existem no
 conteúdo selecionado.

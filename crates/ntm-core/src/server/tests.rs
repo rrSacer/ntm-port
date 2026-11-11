@@ -251,6 +251,9 @@ impl ServerHost for SHost {
     fn effect(&mut self, id: &str, effect: &str, ticks: u32, amplifier: u8) {
         self.world.borrow_mut().effects.push((id.into(), effect.into(), ticks, amplifier));
     }
+    fn world_seed(&mut self) -> i64 {
+        WORLD_SEED
+    }
     fn show(&mut self, dim: &str, show: &crate::blast::visuals::Show) {
         self.world.borrow_mut().shown.push((dim.into(), show.clone()));
     }
@@ -273,6 +276,9 @@ struct Game {
     server: Server,
     sh: SHost,
 }
+
+/// The test world's seed (`ServerHost::world_seed`): what the sickness random is seeded from.
+const WORLD_SEED: i64 = 4242;
 
 fn player() -> PlayerInfo {
     PlayerInfo {
@@ -503,6 +509,91 @@ fn radiation_from_what_a_player_carries() {
     g.run(100);
     assert_eq!(g.ready().world.radiation["p1"].millirad, before);
     assert_eq!(value(&g, KEY_RATE), Some(64 * 350));
+}
+
+/// Slice 5a review: the sickness random is the world seed's. The first sick tick draws a 200-RAD band's two rolls
+/// from `java.util.Random(WORLD_SEED)`; another seed (0 among them) leaves another state.
+#[test]
+fn the_sickness_random_is_seeded_from_the_world_seed() {
+    use crate::rbmk::jrandom::JavaRandom;
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 300_000 });
+    g.run(1);
+    let mut expected = JavaRandom::new(WORLD_SEED);
+    expected.next_int(300);
+    expected.next_int(500);
+    let kept = (*g.ready().world.sickness).clone().expect("drawn once");
+    assert_eq!(kept.rng().state(), expected.state());
+    let mut other = JavaRandom::new(0);
+    other.next_int(300);
+    other.next_int(500);
+    assert_ne!(kept.rng().state(), other.state());
+}
+
+/// Slice 5a review: a blast's effects are given in seconds (`visuals::Show::Effect`) and reach the host in ticks.
+#[test]
+fn a_blasts_effect_seconds_reach_the_host_as_ticks() {
+    let mut g = game();
+    let show = crate::blast::visuals::Show::Effect { player: "p1".into(), id: "nausea", seconds: 8, amplifier: 0 };
+    super::bomb_server::show(&mut g.sh, OW, vec![show]);
+    assert_eq!(g.world.borrow().effects, [("p1".to_string(), "nausea".to_string(), 160, 0)]);
+}
+
+/// Slice 5a review: creative players are skipped (`handleRadiationEffect` returns for them), and there is no joining
+/// grace: a player sick from their first tick rolls at once.
+#[test]
+fn sickness_skips_creative_players_and_has_no_joining_grace() {
+    let mut g = game();
+    g.server.set_players(vec![player()]);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 900_000 });
+    g.run(3000);
+    assert!(g.world.borrow().effects.is_empty(), "creative: {:?}", g.world.borrow().effects);
+    assert_eq!(*g.ready().world.sickness, None, "nothing drawn for a creative player");
+    // A player who joins now, sick: their first tick is well inside radiation::GRACE_TICKS of joining, and the
+    // sickness draws on it.
+    let mut p = player();
+    p.id = "p2".into();
+    p.creative = false;
+    g.server.set_players(vec![player(), p]);
+    g.ready().world.radiation.insert("p2".into(), crate::radiation::Dose { millirad: 900_000 });
+    g.run(1);
+    assert!(g.ready().world.sickness.is_some(), "drawn on the first tick");
+    g.run(2000);
+    let effects = g.world.borrow().effects.clone();
+    assert!(!effects.is_empty() && effects.iter().all(|e| e.0 == "p2"), "{effects:?}");
+}
+
+/// Slice 5a review P2: the sickness random has its own key. A tick whose only change is a sick player's rolls writes
+/// that key alone, a few bytes; the world's key moves only with the rest of the world (its doses every second, the
+/// clock).
+#[test]
+fn a_sick_tick_rewrites_only_the_sickness_key() {
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 300_000 });
+    g.run(5);
+    let (mut own, mut world_moved) = (0, 0);
+    for _ in 0..60 {
+        let before = g.world.borrow().kv.written;
+        g.run(1);
+        let w = g.world.borrow();
+        let sickness = w.kv.map.get(crate::persist::SICKNESS_KEY).map_or(0, Vec::len) as u64;
+        let world = w.kv.map.get(crate::persist::KEY).map_or(0, Vec::len) as u64;
+        let written = w.kv.written - before;
+        if written == sickness {
+            own += 1;
+        } else {
+            // Anything more is the world's whole key, written because the rest of the world moved.
+            assert!(written >= world, "{written} B written: neither the sickness key ({sickness} B) alone nor the world's");
+            world_moved += 1;
+        }
+    }
+    assert!(own >= 50 && world_moved <= 10, "{own} ticks with the sickness key alone, {world_moved} with the world");
 }
 
 mod bomb_tests;
