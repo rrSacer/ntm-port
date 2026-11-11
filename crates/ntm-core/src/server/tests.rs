@@ -552,14 +552,18 @@ fn sickness_skips_creative_players_and_has_no_joining_grace() {
     g.run(3000);
     assert!(g.world.borrow().effects.is_empty(), "creative: {:?}", g.world.borrow().effects);
     assert_eq!(*g.ready().world.sickness, None, "nothing drawn for a creative player");
+    // A player who joins now, sick: their first tick is well inside radiation::GRACE_TICKS of joining, and the
+    // sickness draws on it.
     let mut p = player();
+    p.id = "p2".into();
     p.creative = false;
-    g.server.set_players(vec![p]);
-    // Well inside radiation::GRACE_TICKS of joining: the sickness draws from the first tick.
+    g.server.set_players(vec![player(), p]);
+    g.ready().world.radiation.insert("p2".into(), crate::radiation::Dose { millirad: 900_000 });
     g.run(1);
     assert!(g.ready().world.sickness.is_some(), "drawn on the first tick");
     g.run(2000);
-    assert!(!g.world.borrow().effects.is_empty());
+    let effects = g.world.borrow().effects.clone();
+    assert!(!effects.is_empty() && effects.iter().all(|e| e.0 == "p2"), "{effects:?}");
 }
 
 /// Slice 5a review P2: the sickness random has its own key. A tick whose only change is a sick player's rolls writes

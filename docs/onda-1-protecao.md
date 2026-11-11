@@ -437,7 +437,8 @@ Ajustes da revisão da 5a: o gerador mora numa chave própria do KV (`SICKNESS_K
 camadas do RBMK; antes ele entrava no carimbo da chave do mundo, que um tick com alguém doente regravava inteira
 (medido em release com a camada 15×15: 0,52 ms por tick com 5 mil gerações e 5,68 ms com 50 mil; agora 0,0001 ms nos
 três casos, `keep_world_cost_with_sickness`). Testes novos: só a chave da doença é escrita num tick em que só ela mudou;
-a semente é a do mundo (semente 0 quebra); o ×20 das bombas; criativo pulado e sem carência. Mutações mortas: as quatro.
+a semente é a do mundo (semente 0 quebra); o ×20 das bombas; criativo pulado e sem carência. Mutações mortas: as quatro. O formato com o gerador dentro da chave `world` (o build `afe065dd`) nunca saiu da branch: nenhum save o tem, e a
+leitura não o procura lá. Não pôr o gerador de volta na chave do mundo nem nos seus carimbos.
 
 | Faixa (RAD) | Efeito: chance, duração em ticks, nível |
 | --- | --- |
