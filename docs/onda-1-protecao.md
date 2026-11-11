@@ -500,10 +500,26 @@ mortas a mais: limiar 999 RAD na morte (quatro testes), a doença antes do desco
 Rodada final (`docs/evidence/onda1-f5/death-5b-review.json`): binário `b9ab6c92…`, pacote `87f5e937…`, motor no pin
 sem mudança; `items` 276/276, ZIRNOX 136/136 em três rodadas, pilha 85/85, fusão da pilha 32/32, `save_model` 11/11.
 
-Achado anterior à 5b, não corrigido aqui: a dose da ruína do ZIRNOX é dada dentro do passo da máquina, e o host
-adiado da transação (`transaction.rs:117`) não repassa `player_dose`/`commit_player_dose`. Em jogo essa dose vai só
-para o espelho do mundo, não para o anexo do jogador; os testes do ZIRNOX leem a dose da ruína pelo `expected` do commit
-da morte.
+Re-revisão da 5b. R-1 (P1, anterior à 5b): a dose da ruína do ZIRNOX não chegava ao jogador. A ruína doseia dentro do
+passo da máquina, e o host adiado da transação (`Deferred`, `transaction.rs`) não repassava `player_dose`,
+`commit_player_dose` nem `radiation_factor`: a dose ia só para o espelho do mundo, que a leitura seguinte sobrescreve
+com o anexo do jogador, e a armadura não contava. Agora o passo guarda as doses que escreveu (uma leitura no mesmo passo
+as vê) e as grava no anexo depois do commit da máquina, cada uma esperando a anterior; um passo que não faz commit não
+grava nada. É a única dose dentro de um passo de máquina (as bombas doseiam fora, em `bombs_tick`). Testes: o
+`Deferred` com um anexo (ordem, leitura em estágio, fator, passo sem commit) e os do ZIRNOX com um host de anexo (a
+ruína grava no anexo, a morte no mesmo tick lê essa dose e deixa 0, o fator da armadura vale, a dose sobrevive a
+reabrir). Mutantes mortos: sem repasse da escrita (4 testes), sem a leitura em estágio, sem o fator. Em jogo, no
+roteiro do ZIRNOX (fases `ruin-dose` e `ruin-dose-check`): atrás da obsidiana, a dose do anexo sobe; depois de reabrir o
+mundo, é a mesma; sem blindagem, a seis blocos, a ruína mata com "died from radiation poisoning." e o anexo fica em 0. O
+cliente mutante (o `transaction.rs` anterior, binário idêntico ao da rodada anterior) deixa o anexo em 0 e falha.
+
+R-2: a poção de radiação vem depois da checagem de morte (`updatePotionEffects` depois do `LivingUpdateEvent`); o teste
+`the_radiation_potion_doses_after_the_death_check` (999,9 RAD com a poção: vive no tick, morre no seguinte) mata o
+mutante que inverte a ordem. R-3: a exaustão padrão de um `DamageSource` do 1.7.10 é 0,3 (`ldc 0.3f` no construtor);
+o gerador e `test_damage_types.py` usam 0,3, e só `setDamageBypassesArmor` zera.
+Rodada (`docs/evidence/onda1-f5/ruin-dose-r1.json`): binário `de5a93cf…`, pacote `87f5e937…`, motor no pin sem
+mudança; ZIRNOX 140/140 em três rodadas (as 136 de antes e as 4 da ruína), pilha 85/85, fusão da pilha 32/32; `cargo
+test` 539 + 118 de integração, `save_model` 11/11, clippy limpo.
 
 ### Lacunas nominais da fatia 5
 
