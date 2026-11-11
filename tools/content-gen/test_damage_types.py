@@ -34,7 +34,9 @@ class DamageTypes(unittest.TestCase):
             self.assertIsNotNone(line, name)
             bypasses = '.setDamageBypassesArmor()' in line.group(1)
             data = json.loads((CONTENT / f'data/ntm/damage_type/{name}.json').read_text())
-            self.assertEqual(data, {'message_id': name, 'exhaustion': 0.0 if bypasses else 0.1,
+            # 1.7.10 `DamageSource.<init>` sets `hungerDamage = 0.3F` (`ldc 0.3f` in the bytecode of `ro`);
+            # `setDamageBypassesArmor` zeroes it.
+            self.assertEqual(data, {'message_id': name, 'exhaustion': 0.0 if bypasses else 0.3,
                                     'scaling': 'when_caused_by_living_non_player'
                                     if '.setDifficultyScaled()' in line.group(1) else 'never'})
             self.assertEqual(f'ntm:{name}' in tag['values'], bypasses, name)

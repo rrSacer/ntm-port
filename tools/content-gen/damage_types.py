@@ -2,9 +2,9 @@
 
 The engine adds a content mod's `data/<ns>/damage_type` to the damage registry at world open and resolves the
 damage type tags after it (`damage_source::Catalog::with_packs`). A 1.7.10 `DamageSource` maps to: `message_id` its
-name (the death message `death.attack.<name>` of the Java's lang), `exhaustion` 0 when `setDamageBypassesArmor` (it
-zeroes `hungerDamage`), `scaling` never (`difficultyScaled` is false unless `setDifficultyScaled`), and the
-`minecraft:bypasses_armor` tag when it bypasses armor (Resistance still applies, as in the Java).
+name (the death message `death.attack.<name>` of the Java's lang), `exhaustion` the constructor's 0.3, or 0 when
+`setDamageBypassesArmor` (it zeroes `hungerDamage`), `scaling` never (`difficultyScaled` is false unless
+`setDifficultyScaled`), and the `minecraft:bypasses_armor` tag when it bypasses armor (Resistance still applies, as in the Java).
 
 `DamageSource.func_151519_b` asks for `death.attack.<name>.player` when the victim was last hit by a mob and falls back
 to `death.attack.<name>` when that key has no translation; the Java's lang has no `.player` for these sources, so it
@@ -19,7 +19,8 @@ SOURCES = [
 
 def generate(emit, languages, translations):
     for name, bypasses_armor in SOURCES:
-        emit(f'data/ntm/damage_type/{name}.json', {'message_id': name, 'exhaustion': 0.0, 'scaling': 'never'})
+        emit(f'data/ntm/damage_type/{name}.json', {'message_id': name, 'exhaustion': 0.0 if bypasses_armor else 0.3,
+                                                   'scaling': 'never'})
         for loc, table in translations.items():
             text = table[f'death.attack.{name}']
             languages[loc][f'death.attack.{name}'] = text
