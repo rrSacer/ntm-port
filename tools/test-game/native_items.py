@@ -1328,6 +1328,13 @@ def radiation_death(g):
         g.check(f'radiation_kills_{name}',dead and 'died from radiation poisoning' in chat,{'dead':dead,'chat':chat[:300]})
         if dead:come_back()
         g.check(f'radiation_death_resets_the_dose_{name}',state(g)['dose']==0,state(g))
+    # Hit by a mob in the last 100 ticks, the message key is `death.attack.radiation.player`; the Java falls back to the
+    # base text (`DamageSource.func_151519_b`), so the same message shows, never the raw key.
+    reset(g,'survival');g.command('summon minecraft:zombie ~2 ~ ~ {NoAI:1b,Tags:["ntm_rad_hitter"]}')
+    g.command('damage @s 1 minecraft:mob_attack by @e[tag=ntm_rad_hitter,limit=1]');g.command('ntmitem dose 1000000');pause(g,1)
+    dead=died();chat=chat_lines(g);g.command('kill @e[tag=ntm_rad_hitter]')
+    g.check('radiation_kills_after_a_mob_hit_with_the_java_message',dead and 'died from radiation poisoning' in chat and 'death.attack' not in chat,{'dead':dead,'chat':chat[:300]})
+    if dead:come_back()
     # Resistance V absorbs the 1000: the player lives, and the dose is still 0 (setRadiation after the attack).
     reset(g,'survival');g.command('effect give @s minecraft:resistance 60 4 true')
     g.command('ntmitem dose 1000000');pause(g,1)
