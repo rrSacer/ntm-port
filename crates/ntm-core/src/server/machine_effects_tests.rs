@@ -353,7 +353,7 @@ fn a_common_step_publishes_its_model_and_critical_effects_only_after_acceptance(
     assert_eq!(probe_name(&server, &key), "__effect_probe_spent");
     assert_eq!(server.ready.world.machine_effects.len(), 1);
     let batch = &server.ready.world.machine_effects[0];
-    assert_eq!(batch.owners, [key.clone()]);
+    assert_eq!(batch.owners.as_slice(), std::slice::from_ref(&key));
     assert_eq!(batch.home(), Some((DIM.into(), 0, 0)));
     assert_eq!(batch.origins, [CellGuard::machine(&key, &before)]);
     assert_eq!(batch.effects, VecDeque::from([blast(), drop()]));
