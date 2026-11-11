@@ -1053,6 +1053,22 @@ mod tests {
             assert_eq!(reopened.update_player_dose(&mut h, "p", |d| d.millirad), Some(3_000 + given));
         }
     }
+    /// Slice 5b review R-2: the radiation potion's dose (`updatePotionEffects`) comes after the death check of the
+    /// player's `LivingUpdateEvent`. At 999.9 RAD with the potion the player lives through the tick (the potion takes
+    /// them over 1000) and dies in the next one.
+    #[test]
+    fn the_radiation_potion_doses_after_the_death_check() {
+        let (mut h, mut s) = prepare();
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: "minecraft:the_nether".into(), pos: [0., 64., 0.], creative: false }]);
+        h.attached.insert("p".into(), 999_900);
+        s.ready.world.zirnox.irradiate("p", 600, 3);
+        s.native_tick(&mut h, 2);
+        assert!(h.radiation_deaths.is_empty());
+        assert_eq!(h.attached["p"], 1_000_100, "the potion's 200 millirad came after the check");
+        s.native_tick(&mut h, 3);
+        assert_eq!(h.radiation_deaths, ["p"]);
+        assert_eq!(h.attached["p"], 200, "the death left 0 and the potion gave its tick");
+    }
     #[test]
     fn extraction_contract_exposes_conditional_rod_outputs() {
         assert!(!zirnox::can_extract(0, &zirnox::table().fuels[0].item));
