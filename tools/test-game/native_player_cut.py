@@ -11,7 +11,8 @@ Scenarios (NTM_CUT_SCENARIO):
            dose go to `ntm:item_state`, the `ntm:radiation` effect shows it. Control: the table's two stacks moved
            into the Ender chest at the same moment.
   migration    (slice 5c) prepared by the binary before 5c, whose potion is in the world's storage
-           (`zirnox.irradiated`); the act is the first minute of the new binary, which moves it to the attachment.
+           (`zirnox.irradiated`); the act is 16 s of the new binary, which moves it to the attachment and doses.
+           Control: the table's two stacks moved into the Ender chest.
 Modes: prepare (the world saved with the starting state), act (do it, then a save the failpoint may end; NTM_CRASH_NO_SAVE,
 NTM_CRASH_PAUSE_SAVE as run-crash-proof), verify / again (after a reopen: count).
 """
@@ -139,8 +140,9 @@ def act(g):
     if SCENARIO == 'irradiation' and not VANILLA:
         time.sleep(11)  # past the first 200 ticks of this session: the potion doses
         step_on_mycelium(g)
-    elif SCENARIO == 'migration':
-        time.sleep(3)
+    elif SCENARIO == 'migration' and not VANILLA:
+        # Past this session's first 200 ticks, so the moved potion doses before the cut (review P2-1).
+        time.sleep(16)
     elif SCENARIO == 'table' or VANILLA:
         if VANILLA:
             for slot in range(len(ITEMS)):

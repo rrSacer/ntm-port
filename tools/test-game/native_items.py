@@ -1378,6 +1378,11 @@ def irradiation(g):
     d0=state(g)['dose'];t0=now(g);pause(g,2);d1=state(g)['dose'];t1=now(g)
     # Each read takes a tick or two of its own: the ticks between the two dose reads are t1 - t0, within a few.
     g.check('the_radiation_potion_doses_a_fifth_rad_a_tick',abs((d1-d0)-200*(t1-t0))<=200*6,{'dose':d1-d0,'ticks':t1-t0})
+    # `/effect give` makes a real potion in the Java (`performEffect` doses it): amplifier 9 doses (9 + 1) x 0.05 RAD
+    # a tick, and the attachment takes it in (review P3-3).
+    reset(g,'survival');g.command('effect give @s ntm:radiation 20 9');pause(g,.3)
+    d0=state(g)['dose'];t0=now(g);pause(g,2);d1=state(g)['dose'];t1=now(g);left=potion()
+    g.check('a_given_radiation_effect_doses',left[1]==9 and left[0]>0 and abs((d1-d0)-500*(t1-t0))<=500*6,{'dose':d1-d0,'ticks':t1-t0,'attachment':left})
     cures=[('milk',lambda:hold(g,'minecraft:milk_bucket',2)),('iodine_pill',lambda:hold(g,'ntm:pill_iodine',.9)),
            ('med_bag',lambda:hold(g,'ntm:med_bag',0)),('antidote',lambda:hold(g,'ntm:syringe_antidote',0)),
            ('effect_clear',lambda:g.command('effect clear @s'))]

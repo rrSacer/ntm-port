@@ -11,8 +11,9 @@ counted in game. `table`: each item must be held once (inventory, Ender chest, t
 in a stack), as in the control. `radaway`/`herbal`: the used item and its effect go together: either the item is still
 held, or the treatment (RadAway ticks, a lower dose) / the sickness is there; an item gone without its effect is a loss.
 `irradiation` (slice 5c, with the Ender chest control): the radiation potion and the dose it gave go together, and the
-effect shows the potion. `migration`: prepared by `--prepare-binary` (the binary before 5c, whose potion lives in the
-world's storage); after every cut the potion is in the attachment, at its amplifier, with its effect.
+effect shows the potion. `migration` (with the control): prepared by `--prepare-binary` (the binary before 5c, whose
+potion lives in the world's storage); after every cut the potion is in the attachment, at its amplifier, with its
+effect, and the doses it gave plus its ticks left are no more than its 600 ticks (nothing dosed twice).
 """
 import argparse
 import importlib.util
@@ -106,7 +107,11 @@ def coherent(scenario, c, base):
         shown = 'radiation' in st.get('effects', [])
         attached = st.get('irradiated', 0) > 0 and st.get('irradiated_level') == 3 and shown
         if scenario == 'migration':
-            return attached
+            # Every dose the potion gave (0.2 RAD a tick, since before the cut) plus the ticks it has left is at most
+            # its 600 ticks, and the few ticks the prepare stood on the mycelium (which gives it again each tick): a
+            # potion taken in twice would give its time again (review P2-1).
+            given = (st.get('dose', base) - base) // 200
+            return attached and given + st.get('irradiated', 0) <= 600 + 40
         # Before 5c the potion lives in the world's storage, its dose in the player's file; since, both in one
         # attachment. Either way the potion and the dose it gave go together: both or neither.
         potion = attached or any(level == 3 for _, level in st.get('kv_irradiated', []))
@@ -177,7 +182,7 @@ def main():
             copy_env[key] = str(folder / sub)
         return copy_env
     try:
-        controls = (False, True) if args.scenario in ('table', 'irradiation') else (False,)
+        controls = (False, True) if args.scenario in ('table', 'irradiation', 'migration') else (False,)
         bases = {c: scratch / ('base' + ('-vanilla' if c else '')) for c in controls}
         for c, where in bases.items():
             where.mkdir(exist_ok=True)
