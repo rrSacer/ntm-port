@@ -3425,6 +3425,7 @@
   "effect.ntm.potion_sickness": "Potion Sickness",
   "effect.ntm.taint": "Tainted",
   "death.attack.radiation": "%1$s died from radiation poisoning.",
+  "death.attack.radiation.player": "%1$s died from radiation poisoning.",
   "block.ntm.dummy_machine": "Machine (part)",
   "itemGroup.ntm.parts": "NTM Resources and Parts",
   "itemGroup.ntm.control": "NTM Machine Items and Fuel",

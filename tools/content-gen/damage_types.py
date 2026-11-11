@@ -5,6 +5,11 @@ damage type tags after it (`damage_source::Catalog::with_packs`). A 1.7.10 `Dama
 name (the death message `death.attack.<name>` of the Java's lang), `exhaustion` 0 when `setDamageBypassesArmor` (it
 zeroes `hungerDamage`), `scaling` never (`difficultyScaled` is false unless `setDifficultyScaled`), and the
 `minecraft:bypasses_armor` tag when it bypasses armor (Resistance still applies, as in the Java).
+
+`DamageSource.func_151519_b` asks for `death.attack.<name>.player` when the victim was last hit by a mob and falls back
+to `death.attack.<name>` when that key has no translation; the Java's lang has no `.player` for these sources, so it
+always shows the base text. The engine has no such fallback (an untranslated `.player` key shows raw), so the base text
+is emitted under both keys.
 """
 # name, bypasses armor: `ModDamageSource.radiation = new DamageSource("radiation").setDamageBypassesArmor()`.
 SOURCES = [
@@ -16,6 +21,8 @@ def generate(emit, languages, translations):
     for name, bypasses_armor in SOURCES:
         emit(f'data/ntm/damage_type/{name}.json', {'message_id': name, 'exhaustion': 0.0, 'scaling': 'never'})
         for loc, table in translations.items():
-            languages[loc][f'death.attack.{name}'] = table[f'death.attack.{name}']
+            text = table[f'death.attack.{name}']
+            languages[loc][f'death.attack.{name}'] = text
+            languages[loc][f'death.attack.{name}.player'] = table.get(f'death.attack.{name}.player', text)
     emit('data/minecraft/tags/damage_type/bypasses_armor.json',
          {'replace': False, 'values': [f'ntm:{name}' for name, bypasses in SOURCES if bypasses]})
