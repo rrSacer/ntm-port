@@ -1,5 +1,5 @@
 {
- "binary": "onda1-fatia5 5a on engine 6a79054fa9",
+ "binary": "onda1-fatia5 351b2d47 on engine eb5d3eed58",
  "items_checks": 268,
  "all_ok": true,
  "sickness": {
@@ -7,8 +7,8 @@
    "ok": true,
    "actual": {
     "counts": {
-     "nausea": 51,
-     "weakness": 14
+     "nausea": 35,
+     "weakness": 29
     },
     "bounds": {
      "nausea": [
@@ -21,7 +21,7 @@
      ]
     },
     "wrong": [],
-    "ticks": 12010,
+    "ticks": 12008,
     "state": {
      "dose": 300000,
      "radaway": 0
@@ -32,9 +32,9 @@
    "ok": true,
    "actual": {
     "counts": {
-     "nausea": 37,
-     "slowness": 29,
-     "weakness": 29
+     "nausea": 30,
+     "slowness": 20,
+     "weakness": 48
     },
     "bounds": {
      "nausea": [
@@ -62,10 +62,10 @@
    "ok": true,
    "actual": {
     "counts": {
-     "nausea": 43,
-     "slowness": 39,
-     "weakness": 40,
-     "poison": 22
+     "nausea": 44,
+     "slowness": 43,
+     "weakness": 39,
+     "poison": 17
     },
     "bounds": {
      "nausea": [
@@ -86,7 +86,7 @@
      ]
     },
     "wrong": [],
-    "ticks": 12007,
+    "ticks": 12008,
     "state": {
      "dose": 700000,
      "radaway": 0
@@ -97,11 +97,11 @@
    "ok": true,
    "actual": {
     "counts": {
-     "nausea": 20,
-     "slowness": 38,
-     "weakness": 43,
-     "poison": 14,
-     "wither": 18
+     "nausea": 43,
+     "slowness": 35,
+     "weakness": 44,
+     "poison": 22,
+     "wither": 21
     },
     "bounds": {
      "nausea": [
@@ -126,12 +126,13 @@
      ]
     },
     "wrong": [],
-    "ticks": 12009,
+    "ticks": 12008,
     "state": {
      "dose": 900000,
      "radaway": 0
     }
    }
   }
- }
+ },
+ "earlier_run": "the same 268/268 on engine 6a79054fa9 before absorbing main 6bf570b7"
 }
