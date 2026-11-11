@@ -517,33 +517,3 @@ mod tests {
         assert!(trees > 0, "the fixture makes the trees a full bin becomes");
     }
 }
-#[cfg(test)]
-#[test]
-#[ignore]
-fn dbg_c8() {
-    let fixture: serde_json::Value = serde_json::from_str(include_str!("../../../tools/chunk-radiation-oracle/fixture.json")).unwrap();
-    let case = fixture["cases"].as_array().unwrap().iter().find(|c| c["seed"] == "colliding 8").unwrap();
-    let mut m = ChunkMap::new();
-    let mut dumps = case["dumps"].as_array().unwrap().iter();
-    let mut n = 0;
-    for op in case["ops"].as_array().unwrap() {
-        let int = |k: usize| op[k].as_i64().unwrap() as i32;
-        match op[0].as_str().unwrap() {
-            "load" => { m.put([int(1), int(2)], f32::from_bits(int(3) as u32)); n += 1; }
-            "inc" => increment(&mut m, [int(1), int(2)], f32::from_bits(int(3) as u32)),
-            "update" => update_system(&mut m),
-            "dump" => {
-                let want: Vec<i64> = dumps.next().unwrap().as_array().unwrap().iter().map(|x| x.as_i64().unwrap()).collect();
-                let got: Vec<i64> = m.iter().flat_map(|(c, v)| [c[0] as i64, c[1] as i64, v.to_bits() as i64]).collect();
-                if got != want {
-                    println!("after {n} loads, cap {}", m.buckets.len());
-                    for (b, bin) in m.buckets.iter().enumerate() { if bin.list.len() > 1 { println!("bin {b} tree {} {:?}", bin.tree.is_some(), bin.list.iter().map(|e| e.0).collect::<Vec<_>>()); } }
-                    let w: Vec<_> = want.chunks(3).map(|c| [c[0], c[1]]).collect();
-                    println!("want {:?}", w);
-                    return;
-                }
-            }
-            _ => {}
-        }
-    }
-}
