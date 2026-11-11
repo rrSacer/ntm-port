@@ -58,14 +58,14 @@ A entrega só é pronta após finalizar o mutante `ReplayWithoutOrderGuard` nos 
 **R3 não é seguro no host nativo atual.** O contrato do núcleo exige que o destino que publica itens ou entidades
 registre o ID de efeito, junto de seu chunk; o host sintético do verificador cumpre esse contrato. A cola atual não:
 `glue.rs:620-623` e `648-650` fazem spawn direto em destino carregado sem marcar o ID, enquanto `effect_seen`
-(`1248-1252`) só consulta `ledger_knows`. O mutante `HostWithoutLoadedMarker` reproduz essa implementação e deve
+(`1248-1252`) só consulta `ledger_knows`. O mutante `HostWithoutLoadedMarker` reproduz o caminho de `Items` em destino carregado e deve
 ser morto pelo verificador: replay sobre a saída já salva (dano repetido, mesmo se o drop recriado disfarçar a contagem)
 ou duplicação de saída sem novo dano. O oráculo verifica também esses dois casos, além da perda do item marcado.
 
-Marcar os IDs nos destinos carregados para `Items`, `EncodedItems` e `Entities` é **requisito bloqueante da fatia 4**,
+Marcar e testar os IDs nos destinos carregados para `Items`, `EncodedItems` e `Entities` é **requisito bloqueante da fatia 4**,
 antes de qualquer consumidor de explosão + drop. Conferir também o dreno de dívidas em `ledger_tick`: `take_owed`
 e `take_owed_entities` marcam o registro da origem que devia, não necessariamente o chunk de destino que recebe.
-Esta rodada não altera a cola nem valida o algoritmo nativo de explosão em jogo. A fatia 2 é infraestrutura sob contrato.
+O modelo não simula o débito e sua drenagem: `DestinationOut` apenas recusa o efeito. `EncodedItems`, `Entities` e o caminho de dívida e drenagem precisam de provas próprias na fatia 4. Esta rodada não altera a cola nem valida o algoritmo nativo de explosão em jogo. A fatia 2 é infraestrutura sob contrato.
 
 ## Fatia 3: efeitos do passo e segunda porta
 
