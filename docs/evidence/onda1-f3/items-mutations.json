@@ -141,5 +141,64 @@
     "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
    }
   ]
+ },
+ "merge_review_p3": {
+  "commit": "3166845a",
+  "binary": "engine 6a79054fa9",
+  "run": "setup with NTM_FAMILIES=foods: the pickup delay and the schnitzel pass; audio_ntm:player.gulp fails only because the narrowed run leaves out the energy family that plays it",
+  "pickup": {
+   "early": 0,
+   "late": 1,
+   "age_when_frozen": 3,
+   "attempts": 1,
+   "dropped": {}
+  },
+  "schnitzel": {
+   "effects": {
+    "slow_falling": [
+     0,
+     2320
+    ],
+    "fire_resistance": [
+     0,
+     2328
+    ],
+    "blindness": [
+     0,
+     179
+    ],
+    "nausea": [
+     0,
+     579
+    ],
+    "hunger": [
+     4,
+     3579
+    ],
+    "wither": [
+     0,
+     39
+    ]
+   },
+   "age": 26
+  },
+  "mutants": [
+   {
+    "mutant": "pickup_frozen_late",
+    "expected": "setup:thrown_container_waits_its_pickup_delay",
+    "result": "CAUGHT(setup:thrown_container_waits_its_pickup_delay)"
+   },
+   {
+    "mutant": "schnitzel_uniform_80",
+    "expected": "setup:vegan_schnitzel_java_effects",
+    "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+   },
+   {
+    "mutant": "schnitzel_short_blindness",
+    "expected": "setup:vegan_schnitzel_java_effects",
+    "result": "CAUGHT(setup:vegan_schnitzel_java_effects)"
+   }
+  ],
+  "note": "schnitzel_uniform_80 lowers the three durations read by 80 ticks in the script: /effect gives whole seconds and a player's effects cannot be edited with /data"
  }
 }
