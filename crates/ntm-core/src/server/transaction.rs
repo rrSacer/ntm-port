@@ -240,7 +240,7 @@ impl Server {
     /// against the whole state serialized: a change that left the stamps behind would leave the storage behind the
     /// world.
     pub(super) fn world_changed(&self) -> bool {
-        self.world_part_changed() || self.rbmk_changed()
+        self.world_part_changed() || self.rbmk_changed() || self.sickness_changed()
     }
 
     /// Whether the RBMK layers changed since they were last written.
@@ -263,6 +263,7 @@ impl Server {
         host.set(crate::persist::KEY, &self.ready.world.kept(self.ready.world.ticks))?;
         self.ready.kept_rev = Some(self.ready.world.stamps());
         self.write_rbmk(host)?;
+        self.write_sickness(host)?;
         #[cfg(debug_assertions)]
         {
             self.ready.kept = self.ready.world.kept(0);
@@ -275,6 +276,20 @@ impl Server {
         if self.rbmk_changed() {
             host.set(crate::persist::RBMK_KEY, &self.ready.world.kept_rbmk())?;
             self.ready.kept_rbmk = Some(self.ready.world.rbmk_stamp());
+        }
+        Ok(())
+    }
+
+    /// Whether the sickness random changed since it was last written.
+    pub(super) fn sickness_changed(&self) -> bool {
+        self.ready.kept_sickness != Some(self.ready.world.sickness_stamp())
+    }
+
+    /// The sickness random to the host's storage, under its own key: a tick with someone sick rewrites only it.
+    pub(super) fn write_sickness(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
+        if self.sickness_changed() {
+            host.set(crate::persist::SICKNESS_KEY, &self.ready.world.kept_sickness())?;
+            self.ready.kept_sickness = Some(self.ready.world.sickness_stamp());
         }
         Ok(())
     }

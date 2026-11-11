@@ -385,6 +385,8 @@ struct Ready {
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
     kept_rbmk: Option<u64>,
+    /// The stamp of the sickness random as last kept (`persist::SICKNESS_KEY`); None: write it next time.
+    kept_sickness: Option<u64>,
     /// What was last kept, without the clock: debug builds check every skipped write against it.
     #[cfg(debug_assertions)]
     kept: Vec<u8>,

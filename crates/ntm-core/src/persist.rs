@@ -20,6 +20,8 @@ pub const KEY: &str = "world";
 /// The key of the RBMK layers' state (`WorldState::rbmk`), in the same storage and written with it at every save, apart
 /// from the rest: a reactor that steps rewrites only this one between saves (P2-3 of the T01 review).
 pub const RBMK_KEY: &str = "rbmk";
+/// The sickness rolls' random (`radiation::SicknessRng`), under its own key: a tick with someone sick rewrites only it.
+pub const SICKNESS_KEY: &str = "sickness";
 /// Ticks between keeps of the clock alone: a crash sets it back at most this.
 pub const TICKS_EVERY: u64 = 600;
 
@@ -112,9 +114,6 @@ pub struct Kept {
     pub bombs: crate::blast::BombWorld,
     #[serde(default)]
     pub zirnox: crate::zirnox::Remnants,
-    /// The sickness rolls' random, once someone has been sick here.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sickness: Option<crate::radiation::SicknessRng>,
     #[serde(default)]
     pub ticks: u64,
     /// Batches of effects named so far (`CommittedEffects::serial`).
@@ -236,7 +235,10 @@ impl WorldState {
             radiation: kept.radiation.into(),
             bombs: kept.bombs.into(),
             zirnox: kept.zirnox.into(),
-            sickness: kept.sickness.into(),
+            sickness: kv
+                .get(SICKNESS_KEY)
+                .and_then(|b| serde_json::from_slice::<crate::radiation::SicknessRng>(&b).ok())
+                .into(),
             rbmk: Tracked::new(
                 kv.get(RBMK_KEY)
                     .and_then(|b| serde_json::from_slice::<Vec<((String, i32), crate::rbmk::persist::Layer)>>(&b).ok())
@@ -258,7 +260,7 @@ impl WorldState {
             Tracked::stamp(&self.effect_serial),
             Tracked::stamp(&self.legacy),
             Tracked::stamp(&self.generations),
-            Tracked::stamp(&self.sickness),
+            0,
             0,
             Tracked::stamp(&self.prepared_retentions),
             0,
@@ -272,6 +274,16 @@ impl WorldState {
     /// prepared retentions. Zero in a world of this version at every save (an earlier version's, until they leave).
     pub fn kept_items(&self) -> usize {
         self.legacy.len() + self.prepared_retentions.len()
+    }
+
+    /// The stamp of the sickness random's last change (`SICKNESS_KEY`).
+    pub fn sickness_stamp(&self) -> u64 {
+        Tracked::stamp(&self.sickness)
+    }
+
+    /// What [`WorldState::load`] reads back of the sickness random (`SICKNESS_KEY`): a few bytes, whatever the world.
+    pub fn kept_sickness(&self) -> Vec<u8> {
+        serde_json::to_vec(&*self.sickness).unwrap_or_default()
     }
 
     /// The stamp of the RBMK layers' last change (`RBMK_KEY`).
@@ -293,8 +305,6 @@ impl WorldState {
             radiation: &'a BTreeMap<String, crate::radiation::Dose>,
             bombs: &'a crate::blast::BombWorld,
             zirnox: &'a crate::zirnox::Remnants,
-            #[serde(skip_serializing_if = "Option::is_none")]
-            sickness: &'a Option<crate::radiation::SicknessRng>,
             ticks: u64,
             #[serde(skip_serializing_if = "is_zero")]
             effect_serial: &'a u64,
@@ -311,7 +321,6 @@ impl WorldState {
             radiation: &self.radiation,
             bombs: &self.bombs,
             zirnox: &self.zirnox,
-            sickness: &self.sickness,
             ticks,
             effect_serial: &self.effect_serial,
             // Receipts and survivors are the session's: every save confirms them before the storage is written.
@@ -332,7 +341,6 @@ impl WorldState {
             radiation: (*self.radiation).clone(),
             bombs: (*self.bombs).clone(),
             zirnox: (*self.zirnox).clone(),
-            sickness: (*self.sickness).clone(),
             ticks,
             effect_serial: *self.effect_serial,
             removals: (*self.removals).clone(),
