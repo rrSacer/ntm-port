@@ -7,6 +7,11 @@ Scenarios (NTM_CUT_SCENARIO):
            moved into the Ender chest, which lives in the player's file (EnderItems).
   radaway  one RadAway used on a 300 RAD dose: the item leaves the inventory, the treatment goes to `ntm:item_state`.
   herbal   one herbal pill: the item leaves, the sickness timer (`herbal`) goes to `ntm:item_state`.
+  irradiation  (slice 5c) a step on glowing mycelium: the radiation potion (`irradiated`, `irradiated_level`) and its
+           dose go to `ntm:item_state`, the `ntm:radiation` effect shows it. Control: the table's two stacks moved
+           into the Ender chest at the same moment.
+  migration    (slice 5c) prepared by the binary before 5c, whose potion is in the world's storage
+           (`zirnox.irradiated`); the act is the first minute of the new binary, which moves it to the attachment.
 Modes: prepare (the world saved with the starting state), act (do it, then a save the failpoint may end; NTM_CRASH_NO_SAVE,
 NTM_CRASH_PAUSE_SAVE as run-crash-proof), verify / again (after a reopen: count).
 """
@@ -15,6 +20,7 @@ import re
 import sys
 import time
 from native_game import Game
+import ntm_store
 
 SCENARIO = os.environ.get('NTM_CUT_SCENARIO', 'table')
 VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
@@ -55,18 +61,40 @@ def ender(g):
 
 def item_state(g):
     text = ' '.join(g.command('ntmitem inspect').get('chat', []))
-    out = {k: int(v) for k, v in re.findall(r'(dose|radaway|herbal):\s*(\d+)[lL]?', text)}
+    out = {k: int(v) for k, v in re.findall(r'(dose|radaway|herbal|irradiated|irradiated_level):\s*(\d+)[lL]?', text)}
     out['effects'] = sorted(e['id'].split(':')[-1] for e in g.ctl('state')['player'].get('effects', []))
     return out
 
 
 def count(g):
-    if SCENARIO == 'table':
+    if SCENARIO == 'table' or VANILLA:
         found = held_items(g)
         e = ender(g)
         return {'items': {n: found.get(n, 0) + e.get(n, 0) for n in ITEMS}, 'ender': e}
+    if SCENARIO in ('irradiation', 'migration'):
+        st = item_state(g)
+        # The world's storage as the cut left it (the potion's home before 5c): read before this session saves.
+        try:
+            st['kv_irradiated'] = sorted((ntm_store.value(g.folder / 'saves').get('zirnox') or {}).get('irradiated', {}).values())
+        except (KeyError, RuntimeError, OSError) as error:
+            st['kv_error'] = repr(error)[:120]
+        return {'items': {}, 'state': st}
     item = USED[SCENARIO]
     return {'items': {item: held_items(g).get(item, 0)}, 'state': item_state(g)}
+
+
+MYCELIUM = (22, 100, 11)
+
+
+def step_on_mycelium(g):
+    """`WasteEarth.onEntityWalking`: a moment on glowing mycelium gives the radiation potion (600 ticks, amplifier 3)."""
+    x, y, z = MYCELIUM
+    g.command(f'setblock {x} {y} {z} ntm:waste_mycelium')
+    g.command(f'tp @s {x + .5} {y + 1} {z + .5}')
+    time.sleep(1.0)
+    g.command('tp @s 20.5 101 11.5')
+    g.command(f'setblock {x} {y} {z} minecraft:stone')
+    time.sleep(.3)
 
 
 def table_slot(screen, n):
@@ -81,12 +109,19 @@ def prepare(g):
     g.command('clear @s')
     g.command('ntmitem cure')
     g.command('effect clear @s')
-    if SCENARIO == 'table':
+    if SCENARIO == 'table' or VANILLA:
         if not VANILLA:
             g.command(f'setblock {TABLE[0]} {TABLE[1]} {TABLE[2]} ntm:machine_armor_table')
         g.command('tp @s 24.5 101 11.5')
         for slot, item in enumerate(ITEMS):
             g.command(f'item replace entity @s hotbar.{slot} with {item}')
+    elif SCENARIO in ('irradiation', 'migration'):
+        g.command('ntmitem dose 300000')
+        g.command('tp @s 20.5 101 11.5')
+        if SCENARIO == 'migration':
+            # The binary before 5c keeps this potion in the world's storage.
+            time.sleep(12)  # past the first 200 ticks, so the potion also doses
+            step_on_mycelium(g)
     else:
         g.command('ntmitem dose 300000')
         g.command(f'item replace entity @s hotbar.0 with {USED[SCENARIO]} 1')
@@ -101,7 +136,12 @@ def act(g):
     g.close()
     before = count(g)
     g.evidence['before'] = before
-    if SCENARIO == 'table':
+    if SCENARIO == 'irradiation' and not VANILLA:
+        time.sleep(11)  # past the first 200 ticks of this session: the potion doses
+        step_on_mycelium(g)
+    elif SCENARIO == 'migration':
+        time.sleep(3)
+    elif SCENARIO == 'table' or VANILLA:
         if VANILLA:
             for slot in range(len(ITEMS)):
                 g.command(f'item replace entity @s enderchest.{slot} from entity @s hotbar.{slot}')

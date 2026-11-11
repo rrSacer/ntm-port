@@ -5,11 +5,14 @@ attachments): the armor table, a RadAway's treatment, the herbal pill's sickness
 Example (wrap in agent-run env QUEUE=game):
   python3 tools/test-game/run-player-cut-proof.py SCENARIO --binary PATH --resources PATH --scratch-root PATH [POINT ...]
 
-SCENARIO is table, radaway or herbal (native_player_cut.py). A base world is prepared once and copied for every point;
+SCENARIO is table, radaway, herbal, irradiation or migration (native_player_cut.py). A base world is prepared once and copied for every point;
 `table` also plays a vanilla control (the two stacks moved into the Ender chest). After each cut both reopens are
 counted in game. `table`: each item must be held once (inventory, Ender chest, the ground the table drops it on, nested
 in a stack), as in the control. `radaway`/`herbal`: the used item and its effect go together: either the item is still
 held, or the treatment (RadAway ticks, a lower dose) / the sickness is there; an item gone without its effect is a loss.
+`irradiation` (slice 5c, with the Ender chest control): the radiation potion and the dose it gave go together, and the
+effect shows the potion. `migration`: prepared by `--prepare-binary` (the binary before 5c, whose potion lives in the
+world's storage); after every cut the potion is in the attachment, at its amplifier, with its effect.
 """
 import argparse
 import importlib.util
@@ -98,6 +101,16 @@ def coherent(scenario, c, base):
         return False
     if scenario == 'table':
         return all(v == 1 for v in c['items'].values())
+    if scenario in ('irradiation', 'migration'):
+        st = c['state']
+        shown = 'radiation' in st.get('effects', [])
+        attached = st.get('irradiated', 0) > 0 and st.get('irradiated_level') == 3 and shown
+        if scenario == 'migration':
+            return attached
+        # Before 5c the potion lives in the world's storage, its dose in the player's file; since, both in one
+        # attachment. Either way the potion and the dose it gave go together: both or neither.
+        potion = attached or any(level == 3 for _, level in st.get('kv_irradiated', []))
+        return potion == (st.get('dose', base) > base) and (potion or not shown)
     item = next(iter(c['items']))
     held, st = c['items'][item], c['state']
     if held:
@@ -116,7 +129,8 @@ def verdict(scenario, mine, control):
     out['coherent'] = all(coherent(scenario, mine.get(r), 300000) for r in ('first_reopen', 'second_reopen'))
     out['reopens_agree'] = mine.get('first_reopen', {}) and (mine['first_reopen'] or {}).get('items') == (mine.get('second_reopen') or {}).get('items')
     if control is not None:
-        out['control_coherent'] = all(coherent(scenario, control.get(r), 300000) for r in ('first_reopen', 'second_reopen'))
+        # The control is the table's: the two stacks moved into the Ender chest, each held once.
+        out['control_coherent'] = all(coherent('table', control.get(r), 300000) for r in ('first_reopen', 'second_reopen'))
     out['ok'] = bool(mine['ok'] and out['coherent'] and out['reopens_agree'] and (control is None or (control['ok'] and out['control_coherent'])))
     return out
 
@@ -125,7 +139,8 @@ def main():
     import resource
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['table', 'radaway', 'herbal'])
+    parser.add_argument('scenario', choices=['table', 'radaway', 'herbal', 'irradiation', 'migration'])
+    parser.add_argument('--prepare-binary', type=Path, help='the binary that prepares the base world (migration)')
     parser.add_argument('points', nargs='*')
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
@@ -162,17 +177,22 @@ def main():
             copy_env[key] = str(folder / sub)
         return copy_env
     try:
-        controls = (False, True) if args.scenario == 'table' else (False,)
+        controls = (False, True) if args.scenario in ('table', 'irradiation') else (False,)
         bases = {c: scratch / ('base' + ('-vanilla' if c else '')) for c in controls}
         for c, where in bases.items():
             where.mkdir(exist_ok=True)
             for f in ('options.txt', 'horizon-controller.txt', 'horizon-graphics.txt'):
                 if (base / f).exists() and where != base:
                     shutil.copy(base / f, where / f)
+            binary = args.binary
+            if args.prepare_binary:
+                args.binary = args.prepare_binary.resolve()
+                report['prepare_binary_sha256'] = crash_proof.digest(args.binary)
             world = Copy(args, where, homed(where, c))
             world.launch()
             world.script('prepare')
             world.quit()
+            args.binary = binary
         for point in args.points or POINTS:
             played = {c: play(args, bases[c], scratch, homed(scratch / ('point-' + point + ('-vanilla' if c else '')), c), point, c)
                       for c in controls}
