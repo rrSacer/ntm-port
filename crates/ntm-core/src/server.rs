@@ -143,11 +143,12 @@ pub trait ServerHost: Kv {
     /// The radiation potion (`HbmPotion.radiation`) in player `id`'s own storage: (ticks left, amplifier), (0, 0)
     /// for none. `legacy` seeds a storage that has no dose yet. None: the host has no player storage, and the
     /// world's map (`zirnox.irradiated`) is the state.
-    fn player_irradiation(&mut self,_id:&str,_legacy:&crate::radiation::Dose)->Option<crate::zirnox::Irradiation>{None}
+    fn player_irradiation(&mut self,_id:&str,_legacy:&crate::radiation::Dose)->Option<crate::zirnox::StoredPotion>{None}
     /// Writes it if the storage still holds `expected`.
-    fn commit_player_irradiation(&mut self,_id:&str,_legacy:&crate::radiation::Dose,_expected:crate::zirnox::Irradiation,_desired:crate::zirnox::Irradiation)->bool{false}
-    /// Whether player `id` has status effect `effect` (None: the host can't tell).
-    fn has_effect(&mut self,_id:&str,_effect:&str)->Option<bool>{None}
+    fn commit_player_irradiation(&mut self,_id:&str,_legacy:&crate::radiation::Dose,_expected:crate::zirnox::StoredPotion,_desired:crate::zirnox::StoredPotion)->bool{false}
+    /// Player `id`'s status effect `effect`: Some(None) when they don't have it, Some((ticks left, amplifier)) when
+    /// they do (None: the host can't tell).
+    fn effect_state(&mut self,_id:&str,_effect:&str)->Option<Option<(u32,u8)>>{None}
     /// Takes status effect `effect` from player `id` (`removePotionEffect`).
     fn remove_effect(&mut self,_id:&str,_effect:&str){}
     /// Damage to player `id` of a registered type (`minecraft:magic`); the

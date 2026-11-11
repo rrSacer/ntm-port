@@ -108,7 +108,7 @@ struct Deferred<'a, H> {
     /// after the commit, each write expecting the one before it.
     doses: BTreeMap<String, crate::radiation::Dose>,
     /// The same for the radiation potion in the player's storage.
-    irradiations: BTreeMap<String, crate::zirnox::Irradiation>,
+    irradiations: BTreeMap<String, crate::zirnox::StoredPotion>,
 }
 impl<H: ServerHost> Kv for Deferred<'_, H> {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -238,13 +238,13 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         })));
         true
     }
-    fn player_irradiation(&mut self, id: &str, legacy: &crate::radiation::Dose) -> Option<crate::zirnox::Irradiation> {
+    fn player_irradiation(&mut self, id: &str, legacy: &crate::radiation::Dose) -> Option<crate::zirnox::StoredPotion> {
         match self.irradiations.get(id) {
             Some(staged) => Some(*staged),
             None => self.host.player_irradiation(id, legacy),
         }
     }
-    fn commit_player_irradiation(&mut self, id: &str, legacy: &crate::radiation::Dose, expected: crate::zirnox::Irradiation, desired: crate::zirnox::Irradiation) -> bool {
+    fn commit_player_irradiation(&mut self, id: &str, legacy: &crate::radiation::Dose, expected: crate::zirnox::StoredPotion, desired: crate::zirnox::StoredPotion) -> bool {
         self.irradiations.insert(id.into(), desired);
         let (id, legacy) = (id.to_string(), legacy.clone());
         self.effects.push((self.origins.clone(),Box::new(move |h| {
@@ -254,8 +254,8 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         })));
         true
     }
-    fn has_effect(&mut self, id: &str, effect: &str) -> Option<bool> {
-        self.host.has_effect(id, effect)
+    fn effect_state(&mut self, id: &str, effect: &str) -> Option<Option<(u32, u8)>> {
+        self.host.effect_state(id, effect)
     }
     fn remove_effect(&mut self, id: &str, effect: &str) {
         let (id, effect) = (id.to_string(), effect.to_string());
@@ -1055,7 +1055,7 @@ mod dose_tests {
         doses: BTreeMap<String, u64>,
         writes: Vec<(u64, u64)>,
         logs: Vec<String>,
-        irradiation: BTreeMap<String, crate::zirnox::Irradiation>,
+        irradiation: BTreeMap<String, crate::zirnox::StoredPotion>,
         removed: Vec<String>,
     }
     impl Kv for Attached {
@@ -1072,15 +1072,15 @@ mod dose_tests {
         fn player_dose(&mut self, id: &str, legacy: &Dose) -> Option<Dose> {
             Some(self.doses.get(id).map_or_else(|| legacy.clone(), |&millirad| Dose { millirad }))
         }
-        fn player_irradiation(&mut self, id: &str, _: &Dose) -> Option<crate::zirnox::Irradiation> {
-            Some(self.irradiation.get(id).copied().unwrap_or((0, 0)))
+        fn player_irradiation(&mut self, id: &str, _: &Dose) -> Option<crate::zirnox::StoredPotion> {
+            Some(self.irradiation.get(id).copied().unwrap_or_default())
         }
-        fn commit_player_irradiation(&mut self, id: &str, _: &Dose, expected: crate::zirnox::Irradiation, desired: crate::zirnox::Irradiation) -> bool {
-            if self.irradiation.get(id).copied().unwrap_or((0, 0)) != expected { return false; }
+        fn commit_player_irradiation(&mut self, id: &str, _: &Dose, expected: crate::zirnox::StoredPotion, desired: crate::zirnox::StoredPotion) -> bool {
+            if self.irradiation.get(id).copied().unwrap_or_default() != expected { return false; }
             self.irradiation.insert(id.into(), desired);
             true
         }
-        fn has_effect(&mut self, _: &str, effect: &str) -> Option<bool> { Some(effect == "seen") }
+        fn effect_state(&mut self, _: &str, effect: &str) -> Option<Option<(u32, u8)>> { Some((effect == "seen").then_some((5, 1))) }
         fn remove_effect(&mut self, id: &str, effect: &str) { self.removed.push(format!("{id} {effect}")); }
         fn commit_player_dose(&mut self, id: &str, expected: &Dose, desired: &Dose) -> bool {
             if self.doses.get(id).copied().unwrap_or(0) != expected.millirad { return false; }
@@ -1123,15 +1123,16 @@ mod dose_tests {
         let mut host = Attached::default();
         let mut step = staged(&mut host);
         let legacy = Dose::default();
-        assert!(step.commit_player_irradiation("p", &legacy, (0, 0), (600, 3)));
-        assert_eq!(step.player_irradiation("p", &legacy), Some((600, 3)));
-        assert!(step.commit_player_irradiation("p", &legacy, (600, 3), (1200, 4)));
+        let at = |potion| crate::zirnox::StoredPotion { potion, migrated: (0, 0) };
+        assert!(step.commit_player_irradiation("p", &legacy, at((0, 0)), at((600, 3))));
+        assert_eq!(step.player_irradiation("p", &legacy), Some(at((600, 3))));
+        assert!(step.commit_player_irradiation("p", &legacy, at((600, 3)), at((1200, 4))));
         step.remove_effect("p", "ntm:radiation");
-        assert_eq!(step.has_effect("p", "seen"), Some(true));
+        assert_eq!(step.effect_state("p", "seen"), Some(Some((5, 1))));
         let effects = std::mem::take(&mut step.effects);
         assert!(host.irradiation.is_empty() && host.removed.is_empty(), "nothing before the commit");
         for (_, effect) in effects { effect(&mut host); }
-        assert_eq!(host.irradiation["p"], (1200, 4));
+        assert_eq!(host.irradiation["p"], at((1200, 4)));
         assert_eq!(host.removed, ["p ntm:radiation"]);
         assert!(host.logs.is_empty());
     }
