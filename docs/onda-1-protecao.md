@@ -531,8 +531,55 @@ ruína, sem a carência na poção. Em jogo (`ruin-dose-check`): depois de renas
 está vivo com dose 0 aos 60 ticks e morre 204 ticks depois; o cliente anterior (sem a carência) morre antes dos 60.
 Rodada: binário `88837ca0…`, pacote `87f5e937…`, ZIRNOX 142/142, `cargo test` 540 + 118.
 
+### 5c: a poção de radiação no anexo do jogador (D3)
+
+`HbmPotion.radiation` saiu do mapa do mundo (`zirnox.irradiated`) para o anexo do jogador (`ntm:item_state`, chaves
+`irradiated` e `irradiated_level`) e aparece como o efeito `ntm:radiation` ("Contaminado", nocivo, cor 0x84C128, o
+ícone (1, 0) do `registerPotion`). Decisão do coordenador: opção (A), o anexo guarda o estado e o efeito é a bandeira.
+
+- Núcleo: `irradiate_player` aplica com a regra do `PotionEffect.combine` (nível maior assume com a sua duração, nível
+  igual fica com a maior duração, nível menor não muda nada); `zirnox_irradiation` doseia `(n + 1) × 0,05 RAD` por
+  tick (com a carência, o fator da armadura e a ordem da 5b), desconta o tempo e repõe o efeito com o tempo restante.
+  O host lê e grava o anexo por CAS (`player_irradiation`/`commit_player_irradiation`), como a dose; o `Deferred`
+  repassa em estágio (hoje nenhuma aplicação corre dentro de um passo de máquina: os detritos aplicam em
+  `zirnox_world_effects`, fora dele).
+- Cura: o efeito sumido com tempo restante encerra a poção, como `removePotionEffect`: leite (curativos padrão do
+  Forge), antídoto (`clearActivePotions`), pílula de iodo (`ItemPill:45`), bolsa médica (`ItemSyringe:127`),
+  `/effect clear`. O iodo e a bolsa ganharam `ntm:radiation` na lista de cura (`consumables.json`). O descontaminador
+  (`TileEntityDecon:27`) zera o anexo e tira o efeito. Não conta como cura a falta do efeito no tick em que a poção foi
+  dada (o motor aplica o efeito no fim do tick) nem no primeiro tick do jogador no mundo; e o leite bebido antes do passo
+  no micélio, no mesmo tick, faz a poção nova começar do zero, sem somar com a velha.
+- Migração única: uma entrada de `zirnox.irradiated` de um mundo anterior à 5c entra no anexo (pela mesma regra de
+  soma) quando o jogador está no mundo, e sai do mapa só depois da gravação no anexo. Gravação recusada: o tick que
+  doseou é descontado no mapa e o anexo o recebe depois. Jogador fora do mundo: a entrada espera.
+
+Provas. Testes de unidade (anexo, efeito enfileirado como no motor, curas, confiança no tick dado e na entrada, leite e
+micélio no mesmo tick, descontaminador, migração com recusa e ida e volta por `WorldState::load`, criativo, `Deferred`,
+`combine`); 13 mutantes mortos (sem cura, sem confiança na entrada, sem confiança no tick dado, aplicação ignorando a
+cura, aplicação só pelo mapa, recusa sem desconto, migração mantendo a entrada, sem repor o efeito, descontaminador sem
+efeito, `Deferred` sem estágio, duas regras de soma). Conteúdo: `test_mob_effects.py` lê o `registerPotion` e o
+idioma; `test_consumables.py` passou a ler também as remoções de `HbmPotion`. Em jogo (família `irradiation`): o
+micélio dá o efeito nível 3 com o tempo do anexo, a dose sobe 0,2 RAD por tick, e leite, iodo, bolsa, antídoto e
+`/effect clear` encerram a poção (sem mais dose); o binário anterior à 5c falha (sem efeito, anexo vazio).
+
+Corte de save (`run-player-cut-proof.py`, sete pontos do save, duas reaberturas):
+
+| Cenário | Antes da 5c (binário `88837ca0…`) | Com a 5c (`59f23f19…`) |
+|---|---|---|
+| `irradiation`, com o controle do baú do Ender | `players_saved`: **a dose ficou (310,8 RAD), a poção sumiu** (estava no KV do mundo, não gravado); os outros seis coerentes | Os sete cortes: a poção e a dose andam juntas, como o controle |
+| `migration` (mundo preparado pelo binário anterior) | — | Os sete cortes: a poção está no anexo, nível 3, com o efeito. Entre a gravação do jogador e o commit do KV, a entrada antiga ainda está no disco e se junta pela regra de soma: a poção pode recuperar os ticks da sessão cortada, nunca se perde |
+
+Rodada: binário `59f23f19…`, pacote `36eb93fa…`, motor no pin sem mudança; `items` 283/283 (as 276 de antes e 7 da
+`irradiation`), ZIRNOX 142/142. Evidência em `docs/evidence/onda1-f5/irradiation-5c.json`.
+
+Ordem combinada: depois da 5c, a 5d (fontes da poção com bloco no port: `BlockFallout:57`, `BlockSellafield:49`, e a
+regra de dose do fallout), com plano e revisão próprios.
+
 ### Lacunas nominais da fatia 5
 
+- As outras fontes de `HbmPotion.radiation` (a 5c tem o micélio e os detritos do ZIRNOX). Na 5d: `BlockFallout:57`,
+  `BlockSellafield:49`. Sem bloco ou entidade no port ainda: `BlockOre:156-165`, `BarbedWire:75`, `Balefire:159`,
+  `BlockGasRadonDense:42`, `BlockGasMeltdown:40`, `EntityRBMKDebris:105`, `EntityTaintCrab:53`, `ModEventHandler:1015`.
 - Dose em mobs e as transformações do `handleRadiationEffect` (creeper → creeper nuclear, vaca → mooshroom, aldeão →
   zumbi, pato → quackos): o port só guarda dose de jogadores. Sugerido para a Onda 4 ou a frente de mobs.
 - As conquistas `achRadPoison` e `achRadDeath`: o port não tem conquistas.
