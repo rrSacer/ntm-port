@@ -127,7 +127,7 @@ def run(args):
               'comparator': [('setup',)],
               'pile-meltdown': [('meltdown',)],
               'stations': [('misturador',)], 'recipes': [('montadora', 'bigorna')],
-              'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)]}
+              'dims-idle': [('idle',)], 'dims-idle-clean': [('idle-clean',)], 'ident-diesel': [('setup',)], 'ident-engine': [('setup',)], 'ident-turbofan': [('setup',)], 'ident-turbina': [('setup',)], 'ident-solder': [('setup',)]}
     if getattr(args, 'manual_only', False):
         phases['radioisotopes'] = [('setup', 'decay', 'capture-state'), ('check-state',)]
         report['scope'] = 'manual acceptance; conditional hopper phase still pending'
@@ -204,7 +204,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['audio-lifecycle', 'sounds', 'items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'furnace-brick', 'furnaces', 'welders', 'broken', 'rbmk-t00', 'comparator', 'pile-meltdown', 'stations', 'recipes'])
+    parser.add_argument('scenario', choices=['audio-lifecycle', 'sounds', 'items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'furnace-brick', 'furnaces', 'welders', 'broken', 'rbmk-t00', 'comparator', 'pile-meltdown', 'stations', 'recipes', 'ident-diesel', 'ident-engine', 'ident-turbofan', 'ident-turbina', 'ident-solder'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)
