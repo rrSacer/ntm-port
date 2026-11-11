@@ -496,3 +496,10 @@ radiation poisoning." e volta com dose 0; com Resistência V sobrevive e a dose 
 - As conquistas `achRadPoison` e `achRadDeath`: o port não tem conquistas.
 - A imunidade `ContaminationUtil.isRadImmune` (`EntityEffectHandler:219`): para um jogador ela só vale com o efeito
   `HbmPotion.mutation` ativo, que o port não tem; os mobs imunes da lista dependem da dose em mobs (acima).
+- Os outros usos de `ModDamageSource.radiation` no Java. A 5b só faz a morte a 1000 RAD (`EntityEffectHandler:225`);
+  o tipo `ntm:radiation` já existe para eles, mas as fontes ainda não ferem: o sellafield que fere metade da vida
+  (`TileEntitySellafield:29`); o cório, 2 de dano (`CoriumBlock:81`, `CoriumFinite:54`); os fluidos tóxico e
+  schrabídico (`ModBlocks:2329`, `:2333`); o ataque da besta radioativa, 16 (`EntityRADBeast:145`); a nuvem química, 1
+  sem pausa de invulnerabilidade (`EntityChemical:153`); o item glitch, 1000 (`ItemGlitch:49`); os 100 de dano na
+  transformação do creeper (`EntityEffectHandler:196`, com a dose em mobs); e a imunidade do creeper nuclear a esse
+  dano (`EntityCreeperNuclear:53`).
