@@ -107,6 +107,8 @@ struct Deferred<'a, H> {
     /// Doses a step wrote, by player: what a later read in the same step sees. The player's own storage takes them
     /// after the commit, each write expecting the one before it.
     doses: BTreeMap<String, crate::radiation::Dose>,
+    /// The same for the radiation potion in the player's storage.
+    irradiations: BTreeMap<String, crate::zirnox::Irradiation>,
 }
 impl<H: ServerHost> Kv for Deferred<'_, H> {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -235,6 +237,29 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
             }
         })));
         true
+    }
+    fn player_irradiation(&mut self, id: &str, legacy: &crate::radiation::Dose) -> Option<crate::zirnox::Irradiation> {
+        match self.irradiations.get(id) {
+            Some(staged) => Some(*staged),
+            None => self.host.player_irradiation(id, legacy),
+        }
+    }
+    fn commit_player_irradiation(&mut self, id: &str, legacy: &crate::radiation::Dose, expected: crate::zirnox::Irradiation, desired: crate::zirnox::Irradiation) -> bool {
+        self.irradiations.insert(id.into(), desired);
+        let (id, legacy) = (id.to_string(), legacy.clone());
+        self.effects.push((self.origins.clone(),Box::new(move |h| {
+            if !h.commit_player_irradiation(&id, &legacy, expected, desired) {
+                h.log(&format!("ntm: the radiation potion of {id} changed under a machine step; its write was dropped"));
+            }
+        })));
+        true
+    }
+    fn has_effect(&mut self, id: &str, effect: &str) -> Option<bool> {
+        self.host.has_effect(id, effect)
+    }
+    fn remove_effect(&mut self, id: &str, effect: &str) {
+        let (id, effect) = (id.to_string(), effect.to_string());
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.remove_effect(&id, &effect))));
     }
 }
 
@@ -586,7 +611,7 @@ impl Server {
             generations:(*before.world.generations).clone(),
             origins:before.world.machines.iter().filter(|(k,_)|k.0==dim).map(|(k,m)|CellGuard::machine(k,m)).collect(),
             valid:true,
-            resource:false,world_writes:Vec::new(),doses:BTreeMap::new(),
+            resource:false,world_writes:Vec::new(),doses:BTreeMap::new(),irradiations:BTreeMap::new(),
         };
         let outcome =
             self.native_pile_use_inner(&mut staged, dim, at, face, held, depletion, player);
@@ -819,7 +844,7 @@ impl Server {
             generations:(*before.world.generations).clone(),
                     origins:before.world.machines.iter().map(|(k,m)|CellGuard::machine(k,m)).collect(),
                     valid:true,
-                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),doses:BTreeMap::new(),
+                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),doses:BTreeMap::new(),irradiations:BTreeMap::new(),
                 };
                 let removed: Vec<_> = keys
                     .iter()
@@ -1030,6 +1055,8 @@ mod dose_tests {
         doses: BTreeMap<String, u64>,
         writes: Vec<(u64, u64)>,
         logs: Vec<String>,
+        irradiation: BTreeMap<String, crate::zirnox::Irradiation>,
+        removed: Vec<String>,
     }
     impl Kv for Attached {
         fn get(&mut self, _: &str) -> Option<Vec<u8>> { None }
@@ -1045,6 +1072,16 @@ mod dose_tests {
         fn player_dose(&mut self, id: &str, legacy: &Dose) -> Option<Dose> {
             Some(self.doses.get(id).map_or_else(|| legacy.clone(), |&millirad| Dose { millirad }))
         }
+        fn player_irradiation(&mut self, id: &str, _: &Dose) -> Option<crate::zirnox::Irradiation> {
+            Some(self.irradiation.get(id).copied().unwrap_or((0, 0)))
+        }
+        fn commit_player_irradiation(&mut self, id: &str, _: &Dose, expected: crate::zirnox::Irradiation, desired: crate::zirnox::Irradiation) -> bool {
+            if self.irradiation.get(id).copied().unwrap_or((0, 0)) != expected { return false; }
+            self.irradiation.insert(id.into(), desired);
+            true
+        }
+        fn has_effect(&mut self, _: &str, effect: &str) -> Option<bool> { Some(effect == "seen") }
+        fn remove_effect(&mut self, id: &str, effect: &str) { self.removed.push(format!("{id} {effect}")); }
         fn commit_player_dose(&mut self, id: &str, expected: &Dose, desired: &Dose) -> bool {
             if self.doses.get(id).copied().unwrap_or(0) != expected.millirad { return false; }
             self.writes.push((expected.millirad, desired.millirad));
@@ -1055,7 +1092,7 @@ mod dose_tests {
     fn staged(host: &mut Attached) -> Deferred<'_, Attached> {
         Deferred { host, slots: BTreeMap::new(), effects: Vec::new(), generations: BTreeMap::new(), cells: BTreeMap::new(),
             vacant: BTreeSet::new(), origins: Vec::new(), valid: true, resource: false, world_writes: Vec::new(),
-            critical: std::collections::VecDeque::new(), doses: BTreeMap::new() }
+            critical: std::collections::VecDeque::new(), doses: BTreeMap::new(), irradiations: BTreeMap::new() }
     }
 
     /// A machine step's dose writes reach the player's storage after the commit, in order, each expecting the one
@@ -1076,6 +1113,26 @@ mod dose_tests {
         assert_eq!(host.doses["p"], 1_000, "nothing reaches the storage before the commit");
         for (_, effect) in effects { effect(&mut host); }
         assert_eq!(host.writes, [(1_000, 1_500), (1_500, 2_200)]);
+        assert!(host.logs.is_empty());
+    }
+
+    /// The radiation potion goes the way of the dose: a read in the step sees the step's write, the storage takes
+    /// the writes in order after the commit, and so does an effect's removal; the effect check reads the host.
+    #[test]
+    fn a_machine_steps_radiation_potion_reaches_the_players_storage_in_order() {
+        let mut host = Attached::default();
+        let mut step = staged(&mut host);
+        let legacy = Dose::default();
+        assert!(step.commit_player_irradiation("p", &legacy, (0, 0), (600, 3)));
+        assert_eq!(step.player_irradiation("p", &legacy), Some((600, 3)));
+        assert!(step.commit_player_irradiation("p", &legacy, (600, 3), (1200, 4)));
+        step.remove_effect("p", "ntm:radiation");
+        assert_eq!(step.has_effect("p", "seen"), Some(true));
+        let effects = std::mem::take(&mut step.effects);
+        assert!(host.irradiation.is_empty() && host.removed.is_empty(), "nothing before the commit");
+        for (_, effect) in effects { effect(&mut host); }
+        assert_eq!(host.irradiation["p"], (1200, 4));
+        assert_eq!(host.removed, ["p ntm:radiation"]);
         assert!(host.logs.is_empty());
     }
 
