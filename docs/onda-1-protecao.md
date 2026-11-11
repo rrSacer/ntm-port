@@ -433,6 +433,12 @@ que ignore armadura, senão `minecraft:magic` (nunca `generic_kill`); D3 (A) o e
 1000 RAD: os efeitos da faixa sorteados com `world.rand.nextInt(n) == 0`, na ordem do Java, todos os sorteios feitos
 seja qual for o resultado dos anteriores.
 
+Ajustes da revisão da 5a: o gerador mora numa chave própria do KV (`SICKNESS_KEY`), com carimbo próprio, como as
+camadas do RBMK; antes ele entrava no carimbo da chave do mundo, que um tick com alguém doente regravava inteira
+(medido em release com a camada 15×15: 0,52 ms por tick com 5 mil gerações e 5,68 ms com 50 mil; agora 0,0001 ms nos
+três casos, `keep_world_cost_with_sickness`). Testes novos: só a chave da doença é escrita num tick em que só ela mudou;
+a semente é a do mundo (semente 0 quebra); o ×20 das bombas; criativo pulado e sem carência. Mutações mortas: as quatro.
+
 | Faixa (RAD) | Efeito: chance, duração em ticks, nível |
 | --- | --- |
 | 800 a 999 | náusea 1/300, 150, I; lentidão 1/300, 200, III; fraqueza 1/300, 200, III; veneno 1/500, 60, III; wither 1/700, 60, II |
@@ -460,3 +466,5 @@ padrão da binomial (por exemplo, 39 náuseas para 40 esperadas a 300 RAD).
 - Dose em mobs e as transformações do `handleRadiationEffect` (creeper → creeper nuclear, vaca → mooshroom, aldeão →
   zumbi, pato → quackos): o port só guarda dose de jogadores. Sugerido para a Onda 4 ou a frente de mobs.
 - As conquistas `achRadPoison` e `achRadDeath`: o port não tem conquistas.
+- A imunidade `ContaminationUtil.isRadImmune` (`EntityEffectHandler:219`): para um jogador ela só vale com o efeito
+  `HbmPotion.mutation` ativo, que o port não tem; os mobs imunes da lista dependem da dose em mobs (acima).
