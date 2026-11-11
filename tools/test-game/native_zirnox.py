@@ -484,10 +484,16 @@ def ruin_dose_check(g):
     got=dose(g)
     g.check('ruin_dose_survives_reopening',saved>0 and got==saved,{'saved':saved,'reopened':got})
     # Unshielded, six blocks from the ruin (115,101,6), its dose (500000 or 75000 / distance², in RAD) passes 1000 at
-    # once: the player's update, after the ruin's tick, kills them with `ModDamageSource.radiation` and leaves 0.
+    # once: the player's update, after the ruin's tick, kills them with `ModDamageSource.radiation` and leaves 0. This
+    # session's player has just joined: the ruin waits out their first 200 ticks (`ContaminationUtil.contaminate:287`).
     g.command('fill 112 101 -1 118 105 5 minecraft:air');g.command('fill 114 100 -1 116 100 1 minecraft:obsidian')
-    g.command('tp @s 115.5 101 0.5 0 0');g.command('ntmitem dose 0');g.command('gamemode survival');time.sleep(1.5)
-    p=g.ctl('state')['player'];chat=' | '.join(g.ctl('chat-log 12').get('chat',[]))
+    g.command('tp @s 115.5 101 0.5 0 0');g.command('ntmitem dose 0');g.command('gamemode survival')
+    deadline=time.monotonic()+20
+    while time.monotonic()<deadline:
+        p=g.ctl('state')['player']
+        if p.get('death_time') is not None or p['health']<=0:break
+        time.sleep(.2)
+    chat=' | '.join(g.ctl('chat-log 12').get('chat',[]))
     dead=p.get('death_time') is not None or p['health']<=0
     g.check('ruin_kills_with_radiation',dead and 'died from radiation poisoning' in chat,{'player':p,'chat':chat[:300]})
     if not dead:return
