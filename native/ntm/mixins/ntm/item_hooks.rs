@@ -41,7 +41,7 @@ fn codec(value: &Compound) -> Result<Compound, AttachmentError> {
     if !value.is_empty() && value.get(&JavaString::from("schema")) != Some(&Tag::Int(1)) {
         return Err(AttachmentError::Decode);
     }
-    for key in ["dose", "radaway", "sickness", "herbal"] {
+    for key in ["dose", "radaway", "sickness", "herbal", "irradiated", "irradiated_level"] {
         if let Some(value) = value.get(&JavaString::from(key)) {
             match value {
                 Tag::Long(n) if *n >= 0 => {}
@@ -1118,6 +1118,43 @@ pub(super) fn write_dose(game: &mut Game<'_>, before: &Dose, after: &Dose) -> bo
     }
     set(&mut desired.state, "dose", after.millirad);
     game.native_commit_player(&STATE, &expected, desired, Default::default())
+}
+/// The radiation potion (`HbmPotion.radiation`) in the attachment: `irradiated` ticks left at amplifier
+/// `irradiated_level` (Onda 1, slice 5c, D3). `legacy` seeds an attachment that has no dose yet.
+pub(super) fn read_irradiation(game: &mut Game<'_>, legacy: &Dose) -> Option<(u32, u8)> {
+    let mut snap = game.native_player_snapshot(&STATE)?;
+    init(&mut snap, legacy.clone());
+    Some(read_state(&snap))
+}
+pub(super) fn write_irradiation(game: &mut Game<'_>, legacy: &Dose, before: (u32, u8), after: (u32, u8)) -> bool {
+    let Some(expected) = game.native_player_snapshot(&STATE) else {
+        return false;
+    };
+    let mut current = expected.clone();
+    init(&mut current, legacy.clone());
+    if read_state(&current) != before {
+        return false;
+    }
+    let mut desired = current;
+    set(&mut desired.state, "irradiated", u64::from(after.0));
+    set(&mut desired.state, "irradiated_level", if after.0 == 0 { 0 } else { u64::from(after.1) });
+    game.native_commit_player(&STATE, &expected, desired, Default::default())
+}
+fn read_state(s: &NativePlayerSnapshot) -> (u32, u8) {
+    let ticks = u32::try_from(number(&s.state, "irradiated")).unwrap_or(u32::MAX);
+    let level = u8::try_from(number(&s.state, "irradiated_level")).unwrap_or(u8::MAX);
+    if ticks == 0 { (0, 0) } else { (ticks, level) }
+}
+/// Whether the player has status effect `effect`.
+pub(super) fn has_effect(game: &Game<'_>, effect: &str) -> bool {
+    game.potions.effects.get(effect).is_some()
+}
+/// `removePotionEffect`: takes status effect `effect` from the player.
+pub(super) fn remove_effect(game: &mut Game<'_>, effect: &str) {
+    if game.potions.effects.get(effect).is_some() {
+        game.potions.effects.list.retain(|e| e.id != effect);
+        game.apply_effect_status();
+    }
 }
 /// The acting player's stacks with their state, for a transfer with machines (`ServerHost::player_slots`). None: no
 /// acting player, or a state the codec refuses (then no transfer moves anything).

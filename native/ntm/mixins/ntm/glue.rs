@@ -1422,6 +1422,18 @@ impl ServerHost for Host<'_, '_> {
         self.game.native_visit_player(id,|g|crate::game::ntm_items::write_dose(g,expected,desired)).unwrap_or(false)
     }
     fn radiation_factor(&mut self,id:&str)->f64{self.game.native_visit_player(id,|g|crate::game::ntm_items::radiation_factor(g)).unwrap_or(1.0)}
+    fn player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<ntm_core::zirnox::Irradiation>{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::read_irradiation(g,legacy)).flatten()
+    }
+    fn commit_player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose,expected:ntm_core::zirnox::Irradiation,desired:ntm_core::zirnox::Irradiation)->bool{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::write_irradiation(g,legacy,expected,desired)).unwrap_or(false)
+    }
+    fn has_effect(&mut self,id:&str,effect:&str)->Option<bool>{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::has_effect(g,effect))
+    }
+    fn remove_effect(&mut self,id:&str,effect:&str){
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::remove_effect(g,effect));
+    }
     fn inventory_stacks(&mut self,id:&str)->Option<Vec<Stack>> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {id:c.item,count:c.count,damage:0,custom:c.custom_data}).collect())
     }
