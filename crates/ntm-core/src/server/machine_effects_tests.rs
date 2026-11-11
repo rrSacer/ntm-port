@@ -18,6 +18,9 @@ struct Host {
     seen: BTreeSet<(u64, String, Pos)>,
     homes: BTreeMap<[i32; 2], Vec<CommittedEffects>>,
     empty_homes: Vec<[i32; 2]>,
+    blocks: BTreeMap<Pos, String>,
+    saved: BTreeMap<Pos, String>,
+    refuse_commit: bool,
 }
 impl Kv for Host {
     fn get(&mut self, key: &str) -> Option<Vec<u8>> {
@@ -31,8 +34,21 @@ impl Kv for Host {
     }
 }
 impl ServerHost for Host {
-    fn get_block(&mut self, _: &str, _: Pos) -> Option<String> {
-        Some("minecraft:air".into())
+    fn get_block(&mut self, _: &str, pos: Pos) -> Option<String> {
+        Some(
+            self.blocks
+                .get(&pos)
+                .cloned()
+                .unwrap_or_else(|| "minecraft:air".into()),
+        )
+    }
+    fn commit_machine(&mut self, commit: &MachineCommit) -> bool {
+        if self.refuse_commit {
+            return false;
+        }
+        self.order.push("commit");
+        self.saved.insert(commit.pos, commit.json.clone());
+        true
     }
     fn set_blocks(&mut self, _: &str, _: &[(Pos, String)]) -> Result<(), String> {
         Ok(())
@@ -282,4 +298,240 @@ fn a_reopened_home_is_written_empty_when_its_last_batch_is_paid() {
     }
     reopened.native_settle(&mut host);
     assert_eq!(host.blasts.len(), 1, "a second reopen owes no explosion");
+}
+
+fn synthetic_machine(host: &mut Host, server: &mut Server, pos: Pos, facing: Option<&str>) -> Key {
+    use crate::machine::{Data, Kind};
+    let key = (DIM.to_string(), pos);
+    let mut machine = Machine::new(Kind::Inert, "ntm:effect_probe", facing.map(str::to_string));
+    machine.data = Data::Inert {
+        name: "__effect_probe_armed".into(),
+    };
+    let json = serde_json::to_string(&machine).unwrap();
+    host.blocks.insert(pos, machine.block.clone());
+    host.saved.insert(pos, json.clone());
+    server.ready.native_saved.insert(key.clone(), json);
+    server.ready.loaded.insert(key.clone(), true);
+    server.ready.world.machines.insert(key.clone(), machine);
+    key
+}
+fn probe_name(server: &Server, key: &Key) -> String {
+    let crate::machine::Data::Inert { name } = &server.ready.world.machines[key].data else {
+        panic!()
+    };
+    name.clone()
+}
+fn phase(machine: &mut Machine) -> Vec<crate::machine::MachineEffect> {
+    let crate::machine::Data::Inert { name } = &mut machine.data else {
+        panic!()
+    };
+    if name.as_str() == "__effect_probe_spent" {
+        return vec![];
+    }
+    *name = "__effect_probe_spent".into();
+    vec![crate::machine::MachineEffect::Explode {
+        offset: [0., 1., 0.],
+        power: 5.,
+        fire: false,
+        breaks: false,
+    }]
+}
+#[test]
+fn a_common_step_publishes_its_model_and_critical_effects_only_after_acceptance() {
+    let mut host = Host::default();
+    let mut server = Server::native(&mut host, 0);
+    let key = synthetic_machine(&mut host, &mut server, CORE, Some("north"));
+    let before = server.ready.world.machines[&key].clone();
+    host.refuse_commit = true;
+    server.local_steps(&mut host);
+    server.sync_obligations(&mut host);
+    assert_eq!(server.ready.world.machines[&key], before);
+    assert!(server.ready.world.machine_effects.is_empty() && host.homes.is_empty());
+    assert!(host.blasts.is_empty() && host.items.is_empty());
+    host.refuse_commit = false;
+    server.local_steps(&mut host);
+    assert_eq!(probe_name(&server, &key), "__effect_probe_spent");
+    assert_eq!(server.ready.world.machine_effects.len(), 1);
+    let batch = &server.ready.world.machine_effects[0];
+    assert_eq!(batch.owners, [key.clone()]);
+    assert_eq!(batch.home(), Some((DIM.into(), 0, 0)));
+    assert_eq!(batch.origins, [CellGuard::machine(&key, &before)]);
+    assert_eq!(batch.effects, VecDeque::from([blast(), drop()]));
+    assert!(
+        host.blasts.is_empty() && host.items.is_empty(),
+        "committed, owed, not published before the commit"
+    );
+    assert_eq!(
+        serde_json::from_str::<Machine>(&host.saved[&CORE]).unwrap(),
+        server.ready.world.machines[&key]
+    );
+    server.local_steps(&mut host);
+    assert_eq!(
+        server.ready.world.machine_effects.len(),
+        1,
+        "the waiting batch freezes the consumer"
+    );
+    server.sync_obligations(&mut host);
+    assert_eq!(host.homes[&[0, 0]].len(), 1);
+    server.flush_machine_effects(&mut host);
+    assert_eq!(host.order, ["commit", "explosion attempt", "items"]);
+}
+#[test]
+fn relative_outputs_rotate_about_the_owners_core_and_never_another_machine() {
+    use crate::machine::MachineEffect;
+    for (facing, expected) in [
+        (None, [17, 65, -3]),
+        (Some("north"), [17, 65, -3]),
+        (Some("east"), [18, 65, 2]),
+    ] {
+        let key = (DIM.to_string(), CORE);
+        let drop = MachineEffect::Drop {
+            offset: [2, 1, 3],
+            item: "probe".into(),
+            count: 7,
+        }
+        .in_world(&key, facing);
+        assert_eq!(
+            drop,
+            WorldEffect::Items {
+                dim: DIM.into(),
+                pos: expected,
+                items: vec![("probe".into(), 7)]
+            }
+        );
+        let blast = MachineEffect::Explode {
+            offset: [2., 1., 3.],
+            power: 5.,
+            fire: false,
+            breaks: false,
+        }
+        .in_world(&key, facing);
+        assert_eq!(
+            blast,
+            WorldEffect::Explosion {
+                dim: DIM.into(),
+                at: [
+                    f64::from(expected[0]) + 0.5,
+                    65.,
+                    f64::from(expected[2]) + 0.5
+                ],
+                power: 5.,
+                fire: false,
+                breaks: false
+            }
+        );
+    }
+    let mut host = Host::default();
+    let mut server = Server::native(&mut host, 0);
+    synthetic_machine(&mut host, &mut server, [-160, 64, 0], Some("west"));
+    let owner = synthetic_machine(&mut host, &mut server, CORE, Some("north"));
+    assert!(server.publish_machine_effects(&mut host, &owner, phase));
+    let batch = &server.ready.world.machine_effects[0];
+    assert_eq!(batch.owners, [owner]);
+    assert_eq!(batch.home(), Some((DIM.into(), 0, 0)));
+    assert_eq!(batch.effects, VecDeque::from([blast()]));
+}
+#[test]
+fn a_post_step_phase_refused_at_its_first_commit_publishes_neither_state_nor_obligation() {
+    let mut host = Host::default();
+    let mut server = Server::native(&mut host, 0);
+    let key = synthetic_machine(&mut host, &mut server, CORE, Some("north"));
+    let before = server.ready.world.machines[&key].clone();
+    host.refuse_commit = true;
+    assert!(!server.publish_machine_effects(&mut host, &key, phase));
+    server.native_save(&mut host, false);
+    server.native_world_saving(&mut host);
+    assert_eq!(server.ready.world.machines[&key], before);
+    assert_eq!(
+        serde_json::from_str::<Machine>(&host.saved[&CORE]).unwrap(),
+        before
+    );
+    assert!(host.blasts.is_empty() && host.homes.is_empty());
+    assert!(server.ready.world.machine_effects.is_empty());
+    host.refuse_commit = false;
+    assert!(server.publish_machine_effects(&mut host, &key, phase));
+    // The first commit was accepted. Refusal of a redundant native_save cannot restore the earlier BE.
+    host.refuse_commit = true;
+    server.native_save(&mut host, false);
+    assert_eq!(probe_name(&server, &key), "__effect_probe_spent");
+    assert_eq!(
+        serde_json::from_str::<Machine>(&host.saved[&CORE]).unwrap(),
+        server.ready.world.machines[&key]
+    );
+    server.sync_obligations(&mut host);
+    assert_eq!(host.homes[&[0, 0]].len(), 1);
+    host.refuse_commit = false;
+    server.native_world_saving(&mut host);
+    assert_eq!(host.blasts, [blast()]);
+    assert!(host.homes.is_empty());
+    assert!(server.publish_machine_effects(&mut host, &key, phase));
+    server.native_world_saving(&mut host);
+    assert_eq!(
+        host.blasts.len(),
+        1,
+        "a completed phase has nothing new to publish"
+    );
+}
+#[test]
+fn a_save_between_this_tick_and_the_next_keeps_the_post_phase_batch_with_its_model() {
+    let mut host = Host {
+        refuse_blast: true,
+        ..Default::default()
+    };
+    let mut server = Server::native(&mut host, 0);
+    let key = synthetic_machine(&mut host, &mut server, CORE, Some("north"));
+    assert!(server.publish_machine_effects(&mut host, &key, phase));
+    server.native_save(&mut host, true);
+    server.sync_obligations(&mut host);
+    server.native_world_saving(&mut host);
+    // Capture immediately, with no next tick. Same home record contains the committed model and its debt.
+    let saved_model = host.saved[&CORE].clone();
+    let saved_batches = host.homes.get(&[0, 0]).cloned().unwrap_or_default();
+    assert_eq!(
+        saved_batches.len(),
+        1,
+        "PublishNextTick loses the debt in this cut"
+    );
+    assert_eq!(
+        serde_json::from_str::<Machine>(&saved_model).unwrap(),
+        server.ready.world.machines[&key]
+    );
+    for t in [1, 2] {
+        let mut reopened = Server::native(&mut host, t);
+        reopened.native_obligations_loaded(
+            DIM,
+            [0, 0],
+            vec![],
+            saved_batches.clone(),
+            BTreeSet::new(),
+        );
+        assert!(reopened.native_adopt(DIM, CORE, &saved_model));
+        assert_eq!(probe_name(&reopened, &key), "__effect_probe_spent");
+        reopened.native_settle(&mut host);
+        assert!(host.blasts.is_empty());
+    }
+    let mut reopened = Server::native(&mut host, 3);
+    reopened.native_obligations_loaded(DIM, [0, 0], vec![], saved_batches, BTreeSet::new());
+    host.refuse_blast = false;
+    reopened.native_settle(&mut host);
+    assert_eq!(host.blasts, [blast()]);
+    assert!(host.homes.is_empty());
+}
+#[test]
+fn the_post_phase_publisher_rejects_stale_or_replaced_owners_before_running_the_phase() {
+    for stale in [false, true] {
+        let mut host = Host::default();
+        let mut server = Server::native(&mut host, 0);
+        let key = synthetic_machine(&mut host, &mut server, CORE, None);
+        if stale {
+            server.ready.world.generations.insert(key.clone(), 1);
+        } else {
+            host.blocks.insert(CORE, "minecraft:stone".into());
+        }
+        assert!(
+            !server
+                .publish_machine_effects(&mut host, &key, |_| panic!("stale phase must not run"))
+        );
+        assert!(server.ready.world.machine_effects.is_empty());
+    }
 }

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Run through agent-run. Every mutant must compile and fail its named oracle; restore sources even on failure."""
 import json
+import os
+import shutil
+import signal
 import pathlib
 import subprocess
 import sys
@@ -33,10 +36,41 @@ MUTANTS = {
          'if later_seen {', 'if later_seen && false {',
          'replay_skips_an_old_explosion_when_a_later_destination_proves_the_order'),
     ],
+    '3': [
+        ('PublishBeforeCommit', TRANSACTION,
+         '                accepted = staged.valid && staged.host.commit_machines(&commits);',
+         '                for effect in &staged.critical { if let WorldEffect::Explosion{dim,at,power,fire,breaks}=effect { staged.host.explode(dim,*at,*power,*fire,*breaks); } }\n                accepted = staged.valid && staged.host.commit_machines(&commits);',
+         'a_common_step_publishes_its_model_and_critical_effects_only_after_acceptance'),
+        ('CommitWithoutBatch', TRANSACTION,
+         '                    if !staged.critical.is_empty() {',
+         '                    if false && !staged.critical.is_empty() {',
+         'a_common_step_publishes_its_model_and_critical_effects_only_after_acceptance'),
+        ('PostPhaseWithoutCommit', 'crates/ntm-core/src/server/machine_effects.rs',
+         '        if !host.commit_machine(&commit) {\n            return false;\n        }',
+         '        host.commit_machine(&commit);',
+         'a_post_step_phase_refused_at_its_first_commit_publishes_neither_state_nor_obligation'),
+        ('PublishNextTick', 'crates/ntm-core/src/server/machine_effects.rs',
+         '            self.ready.world.machine_effects.push_back(batch);',
+         '            DELAYED.with(|pending| pending.borrow_mut().push(batch));',
+         'a_save_between_this_tick_and_the_next_keeps_the_post_phase_batch_with_its_model'),
+    ],
 }
 
 
 def main():
+    backup_root = pathlib.Path(os.environ['CARGO_TARGET_DIR']) / 'world-effects-mutant-backups'
+    if sys.argv[1] == '--restore':
+        for backup in backup_root.rglob('*'):
+            if backup.is_file():
+                (ROOT / backup.relative_to(backup_root)).write_bytes(backup.read_bytes())
+        shutil.rmtree(backup_root, ignore_errors=True)
+        print('Interrupted mutant sources restored; discard the interrupted result.', flush=True)
+        return
+    if backup_root.exists():
+        raise RuntimeError('Interrupted mutant: inspect changes, run this script --restore, then rerun the slice.')
+    def interrupted(signum, _frame):
+        raise RuntimeError(f'Interrupted by signal {signum}; discard this run')
+    signal.signal(signal.SIGTERM, interrupted)
     results = []
     for name, relative, before, after, oracle in MUTANTS[sys.argv[1]]:
         path = ROOT / relative
@@ -45,8 +79,24 @@ def main():
         # Repeat only once: a timeout or compile error is never accepted as a kill.
         if name == 'ExplosionRepeatedOnItemRetry':
             after = 'let effect=if batch.done==0 && matches!(batch.effects.front(),Some(WorldEffect::Explosion{..})){batch.effects.front().unwrap().clone()}else{batch.effects.pop_front().unwrap()};'
+        backup = backup_root / relative
+        backup.parent.mkdir(parents=True, exist_ok=True)
+        backup.write_text(original)
+        extra_originals = {}
         try:
-            path.write_text(original.replace(before, after))
+            changed = original.replace(before, after)
+            if name == 'PublishNextTick':
+                # A real delayed queue, drained only at the beginning of the next native tick.
+                changed += '\nstd::thread_local! { pub(super) static DELAYED: std::cell::RefCell<Vec<CommittedEffects>> = const { std::cell::RefCell::new(Vec::new()) }; }\n'
+                native = ROOT / 'crates/ntm-core/src/server/native_server.rs'
+                extra_originals[native] = native.read_text()
+                native_backup = backup_root / native.relative_to(ROOT)
+                native_backup.parent.mkdir(parents=True, exist_ok=True)
+                native_backup.write_text(extra_originals[native])
+                needle = '    pub fn native_tick(&mut self, host: &mut impl ServerHost, tick: u64) {'
+                assert extra_originals[native].count(needle) == 1
+                native.write_text(extra_originals[native].replace(needle, needle + '\n        super::machine_effects::DELAYED.with(|pending| self.ready.world.machine_effects.extend(pending.borrow_mut().drain(..)));'))
+            path.write_text(changed)
             command = ['cargo', 'test', '--release', '--test', 'save_model', oracle, '--', '--nocapture'] if name == 'HostWithoutLoadedMarker' else ['cargo', 'test', '--lib', oracle, '--', '--nocapture']
             run = subprocess.run(command, cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300)
             killed = run.returncode == 101 and 'test result: FAILED.' in run.stdout and 'could not compile' not in run.stdout
@@ -67,6 +117,9 @@ def main():
                 raise RuntimeError(f'{name} not killed by a test assertion')
         finally:
             path.write_text(original)
+            for extra, previous in extra_originals.items():
+                extra.write_text(previous)
+            shutil.rmtree(backup_root)
     print(json.dumps({'slice': sys.argv[1], 'results': results}), flush=True)
 
 

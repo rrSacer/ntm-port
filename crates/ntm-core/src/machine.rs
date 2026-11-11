@@ -110,12 +110,34 @@ pub enum Effect {
     Toast(String),
 }
 
+/// Outputs drained after `Logic::tick`, relative to the core in [right, up, forward] axes.
+/// Forward follows the machine's facing (north when absent). Explosions start at [x+0.5,y,z+0.5],
+/// drops at the core cell: [0,1,0] explodes at the Java y+1, without a hidden extra half block.
+#[derive(Clone, Debug, PartialEq)]
+pub enum MachineEffect {
+    Explode {
+        offset: [f64; 3],
+        power: f32,
+        fire: bool,
+        breaks: bool,
+    },
+    Drop {
+        offset: crate::Pos,
+        item: String,
+        count: u32,
+    },
+}
+
 /// What every machine kind implements.
 pub trait Logic {
     /// Once per tick while its chunk is loaded, before the networks move
     /// energy: whether its state changed (the world then needs a save).
     fn tick(&mut self) -> bool {
         false
+    }
+    /// Drains outputs of the last tick. The speculative copy owns them until its model commit is accepted.
+    fn world_effects(&mut self) -> Vec<MachineEffect> {
+        Vec::new()
     }
     fn energy(&mut self) -> Option<&mut dyn EnergyNode> {
         None
@@ -451,6 +473,37 @@ impl Machine {
 }
 
 impl Logic for String {
+    // Synthetic test consumer only; release builds retain the inert String logic unchanged.
+    #[cfg(test)]
+    fn tick(&mut self) -> bool {
+        if self.as_str() == "__effect_probe_armed" {
+            *self = "__effect_probe_pending".into();
+            true
+        } else {
+            false
+        }
+    }
+    #[cfg(test)]
+    fn world_effects(&mut self) -> Vec<MachineEffect> {
+        if self.as_str() != "__effect_probe_pending" {
+            return vec![];
+        }
+        *self = "__effect_probe_spent".into();
+        vec![
+            MachineEffect::Explode {
+                offset: [0., 1., 0.],
+                power: 5.,
+                fire: false,
+                breaks: false,
+            },
+            MachineEffect::Drop {
+                offset: [1, 1, 0],
+                item: "ntm:sawblade".into(),
+                count: 1,
+            },
+        ]
+    }
+
     fn level(&self, _max: u8) -> u8 {
         0
     }

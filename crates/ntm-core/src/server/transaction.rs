@@ -904,8 +904,9 @@ impl Server {
                     staged.valid = false;
                 }
                 self.requested_detonations(&mut staged);
-                for m in self.ready.world.machines.values_mut() {
+                for (key, m) in &mut self.ready.world.machines {
                     m.logic_mut().tick();
+                    staged.critical.extend(m.logic_mut().world_effects().into_iter().map(|e| e.in_world(key, m.facing.as_deref())));
                     match &mut m.data {
                         crate::machine::Data::Crucible(c) => {
                             c.local_step(crate::foundry::Tables::ntm(), self.tick);

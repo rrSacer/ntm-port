@@ -738,6 +738,7 @@ pub use pile_server::PileUse;
 mod zirnox_server;
 mod rbmk_server;
 mod transaction;
+mod machine_effects;
 pub mod obligations;
 mod generation;
 pub use generation::CellGuard;

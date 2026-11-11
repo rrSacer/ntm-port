@@ -66,3 +66,43 @@ Marcar os IDs nos destinos carregados para `Items`, `EncodedItems` e `Entities` 
 antes de qualquer consumidor de explosão + drop. Conferir também o dreno de dívidas em `ledger_tick`: `take_owed`
 e `take_owed_entities` marcam o registro da origem que devia, não necessariamente o chunk de destino que recebe.
 Esta rodada não altera a cola nem valida o algoritmo nativo de explosão em jogo. A fatia 2 é infraestrutura sob contrato.
+
+## Fatia 3: efeitos do passo e segunda porta
+
+`Logic::world_effects` drena saídas runtime depois do `tick`, dentro do `Deferred`; o commit confirmado publica
+modelo e fila crítica juntos. Sem consumidor de produção nesta rodada: o `String` inerte só tem uma sonda em
+`cfg(test)` que consome um estado armado e produz uma explosão e um drop.
+
+A convenção aprovada dos offsets é `[direita, cima, frente]`. Frente vem de `facing`, padrão `north`; direita é
+leste quando a frente é norte. Drop parte da célula do núcleo. Explosão parte de `[x+0.5,y,z+0.5]`: offset
+`[0,1,0]` dá literalmente `[x+0.5,y+1,z+0.5]` do Java. Testes cobrem north/default e east e outra máquina em outro chunk.
+
+### Segunda porta: confirmação explícita da fase
+
+O coordenador aprovou alterar a proposta inicial de Vec direto para:
+
+```rust
+server.publish_machine_effects(host, &key, |candidate| {
+    // Só altera a cópia candidate e retorna as saídas locais do passo.
+    Vec::<ntm_core::machine::MachineEffect>::new()
+});
+```
+
+Ela recusa origem descarregada, removida, substituída ou de geração antiga, roda a fase numa cópia e confirma
+`MachineCommit` completo (slots, modelo e dados). Só com aceitação troca o estado vivo, registra o sobrevivente e
+põe a batelada em `machine_effects`, com `owners=[key]` e origem na geração observada. Recusa não altera nada e
+permite repetir. A chamada fica no mesmo tick da fase, antes de `native_save`/`sync_obligations`.
+
+O Vec direto não bastava: o finish futuro do Stirling vem depois de `local_steps`, logo `native_save` seria o primeiro
+commit de `has_cog=false` e poderia recusar, com a obrigação já publicada. A closure torna esse primeiro commit parte
+da porta; depois dele uma recusa de `native_save` é redundante e não pode deixar a batelada com o BE anterior.
+O consumidor Stirling permanece desativado; mover seu finish para a closure cabe à fatia 5.
+
+Oráculos preparados: recusa do passo comum sem estado/batelada, aceitação e uma única batelada na casa do núcleo;
+recusa do primeiro commit pós-fase, repetição aceita, recusa posterior de save; captura entre este tick e o próximo,
+duas reaberturas com a explosão recusada e uma aplicação quando aceita. Mutantes da fatia 3:
+`PublishBeforeCommit`, `CommitWithoutBatch`, `PostPhaseWithoutCommit`, `PublishNextTick` (fila real drenada só no tick
+seguinte). Reproduzir com `python3 crates/ntm-core/tests/mutate_world_effects.py 3` via `agent-run`.
+
+As provas finais e números são enviados ao coordenador após rodar; ter código e oráculos preparados não é conclusão.
+O bloqueio da marca de destino da fatia 4 continua valendo para consumidores que combinarem explosão e item/entidade.
