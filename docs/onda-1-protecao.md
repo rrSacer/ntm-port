@@ -489,6 +489,22 @@ Prova: o oráculo da 5a também compara os ataques (tick, fonte e 1000), 20 nos 
 `radiation_death`): sem armadura e com armadura de diamante completa, o jogador morre com "ItemsTest died from
 radiation poisoning." e volta com dose 0; com Resistência V sobrevive e a dose é 0; no criativo, nada.
 
+Correções da revisão da 5b. A ordem no tick (acima) e um limiar só para a morte. A mensagem com matador: o jogo pede
+`death.attack.radiation.player` quando um mob feriu o jogador nos últimos 100 ticks; o Java cai para o texto base
+(`DamageSource.func_151519_b`, o idioma do Java não tem `.player`), o motor mostraria a chave crua, então o gerador emite
+o texto base nas duas chaves. `test_damage_types.py` relê `ModDamageSource.java:15` e os idiomas do Java. Em jogo, duas
+checagens novas na família `radiation_death`: com Resistência V e peitoral de diamante, o peitoral não perde
+durabilidade (sem a tag `minecraft:bypasses_armor`, o pacote mutante perde 250, isto é 1000 / 4); e, depois de um golpe
+de zumbi, a morte mostra "died from radiation poisoning." (o pacote mutante sem `.player` mostra a chave). Mutações
+mortas a mais: limiar 999 RAD na morte (quatro testes), a doença antes do descontaminador (o teste de 1000,2 RAD).
+Rodada final (`docs/evidence/onda1-f5/death-5b-review.json`): binário `b9ab6c92…`, pacote `87f5e937…`, motor no pin
+sem mudança; `items` 276/276, ZIRNOX 136/136 em três rodadas, pilha 85/85, fusão da pilha 32/32, `save_model` 11/11.
+
+Achado anterior à 5b, não corrigido aqui: a dose da ruína do ZIRNOX é dada dentro do passo da máquina, e o host
+adiado da transação (`transaction.rs:117`) não repassa `player_dose`/`commit_player_dose`. Em jogo essa dose vai só
+para o espelho do mundo, não para o anexo do jogador; os testes do ZIRNOX leem a dose da ruína pelo `expected` do commit
+da morte.
+
 ### Lacunas nominais da fatia 5
 
 - Dose em mobs e as transformações do `handleRadiationEffect` (creeper → creeper nuclear, vaca → mooshroom, aldeão →
