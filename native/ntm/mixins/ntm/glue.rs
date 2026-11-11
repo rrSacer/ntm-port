@@ -1422,14 +1422,14 @@ impl ServerHost for Host<'_, '_> {
         self.game.native_visit_player(id,|g|crate::game::ntm_items::write_dose(g,expected,desired)).unwrap_or(false)
     }
     fn radiation_factor(&mut self,id:&str)->f64{self.game.native_visit_player(id,|g|crate::game::ntm_items::radiation_factor(g)).unwrap_or(1.0)}
-    fn player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<ntm_core::zirnox::Irradiation>{
+    fn player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<ntm_core::zirnox::StoredPotion>{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::read_irradiation(g,legacy)).flatten()
     }
-    fn commit_player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose,expected:ntm_core::zirnox::Irradiation,desired:ntm_core::zirnox::Irradiation)->bool{
+    fn commit_player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose,expected:ntm_core::zirnox::StoredPotion,desired:ntm_core::zirnox::StoredPotion)->bool{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::write_irradiation(g,legacy,expected,desired)).unwrap_or(false)
     }
-    fn has_effect(&mut self,id:&str,effect:&str)->Option<bool>{
-        self.game.native_visit_player(id,|g|crate::game::ntm_items::has_effect(g,effect))
+    fn effect_state(&mut self,id:&str,effect:&str)->Option<Option<(u32,u8)>>{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::effect_state(g,effect))
     }
     fn remove_effect(&mut self,id:&str,effect:&str){
         self.game.native_visit_player(id,|g|crate::game::ntm_items::remove_effect(g,effect));

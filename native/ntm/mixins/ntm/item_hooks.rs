@@ -16,6 +16,7 @@ use horizon_world::{
 use ntm_core::{
     item_hooks::{self, Animation, Hazard},
     radiation::Dose,
+    zirnox::StoredPotion,
 };
 
 /// `HbmPotion.potionsickness`, the effect the herbal pill applies. Its curative
@@ -41,7 +42,7 @@ fn codec(value: &Compound) -> Result<Compound, AttachmentError> {
     if !value.is_empty() && value.get(&JavaString::from("schema")) != Some(&Tag::Int(1)) {
         return Err(AttachmentError::Decode);
     }
-    for key in ["dose", "radaway", "sickness", "herbal", "irradiated", "irradiated_level"] {
+    for key in ["dose", "radaway", "sickness", "herbal", "irradiated", "irradiated_level", "irradiated_migrated", "irradiated_migrated_level"] {
         if let Some(value) = value.get(&JavaString::from(key)) {
             match value {
                 Tag::Long(n) if *n >= 0 => {}
@@ -1120,13 +1121,14 @@ pub(super) fn write_dose(game: &mut Game<'_>, before: &Dose, after: &Dose) -> bo
     game.native_commit_player(&STATE, &expected, desired, Default::default())
 }
 /// The radiation potion (`HbmPotion.radiation`) in the attachment: `irradiated` ticks left at amplifier
-/// `irradiated_level` (Onda 1, slice 5c, D3). `legacy` seeds an attachment that has no dose yet.
-pub(super) fn read_irradiation(game: &mut Game<'_>, legacy: &Dose) -> Option<(u32, u8)> {
+/// `irradiated_level` (Onda 1, slice 5c, D3), and the world's entry it took in (`irradiated_migrated`,
+/// `irradiated_migrated_level`), written with it. `legacy` seeds an attachment that has no dose yet.
+pub(super) fn read_irradiation(game: &mut Game<'_>, legacy: &Dose) -> Option<StoredPotion> {
     let mut snap = game.native_player_snapshot(&STATE)?;
     init(&mut snap, legacy.clone());
     Some(read_state(&snap))
 }
-pub(super) fn write_irradiation(game: &mut Game<'_>, legacy: &Dose, before: (u32, u8), after: (u32, u8)) -> bool {
+pub(super) fn write_irradiation(game: &mut Game<'_>, legacy: &Dose, before: StoredPotion, after: StoredPotion) -> bool {
     let Some(expected) = game.native_player_snapshot(&STATE) else {
         return false;
     };
@@ -1136,18 +1138,23 @@ pub(super) fn write_irradiation(game: &mut Game<'_>, legacy: &Dose, before: (u32
         return false;
     }
     let mut desired = current;
-    set(&mut desired.state, "irradiated", u64::from(after.0));
-    set(&mut desired.state, "irradiated_level", if after.0 == 0 { 0 } else { u64::from(after.1) });
+    for (ticks, level, (n, a)) in [("irradiated", "irradiated_level", after.potion), ("irradiated_migrated", "irradiated_migrated_level", after.migrated)] {
+        set(&mut desired.state, ticks, u64::from(n));
+        set(&mut desired.state, level, if n == 0 { 0 } else { u64::from(a) });
+    }
     game.native_commit_player(&STATE, &expected, desired, Default::default())
 }
-fn read_state(s: &NativePlayerSnapshot) -> (u32, u8) {
-    let ticks = u32::try_from(number(&s.state, "irradiated")).unwrap_or(u32::MAX);
-    let level = u8::try_from(number(&s.state, "irradiated_level")).unwrap_or(u8::MAX);
-    if ticks == 0 { (0, 0) } else { (ticks, level) }
+fn read_state(s: &NativePlayerSnapshot) -> StoredPotion {
+    let pair = |ticks: &str, level: &str| {
+        let n = u32::try_from(number(&s.state, ticks)).unwrap_or(u32::MAX);
+        let a = u8::try_from(number(&s.state, level)).unwrap_or(u8::MAX);
+        if n == 0 { (0, 0) } else { (n, a) }
+    };
+    StoredPotion { potion: pair("irradiated", "irradiated_level"), migrated: pair("irradiated_migrated", "irradiated_migrated_level") }
 }
-/// Whether the player has status effect `effect`.
-pub(super) fn has_effect(game: &Game<'_>, effect: &str) -> bool {
-    game.potions.effects.get(effect).is_some()
+/// The player's status effect `effect`: (ticks left, amplifier), None when they don't have it.
+pub(super) fn effect_state(game: &Game<'_>, effect: &str) -> Option<(u32, u8)> {
+    game.potions.effects.get(effect).map(|e| (e.duration.max(0) as u32, e.amplifier.clamp(0, 255) as u8))
 }
 /// `removePotionEffect`: takes status effect `effect` from the player.
 pub(super) fn remove_effect(game: &mut Game<'_>, effect: &str) {
