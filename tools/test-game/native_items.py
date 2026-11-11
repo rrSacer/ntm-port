@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1403,7 +1403,25 @@ def irradiation(g):
     reset(g,'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation)]
+def sellafield_levels(g):
+    """Onda 1, fatia 5d, D1: BlockSellafield's six levels are blocks (`ntm:sellafield`, `__1`..`__5`); each one is
+    placed, and carried (one in the hotbar) gives its HazardRegistry:222-227 radiation in the radBuf reading."""
+    levels=['ntm:sellafield']+[f'ntm:sellafield__{n}' for n in range(1,6)]
+    rads=[500,1000,2500,4000,5000,10000]
+    placed=[]
+    for n,block in enumerate(levels):
+        g.command(f'setblock {20+n} 100 16 {block}');placed.append(g.ctl(f'block {20+n} 100 16').get('state',''))
+    g.check('sellafield_levels_are_placed',[s.split('[')[0] for s in placed]==levels,placed)
+    for n,block in enumerate(levels):g.command(f'setblock {20+n} 100 16 minecraft:stone')
+    seen={}
+    for block,rate in zip(levels,rads):
+        reset(g,'creative');g.command(f'item replace entity @s hotbar.5 with {block} 1');pause(g,2.5)
+        seen[block]=int(' '.join(g.command('ntmitem radbuf').get('chat',[])))
+    g.check('sellafield_levels_carry_their_radiation',[seen[b] for b in levels]==rads,seen)
+    g.command('clear @s');reset(g,'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels)]
 
 
 if __name__=='__main__':
