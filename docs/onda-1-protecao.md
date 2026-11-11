@@ -593,7 +593,7 @@ Correções da revisão da 5c (APROVADO COM RESSALVAS):
   próximo tenta de novo. Teste: `refused_writes_give_no_dose_and_lose_no_tick`.
 - P3-5, divergências anteriores à fatia, registradas para depois: o micélio aplica a poção a cada tick e pula o
   criativo, mas no Java `onEntityWalking` só vem num passo (`Entity.moveEntity`, depois de `nextStepDistance`) e
-  `WasteEarth:83-91` e `EntityZirnoxDebris:118-124` não excluem o criativo; e o descontaminador roda antes dos detritos,
+  `WasteEarth:81-93` e `EntityZirnoxDebris:118-124` não excluem o criativo; e o descontaminador roda antes dos detritos,
   mas no Java as entidades vêm antes das tile entities, e ele tira a poção que o detrito acabou de dar. Para a 5d: os
   itens de cura por instância do Forge (`BlockFallout:58` esvazia a lista: o leite não cura essa poção) pedem um campo no
   anexo, como o `herbal`; e o `update` do motor guarda efeitos ocultos (amplificador maior e mais curto), que o 1.7.10
@@ -674,9 +674,9 @@ Decisões do coordenador: D1 (A) os níveis 0..5 do sellafield; D2 (A) a poção
   awaiting_teleport, landing}`) e o jogador local (`Player::ground.on_ground`, a tecla `Action::Sneak`, `Game::riding`,
   e `Player::steps`, o `moveDist`/`flyDist` que só a física faz crescer). **Pedido ao motor para depois (B):** expor
   em `NativePlayerInfo` os três campos `on_ground`, `sneaking` e `vehicle` (e um sinal de teleporte).
-- As poções ao pisar: micélio 600 ticks nível 3 (criativo incluso, `WasteEarth:83-91`); fallout 12000 ticks nível 0,
-  sem itens de cura, fora do criativo (`BlockFallout:51-59`); sellafield 600 ticks nível `meta < 5 ? meta : meta × 2`
-  (criativo incluso, `BlockSellafield:28-33`). Parado em cima não há passo, e a poção desconta, como no Java.
+- As poções ao pisar: micélio 600 ticks nível 3 (criativo incluso, `WasteEarth:81-93`); fallout 12000 ticks nível 0,
+  sem itens de cura, fora do criativo (`BlockFallout:53-61`); sellafield 600 ticks nível `meta < 5 ? meta : meta × 2`
+  (criativo incluso, `BlockSellafield:44-49`). Parado em cima não há passo, e a poção desconta, como no Java.
 - O fallout tem 0,125 de altura no Java e não empilha; o do port é uma camada de neve (1 a 8). No passo, sobre uma
   célula de fallout, o pé é tomado na altura do Java (revisão P3-4): andar no plano, com qualquer número de camadas, pisa
   no bloco de baixo; só um passo no ar mais de 0,075 acima da camada (um pulo) pisa no fallout. No 1.7.10 é igual:
@@ -687,7 +687,7 @@ Decisões do coordenador: D1 (A) os níveis 0..5 do sellafield; D2 (A) a poção
   por `clearActivePotions` (iodo, bolsa médica, antídoto, descontaminador) zera o anexo direto. O `milkproof` é limpo
   quando a poção acaba (revisão P3-3).
 - Decadência: no tick aleatório, com 1/25 no nível 0 (vira `sellafield_slaked`) e 1/15 nos outros (desce um nível),
-  `BlockSellafield.updateTick:36-46`. O sorteio é por hash da célula e do `Level.randValue` (os mods não têm aleatório
+  `BlockSellafield.updateTick:53-62`. O sorteio é por hash da célula e do `Level.randValue` (os mods não têm aleatório
   próprio): a chance é a do Java, a sequência não.
 
 Provas. Unidade: `crate::walking` (passo, cerca, escada, trepadeira e andaime, ar, teleporte, fallout com camadas, o

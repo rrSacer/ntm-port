@@ -1439,7 +1439,7 @@ def fallout(g):
     """Onda 1, fatia 5d: the radiation potion of BlockFallout and BlockSellafield, given on a step (`Entity.moveEntity`,
     D3: the block at the feet less 0.2; no step sneaking on the ground or riding) and kept in the attachment.
     The fallout layer is 0.125 high: walking on it the step lands on the block below, so only a step in the air
-    above it (a jump) gives its potion (`BlockFallout:51-59`, 10 min at amplifier 0, no curative items: milk does not
+    above it (a jump) gives its potion (`BlockFallout:53-61`, 10 min at amplifier 0, no curative items: milk does not
     cure it, an iodine pill does; not in creative). Sellafield gives 30 s at `meta < 5 ? meta : meta * 2`; standing
     still on it the potion counts down. Its random tick goes down a level (`updateTick`)."""
     def potion():

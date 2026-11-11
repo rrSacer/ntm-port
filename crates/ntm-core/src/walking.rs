@@ -124,9 +124,9 @@ pub struct Walked {
 }
 
 /// `Block.onEntityWalking` of the radiation blocks, for a player (`creative`: in creative mode):
-/// - `WasteEarth:83-91` (glowing mycelium): 30 s at amplifier 3, creative included;
-/// - `BlockFallout:51-59`: 10 min at amplifier 0 with no curative items, not in creative;
-/// - `BlockSellafield:28-33`: 30 s at `meta < 5 ? meta : meta * 2`, creative included.
+/// - `WasteEarth:81-93` (glowing mycelium): 30 s at amplifier 3, creative included;
+/// - `BlockFallout:53-61`: 10 min at amplifier 0 with no curative items, not in creative;
+/// - `BlockSellafield:44-49`: 30 s at `meta < 5 ? meta : meta * 2`, creative included.
 pub fn on_entity_walking(block: &str, creative: bool) -> Option<Walked> {
     let potion = |ticks, amplifier, milkproof| Some(Walked { ticks, amplifier, milkproof });
     match id(block) {
@@ -140,7 +140,7 @@ pub fn on_entity_walking(block: &str, creative: bool) -> Option<Walked> {
     }
 }
 
-/// `BlockSellafield.updateTick:36-46`, a random tick of sellafield at `level` (0..5): with `rand.nextInt(meta == 0 ? 25
+/// `BlockSellafield.updateTick:53-62`, a random tick of sellafield at `level` (0..5): with `rand.nextInt(meta == 0 ? 25
 /// : 15) == 0` it goes down a level, and level 0 becomes `sellafield_slaked`. The block it becomes, if any. The mods
 /// have no random source (crate::hash): `seed` mixes what the caller sees (the cell and the game time); the draw is the
 /// Java's chance, not its sequence. The `incrementRad` of the same tick waits for the chunk radiation (slice 4).
