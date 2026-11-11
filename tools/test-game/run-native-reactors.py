@@ -114,7 +114,7 @@ def run(args):
     with os.fdopen(reader) as pipe:
         env['DISPLAY'] = ':' + pipe.readline().strip()
     phases = {'audio-lifecycle': [('setup',)], 'sounds': [('setup',)], 'items': [('setup','capture-state'),('check-state',)], 'zirnox': [('setup', 'inactive', 'convert', 'capture-state'),
-                         ('check-state', 'automation', 'failure', 'soils')],
+                         ('check-state', 'automation', 'failure', 'ruin-dose', 'soils'), ('ruin-dose-check',)],
               'pile': [('setup', 'capture-state'), ('check-state', 'destroy')],
               'dims': [('setup', 'capture-state'), ('check-state',)],
               # A nuke's and a balefire's craters left digging, the world closed and opened again (HBM 1.7.10).
@@ -136,7 +136,7 @@ def run(args):
     if args.setup_only:
         phases[args.scenario] = [phases[args.scenario][0][:1]]
     if args.failure_only:
-        phases['zirnox'] = [('failure',)]
+        phases['zirnox'] = [('failure', 'ruin-dose'), ('ruin-dose-check',)]
     client = None
     try:
         if args.resume_reopen:
@@ -148,7 +148,7 @@ def run(args):
         for index, modes in enumerate(phases[args.scenario]):
             if args.resume_reopen and index == 0:
                 continue
-            log_path = folder / ('client-first.log' if index == 0 else 'client-reopen.log')
+            log_path = folder / ('client-first.log' if index == 0 else 'client-reopen.log' if index == 1 else f'client-reopen-{index}.log')
             script = ('dims' if args.scenario.startswith('dims') else
                       'solar_stirling' if args.scenario == 'solar' else
                       'pile' if args.scenario == 'pile-meltdown' else args.scenario.replace('-', '_'))

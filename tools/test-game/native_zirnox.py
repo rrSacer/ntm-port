@@ -3,7 +3,7 @@
 
 No reactor state or rod life is injected. /tick sprint advances ordinary server
 simulation for the source's 20,000/50,000-life breeding/depletion checks.
-Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|automation|failure|soils
+Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|automation|failure|ruin-dose|soils|ruin-dose-check
 """
 import json
 import os
@@ -454,6 +454,36 @@ def failure(g):
     g.snapshot('zirnox-failure')
 
 
+def dose(g):
+    text=' '.join(g.command('ntmitem inspect').get('chat',[]))
+    found=re.search(r'dose:\s*(\d+)[lL]?',text)
+    if not found:raise AssertionError(text)
+    return int(found.group(1))
+
+
+def ruin_dose(g):
+    """The ruin left by `failure` irradiates a survival player (`TileEntityZirnoxDestroyed.radiate`). Its dose is given
+    inside the ruin's machine step and must reach the player's own storage (the attachment `ntmitem inspect` reads),
+    not only the world's mirror. Behind the obsidian of `failure`, with an empty inventory and no bomb zone, the ruin is
+    the only source: before slice 5b's fix the attachment stayed at 0."""
+    g.close();g.command('clear @s');g.command('effect clear @s')
+    g.command('setblock 138 100 2 minecraft:obsidian');g.command('gamemode survival');g.command('tp @s 138.5 101 2.5 90 0')
+    g.command('ntmitem dose 0');start=dose(g)
+    sprint(g,60);time.sleep(1)
+    got=dose(g);p=g.ctl('state')['player']
+    g.check('ruin_dose_reaches_the_player_storage',start==0 and 0<got<1_000_000 and p.get('death_time') is None,{'start':start,'dose':got,'player':p})
+    # Creative stops the dose (the ruin skips creative players) for the reopening.
+    g.command('gamemode creative');time.sleep(1);kept=dose(g)
+    (g.folder/'zirnox-ruin-dose.json').write_text(json.dumps({'dose':kept}))
+    g.ctl('save')
+
+
+def ruin_dose_check(g):
+    saved=json.loads((g.folder/'zirnox-ruin-dose.json').read_text())['dose'];time.sleep(2)
+    got=dose(g)
+    g.check('ruin_dose_survives_reopening',saved>0 and got==saved,{'saved':saved,'reopened':got})
+
+
 def soils(g):
     g.close();g.command('clear @s')
     g.ground(160,101,8,width=20,height=12)
@@ -472,7 +502,7 @@ def soils(g):
     g.snapshot('zirnox-soils')
 
 
-PHASES={'setup':setup,'inactive':inactive,'convert':convert,'capture-state':capture,'check-state':check,'failure':failure,'soils':soils,'automation':automation}
+PHASES={'setup':setup,'inactive':inactive,'convert':convert,'capture-state':capture,'check-state':check,'failure':failure,'ruin-dose':ruin_dose,'ruin-dose-check':ruin_dose_check,'soils':soils,'automation':automation}
 if __name__=='__main__':
     g=Game(sys.argv[1],'zirnox-'+sys.argv[2]);g.ctl('wait-ready 120')
     g.evidence['phase']=sys.argv[2]
