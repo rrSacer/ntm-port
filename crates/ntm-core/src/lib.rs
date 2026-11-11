@@ -54,6 +54,7 @@ pub mod snbt;
 pub mod steam;
 pub mod view;
 pub mod walking;
+pub mod chunk_radiation;
 
 /// The pool allocator of the explosion engine, for the server mod's
 /// `#[global_allocator]` (single-threaded WebAssembly only).
