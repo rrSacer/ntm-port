@@ -13,12 +13,16 @@ Scenarios (NTM_CUT_SCENARIO):
   migration    (slice 5c) prepared by the binary before 5c, whose potion is in the world's storage
            (`zirnox.irradiated`); the act is 16 s of the new binary, which moves it to the attachment and doses.
            Control: the table's two stacks moved into the Ender chest.
+  field        (slice 4a) the world's radiation by chunk: `/ntmrad set 100000` on the player's chunk, whose save is
+           the NTM storage's own key (`chunk_radiation`), committed after the chunks. Control: the table's two stacks
+           moved into the Ender chest.
 Modes: prepare (the world saved with the starting state), act (do it, then a save the failpoint may end; NTM_CRASH_NO_SAVE,
 NTM_CRASH_PAUSE_SAVE as run-crash-proof), verify / again (after a reopen: count).
 """
 import os
 import re
 import sys
+import struct
 import time
 from native_game import Game
 import ntm_store
@@ -67,7 +71,37 @@ def item_state(g):
     return out
 
 
+FIELD_CHUNK = (1, 0)  # the chunk of 20.5 101 11.5
+
+
+def field_probe(g, r=16):
+    """`ntmtest rad`: each chunk within r of the field's chunk that the map holds or the next update writes, its raw
+    value (None: not in the map) and the next update's, as floats; and the ticks since the last update. The radius
+    takes in the whole spread of the act's seconds (each update reaches one chunk further)."""
+    text = ' '.join(g.command(f'ntmtest rad {FIELD_CHUNK[0]} {FIELD_CHUNK[1]} {r}').get('chat', []))
+    m = re.search(r'timer=(\d+) rad=(\S+)', text)
+    if not m:
+        return {'error': text[:200]}
+    as_float = lambda bits: struct.unpack('<f', struct.pack('<I', int(bits)))[0]
+    chunks = {}
+    for item in filter(None, m.group(2).split(';')):
+        c, raw, nxt = item.split(':')
+        chunks[c] = [None if raw == 'none' else as_float(raw), as_float(nxt)]
+    return {'timer': int(m.group(1)), 'chunks': chunks}
+
+
+def field_store(g):
+    """The field's key in the storage on the disk, as the last commit left it: read before this session saves."""
+    try:
+        saved = ntm_store.value(g.folder / 'saves', 'chunk_radiation') or {}
+        return saved.get('minecraft:overworld', {})
+    except (KeyError, RuntimeError, OSError) as error:
+        return {'error': repr(error)[:120]}
+
+
 def count(g):
+    if SCENARIO == 'field' and not VANILLA:
+        return {'items': {}, 'field': {'store': field_store(g), 'probe': field_probe(g)}}
     if SCENARIO == 'table' or VANILLA:
         found = held_items(g)
         e = ender(g)
@@ -117,6 +151,12 @@ def prepare(g):
         g.command('tp @s 24.5 101 11.5')
         for slot, item in enumerate(ITEMS):
             g.command(f'item replace entity @s hotbar.{slot} with {item}')
+    elif SCENARIO == 'field':
+        g.command('tp @s 20.5 101 11.5')
+        time.sleep(1)
+        g.evidence['set'] = g.command('ntmrad set 100000').get('chat')
+        # Some updates, so that the base's save holds the field spread and decayed below what the act sets.
+        time.sleep(6)
     elif SCENARIO in ('irradiation', 'migration'):
         g.command('ntmitem dose 300000')
         g.command('tp @s 20.5 101 11.5')
@@ -154,6 +194,12 @@ def act(g):
     elif SCENARIO == 'migration' and not VANILLA:
         # Past this session's first 200 ticks, so the moved potion doses before the cut (review P2-1).
         time.sleep(16)
+    elif SCENARIO == 'field' and not VANILLA:
+        # Some updates of the reopened field, then the chunk at 100 000 again: the value before the cut, read with
+        # what the next update gives, right before the save the failpoint may end.
+        time.sleep(4)
+        g.evidence['set'] = g.command('ntmrad set 100000').get('chat')
+        g.evidence['before_cut'] = field_probe(g)
     elif SCENARIO == 'table' or VANILLA:
         if VANILLA:
             for slot in range(len(ITEMS)):

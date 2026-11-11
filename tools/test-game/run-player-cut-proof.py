@@ -5,7 +5,7 @@ attachments): the armor table, a RadAway's treatment, the herbal pill's sickness
 Example (wrap in agent-run env QUEUE=game):
   python3 tools/test-game/run-player-cut-proof.py SCENARIO --binary PATH --resources PATH --scratch-root PATH [POINT ...]
 
-SCENARIO is table, radaway, herbal, irradiation or migration (native_player_cut.py). A base world is prepared once and copied for every point;
+SCENARIO is table, radaway, herbal, irradiation, migration or field (native_player_cut.py). A base world is prepared once and copied for every point;
 `table` also plays a vanilla control (the two stacks moved into the Ender chest). After each cut both reopens are
 counted in game. `table`: each item must be held once (inventory, Ender chest, the ground the table drops it on, nested
 in a stack), as in the control. `radaway`/`herbal`: the used item and its effect go together: either the item is still
@@ -14,6 +14,10 @@ held, or the treatment (RadAway ticks, a lower dose) / the sickness is there; an
 effect shows the potion. `migration` (with the control): prepared by `--prepare-binary` (the binary before 5c, whose
 potion lives in the world's storage); after every cut the potion is in the attachment, at its amplifier, with its
 effect, and the doses it gave plus its ticks left are no more than its 600 ticks (nothing dosed twice).
+`field` (slice 4a, with the control): a chunk at 100 000 by `/ntmrad`; its save is the NTM storage's own key, committed
+after the chunks. After every cut the key on the disk is the last commit's or the new one's, and no chunk in it holds
+more than it held before the cut: the larger of the last commit's value, the map's value right before the save and what
+the next update would give it (an update may fall between that reading and the save). The source chunk is never lost.
 """
 import argparse
 import importlib.util
@@ -21,6 +25,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
@@ -78,6 +83,8 @@ def play(args, base, scratch, env, point, control):
         acted = world.script('act', check=False, extra=crash_proof.act_extra(point))
         act = evidence(folder, 'act')
         result['after_act'] = act.get('after_act')
+        result['act_before'] = act.get('before')
+        result['before_cut'] = act.get('before_cut')
         result['act_checks'] = {k: v['ok'] for k, v in act.get('checks', {}).items()}
         if acted and world.client.poll() is None:
             raise AssertionError('action failed before its save; see act evidence')
@@ -152,9 +159,43 @@ def coherent(scenario, c, base, may_have_ended=False):
     return st.get('dose', base) == base - HERBAL_MILLIRAD and st.get('herbal', 0) > 0
 
 
+def field_coherent(mine):
+    """`field`: the key on the disk at the first reopen is bounded chunk by chunk by the last commit (the act's `before`,
+    read before its session saved), the value before the cut and the next update's; the source chunk is there, and
+    which commit it is is reported. The second reopen still holds the source chunk."""
+    try:
+        base = mine['act_before']['field']['store']
+        pre = mine['before_cut']['chunks']
+        first = mine['first_reopen']['field']['store']
+        second = mine['second_reopen']['field']['store']
+    except (KeyError, TypeError):
+        return False, None
+    if 'error' in base or 'error' in first or 'error' in second:
+        return False, None
+    # The storage writes each f32 as its shortest decimal; read as a double it is not the f32. Compare as f32.
+    f32 = lambda x: struct.unpack('<f', struct.pack('<f', x))[0]
+    over = {}
+    for key, value in first.items():
+        raw, nxt = pre.get(key, [None, 0.0])
+        bound = max(f32(base.get(key, 0.0)), raw or 0.0, nxt)
+        value = f32(value)
+        if value > bound:
+            over[key] = [value, bound]
+    source = '1,0'
+    commit = 'last' if first == base else 'new'
+    ok = not over and first.get(source, 0.0) > 0.0 and second.get(source, 0.0) > 0.0
+    return ok, {'commit': commit, 'over_bound': over, 'source': [base.get(source), (pre.get(source) or [None])[0], first.get(source), second.get(source)]}
+
+
 def verdict(scenario, mine, control):
     point = mine['point']
     out = {'point': point, 'mod': mine, 'control': control}
+    if scenario == 'field':
+        out['coherent'], out['field'] = field_coherent(mine)
+        out['reopens_agree'] = True
+        out['control_coherent'] = control is not None and all(coherent('table', control.get(r), 300000) for r in ('first_reopen', 'second_reopen'))
+        out['ok'] = bool(mine['ok'] and out['coherent'] and control is not None and control['ok'] and out['control_coherent'])
+        return out
     first = coherent(scenario, mine.get('first_reopen'), 300000)
     out['coherent'] = first and coherent(scenario, mine.get('second_reopen'), 300000, may_have_ended=first)
     out['reopens_agree'] = mine.get('first_reopen', {}) and (mine['first_reopen'] or {}).get('items') == (mine.get('second_reopen') or {}).get('items')
@@ -169,7 +210,7 @@ def main():
     import resource
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['table', 'radaway', 'herbal', 'irradiation', 'migration'])
+    parser.add_argument('scenario', choices=['table', 'radaway', 'herbal', 'irradiation', 'migration', 'field'])
     parser.add_argument('--prepare-binary', type=Path, help='the binary that prepares the base world (migration)')
     parser.add_argument('points', nargs='*')
     parser.add_argument('--binary', type=Path, required=True)
@@ -186,6 +227,9 @@ def main():
     base.mkdir()
     env = os.environ.copy()
     env['NTM_CUT_SCENARIO'] = os.environ['NTM_CUT_SCENARIO'] = args.scenario
+    # `field` reads the map through `ntmtest rad`.
+    if args.scenario == 'field':
+        env['NTM_TEST_HOOKS'] = '1'
     env.update(HORIZON_NO_AUDIO='1', HORIZON_LAUNCHER_NO_SELF_UPDATE='1', HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='')
     (base / 'options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
     (base / 'horizon-controller.txt').write_text('enabled:false\n')
@@ -207,7 +251,7 @@ def main():
             copy_env[key] = str(folder / sub)
         return copy_env
     try:
-        controls = (False, True) if args.scenario in ('table', 'irradiation', 'migration') else (False,)
+        controls = (False, True) if args.scenario in ('table', 'irradiation', 'migration', 'field') else (False,)
         bases = {c: scratch / ('base' + ('-vanilla' if c else '')) for c in controls}
         for c, where in bases.items():
             where.mkdir(exist_ok=True)
@@ -233,7 +277,7 @@ def main():
                       for c in controls}
             outcome = verdict(args.scenario, played[False], played.get(True))
             report['points'].append(outcome)
-            print(json.dumps({'point': point, 'ok': outcome['ok'], 'mod': played[False].get('first_reopen'),
+            print(json.dumps({'point': point, 'ok': outcome['ok'], 'field': outcome.get('field'), 'mod': played[False].get('first_reopen'),
                               'control': (played.get(True) or {}).get('first_reopen')}), flush=True)
             if outcome['ok']:
                 for c in ('', '-vanilla'):
