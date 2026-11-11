@@ -50,34 +50,37 @@ impl Server {
     /// seeded from the world's seed the first time someone is sick; a tick with nobody in a band draws nothing and
     /// writes nothing. The Java has no joining grace here (that is `contaminate`'s `ticksExisted`).
     pub(super) fn sickness_tick(&mut self, host: &mut impl ServerHost) {
-        let mut sick = Vec::new();
+        // The bands' edges are radiation::death's and radiation::sickness_roll's alone.
+        let mut alive = Vec::new();
         for p in self.players.clone().iter().filter(|p| !p.creative) {
             let Some(dose) = host.player_dose(&p.id, &self.player_dose(&p.id)) else { continue };
-            if dose.millirad >= 1_000_000 {
-                if let Some(Some(Harm::Hurt { amount, kind })) = self.update_player_dose(host, &p.id, radiation::death) {
-                    host.hurt(&p.id, amount, kind);
-                }
-            } else if dose.millirad >= 200_000 {
-                sick.push((p.id.clone(), dose));
+            if radiation::death(&mut dose.clone()).is_none() {
+                alive.push((p.id.clone(), dose));
+            } else if let Some(Some(Harm::Hurt { amount, kind })) = self.update_player_dose(host, &p.id, radiation::death) {
+                host.hurt(&p.id, amount, kind);
             }
         }
-        if sick.is_empty() {
+        if alive.is_empty() {
             return;
         }
         let mut rng = match &*self.ready.world.sickness {
             Some(s) => s.rng(),
             None => crate::rbmk::jrandom::JavaRandom::new(host.world_seed()),
         };
-        for (id, dose) in sick {
+        let before = rng.state();
+        for (id, dose) in alive {
             for h in radiation::sickness_roll(&dose, &mut rng) {
                 if let Harm::Effect { id: effect, amplifier, ticks } = h {
                     host.effect(&id, effect, ticks, amplifier);
                 }
             }
         }
-        let mut kept = radiation::SicknessRng { seed: 0, gaussian: None };
-        kept.set_rng(&rng);
-        *self.ready.world.sickness = Some(kept);
+        // Kept only when something was drawn: a tick with nobody in a band writes nothing.
+        if rng.state() != before {
+            let mut kept = radiation::SicknessRng { seed: 0, gaussian: None };
+            kept.set_rng(&rng);
+            *self.ready.world.sickness = Some(kept);
+        }
     }
     /// `TileEntityDecon.updateEntity`, every tick: each decontaminator whose
     /// box reaches a player takes 0.5 RAD from them (creative too:
@@ -281,17 +284,17 @@ mod tests {
         let mut s=Server::native(&mut h,0);
         s.players=vec![PlayerInfo{id:"p".into(),name:"p".into(),dim:"minecraft:overworld".into(),pos:[0.5,64.,0.5],creative:false}];
         assert!(s.ready.world.zirnox.debris.is_empty());
-        s.zirnox_effects(&mut h);
+        s.zirnox_world_effects(&mut h);s.zirnox_irradiation(&mut h);
         assert_eq!(s.ready.world.zirnox.irradiated.get("p"),Some(&(599,3)));
         assert_eq!(h.dose.as_ref().unwrap().millirad,200);
         h.block="minecraft:stone".into();
-        s.zirnox_effects(&mut h);
+        s.zirnox_world_effects(&mut h);s.zirnox_irradiation(&mut h);
         assert_eq!(h.dose.as_ref().unwrap().millirad,400,"the potion keeps dosing off the mycelium");
         h.block="ntm:decon".into();
         s.decon_tick(&mut h);
         assert!(!s.ready.world.zirnox.irradiated.contains_key("p"));
         h.block="minecraft:stone".into();
-        s.zirnox_effects(&mut h);
+        s.zirnox_world_effects(&mut h);s.zirnox_irradiation(&mut h);
         assert_eq!(h.dose.as_ref().unwrap().millirad,0,"after the decontaminator nothing doses");
     }
 }

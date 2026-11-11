@@ -596,6 +596,41 @@ fn a_sick_tick_rewrites_only_the_sickness_key() {
     assert!(own >= 50 && world_moved <= 10, "{own} ticks with the sickness key alone, {world_moved} with the world");
 }
 
+/// Slice 5b review P1: a player's EntityEffectHandler runs after the tile entities of the tick (processPlayer, in the
+/// network tick). At 1000.2 RAD on a decontaminator, the decontaminator's 0.5 RAD comes first: the player lives on
+/// 999.7 RAD.
+#[test]
+fn a_decontaminator_takes_its_half_rad_before_the_death_check() {
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.place([0, 69, 0], crate::radiation::DECON);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 1_000_200 });
+    g.run(1);
+    assert!(!g.world.borrow().hurts.iter().any(|h| h.2 == crate::radiation::RADIATION_DAMAGE), "{:?}", g.world.borrow().hurts);
+    assert_eq!(g.ready().world.radiation["p1"].millirad, 999_700);
+}
+
+/// Slice 5b review P2-4: one threshold. Just under 1000 RAD the player rolls the 800 band and lives; at 1000 they die
+/// in that tick and nothing is drawn.
+#[test]
+fn just_under_a_thousand_rad_rolls_and_a_thousand_kills_without_drawing() {
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 999_999 });
+    g.run(1);
+    assert!(g.world.borrow().hurts.is_empty());
+    let drawn = (*g.ready().world.sickness).clone().expect("the 800 band drew its five rolls");
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 1_000_000 });
+    g.run(1);
+    assert_eq!(g.world.borrow().hurts.iter().filter(|h| h.2 == crate::radiation::RADIATION_DAMAGE).count(), 1);
+    assert_eq!(g.ready().world.radiation["p1"].millirad, 0);
+    assert_eq!(*g.ready().world.sickness, Some(drawn), "the death's tick drew nothing");
+}
+
 mod bomb_tests;
 mod combustion_tests;
 mod solar_stirling_tests;
