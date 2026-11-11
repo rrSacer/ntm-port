@@ -113,10 +113,13 @@ impl Server {
         if self.ready.world.zirnox.irradiated.is_empty() {
             return;
         }
+        let graced: Vec<String> = self.players.iter().filter(|p| self.in_grace(&p.id)).map(|p| p.id.clone()).collect();
         for (id, (remaining, level)) in &mut self.ready.world.zirnox.irradiated {
             if let Some(p) = self.players.iter().find(|p| p.id == *id) {
                 if !p.creative {
-                    let expected=host.player_dose(id,&self.ready.world.radiation.get(id).cloned().unwrap_or_default());
+                    // `HbmPotion.radiation` doses through `contaminate`, which skips the first 200 ticks of a player
+                    // (`ContaminationUtil:287`); the effect still counts down and the Geiger still hears it.
+                    let expected=if graced.contains(id){None}else{host.player_dose(id,&self.ready.world.radiation.get(id).cloned().unwrap_or_default())};
                     if let Some(expected)=expected {
                         let mut desired=expected.clone();
                         crate::radiation::add_dose(&mut desired,((u64::from(*level)+1) as f64*50.0*host.radiation_factor(id)) as u64);
@@ -265,7 +268,11 @@ impl Server {
             }
             let rad = if z.on_fire { 500000. } else { 75000. };
             let amount = (rad / resistance.max(1.) / (len * len) * 1000.) as u64;
-            self.expose_player(host,&p.id,amount);
+            // `TileEntityZirnoxDestroyed.radiate:89` doses through `contaminate`: nothing in the first 200 ticks of a
+            // player (`ContaminationUtil:287`).
+            if !self.in_grace(&p.id) {
+                self.expose_player(host,&p.id,amount);
+            }
             let rate = self
                 .ready
                 .zirnox_radiation_rate
@@ -958,7 +965,8 @@ mod tests {
                 creative: false,
             },
         ]);
-        s.native_tick(&mut h, 2);
+        s.blasts.entered.insert("same".into(), 0);s.blasts.entered.insert("other".into(), 0);
+        s.native_tick(&mut h, 202);
         // The ruin wrote its dose, over 1000 RAD, to the player's storage; the death read it and wrote 0.
         let same: Vec<_> = h.doses.iter().filter(|(id, ..)| id == "same").map(|d| (d.1, d.2)).collect();
         assert!(matches!(same[..], [(0, given), (read, 0)] if given >= 1_000_000 && read == given), "{:?}", h.doses);
@@ -970,7 +978,7 @@ mod tests {
         assert_eq!(h.radiation_deaths, ["same"]);
         assert_eq!(s.ready.world.radiation["same"].millirad, 0);
         zm(&mut s).on_fire = false;
-        s.native_tick(&mut h, 3);
+        s.native_tick(&mut h, 203);
         assert_eq!(h.hurt.len(), 1);
         assert!(!z(&s).on_fire);
     }
@@ -1003,7 +1011,8 @@ mod tests {
             h.blocks.insert(key(), zirnox::DESTROYED.into());
             h.shields.insert((DIM.into(), [wall_x, 64, 0]), 100.);
             s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [eye_x, 62.88, 0.5], creative: false }]);
-            s.native_tick(&mut h, 2);
+            s.blasts.entered.insert("p".into(), 0);
+            s.native_tick(&mut h, 202);
             // Below 1000 RAD the tick ends at the ruin's dose; from 1000 the player's update, after the ruin, kills in the
             // same tick: its write read the ruin's dose and left 0.
             // The ruin's dose reaches the player's own storage (through the machine step's host) once per tick.
@@ -1032,8 +1041,9 @@ mod tests {
             s.ready.world.machines.get_mut(&key()).unwrap().block = zirnox::DESTROYED.into();
             h.blocks.insert(key(), zirnox::DESTROYED.into());
             s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [10.5, 62.88, 0.5], creative: false }]);
+            s.blasts.entered.insert("p".into(), 0);
             h.attached.insert("p".into(), 3_000);
-            s.native_tick(&mut h, 2);
+            s.native_tick(&mut h, 202);
             let given = h.attached["p"] - 3_000;
             assert!(given > 0, "{:?}", h.doses);
             assert_eq!(h.doses.len(), 1);
@@ -1045,7 +1055,8 @@ mod tests {
                 s1.ready.world.machines.get_mut(&key()).unwrap().block = zirnox::DESTROYED.into();
                 h1.blocks.insert(key(), zirnox::DESTROYED.into());
                 s1.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [10.5, 62.88, 0.5], creative: false }]);
-                s1.native_tick(&mut h1, 2);
+                s1.blasts.entered.insert("p".into(), 0);
+                s1.native_tick(&mut h1, 202);
                 assert_eq!(given, (h1.attached["p"] as f64 * f) as u64, "the armor's factor applies to the ruin");
             }
             let mut reopened = Server::native(&mut h, 3);
@@ -1060,14 +1071,51 @@ mod tests {
     fn the_radiation_potion_doses_after_the_death_check() {
         let (mut h, mut s) = prepare();
         s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: "minecraft:the_nether".into(), pos: [0., 64., 0.], creative: false }]);
+        s.blasts.entered.insert("p".into(), 0);
         h.attached.insert("p".into(), 999_900);
         s.ready.world.zirnox.irradiate("p", 600, 3);
-        s.native_tick(&mut h, 2);
+        s.native_tick(&mut h, 202);
         assert!(h.radiation_deaths.is_empty());
         assert_eq!(h.attached["p"], 1_000_100, "the potion's 200 millirad came after the check");
-        s.native_tick(&mut h, 3);
+        s.native_tick(&mut h, 203);
         assert_eq!(h.radiation_deaths, ["p"]);
         assert_eq!(h.attached["p"], 200, "the death left 0 and the potion gave its tick");
+    }
+    /// Review R2-1: the ruin and the radiation potion dose through `ContaminationUtil.contaminate`, which skips a
+    /// player's first 200 ticks (`:287`, `ticksExisted < 200`). A player who joins next to a burning ruin, or respawns
+    /// there, takes nothing for 200 ticks and the dose after; the potion still counts down meanwhile.
+    #[test]
+    fn the_ruin_and_the_potion_spare_a_players_first_200_ticks() {
+        let (mut h, mut s) = prepare();
+        zm(&mut s).destroyed = true;
+        zm(&mut s).on_fire = true;
+        s.ready.world.machines.get_mut(&key()).unwrap().block = zirnox::DESTROYED.into();
+        h.blocks.insert(key(), zirnox::DESTROYED.into());
+        let near = PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [30.5, 62.88, 0.5], creative: false };
+        s.set_players(vec![near.clone()]);
+        s.ready.world.zirnox.irradiate("p", 600, 3);
+        h.attached.insert("p".into(), 0);
+        let joined = 10;
+        for tick in joined..joined + crate::radiation::GRACE_TICKS {
+            s.native_tick(&mut h, tick);
+        }
+        assert_eq!(h.attached["p"], 0, "nothing in the first 200 ticks: {:?}", h.doses);
+        assert_eq!(s.ready.world.zirnox.irradiated["p"].0, 600 - 200, "the potion counted down all along");
+        assert!(s.rad_buf("p") > 0, "the Geiger heard the ruin all along");
+        s.native_tick(&mut h, joined + crate::radiation::GRACE_TICKS);
+        let first = h.attached["p"];
+        assert!(first > 200, "the ruin and the potion dose on tick 200: {first}");
+        // Dead, the player leaves the list (the host lists the living); back, the 200 ticks start again.
+        s.set_players(Vec::new());
+        s.native_tick(&mut h, joined + crate::radiation::GRACE_TICKS + 1);
+        s.set_players(vec![near]);
+        let back = joined + crate::radiation::GRACE_TICKS + 2;
+        for tick in back..back + crate::radiation::GRACE_TICKS {
+            s.native_tick(&mut h, tick);
+        }
+        assert_eq!(h.attached["p"], first, "a respawn is spared its first 200 ticks too");
+        s.native_tick(&mut h, back + crate::radiation::GRACE_TICKS);
+        assert!(h.attached["p"] > first);
     }
     #[test]
     fn extraction_contract_exposes_conditional_rod_outputs() {

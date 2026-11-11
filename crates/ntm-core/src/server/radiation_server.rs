@@ -39,6 +39,11 @@ impl Server {
         let now = self.ready.world.ticks;
         self.ready.world.bombs.zones.iter().map(|z| z.rate(dim, pos, now)).fold(0u32, u32::saturating_add)
     }
+    /// `ContaminationUtil.contaminate:287`: a player who joined or respawned less than 200 ticks ago
+    /// (`ticksExisted < 200`) takes no dose; `blasts.entered` drops the dead, so a respawn starts it again.
+    pub(super) fn in_grace(&self, id: &str) -> bool {
+        self.blasts.entered.get(id).is_none_or(|t| self.tick.saturating_sub(*t) < radiation::GRACE_TICKS)
+    }
     pub(super) fn expose_player(&mut self,host:&mut impl ServerHost,id:&str,amount:u64) {
         let factor=host.radiation_factor(id);
         let amount=(amount as f64*factor) as u64;
@@ -118,7 +123,7 @@ impl Server {
             let held = u32::try_from(held).unwrap_or(u32::MAX);
             let now = self.ready.world.ticks;
             let zones = self.ready.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add);
-            let grace = self.blasts.entered.get(&p.id).is_none_or(|t| tick.saturating_sub(*t) < radiation::GRACE_TICKS);
+            let grace = self.in_grace(&p.id);
             let protected = (f64::from(held)*host.radiation_factor(&p.id)) as u32;
             let Some(()) = self.update_player_dose(host,&p.id,|dose| {
                 if !(p.creative || grace) {radiation::accumulate(dose,protected);}
@@ -283,6 +288,8 @@ mod tests {
         let mut h=Soil{block:"ntm:waste_mycelium".into(),dose:Some(crate::radiation::Dose{millirad:0}),..Default::default()};
         let mut s=Server::native(&mut h,0);
         s.players=vec![PlayerInfo{id:"p".into(),name:"p".into(),dim:"minecraft:overworld".into(),pos:[0.5,64.,0.5],creative:false}];
+        // Past the player's first 200 ticks (`ContaminationUtil:287`).
+        s.blasts.entered.insert("p".into(),0);s.tick=radiation::GRACE_TICKS;
         assert!(s.ready.world.zirnox.debris.is_empty());
         s.zirnox_world_effects(&mut h);s.zirnox_irradiation(&mut h);
         assert_eq!(s.ready.world.zirnox.irradiated.get("p"),Some(&(599,3)));
