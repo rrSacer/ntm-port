@@ -20,6 +20,7 @@
     "ntm:pwr_fuel__heu233",
     "ntm:pwr_fuel_depleted__meu",
     "ntm:pwr_fuel_hot__meu",
-    "ntm:rod_zirnox__u233_fuel"
+    "ntm:rod_zirnox__u233_fuel",
+    "ntm:sellafield__4"
   ]
 }

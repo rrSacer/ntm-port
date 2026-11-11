@@ -130,7 +130,7 @@
     {
       "tag": "ntm:rad/rate_1000",
       "radiation_millirad_s": 1000,
-      "item_count": 11
+      "item_count": 12
     },
     {
       "tag": "ntm:rad/rate_1050",
@@ -180,7 +180,7 @@
     {
       "tag": "ntm:rad/rate_2500",
       "radiation_millirad_s": 2500,
-      "item_count": 14
+      "item_count": 15
     },
     {
       "tag": "ntm:rad/rate_2625",
@@ -225,7 +225,7 @@
     {
       "tag": "ntm:rad/rate_4000",
       "radiation_millirad_s": 4000,
-      "item_count": 2
+      "item_count": 3
     },
     {
       "tag": "ntm:rad/rate_4219",
@@ -250,7 +250,7 @@
     {
       "tag": "ntm:rad/rate_5000",
       "radiation_millirad_s": 5000,
-      "item_count": 20
+      "item_count": 21
     },
     {
       "tag": "ntm:rad/rate_5250",
@@ -335,7 +335,7 @@
     {
       "tag": "ntm:rad/rate_10000",
       "radiation_millirad_s": 10000,
-      "item_count": 10
+      "item_count": 11
     },
     {
       "tag": "ntm:rad/rate_10500",
@@ -687,62 +687,62 @@
     {
       "tag": "ntm:rad/bit_2",
       "bit": 2,
-      "item_count": 163
+      "item_count": 164
     },
     {
       "tag": "ntm:rad/bit_3",
       "bit": 3,
-      "item_count": 233
+      "item_count": 235
     },
     {
       "tag": "ntm:rad/bit_4",
       "bit": 4,
-      "item_count": 240
+      "item_count": 241
     },
     {
       "tag": "ntm:rad/bit_5",
       "bit": 5,
-      "item_count": 235
+      "item_count": 237
     },
     {
       "tag": "ntm:rad/bit_6",
       "bit": 6,
-      "item_count": 233
+      "item_count": 235
     },
     {
       "tag": "ntm:rad/bit_7",
       "bit": 7,
-      "item_count": 276
+      "item_count": 280
     },
     {
       "tag": "ntm:rad/bit_8",
       "bit": 8,
-      "item_count": 285
+      "item_count": 290
     },
     {
       "tag": "ntm:rad/bit_9",
       "bit": 9,
-      "item_count": 211
+      "item_count": 215
     },
     {
       "tag": "ntm:rad/bit_10",
       "bit": 10,
-      "item_count": 144
+      "item_count": 146
     },
     {
       "tag": "ntm:rad/bit_11",
       "bit": 11,
-      "item_count": 161
+      "item_count": 163
     },
     {
       "tag": "ntm:rad/bit_12",
       "bit": 12,
-      "item_count": 149
+      "item_count": 150
     },
     {
       "tag": "ntm:rad/bit_13",
       "bit": 13,
-      "item_count": 129
+      "item_count": 130
     },
     {
       "tag": "ntm:rad/bit_14",
