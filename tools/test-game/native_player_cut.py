@@ -88,13 +88,14 @@ MYCELIUM = (22, 100, 11)
 
 
 def step_on_mycelium(g):
-    """`WasteEarth.onEntityWalking`: a moment on glowing mycelium gives the radiation potion (600 ticks, amplifier 3)."""
-    x, y, z = MYCELIUM
-    g.command(f'setblock {x} {y} {z} ntm:waste_mycelium')
-    g.command(f'tp @s {x + .5} {y + 1} {z + .5}')
-    time.sleep(1.0)
+    """`WasteEarth.onEntityWalking`: walking over glowing mycelium gives the radiation potion (600 ticks, amplifier
+    3). A step of `Entity.moveEntity` (slice 5d): standing on it or teleporting onto it is no step."""
+    g.command('fill 21 100 10 27 100 12 ntm:waste_mycelium')
+    g.command('tp @s 20.5 101 11.5 -90 0')
+    time.sleep(.4)
+    g.ctl('move forward 0.8')
+    g.command('fill 21 100 10 27 100 12 minecraft:stone')
     g.command('tp @s 20.5 101 11.5')
-    g.command(f'setblock {x} {y} {z} minecraft:stone')
     time.sleep(.3)
 
 

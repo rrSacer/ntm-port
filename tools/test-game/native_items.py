@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout').split(',')
 
 
 FAMILY_RUNS=[]
@@ -584,6 +584,13 @@ def reset(g,mode='survival',dose=0):
 def hold(g,item,seconds,count=1,slot=0):
     """Give `item` in the hand and use it for `seconds` (0: one click)."""
     give_hand(g,item,count,slot);use(g,seconds)
+
+
+def walk_over(g,block,seconds=0.8):
+    """Walk east over a lane of `block` (x 21..31 at y 100): `onEntityWalking` comes on a step of `Entity.moveEntity`
+    (slice 5d), so standing on a block or teleporting onto it gives nothing. The lane goes back to stone after."""
+    g.command(f'fill 21 100 10 31 100 12 {block}');g.command('tp @s 20.5 101 11.5 -90 0');pause(g,.4)
+    g.ctl(f'move forward {seconds}');pause(g,.2);g.command('fill 21 100 10 31 100 12 minecraft:stone')
 
 
 def refused(g,item,count=1):
@@ -1267,7 +1274,7 @@ def decon(g):
     g.check('out_of_the_box_nothing',dose_drop(g)==0,state(g))
     # Glowing mycelium irradiates (600 ticks of the radiation potion); the decontaminator ends it, so once off it
     # the dose no longer grows.
-    reset(g,'survival',dose=0);g.command(f'setblock {under} ntm:waste_mycelium');time.sleep(2.5)
+    reset(g,'survival',dose=0);walk_over(g,'ntm:waste_mycelium');time.sleep(2.0)
     g.command(f'setblock {under} minecraft:stone');g.command('tp @s 25.5 101 11.5');time.sleep(.5)
     growing=-dose_drop(g,1.5)
     g.check('mycelium_irradiation_keeps_growing_the_dose',growing>0,{'growth':growing})
@@ -1368,8 +1375,7 @@ def irradiation(g):
         found=dict((k,int(v)) for k,v in re.findall(r'(irradiated|irradiated_level):\s*(\d+)[lL]?',text))
         return found.get('irradiated',0),found.get('irradiated_level',0)
     def irradiate():
-        g.command(f'setblock {under} ntm:waste_mycelium');g.command('tp @s 22.5 101 11.5');pause(g,.5)
-        g.command('tp @s 20.5 101 11.5');g.command(f'setblock {under} minecraft:stone');pause(g,.3)
+        walk_over(g,'ntm:waste_mycelium');g.command('tp @s 20.5 101 11.5');pause(g,.3)
     reset(g,'survival');irradiate()
     effects=effect_map(g);left=potion()
     shown=effects.get('radiation')
@@ -1384,9 +1390,9 @@ def irradiation(g):
     d0=state(g)['dose'];t0=now(g);pause(g,2);d1=state(g)['dose'];t1=now(g);left=potion()
     g.check('a_given_radiation_effect_doses',left[1]==9 and left[0]>0 and abs((d1-d0)-500*(t1-t0))<=500*6,{'dose':d1-d0,'ticks':t1-t0,'attachment':left})
     # Given while the mycelium gives the potion (re-review RR3-1): in the Java `combine` keeps amplifier 9.
-    reset(g,'survival');g.command(f'setblock {under} ntm:waste_mycelium');g.command('tp @s 22.5 101 11.5');pause(g,.5)
-    g.command('effect give @s ntm:radiation 20 9');pause(g,.5)
-    g.command('tp @s 20.5 101 11.5');g.command(f'setblock {under} minecraft:stone');pause(g,1)
+    reset(g,'survival');g.command('fill 21 100 10 31 100 12 ntm:waste_mycelium');g.command('tp @s 20.5 101 11.5 -90 0');pause(g,.4)
+    g.ctl('move forward 0.4');g.command('effect give @s ntm:radiation 20 9');g.ctl('move forward 0.6')
+    g.command('fill 21 100 10 31 100 12 minecraft:stone');g.command('tp @s 20.5 101 11.5');pause(g,1)
     shown=effect_map(g).get('radiation');left=potion()
     g.check('an_effect_given_on_the_mycelium_reaches_the_attachment',left[1]==9 and shown is not None and shown[0]==9,{'effect':shown,'attachment':left})
     cures=[('milk',lambda:hold(g,'minecraft:milk_bucket',2)),('iodine_pill',lambda:hold(g,'ntm:pill_iodine',.9)),
@@ -1410,7 +1416,15 @@ def sellafield_levels(g):
     rads=[500,1000,2500,4000,5000,10000]
     placed=[]
     for n,block in enumerate(levels):
-        g.command(f'setblock {20+n} 100 16 {block}');placed.append(g.ctl(f'block {20+n} 100 16').get('state',''))
+        g.command(f'setblock {20+n} 100 16 {block}')
+        # The command returns before the block lands (native_game waits wall time): read until it is there, a few
+        # ticks at most (review P3-1).
+        state=''
+        for _ in range(40):
+            state=g.ctl(f'block {20+n} 100 16').get('state','')
+            if state.split('[')[0]==block:break
+            pause(g,.05)
+        placed.append(state)
     g.check('sellafield_levels_are_placed',[s.split('[')[0] for s in placed]==levels,placed)
     for n,block in enumerate(levels):g.command(f'setblock {20+n} 100 16 minecraft:stone')
     seen={}
@@ -1421,7 +1435,80 @@ def sellafield_levels(g):
     g.command('clear @s');reset(g,'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels)]
+def fallout(g):
+    """Onda 1, fatia 5d: the radiation potion of BlockFallout and BlockSellafield, given on a step (`Entity.moveEntity`,
+    D3: the block at the feet less 0.2; no step sneaking on the ground or riding) and kept in the attachment.
+    The fallout layer is 0.125 high: walking on it the step lands on the block below, so only a step in the air
+    above it (a jump) gives its potion (`BlockFallout:51-59`, 10 min at amplifier 0, no curative items: milk does not
+    cure it, an iodine pill does; not in creative). Sellafield gives 30 s at `meta < 5 ? meta : meta * 2`; standing
+    still on it the potion counts down. Its random tick goes down a level (`updateTick`)."""
+    def potion():
+        text=' '.join(g.command('ntmitem inspect').get('chat',[]))
+        found=dict((k,int(v)) for k,v in re.findall(r'(irradiated|irradiated_level|irradiated_milkproof):\s*(\d+)[lL]?',text))
+        return found.get('irradiated',0),found.get('irradiated_level',0),found.get('irradiated_milkproof',0)
+    def lane(block):
+        # The fallout layer first, while it still stands on its floor: the port's (a snow layer) drops its item when it
+        # loses its support, which the Java's (setBlockToAir) does not; a picked fallout item is 60 RAD/s.
+        g.command('fill 21 101 10 31 101 12 minecraft:air');g.command('kill @e[type=minecraft:item]')
+        g.command('fill 21 100 10 31 100 12 minecraft:stone')
+        if block.startswith('ntm:fallout'):g.command('fill 22 101 10 31 101 12 '+block)
+        elif block:g.command('fill 22 100 10 31 100 12 '+block)
+        g.command('tp @s 21.5 101 11.5 -90 0');pause(g,.5)
+    def run(*extra):
+        # The agent's flags: --jump, --sneak (held for the whole move).
+        g.ctl('move forward 1.6 '+' '.join('--'+e for e in extra));pause(g,.5)
+    # Flat on the fallout: every step lands on the stone below it.
+    reset(g,'survival');lane('ntm:fallout');run()
+    g.check('walking_flat_on_fallout_gives_nothing',potion()==(0,0,0),{'potion':potion(),'pos':g.ctl('state')['player']['position']})
+    # Jumping over it: steps in the air land on the layer.
+    reset(g,'survival');lane('ntm:fallout');run('jump');left=potion();raw_effects=g.ctl('state')['player']['effects']
+    shown=next(((e['amplifier'],e['duration_ticks']) for e in raw_effects if e['id']=='ntm:radiation'),None)
+    g.check('jumping_on_fallout_gives_its_milkproof_potion',left[0]>11000 and left[1:]==(0,1) and shown is not None and shown[0]==0,{'potion':left,'effect':shown,'effects':raw_effects})
+    # Milk does not cure it: the effect is back and the dose goes on; an iodine pill ends it.
+    g.command('tp @s 20.5 101 11.5');hold(g,'minecraft:milk_bucket',2);pause(g,1)
+    d0=state(g)['dose'];pause(g,1);d1=state(g)['dose']
+    g.check('milk_does_not_cure_the_fallout_potion',potion()[0]>0 and 'radiation' in effect_map(g) and d1>d0,{'potion':potion(),'effects':sorted(effect_map(g)),'dose_growth':d1-d0})
+    g.command('ntmitem cure');hold(g,'ntm:pill_iodine',.9);pause(g,.5)
+    g.check('an_iodine_pill_ends_the_fallout_potion',potion()==(0,0,0) and 'radiation' not in effect_map(g),{'potion':potion(),'effects':sorted(effect_map(g))})
+    reset(g,'creative');lane('ntm:fallout');run('jump')
+    g.check('fallout_spares_creative_players',potion()==(0,0,0),potion())
+    # Sellafield: the level's amplifier on a walking step, creative included.
+    for block,amp in [('ntm:sellafield__3',3),('ntm:sellafield__5',10)]:
+        reset(g,'creative');lane(block);run()
+        g.check(f'walking_on_{block.split(":")[1]}_gives_amplifier_{amp}',potion()[0]>500 and potion()[1]==amp and potion()[2]==0,potion())
+    # Standing still on it: no step, the potion counts down.
+    before=potion()[0];t0=now(g);pause(g,1.5);after=potion()[0];t1=now(g)
+    g.check('standing_on_sellafield_counts_the_potion_down',0<after<before and before-after>=(t1-t0)-6,{'before':before,'after':after,'ticks':t1-t0})
+    # Sneaking on the ground: no step.
+    reset(g,'survival');lane('ntm:sellafield__3');g.ctl('key shift down');pause(g,.3);run();g.ctl('key shift up')
+    sneaked=g.ctl('state')['player']['position']
+    g.check('sneaking_on_sellafield_takes_no_step',potion()==(0,0,0) and 21.5<sneaked[0]<26,{'potion':potion(),'pos':sneaked})
+    # Riding (a pig moved along the lane): no step; on foot over the same lane, a step.
+    reset(g,'survival');lane('ntm:sellafield__3')
+    g.command('summon minecraft:pig 21.5 101 11.5 {NoAI:1b,Tags:["ntm_ride"]}');g.command('ride @s mount @e[tag=ntm_ride,limit=1]');pause(g,.3)
+    for i in range(30):
+        g.command(f'tp @e[tag=ntm_ride] {21.5+0.3*i:.2f} 101 11.5');pause(g,.05)
+    riding=potion();g.command('ride @s dismount');g.command('kill @e[tag=ntm_ride]')
+    g.check('riding_over_sellafield_takes_no_step',riding==(0,0,0),riding)
+    reset(g,'survival');lane('ntm:sellafield__3');run()
+    g.check('walking_the_same_lane_takes_a_step',potion()[1]==3,potion())
+    # A teleport onto the mycelium is no step (`setPositionAndUpdate` skips moveEntity; review P2-1); walking is.
+    reset(g,'survival');g.command('fill 21 100 10 31 100 12 ntm:waste_mycelium');g.command('tp @s 20.5 101 11.5 -90 0');pause(g,.4)
+    for x in (23.5,25.5,27.5):g.command(f'tp @s {x} 101 11.5');pause(g,.3)
+    teleported=potion();g.command('fill 21 100 10 31 100 12 minecraft:stone')
+    g.check('teleporting_onto_the_mycelium_takes_no_step',teleported==(0,0,0),teleported)
+    reset(g,'survival');walk_over(g,'ntm:waste_mycelium')
+    g.check('walking_onto_the_mycelium_takes_a_step',potion()[1]==3,potion())
+    # Random ticks: level 5 goes down levels, level 0 to slaked (1 in 15, 1 in 25).
+    g.command('fill 21 101 10 31 101 12 minecraft:air');g.command('fill 21 100 10 31 100 12 ntm:sellafield__5')
+    g.command('gamerule minecraft:random_tick_speed 1000');pause(g,15);g.command('gamerule minecraft:random_tick_speed 3')
+    cells=[g.ctl(f'block {x} 100 {z}').get('state','').split('[')[0] for x in range(21,32) for z in range(10,13)]
+    lower=[c for c in cells if c!='ntm:sellafield__5']
+    g.check('sellafield_goes_down_levels_on_random_ticks',len(lower)>=len(cells)//2 and all(c.startswith('ntm:sellafield') for c in cells),{'counts':{c:cells.count(c) for c in set(cells)}})
+    g.command('fill 21 101 10 31 101 12 minecraft:air');g.command('fill 21 100 10 31 100 12 minecraft:stone');reset(g,'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout)]
 
 
 if __name__=='__main__':
