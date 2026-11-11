@@ -557,10 +557,13 @@ mod tests {
         hurt: Vec<(String, f32)>,
         /// The radiation deaths (`ntm:radiation`), apart from the ruin's own damage.
         radiation_deaths: Vec<String>,
-        /// Every dose written through the host, in order, as (player, the dose read, the dose written). The ruin's own
-        /// dose is written inside its machine step (the transaction's host keeps it in the world's mirror): what it gave
-        /// is the dose a death in the same tick reads.
+        /// Every dose written through the host, in order, as (player, the dose read, the dose written).
         doses: Vec<(String, u64, u64)>,
+        /// The player's own dose storage (the engine's player attachment): it wins over the world's mirror and
+        /// refuses a write that expected another dose.
+        attached: BTreeMap<String, u64>,
+        /// The armor's share of the radiation that gets through (`ContaminationUtil.calculateRadiationMod`).
+        factor: Option<f64>,
         carried: BTreeMap<String, Vec<Stack>>,
         shields: BTreeMap<Key, f32>,
     }
@@ -576,9 +579,19 @@ mod tests {
         }
     }
     impl ServerHost for Host {
+        fn player_dose(&mut self, id: &str, legacy: &crate::radiation::Dose) -> Option<crate::radiation::Dose> {
+            Some(self.attached.get(id).map_or_else(|| legacy.clone(), |&millirad| crate::radiation::Dose { millirad }))
+        }
         fn commit_player_dose(&mut self, id: &str, expected: &crate::radiation::Dose, desired: &crate::radiation::Dose) -> bool {
+            if self.attached.get(id).is_some_and(|&d| d != expected.millirad) {
+                return false;
+            }
             self.doses.push((id.into(), expected.millirad, desired.millirad));
+            self.attached.insert(id.into(), desired.millirad);
             true
+        }
+        fn radiation_factor(&mut self, _: &str) -> f64 {
+            self.factor.unwrap_or(1.0)
         }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
@@ -946,9 +959,9 @@ mod tests {
             },
         ]);
         s.native_tick(&mut h, 2);
-        // The death read what the ruin gave, over 1000 RAD, and wrote 0.
-        let death = h.doses.iter().find(|(id, ..)| id == "same").map(|d| (d.1, d.2));
-        assert!(death.is_some_and(|(given, left)| given >= 1_000_000 && left == 0), "{:?}", h.doses);
+        // The ruin wrote its dose, over 1000 RAD, to the player's storage; the death read it and wrote 0.
+        let same: Vec<_> = h.doses.iter().filter(|(id, ..)| id == "same").map(|d| (d.1, d.2)).collect();
+        assert!(matches!(same[..], [(0, given), (read, 0)] if given >= 1_000_000 && read == given), "{:?}", h.doses);
         assert!(!h.doses.iter().any(|(id, ..)| id == "other"));
         assert!(!s.ready.world.radiation.contains_key("other"));
         assert_eq!(h.hurt.len(), 1);
@@ -993,14 +1006,51 @@ mod tests {
             s.native_tick(&mut h, 2);
             // Below 1000 RAD the tick ends at the ruin's dose; from 1000 the player's update, after the ruin, kills in the
             // same tick: its write read the ruin's dose and left 0.
+            // The ruin's dose reaches the player's own storage (through the machine step's host) once per tick.
             if expected < 1_000_000 {
                 assert_eq!(s.ready.world.radiation["p"].millirad, expected, "eye={eye_x}, wall={wall_x}");
+                assert_eq!(h.doses, [("p".to_string(), 0, expected)], "eye={eye_x}, wall={wall_x}");
+                assert_eq!(h.attached["p"], expected);
                 assert!(h.radiation_deaths.is_empty());
             } else {
-                assert_eq!(h.doses, [("p".to_string(), expected, 0)], "eye={eye_x}, wall={wall_x}");
+                assert_eq!(h.doses, [("p".to_string(), 0, expected), ("p".to_string(), expected, 0)], "eye={eye_x}, wall={wall_x}");
+                assert_eq!(h.attached["p"], 0);
                 assert_eq!(h.radiation_deaths, ["p"]);
                 assert_eq!(s.ready.world.radiation["p"].millirad, 0);
             }
+        }
+    }
+    /// The ruin's dose is given inside the machine step: it reaches the player's own storage, not only the world's
+    /// mirror, so a reopened world (an empty mirror) still has it, and the armor's factor applies to it.
+    #[test]
+    fn the_ruins_dose_reaches_the_players_storage_and_survives_reopening() {
+        for factor in [None, Some(0.5)] {
+            let (mut h, mut s) = prepare();
+            h.factor = factor;
+            zm(&mut s).destroyed = true;
+            zm(&mut s).on_fire = false;
+            s.ready.world.machines.get_mut(&key()).unwrap().block = zirnox::DESTROYED.into();
+            h.blocks.insert(key(), zirnox::DESTROYED.into());
+            s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [10.5, 62.88, 0.5], creative: false }]);
+            h.attached.insert("p".into(), 3_000);
+            s.native_tick(&mut h, 2);
+            let given = h.attached["p"] - 3_000;
+            assert!(given > 0, "{:?}", h.doses);
+            assert_eq!(h.doses.len(), 1);
+            assert_eq!(s.ready.world.radiation["p"].millirad, h.attached["p"]);
+            if let Some(f) = factor {
+                let (mut h1, mut s1) = prepare();
+                zm(&mut s1).destroyed = true;
+                zm(&mut s1).on_fire = false;
+                s1.ready.world.machines.get_mut(&key()).unwrap().block = zirnox::DESTROYED.into();
+                h1.blocks.insert(key(), zirnox::DESTROYED.into());
+                s1.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [10.5, 62.88, 0.5], creative: false }]);
+                s1.native_tick(&mut h1, 2);
+                assert_eq!(given, (h1.attached["p"] as f64 * f) as u64, "the armor's factor applies to the ruin");
+            }
+            let mut reopened = Server::native(&mut h, 3);
+            reopened.ready.world.radiation.clear();
+            assert_eq!(reopened.update_player_dose(&mut h, "p", |d| d.millirad), Some(3_000 + given));
         }
     }
     #[test]

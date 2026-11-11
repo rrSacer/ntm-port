@@ -104,6 +104,9 @@ struct Deferred<'a, H> {
     resource:bool,
     world_writes:Vec<CellWrite>,
     critical: std::collections::VecDeque<WorldEffect>,
+    /// Doses a step wrote, by player: what a later read in the same step sees. The player's own storage takes them
+    /// after the commit, each write expecting the one before it.
+    doses: BTreeMap<String, crate::radiation::Dose>,
 }
 impl<H: ServerHost> Kv for Deferred<'_, H> {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -213,6 +216,25 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
     fn show(&mut self, d: &str, s: &crate::blast::visuals::Show) {
         let (d, s) = (d.to_string(), s.clone());
         self.effects.push((self.origins.clone(),Box::new(move |h| h.show(&d, &s))));
+    }
+    fn radiation_factor(&mut self, id: &str) -> f64 {
+        self.host.radiation_factor(id)
+    }
+    fn player_dose(&mut self, id: &str, legacy: &crate::radiation::Dose) -> Option<crate::radiation::Dose> {
+        match self.doses.get(id) {
+            Some(staged) => Some(staged.clone()),
+            None => self.host.player_dose(id, legacy),
+        }
+    }
+    fn commit_player_dose(&mut self, id: &str, expected: &crate::radiation::Dose, desired: &crate::radiation::Dose) -> bool {
+        self.doses.insert(id.into(), desired.clone());
+        let (id, expected, desired) = (id.to_string(), expected.clone(), desired.clone());
+        self.effects.push((self.origins.clone(),Box::new(move |h| {
+            if !h.commit_player_dose(&id, &expected, &desired) {
+                h.log(&format!("ntm: the dose of {id} changed under a machine step; its write was dropped"));
+            }
+        })));
+        true
     }
 }
 
@@ -564,7 +586,7 @@ impl Server {
             generations:(*before.world.generations).clone(),
             origins:before.world.machines.iter().filter(|(k,_)|k.0==dim).map(|(k,m)|CellGuard::machine(k,m)).collect(),
             valid:true,
-            resource:false,world_writes:Vec::new(),
+            resource:false,world_writes:Vec::new(),doses:BTreeMap::new(),
         };
         let outcome =
             self.native_pile_use_inner(&mut staged, dim, at, face, held, depletion, player);
@@ -797,7 +819,7 @@ impl Server {
             generations:(*before.world.generations).clone(),
                     origins:before.world.machines.iter().map(|(k,m)|CellGuard::machine(k,m)).collect(),
                     valid:true,
-                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),
+                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),doses:BTreeMap::new(),
                 };
                 let removed: Vec<_> = keys
                     .iter()
@@ -994,5 +1016,76 @@ impl Server {
         buttons.retain(|i| self.ready.world.machines.get(&i.guard.key()).is_some_and(|m|m.generation==i.guard.generation));
         self.ready.pending_buttons = buttons;
         self.track_effect_cells();
+    }
+}
+
+#[cfg(test)]
+mod dose_tests {
+    use super::*;
+    use crate::radiation::Dose;
+
+    /// A player's dose storage that refuses a write expecting another dose, and the armor's factor.
+    #[derive(Default)]
+    struct Attached {
+        doses: BTreeMap<String, u64>,
+        writes: Vec<(u64, u64)>,
+        logs: Vec<String>,
+    }
+    impl Kv for Attached {
+        fn get(&mut self, _: &str) -> Option<Vec<u8>> { None }
+        fn set(&mut self, _: &str, _: &[u8]) -> Result<(), String> { Ok(()) }
+        fn delete(&mut self, _: &str) {}
+    }
+    impl ServerHost for Attached {
+        fn get_block(&mut self, _: &str, _: Pos) -> Option<String> { None }
+        fn set_blocks(&mut self, _: &str, _: &[(Pos, String)]) -> Result<(), String> { Ok(()) }
+        fn tell(&mut self, _: &str, _: &str) {}
+        fn log(&mut self, text: &str) { self.logs.push(text.into()); }
+        fn radiation_factor(&mut self, _: &str) -> f64 { 0.25 }
+        fn player_dose(&mut self, id: &str, legacy: &Dose) -> Option<Dose> {
+            Some(self.doses.get(id).map_or_else(|| legacy.clone(), |&millirad| Dose { millirad }))
+        }
+        fn commit_player_dose(&mut self, id: &str, expected: &Dose, desired: &Dose) -> bool {
+            if self.doses.get(id).copied().unwrap_or(0) != expected.millirad { return false; }
+            self.writes.push((expected.millirad, desired.millirad));
+            self.doses.insert(id.into(), desired.millirad);
+            true
+        }
+    }
+    fn staged(host: &mut Attached) -> Deferred<'_, Attached> {
+        Deferred { host, slots: BTreeMap::new(), effects: Vec::new(), generations: BTreeMap::new(), cells: BTreeMap::new(),
+            vacant: BTreeSet::new(), origins: Vec::new(), valid: true, resource: false, world_writes: Vec::new(),
+            critical: std::collections::VecDeque::new(), doses: BTreeMap::new() }
+    }
+
+    /// A machine step's dose writes reach the player's storage after the commit, in order, each expecting the one
+    /// before it; a read in the step sees the step's own write; the armor's factor is the host's.
+    #[test]
+    fn a_machine_steps_doses_reach_the_players_storage_in_order() {
+        let mut host = Attached::default();
+        host.doses.insert("p".into(), 1_000);
+        let mut step = staged(&mut host);
+        assert_eq!(step.radiation_factor("p"), 0.25);
+        for add in [500, 700] {
+            let expected = step.player_dose("p", &Dose::default()).unwrap();
+            let desired = Dose { millirad: expected.millirad + add };
+            assert!(step.commit_player_dose("p", &expected, &desired));
+        }
+        assert_eq!(step.player_dose("p", &Dose::default()).unwrap().millirad, 2_200);
+        let effects = std::mem::take(&mut step.effects);
+        assert_eq!(host.doses["p"], 1_000, "nothing reaches the storage before the commit");
+        for (_, effect) in effects { effect(&mut host); }
+        assert_eq!(host.writes, [(1_000, 1_500), (1_500, 2_200)]);
+        assert!(host.logs.is_empty());
+    }
+
+    /// Dropped with the step: a step that is not committed leaves the storage as it was.
+    #[test]
+    fn an_uncommitted_steps_dose_never_reaches_the_storage() {
+        let mut host = Attached::default();
+        let mut step = staged(&mut host);
+        assert!(step.commit_player_dose("p", &Dose::default(), &Dose { millirad: 9 }));
+        drop(step);
+        assert!(host.writes.is_empty() && host.doses.is_empty());
     }
 }
