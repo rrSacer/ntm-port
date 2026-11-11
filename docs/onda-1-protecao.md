@@ -607,6 +607,28 @@ dadas e falha). Corte `irradiation` com controle: sete de sete. `items` 284/284,
 118, `save_model` 11/11, clippy limpo; 15 mutantes do núcleo mortos (os 13 da entrega, mais a marca ignorada e o
 descontaminador sem marca).
 
+Correções da re-revisão da 5c:
+
+- RR-1: um convidado que o motor ainda não carregou fica com os efeitos parados (o motor só passa os efeitos de quem
+  está carregado), um tick acima do anexo, e o NTM já o vê: a correção do P3-3 tomava isso por aplicação a cada tick, e
+  a poção não descontava. Agora a leitura do efeito é guardada a cada tick (e só é usada depois do primeiro), e só conta
+  como aplicação um efeito que cresceu desde a leitura anterior. Teste: `an_effect_held_still_is_no_application` (30
+  ticks parados dão exatos 30 × 200 millirad). Mutantes mortos: sem a condição de crescimento, efeito dado ignorado,
+  fim sem normalizar.
+- RR-2 (nominal): a marca da migração mora no anexo, e o anexo não passa da morte (`copy_on_death: false`). Se o
+  jogador morre depois da migração e o save cai entre a gravação do jogador e o primeiro commit do KV, a entrada antiga
+  ainda está no KV e o anexo novo a absorve de novo: o jogador renascido volta com a poção, que no Java ele não tem.
+  Exige migração, morte e queda no save, tudo antes do primeiro commit do KV; fica registrado.
+- RR-3: a regra do corte `migration` usa o orçamento medido no fim do prepare, `G0` = doses dadas + ticks restantes,
+  lido de uma só gravação do binário anterior (o KV tem a poção e o espelho da dose do mesmo instante). Em todo ponto,
+  `dadas + restantes ≤ G0`; a carência das reaberturas só faz a soma cair, e uma poção que acabou no caminho (0 ticks,
+  sem efeito) também cabe.
+
+Rodada da re-revisão (`docs/evidence/onda1-f5/irradiation-5c-rereview.json`): binário `589d2efe…`, pacote `36eb93fa…`,
+motor no pin sem mudança. Família `irradiation` 8/8. Corte `migration` com controle, `G0` = 626 (`[559, 3]` e 313 400
+millirad numa gravação): sete de sete na primeira rodada; o pior ponto, `players_saved`, soma 312 + 43 = 355. `cargo
+test` 556 + 118, clippy limpo.
+
 Ordem combinada: depois da 5c, a 5d (fontes da poção com bloco no port: `BlockFallout:57`, `BlockSellafield:49`, e a
 regra de dose do fallout), com plano e revisão próprios.
 
