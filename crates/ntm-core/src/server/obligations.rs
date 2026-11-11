@@ -127,6 +127,11 @@ impl Server {
         migrated: BTreeSet<Obligation>,
     ) {
         let home: Home = (dim.to_string(), chunk[0], chunk[1]);
+        // Even if the first settle pays everything, the loaded record must be written empty. Otherwise its old
+        // batch comes back on every reopen (an explosion has no destination id of its own to suppress it).
+        if !removals.is_empty() || !batches.is_empty() || !migrated.is_empty() {
+            self.homes.entry(home.clone()).or_insert(0);
+        }
         for r in removals {
             if self.ready.world.removals.iter().any(|x| x.obligation() == r.obligation()) {
                 continue;

@@ -16,6 +16,8 @@ struct Host {
     items: Vec<(String, u32)>,
     order: Vec<&'static str>,
     seen: BTreeSet<(u64, String, Pos)>,
+    homes: BTreeMap<[i32; 2], Vec<CommittedEffects>>,
+    empty_homes: Vec<[i32; 2]>,
 }
 impl Kv for Host {
     fn get(&mut self, key: &str) -> Option<Vec<u8>> {
@@ -65,6 +67,22 @@ impl ServerHost for Host {
         self.order.push("items");
         if self.seen.insert((id, dim.into(), pos)) {
             self.items.extend_from_slice(items);
+        }
+        true
+    }
+    fn store_obligations(
+        &mut self,
+        _: &str,
+        chunk: [i32; 2],
+        _: &[crate::persist::Removal],
+        batches: &[CommittedEffects],
+        _: &BTreeSet<crate::persist::Obligation>,
+    ) -> bool {
+        if batches.is_empty() {
+            self.empty_homes.push(chunk);
+            self.homes.remove(&chunk);
+        } else {
+            self.homes.insert(chunk, batches.to_vec());
         }
         true
     }
@@ -157,4 +175,111 @@ fn an_accepted_generic_explosion_is_not_repeated_when_its_item_waits() {
     server.flush_machine_effects(&mut host);
     assert_eq!(host.order, ["explosion attempt", "items"]);
     assert_eq!(server.ready.world.applied_machine_effects.len(), 2);
+}
+
+#[test]
+fn replay_skips_an_old_explosion_when_a_later_destination_proves_the_order() {
+    for later in [
+        drop(),
+        WorldEffect::EncodedItems {
+            dim: DIM.into(),
+            pos: DEST,
+            items: vec![],
+        },
+        WorldEffect::Entities {
+            dim: DIM.into(),
+            pos: DEST,
+            entities: vec![],
+        },
+    ] {
+        let mut host = Host {
+            refuse_blast: true,
+            ..Default::default()
+        };
+        let mut server = Server::native(&mut host, 0);
+        let mut old = batch();
+        old.done = 3;
+        old.effects = VecDeque::from([blast(), blast(), later]);
+        server.ready.world.machine_effects.push_back(old.clone());
+        server.flush_machine_effects(&mut host);
+        assert_eq!(
+            server.ready.world.machine_effects[0], old,
+            "save 1: explosion refused, whole batch owed"
+        );
+        // Save 2 wrote the later effect's chunk but not the home: R3. Its stable index is 3 + 2.
+        host.seen
+            .insert((crate::ledger::effect_id(old.serial, 5), DIM.into(), DEST));
+        host.refuse_blast = false;
+        let mut reopened = Server::native(&mut host, 1);
+        reopened.native_obligations_loaded(DIM, [0, 0], vec![], vec![old], BTreeSet::new());
+        reopened.flush_machine_effects(&mut host);
+        assert!(
+            host.blasts.is_empty(),
+            "the later record proves both earlier explosions ran"
+        );
+        assert!(
+            reopened
+                .ready
+                .world
+                .applied_machine_effects
+                .iter()
+                .all(|b| b
+                    .effects
+                    .iter()
+                    .all(|e| !matches!(e, WorldEffect::Explosion { .. }))),
+            "skipped effects get no new receipt"
+        );
+    }
+}
+
+#[test]
+fn a_later_unseen_effect_or_a_new_batch_does_not_skip_the_explosion() {
+    for replayed in [false, true] {
+        let mut host = Host::default();
+        let mut server = Server::native(&mut host, 0);
+        let mut batch = batch();
+        batch.replayed = replayed;
+        if !replayed {
+            host.seen
+                .insert((crate::ledger::effect_id(batch.serial, 1), DIM.into(), DEST));
+        } else {
+            // A different id, even in the same cell, proves nothing about this batch's order.
+            host.seen
+                .insert((crate::ledger::effect_id(batch.serial, 9), DIM.into(), DEST));
+        }
+        server.ready.world.machine_effects.push_back(batch);
+        server.flush_machine_effects(&mut host);
+        assert_eq!(host.blasts, vec![blast()]);
+    }
+}
+
+#[test]
+fn a_reopened_home_is_written_empty_when_its_last_batch_is_paid() {
+    let mut host = Host::default();
+    host.homes.insert([0, 0], vec![batch()]);
+    let mut server = Server::native(&mut host, 0);
+    server.native_obligations_loaded(
+        DIM,
+        [0, 0],
+        vec![],
+        host.homes[&[0, 0]].clone(),
+        BTreeSet::new(),
+    );
+    server.native_settle(&mut host);
+    assert!(server.ready.world.machine_effects.is_empty());
+    assert!(
+        host.homes.is_empty(),
+        "the loaded record must lose its old batch on full payment"
+    );
+    assert_eq!(
+        host.empty_homes,
+        [[0, 0]],
+        "write the empty record even when no pending batch remains"
+    );
+    let mut reopened = Server::native(&mut host, 1);
+    for (chunk, batches) in host.homes.clone() {
+        reopened.native_obligations_loaded(DIM, chunk, vec![], batches, BTreeSet::new());
+    }
+    reopened.native_settle(&mut host);
+    assert_eq!(host.blasts.len(), 1, "a second reopen owes no explosion");
 }

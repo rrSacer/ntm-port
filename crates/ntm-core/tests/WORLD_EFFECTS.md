@@ -27,3 +27,28 @@ Contexto Java do consumidor futuro (não ativado aqui): `TileEntityStirling.java
 sem fogo/quebra e uma `EntityCog`; `EntityCog.java:60-67` devolve um `ModItems.gear_large` com o metadado da entidade
 ao interagir e só mata a entidade quando o inventário aceita. Portanto perder a engrenagem continua defeito nominal;
 a explosão, sozinha, não conclui o Stirling nem a jogabilidade da família.
+
+## Fatia 2
+
+No replay, um efeito posterior `Items`, `EncodedItems` ou `Entities` já visto no chunk de destino prova a aplicação
+ordenada dos anteriores. O cursor avança sem nova aplicação/recibo. Não se aplica a bateladas novas nem a IDs alheios.
+O teste inclui cursor inicial 3, dois efeitos anteriores e as três variantes de destino.
+
+Correção correlata autorizada pelo coordenador: `native_obligations_loaded` rastreia uma casa que chega com dívida,
+mesmo sem marca de migração. Sem isso, pagar tudo no primeiro `native_settle` deixa a casa fora de `sync_obligations`
+e o anexo antigo continua no chunk. A sonda exige uma gravação vazia e uma segunda reabertura sem nova explosão.
+
+Extensão `common/world_effects_order_model.rs` do `save_model`: dois registros independentes, captura nos dois sentidos,
+writer FIFO com coalescência, morte, recusa e destino descarregado. Cada tick chama o `Server` real; o controle do
+recorte R3 é a saída vanilla já salva (um item). O verificador anterior continua cobrindo conservação vanilla geral;
+a extensão prova especificamente que o replay não destrói essa saída. Não pretende modelar o algoritmo de dano nativo.
+Na primeira rodada, profundidade 9: 17.544 estados distintos, 22.053.400 sequências, zero violações. O padrão da extensão
+foi elevado a 10 para acompanhar o máximo da Onda 0. Reproduzir:
+
+```sh
+cargo test --release --test save_model saved_outputs_survive_an_older_homes_explosion_replay -- --nocapture
+python3 crates/ntm-core/tests/mutate_world_effects.py 2
+```
+
+A entrega só é pronta após finalizar o mutante `ReplayWithoutOrderGuard` nos dois oráculos, o mutante
+`LoadedHomeNotTracked`, os testes finais e clippy; os números finais são enviados com o hash ao coordenador.

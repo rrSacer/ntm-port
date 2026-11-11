@@ -400,6 +400,23 @@ impl Server {
                 // What a chunk owes is played only while it is loaded: its record then follows every step.
                 if let Some(h)=batch.home()&&!host.home_loaded(&h.0,[h.1,h.2]){self.ready.world.machine_effects.rotate_left(1);break;}
                 let Some(mut effect)=batch.effects.front().cloned() else{self.ready.world.machine_effects.pop_front();break};
+                // A later item/entity effect in its destination's record proves every earlier effect ran in order.
+                // The home's older record may still owe the explosion, which has no persistent mark of its own.
+                // Advance without a new receipt: replaying it now could destroy the very item that proves it ran.
+                let later_seen = batch.replayed && batch.effects.iter().enumerate().skip(1).any(|(k, later)| {
+                    let (dim, pos) = match later {
+                        WorldEffect::Items { dim, pos, .. } | WorldEffect::EncodedItems { dim, pos, .. }
+                        | WorldEffect::Entities { dim, pos, .. } => (dim, pos),
+                        _ => return false,
+                    };
+                    host.effect_seen(crate::ledger::effect_id(batch.serial, batch.done + k as u32), dim, *pos)
+                });
+                if later_seen {
+                    let batch = self.ready.world.machine_effects.front_mut().unwrap();
+                    batch.effects.pop_front();
+                    batch.done += 1;
+                    continue;
+                }
                 let dim=match &effect{WorldEffect::Blocks{dim,..}|WorldEffect::Items{dim,..}|WorldEffect::EncodedItems{dim,..}|WorldEffect::Explosion{dim,..}|WorldEffect::PileExplosion{dim,..}|WorldEffect::Entities{dim,..}=>dim};
                 if !host.pile_reachable(dim){self.ready.world.machine_effects.rotate_left(1);break;}
                 let (effect_id,replayed)={let b=self.ready.world.machine_effects.front().unwrap();(crate::ledger::effect_id(b.serial,b.done),b.replayed)};
