@@ -468,10 +468,11 @@ def ruin_dose(g):
     the only source: before slice 5b's fix the attachment stayed at 0."""
     g.close();g.command('clear @s');g.command('effect clear @s')
     g.command('setblock 138 100 2 minecraft:obsidian');g.command('gamemode survival');g.command('tp @s 138.5 101 2.5 90 0')
+    # The ruin doses every tick: the reading after `dose 0` already has a tick or two of it.
     g.command('ntmitem dose 0');start=dose(g)
     sprint(g,60);time.sleep(1)
     got=dose(g);p=g.ctl('state')['player']
-    g.check('ruin_dose_reaches_the_player_storage',start==0 and 0<got<1_000_000 and p.get('death_time') is None,{'start':start,'dose':got,'player':p})
+    g.check('ruin_dose_reaches_the_player_storage',start<got<1_000_000 and p.get('death_time') is None,{'start':start,'dose':got,'player':p})
     # Creative stops the dose (the ruin skips creative players) for the reopening.
     g.command('gamemode creative');time.sleep(1);kept=dose(g)
     (g.folder/'zirnox-ruin-dose.json').write_text(json.dumps({'dose':kept}))
