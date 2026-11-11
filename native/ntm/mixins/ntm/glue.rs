@@ -1450,6 +1450,38 @@ impl ServerHost for Host<'_, '_> {
         }
         false
     }
+    /// A teleport takes no step (`setPositionAndUpdate` skips `Entity.moveEntity`; slice 5d, review P2-1). Read here,
+    /// with `step_blocked`, from engine fields at the same pin:
+    /// - a LAN guest: `Guest::teleport_counter` (the id of the last position the server set), `awaiting_teleport` and
+    ///   `landing` (moves ignored until the client takes the new position);
+    /// - the player in place: `Player::steps` (`MovementDistances::{movement, flight}`, `Entity.moveDist` and
+    ///   `flyDist`), which only a move by the physics grows: the feet moved across with neither grown is a teleport
+    ///   (a fall moves no step distance either way, and rides are blocked).
+    ///
+    /// Remembers each player's last mark; asked once a tick for each player.
+    fn teleported(&mut self,id:&str)->bool{
+        static SEEN:OnceLock<Mutex<HashMap<u128,(u64,f64,f64)>>>=OnceLock::new();
+        let Ok(uuid)=u128::from_str_radix(&id.replace('-',""),16) else{return false};
+        let game=&*self.game;
+        let mut seen=lock(SEEN.get_or_init(Default::default));
+        if let Some(g)=game.lan.iter().flat_map(|h|h.hub.guests.iter()).find(|g|g.placed&&g.uuid==uuid){
+            let guest:&horizon_client::lan::guest::Guest=g;
+            let counter:i32=guest.teleport_counter;
+            let pending=guest.awaiting_teleport.is_some()||guest.landing;
+            let last=seen.insert(uuid,(counter as u32 as u64,0.0,0.0));
+            return pending||last.is_some_and(|(c,..)|c!=counter as u32 as u64);
+        }
+        if game.level.player_uuid.map(horizon_client::lan::playerdata::ints_uuid)==Some(uuid)
+            && let Some(p)=game.player.as_ref()
+        {
+            let steps:horizon_world::movement_emission::MovementDistances=p.steps;
+            let walked=u64::from((steps.movement+steps.flight).to_bits());
+            let (x,z)=(p.position.x,p.position.z);
+            let last=seen.insert(uuid,(walked,x,z));
+            return last.is_some_and(|(w,lx,lz)|w==walked&&((x-lx).abs()>1e-9||(z-lz).abs()>1e-9));
+        }
+        false
+    }
     fn effect_state(&mut self,id:&str,effect:&str)->Option<Option<(u32,u8)>>{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::effect_state(g,effect))
     }

@@ -153,6 +153,9 @@ pub trait ServerHost: Kv {
     fn remove_effect(&mut self,_id:&str,_effect:&str){}
     /// Whether player `id` takes no step this tick (`Entity.moveEntity`): sneaking on the ground, or riding.
     fn step_blocked(&mut self,_id:&str)->bool{false}
+    /// Whether player `id`'s position was set this tick, not moved (`setPositionAndUpdate`: a command, a pearl, a
+    /// portal): no step. Asked once a tick for each player.
+    fn teleported(&mut self,_id:&str)->bool{false}
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}

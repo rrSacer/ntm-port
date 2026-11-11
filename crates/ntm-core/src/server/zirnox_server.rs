@@ -182,9 +182,10 @@ impl Server {
         let mut walked = Vec::new();
         for p in self.players.clone() {
             let blocked = host.step_blocked(&p.id);
+            let teleported = host.teleported(&p.id);
             let walk = self.ready.walks.entry(p.id.clone()).or_insert_with(|| crate::walking::Walk { dim: p.dim.clone(), at: p.pos, ..Default::default() });
             let mut ground = HostGround { host: &mut *host, dim: &p.dim };
-            if let Some((_, block)) = crate::walking::advance(walk, &p.dim, p.pos, blocked, &mut ground)
+            if let Some((_, block)) = crate::walking::advance(walk, &p.dim, p.pos, blocked, teleported, &mut ground)
                 && let Some(potion) = crate::walking::on_entity_walking(&block, p.creative)
             {
                 walked.push((p.id.clone(), potion));
@@ -727,6 +728,8 @@ mod tests {
         stepping: bool,
         /// `step_blocked` for every player (sneaking on the ground, or riding).
         blocked: bool,
+        /// `teleported` for every player.
+        teleport: bool,
         carried: BTreeMap<String, Vec<Stack>>,
         shields: BTreeMap<Key, f32>,
     }
@@ -773,6 +776,9 @@ mod tests {
         }
         fn step_blocked(&mut self, _: &str) -> bool {
             self.blocked
+        }
+        fn teleported(&mut self, _: &str) -> bool {
+            self.teleport
         }
         fn effect(&mut self, id: &str, effect: &str, ticks: u32, amplifier: u8) {
             self.queued.push(((id.into(), effect.into()), (ticks, amplifier)));
@@ -1771,6 +1777,26 @@ mod tests {
         h.effects.clear();
         tick(&mut h, &mut s, 306);
         assert_eq!(potion(&h), (0, 0), "milk cured the mycelium's potion");
+    }
+
+    /// Review P2-1: a short teleport onto the mycelium (`ServerHost::teleported`) takes no step: no potion.
+    #[test]
+    fn a_teleport_onto_the_mycelium_gives_nothing() {
+        let (mut h, mut s) = prepare();
+        h.irradiation = Some(BTreeMap::new());
+        h.blocks.insert((DIM.into(), [0, 99, 0]), "ntm:waste_mycelium".into());
+        s.blasts.entered.insert("p".into(), 0);
+        let at = |z: f64| vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: DIM.into(), pos: [0.5, 100., z], creative: false }];
+        s.set_players(at(2.5));
+        tick(&mut h, &mut s, 300);
+        h.teleport = true;
+        s.set_players(at(0.5));
+        tick(&mut h, &mut s, 301);
+        assert_eq!(potion(&h), (0, 0));
+        h.teleport = false;
+        s.set_players(at(0.9));
+        tick(&mut h, &mut s, 302);
+        assert_eq!(potion(&h).1, 3, "a move after it steps");
     }
 
     /// Sellafield level 5 gives amplifier 10, to creative players too.

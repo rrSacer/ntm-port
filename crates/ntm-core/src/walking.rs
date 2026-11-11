@@ -72,16 +72,17 @@ pub fn step_cell(ground: &mut impl Ground, feet: [f64; 3]) -> ([i32; 3], String)
     (cell, block)
 }
 
-/// One tick of a player's move to `to` in `dim`; `blocked`: sneaking on the ground, or riding. The block a step
-/// lands on, when the player stepped.
-pub fn advance(walk: &mut Walk, dim: &str, to: [f64; 3], blocked: bool, ground: &mut impl Ground) -> Option<([i32; 3], String)> {
+/// One tick of a player's move to `to` in `dim`; `blocked`: sneaking on the ground, or riding; `teleported`: the
+/// position was set this tick (`setPositionAndUpdate`, a pearl, a portal), not moved. The block a step lands on,
+/// when the player stepped.
+pub fn advance(walk: &mut Walk, dim: &str, to: [f64; 3], blocked: bool, teleported: bool, ground: &mut impl Ground) -> Option<([i32; 3], String)> {
     let from = std::mem::replace(&mut walk.at, to);
     if walk.dim != dim {
         walk.dim = dim.to_string();
         return None;
     }
     let (dx, mut dy, dz) = (to[0] - from[0], to[1] - from[1], to[2] - from[2]);
-    if dx * dx + dy * dy + dz * dz > 100.0 || blocked {
+    if teleported || dx * dx + dy * dy + dz * dz > 100.0 || blocked {
         return None;
     }
     let feet = java_feet(ground, to);
@@ -173,7 +174,7 @@ mod tests {
     }
     fn walk(w: &mut World, path: &[[f64; 3]], blocked: bool) -> Vec<usize> {
         let mut s = Walk { dim: "o".into(), at: path[0], ..Walk::default() };
-        path.iter().enumerate().skip(1).filter_map(|(i, p)| advance(&mut s, "o", *p, blocked, w).map(|_| i)).collect()
+        path.iter().enumerate().skip(1).filter_map(|(i, p)| advance(&mut s, "o", *p, blocked, false, w).map(|_| i)).collect()
     }
 
     /// The Java's arithmetic, compiled and run (tools/step-oracle): over long irregular walks (walking, sprinting,
@@ -304,4 +305,38 @@ mod tests {
         }
     }
 
+    /// A teleport (the position set, not moved) takes no step, however short (review P2-1).
+    #[test]
+    fn a_teleport_takes_no_step() {
+        let mut w = floor("ntm:waste_mycelium");
+        let mut s = Walk { dim: "o".into(), at: [0.5, 64.0, 2.5], ..Walk::default() };
+        assert_eq!(advance(&mut s, "o", [0.5, 64.0, 0.5], false, true, &mut w), None);
+        assert_eq!((s.walked, s.at), (0.0, [0.5, 64.0, 0.5]));
+        assert!(advance(&mut s, "o", [0.5, 64.0, 0.9], false, false, &mut w).is_some(), "the next move steps");
+    }
+
+    /// The fallout at the Java's 0.125 whatever its layers (review P3-4): standing on 1 or 4 layers the step lands
+    /// below it; a jump of 0.1 above standing lands on it (the Java's feet 0.225 above the cell).
+    #[test]
+    fn fallout_is_as_high_as_the_javas_whatever_its_layers() {
+        for layers in [1, 4, 8] {
+            let mut w = floor("minecraft:stone");
+            w.0.insert([0, 64, 0], format!("ntm:fallout[layers={layers}]"));
+            let standing = 64.0 + f64::from(layers - 1) / 8.0;
+            let feet = java_feet(&mut w, [0.5, standing, 0.5]);
+            assert_eq!(step_cell(&mut w, feet).0, [0, 63, 0], "{layers} standing");
+            let feet = java_feet(&mut w, [0.5, standing + 0.1, 0.5]);
+            assert_eq!(step_cell(&mut w, feet).0, [0, 64, 0], "{layers} jumping");
+        }
+        let mut w = floor("minecraft:stone");
+        assert_eq!(java_feet(&mut w, [0.5, 64.0, 0.5]), [0.5, 64.0, 0.5], "no fallout, no change");
+        // Walking flat on four layers (standing 0.375 above the cell): every step lands on the stone below.
+        let mut w = floor("minecraft:stone");
+        for x in 0..20 {
+            w.0.insert([x, 64, 0], "ntm:fallout[layers=4]".into());
+        }
+        let mut s = Walk { dim: "o".into(), at: [0.5, 64.375, 0.5], ..Walk::default() };
+        let landed: Vec<_> = (1..40).filter_map(|i| advance(&mut s, "o", [0.5 + 0.3 * f64::from(i), 64.375, 0.5], false, false, &mut w)).map(|(_, b)| b).collect();
+        assert!(!landed.is_empty() && landed.iter().all(|b| b == "minecraft:stone"), "{landed:?}");
+    }
 }
