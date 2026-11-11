@@ -632,6 +632,7 @@ fn just_under_a_thousand_rad_rolls_and_a_thousand_kills_without_drawing() {
 }
 
 mod bomb_tests;
+mod chunk_radiation_tests;
 mod combustion_tests;
 mod solar_stirling_tests;
 mod fluid_tests;

@@ -9,9 +9,12 @@
 //!   `clamp_float(0F, x, maxRad)`, which keeps `max(0, x)` with no ceiling); one outside the copy is *set* to the
 //!   share, the last one written winning. Both depend on the order the copy is walked, which is the Java's
 //!   `HashMap` order: [`ChunkMap`] keeps it.
-//! - A chunk that loads is put in with the value its save holds (0 when none, `getFloat` of a missing key); one that
-//!   unloads stays in the map (the Java removes the `Chunk`, not its `ChunkCoordIntPair`: nothing), and its value
-//!   is what its save keeps.
+//! - A chunk that loads is put in with the value its save holds (0 when none, `getFloat` of a missing key), over what
+//!   the map had. One that unloads stays in the map, spreading and decaying (`receiveChunkUnload` removes the `Chunk`
+//!   from a map keyed by `ChunkCoordIntPair`: nothing), and its save keeps the value it left with. The spread also
+//!   puts in chunks never loaded. A chunk at 0 leaves the map at the next update (it is cleared and only what a
+//!   chunk not at 0 spreads goes back in), so the map holds the chunks not at 0 and the ring around them.
+//! - Where the save is: the NTM storage (`persist::CHUNK_RADIATION_KEY`), not the chunk's NBT (`server::chunk_radiation`).
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -437,9 +440,40 @@ pub fn decrement(radiation: &mut ChunkMap, chunk: [i32; 2], rad: f32) {
     set(radiation, chunk, (get(radiation, chunk) - rad).max(0.0));
 }
 
-/// The field as saved: each world's chunks with what their saves hold (`hfr_simple_radiation`); 0 is left out.
+/// The field as saved: each world's chunks with what their saves hold (`hfr_simple_radiation`, written by
+/// `receiveChunkSave` as the map holds it, over 100 000 too); 0, what `getFloat` gives for a missing key, is left out.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Saved(pub BTreeMap<String, BTreeMap<String, f32>>);
+
+impl Saved {
+    fn key(chunk: [i32; 2]) -> String {
+        format!("{},{}", chunk[0], chunk[1])
+    }
+
+    /// `getFloat(NBT_KEY_CHUNK_RADIATION)` of the chunk's save: 0 when it holds none.
+    pub fn get(&self, dim: &str, chunk: [i32; 2]) -> f32 {
+        self.0.get(dim).and_then(|m| m.get(&Self::key(chunk))).copied().unwrap_or(0.0)
+    }
+
+    /// Whether writing `rad` would change what the chunk's save holds (bit for bit).
+    pub fn differs(&self, dim: &str, chunk: [i32; 2], rad: f32) -> bool {
+        self.get(dim, chunk).to_bits() != rad.to_bits()
+    }
+
+    /// `setFloat(NBT_KEY_CHUNK_RADIATION, rad)`.
+    pub fn set(&mut self, dim: &str, chunk: [i32; 2], rad: f32) {
+        if rad == 0.0 {
+            if let Some(m) = self.0.get_mut(dim) {
+                m.remove(&Self::key(chunk));
+                if m.is_empty() {
+                    self.0.remove(dim);
+                }
+            }
+        } else {
+            self.0.entry(dim.to_string()).or_default().insert(Self::key(chunk), rad);
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {

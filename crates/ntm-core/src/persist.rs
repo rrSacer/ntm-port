@@ -22,6 +22,9 @@ pub const KEY: &str = "world";
 pub const RBMK_KEY: &str = "rbmk";
 /// The sickness rolls' random (`radiation::SicknessRng`), under its own key: a tick with someone sick rewrites only it.
 pub const SICKNESS_KEY: &str = "sickness";
+/// The storage key of the world's radiation by chunk as the chunks' saves hold it (`chunk_radiation::Saved`): under its
+/// own key, so a save rewrites it alone when only it changed.
+pub const CHUNK_RADIATION_KEY: &str = "chunk_radiation";
 /// Ticks between keeps of the clock alone: a crash sets it back at most this.
 pub const TICKS_EVERY: u64 = 600;
 
@@ -210,6 +213,8 @@ pub struct WorldState {
     /// The sickness rolls' `java.util.Random` (radiation::SicknessRng): seeded from the world's seed the first time
     /// someone is sick, so a world nobody was sick in never writes it.
     pub sickness: Tracked<Option<crate::radiation::SicknessRng>>,
+    /// What each chunk's save holds of the world's radiation (`hfr_simple_radiation`, `CHUNK_RADIATION_KEY`).
+    pub chunk_radiation: Tracked<crate::chunk_radiation::Saved>,
     /// Each RBMK layer's simulation state, by dimension and base Y. It holds no item: a crash between the regions and
     /// this storage sets it back to the save before while the columns are as the regions left them (docs).
     pub rbmk: Tracked<BTreeMap<(String, i32), crate::rbmk::persist::Layer>>,
@@ -238,6 +243,11 @@ impl WorldState {
             sickness: kv
                 .get(SICKNESS_KEY)
                 .and_then(|b| serde_json::from_slice::<crate::radiation::SicknessRng>(&b).ok())
+                .into(),
+            chunk_radiation: kv
+                .get(CHUNK_RADIATION_KEY)
+                .and_then(|b| serde_json::from_slice::<crate::chunk_radiation::Saved>(&b).ok())
+                .unwrap_or_default()
                 .into(),
             rbmk: Tracked::new(
                 kv.get(RBMK_KEY)
@@ -284,6 +294,16 @@ impl WorldState {
     /// What [`WorldState::load`] reads back of the sickness random (`SICKNESS_KEY`): a few bytes, whatever the world.
     pub fn kept_sickness(&self) -> Vec<u8> {
         serde_json::to_vec(&*self.sickness).unwrap_or_default()
+    }
+
+    /// The stamp of the chunks' saved radiation's last change (`CHUNK_RADIATION_KEY`).
+    pub fn chunk_radiation_stamp(&self) -> u64 {
+        Tracked::stamp(&self.chunk_radiation)
+    }
+
+    /// What [`WorldState::load`] reads back of the chunks' saved radiation (`CHUNK_RADIATION_KEY`).
+    pub fn kept_chunk_radiation(&self) -> Vec<u8> {
+        serde_json::to_vec(&*self.chunk_radiation).unwrap_or_default()
     }
 
     /// The stamp of the RBMK layers' last change (`RBMK_KEY`).

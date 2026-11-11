@@ -411,6 +411,14 @@ struct Ready {
     kept_rbmk: Option<u64>,
     /// The stamp of the sickness random as last kept (`persist::SICKNESS_KEY`); None: write it next time.
     kept_sickness: Option<u64>,
+    /// The stamp of the chunks' saved radiation as last kept (`persist::CHUNK_RADIATION_KEY`); None: write it next time.
+    kept_chunk_radiation: Option<u64>,
+    /// The world's radiation by chunk (`server::chunk_radiation`): each world's map as the Java holds it.
+    chunk_field: BTreeMap<String, crate::chunk_radiation::ChunkMap>,
+    /// The chunks loaded, by world (the hooks of loading and unloading): the ones a save writes.
+    chunk_field_loaded: BTreeMap<String, BTreeSet<[i32; 2]>>,
+    /// `ChunkRadiationManager.eggTimer`: server ticks since the last update, counted from the server's start.
+    chunk_field_timer: u32,
     /// What was last kept, without the clock: debug builds check every skipped write against it.
     #[cfg(debug_assertions)]
     kept: Vec<u8>,
@@ -724,6 +732,7 @@ mod fluid_server;
 mod foundry_server;
 pub mod native_server;
 mod radiation_server;
+mod chunk_radiation_server;
 
 #[cfg(test)]
 mod tests;

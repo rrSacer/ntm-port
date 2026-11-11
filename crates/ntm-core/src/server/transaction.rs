@@ -287,7 +287,7 @@ impl Server {
     /// against the whole state serialized: a change that left the stamps behind would leave the storage behind the
     /// world.
     pub(super) fn world_changed(&self) -> bool {
-        self.world_part_changed() || self.rbmk_changed() || self.sickness_changed()
+        self.world_part_changed() || self.rbmk_changed() || self.sickness_changed() || self.chunk_radiation_changed()
     }
 
     /// Whether the RBMK layers changed since they were last written.
@@ -311,6 +311,7 @@ impl Server {
         self.ready.kept_rev = Some(self.ready.world.stamps());
         self.write_rbmk(host)?;
         self.write_sickness(host)?;
+        self.write_chunk_radiation(host)?;
         #[cfg(debug_assertions)]
         {
             self.ready.kept = self.ready.world.kept(0);
@@ -337,6 +338,20 @@ impl Server {
         if self.sickness_changed() {
             host.set(crate::persist::SICKNESS_KEY, &self.ready.world.kept_sickness())?;
             self.ready.kept_sickness = Some(self.ready.world.sickness_stamp());
+        }
+        Ok(())
+    }
+
+    /// Whether the chunks' saved radiation changed since it was last written.
+    pub(super) fn chunk_radiation_changed(&self) -> bool {
+        self.ready.kept_chunk_radiation != Some(self.ready.world.chunk_radiation_stamp())
+    }
+
+    /// The chunks' saved radiation to the host's storage, under its own key: it changes when a chunk is saved.
+    pub(super) fn write_chunk_radiation(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
+        if self.chunk_radiation_changed() {
+            host.set(crate::persist::CHUNK_RADIATION_KEY, &self.ready.world.kept_chunk_radiation())?;
+            self.ready.kept_chunk_radiation = Some(self.ready.world.chunk_radiation_stamp());
         }
         Ok(())
     }
