@@ -12,7 +12,7 @@ import sys
 import time
 
 from native_game import Game
-from native_recipes import core_of
+from native_recipes import core_of, screen_json
 
 
 def machine_state(game, at):
@@ -113,20 +113,56 @@ def run_test(game):
             break
     game.check('tank_holds_diesel_first', filled is not None and filled[0] == 'diesel' and filled[1] > 0, filled)
 
-    # 2. Put kerosene identifier into slot 4: tank types to kerosene, empties, tenth becomes 0
+    # 2. Establish precondition with tenth > 0 before inserting fluid identifier:
+    # Insert a steel piston into slot 2, freeze ticks, set slider to setting 1 (speed=2 tenths/t),
+    # ignite and step 1 tick so tenth becomes non-zero (8), then shut off and unfreeze.
+    machine = screen_json('machine_combustion_engine')
+    game.put('ntm:piston_set__steel', 1, 2)
+    slider_1 = next(b for b in machine['buttons'] if b['id'] == 101)
+    slider_0 = next(b for b in machine['buttons'] if b['id'] == 100)
+    ignition = next(b for b in machine['buttons'] if b['id'] == 0)
+
+    game.command('tick freeze')
+    time.sleep(0.2)
+    game.button(slider_1['rect'], machine['size'])
+    game.button(ignition['rect'], machine['size'])
+    game.command('tick step 1')
+    time.sleep(0.5)
+
+    tenth_before = engine_tenth(game, core)
+    if tenth_before == 0:
+        game.command('tick step 1')
+        time.sleep(0.5)
+        tenth_before = engine_tenth(game, core)
+
+    # Shut off: reset slider to 0 and toggle ignition off
+    game.button(slider_0['rect'], machine['size'])
+    game.button(ignition['rect'], machine['size'])
+    game.command('tick step 1')
+    time.sleep(0.5)
+    game.command('tick unfreeze')
+    time.sleep(0.5)
+
+    tenth_before = engine_tenth(game, core)
+    game.evidence['tenth_before'] = tenth_before
+    game.check('engine_tenth_nonzero_before', tenth_before > 0, tenth_before)
+
+    # 3. Put kerosene identifier into slot 4: tank types to kerosene, empties, and resets tenth to 0
+    # (CombustionEngine.java:81: if(tank.setType(4, slots)) tenth = 0)
     identifier_in_slot(game, 4, '{ntm_fluid:"kerosene"}')
     typed_k = wait_tank(game, core, 'kerosene')
-    tenth = engine_tenth(game, core)
+    tenth_after = engine_tenth(game, core)
+    game.evidence['tenth_after'] = tenth_after
     game.evidence['kerosene_state'] = machine_state(game, core)[:600]
-    game.check('kerosene_identifier_types_and_empties_engine_tank', typed_k == ('kerosene', 0) and tenth == 0, (typed_k, tenth))
+    game.check('kerosene_identifier_types_and_empties_engine_tank', typed_k == ('kerosene', 0) and tenth_after == 0, (typed_k, tenth_after))
 
-    # 3. Bare identifier in slot 4: leaves tank untyped and empty ('', 0)
+    # 4. Bare identifier in slot 4: leaves tank untyped and empty ('', 0)
     identifier_in_slot(game, 4, None)
     untyped_bare = wait_tank(game, core, '')
     game.evidence['bare_state'] = machine_state(game, core)[:600]
     game.check('bare_identifier_leaves_engine_tank_untyped', untyped_bare == ('', 0), untyped_bare)
 
-    # 4. Type to diesel again, then test {ntm_fluid:"none"}
+    # 5. Type to diesel again, then test {ntm_fluid:"none"}
     identifier_in_slot(game, 4, '{ntm_fluid:"diesel"}')
     wait_tank(game, core, 'diesel')
     identifier_in_slot(game, 4, '{ntm_fluid:"none"}')
@@ -134,7 +170,7 @@ def run_test(game):
     game.evidence['none_state'] = machine_state(game, core)[:600]
     game.check('none_identifier_leaves_engine_tank_untyped', untyped_none == ('', 0), untyped_none)
 
-    # 5. Type to diesel again, then test unknown fluid name {ntm_fluid:"bogus"}
+    # 6. Type to diesel again, then test unknown fluid name {ntm_fluid:"bogus"}
     identifier_in_slot(game, 4, '{ntm_fluid:"diesel"}')
     wait_tank(game, core, 'diesel')
     identifier_in_slot(game, 4, '{ntm_fluid:"bogus"}')

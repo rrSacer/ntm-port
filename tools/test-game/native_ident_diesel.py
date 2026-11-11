@@ -75,7 +75,8 @@ def run_test(game):
 
     core = (x, y, z)
     initial = tank_state(game, core)
-    # TileEntityMachineDiesel.java:105: tank = new FluidTank(Fluids.DIESEL, fuelCap)\ngame.check('tank_typed_diesel_initially', initial == ('diesel', 0), initial)
+    # TileEntityMachineDiesel.java:105: tank = new FluidTank(Fluids.DIESEL, fuelCap)
+    game.check('tank_typed_diesel_initially', initial == ('diesel', 0), initial)
 
     # 1. Fill tank with diesel via canister in slot 0
     game.put('ntm:canister_full__diesel', 2, 0)
