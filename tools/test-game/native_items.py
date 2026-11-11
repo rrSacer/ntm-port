@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1356,7 +1356,43 @@ def radiation_death(g):
     g.command('ntmitem dose 0');reset(g,'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death)]
+def irradiation(g):
+    """Onda 1, fatia 5c (D3): the radiation potion (`HbmPotion.radiation`) in the player's attachment, shown as the
+    `ntm:radiation` effect. Glowing mycelium (`WasteEarth.onEntityWalking`) gives 600 ticks at amplifier 3; each tick it
+    doses (3 + 1) x 0.05 RAD (`HbmPotion.performEffect` -> `contaminate`). Milk (the curative items of every potion),
+    the antidote (`clearActivePotions`), an iodine pill (`ItemPill:45`), a med bag (`ItemSyringe:127`) and `/effect
+    clear` take the effect, and that ends the potion: no more dose."""
+    under='22 100 11'
+    def potion():
+        text=' '.join(g.command('ntmitem inspect').get('chat',[]))
+        found=dict((k,int(v)) for k,v in re.findall(r'(irradiated|irradiated_level):\s*(\d+)[lL]?',text))
+        return found.get('irradiated',0),found.get('irradiated_level',0)
+    def irradiate():
+        g.command(f'setblock {under} ntm:waste_mycelium');g.command('tp @s 22.5 101 11.5');pause(g,.5)
+        g.command('tp @s 20.5 101 11.5');g.command(f'setblock {under} minecraft:stone');pause(g,.3)
+    reset(g,'survival');irradiate()
+    effects=effect_map(g);left=potion()
+    shown=effects.get('radiation')
+    g.check('mycelium_gives_the_radiation_effect',shown is not None and shown[0]==3 and 500<=shown[1]<=600 and left[1]==3 and abs(left[0]-shown[1])<=40,
+            {'effect':shown,'attachment':left})
+    d0=state(g)['dose'];t0=now(g);pause(g,2);d1=state(g)['dose'];t1=now(g)
+    # Each read takes a tick or two of its own: the ticks between the two dose reads are t1 - t0, within a few.
+    g.check('the_radiation_potion_doses_a_fifth_rad_a_tick',abs((d1-d0)-200*(t1-t0))<=200*6,{'dose':d1-d0,'ticks':t1-t0})
+    cures=[('milk',lambda:hold(g,'minecraft:milk_bucket',2)),('iodine_pill',lambda:hold(g,'ntm:pill_iodine',.9)),
+           ('med_bag',lambda:hold(g,'ntm:med_bag',0)),('antidote',lambda:hold(g,'ntm:syringe_antidote',0)),
+           ('effect_clear',lambda:g.command('effect clear @s'))]
+    for name,cure in cures:
+        reset(g,'survival');irradiate()
+        given=potion()
+        cure();pause(g,.5)
+        d0=state(g)['dose'];pause(g,1);d1=state(g)['dose']
+        effects=effect_map(g)
+        g.check(f'{name}_ends_the_radiation_potion',given[0]>0 and 'radiation' not in effects and potion()==(0,0) and d1==d0,
+                {'given':given,'after':potion(),'effects':sorted(effects),'dose_growth':d1-d0})
+    reset(g,'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation)]
 
 
 if __name__=='__main__':
