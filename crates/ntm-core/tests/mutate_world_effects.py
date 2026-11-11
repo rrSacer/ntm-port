@@ -23,6 +23,9 @@ MUTANTS = {
          'an_accepted_generic_explosion_is_not_repeated_when_its_item_waits'),
     ],
     '2': [
+        ('HostWithoutLoadedMarker', 'crates/ntm-core/tests/common/world_effects_order_model.rs',
+         '            self.state.destination.seen = true;', '',
+         'saved_outputs_survive_an_older_homes_explosion_replay'),
         ('LoadedHomeNotTracked', 'crates/ntm-core/src/server/obligations.rs',
          'self.homes.entry(home.clone()).or_insert(0);', '',
          'a_reopened_home_is_written_empty_when_its_last_batch_is_paid'),
@@ -44,7 +47,8 @@ def main():
             after = 'let effect=if batch.done==0 && matches!(batch.effects.front(),Some(WorldEffect::Explosion{..})){batch.effects.front().unwrap().clone()}else{batch.effects.pop_front().unwrap()};'
         try:
             path.write_text(original.replace(before, after))
-            run = subprocess.run(['cargo', 'test', '--lib', oracle, '--', '--nocapture'], cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300)
+            command = ['cargo', 'test', '--release', '--test', 'save_model', oracle, '--', '--nocapture'] if name == 'HostWithoutLoadedMarker' else ['cargo', 'test', '--lib', oracle, '--', '--nocapture']
+            run = subprocess.run(command, cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=300)
             killed = run.returncode == 101 and 'test result: FAILED.' in run.stdout and 'could not compile' not in run.stdout
             results.append({'mutant': name, 'oracle': oracle, 'killed': killed, 'exit': run.returncode})
             if killed:

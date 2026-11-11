@@ -41,6 +41,7 @@ struct State {
     writes: Vec<Write>,
     refused: bool,
     destination_out: bool,
+    reblasted: bool,
 }
 struct Host<'a> {
     kv: MemKv,
@@ -72,6 +73,7 @@ impl ServerHost for Host<'_> {
         }
         // A replay over a saved ordinary item would destroy it. Vanilla's saved control still has one.
         if !self.state.destination_out {
+            self.state.reblasted |= self.state.destination.items > 0;
             self.state.destination.items = 0;
         }
         true
@@ -194,7 +196,7 @@ fn explore(
     seen: &mut HashMap<(State, usize), u128>,
     path: &mut Vec<Op>,
 ) -> Result<u128, Vec<Op>> {
-    if s.destination.seen && s.destination.items != 1 {
+    if s.reblasted || s.destination.items > 1 || s.destination.seen && s.destination.items != 1 {
         return Err(path.clone());
     }
     if left == 0 {
