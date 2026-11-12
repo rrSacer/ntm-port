@@ -595,15 +595,18 @@ mod tests {
             r.slots[FLUID_IN] = Some(identifier("water"));
             r.step();
             r.tanks[0].mb = 1_000;
+            // A tick of the clock that is a multiple of every period here (30, 25 and 20), then one of the sterilization's.
+            r.clock = 300;
+            r.step();
             r.slots[STERILIZE_IN] = Some(contaminated("minecraft:iron_sword"));
-            r.clock = 100;
+            r.clock = 400;
             r.step();
             r
         };
         let (two, three, four) = (chamber(2), chamber(3), chamber(4));
         assert_eq!((two.heat, three.heat, four.heat), (100, 150, 200));
         assert_eq!(two.tanks[0].mb, 1_000, "exactly 100 does not crack");
-        assert_eq!(three.tanks[0].mb, 900, "150 cracks (on the tick the clock is a multiple of 100 and of its period 25)");
+        assert_eq!(three.tanks[0].mb, 800, "150 cracks on both ticks (multiples of its period 25)");
         assert!(three.slots[STERILIZE_IN].is_some() && four.slots[STERILIZE_IN].is_none(), "199 does not sterilize, 200 does");
     }
 
@@ -618,5 +621,43 @@ mod tests {
             r.step();
             assert_eq!(r.slots[STERILIZE_IN].as_ref().map_or(0, |s| s.count), left, "{have} in the second slot");
         }
+    }
+
+    #[test]
+    fn the_edges_of_what_it_cracks_and_where_it_fits() {
+        let mut r = hot();
+        r.slots[FLUID_IN] = Some(identifier("water"));
+        r.step();
+        // Exactly a hundred mB is enough, and an output with room for exactly the recipe's share takes it.
+        r.tanks[0].mb = 100;
+        r.tanks[1].mb = TANK - 80;
+        r.tanks[2].mb = TANK - 20;
+        r.clock = 5;
+        r.step();
+        assert_eq!((r.tanks[0].mb, r.tanks[1].mb, r.tanks[2].mb), (0, TANK, TANK));
+        // Ninety-nine is not.
+        r.tanks[0].mb = 99;
+        r.tanks[1].mb = 0;
+        r.tanks[2].mb = 0;
+        r.clock = 10;
+        r.step();
+        assert_eq!((r.tanks[0].mb, r.tanks[1].mb), (99, 0));
+    }
+
+    #[test]
+    fn a_contaminated_item_already_in_the_second_slot_is_cleaned_when_another_joins() {
+        let mut r = hot();
+        r.step();
+        r.slots[STERILIZE_OUT] = Some(contaminated("minecraft:iron_sword"));
+        r.slots[STERILIZE_IN] = Some(contaminated("minecraft:iron_sword"));
+        r.clock = 100;
+        r.step();
+        assert_eq!(r.slots[STERILIZE_OUT], Some(Stack::new("minecraft:iron_sword", 2)));
+    }
+
+    #[test]
+    fn a_tank_with_no_type_asks_for_nothing() {
+        let r = Radiolysis::default();
+        assert_eq!((r.fluid_demand(""), r.fluid_offer("")), (0, 0));
     }
 }
