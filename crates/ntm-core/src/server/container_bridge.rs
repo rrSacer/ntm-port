@@ -424,11 +424,13 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TilePortShapes.comboven: the ring round the core on its two layers.
     ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),
-    // MachineOrbus.getAllPorts (`rotatePorts` puts them on the core's own frame): the 2x2 columns at the bottom and at
-    // the top (y 4), the core being the first bottom one. Their directions (down, up) are not kept.
-    // MachineRadiolysis.getAllPorts (`makeExtra` cells, the `flare` ports): the four beside the core on its layer.
+    // MachineRadiolysis.getAllPorts (`makeExtra` cells, the `flare` ports): the four beside the core on its layer (symmetric,
+    // so the mirroring below does not move them).
     ("ntm:machine_radiolysis", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
-    ("ntm:machine_orbus", &[[0, 0, -1], [1, 0, -1], [1, 0, 0], [0, 4, -1], [0, 4, 0], [1, 4, -1], [1, 4, 0]]),
+    // MachineOrbus.getAllPorts: the 2x2 columns at the bottom and at the top (y 4), the core being the first bottom one. The
+    // NTM's port (x, y, z) is at (-x, y, -z) here (`rotatePorts` takes x to the placer's left and z towards them,
+    // docs/visual-fiel.md). Their directions (down, up) are not kept.
+    ("ntm:machine_orbus", &[[0, 0, 1], [-1, 0, 1], [-1, 0, 0], [0, 4, 1], [0, 4, 0], [-1, 4, 1], [-1, 4, 0]]),
     // MachineExcavator.getAllPorts: (±1, 1, 3) and (±3, 1, 0). The whole
     // layer above the core holds them and reaches the core through the cell
     // over it.
@@ -1178,6 +1180,14 @@ mod tests {
             // Each top port is straight over a bottom one (the core included).
             for h in &high {
                 assert!(low.iter().any(|l| l[0] == h[0] && l[2] == h[2]) || (h[0], h[2]) == (10, 10), "{facing} {h:?}");
+            }
+            // The NTM's ports (0..1, -1..0) are at (-x, -z) here: the column is on the placer's left and far side of the core.
+            let f = crate::registry::facing_dir(facing).expect("a facing");
+            for l in [[0, 0, 1], [-1, 0, 1], [-1, 0, 0], [0, 4, 1], [0, 4, 0], [-1, 4, 1], [-1, 4, 0]] {
+                assert!(cells.contains(&world_cell([10, 64, 10], f, l)), "{facing} {l:?}");
+            }
+            for l in [[0, 0, -1], [1, 0, -1], [1, 0, 0]] {
+                assert!(!cells.contains(&world_cell([10, 64, 10], f, l)), "{facing} {l:?} is the mirrored one");
             }
             // A 2x2 footprint: the three bottom proxies and the core span two cells each way.
             let (xs, zs): (Vec<i32>, Vec<i32>) = low.iter().map(|c| (c[0], c[2])).chain([(10, 10)]).unzip();

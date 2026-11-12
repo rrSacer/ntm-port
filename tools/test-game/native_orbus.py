@@ -116,24 +116,25 @@ def build(g):
 
 
 def lay_out(g, core, facing):
-    """A typed duct beside a bottom port and one beside a top port, each to a barrel."""
-    low = world_cell(core, facing, (2, 0, -1))
-    high = world_cell(core, facing, (2, 4, 0))
-    far_low = world_cell(core, facing, (3, 0, -1))
-    far_high = world_cell(core, facing, (3, 4, 0))
-    for p in (low, high):
+    """A typed duct under a bottom port and one over a top port, each to a barrel. The ports (NTM tuples 0..1, -1..0 and 4)
+    are at (-x, -z) of the core: (-1, 0, 1) at the bottom and (-1, 4, 0) at the top, their free faces down and up."""
+    cell = lambda x, y, z: world_cell(core, facing, (x, y, z))
+    low_duct, low_barrel = cell(-1, -1, 1), cell(-2, -1, 1)
+    high_duct, high_barrel = cell(-1, 5, 0), cell(-1, 6, 0)
+    for p in (cell(-2, -2, 1), cell(-1, -2, 1), cell(0, -2, 1), cell(-1, 5, -1)):
+        g.command(f'setblock {p[0]} {p[1]} {p[2]} minecraft:stone')
+    for p in (low_duct, high_duct):
         g.command(f'setblock {p[0]} {p[1]} {p[2]} ntm:fluid_duct_neo')
-    for p in (far_low, far_high):
+    for p in (low_barrel, high_barrel):
         g.command(f'setblock {p[0]} {p[1]} {p[2]} ntm:barrel_steel[facing=north]')
-    g.command(f'fill {far_high[0]} {far_high[1] - 1} {far_high[2]} {far_high[0]} {far_high[1] - 1} {far_high[2]} minecraft:stone')
-    # Typed from outside the multiblock (its cells are in the way inside): at the side of the bottom duct, and on a
-    # stone platform beside the top one.
-    type_duct(g, 'water', [low], world_cell(core, facing, (2, 0, -3)))
-    platform = world_cell(core, facing, (2, 3, -2))
-    g.command(f'setblock {platform[0]} {platform[1]} {platform[2]} minecraft:stone')
-    type_duct(g, 'water', [high], world_cell(core, facing, (2, 4, -2)))
+    # Typed from beside them: the bottom one from the cell under the core's column, the top one from a stone over the box.
+    air = cell(0, -1, 1)
+    g.command(f'setblock {air[0]} {air[1]} {air[2]} minecraft:air')
+    type_duct(g, 'water', [low_duct], air)
+    high_stand = cell(-1, 6, -1)
+    type_duct(g, 'water', [high_duct], high_stand)
     g.command('clear @s')
-    return far_low, far_high
+    return low_barrel, high_barrel
 
 
 def setup(g):
