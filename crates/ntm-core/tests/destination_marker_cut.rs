@@ -372,3 +372,95 @@ fn a_tagged_output_saved_after_moving_away_is_not_evidence_at_its_origin() {
         "an origin-only tag search cannot prove the earlier blast"
     );
 }
+
+/// A small exhaustive cut model, not a model of all engine scheduling. Source A is always the old pending record.
+/// Each history is built by spawn then a real-world-style transfer; each mask independently selects old/new B region,
+/// B entity file, C entity file and player file. This deliberately over-approximates writer order and must not be
+/// presented as a game proof. Each case runs the actual Server replay through the synthetic host above.
+#[test]
+fn tag_and_marker_cut_matrix_covers_pickup_merge_and_movement() {
+    #[derive(Clone, Copy)]
+    enum Transfer {
+        Stay,
+        Pickup,
+        Merge,
+        Move,
+    }
+    let mut cases = 0;
+    let mut losses = 0;
+    let mut repeated_blasts_over_saved_output = 0;
+    for transfer in [
+        Transfer::Stay,
+        Transfer::Pickup,
+        Transfer::Merge,
+        Transfer::Move,
+    ] {
+        for mask in 0u8..16 {
+            let marker_new = mask & 1 != 0;
+            let b_new = mask & 2 != 0;
+            let c_new = mask & 4 != 0;
+            let player_new = mask & 8 != 0;
+            let b_items = if b_new {
+                match transfer {
+                    Transfer::Stay => 1,
+                    Transfer::Merge => 3,
+                    _ => 0,
+                }
+            } else {
+                0
+            };
+            let b_tag = b_new && matches!(transfer, Transfer::Stay);
+            let c_items = usize::from(c_new && matches!(transfer, Transfer::Move));
+            let player_items = usize::from(player_new && matches!(transfer, Transfer::Pickup));
+            // The output is physically present in a saved file even when its entity tag was discarded by merge/pickup.
+            let output_saved = b_new && matches!(transfer, Transfer::Stay | Transfer::Merge)
+                || c_items > 0
+                || player_items > 0;
+            let mut destination = ChunkLedger::default();
+            if marker_new {
+                destination.applied.insert(effect_id(SERIAL, 1));
+            }
+            let mut host = CutHost {
+                kv: MemKv::default(),
+                destination,
+                physical_items: b_items,
+                explosions: 0,
+                reemit_old_debt: true,
+                emitted_ids: vec![],
+                tagged_at_destination: b_tag,
+                destroy_items_on_blast: true,
+            };
+            let vanilla = 1 + b_items + c_items + player_items; // old source plus identical saved destination files
+            let mut server = Server::native(&mut host, 0);
+            server.native_obligations_loaded(
+                DIM,
+                [0, 0],
+                vec![],
+                vec![old_home_batch()],
+                BTreeSet::new(),
+            );
+            server.native_settle(&mut host);
+            let actual = host.physical_items + c_items + player_items;
+            assert!(
+                actual <= vanilla,
+                "candidate adds no items beyond the vanilla cut"
+            );
+            losses += usize::from(actual < vanilla);
+            repeated_blasts_over_saved_output += usize::from(output_saved && host.explosions > 0);
+            if marker_new || b_tag {
+                assert_eq!(host.explosions, 0);
+                assert_eq!(actual, vanilla);
+            }
+            cases += 1;
+        }
+    }
+    assert_eq!(cases, 64);
+    assert!(losses > 0, "the merged, untagged saved entity exposes loss");
+    assert!(
+        repeated_blasts_over_saved_output > 0,
+        "pickup or move can lose origin evidence"
+    );
+    println!(
+        "tag/marker cut matrix: {cases} cases, {losses} losses, {repeated_blasts_over_saved_output} repeated blasts over a saved output"
+    );
+}

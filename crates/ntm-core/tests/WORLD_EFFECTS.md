@@ -189,3 +189,10 @@ sobrevive, mas a explosão física se repete. As três sondas constroem os regis
 `Server` real; **não** simulam ainda as transições de save do motor nem substituem o verificador exaustivo ou corte em
 jogo. `cargo test --test destination_marker_cut` e Clippy desse teste: 9/9 e sem avisos. A guarda de produção ainda é a
 da fatia 2, e a restrição aprovada ainda precisa ser implementada após o modelo.
+
+A matriz `tag_and_marker_cut_matrix_covers_pickup_merge_and_movement` percorre 4 histórias (parado, coletado, fundido,
+movido) × 16 combinações antigo/novo dos registros de B, entidades B/C e jogador, sempre com A antigo. Cada caso chama
+`Server::native_settle` com host candidato que consulta marcador ou tag **em B** e reemite a dívida antiga. Resultado:
+64 casos, 4 perdas e 12 explosões repetidas sobre saída que algum arquivo conserva; 10/10 testes de diagnóstico e
+Clippy passaram. É uma **sobreaproximação**: não prova que cada combinação seja alcançável pela ordem FIFO do motor,
+nem equivale a uma prova em jogo. Ela documenta onde o candidato simples falha e não declara a fatia 4 pronta.
