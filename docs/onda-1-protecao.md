@@ -1264,3 +1264,18 @@ explosões e conteúdo; o fogo de balefire fica como lacuna (A); as correções 
   explosões.
 - **O `raiomax`**: o pulso usa o raio cortado pelo `raiomax` do servidor. Abaixo de 38, não há pulso. Com o padrão
   (500), o raio é o da bomba.
+
+## Fatia 6: as cinzas (`powder_ash`) e o cinzeiro (`machine_ashpit`)
+
+### O inventário (antes do código)
+
+| Peça | Java | O que faz | No port |
+|---|---|---|---|
+| Cinzeiro | `TileEntityAshpit.java` | 5 slots, níveis `wood/coal/misc/fly/soot`; a cada tick, uma cinza por tipo quando o nível passa do limiar (2000; fuligem 8000); todos os slots saem por qualquer lado; os níveis vão no NBT | `Kind::Inert` |
+| Bug do cinzeiro | `TileEntityAshpit.processAsh` | ao abrir uma pilha nova num slot vazio, subtrai o limiar de `ashLevelWood` qualquer que seja o tipo, além do que o chamador subtrai do tipo (o nível de madeira pode ficar negativo); um slot vazio vence uma pilha parcial mais adiante | entra como é |
+| Fornalha e forno de aquecimento | `TileEntityFireboxBase.java:73-98` | ao consumir um combustível, o cinzeiro **logo abaixo do núcleo** (`getTileEntity(x, y-1, z)`) ganha o `baseTime` do combustível (o tempo do módulo de queima, **antes** do `getTimeMult` do forno, 0,125) no tipo de `getAshFromFuel:171-187` | ativos (`Kind::Firebox`), sem cinza; a tabela do forno guarda o tempo já multiplicado |
+| Chaminés de tijolo e industrial | `TileEntityChimneyBase.java:40-60` | a fumaça recebida por cano (`SMOKE*`) vira `ashLevelFly`/`ashLevelSoot` do cinzeiro abaixo | `Kind::Inert`; nenhuma máquina do port emite fumaça (`TileEntityMachinePolluting` ficou de fora) |
+| Queimador a lenha | `TileEntityMachineWoodBurner.java:95-110,204-219` | a cinza vai ao próprio slot 1 (`while processAsh`, limiar 2000); consome o combustível sempre que `burnTime <= 0`, ligado ou não (só a geração depende de `isOn`, `:118`) | versão simplificada (um campo de combustível com botão, sem slot de cinza, consome só ligado, sem queima líquida) |
+| Forno de tijolo | `TileEntityFurnaceBrick.java:85-92,163-176` | cinza no slot 3 | feito na Onda 2 (`furnace_brick.rs`), sem o bug do cinzeiro (o Java desse forno não o tem) |
+
+Decisão de escopo pedida ao coordenador antes do código.
