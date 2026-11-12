@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'radiolysis-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -710,7 +710,7 @@ def break_act(g):
         offsets = [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]
         if SCENARIO in ('keyforge-break', 'funnel-break'):
             offsets = [(0, 0, 0)]
-        if SCENARIO == 'orbus-break':
+        if SCENARIO in ('orbus-break', 'radiolysis-break'):
             import native_orbus
             offsets = [(c[0] - core[0], c[1] - core[1], c[2] - core[2]) for c in native_orbus.dummies(g, core)]
         for dx, dy, dz in offsets:
@@ -1219,7 +1219,7 @@ def frozen_state(g, core, keys=('burn_time', 'max_burn_time', 'progress', 'proce
     return out
 
 
-MB_BLOCK = {'keyforge': ('ntm:machine_keyforge', '"rng"'), 'funnel': ('ntm:machine_funnel', '"mode"'), 'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
+MB_BLOCK = {'keyforge': ('ntm:machine_keyforge', '"rng"'), 'funnel': ('ntm:machine_funnel', '"mode"'), 'radiolysis': ('ntm:machine_radiolysis', '"clock"'), 'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
             'combination': ('ntm:furnace_combination', '"Combination"')}
 MB_AT = (140, 100, 8)
 
@@ -1233,7 +1233,7 @@ def mb_place(g, kind, fire=True):
     g.command('clear @s')
     item, marker = MB_BLOCK[kind]
     g.command(f'give @s {item} 1')
-    if kind in ('orbus', 'keyforge', 'funnel'):
+    if kind in ('orbus', 'keyforge', 'funnel', 'radiolysis'):
         g.command(f'tp @s {x + .5} {y} {z + 3.5}')
         g.ctl(f'place {x} {y} {z} --item {item}')
         time.sleep(1.5)
@@ -1256,7 +1256,7 @@ def mb_place(g, kind, fire=True):
 
 def mb_open(g, kind, core):
     """The screen, through a cell of the multiblock a player can click from the south; patient, the host may be loaded."""
-    if kind == 'orbus':
+    if kind in ('orbus', 'radiolysis'):
         import native_orbus
         native_orbus.open_through(g, native_orbus.dummies(g, core))
         return
@@ -1383,7 +1383,7 @@ def state_verify(g, again=False):
 
 # `iron-break`, `steel-break`, `combination-break`: the multiblock furnace holding items, broken, against the chest control
 # holding the same ones; counted item by item, once in the world.
-MB_BREAK = {'keyforge-break': ('keyforge', [('ntm:key', 1, 0), ('ntm:padlock', 1, 1)]), 'funnel-break': ('funnel', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 2)]), 'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
+MB_BREAK = {'keyforge-break': ('keyforge', [('ntm:key', 1, 0), ('ntm:padlock', 1, 1)]), 'funnel-break': ('funnel', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 2)]), 'radiolysis-break': ('radiolysis', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 12)]), 'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
             'steel-break': ('steel', [('minecraft:raw_iron', 6, 0), ('minecraft:raw_copper', 3, 1)]),
             'combination-break': ('combination', [('minecraft:coal', 8, 0), ('minecraft:bucket', 2, 2)])}
 
@@ -1434,14 +1434,14 @@ def mb_break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'minecraft:chest'))
+    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'minecraft:chest'))
     inside = mb_items(g, core, ids) if standing else 0
     ents = sum(entities(g, i) for i in ids)
     inv = sum(inventory(g, i) for i in ids)
     detail = {'block': state, 'inside': inside, 'entities': ents, 'inventory': inv, 'total': inside + ents + inv,
               'expected': sum(c for _, c, _ in loads), 'ledger': led, 'machine': machine_present(g, core)}
     counted(g, 'mb_items_exactly_once', detail, again)
-    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel')):
+    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis')):
         g.check('a_standing_furnace_is_a_live_machine', machine_present(g, core), detail)
 
 
@@ -1609,6 +1609,57 @@ def funnel_verify(g, again=False):
     g.check('the_funnel_is_alive', machine_present(g, (140, 100, 8)), state)
 
 
+# `radiolysis-state`: four polonium pellets, a water identifier and a contaminated sword in the chamber, the world saved and killed at
+# each boundary while the identifier moves to its out slot and the sword is cleaned: whatever the cut, each item is exactly once
+# (the sword in the first or the second sterilization slot, the identifier in the first or the second fluid slot, the pellets four).
+def radiolysis_parts(g):
+    import native_radiolysis as R
+    R.X, R.Z = 135, 8
+    return R
+
+
+def radiolysis_prepare(g):
+    R = radiolysis_parts(g)
+    g.ctl('wait-ready 120')
+    core = R.build(g)
+    g.evidence['core'] = list(core)
+    R.fill_chamber(g, core)
+    g.ctl('save')
+
+
+def radiolysis_act(g):
+    R = radiolysis_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 30)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    g.evidence['after_act'] = R.items(g, tuple(prep['core']))
+    save_expecting_death(g)
+
+
+def radiolysis_verify(g, again=False):
+    R = radiolysis_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 6))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        s = R.items(g, core)
+    finally:
+        g.command('tick unfreeze')
+    ids = {}
+    for _, (i, n, _) in s.items():
+        ids[i] = ids.get(i, 0) + n
+    counted(g, 'six_items_exactly_once', {'total': sum(ids.values()), 'expected': 6, 'items': s}, again)
+    g.check('each_item_exactly_once', ids == {'ntm:pellet_rtg_polonium': 4, 'minecraft:iron_sword': 1, R.IDENTIFIER: 1}, s)
+    g.check('the_identifier_is_in_a_fluid_slot', (10 in s) != (11 in s) and R.IDENTIFIER in (s.get(10, ('',))[0], s.get(11, ('',))[0]), s)
+    g.check('the_sword_is_in_a_sterilization_slot', (12 in s) != (13 in s), s)
+    g.check('the_chamber_is_alive', machine_present(g, core), s)
+
+
 def drain(g):
     g.ctl('wait-ready 120')
     g.ctl('save')
@@ -1642,6 +1693,8 @@ STEPS = {
     'keyforge-break': (mb_break_prepare, break_act, mb_break_verify),
     'funnel-state': (funnel_prepare, funnel_act, funnel_verify),
     'funnel-break': (mb_break_prepare, break_act, mb_break_verify),
+    'radiolysis-state': (radiolysis_prepare, radiolysis_act, radiolysis_verify),
+    'radiolysis-break': (mb_break_prepare, break_act, mb_break_verify),
     'orbus-break': (mb_break_prepare, break_act, mb_break_verify),
     'iron-break': (mb_break_prepare, break_act, mb_break_verify),
     'steel-break': (mb_break_prepare, break_act, mb_break_verify),

@@ -31,7 +31,7 @@ spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-p
 crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
 INCOMING = 'ntm:pile_rod__zr'
-BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'radiolysis-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The scenarios whose action writes files itself (a chunk it unloads): after a death outside a save they hold what those
 # files hold, not the last save.
@@ -52,7 +52,7 @@ EMITTING = {'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pil
 
 
 # The multiblock furnaces' break scenarios: the items counted before the cut (6 + 1, 6 + 3, 8 + 2).
-MB_TOTALS = {'keyforge-break': 2, 'funnel-break': 9, 'orbus-break': 6, 'iron-break': 7, 'steel-break': 9, 'combination-break': 10}
+MB_TOTALS = {'keyforge-break': 2, 'funnel-break': 9, 'radiolysis-break': 9, 'orbus-break': 6, 'iron-break': 7, 'steel-break': 9, 'combination-break': 10}
 
 
 # Breaks of a machine holding rods (its hidden contents), with what both worlds hold before: counted equal to the control.
@@ -74,6 +74,10 @@ def items_of(scenario):
     if scenario == 'funnel-state':
         return ('minecraft:gold_ingot', 'minecraft:gold_block')
     if scenario == 'funnel-break':
+        return ('minecraft:dirt', 'minecraft:stick')
+    if scenario == 'radiolysis-state':
+        return ('ntm:pellet_rtg_polonium', 'minecraft:iron_sword', 'ntm:fluid_identifier_multi')
+    if scenario == 'radiolysis-break':
         return ('minecraft:dirt', 'minecraft:stick')
     if scenario == 'orbus-state':
         return ('minecraft:water_bucket',)
@@ -114,6 +118,8 @@ DEFAULT_POINTS = {
     'keyforge-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'keyforge-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'funnel-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'radiolysis-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'radiolysis-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'funnel-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'orbus-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'orbus-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
