@@ -225,3 +225,15 @@ oficial emparelha cortes pelos chunks realmente gravados, não por relógio; por
 falha do critério oficial**. A primitiva de barreira deve agir só quando A já participa do ciclo normal de gravação;
 não há autorização para salvar A artificialmente. Unload de B sozinho não enfileira A no pin (`world_update.rs:175-198`),
 então a primitiva isolada também não fecha esse caso. As sondas do writer passaram 5/5 e Clippy do teste ficou limpo.
+
+O protótipo isolado do motor, branch `onda2-writer-barrier` no pin `eb5d3eed58`, commit `5c3e305e62`, implementa
+uma batelada de origem obrigatória, assíncrona e não coalescível. Se ela falha, os lotes posteriores dessa mesma
+instância do writer não chegam ao disco, continuam pendentes e a falha é retornada; o caminho de save comum não usa a
+barreira. No writer real, 77 testes de `save::tests` passaram, Clippy `-D warnings` passou e dois mutantes foram
+mortos por asserções: coalescer a origem e ignorar sua falha. O primeiro teste foi ajustado para bloquear o writer
+antes de avaliar a coalescência, depois que a versão inicial deixou o mutante sobreviver por uma corrida de teste.
+
+Essa primitiva só ordena bateladas que o chamador efetivamente enfileirou na mesma `SaveDir`: não grava A por conta
+própria, não coordena dimensões ou arquivos de jogador e não prova o conteúdo do snapshot ou a paridade em jogo. Não
+foi integrada ao motor principal nem ao mod. A cola, o caminho owed/drain, a guarda de explosão e a prova em jogo
+permanecem pendentes antes de habilitar consumidores da fatia 4.
