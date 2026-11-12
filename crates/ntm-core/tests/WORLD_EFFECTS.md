@@ -217,3 +217,11 @@ dimensões/writers, vários donos, falhas posteriores, persistência separada de
 nem confirma que a cópia de A contém o BE e os débitos/recibos certos. Uma implementação precisaria manter os dados
 pendentes e retornar o erro a `flush`/`writes_finished` sem deadlock se o writer bloquear, e cobrir esses casos antes de
 ativar um consumidor. Nenhum arquivo do motor foi alterado.
+
+Um quinto caso do modelo do writer, `an_extra_required_source_write_can_change_the_same_unload_cut_against_vanilla`,
+mostra que acrescentar uma gravação de A antes da descarga B pode mudar o estado no mesmo evento temporal: candidato
+com A novo + E_B novo contém 1, controle com A antigo + E_B novo contém 2. O coordenador esclareceu que o harness
+oficial emparelha cortes pelos chunks realmente gravados, não por relógio; portanto este caso **não é um veredito de
+falha do critério oficial**. A primitiva de barreira deve agir só quando A já participa do ciclo normal de gravação;
+não há autorização para salvar A artificialmente. Unload de B sozinho não enfileira A no pin (`world_update.rs:175-198`),
+então a primitiva isolada também não fecha esse caso. As sondas do writer passaram 5/5 e Clippy do teste ficou limpo.

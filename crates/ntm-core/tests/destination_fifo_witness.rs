@@ -234,3 +234,28 @@ fn mutants_coalescing_the_barrier_or_ignoring_its_failure_are_caught() {
     );
     println!("coalesced barrier: {coalesce:?}; ignored failure: {ignore_failure:?}");
 }
+
+#[test]
+fn an_extra_required_source_write_can_change_the_same_unload_cut_against_vanilla() {
+    // Both worlds start with one item in the old source record. Both eject it into B and then B unloads.
+    // The candidate mod alone enqueues the additional required A snapshot before spawning; ordinary vanilla
+    // schedules only E_B during this unload. This models the same action/cut, not a cut re-paired by written chunks.
+    let mut candidate = Writer::default();
+    candidate.queue_required(Target::SourceRegion, 1); // consumed in A
+    candidate.queue(Target::DestinationEntities, 1);
+    candidate.guarded_step(false, false, false);
+    candidate.guarded_step(false, false, false);
+    let mut vanilla = Writer::default();
+    vanilla.queue(Target::DestinationEntities, 1);
+    vanilla.step(false);
+    let saved_total = |w: &Writer| {
+        usize::from(w.after_crash(Target::SourceRegion) == 0)
+            + usize::from(w.after_crash(Target::DestinationEntities) == 1)
+    };
+    assert_eq!(saved_total(&candidate), 1);
+    assert_eq!(saved_total(&vanilla), 2);
+    assert!(
+        saved_total(&candidate) < saved_total(&vanilla),
+        "same unload, different source writes: potential L violation"
+    );
+}
