@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout,chunk_field,geiger_block').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1508,7 +1508,188 @@ def fallout(g):
     g.command('fill 21 101 10 31 101 12 minecraft:air');g.command('fill 21 100 10 31 100 12 minecraft:stone');reset(g,'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout)]
+def chunk_field(g):
+    """Onda 1, fatia 4b: the world's radiation by chunk on the player (needs NTM_TEST_HOOKS=1 for `ntmtest rad`).
+    `handleRadiationFX` doses rad / 20 RAD a tick from the field at the player's block (frozen and stepped, every tick
+    of the window reads the value set: the update is every 20 ticks and `ntmtest rad` says when the last one was); the
+    Geiger's chunk line is the field truncated to a tenth (`printGeigerData:161`); a chunk that unloads saves its value
+    and stays in the map (the `receiveChunkUnload` bug), and its value comes back from the save when it loads again."""
+    import struct
+    import ntm_store
+    cx, cz = 1, 0  # the chunk of 20.5 101 11.5
+    as_float = lambda bits: struct.unpack('<f', struct.pack('<I', int(bits)))[0]
+    def probe(cx=cx, cz=cz):
+        text = ' '.join(g.command(f'ntmtest rad {cx} {cz} 0').get('chat', []))
+        m = re.search(r'timer=(\d+) rad=(\S*)', text)
+        if not m:
+            raise AssertionError('no probe: ' + text[:200])
+        for item in filter(None, m.group(2).split(';')):
+            c, raw, nxt, loaded = item.split(':')
+            if c == f'{cx},{cz}':
+                return int(m.group(1)), (None if raw == 'none' else as_float(raw)), as_float(nxt), loaded == '1'
+        return int(m.group(1)), None, 0.0, False
+    # The dose: 10 RAD/s is 500 milliRAD a tick, for each tick before the next update.
+    reset(g, 'survival')
+    g.command('ntmrad clear')
+    g.command('tick freeze')
+    timer = probe()[0]
+    g.command('ntmrad set 10')
+    window = 20 - timer
+    before = state(g)['dose']
+    start = now(g)
+    g.command(f'tick step {window}')
+    while now(g) < start + window:
+        time.sleep(.2)
+    after = state(g)['dose']
+    g.command('tick unfreeze')
+    g.check('the_field_doses_rad_over_20_a_tick', after - before == 500 * window, {'window': window, 'gained': after - before, 'timer': timer})
+    # Creative: no dose, the field still heard.
+    reset(g, 'creative')
+    g.command('ntmrad set 40')
+    pause(g, 1.5)
+    g.check('creative_takes_no_dose_from_the_field', state(g)['dose'] == 0, state(g))
+    # The Geiger's chunk line: the field as getRadiation reads it, to a tenth; an update may fall before the click.
+    g.command('ntmrad set 12.34')
+    _, raw, nxt, _ = probe()
+    hold(g, 'ntm:geiger_counter', 0)
+    text = chat_lines(g)
+    tenth = lambda x: int(x * 10) / 10
+    # The chat log comes newest first, without its colour codes.
+    seen = re.findall(r'Current chunk radiation: (?:§.)?([0-9.]+) RAD/s', text)
+    g.check('the_geiger_chunk_line_reads_the_field', bool(seen) and float(seen[0]) in (tenth(raw), tenth(nxt)), {'chat': text, 'raw': raw, 'next': nxt})
+    # The unload, far from the spawn chunks (they never unload): the field set at x 3000, then the player 6000 blocks
+    # away until the chunk is unloaded (the probe says it); its save read on the disk.
+    reset(g, 'creative')
+    far = (187, 0)  # the chunk of 3000.5 .. 11.5
+    g.command('tp @s 3000.5 200 11.5')
+    deadline = now(g) + 60 * 20
+    while now(g) < deadline and not probe(*far)[3]:
+        pause(g, .25)
+    g.command('ntmrad set 100000')
+    pause(g, 1)
+    last_loaded = probe(*far)
+    g.command('tp @s -3000.5 200 11.5')
+    unloaded = None
+    deadline = now(g) + 120 * 20
+    while now(g) < deadline:
+        p = probe(*far)
+        if not p[3]:
+            unloaded = p
+            break
+        last_loaded = p
+        pause(g, .5)
+    g.ctl('save')
+    saved = (ntm_store.value(g.folder / 'saves', 'chunk_radiation').get('minecraft:overworld') or {}).get(f'{far[0]},{far[1]}')
+    # The storage writes each f32 as its shortest decimal: read back as the f32 it is.
+    saved = None if saved is None else struct.unpack('<f', struct.pack('<f', saved))[0]
+    g.check('the_chunk_unloads_and_saves_its_value', unloaded is not None and saved is not None and unloaded[1] is not None
+            and unloaded[1] <= saved <= last_loaded[1], {'last_loaded': last_loaded, 'unloaded': unloaded, 'saved': saved})
+    pause(g, 20)
+    away = probe(*far)
+    g.check('an_unloaded_chunk_stays_in_the_map_and_decays', away[1] is not None and not away[3] and saved is not None and away[1] < saved / 10,
+            {'away': away, 'saved': saved})
+    g.command('tp @s 3000.5 200 11.5')
+    back = None
+    deadline = now(g) + 60 * 20
+    while now(g) < deadline:
+        p = probe(*far)
+        if p[3]:
+            back = p
+            break
+        pause(g, .25)
+    # Put back from its save (receiveChunkLoad), then at most an update or two: well above what the map had while away
+    # (20 updates there, its neighbours spreading back into it, leave it some tens of times below its save).
+    g.check('a_reloaded_chunk_takes_its_saved_value', back is not None and saved is not None and back[1] is not None
+            and saved * 0.3 <= back[1] <= saved and back[1] > away[1] * 5, {'back': back, 'saved': saved, 'away': away})
+    g.command('tp @s 20.5 101 11.5')
+    g.command('ntmrad clear')
+    reset(g, 'creative')
+
+
+def geiger_block(g):
+    """Onda 1, fatia 4b: the Geiger counter block (`GeigerCounter`, `TileEntityGeiger`; needs NTM_TEST_HOOKS=1).
+    Placed by a player looking north it faces south, the beehive's way, which is the Java's meta 2 (yaw 180). Its
+    comparator reads min(ceil(rad / 5), 15) as of its last reading (every 10 ticks, the neighbours told): frozen and
+    stepped so no field update falls in the window, 30 RAD/s gives 6 and an empty field 0. At 30 RAD/s its list is
+    [6]: it clicks `geiger6`. A right click, not sneaking, gives the hand counter's report."""
+    from native_sounds import log_lines
+    at = (24, 101, 11)
+    def timer():
+        text = ' '.join(g.command('ntmtest rad 1 0 0').get('chat', []))
+        return int(re.search(r'timer=(\d+)', text).group(1))
+    def step(n):
+        start = now(g)
+        g.command(f'tick step {n}')
+        while now(g) < start + n:
+            time.sleep(.2)
+    def signal():
+        text = ' '.join(g.command(f'data get block {at[0] + 1} {at[1]} {at[2]} OutputSignal').get('chat', []))
+        found = re.search(r'(\d+)\s*$', text.strip()) or re.search(r'has the following block data: (\d+)', text)
+        return int(found.group(1)) if found else None
+    reset(g, 'creative')
+    g.command('ntmrad clear')
+    g.command(f'fill {at[0]} {at[1]} {at[2]} {at[0] + 1} {at[1]} {at[2]} minecraft:air')
+    # Its own floor (where it stands and where the player stands, three blocks south), the air above clear.
+    g.command(f'fill {at[0] - 2} {at[1] - 1} {at[2] - 2} {at[0] + 3} {at[1] - 1} {at[2] + 5} minecraft:stone')
+    g.command(f'fill {at[0] - 2} {at[1]} {at[2] - 2} {at[0] + 3} {at[1] + 2} {at[2] + 5} minecraft:air')
+    # The player at z 14.5 looking north places it on the ground at z 11.
+    # After a long teleport (the chunk field family's) the player may land a while later: wait to be there.
+    for _ in range(40):
+        g.command('tp @s 24.5 101 14.5 180 30')
+        pause(g, .25)
+        pos = g.ctl('state')['player']['position']
+        if abs(pos[0] - 24.5) < .5 and abs(pos[2] - 14.5) < .5:
+            break
+    give_hand(g, 'ntm:geiger', 1)
+    g.close()
+    g.ctl(f'interact {at[0]} {at[1] - 1} {at[2]} up')
+    pause(g, .5)
+    state = g.ctl(f'block {at[0]} {at[1]} {at[2]}').get('state', '')
+    g.check('the_geiger_block_placed_looking_north_faces_south', state.startswith('ntm:geiger') and 'facing=south' in state, state)
+    if not state.startswith('ntm:geiger'):
+        g.command(f'setblock {at[0]} {at[1]} {at[2]} ntm:geiger[facing=south]')
+    # A comparator east of it, facing west: it reads the block at its west.
+    g.command(f'setblock {at[0] + 1} {at[1]} {at[2]} minecraft:comparator[facing=west]')
+    g.command('clear @s')
+    def settle_signal(command):
+        # A window with no field update (timer at most 3, then 14 ticks: below 20): one reading and its notice in the
+        # first ten, the comparator's own scheduled update (2 ticks) after it.
+        g.command('tick freeze')
+        while timer() > 3:
+            step(1)
+        g.command(command)
+        step(14)
+        out = (signal(), timer())
+        g.command('tick unfreeze')
+        return out
+    s30 = settle_signal('ntmrad set 30')
+    g.check('the_geiger_comparator_reads_30_rad_as_6', s30[0] == 6, {'signal_timer': s30})
+    # The field held at 30 (set again before each tick, so no update moves it): ten ticks for the block to read it
+    # again (a click before that comes from its last reading), then 20 ticks, four clicks of [6].
+    g.command('tick freeze')
+    for n in range(30):
+        if n == 10:
+            offset = len(log_lines(g))
+        g.command('ntmrad set 30')
+        step(1)
+    # Still frozen (no tick, no click): the log has the window's clicks once the client has played them.
+    time.sleep(1)
+    clicks = [l for l in log_lines(g)[offset:] if 'event=ntm:item.geiger' in l]
+    g.command('tick unfreeze')
+    g.check('the_geiger_block_clicks_its_list_at_30_rad', bool(clicks) and all('event=ntm:item.geiger6 ' in l for l in clicks), clicks[:4])
+    s0 = settle_signal('ntmrad clear')
+    g.check('the_geiger_comparator_reads_an_empty_field_as_0', s0[0] == 0, {'signal_timer': s0})
+    g.command('ntmrad set 12.34')
+    g.ctl(f'interact {at[0]} {at[1]} {at[2]} south')
+    pause(g, .5)
+    text = chat_lines(g)
+    g.check('a_right_click_on_the_geiger_block_reports', 'GEIGER COUNTER' in text and 'Current chunk radiation' in text, text)
+    g.command('ntmrad clear')
+    g.command(f'fill {at[0]} {at[1]} {at[2]} {at[0] + 1} {at[1]} {at[2]} minecraft:air')
+    reset(g, 'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout),('chunk_field',chunk_field),('geiger_block',geiger_block)]
 
 
 if __name__=='__main__':
