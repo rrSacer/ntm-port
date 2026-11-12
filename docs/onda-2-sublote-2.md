@@ -108,3 +108,40 @@ Lições já pagas no sublote 1 que valem aqui: o identificador de fluido em slo
 2. **Ordem:** começo pelo 2a? (proposto: sim, são as que não dependem de ninguém).
 3. **Perfil 528 e `orbital_assembly`** (para a precass): segue pendente da decisão do usuário.
 4. **`machine_ammo_press`:** confirmar se há itens de munição no catálogo (se não, vira Onda 4).
+
+## Entregas
+
+### `machine_orbus` (grupo 2a)
+
+`TileEntityMachineOrbus` estende `TileEntityBarrel` com 512 000 mB; o bloco `MachineOrbus` é um `BlockDummyable` de dimensões
+`{4,0,2,1,2,1}` e offset 1, com `TileEntityProxyCombo(false, false, true)` (só fluido). No port ele é um `FluidStore` (o mesmo
+dos barris e do tanque grande, `fluidbox.rs`) de 512 000 mB, com os modos do barril (entrada, buffer, saída, desligado), a tela do
+barril (`GUIBarrel`, que o Java não sobrescreve) e as velocidades `max(1 000, sala/100)` para entrar e `max(1 000, conteúdo/100)`
+para sair (`getReceiverSpeed`/`getProviderSpeed` da orbus). O multibloco tem 80 células (79 dummies e o núcleo); as oito portas de
+`getAllPorts` (as colunas 2x2 de baixo e de cima, em y 0 e 4) ligam as redes de fluido: sete células além do núcleo
+(`container_bridge::FLUID_PROXIES`).
+
+**Correção de passagem, no tanque grande também:** o Java recebe pela sala que sobra (`(max - fill) / 100`,
+`TileEntityMachineFluidTank.java:49`); o port usava o conteúdo (`fill / 100`) nas duas direções. Agora entra pela sala e sai pelo
+conteúdo. Vale para o `machine_fluidtank` (piso 500) e para a orbus (piso 1 000); o barril de aço (sem piso) não muda.
+
+Lacunas declaradas:
+
+| Lacuna | Por quê |
+| --- | --- |
+| NBT persistente (`IPersistentNBT`): o conteúdo do tanque não vai no item ao quebrar o bloco | O barril e o tanque grande têm a mesma lacuna; o REDD também. A quebra da orbus perde o fluido e devolve só os itens dos slots. |
+| A direção de cada porta (as de baixo para baixo, as de cima para cima) | Os dutos ligam em qualquer face das células-porta, como nas demais máquinas de fluido. |
+| O clique com o identificador na mão e agachado (`onBlockActivated`, `setTankType`) | O tipo se muda pelos botões da tela e pelo recipiente na mão, como no barril; o clique agachado não é um gancho do port. |
+| A corrosão e o vazamento do barril de aço (`checkFluidInteraction`) | A orbus os desliga no Java ("NO!"): nada a reproduzir. |
+| O modelo 3D e o nome do item na mão | O visual-gen gerou o modelo da esfera e a textura da fonte; o resto é cosmético. |
+
+Provas (cliente release `306e5738…`, `ntm.hmod` `db5652b2…`, em `content-gen-evidence/onda2-s2/`):
+`run-native-reactors.py orbus` (8 verificações, 0 falhas): o bloco vira uma loja de 512 000 mB e o multibloco tem 79 dummies e um
+núcleo; três baldes de água entram pela tela de uma célula; em modo de entrada dois dutos nas portas de baixo e de cima não tiram
+nada; em modo de saída a água sai pelos dois dutos para dois barris e a orbus esvazia, com a conservação (3 000 mB) entre os três
+tanques; depois de salvar e reabrir o mundo o tanque, o fluido e o modo voltam iguais. Corte de gravação `orbus-state` (cinco baldes
+saindo por dois dutos enquanto o mundo é salvo e morto em cada fronteira): 7 de 7 pontos, 5 000 mB entre os tanques e o modo
+intacto. Corte de quebra `orbus-break` (a orbus com 6 recipientes vazios quebrada por uma célula contra o baú de controle, no modo
+estrito sem salvamento adiantado de chunks): 7 de 7 pontos. No modo normal, com o salvamento adiantado de chunks, dois pontos de
+morte sem save (`kill`, `kv_committed`) divergem do controle porque o baú de vanilla perde os 6 itens que a orbus conserva; o critério
+do harness para esses pontos é "evidência, não prova", e a prova é o modo estrito (evidência em `orbus-break-eager`).
