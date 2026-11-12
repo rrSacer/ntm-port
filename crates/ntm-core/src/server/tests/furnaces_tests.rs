@@ -364,3 +364,23 @@ fn the_radiolysis_chamber_runs_its_pellets_identifier_and_sterilization_through_
     assert_eq!((data.len(), data[1], data[2]), (12, 1_000_000, 500), "{data:?}");
     assert!(data[0] > 0, "the heat's power is in the store");
 }
+
+/// The exposure chamber through the bridge: a higgs capsule and a uranium ingot on a creative battery make an ingot, the empty
+/// capsule comes out in its slot, and the screen's seven values follow.
+#[test]
+fn the_exposure_chamber_runs_a_capsule_through_the_engine_slots() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_exposure_chamber[facing=north,honey_level=0]", 7);
+    put(&mut g, 0, Some(Stack::new("ntm:particle_higgs", 2)));
+    put(&mut g, 2, Some(Stack::new("ntm:ingot_uranium", 5)));
+    put(&mut g, 4, Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1)));
+    g.run(260);
+    let s = slots(&g);
+    assert_eq!(s[0], Some(Stack::new("ntm:particle_higgs", 1)), "{s:?}");
+    assert_eq!(s[1], Some(Stack::new("ntm:particle_empty", 1)), "{s:?}");
+    assert_eq!(s[2], Some(Stack::new("ntm:ingot_uranium", 4)), "{s:?}");
+    assert_eq!(s[3], Some(Stack::new("ntm:ingot_schraranium", 1)), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    // The screen's seven values, then the four saved ones (power, progress, uses, the particle's code).
+    assert_eq!((data.len(), data[1], data[4], data[5], data[9], data[10]), (11, 1_000_000, 7, 8, 7, 1), "{data:?}");
+}

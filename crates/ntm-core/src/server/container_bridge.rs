@@ -133,6 +133,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::KeyForge(f) => Some(f),
         Data::Funnel(f) => Some(f),
         Data::Radiolysis(r) => Some(&mut **r),
+        Data::Exposure(e) => Some(&mut **e),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         _ => None,
@@ -184,6 +185,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_keyforge", Layout::Native),
     ("ntm:machine_funnel", Layout::Native),
     ("ntm:machine_radiolysis", Layout::Native),
+    ("ntm:machine_exposure_chamber", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
     // Energy batch 3 (`crate::combustion`): the generators' slots are their
@@ -380,6 +382,10 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
 /// Exact outward port cells, in the order of registry::ports. These do not
 /// become cables: the graph keeps each cell's faces and machine owner.
 pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
+    // The exposure chamber's five ports, at the ends of its two legs and of its corridor (`getPorts`, `crate::exposure::PORTS`).
+    if block == crate::exposure::BLOCK {
+        return facing.and_then(crate::registry::facing_dir).map(|f| crate::exposure::PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();
+    }
     if block == crate::radioisotopes::RADGEN {
         return facing.and_then(crate::registry::facing_dir).map(|d|vec![[core[0]-d[0]*3,core[1],core[2]-d[2]*3]]).unwrap_or_default();
     }
@@ -1165,6 +1171,39 @@ mod tests {
         // The electrolyser's right-hand ports are three cells from its core.
         let cell = fluid_proxy_cells("ntm:machine_electrolyser", [0, 64, 0], Some("north"));
         assert!(cell.contains(&[-3, 64, 4]) && cell.contains(&[1, 64, -5]));
+    }
+
+    /// The exposure chamber's five ports (`getPorts`): at the ends of the legs and the corridor on the placer's right, each open
+    /// outwards, whatever the facing.
+    #[test]
+    fn the_exposure_chamber_has_its_five_ports_at_the_ends_of_its_legs() {
+        use crate::exposure::{BLOCK, PORTS};
+        for facing in ["north", "south", "east", "west"] {
+            let f = crate::registry::facing_dir(facing).expect("a facing");
+            let core = [10, 64, 10];
+            let cells = energy_port_cells(BLOCK, core, Some(facing));
+            let ports = crate::registry::ports(crate::registry::spec(BLOCK).expect("a block"), Some(facing));
+            assert_eq!((cells.len(), ports.len()), (5, 5), "{facing}");
+            for (i, (cell, face)) in PORTS.iter().enumerate() {
+                assert_eq!(cells[i], world_cell(core, f, *cell), "{facing} {i}");
+                assert_eq!(ports[i], vec![world_cell([0, 0, 0], f, *face)], "{facing} {i}");
+            }
+        }
+        // In the placer's frame (the visual spec's boxes): every port is a cell of the volume and opens on one outside it.
+        const BOXES: [([i32; 3], [i32; 3]); 6] = [
+            ([-2, 0, -2], [2, 4, 2]),
+            ([3, 0, 0], [8, 3, 0]),
+            ([3, 2, 1], [6, 2, 1]),
+            ([3, 2, -1], [6, 2, -1]),
+            ([7, 0, 1], [8, 3, 1]),
+            ([7, 0, -1], [8, 3, -1]),
+        ];
+        let inside = |c: [i32; 3]| BOXES.iter().any(|(lo, hi)| (0..3).all(|k| lo[k] <= c[k] && c[k] <= hi[k]));
+        for (cell, face) in PORTS {
+            assert!(inside(cell), "{cell:?} is a cell of the volume");
+            assert!(!inside([cell[0] + face[0], cell[1] + face[1], cell[2] + face[2]]), "{cell:?} opens into the volume");
+        }
+        assert_eq!(energy_port_cells(BLOCK, [0, 0, 0], None), Vec::<Pos>::new());
     }
 
     /// The orbus's eight ports (`MachineOrbus.getAllPorts`): the 2x2 columns at the bottom and the top of the 5-high box,

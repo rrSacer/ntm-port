@@ -73,6 +73,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::radiolysis::BLOCK {
         return Some(crate::radiolysis::container());
     }
+    if block == crate::exposure::BLOCK {
+        return Some(crate::exposure::container());
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -127,6 +130,14 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         let output = SlotFilter { output: true, ..Default::default() };
         let mut rules = vec![SlotFilter::default(); crate::funnel::INPUTS];
         rules.extend(vec![output; crate::funnel::INPUTS]);
+        return rules;
+    }
+    if block == crate::exposure::BLOCK {
+        // `ContainerMachineExposureChamber`: the empty capsules' slot is a `SlotTakeOnly` and the output a `SlotCraftingOutput`.
+        let mut rules = vec![SlotFilter::default(); crate::exposure::SLOTS];
+        for i in [crate::exposure::CAPSULE, crate::exposure::OUTPUT] {
+            rules[i].output = true;
+        }
         return rules;
     }
     if block == crate::radiolysis::BLOCK {
@@ -189,6 +200,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::keyforge::BLOCK {
         return crate::keyforge::allows(slot, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::exposure::BLOCK {
+        return crate::exposure::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if block == crate::radiolysis::BLOCK {
         return crate::radiolysis::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);

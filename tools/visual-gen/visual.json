@@ -37198,7 +37198,253 @@
     },
     "ntm:machine_exposure_chamber": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineExposureChamber, GUIMachineExposureChamber 176x186 (processing/gui_exposure_chamber.png): the particle (8,18), the empty capsule out (8,54), the ingredient (80,36), the output (116,36), the battery (152,54) and the two upgrades (44,54) and (62,54), as the engine's slots 0..6 (Java's 0, 2, 3, 4, 5, 6, 7: its slot 1 is the loaded particle, a ghost kept in the machine); the energy bar (152,18) 16x34, the progress (36,39) 42x10, the particles left (26,36) 9x16 and the lamp (156,4); MachineExposureChamber: dims {4,0,2,2,2,2} offset 2 and five boxes (`getAllDimensions`: the corridor, two bridges and two legs, at the placer's right) with the five `makeExtra` ports (`getPorts`) at the ends of the legs and the corridor; the three info panels are not drawn; the block's model stays the casing's (the renderer model is not ported)",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 54,
+            "output": true
+          },
+          {
+            "x": 80,
+            "y": 36
+          },
+          {
+            "x": 116,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 54
+          },
+          {
+            "x": 44,
+            "y": 54
+          },
+          {
+            "x": 62,
+            "y": 54
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 7,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            4,
+            2
+          ],
+          "offset": 2,
+          "extra": [
+            {
+              "min": [
+                3,
+                0,
+                0
+              ],
+              "max": [
+                8,
+                3,
+                0
+              ]
+            },
+            {
+              "min": [
+                3,
+                2,
+                1
+              ],
+              "max": [
+                6,
+                2,
+                1
+              ]
+            },
+            {
+              "min": [
+                3,
+                2,
+                -1
+              ],
+              "max": [
+                6,
+                2,
+                -1
+              ]
+            },
+            {
+              "min": [
+                7,
+                0,
+                1
+              ],
+              "max": [
+                8,
+                3,
+                1
+              ]
+            },
+            {
+              "min": [
+                7,
+                0,
+                -1
+              ],
+              "max": [
+                8,
+                3,
+                -1
+              ]
+            }
+          ],
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              7,
+              0,
+              -1
+            ],
+            [
+              7,
+              0,
+              1
+            ],
+            [
+              8,
+              0,
+              -1
+            ],
+            [
+              8,
+              0,
+              1
+            ],
+            [
+              8,
+              0,
+              0
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_exposure_chamber.png",
+        "texture_from": "textures/gui/processing/gui_exposure_chamber.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          92
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              36,
+              39,
+              42,
+              10
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              26,
+              36,
+              9,
+              16
+            ],
+            "uv": [
+              192,
+              10
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 6,
+            "min": 1,
+            "rect": [
+              156,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              34
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              26,
+              36,
+              9,
+              16
+            ],
+            "lines": [
+              "{4} / {5}"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_electric_furnace_on": {
       "source": "ContainerElectricFurnace, GUIMachineElectricFurnace 176x186 (processing/gui_electric_furnace.png); the logic's slot order (input, battery, output: the vanilla furnace menu's) at HBM's places, no upgrade slot (the logic has none); the flames while it smelts (value 2), HBM's lit block",

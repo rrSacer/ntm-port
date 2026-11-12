@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "station": "exposure_chamber",
+  "source": "ExposureChamberRecipes.registerDefaults",
+  "recipes": [
+    {
+      "particle": "ntm:particle_higgs",
+      "ore": "ingotUranium",
+      "ingredients": [
+        "ntm:ingot_uranium"
+      ],
+      "output": [
+        "ntm:ingot_schraranium",
+        1
+      ],
+      "output_stack": 64,
+      "container": "ntm:particle_empty",
+      "container_stack": 64,
+      "source": "ExposureChamberRecipes.java:29"
+    },
+    {
+      "particle": "ntm:particle_higgs",
+      "ore": "ingotUranium238",
+      "ingredients": [
+        "ntm:ingot_u238"
+      ],
+      "output": [
+        "ntm:ingot_schrabidium",
+        1
+      ],
+      "output_stack": 64,
+      "container": "ntm:particle_empty",
+      "container_stack": 64,
+      "source": "ExposureChamberRecipes.java:30"
+    },
+    {
+      "particle": "ntm:particle_dark",
+      "ore": "ingotPlutonium",
+      "ingredients": [
+        "ntm:ingot_plutonium"
+      ],
+      "output": [
+        "ntm:ingot_euphemium",
+        1
+      ],
+      "output_stack": 64,
+      "container": "ntm:particle_empty",
+      "container_stack": 64,
+      "source": "ExposureChamberRecipes.java:31"
+    },
+    {
+      "particle": "ntm:particle_sparkticle",
+      "ore": "ingotSchrabidate",
+      "ingredients": [
+        "ntm:ingot_schrabidate"
+      ],
+      "output": [
+        "ntm:ingot_dineutronium",
+        1
+      ],
+      "output_stack": 64,
+      "container": "ntm:particle_empty",
+      "container_stack": 64,
+      "source": "ExposureChamberRecipes.java:36"
+    }
+  ],
+  "skipped": [
+    {
+      "source": "ExposureChamberRecipes.java:34",
+      "reason": "enableExpensiveMode is off by default",
+      "particle": "particle_sparkticle"
+    }
+  ],
+  "coverage": {
+    "recipes": 4,
+    "skipped": 1
+  }
+}

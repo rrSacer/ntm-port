@@ -46,6 +46,13 @@ pub fn facing_dir(facing: &str) -> Option<crate::Pos> {
 /// The ports of a machine of `spec` facing `facing`.
 pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
     use crate::energy::DIRS;
+    // The exposure chamber's five ports, each open on the face `crate::exposure::PORTS` gives, turned with the facing.
+    if spec.kind == Kind::ExposureChamber {
+        return facing
+            .and_then(facing_dir)
+            .map(|f| crate::exposure::PORTS.iter().map(|(_, face)| vec![crate::server::container_bridge::world_cell([0, 0, 0], f, *face)]).collect())
+            .unwrap_or_default();
+    }
     match spec.ports {
         Ports::None => Vec::new(),
         Ports::AllRound => vec![DIRS.to_vec()],
@@ -335,7 +342,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_exposure_chamber",
-        kind: Kind::Inert,
+        kind: Kind::ExposureChamber,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

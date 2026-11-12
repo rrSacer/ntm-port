@@ -25,6 +25,7 @@ pub mod energy;
 pub mod energy_network;
 pub mod explosion;
 pub mod excavator;
+pub mod exposure;
 pub mod fluid;
 pub mod fluidbox;
 pub mod fuel;

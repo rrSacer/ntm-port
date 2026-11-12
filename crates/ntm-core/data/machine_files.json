@@ -3744,6 +3744,45 @@
 8
 ]
 },
+"ntm:machine_exposure_chamber": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 8,
+"y": 18
+},
+{
+"output": true,
+"x": 8,
+"y": 54
+},
+{
+"x": 80,
+"y": 36
+},
+{
+"output": true,
+"x": 116,
+"y": 36
+},
+{
+"x": 152,
+"y": 54
+},
+{
+"x": 44,
+"y": 54
+},
+{
+"x": 62,
+"y": 54
+}
+],
+"synced": []
+},
 "ntm:machine_flare": {
 "inventory": [
 8,
