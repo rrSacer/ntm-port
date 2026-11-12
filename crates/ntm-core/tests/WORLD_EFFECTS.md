@@ -140,3 +140,26 @@ Código verificado no HEAD `f11dde1d`; os commits posteriores desta seção são
 
 Os logs de mutação imprimem a falha de asserção esperada de cada variante; esses erros pertencem aos mutantes, não ao
 código nominal. A conclusão de infraestrutura não autoriza o consumidor enquanto a marca de destino da cola faltar.
+
+## Investigação da fatia 4 — marcadores e arquivos independentes
+
+Sondas em `destination_marker_cut.rs` (4/4, Clippy `-D warnings`): usam o `Server` real e hosts sintéticos para
+examinar candidatos, não são prova da cola nativa nem de um desenho completo. A casa A tem uma batelada antiga com
+explosão e item; B é o chunk vizinho. O controle vanilla conserva 1 no baú/dropper correspondente de A.
+
+- A antigo, região B com marcador novo, arquivo de entidades B antigo/vazio: suprimir item pelo marcador dá NTM 0,
+  vanilla 1. A guarda também evita a explosão (correto para o efeito físico).
+- A antigo, região **e** entidades B novas, com 1 item em B: suprimir item pelo marcador dá NTM 1, vanilla 2 (o
+  item que a origem antiga volta a ter mais o salvo em B). O coordenador confirmou formalmente este análogo vanilla.
+- Uma casa antiga que deve um item e um marcador B idêntico podem coexistir com entidades B antigas ou novas; decidir
+  o owed/drain apenas pelo marcador, sempre soltando ou sempre suprimindo, falha em um dos dois.
+- No recorte limitado dos dois casos de A antigo e marcador B novo, usar o marcador para pular **somente a explosão**
+  e pagar novamente o item da origem produz 1 ou 2, igual ao vanilla. É candidato parcial, não valida unload, ordem de
+  entidade antes de região, coleta, merge, movimentação nem Entities/EncodedItems.
+
+No pin `eb5d3eed58`, `save_level` agenda regiões antes das entidades e a passada eager grava só região; ambos têm
+arquivos separados. Na cola há `EFFECT_TYPE` persistente legado e leitura dos anexos, mas o `spawn_item_own` do motor
+retorna velocidade, não ID; a cola vê `next_entity` e UUID. Uma tag de entidade precisa ainda tratar remoção, coleta,
+merge e deslocamento e não prova sozinha que os dados de região/entidade representam o mesmo corte. Nenhuma alteração
+no motor ou no host foi feita nesta investigação. Os casos adicionais, o modelo de paridade e a prova com controle em
+jogo são obrigatórios antes de aprovar a fatia 4.
