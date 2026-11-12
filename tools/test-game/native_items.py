@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout,chunk_field,geiger_block,world_effects,field_sources').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout,chunk_field,geiger_block,world_effects,field_sources,crater').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1872,7 +1872,106 @@ def field_sources(g):
     reset(g, 'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout),('chunk_field',chunk_field),('geiger_block',geiger_block),('world_effects',world_effects),('field_sources',field_sources)]
+def crater(g):
+    """Onda 1, fatia 4e: what a nuke irradiates (needs NTM_TEST_HOOKS=1). `EntityNukeExplosionMK5.radiate` on the
+    entity's updates 2 to 9 (`ticksExisted` counts before `onUpdate`; the first has no explosion yet): each gives
+    `2 500 000 / (5t + 1) / max(res, 1) / len²` through `contaminate(.., RAD_BYPASS, ..)`. Then nothing: the port's
+    bomb zones are gone, the chunk field gets nothing from the crater nor from its rain (`EntityFalloutRain` writes no
+    radiation; its blocks are inert), and the rain turns mycelium past the grass's 45% into `waste_mycelium`
+    (`FalloutConfigJSON.java:87-112`). A radius-40 test nuke in the air at 400 150 0; the player 50 east on a block,
+    behind a wool wall that stops the blast's damage and not the pulse; frozen and stepped, the dose read from the
+    server after each tick."""
+    import struct
+    as_float = lambda bits: struct.unpack('<f', struct.pack('<I', int(bits)))[0]
+    def step():
+        start = now(g)
+        g.command('tick step 1')
+        while now(g) < start + 1:
+            time.sleep(.05)
+    def dose():
+        m = re.search(r'dose=(\d+) buf=(-?\d+)', ' '.join(g.command('ntmtest dose').get('chat', [])))
+        return int(m.group(1)) if m else -1
+    def field(cx, cz, r):
+        """The chunks the map holds with a value, or the next update writes, around cx, cz."""
+        text = ' '.join(g.command(f'ntmtest rad {cx} {cz} {r}').get('chat', []))
+        m = re.search(r'rad=(\S*)', text)
+        out = {}
+        for item in filter(None, (m.group(1) if m else '').split(';')):
+            c, raw, nxt, _ = item.split(':')
+            value = 0.0 if raw == 'none' else as_float(raw)
+            if value != 0.0 or as_float(nxt) != 0.0:
+                out[c] = (value, as_float(nxt))
+        return out
+    is_ = lambda x, y, z, b: 'passed' in ' '.join(g.command(f'execute if block {x} {y} {z} {b}').get('chat', []))
+    reset(g, 'creative')
+    g.command('ntmrad clear')
+    g.command('forceload add 290 -110 510 110')
+    pause(g, 3)
+    g.command('ntmbomba config mundo fuel 4')
+    # The line from the center to the player's eyes, and the mycelium's columns above them, through air.
+    g.command('fill 399 149 -1 451 153 1 minecraft:air')
+    g.command('setblock 400 149 0 minecraft:stone')
+    g.command('setblock 450 149 0 minecraft:stone')
+    # The blast's damage (`ExplosionNukeGeneric.dealDamage`, from the entity's first update, before any `radiate`)
+    # kills a player in the open. A wool wall stops it (`isObstructed`, resistance over 0.5) and not the pulse: a
+    # single block of 0.8 on the line leaves `max(res, 1)` at 1. Outside the crater (46 from the center).
+    g.command('fill 446 149 -1 446 153 1 minecraft:white_wool')
+    # Mycelium on dirt, the ground's top, in the rain's ring (40..100 from the center): at 42 (d 0.42, the grass's
+    # slag) and 60 (d 0.6). On the ground: the port's rain starts a column's search near its neighbours' tops, so a block
+    # floating above them is missed (a gap of the rain's engine, the Java scans from 255).
+    tops = {}
+    for z in (42, 60):
+        found = re.search(r'height=Some\((-?\d+)\)', ' '.join(g.command(f'ntmtest height 400 {z}').get('chat', [])))
+        tops[z] = int(found.group(1)) if found else None
+        if tops[z] is not None:
+            g.command(f'fill 400 {tops[z] - 3} {z} 400 {tops[z] - 1} {z} minecraft:dirt')
+            g.command(f'setblock 400 {tops[z]} {z} minecraft:mycelium')
+    g.evidence['mycelium_tops'] = tops
+    g.command('tp @s 400.5 150 0.5')
+    pause(g, 1)
+    # Past `contaminate`'s 200 ticks from the player's entry (a fresh world: they came in at its start).
+    while now(g) < 300:
+        time.sleep(.5)
+    g.command('tick freeze')
+    result = g.command('ntmbomba teste 40')
+    g.check('a_test_nuke_is_set_off', any('detonada' in line for line in result.get('chat', [])), result)
+    g.command('gamemode survival @s')
+    g.command('tp @s 450.5 150 0.5')
+    g.command('ntmitem dose 0')
+    last, gains = dose(), []
+    for n in range(30):
+        step()
+        d = dose()
+        if d > last:
+            gains.append((n, d - last))
+        last = d
+    length = ((450.5 - 400.5) ** 2 + (151.62 - 150.5) ** 2) ** 0.5
+    want = [2_500_000 / (5 * t + 1) / length ** 2 * 1000 for t in range(2, 10)]
+    g.check('the_nuke_radiates_eight_updates_as_the_java', len(gains) == 8 and all(b[0] == a[0] + 1 for a, b in zip(gains, gains[1:]))
+            and all(abs(got - w) <= 1.0 for (_, got), w in zip(gains, want)),
+            {'gains': gains, 'want': [round(w, 1) for w in want], 'total_rad': round(sum(x for _, x in gains) / 1000, 3)})
+    pulsed = dose()
+    g.check('the_field_has_nothing_after_the_pulse', field(25, 0, 7) == {}, field(25, 0, 7))
+    # The crater and its rain to the end, at the usual fuel; the player stands still on the block.
+    g.command('tick unfreeze')
+    g.command('ntmbomba config mundo fuel 22')
+    status = lambda: ' '.join(g.command('ntmbomba status').get('chat', []))
+    deadline = time.monotonic() + 900
+    while ('R=' in status() or 'fallout esperando' in status()) and time.monotonic() < deadline:
+        time.sleep(5)
+    g.evidence['crater_status'] = status()
+    g.check('the_crater_and_its_rain_end', 'R=' not in g.evidence['crater_status'], g.evidence['crater_status'])
+    g.check('no_dose_after_the_pulse', dose() == pulsed, {'pulsed': pulsed, 'now': dose()})
+    g.check('the_field_has_nothing_after_the_rain', field(25, 0, 7) == {}, field(25, 0, 7))
+    seen = {z: [b for b in ('ntm:sellafield_slaked', 'minecraft:mycelium', 'ntm:waste_mycelium') if tops[z] is not None and is_(400, tops[z], z, b)]
+            for z in (42, 60)}
+    g.check('the_rain_slags_mycelium_near_and_wastes_it_far', seen == {42: ['ntm:sellafield_slaked'], 60: ['ntm:waste_mycelium']}, {'tops': tops, 'seen': seen})
+    g.command('forceload remove 290 -110 510 110')
+    g.command('ntmrad clear')
+    reset(g, 'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout),('chunk_field',chunk_field),('geiger_block',geiger_block),('world_effects',world_effects),('field_sources',field_sources),('crater',crater)]
 
 
 if __name__=='__main__':

@@ -1,0 +1,105 @@
+{
+ "binary_sha256": "e8022e5d3aa7f7fccf8f1cdd35dd71ee3b8ecd802afe24911cd2e704e913202e",
+ "bundle_sha256": "79dba2647f161eb7c6aa3903af852d4a42ab0a016a331157bd83a3dafd6bf26c",
+ "families": [
+  "crater"
+ ],
+ "ok": true,
+ "checks": {
+  "setup:a_test_nuke_is_set_off": {
+   "ok": true,
+   "actual": {
+    "chat": [
+     "detonada em [400, 150, 0]"
+    ],
+    "ok": true
+   }
+  },
+  "setup:the_nuke_radiates_eight_updates_as_the_java": {
+   "ok": true,
+   "actual": {
+    "gains": [
+     [
+      1,
+      90863
+     ],
+     [
+      2,
+      62469
+     ],
+     [
+      3,
+      47595
+     ],
+     [
+      4,
+      38442
+     ],
+     [
+      5,
+      32242
+     ],
+     [
+      6,
+      27764
+     ],
+     [
+      7,
+      24378
+     ],
+     [
+      8,
+      21728
+     ]
+    ],
+    "want": [
+     90863.5,
+     62468.7,
+     47595.2,
+     38442.2,
+     32241.9,
+     27763.8,
+     24378.0,
+     21728.2
+    ],
+    "total_rad": 345.481
+   }
+  },
+  "setup:the_field_has_nothing_after_the_pulse": {
+   "ok": true,
+   "actual": {}
+  },
+  "setup:the_crater_and_its_rain_end": {
+   "ok": true,
+   "actual": "Bombas: modo otimizado | fallout on | efeitos on (part\u00edculas 24) | dano on | radia\u00e7\u00e3o on | or\u00e7amento 8192/tick | raiomax 500 | fuel 22 M detonada:  [400, 150, 0] teste"
+  },
+  "setup:no_dose_after_the_pulse": {
+   "ok": true,
+   "actual": {
+    "pulsed": 345481,
+    "now": 345481
+   }
+  },
+  "setup:the_field_has_nothing_after_the_rain": {
+   "ok": true,
+   "actual": {}
+  },
+  "setup:the_rain_slags_mycelium_near_and_wastes_it_far": {
+   "ok": true,
+   "actual": {
+    "tops": {
+     "42": 76,
+     "60": 77
+    },
+    "seen": {
+     "42": [
+      "ntm:sellafield_slaked"
+     ],
+     "60": [
+      "ntm:waste_mycelium"
+     ]
+    }
+   }
+  }
+ }
+}

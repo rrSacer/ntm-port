@@ -1183,3 +1183,84 @@ balefire também cria uma zona. Usos: `blast/mod.rs`, `blast/config.rs` (`zona`,
 (`glue.rs`, `item_hooks.rs`) e os testes.
 
 Decisão pedida ao coordenador antes do código.
+
+Decisões do coordenador: (A) remover as zonas; D2, a tabela cosmética da chuva, fica como lacuna para a frente de
+explosões e conteúdo; o fogo de balefire fica como lacuna (A); as correções do pulso foram aprovadas.
+
+#### O que entrou
+
+- **As zonas saíram.** Isso inclui:
+  - `blast::Zone`, `area_dose` e `area_rate`;
+  - a soma na linha "chunk" do Geiger, que agora lê só o campo;
+  - as chaves `zona` e `meiavida` do `/ntmbomba config`;
+  - a gravação das zonas no save.
+  Um mundo salvo antes, com zonas ou com essas chaves, abre normalmente: o serde ignora as chaves, o resto do que o
+  mundo guardou continua, e o próximo save sai sem elas. Testes: `a_world_kept_with_zones_loads_without_them` e
+  `the_zones_settings_of_an_old_world_are_read_past`.
+- **O pulso do MK5 ficou fiel** (`EntityNukeExplosionMK5.java:66-67,102-136`, com
+  `ContaminationUtil.contaminate:265-300`). O inventário achou nele estas divergências, além das zonas:
+  - Os updates que irradiam são t = 2..9. O `ticksExisted` cresce antes do `onUpdate` (`World.java:2290-2298` do
+    1.7.10), e o primeiro update ainda não tem explosão. O total é `Σ 2 500 000 / (5t + 1)` ≈ 864 138 RAD. O port
+    somava t = 0..9 (3 780 000) de uma vez: 4,4 vezes mais.
+  - Um update por tick, a partir do tick da detonação (que é o update 1), e cada um com a geometria do seu tick: a
+    posição do jogador e os blocos no caminho naquele momento. Os oito updates acontecem sempre. A entidade do Java
+    vive mais do que isso: a explosão em lotes de força 75 ou mais leva mais updates, até no ar, porque os raios são
+    calculados mesmo sem blocos. A cratera do port, que no ar termina quase de imediato, não corta o pulso. Só o
+    `/ntmbomba cancelar` o encerra, porque ele mata a entidade.
+  - A área é a caixa `getEntitiesWithinAABB` de ±2 × length, comparada com a caixa do jogador (0,6 × 1,8), e não
+    uma esfera.
+  - A resistência é somada bloco a bloco: um passo por bloco ao longo do vetor unitário, de `i = 1` enquanto
+    `i < len`, com `getExplosionResistance`, em float. Antes eram até 48 amostras escaladas. A dose do update é
+    `rads / max(res, 1) / len²`, em float.
+  - `RAD_BYPASS`: a armadura não reduz o pulso (antes reduzia).
+  - O `radEnv` recebe o valor antes das barreiras, então o Geiger de quem está em criativo ouve o pulso. A dose
+    respeita o criativo e a carência de 200 ticks (antes o pulso ignorava a carência).
+  - O pulso só acontece com fallout e `strength = 2r ≥ 75`, ou seja, raio ≥ 38. O balefire não tem pulso
+    (`EntityBalefire` não chama `radiate`).
+  - O raio é o que o servidor usa, depois do `raiomax`. Com o `raiomax` padrão (500), é o raio da bomba; com um
+    `raiomax` abaixo de 38, não há pulso.
+- **Micélio na chuva** (`FalloutConfigJSON.java:87-112`): o micélio é `Material.grass`, então até 45% a entrada da
+  grama o escoria; depois disso ele vira `waste_mycelium`. Essa entrada não é `sol`, então não conta na
+  profundidade da coluna. O perfil da chuva ganhou um 12º campo; um perfil guardado com 11 campos continua lendo.
+- **`ntmtest dose`**: um gancho de prova que lê a dose do servidor a cada tick.
+
+#### Prova da 4e (binário `e8022e5d…`, pacote `79dba264…`)
+
+- Biblioteca 717/717; `watz_pwr_parity` passa; `clippy -D warnings` limpo no núcleo e no stage nativo.
+  - Testes novos: o pulso no jogo de teste (8 updates com os valores da fórmula, armadura ignorada, criativo com Geiger
+    e sem dose, nada depois); a bomba no ar, que ainda dá os 8 updates; o save e a config antigos com zonas; o micélio
+    na chuva; o perfil de 11 campos.
+  - O `save_model` (o modelo do save, que não importa o `ntm_core`) foi interrompido depois de 1,5 h em debug e não foi
+    rodado nesta fatia; nada da 4e passa por ele.
+- Mutantes manuais, 4/4 pegos:
+  - o update 1 irradiando;
+  - o limiar 74;
+  - `RAD_BYPASS` ignorado;
+  - sem o piso `max(res, 1)`.
+- Família `crater` em jogo, 7/7 (`docs/evidence/onda1-f4/items-4e.json`). Uma bomba de teste de raio 40 no ar; o
+  jogador a 50 blocos, atrás de uma parede de lã que barra o dano da explosão e não o pulso; tudo congelado e lido do
+  servidor tick a tick (`ntmtest dose`):
+  - 8 updates seguidos: 90 863, 62 469, 47 595, 38 442, 32 242, 27 764, 24 378 e 21 728 milliRAD, os valores do Java
+    (345,481 RAD no total);
+  - o campo por chunk vazio depois do pulso e depois da chuva;
+  - nenhuma dose a mais com o jogador parado até o fim da cratera e da chuva;
+  - micélio a 42 blocos (d 0,42) virou `sellafield_slaked`; a 60 (d 0,6) virou `waste_mycelium`.
+- Duas coisas que a prova encontrou:
+  - Sem a parede, o jogador morre no primeiro tick pelo dano da explosão, antes de qualquer `radiate`. É fiel: no
+    Java o `dealDamage` roda em todo update, o primeiro também.
+  - A primeira versão ligava o pulso à cratera ainda sendo cavada. No ar, a cratera do port termina quase de imediato
+    e cortava o pulso, então o pulso foi separado dela.
+
+#### Lacunas da 4e
+
+- **Fogo de balefire** (decisão A do coordenador): o bloco `ntm:balefire` não existe no port. A explosão de balefire
+  põe fogo vanilla. A poção ao tocar (`Balefire.java:156-159`) entra junto com o bloco e sua propagação de 15
+  gerações, na frente de conteúdo e explosões.
+- **Dose em mobs**: o `radiate` do Java irradia toda `EntityLivingBase`. O port não tem dose em mobs.
+- **A tabela cosmética da chuva** (D2): o `slaked` com nível de cor 0..9; os minérios que viram minérios de
+  sellafield; o *falloff* gaussiano perto do `maxDist` de cada entrada; folhas e cogumelos.
+- **A busca de topo da chuva**: cada coluna começa perto do topo das vizinhas mais 8 e sobe enquanto não acha ar. Um
+  bloco flutuando acima disso escapa da chuva, enquanto o Java varre a coluna de 255 para baixo. Fica para a frente de
+  explosões.
+- **O `raiomax`**: o pulso usa o raio cortado pelo `raiomax` do servidor. Abaixo de 38, não há pulso. Com o padrão
+  (500), o raio é o da bomba.
