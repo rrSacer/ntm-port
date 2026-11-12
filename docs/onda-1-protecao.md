@@ -1279,3 +1279,68 @@ explosões e conteúdo; o fogo de balefire fica como lacuna (A); as correções 
 | Forno de tijolo | `TileEntityFurnaceBrick.java:85-92,163-176` | cinza no slot 3 | feito na Onda 2 (`furnace_brick.rs`), sem o bug do cinzeiro (o Java desse forno não o tem) |
 
 Decisão de escopo pedida ao coordenador antes do código.
+
+Decisões do coordenador: D1 (A), as chaminés ficam como lacuna até o sistema de fumaça; D2 (A), no queimador a lenha
+entra o mínimo fiel na parte que toca as cinzas.
+
+#### O que entrou
+
+- **Cinzeiro** (`crate::ashpit`, `Kind::Ashpit`), seguindo `TileEntityAshpit` linha a linha:
+  - 5 slots e os níveis `wood/coal/misc/fly/soot`, como ints do Java;
+  - limiares 2000, e 8000 para a fuligem; uma cinza por tipo por tick;
+  - o bug do `processAsh` (pilha nova tira o limiar da madeira, e um slot vazio vence a pilha parcial);
+  - os níveis no `save_state`, junto com os slots.
+  Os slots são só de saída (`SlotTakeOnly`, `output` no arquivo da máquina): nada entra, nem por funil.
+  Visual: o multibloco 3×3 (`{0,0,1,1,1,1}` offset 1); a tela `gui_ashpit`; o modelo do forno de aquecimento com a
+  textura do cinzeiro, com a porta deslizando enquanto a tela está aberta e o interior cheio enquanto há cinza.
+- **Fornalha e forno de aquecimento**: ao acender um combustível, guardam o tipo (`getAshFromFuel`) e o `baseTime`
+  dele. Depois das máquinas, o servidor o passa ao cinzeiro logo abaixo do núcleo (`ash_tick`). O `baseTime` é o
+  tempo da tabela da fornalha, também para o forno: os dois usam o mesmo módulo de queima e a fornalha tem
+  `timeMult` 1. Verificado nas 85 entradas: o tempo do forno é sempre `floor(fornalha × 0,125)`.
+- **Queimador a lenha**, mínimo fiel:
+  - o tempo do módulo de queima (troncos ×4, madeira ×2) vai ao nível de cinza do tipo, com uma cinza no slot 1 a
+    cada 2000, em `while`;
+  - acende o próximo combustível sempre que a queima acaba, ligado ou não;
+  - no tick em que acende, não gera nada (no Java a queima é `else if`).
+  O tempo de queima passou a ser o do módulo (antes era o vanilla), porque no Java é o mesmo valor que vai para a
+  cinza.
+- `fuel::family`: as escadas de madeira passam a ser da família madeira (`stairWood` do Forge).
+
+O que a primeira prova em jogo encontrou: o servidor nativo lê os slots de cada máquina de `data/machine_files.json`
+(gerado pelo `tools/machine-gen/build.py` a partir do conteúdo), e não do pacote em tempo de execução. Sem a entrada
+do cinzeiro, o motor deu zero slots e o primeiro `processAsh` derrubou o servidor por índice fora dos limites. A
+entrada foi gerada (só ela; o resto do arquivo saiu igual). O cinzeiro e o queimador agora toleram um vetor de slots
+mais curto: o nível espera e nada cai.
+
+#### Prova da fatia 6 (binário `751927b5…`, pacote `eebe930a…`)
+
+- Biblioteca 728/728; `clippy -D warnings` limpo no núcleo e no stage nativo.
+  - Testes novos: o cinzeiro (o bug da madeira, a vez do slot vazio, a fuligem a 8000, cheio, sem slots, os níveis no
+    `save_state`); a fornalha e o forno no servidor alimentando o cinzeiro de baixo, e nada se o cinzeiro estiver ao
+    lado; o queimador (cinza no slot 1, ligado ou não, o bloco de carvão em oito cinzas de uma vez, nenhuma geração
+    no tick em que acende); o módulo de queima do queimador.
+- Mutantes manuais, 5/5 pegos:
+  - sem o bug da madeira;
+  - o cinzeiro procurado acima;
+  - o forno com a queima no lugar do tempo-base;
+  - `if` no lugar do `while`;
+  - o queimador acendendo só ligado.
+- Cenário `ash` em jogo, com reabertura do mundo (`docs/evidence/onda1-f6/ash-6.json`), todos os checks passaram:
+  - o carvão de uma fornalha e o de um forno sobre seus cinzeiros dão uma cinza de carvão no tick seguinte, com
+    `coal` 0 e `wood` −2000. O forno queima 250 ticks, um oitavo, e mesmo assim o cinzeiro recebe os 2000 do
+    tempo-base;
+  - o segundo carvão do forno faz a pilha crescer para 2 sem tocar na madeira;
+  - um queimador desligado acende um bloco de carvão: 16 000 de queima parada, oito cinzas de carvão no slot 1 e o
+    segundo bloco esperando;
+  - depois de reabrir, os dois cinzeiros e o queimador voltam iguais (níveis, cinzas e queima).
+
+#### Lacunas da fatia 6
+
+- **Chaminés** (D1 A): as cinzas volantes e a fuligem vêm da fumaça que as máquinas emitem
+  (`TileEntityMachinePolluting`), que o port não tem. Os níveis `fly` e `soot` do cinzeiro existem e ficam em zero.
+- **Queimador a lenha** (D2 A): faltam a queima líquida, o tanque e a recarga de bateria pelo slot, além das
+  portas do queimador. A fuligem de poluição (`PollutionHandler`) também falta.
+- **A ordem de atualização no mesmo tick**: no Java, o cinzeiro pode processar antes ou depois da fornalha, conforme
+  a ordem da lista de *tile entities*. No port, a fornalha passa a cinza depois das máquinas, e o cinzeiro a
+  transforma no tick seguinte. A diferença é de no máximo um tick.
+- **A animação da porta e o `isFull`** estão no visual; não foram conferidos por captura de tela nesta fatia.
