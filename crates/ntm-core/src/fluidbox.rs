@@ -116,8 +116,9 @@ impl Mode {
 pub struct FluidStore {
     pub tank: Tank,
     pub mode: Mode,
-    /// mB a tick it moves at most (0: no limit). The big tank's
-    /// `max(500, fill/100)` (`TileEntityMachineFluidTank.java:49-50`).
+    /// mB a tick it moves at most (0: no limit): the floor of the big tank's
+    /// `max(500, fill/100)` out and `max(500, room/100)` in
+    /// (`TileEntityMachineFluidTank.java:49-50`; the orbus has 1 000).
     #[serde(default)]
     pub rate_floor: u32,
     /// `ContainerBarrel` / `ContainerMachineFluidTank`: the identifier and
@@ -162,17 +163,24 @@ impl FluidStore {
         true
     }
 
-    fn rate(&self) -> u64 {
+    /// What it gives a tick: `getProviderSpeed`, `max(floor, fill / 100)`.
+    fn send_rate(&self) -> u64 {
         if self.rate_floor == 0 { u64::MAX } else { u64::from(self.rate_floor.max(self.tank.mb / 100)) }
+    }
+
+    /// What it takes a tick: `getReceiverSpeed`, `max(floor, (max - fill) / 100)` (`TileEntityMachineFluidTank.java:49`,
+    /// `TileEntityMachineOrbus.java`): the room it has left, not what it holds.
+    fn receive_rate(&self) -> u64 {
+        if self.rate_floor == 0 { u64::MAX } else { u64::from(self.rate_floor.max(self.tank.free() / 100)) }
     }
 }
 
 impl FluidNode for FluidStore {
     fn fluid_offer(&self, f: &str) -> u64 {
-        if matches!(self.mode, Mode::Buffer | Mode::Output) && self.tank.fluid == f { u64::from(self.tank.mb).min(self.rate()) } else { 0 }
+        if matches!(self.mode, Mode::Buffer | Mode::Output) && self.tank.fluid == f { u64::from(self.tank.mb).min(self.send_rate()) } else { 0 }
     }
     fn fluid_demand(&self, f: &str) -> u64 {
-        if matches!(self.mode, Mode::Buffer | Mode::Input) && self.tank.accepts(f) { u64::from(self.tank.free()).min(self.rate()) } else { 0 }
+        if matches!(self.mode, Mode::Buffer | Mode::Input) && self.tank.accepts(f) { u64::from(self.tank.free()).min(self.receive_rate()) } else { 0 }
     }
     fn fluid_priority(&self) -> u8 {
         if self.mode == Mode::Buffer { PRIORITY_LOW } else { fluid::PRIORITY_NORMAL }
@@ -344,6 +352,25 @@ mod tests {
         t.mode = Mode::Output;
         t.tank.fill("oil", 200_000);
         assert_eq!(t.fluid_offer("oil"), 2000, "max(500, fill/100)");
+    }
+
+    /// The speed in is the room left over a hundred (`getReceiverSpeed`), the speed out what it holds over a hundred.
+    #[test]
+    fn the_big_tanks_take_by_their_room_and_give_by_their_content() {
+        let mut t = FluidStore::new(512_000, 1_000);
+        t.mode = Mode::Buffer;
+        // Empty: it takes max(1 000, 512 000 / 100) = 5 120, gives nothing.
+        assert_eq!((t.fluid_demand("oil"), t.fluid_offer("oil")), (5_120, 0));
+        t.tank.fill("oil", 412_000);
+        // 100 000 of room: max(1 000, 1 000); 412 000 held: max(1 000, 4 120).
+        assert_eq!((t.fluid_demand("oil"), t.fluid_offer("oil")), (1_000, 4_120));
+        t.tank.fill("oil", 99_500);
+        // 500 of room: the floor, then what is left of it.
+        assert_eq!(t.fluid_demand("oil"), 500);
+        let mut small = FluidStore::new(256_000, 500);
+        assert_eq!(small.fluid_demand("water"), 2_560, "max(500, 256 000 / 100)");
+        small.tank.fill("water", 255_900);
+        assert_eq!(small.fluid_demand("water"), 100, "100 of room");
     }
 
     #[test]
