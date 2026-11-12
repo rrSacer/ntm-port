@@ -389,6 +389,13 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let mut host=Host{game,buttons:Vec::new()};
     let Some((server,_))=guard.as_mut() else{return true};
     reconcile(server,&mut host);
+    // `ntmtest height <x> <z>`: the column's motion-blocking height and the blocks at it and the two under it.
+    if w.first()==Some(&"height") && let (Some(x),Some(z))=(n(1),n(2)){
+        let h=ntm_core::server::ServerHost::surface_heights(&mut host,&dim,&[(x as i32,z as i32)])[0];
+        let around=h.map(|h|(h-2..=h).map(|y|host.game.native_loaded_block(&dim,[x as i32,y,z as i32]).unwrap_or_default()).collect::<Vec<_>>().join(",")).unwrap_or_default();
+        host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok=true height={h:?} below2..at={around}")));
+        return true;
+    }
     // `ntmtest rad <cx> <cz> [r]`: the world's radiation map around a chunk, one `x,z:raw:next:loaded` per chunk the
     // map holds, the next update writes or that is loaded (`raw` the map's value as its float bits, `none` when not in
     // it; `next` what the next update gives it; `loaded` 1 when a save writes it), and the ticks since the last update.
@@ -1615,11 +1622,22 @@ impl ServerHost for Host<'_, '_> {
     /// Particles and sounds in the dimension in play (`native_send_particles`,
     /// API 11; `native_play_sound`, API 32).
     /// The motion-blocking heights of the level being ticked (`native_surface_heights`, API 127): another level's
-    /// columns, or a refused read, are not loaded.
+    /// columns, or a refused read, are not loaded. The engine's map leaves the NTM's blocks out (an engine ticket):
+    /// where the world-surface map, which counts them, is above it, the highest NTM block that blocks motion between
+    /// the two is the top (`chunk_radiation::height_with_ntm`, the bridge of 4c).
     fn surface_heights(&mut self, dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
-        self.game
-            .native_surface_heights(dim, columns, super::native_world_edit::NativeHeightmap::MotionBlocking)
-            .unwrap_or_else(|_| vec![None; columns.len()])
+        use super::native_world_edit::NativeHeightmap;
+        let none = || vec![None; columns.len()];
+        let Ok(motion) = self.game.native_surface_heights(dim, columns, NativeHeightmap::MotionBlocking) else { return none() };
+        let Ok(surface) = self.game.native_surface_heights(dim, columns, NativeHeightmap::WorldSurface) else { return none() };
+        columns
+            .iter()
+            .zip(motion.iter().zip(&surface))
+            .map(|(&(x, z), (m, s))| match (*m, *s) {
+                (Some(m), Some(s)) if s > m => Some(ntm_core::chunk_radiation::height_with_ntm(m, s, |y| self.game.native_loaded_block(dim, [x, y, z]))),
+                (m, _) => m,
+            })
+            .collect()
     }
     fn show(&mut self, dim: &str, show: &ntm_core::blast::visuals::Show) {
         if dim_of(dim) != Some(self.game.dim) {
