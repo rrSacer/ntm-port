@@ -1344,3 +1344,31 @@ mais curto: o nível espera e nada cai.
   a ordem da lista de *tile entities*. No port, a fornalha passa a cinza depois das máquinas, e o cinzeiro a
   transforma no tick seguinte. A diferença é de no máximo um tick.
 - **A animação da porta e o `isFull`** estão no visual; não foram conferidos por captura de tela nesta fatia.
+
+## Encerramento da Onda 1
+
+Todas as fatias do escopo (`onda-1-escopo.md`) foram revisadas e integradas na `main`:
+1. proteção;
+2. máscaras e trajes;
+3. descontaminação;
+5. doença, morte e poção de radiação;
+4a a 4e. radiação do mundo por chunk, leituras, neblina e destruição, fontes, crateras;
+6. cinzas.
+
+Cada fatia segue o Java com as linhas citadas, bugs incluídos, e tem provas em jogo e evidências em `docs/evidence/`.
+
+Não há pendência dentro do escopo da Onda 1. As lacunas abaixo são do que o Java faz e o port ainda não tem, ou do
+que depende de outro sistema. Cada uma já aparece na sua fatia; aqui ficam agrupadas pela frente que deve levá-las.
+
+| Frente sugerida | Lacunas (fatia de origem) |
+|---|---|
+| **Dose em mobs** | O port só guarda dose de jogadores. Ficam de fora: a descontaminação de mobs (3); a contaminação pelo campo (4b); o `radiate` do MK5 em mobs (4e); as transformações do `handleRadiationEffect` (creeper, vaca, aldeão, pato) e os mobs imunes (5) |
+| **Poluição, fumaça e gases** | O `filter_exposure` sem fonte ambiental (2); as chaminés, com `fly` e `soot` (6); a fuligem do queimador e da fornalha (6); o gás de fusão e o radônio denso do resíduo (4d) |
+| **Explosões e conteúdo de bombas** | O bloco `ntm:balefire`, sua propagação e a poção ao tocar (4e); a tabela cosmética da chuva e a busca de topo que perde blocos flutuantes (4e); o barril amarelo que explode (4d); a explosão nuclear pequena, a granada e a catapulta (4d) |
+| **Máquinas ainda Inert ou ausentes** | Flare (`FT_VentRadiation`), Watz, aniquilador, absorvedor, núcleo do DFC, reator de pesquisa, máquina personalizada (4d); a queima líquida, o tanque, a bateria e as portas do queimador a lenha (6) |
+| **Entidades e itens ausentes** | Besta radioativa, projétil químico, névoa de fluido, item glitch e caranguejo de taint (4d, 5); as outras fontes de `HbmPotion.radiation` e de dano `ntm:radiation` (5); a lista de contaminação do jogador (3, 5d) |
+| **Motor** | O atraso de queda de um bloco de mod (4d). A ponte de altura do heightmap continua no lugar, com o ticket do motor registrado (4c). O gancho de comandos do jogador local, para o `/effect clear` (5d) |
+| **Visual e som** | As camadas de tela e os modelos vestidos das máscaras, os passos do liquidator e os tooltips (2); a partícula `townaura` da descontaminação (3); as texturas por posição do sellafield (5d); a porta e o interior do cinzeiro sem captura de tela (6) |
+| **Blocos** | A camada de fallout que solta item e empilha (5d) |
+| **Efeitos que o port ainda não tem** | O resto do `handleRadiationFX` acima de 200 RAD (vômito, suor, partículas) (4b); a poção `mutation` e o `isRadImmune` (5); as conquistas (5) |
+| **Regras globais do projeto** | A durabilidade com um uso a mais do 1.7.10, a aba criativa dos revestimentos e o `ShadyUtil` (1); as leituras do OpenComputers e do Energy Control (4b) |
