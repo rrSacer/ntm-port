@@ -4,6 +4,8 @@
 
 As cinco máquinas agora têm simulação nativa de calor, vapor e HE, com vínculo pela ferramenta `ntm:mirror_tool`. A variante creative continua exigindo calor. O estado de engrenagem, excesso de velocidade e alvos é persistido nos block entities. O K3 e esta frente foram rebaseados no Horizon oficial `d928d1cd6`, pin integrado `3eb781ab5`, e passaram na aceitação nativa. A falha da engrenagem é simulada; o aviso sonoro, a explosão de overspeed (inclusive seu dano a entidades) e o projétil de engrenagem ainda não são emitidos.
 
+**Defeito nominal (perda em relação ao Java):** na falha, o port faz `has_cog = false` e a engrenagem some. No Java ela vira o `EntityCog`, e `EntityCog.interactFirst` devolve um `gear_large` com o metadado da variante ao jogador que a pega. A explosão de força 5, sem fogo e sem quebra, entra pelas decisões D1+D2 do artifact `onda2-efeitos-mundo` (o Stirling é o piloto). A devolução da engrenagem depende da API de entidades e fica para a Onda 4 do `roadmap-100`. Não é corrigida agora.
+
 ### Verificação da integração atual
 
 No servidor integrado, com combustível, rede, água e ferramenta reais, `tools/test-game/native_solar_stirling.py` passou nas quatro fases, com 15 asserções:

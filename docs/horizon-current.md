@@ -1340,3 +1340,10 @@ volta ao mundo também ficam provadas em jogo (cortes de save da Onda 1, `docs/o
 `61aa03d1a` com o `store_owner` idêntico byte a byte ao de `130153a4ac` e o teste extra como `10ae4aa43d`
 (confirmado pelo agente do Horizon). A branch `player-attachments-fix` não entra no pin; ela fica como prova
 da correção sobre `a31497f38`.
+## Pedido ao motor em aberto: listas de slots por célula de multibloco
+
+Hoje a política de slot do contêiner nativo é uma por máquina e não conhece a célula pela qual um funil chega. A soldadora a arco
+do Java (`getAccessibleSlotsFromSide(x,y,z,side)`) dá uma lista diferente a cada célula (entradas 0, 1 ou 2 e a saída; nada nas seis
+células de cima). Detalhe e o que o port faz no lugar em `docs/native-slot-policy.md` (seção "Pedido ao motor: lista de slots por
+célula") e em `docs/onda-2-sublote-1.md`.
+

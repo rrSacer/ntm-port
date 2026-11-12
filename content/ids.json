@@ -87389,6 +87389,27 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:broken_item",
+      "source_variable": "broken_item",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/broken_item.png",
+      "creative_hidden": true,
+      "names": {
+        "en_us": "Broken Item",
+        "pt_br": "Item Quebrado"
+      },
+      "behavior_gap": "The product (id) lives in custom_data {ntm_broken:{id}}; the name and the layered icon of the product (BrokenItem.getItemStackDisplayName/getIcon) are not reproduced",
+      "source_registry": "hbm:item.broken_item",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:machine_excavator",
       "source_variable": "machine_excavator",
       "type": "block",
@@ -100691,6 +100712,7 @@
       "source_tiles": [
         "TileEntityMachineElectricFurnace"
       ],
+      "drop": "ntm:machine_electric_furnace_off",
       "source_registry": "hbm:tile.machine_electric_furnace_on",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",

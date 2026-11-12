@@ -1,0 +1,88 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_furnace_iron.png",
+  "size": [
+    176,
+    166
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    72
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        53,
+        36,
+        70,
+        5
+      ],
+      "uv": [
+        176,
+        18
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        53,
+        45,
+        70,
+        5
+      ],
+      "uv": [
+        176,
+        23
+      ],
+      "dir": "right"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 4,
+      "min": 1,
+      "rect": [
+        70,
+        16,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        0
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        52,
+        35,
+        71,
+        7
+      ],
+      "lines": [
+        "{0} / {1} ticks"
+      ]
+    },
+    {
+      "rect": [
+        52,
+        44,
+        71,
+        7
+      ],
+      "lines": [
+        "{2} / {3} ticks"
+      ]
+    }
+  ]
+}

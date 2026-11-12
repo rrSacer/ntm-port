@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "ntm:machine_electric_furnace_on"
+          "name": "ntm:machine_electric_furnace_off"
         }
       ]
     }

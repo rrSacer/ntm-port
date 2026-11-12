@@ -12,7 +12,10 @@ the battery goes next to one of the port cells (container_bridge.rs).
   turbina    natural gas, lubricant and water from three barrels by typed ducts; start,
              29 s, the slider at the top: power on the battery and dense steam;
   turbofan   kerosene burns with no ignition; a redstone block by a connector
-             stops it, taking it away starts it again.
+             stops it, taking it away starts it again;
+  identifier the combustion engine's tank is typed by the identifier in its slot 4 (`tank.setType(4, slots)`):
+             a kerosene identifier empties the diesel the tank held, and an identifier with no type
+             (`ItemFluidIDMulti.getType` of a bare item is NONE) empties it again and leaves it untyped.
 """
 import json
 import re
@@ -233,7 +236,62 @@ def turbina(game):
     game.check('boils_water', steam is not None and steam > 0, steam)
 
 
-PHASES = {'diesel': diesel, 'motor': motor, 'turbofan': turbofan, 'turbina': turbina}
+def tank_state(game, at):
+    """(fluid, mb) of the machine's `tank` in its saved state; None when it has no tank."""
+    found = re.search(r'"tank":\{([^{}]*)\}', machine_state(game, at))
+    if not found:
+        return None
+    fluid = re.search(r'"fluid":"(\w*)"', found[1])
+    mb = re.search(r'"mb":(\d+)', found[1])
+    return (fluid[1] if fluid else '', int(mb[1]) if mb else 0)
+
+
+def identifier_in_slot(game, core, custom, slot):
+    """An identifier (`custom` is its custom_data, or None for a bare one) by hand into the machine's `slot`,
+    the one in it taken out first; then ticks pass for the saved state to follow."""
+    game.ctl(f'click-slot {300 + slot} shift')
+    game.command('clear @s')
+    component = '' if custom is None else f'[minecraft:custom_data={custom}]'
+    game.command(f'give @s ntm:fluid_identifier_multi{component} 1')
+    time.sleep(.6)
+    screen = game.ctl('screen')
+    src = next(s['slot'] for s in screen['slots'] if s['slot'] < 36 and s.get('item') == 'ntm:fluid_identifier_multi')
+    game.ctl(f'click-slot {src}')
+    game.ctl(f'click-slot {300 + slot}')
+    time.sleep(.4)
+    game.command('tick sprint 20')
+    time.sleep(2)
+
+
+def identifier(game):
+    game.evidence['phase'] = 'identifier'
+    x, y, z = 320, 100, 8
+    start_area(game, x, y, z, 10)
+    game.command('give @s ntm:machine_combustion_engine 1')
+    game.command(f'tp @s {x + .5} {y} {z + 3.5}')
+    time.sleep(2)
+    game.ctl(f'place {x} {y} {z} --item ntm:machine_combustion_engine')
+    game.command('clear @s')
+    core = core_of(game, 'ntm:machine_combustion_engine', x, y, z, reach=(4, 3))
+    open_near(game, x, y, z)
+    game.put('ntm:canister_full__diesel', 1, 0)
+    for _ in range(10):
+        game.command('tick sprint 20')
+        time.sleep(1.5)
+        before = tank_state(game, core)
+        if before and before[1] > 0:
+            break
+    game.check('the_tank_holds_diesel_first', before is not None and before[0] == 'diesel' and before[1] > 0, before)
+    identifier_in_slot(game, core, '{ntm_fluid:"kerosene"}', 4)
+    typed = tank_state(game, core)
+    game.check('a_kerosene_identifier_types_and_empties_the_tank', typed is not None and typed[0] == 'kerosene' and typed[1] == 0, typed)
+    identifier_in_slot(game, core, None, 4)
+    untyped = tank_state(game, core)
+    game.check('a_bare_identifier_leaves_the_tank_untyped', untyped is not None and untyped == ('', 0), untyped)
+    game.close()
+
+
+PHASES = {'diesel': diesel, 'motor': motor, 'turbofan': turbofan, 'turbina': turbina, 'identifier': identifier}
 
 if __name__ == '__main__':
     game = Game(sys.argv[1], 'combustion')
