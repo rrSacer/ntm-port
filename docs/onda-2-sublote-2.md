@@ -346,3 +346,37 @@ shift-click do menu não foi provado em jogo; (f) só a bateria criativa carrega
   ou como a vazia que a carregada deixa, são duas, os lingotes dez, e a partícula carregada está onde está a cápsula vazia),
   `exposure-break` 7/7 (quebrar a câmara com itens dentro, contra o baú de controle) e `orbus-state` 7/7;
 - mutantes: 38 escolhidos à mão, 38 mortos (dois só depois de um teste do container: `inputs` e `outputs`).
+
+### `machine_cyclotron` (grupo 2a)
+
+`TileEntityMachineCyclotron` (o cíclotron): três faixas em que uma partícula bombardeia um alvo e o transforma em outro pó, com um
+pouco de antimatéria, gastando muita água como refrigerante. Multibloco 5x5x3 (`getDimensions` `{2,0,2,2,2,2}`, offset 2) com doze
+portas (`getAllPorts`, `makeExtra`): três em cada lado da base, abertas para fora; levam energia, fluido e inventário. 12 slots
+(linha 66): 0 a 2 as partículas, 3 a 5 os alvos, 6 a 8 as saídas, 9 a bateria, 10 e 11 as melhorias; três tanques: água de entrada
+(32 000 mB), vapor gasto de saída (32 000 mB) e antimatéria de saída (8 000 mB); 100 000 000 HE.
+
+Um tick (`updateEntity`, linhas 109-137): a bateria dá a energia; se pode processar (energia para o tick, água, lugar no tanque de
+vapor e uma faixa cuja receita tem lugar na saída; `canProcess`, linhas 155-171), o progresso corre pela velocidade, a energia sai, a água
+vira vapor (`coolant` por tick) e, aos 690, cada faixa que pode faz a sua saída e soma a antimatéria da receita (`process`, linhas
+189-224); senão o progresso volta a 0. As melhorias (`UpgradeManagerNT`, até 3 cada): velocidade `+1` por nível no progresso, potência
+`-100 000 HE` por nível, efeito `500 / (nível + 1) * velocidade` mB de água por tick (inteiros: `500 / 4 * 4 = 500`, não `500`).
+
+| Regra | Java | Port |
+| --- | --- | --- |
+| Receitas | `CyclotronRecipes.registerDefaults` (linhas 28-93): 42 receitas de partícula (lítio, berílio, carbono, cobre, plutônio) + alvo (pó de OreDict ou item) dando um pó e uma quantidade de antimatéria | `data/machines/cyclotron.json`, de `tools/content-gen/cyclotron_data.py`: 38 receitas; 4 ficam `skipped` porque o catálogo não tem o item (`dustPhosphorus` duas vezes, `dustLanthanium`, `dustActinium`); o mapa do Java é um `HashMap`, mas nenhum alvo é de duas receitas da mesma partícula (`collisions` vazio), então a ordem não importa |
+| Estado fora dos slots | `power`, `progress` e os três tanques | `save_state`: viajam com os slots: um corte não deixa os insumos de uma faixa gastos sem a saída, nem a água gasta sem o vapor |
+| Mão | `Slot` comum nos slots 0 a 5, 9 a 11; `SlotCraftingOutput` nas saídas | `slot_filters` (as saídas com `output`) e `slot_allows` |
+| Shift-click | partícula (as 5 do Java) para 0..3; bateria para 9; melhoria para 10..12; o resto para os alvos 3..6 | `slot_filters`: partículas das receitas para 0..3, ingredientes das receitas para 3..6, a bateria criativa, as melhorias (item sem receita não entra nos alvos) |
+| Funil/duto | `isItemValidForSlot` (linhas 304-323): uma partícula de alguma receita nos slots 0 a 2, um alvo de alguma receita nos 3 a 5; `canExtractItem` as saídas | `cyclotron::allows` e `container()` |
+| Faixas por célula | `getAccessibleSlotsFromSide(x, y, z, side)`: cada uma das três células de um lado liga uma faixa (`{0, 3}`, `{1, 4}`, `{2, 5}`) e as saídas | a política de slots do motor vale por máquina, não pela célula (`docs/native-slot-policy.md`): todas as células alcançam os slots 0 a 8 |
+| Tela | `GUIMachineCyclotron` 190x215: energia, seta de progresso `progresso * 34 / 690`, lâmpada com a seta, três tanques | visual-gen; treze valores (o 34 é o divisor da seta) |
+| Portas | `rotatePorts`: `(2, 0, ±1)`, `(-2, 0, ±1)`, `(±1, 0, 2)`, `(±1, 0, -2)` | os mesmos pontos em `(-x, -z)` no quadro de quem coloca, cada uma aberta para fora (teste unitário) |
+
+**A água.** Um ciclo pede 690 ticks de progresso, e o refrigerante é `500 / (efeito + 1) * velocidade` mB por tick: com velocidade 1 são
+345 000 mB por ciclo, e com velocidade 3 e efeito 3 ainda 86 000 (o total quase não depende da velocidade). O tanque de entrada tem
+32 000 mB e o de vapor 32 000 mB: sem uma rede que traga a água e leve o vapor, a máquina roda só uns 64 ticks. Os testes de unidade
+usam tanques maiores; o de jogo usa um orbus cheio de barris como fonte e outro como destino do vapor.
+
+Lacunas: (a) as faixas por célula (acima); (b) as quatro receitas que o catálogo não tem; (c) os plugues decorativos (`plugs`, itens que
+se põem com o botão direito e só mudam o modelo) e o modelo e a animação do bloco; (d) o painel de informação das melhorias é uma dica
+de texto; (e) o shift-click não foi provado em jogo; (f) só a bateria criativa carrega no slot 9.
