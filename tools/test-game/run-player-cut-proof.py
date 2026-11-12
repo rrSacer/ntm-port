@@ -15,9 +15,10 @@ effect shows the potion. `migration` (with the control): prepared by `--prepare-
 potion lives in the world's storage); after every cut the potion is in the attachment, at its amplifier, with its
 effect, and the doses it gave plus its ticks left are no more than its 600 ticks (nothing dosed twice).
 `field` (slice 4a, with the control): a chunk at 100 000 by `/ntmrad`; its save is the NTM storage's own key, committed
-after the chunks. After every cut the key on the disk is the last commit's or the new one's, and no chunk in it holds
-more than it held before the cut: the larger of the last commit's value, the map's value right before the save and what
-the next update would give it (an update may fall between that reading and the save). The source chunk is never lost.
+after the chunks. After every cut the key on the disk is one of the two commits, chunk by chunk: the last one exactly,
+or the act's save, one instant of the map (every loaded chunk as it was right before the save, or every loaded chunk as
+the next update gave it; a chunk not loaded keeps its last save exactly); a chunk lost, over its value, two instants
+mixed or an unloaded chunk rewritten is neither. The source chunk is never lost.
 """
 import argparse
 import importlib.util
@@ -159,10 +160,37 @@ def coherent(scenario, c, base, may_have_ended=False):
     return st.get('dose', base) == base - HERBAL_MILLIRAD and st.get('herbal', 0) > 0
 
 
+def field_store_verdict(base, pre, first):
+    """The field's key at a reopening against the two commits it may be, chunk by chunk, compared as f32 (the storage
+    writes each f32 as its shortest decimal). `last`: the last commit, exactly, every chunk and no other. `new`: the
+    act's save, one instant of the map: every loaded chunk as the map held it right before the save, or every loaded
+    chunk as the next update gave it (an update may fall between that reading and the save); a chunk not loaded keeps
+    its last save exactly. A chunk the key lacks is 0: a loss unless the instant had it at 0. Anything else (a chunk
+    lost, one over its value, two instants mixed, an unloaded chunk rewritten) is neither."""
+    f32 = lambda x: struct.unpack('<f', struct.pack('<f', x))[0]
+    base = {k: f32(v) for k, v in base.items()}
+    first = {k: f32(v) for k, v in first.items()}
+    if first == base:
+        return 'last', {}
+    keys = set(base) | set(first) | set(pre)
+    best = None
+    for instant in (0, 1):
+        wrong = {}
+        for key in keys:
+            raw, nxt, loaded = pre.get(key, [None, 0.0, False])
+            want = f32((raw, nxt)[instant] or 0.0) if loaded else base.get(key, 0.0)
+            if first.get(key, 0.0) != want:
+                wrong[key] = [first.get(key), want, 'loaded' if loaded else 'not loaded']
+        if not wrong:
+            return 'new', {}
+        best = wrong if best is None or len(wrong) < len(best) else best
+    return 'neither', best
+
+
 def field_coherent(mine):
-    """`field`: the key on the disk at the first reopen is bounded chunk by chunk by the last commit (the act's `before`,
-    read before its session saved), the value before the cut and the next update's; the source chunk is there, and
-    which commit it is is reported. The second reopen still holds the source chunk."""
+    """`field`: the key on the disk at the first reopen is one of the two commits ([`field_store_verdict`]): the last
+    one (the act's `before`, read before its session saved) or the act's save; the source chunk is in it, and still at
+    the second reopen."""
     try:
         base = mine['act_before']['field']['store']
         pre = mine['before_cut']['chunks']
@@ -172,19 +200,10 @@ def field_coherent(mine):
         return False, None
     if 'error' in base or 'error' in first or 'error' in second:
         return False, None
-    # The storage writes each f32 as its shortest decimal; read as a double it is not the f32. Compare as f32.
-    f32 = lambda x: struct.unpack('<f', struct.pack('<f', x))[0]
-    over = {}
-    for key, value in first.items():
-        raw, nxt = pre.get(key, [None, 0.0])
-        bound = max(f32(base.get(key, 0.0)), raw or 0.0, nxt)
-        value = f32(value)
-        if value > bound:
-            over[key] = [value, bound]
+    commit, wrong = field_store_verdict(base, pre, first)
     source = '1,0'
-    commit = 'last' if first == base else 'new'
-    ok = not over and first.get(source, 0.0) > 0.0 and second.get(source, 0.0) > 0.0
-    return ok, {'commit': commit, 'over_bound': over, 'source': [base.get(source), (pre.get(source) or [None])[0], first.get(source), second.get(source)]}
+    ok = commit != 'neither' and first.get(source, 0.0) > 0.0 and second.get(source, 0.0) > 0.0
+    return ok, {'commit': commit, 'wrong': wrong, 'source': [base.get(source), (pre.get(source) or [None])[0], first.get(source), second.get(source)]}
 
 
 def verdict(scenario, mine, control):

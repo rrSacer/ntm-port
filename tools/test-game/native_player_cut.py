@@ -75,8 +75,9 @@ FIELD_CHUNK = (1, 0)  # the chunk of 20.5 101 11.5
 
 
 def field_probe(g, r=16):
-    """`ntmtest rad`: each chunk within r of the field's chunk that the map holds or the next update writes, its raw
-    value (None: not in the map) and the next update's, as floats; and the ticks since the last update. The radius
+    """`ntmtest rad`: each chunk within r of the field's chunk that the map holds, the next update writes or that is
+    loaded: its raw value (None: not in the map) and the next update's, as floats, and whether it is loaded; and the
+    ticks since the last update. The radius
     takes in the whole spread of the act's seconds (each update reaches one chunk further)."""
     text = ' '.join(g.command(f'ntmtest rad {FIELD_CHUNK[0]} {FIELD_CHUNK[1]} {r}').get('chat', []))
     m = re.search(r'timer=(\d+) rad=(\S+)', text)
@@ -85,8 +86,8 @@ def field_probe(g, r=16):
     as_float = lambda bits: struct.unpack('<f', struct.pack('<I', int(bits)))[0]
     chunks = {}
     for item in filter(None, m.group(2).split(';')):
-        c, raw, nxt = item.split(':')
-        chunks[c] = [None if raw == 'none' else as_float(raw), as_float(nxt)]
+        c, raw, nxt, loaded = item.split(':')
+        chunks[c] = [None if raw == 'none' else as_float(raw), as_float(nxt), loaded == '1']
     return {'timer': int(m.group(1)), 'chunks': chunks}
 
 
