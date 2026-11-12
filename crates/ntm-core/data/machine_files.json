@@ -4244,6 +4244,42 @@
 23
 ]
 },
+"ntm:machine_orbus": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 8,
+"y": 17
+},
+{
+"output": true,
+"x": 8,
+"y": 53
+},
+{
+"x": 35,
+"y": 17
+},
+{
+"output": true,
+"x": 35,
+"y": 53
+},
+{
+"x": 125,
+"y": 17
+},
+{
+"output": true,
+"x": 125,
+"y": 53
+}
+],
+"synced": []
+},
 "ntm:machine_ore_slopper": {
 "inventory": [
 8,

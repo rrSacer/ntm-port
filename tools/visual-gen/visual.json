@@ -37708,8 +37708,177 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_orbus": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerBarrel, GUIBarrel 176x166 (storage/gui_barrel.png), as the barrel's: TileEntityMachineOrbus extends TileEntityBarrel (512 000 mB); MachineOrbus.getDimensions {4,0,2,1,2,1} offset 1, TileEntityProxyCombo(false, false, true) (fluid only); the eight ports of getAllPorts (the 2x2 columns at y 0 and y 4) are fluid_proxies; no item ports",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 17
+          },
+          {
+            "x": 8,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 35,
+            "y": 17
+          },
+          {
+            "x": 35,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 125,
+            "y": 17
+          },
+          {
+            "x": 125,
+            "y": 53,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 4,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            4,
+            2
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_barrel.png",
+        "texture_from": "textures/gui/storage/gui_barrel.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              71,
+              17,
+              34,
+              52
+            ],
+            "color": 2,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 3,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              18
+            ]
+          },
+          {
+            "value": 3,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              36
+            ]
+          },
+          {
+            "value": 3,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              54
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              71,
+              17,
+              34,
+              52
+            ],
+            "lines": [
+              "{0} / {1} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              151,
+              35,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_lpw2": {
       "auto": false,

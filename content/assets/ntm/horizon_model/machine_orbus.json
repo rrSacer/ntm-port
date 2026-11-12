@@ -1,0 +1,11 @@
+{
+  "obj": "ntm:models/obj/sphere_uv.obj",
+  "texture": "ntm:textures/models/machines/orbus.png",
+  "rotation": 0,
+  "radius": 2.0,
+  "translate": [
+    1.0,
+    0.0,
+    1.0
+  ]
+}

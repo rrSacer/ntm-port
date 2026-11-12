@@ -489,7 +489,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_orbus",
-        kind: Kind::Inert,
+        kind: Kind::FluidStore,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

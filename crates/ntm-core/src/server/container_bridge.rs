@@ -175,6 +175,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_soldering_station", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
+    ("ntm:machine_orbus", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
     // Energy batch 3 (`crate::combustion`): the generators' slots are their
@@ -414,6 +415,9 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TilePortShapes.comboven: the ring round the core on its two layers.
     ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),
+    // MachineOrbus.getAllPorts (`rotatePorts` puts them on the core's own frame): the 2x2 columns at the bottom and at
+    // the top (y 4), the core being the first bottom one. Their directions (down, up) are not kept.
+    ("ntm:machine_orbus", &[[0, 0, -1], [1, 0, -1], [1, 0, 0], [0, 4, -1], [0, 4, 0], [1, 4, -1], [1, 4, 0]]),
     // MachineExcavator.getAllPorts: (±1, 1, 3) and (±3, 1, 0). The whole
     // layer above the core holds them and reaches the core through the cell
     // over it.
@@ -1148,6 +1152,26 @@ mod tests {
         // The electrolyser's right-hand ports are three cells from its core.
         let cell = fluid_proxy_cells("ntm:machine_electrolyser", [0, 64, 0], Some("north"));
         assert!(cell.contains(&[-3, 64, 4]) && cell.contains(&[1, 64, -5]));
+    }
+
+    /// The orbus's eight ports (`MachineOrbus.getAllPorts`): the 2x2 columns at the bottom and the top of the 5-high box,
+    /// the core being one of the bottom ones; the other seven are its fluid proxies, turned with the facing.
+    #[test]
+    fn the_orbus_has_two_columns_of_ports_four_blocks_apart() {
+        for facing in ["north", "south", "east", "west"] {
+            let cells = fluid_proxy_cells("ntm:machine_orbus", [10, 64, 10], Some(facing));
+            assert_eq!(cells.len(), 7, "{facing}");
+            let low: Vec<_> = cells.iter().filter(|c| c[1] == 64).collect();
+            let high: Vec<_> = cells.iter().filter(|c| c[1] == 68).collect();
+            assert_eq!((low.len(), high.len()), (3, 4), "{facing}");
+            // Each top port is straight over a bottom one (the core included).
+            for h in &high {
+                assert!(low.iter().any(|l| l[0] == h[0] && l[2] == h[2]) || (h[0], h[2]) == (10, 10), "{facing} {h:?}");
+            }
+            // A 2x2 footprint: the three bottom proxies and the core span two cells each way.
+            let (xs, zs): (Vec<i32>, Vec<i32>) = low.iter().map(|c| (c[0], c[2])).chain([(10, 10)]).unzip();
+            assert_eq!((xs.iter().max().unwrap() - xs.iter().min().unwrap(), zs.iter().max().unwrap() - zs.iter().min().unwrap()), (1, 1), "{facing}");
+        }
     }
 
     #[test]

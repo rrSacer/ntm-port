@@ -288,9 +288,11 @@ impl Machine {
                 None => Data::Inert { name: block_id.into() },
             },
             // `TileEntityBarrel` steel 16 000 mB; `TileEntityMachineFluidTank`
-            // 256 000 mB at max(500, fill/100) a tick.
+            // 256 000 mB at max(500, fill/100) a tick; the orbus (a barrel of
+            // 512 000 mB, `TileEntityMachineOrbus`) at max(1 000, ...).
             Kind::FluidStore => Data::FluidStore(match block_id {
                 "ntm:machine_fluidtank" => crate::fluidbox::FluidStore::new(256_000, 500),
+                "ntm:machine_orbus" => crate::fluidbox::FluidStore::new(512_000, 1_000),
                 _ => crate::fluidbox::FluidStore::new(16_000, 0),
             }),
             Kind::BrickFurnace => Data::BrickFurnace(Default::default()),
