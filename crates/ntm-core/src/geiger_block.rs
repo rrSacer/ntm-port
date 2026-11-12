@@ -1,12 +1,13 @@
 //! The Geiger counter block (`GeigerCounter`, `TileEntityGeiger`), Onda 1, slice 4b. Its block entity keeps nothing
 //! (`TileEntityGeiger` has no NBT): its counters start at 0 each time it is made, placed or loaded.
 //!
-//! - `updateEntity:22-52`, every tick: `timer` counts to 10, then reads the world's radiation where the block is
+//! - `updateEntity:31-66`, every tick: `timer` counts to 10, then reads the world's radiation where the block is
 //!   (`check`, `getRadiation`) into `ticker` and notifies the neighbours (the comparators read it again); every fifth
 //!   tick a click from `ticker`'s list (the hand counter's, [`crate::instruments::geiger_pool`]) or, at 0, one in 50
 //!   of `geiger1`.
-//! - `getComparatorInputOverride:153-163`: `min(ceil(check() / 5F), 15)`, read when asked.
-//! - `onBlockActivated:140-151`: not sneaking, the `techBoop` and the hand counter's report (`printGeigerData`).
+//! - `GeigerCounter.getComparatorInputOverride:141-151`: `min(ceil(check() / 5F), 15)`, read when asked.
+//! - `GeigerCounter.onBlockActivated:120-133`: not sneaking, the `techBoop` and the hand counter's report
+//!   (`printGeigerData`).
 
 /// `TileEntityGeiger`'s `timer` and `ticker`.
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
