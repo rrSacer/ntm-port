@@ -227,3 +227,41 @@ do `Games/horizon` recusa o menu da mesa de armadura que veio da main):
   total em lingotes e blocos fica 90 e o modo fica) e `funnel-break` 7/7 (quebrar o funil com itens dentro);
 - mutantes: 18 escolhidos à mão, 17 mortos. O que sobrevive (`count < 4` trocado por `count < 3` na escolha do modo 3x3) é
   equivalente: o teste seguinte `count < size` já descarta um stack de 3.
+
+### `machine_radiolysis` (grupo 2a)
+
+`TileEntityMachineRadiolysis` (a câmara de radiólise): um RTG que craqueia fluidos com o calor e esteriliza itens. Multibloco 3x3x3 no
+centro da base (`getDimensions` `{2,0,1,1,1,1}`, offset 0), com quatro portas `flare` (`makeExtra`) ao lado do núcleo, cada uma aberta
+para fora, que levam energia, fluido e inventário. 15 slots (linha 51): 0 a 9 pelotas de RTG, 10 e 11 o identificador de fluido (entra e
+sai), 12 e 13 a esterilização (entra e sai), 14 a bateria; três tanques de 2 000 mB (a entrada e duas saídas).
+
+Um tick (`updateEntity`, linhas 107-141), na ordem: a energia vai para o item da bateria (`Library.chargeItemsFromTE`); as pelotas dão
+calor (`RTGUtil.updateRTGs`, sem teto, e cada uma decai) e `calor * 10` HE entram no armazém (teto 1 000 000); o identificador do slot 10
+tipa o tanque de entrada e vai para o slot 11, que precisa estar vazio (`FluidTank.setType(10, 11, slots)`, linha 157); os tanques de
+saída recebem o tipo da receita da entrada (`setupTanks`), e uma entrada sem receita zera os três; com calor acima de 100 craqueia 100 mB
+a cada `max(30 - 0.1 * (calor - 100), 5)` ticks, só se as duas saídas têm lugar (`crack`); com calor de 200 ou mais esteriliza a cada 100
+ticks (`sterilize`).
+
+| Regra | Java | Port |
+| --- | --- | --- |
+| Receitas | `RadiolysisRecipes.registerRadiolysis`: água vira 80 mB de peróxido e 20 de hidrogênio (linha 50), mais as 12 receitas de craqueamento, com as saídas como estão | `data/machines/radiolysis.json`, de `tools/content-gen/radiolysis_data.py` (13 entradas; a segunda saída que falta é `NONE`, como no querosene) |
+| Calor | `RTGUtil.updateRTGs` sobre os slots 0 a 9 | `radioisotopes::update_rtgs`, compartilhada com o RTG (que mantém o teto de 600 e 200) |
+| Energia | provedora; `updatePortPOFIFO` oferece antes de gerar | `EnergyNode` provedor; o que o calor fez neste tick (`pending`) entra no armazém depois da oferta da rede, e o item da bateria leva a sua parte antes dele |
+| Bateria | `Library.chargeItemsFromTE`: qualquer bateria carrega | só a bateria criativa (leva tudo); o port não tem carga em outros itens (igual às outras máquinas) |
+| Fluido | `getReceivingTanks` a entrada, `getSendingTanks` as duas saídas | `FluidNode`: a entrada demanda o seu tipo, as saídas oferecem |
+| Mão | `Slot` comum em 0 a 9, 10, 12 e 14; `SlotTakeOnly` em 11 e 13 | `slot_filters` (11 e 13 com `output`) e `slot_allows` |
+| Funil/duto | `isItemValidForSlot`: pelota nos slots de pelota, qualquer coisa no 12; `canExtractItem`: pelota gasta e o slot 13; todas as faces dão `{0..9, 12, 13}` | `radiolysis::allows` e `container()` |
+| Esterilização | `sterilize`: um alimento (`ItemFood`, menos a panqueca) no slot 12 é comido (um por vez); depois um item com `ntmContagion` vai para o 13 sem a marca (um por vez, juntando ao igual até o limite) | `Radiolysis::sterilize`; `ntmContagion` é um campo do `custom_data` do item; o glue passa o `custom_data` de qualquer item que o tenha e o tira quando a lógica o remove |
+| Relógio | `getTotalWorldTime` | o tick da máquina não recebe o relógio do mundo: um contador próprio (`clock`), então a fase do craqueamento e da esterilização muda, a cadência não |
+
+**Listas.** Os alimentos que a esterilização come vêm de duas fontes: os da NTM, achados pelas classes que estendem `ItemFood` e
+`ItemSoup` e pelos itens que `ModItems` faz delas (o que o catálogo não tem, como `crayon`, `apple_lead`, `apple_schrabidium`,
+`tem_flakes` e `med_schizophrenia`, fica `skipped`), e os do vanilla 1.7.10, escritos à mão (o jar está ofuscado e sem fonte aqui) e
+mapeados para a 26.3. As pelotas gastas que saem pelo funil são os seis `pellet_rtg_depleted__*` do catálogo.
+
+Lacunas: (a) o relógio próprio no lugar de `getTotalWorldTime`; (b) a lista vanilla de alimentos é curada, sem linhas citadas; (c) o
+contágio ainda não existe no port (`EntityEffectHandler` e `ModEventHandler` o põem nos itens), então só aparece com um item dado por
+comando; (d) o limite de pilha do item de saída é 64 (o port não conhece o de cada item; o contágio vale em itens que no Java não
+empilham); (e) baterias que não a criativa; (f) os painéis de informação à esquerda da tela (ícones fora dela) não são desenhados:
+o calor vai na dica da barra de energia; (g) o shift-click do menu não foi provado em jogo; (h) as portas, em cada célula, não guardam a
+direção do Java (`canConnect` recusa só `DOWN`) além de ficarem abertas para fora; (i) o modelo do bloco continua sendo a caixa genérica.
