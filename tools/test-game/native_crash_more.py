@@ -1498,7 +1498,7 @@ def orbus_verify(g, again=False):
     quiet(g, 6)
     g.command('tick freeze')
     try:
-        tanks = [O.tank(g, core)] + [O.tank(g, world_cell(core, facing, c)) for c in ((3, 0, -1), (3, 4, 0))]
+        tanks = [O.tank(g, core)] + [O.tank(g, world_cell(core, facing, c)) for c in ((-2, -1, 1), (-2, 5, 0))]
     finally:
         g.command('tick unfreeze')
     held = [t for t in tanks if t]
