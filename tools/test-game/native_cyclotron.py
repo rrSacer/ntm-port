@@ -142,13 +142,15 @@ def ducts(g, core, cell):
         'steam': [(x, 0, 0) for x in range(3, 8)] + [(x, -1, 0) for x in range(7, 10)],
     }
     for fluid, local in rows.items():
-        for l in local:
-            p = cell(*l)
-            g.command(f'setblock {p[0]} {p[1]} {p[2]} ntm:fluid_duct_neo')
-        for l in local:
-            # From the cell over it, or beside it when that is a duct.
-            over = (l[0], 0, 1) if l[1] == 0 or (l[0], 0, 0) in local else (l[0], 0, 0)
-            type_duct(g, fluid, [cell(*l)], cell(*over))
+        # The low ones first, each typed from the cell over it, before the high ones are laid over them; then the high ones from the
+        # cell beside them.
+        for low in (True, False):
+            group = [l for l in local if (l[1] == -1) == low]
+            for l in group:
+                p = cell(*l)
+                g.command(f'setblock {p[0]} {p[1]} {p[2]} ntm:fluid_duct_neo')
+            for l in group:
+                type_duct(g, fluid, [cell(*l)], cell(l[0], 0, 0) if low else cell(l[0], 0, 1))
     g.command('clear @s')
 
 
