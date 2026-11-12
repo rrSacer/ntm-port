@@ -221,9 +221,30 @@ pub fn with_field(s: Option<&str>, key: &str, value: &str) -> String {
     canonical(&format!("{{{body}}}")).expect("valid compound field")
 }
 
+/// `NBTTagCompound.removeTag` on a custom-data compound, as `ItemStack.stackTagCompound` is then null when it has no tags left
+/// (`hasNoTags`): `None` for that, else the rest of the compound. A string that is not a compound is left as it is.
+pub fn without_field(s: &str, key: &str) -> Option<String> {
+    let Some(mut fields) = fields(s) else { return Some(s.into()) };
+    fields.remove(key);
+    if fields.is_empty() {
+        return None;
+    }
+    let body = fields.iter().map(|(k, v)| format!("{}:{v}", quote(k))).collect::<Vec<_>>().join(",");
+    Some(canonical(&format!("{{{body}}}")).expect("valid compound field"))
+}
+
 #[cfg(test)]
 mod tests {
-    use super::canonical;
+    use super::{canonical, without_field};
+
+    #[test]
+    fn a_field_leaves_and_an_empty_compound_is_none() {
+        assert_eq!(without_field("{a:1b,b:\"x y\"}", "a").as_deref(), Some("{b:\"x y\"}"));
+        assert_eq!(without_field("{a:1b}", "a"), None);
+        assert_eq!(without_field("{a:1b}", "zz").as_deref(), Some("{a:1b}"));
+        assert_eq!(without_field("{}", "a"), None);
+    }
+
 
     #[test]
     fn the_engines_order_and_numbers_are_the_same_data() {
