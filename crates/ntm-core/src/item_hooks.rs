@@ -587,7 +587,6 @@ mod tests {
             let line = crate::instruments::geiger_lines(&crate::instruments::Readings {
                 dose_millirad: 0,
                 chunk_rad: 0.0,
-                zone_millirad_s: 0,
                 buffer_millirad_s: 0,
                 resistance: r,
             })[4]

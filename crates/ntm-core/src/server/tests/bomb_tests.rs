@@ -114,27 +114,11 @@ fn a_little_boy_assembled_in_its_slots_goes_off_by_redstone() {
     assert!(w.blocks.values().any(|s| s == "ntm:sellafield_slaked"));
     assert!(w.hurts.iter().any(|h| h.0 == "p1" && h.2 == "minecraft:explosion"), "sem dano");
     drop(w);
-    let dose = g.ready().world.radiation.get("p1").map_or(0, |d| d.millirad);
-    // The blast's dose passes 1000 RAD: radiation kills and the dose starts again from 0 (EntityEffectHandler
-    // .handleRadiationEffect:223-226, slice 5b).
-    let died = g.world.borrow().hurts.iter().any(|h| h.0 == "p1" && h.2 == crate::radiation::RADIATION_DAMAGE);
-    assert!(died, "a dose da bomba não matou");
-    assert_eq!(dose, 0);
-    assert_eq!(g.ready().world.bombs.zones.len(), 1);
-    assert!(g.server.area_rate("p1") > 0);
-    // A zona soma dose a cada segundo, sem depender da amostra do cliente.
-    // (Passada a carência de entrada; o pulso já deu o teto de 2.500 RAD:
-    // zera para medir.)
-    g.run(crate::radiation::GRACE_TICKS as usize);
-    g.ready().world.radiation.insert("p1".into(), Default::default());
-    let before = 0;
-    g.run(40);
-    let after = g.ready().world.radiation.get("p1").map_or(0, |d| d.millirad);
-    assert!(after > before, "a zona não somou dose: {before} → {after}");
-    // Criativo: nenhuma radiação de área.
-    set_creative(&mut g, true);
-    g.run(1);
-    assert_eq!(g.server.area_rate("p1"), 0);
+    // `raiomax 10`: strength 2 × 10 is under the 75 `EntityNukeExplosionMK5.onUpdate:66` radiates from, and a crater
+    // leaves no lingering area (slice 4e): no dose now nor later.
+    assert!(!g.world.borrow().hurts.iter().any(|h| h.0 == "p1" && h.2 == crate::radiation::RADIATION_DAMAGE));
+    g.run(crate::radiation::GRACE_TICKS as usize + 40);
+    assert_eq!(g.ready().world.radiation.get("p1").map_or(0, |d| d.millirad), 0);
     // The components are spent: nothing dropped.
     assert!(g.world.borrow().dropped.is_empty());
     // Nothing of the explosion left in the storage.
@@ -187,7 +171,7 @@ fn the_detonator_links_and_sets_off_a_ready_bomb() {
     let w = g.world.borrow();
     assert!(!w.blocks.values().any(|s| s.starts_with("ntm:sellafield") || s.starts_with("ntm:fallout")));
     drop(w);
-    assert!(g.ready().world.bombs.zones.is_empty());
+    assert!(g.server.blasts.radiating.is_empty());
 }
 
 #[test]
@@ -390,4 +374,76 @@ fn the_native_detonator_links_on_a_bomb_and_fires_elsewhere() {
     assert!(bomb_data(&mut g, at).is_some(),"the intent awaits the next local step");
     g.run(1);
     assert!(bomb_data(&mut g, at).is_none());
+}
+
+/// 4e: `EntityNukeExplosionMK5.radiate:102-136`. The entity's updates 2 to 9 (`ticksExisted` counts before
+/// `onUpdate`; the first has no explosion yet) each give `2 500 000 / (5t + 1) / max(res, 1) / len²` through
+/// `contaminate(.., RAD_BYPASS, ..)`: the armor does not count, a creative player's Geiger hears it and takes no dose.
+/// Then nothing: a crater leaves no area behind.
+#[test]
+fn a_nuke_radiates_its_eight_first_updates_and_leaves_nothing() {
+    let mut g = bomb_game(40);
+    let at = [3, 70, 3];
+    let id = "ntm:nuke_boy";
+    place_bomb(&mut g, at, id);
+    assemble(&mut g, at, id, 0..5);
+    // 40 blocks east of the center, the line through air above the floor; a creative one 40 south.
+    let far = PlayerInfo { id: "p1".into(), name: "Steve".into(), dim: OW.into(), pos: [43.5, 70.0, 3.5], creative: false };
+    let watcher = PlayerInfo { id: "p2".into(), name: "Alex".into(), dim: OW.into(), pos: [3.5, 70.0, 43.5], creative: true };
+    g.server.set_players(vec![far, watcher]);
+    g.run(crate::radiation::GRACE_TICKS as usize + 5);
+    // A full grey hazmat (10^-2): RAD_BYPASS goes through it.
+    g.world.borrow_mut().radiation_factor = f64::from(10f32.powf(-2.0));
+    power(&mut g, at, true);
+    let dose = |g: &mut Game, id: &str| g.ready().world.radiation.get(id).map_or(0, |d| d.millirad);
+    let (mut gains, mut last, mut heard) = (Vec::new(), 0, 0);
+    for n in 0..80 {
+        g.run(1);
+        let d = dose(&mut g, "p1");
+        if d > last {
+            gains.push((n, d - last));
+        }
+        last = d;
+        heard = heard.max(g.server.rad_buf("p2"));
+    }
+    assert_eq!(gains.len(), 8, "{gains:?}");
+    assert!(gains.windows(2).all(|w| w[1].0 == w[0].0 + 1), "eight updates in a row: {gains:?}");
+    let len = ((40.0f64).powi(2) + (1.62f64 - 0.5).powi(2)).sqrt();
+    let mut carry = 0.0;
+    for ((_, got), t) in gains.iter().zip(2u32..) {
+        let amount = 2_500_000f32 / (t * 5 + 1) as f32 / 1.0 / (len * len) as f32;
+        carry += f64::from(amount) * 1000.0;
+        let whole = carry.trunc();
+        carry -= whole;
+        assert_eq!(*got, whole as u64, "update {t}");
+    }
+    assert_eq!(dose(&mut g, "p2"), 0, "creative: ContaminationUtil:284");
+    assert!(heard > 0, "radEnv takes the amount before the gates");
+    g.run(400);
+    assert_eq!(dose(&mut g, "p1"), last, "no area after the pulse");
+    assert!(g.server.blasts.radiating.is_empty());
+}
+
+/// 4e: a test nuke in the air has next to nothing to dig and its crater ends at once; the pulse is the entity's, not
+/// the crater's, and still gives its eight updates.
+#[test]
+fn a_nuke_in_the_air_still_radiates_eight_updates() {
+    let mut g = bomb_game(40);
+    let mut tester = player();
+    tester.pos = [200.5, 150.0, 0.5];
+    g.server.set_players(vec![tester.clone()]);
+    g.run(crate::radiation::GRACE_TICKS as usize + 5);
+    let out = g.server.bomb_command(&mut g.sh, Some(&tester), "teste 40");
+    assert!(out.is_ok(), "{out:?}");
+    let far = PlayerInfo { pos: [250.5, 150.0, 0.5], creative: false, ..tester };
+    g.server.set_players(vec![far]);
+    let dose = |g: &mut Game| g.ready().world.radiation.get("p1").map_or(0, |d| d.millirad);
+    let (mut gains, mut last) = (0, 0);
+    for _ in 0..40 {
+        g.run(1);
+        let d = dose(&mut g);
+        gains += usize::from(d > last);
+        last = d;
+    }
+    assert_eq!(gains, 8);
 }
