@@ -145,3 +145,32 @@ intacto. Corte de quebra `orbus-break` (a orbus com 6 recipientes vazios quebrad
 estrito sem salvamento adiantado de chunks): 7 de 7 pontos. No modo normal, com o salvamento adiantado de chunks, dois pontos de
 morte sem save (`kill`, `kv_committed`) divergem do controle porque o baú de vanilla perde os 6 itens que a orbus conserva; o critério
 do harness para esses pontos é "evidência, não prova", e a prova é o modo estrito (evidência em `orbus-break-eager`).
+
+### `machine_keyforge` (grupo 2a)
+
+`TileEntityMachineKeyForge` (mesa do chaveiro): três slots, sem energia, sem fluido, sem multibloco (`updateEntity`, linhas
+187-201). Se o slot 0 e o slot 1 têm um `ItemKeyPin` que pode transferir, o slot 1 recebe os pinos do slot 0 (`setPins`); se o slot
+2 tem um, ele recebe `rand.nextInt(900) + 100` **a cada tick**. Os itens são os `ItemKeyPin` do Java: `key`, `key_fake` (que não
+transfere: `canTransfer`, não muda nem é copiado) e os quatro cadeados (`padlock_rusty`, `padlock`, `padlock_reinforced`,
+`padlock_unbreakable`). Os pinos são o int `pins` do NBT; no port, o int `pins` do `custom_data` do item, e os demais dados do item
+ficam (`snbt::with_field`).
+
+| Regra | Java | Port |
+| --- | --- | --- |
+| Mão | `Slot` comum: aceita qualquer item nos três slots | `slot_allows`: qualquer item, só por clique (`manual`) |
+| Funil | `isItemValidForSlot` é sempre falso: nenhum funil põe nada; `canExtractItem` é verdadeiro | `container`: sem entradas, três saídas |
+| Lados | `getAccessibleSlotsFromSide`: de cima o slot 0, de baixo o 1, dos lados o 2 | `container().faces` |
+| Shift-click | `transferStackInSlot`: do inventário só para o slot 0 | `slot_filters`: os slots 1 e 2 recusam o shift |
+| Aleatório | `worldObj.rand` | xorshift64* com o estado guardado na máquina |
+| Tela | `ContainerMachineKeyForge`: slots (44,36), (80,36), (116,36); `gui_keyforge.png` 176x186; dois painéis de informação | tela do visual-gen; os painéis são dicas de texto nas posições (12,28) e (12,44), sem os ícones |
+
+O glue (`stack()`) passa o `custom_data` desses seis itens à lógica (como para o identificador de fluido e o item quebrado).
+
+Lacunas: o shift-click que sai dos slots 1 e 2 (no Java vai para o slot 0, uma esquisitice de `mergeItemStack(var5, 0, 1, false)`; no
+port vai para o inventário); os ícones dos painéis de informação; o nome do item e o modelo, que são os do bloco da fonte.
+
+Provas (cliente release `a372c919…`, `ntm.hmod` `54e13d99…`, em `content-gen-evidence/onda2-s2/`): 6 testes de unidade e um de
+servidor pela ponte (os pinos vão do slot 0 ao 1, o 2 rola três dígitos, a chave falsa fica como estava); no jogo
+`run-native-reactors.py keyforge` (8 verificações, 0 falhas): a segunda recebe os pinos da primeira, a terceira muda a cada leitura
+com três dígitos, a chave falsa guarda os seus pinos, um funil embaixo tira o item do slot 1 e um funil em cima não põe nada (guarda
+as três chaves do baú), e depois de salvar e reabrir o mundo os dois primeiros slots seguem iguais e o terceiro continua rolando.
