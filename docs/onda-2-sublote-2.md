@@ -146,6 +146,14 @@ estrito sem salvamento adiantado de chunks): 7 de 7 pontos. No modo normal, com 
 morte sem save (`kill`, `kv_committed`) divergem do controle porque o baú de vanilla perde os 6 itens que a orbus conserva; o critério
 do harness para esses pontos é "evidência, não prova", e a prova é o modo estrito (evidência em `orbus-break-eager`).
 
+**Correção das portas (depois da aprovação).** As oito portas de fluido da orbus ficaram espelhadas pelo núcleo: a regra do
+`docs/visual-fiel.md` (a porta `(x, y, z)` do NTM fica em `(-x, y, -z)` no bridge, porque `rotatePorts` leva o x para a esquerda de quem
+coloca e o z para quem coloca) não tinha sido aplicada, e a tabela usava as tuplas do Java direto. Os dois testes de jogo da orbus
+passavam porque punham os dutos ao lado das mesmas células erradas. Agora as portas são `[[0,0,1], [-1,0,1], [-1,0,0], [0,4,1],
+[0,4,0], [-1,4,1], [-1,4,0]]` (mais o núcleo), o teste unitário confere as células esperadas e que as espelhadas não são portas, e o
+teste de jogo põe um duto por baixo da porta de baixo e outro por cima da de cima (as faces livres, e as do Java: `DOWN` e `UP`), cada
+um com o seu barril. Reprovado e refeito: jogo 8/8 e corte `orbus-state` 7/7 no cliente novo.
+
 ### `machine_keyforge` (grupo 2a)
 
 `TileEntityMachineKeyForge` (mesa do chaveiro): três slots, sem energia, sem fluido, sem multibloco (`updateEntity`, linhas
@@ -284,3 +292,37 @@ direção do Java (`canConnect` recusa só `DOWN`) além de ficarem abertas para
   `radiolysis-break` 7/7 (quebrar a câmara com itens dentro, contra o baú de controle);
 - mutantes: 36 escolhidos à mão, 36 mortos; cinco só morreram depois de testes mais fortes (limite de 100 de calor com o relógio no
   múltiplo certo, exatamente 100 mB, saída com vaga exata, limpeza do contágio ao juntar, tanque sem tipo).
+
+
+### `machine_exposure_chamber` (grupo 2a)
+
+`TileEntityMachineExposureChamber` (a câmara de exposição): uma cápsula de partícula expõe oito lingotes do ingrediente da sua receita,
+um de cada vez. Multibloco irregular (`MachineExposureChamber`): o corpo 5x5x5 (`getDimensions` `{4,0,2,2,2,2}`, offset 2) e cinco
+caixas (`getAllDimensions`: o corredor de 6 células à direita, duas pontes e duas pernas), 17 células de comprimento; as cinco portas
+(`getPorts`, `makeExtra`) ficam nas pontas das pernas e do corredor, cada uma aberta para fora, e levam energia e inventário. Oito
+slots no Java (linha 91): 0 a partícula, 1 a partícula carregada (interna), 2 a cápsula vazia, 3 o ingrediente, 4 a saída, 5 a bateria,
+6 e 7 as melhorias; a tela e o port usam os sete que aparecem (o 1 é um fantasma de tamanho 0 no Java; aqui é o id da cápsula em
+`loaded`).
+
+Um tick (`updateEntity`, linhas 109-192): a bateria dá a energia; as melhorias fixam o tempo e o consumo (200 ticks e 10 000 HE, em
+`int`: `tempo = 200 - 50 * velocidade`, `consumo *= velocidade / 2 + 1`, `tempo *= potência / 2 + 1`, `consumo /= potência + 1`,
+`tempo /= overdrive + 1`, `consumo *= 2 * overdrive + 1`); sem partícula carregada e com uma cápsula e um ingrediente que fazem receita,
+a cápsula é carregada (a vazia vai para o slot 2, que precisa aceitá-la) e dá 8 usos; com partícula, energia para um tick e lugar na
+saída, o progresso corre e, no fim do tempo, um ingrediente vira a saída e um uso se gasta; sem usos a partícula sai.
+
+| Regra | Java | Port |
+| --- | --- | --- |
+| Receitas | `ExposureChamberRecipes.registerDefaults` (linhas 29-36): higgs + urânio dá schraranium, higgs + U238 dá schrabidium, escuro + plutônio dá euphemium, sparkticle + schrabidate dá dineutronium; o ingrediente é `OreDictStack(X.ingot())` | `data/machines/exposure.json`, de `tools/content-gen/exposure_data.py` (o nome do OreDict é `ingot` + o primeiro nome da `DictFrame`; os itens, do `oredict.json`; a cápsula vazia é o `setContainerItem` da partícula) |
+| Modo caro | a receita do dineutronium com a matéria degenerada, em `enableExpensiveMode` | fora (desligado por padrão); fica `skipped` com o motivo |
+| Melhorias | `UpgradeManagerNT`, velocidade, potência e overdrive até 3 | `upgrades::level`, as mesmas contas em inteiros |
+| Estado fora dos slots | `power`, `progress`, `savedParticles`, o slot 1 | `save_state`: a energia, o progresso, os usos e o código da partícula viajam com os slots: um corte não deixa a cápsula gasta sem usos nem usos sem a cápsula |
+| Mão | `Slot` comum nos slots 0, 3, 5, 6, 7; `SlotTakeOnly` (cápsula vazia) e `SlotCraftingOutput` (saída) | `slot_filters` (a cápsula vazia e a saída com `output`) e `slot_allows` |
+| Funil/duto | `isItemValidForSlot` (linhas 196-231): só entram partícula e ingrediente que fazem receita (com o outro já presente) ou, sem nada, qualquer um de alguma receita; `canExtractItem`: a cápsula vazia e a saída; todas as faces dão `{0, 2, 3, 4}` | `exposure::allows` e `container()` |
+| Tela | `GUIMachineExposureChamber` 176x186 (`gui_exposure_chamber.png`): barra de energia, progresso `progresso * 42 / (tempo + 1)`, partículas `usos * 16 / 8`, lâmpada se `consumo <= energia` | visual-gen: as barras, a lâmpada e as dicas de energia e partículas; sete valores |
+| Portas | `rotatePorts`: `(-7, 0, ±1)`, `(-8, 0, ±1)` e `(-8, 0, 0)` | `(7, 0, ∓1)`, `(8, 0, ∓1)` e `(8, 0, 0)` no quadro de quem coloca, cada uma aberta para fora do volume (teste unitário que confere que cada porta é célula do volume e que a face livre não entra nele) |
+
+Lacunas: (a) a receita do modo caro; (b) a regra de `isItemValidForSlot` que usa a partícula interna (linha 205) como referência: com
+uma cápsula carregada e o slot de entrada vazio o Java recusa um ingrediente que o funil traz com o slot do ingrediente vazio, e o port
+o aceita (a política só vê os slots do motor, e a partícula interna não é um deles: guardá-la num slot dropperia uma cápsula ao quebrar);
+(c) o modelo do bloco continua a caixa genérica e o rotor não gira; (d) os painéis de informação das melhorias não são desenhados; (e) o
+shift-click do menu não foi provado em jogo; (f) só a bateria criativa carrega no slot 5 (igual às outras máquinas).
