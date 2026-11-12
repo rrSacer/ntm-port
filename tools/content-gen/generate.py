@@ -235,7 +235,11 @@ def generate(src,out,rows,distributions,max_damage=True):
    template=row.get('template','minecraft:beehive' if machine else 'minecraft:iron_block' if row['category'] in ('storage','resource_block') else 'minecraft:stone')
    properties={'hardness':5.0,'explosion_resistance':10.0,'requires_tool':True,'sounds':'minecraft:iron_block' if machine or row['category']=='storage' else 'minecraft:stone','light':0,**row.get('block_properties',{})}
    properties['sounds']=sound_block(properties['sounds'])
-   emit(f'data/ntm/horizon/block/{name}.json',{'template':template,'properties':properties,'item':True})
+   declaration={'template':template,'properties':properties,'item':True}
+   # Bounds by state (the engine's `shapes`, the collision too when no `collision_shapes`), in blocks.
+   for key in ('shapes','collision_shapes'):
+    if row.get(key):declaration[key]=row[key]
+   emit(f'data/ntm/horizon/block/{name}.json',declaration)
    if machine:
     textures={face:texture('src/main/resources/assets/hbm/textures/'+path+'.png') for face,path in row['textures'].items()}
     if row.get('opaque_machine_textures'):

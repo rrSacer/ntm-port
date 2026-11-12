@@ -36255,6 +36255,17 @@
     "ntm:decon": {
       "auto": false,
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:geiger": {
+      "source": "GeigerCounter, RenderGeiger: the geiger_counter OBJ turned by the meta (2: 0, 4: 90, 3: 180, 5: 270), which is the way the placer looks; the beehive's facing is the other way, so 180 more",
+      "model": {
+        "obj": "ntm:models/obj/geiger_counter.obj",
+        "obj_from": "models/blocks/geiger_counter.obj",
+        "texture": "ntm:textures/models/geiger.png",
+        "texture_from": "textures/models/ModelGeiger.png",
+        "rotation": 180,
+        "radius": 1.0
+      }
     }
   },
   "textures": {

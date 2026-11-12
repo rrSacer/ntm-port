@@ -5,7 +5,8 @@ The content has no block states of its own, so each level is a block, as the por
 (`<registry path>__<n>`); level 0 keeps `ntm:sellafield`, the id worlds already hold. Each level's texture is the
 Java's runtime tint (`BlockSellafield.registerBlockIcons`): `RGBMutatorInterpolatedComponentRemap(0x858384, 0x434343,
 light, dark)` over `sellafield_slaked`, with the level's pair of `colors`; the names are `tile.sellafield.<n>.name`.
-Writes radiation_blocks.json, which generate.py merges into the catalog.
+Slice 4b adds the Geiger counter block (`GeigerCounter`). Writes radiation_blocks.json, which generate.py merges into
+the catalog.
 
   python3 tools/content-gen/radiation_blocks.py
 """
@@ -47,10 +48,35 @@ def rows():
             'behavior_gap': 'Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick '
                             '(incrementRad) waits for slice 4; the four position texture variants are reduced to the first',
         })
-    return out
+    return out + [geiger(translations)]
+
+
+def geiger(translations):
+    """`GeigerCounter` (ModBlocks:1635): Material.iron, hardness 15, resistance 0.25, the machine tab. Drawn by
+    RenderGeiger's OBJ (visual.json); turned by the meta its placer's yaw gives, which is the way the placer looks
+    (`onBlockPlacedBy`: yaw 0, south, is meta 3). The beehive faces the placer, the other way: the model takes 180
+    more (visual.json) and each facing takes the bounds of the meta opposite it (`setBlockBoundsBasedOnState`, the
+    same for the collision box)."""
+    f = 1 / 16
+    meta_bounds = {4: [0, 0, 0, 14 * f, 9 * f, 14.5 * f], 2: [1.5 * f, 0, 0, 1, 9 * f, 14 * f],
+                   5: [2 * f, 0, 1.5 * f, 1, 9 * f, 1], 3: [0, 0, 2 * f, 14.5 * f, 9 * f, 1]}
+    # The beehive's facing and the meta the Java gives the same placement (opposite ways).
+    opposite_meta = {'north': 3, 'south': 2, 'west': 5, 'east': 4}
+    return {
+        'id': 'geiger', 'source_variable': 'geiger', 'type': 'block', 'category': 'machine', 'source_class': 'GeigerCounter',
+        'template': 'minecraft:beehive',
+        'textures': {'side': 'blocks/geiger', 'top': 'blocks/geiger', 'front': 'blocks/geiger'},
+        'source_texture': 'src/main/resources/assets/hbm/textures/blocks/geiger.png',
+        # setHardness(15.0F).setResistance(0.25F); no step sound set: the stone one.
+        'block_properties': {'hardness': 15.0, 'explosion_resistance': 0.25, 'sounds': 'minecraft:stone'},
+        'shapes': {'property': 'facing', 'values': {facing: [[round(v, 6) for v in meta_bounds[meta]]] for facing, meta in opposite_meta.items()}},
+        'names': {loc: table['tile.geiger.name'] for loc, table in translations.items()},
+        'behavior_gap': 'TileEntityGeiger (clicks, comparator, report) in the native glue and ntm-core geiger_block (slice 4b); '
+                        'the OpenComputers and Energy Control readings have no mods to read them',
+    }
 
 
 if __name__ == '__main__':
     entries = rows()
     write_json(HERE / 'radiation_blocks.json', {'schema': 1, 'entries': entries})
-    print(len(entries), 'radiation block levels')
+    print(len(entries), 'radiation blocks')

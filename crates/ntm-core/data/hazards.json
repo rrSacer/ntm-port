@@ -32117,6 +32117,15 @@
       ],
       "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
       "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:geiger",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
     }
   ],
   "extraction_gaps": [

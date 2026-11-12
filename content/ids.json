@@ -232,7 +232,8 @@
     "ntm:anvil_schrabidate",
     "ntm:anvil_dnt",
     "ntm:anvil_osmiridium",
-    "ntm:anvil_murky"
+    "ntm:anvil_murky",
+    "ntm:geiger"
   ],
   "internal_blocks": [
     {
@@ -110965,6 +110966,92 @@
         }
       ],
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:geiger",
+      "source_variable": "geiger",
+      "type": "block",
+      "category": "machine",
+      "source_class": "GeigerCounter",
+      "template": "minecraft:beehive",
+      "textures": {
+        "side": "blocks/geiger",
+        "top": "blocks/geiger",
+        "front": "blocks/geiger"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/geiger.png",
+      "block_properties": {
+        "hardness": 15.0,
+        "explosion_resistance": 0.25,
+        "sounds": "minecraft:stone"
+      },
+      "shapes": {
+        "property": "facing",
+        "values": {
+          "north": [
+            [
+              0,
+              0,
+              0.125,
+              0.90625,
+              0.5625,
+              1
+            ]
+          ],
+          "south": [
+            [
+              0.09375,
+              0,
+              0,
+              1,
+              0.5625,
+              0.875
+            ]
+          ],
+          "west": [
+            [
+              0.125,
+              0,
+              0.09375,
+              1,
+              0.5625,
+              1
+            ]
+          ],
+          "east": [
+            [
+              0,
+              0,
+              0,
+              0.875,
+              0.5625,
+              0.90625
+            ]
+          ]
+        }
+      },
+      "names": {
+        "en_us": "Geiger Counter",
+        "pt_br": "Contador Geiger"
+      },
+      "behavior_gap": "TileEntityGeiger (clicks, comparator, report) in the native glue and ntm-core geiger_block (slice 4b); the OpenComputers and Energy Control readings have no mods to read them",
+      "source_registry": "hbm:tile.geiger",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": "facing",
+        "active": null,
+        "level": {
+          "prop": "honey_level",
+          "max": 5
+        }
+      }
     }
   ]
 }
