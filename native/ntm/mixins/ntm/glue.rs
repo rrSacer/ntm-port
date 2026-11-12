@@ -1614,6 +1614,13 @@ impl ServerHost for Host<'_, '_> {
     }
     /// Particles and sounds in the dimension in play (`native_send_particles`,
     /// API 11; `native_play_sound`, API 32).
+    /// The motion-blocking heights of the level being ticked (`native_surface_heights`, API 127): another level's
+    /// columns, or a refused read, are not loaded.
+    fn surface_heights(&mut self, dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
+        self.game
+            .native_surface_heights(dim, columns, super::native_world_edit::NativeHeightmap::MotionBlocking)
+            .unwrap_or_else(|_| vec![None; columns.len()])
+    }
     fn show(&mut self, dim: &str, show: &ntm_core::blast::visuals::Show) {
         if dim_of(dim) != Some(self.game.dim) {
             // Particles and sounds reach only the players of the level in place.
@@ -1638,8 +1645,16 @@ fn show_in_place(game: &mut crate::game::Game<'_>, show: &ntm_core::blast::visua
     use ntm_core::blast::visuals::Show;
     let (what, sent) = match show {
         Show::Particles { id, color, at, spread, speed, count } => {
-            let Some(ty) = ParticleType::from_name(id) else { return };
-            let mut options = ParticleOptions::simple(ty);
+            // The NTM's own particles (the radiation fog's quads): a mod particle type, by its namespaced name.
+            let mut options = match ParticleType::from_name(id) {
+                Some(ty) => ParticleOptions::simple(ty),
+                None if id.starts_with("ntm:") => {
+                    let mut options = ParticleOptions::simple(ParticleType::Smoke);
+                    options.mod_particle = Some(id.to_string());
+                    options
+                }
+                None => return,
+            };
             options.color = *color;
             (id, game.with_level(|_, level, _| level.native_send_particles(&options, None, *at, *spread, *speed, *count)))
         }
