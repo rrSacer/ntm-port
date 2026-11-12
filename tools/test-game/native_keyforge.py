@@ -29,8 +29,9 @@ def sprint(g, ticks):
         time.sleep(.5)
 
 
-def slots(g, p=TABLE):
+def slots(g, p=None):
     """slot -> (id, pins or None) from the block entity's items."""
+    p = p or TABLE
     text = ' '.join(g.command(f'data get block {p[0]} {p[1]} {p[2]} Items').get('chat', []))
     out = {}
     depth, start = 0, None
@@ -122,7 +123,8 @@ def setup(g):
     g.command(f'setblock {X} {98} {Z} minecraft:chest')
     g.command(f'setblock {X} 101 {Z} minecraft:hopper[facing=down]')
     g.command(f'setblock {X} 102 {Z} minecraft:chest')
-    g.command(f'item replace block {X} 102 {Z} container.0 with ntm:key 3')
+    for n in range(3):
+        g.command(f'item replace block {X} 102 {Z} container.{n} with ntm:key 1')
     sprint(g, 60)
     text = ' '.join(g.command(f'data get block {X} 98 {Z} Items').get('chat', []))
     g.check('a_hopper_under_it_takes_the_second_slot_out', 'ntm:key_fake' in text, text[:200])
@@ -130,6 +132,7 @@ def setup(g):
     held = ' '.join(g.command(f'data get block {X} 101 {Z} Items').get('chat', []))
     chest = ' '.join(g.command(f'data get block {X} 102 {Z} Items').get('chat', []))
     after = slots(g)
+    g.evidence['containers'] = {str(y): ' '.join(g.command(f'data get block {X} {y} {Z} Items').get('chat', []))[:400] for y in (98, 99, 100, 101, 102)}
     in_the_hopper = sum(int(n) for n in re.findall(r'[cC]ount: ?(\d+)', held))
     in_the_chest = sum(int(n) for n in re.findall(r'[cC]ount: ?(\d+)', chest))
     g.check('a_hopper_over_it_puts_nothing_in', in_the_hopper + in_the_chest == 3 and after.get(0) == ('ntm:key', 456) and set(after) <= {0, 2},

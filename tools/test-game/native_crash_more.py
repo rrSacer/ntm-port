@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'furnace-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -708,6 +708,8 @@ def break_act(g):
         # A multiblock's core hides behind its cells: the player breaks the first cell he can see (any cell breaks it).
         seen = None
         offsets = [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]
+        if SCENARIO == 'keyforge-break':
+            offsets = [(0, 0, 0)]
         if SCENARIO == 'orbus-break':
             import native_orbus
             offsets = [(c[0] - core[0], c[1] - core[1], c[2] - core[2]) for c in native_orbus.dummies(g, core)]
@@ -1217,7 +1219,7 @@ def frozen_state(g, core, keys=('burn_time', 'max_burn_time', 'progress', 'proce
     return out
 
 
-MB_BLOCK = {'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
+MB_BLOCK = {'keyforge': ('ntm:machine_keyforge', '"rng"'), 'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
             'combination': ('ntm:furnace_combination', '"Combination"')}
 MB_AT = (140, 100, 8)
 
@@ -1231,7 +1233,7 @@ def mb_place(g, kind, fire=True):
     g.command('clear @s')
     item, marker = MB_BLOCK[kind]
     g.command(f'give @s {item} 1')
-    if kind == 'orbus':
+    if kind in ('orbus', 'keyforge'):
         g.command(f'tp @s {x + .5} {y} {z + 3.5}')
         g.ctl(f'place {x} {y} {z} --item {item}')
         time.sleep(1.5)
@@ -1257,6 +1259,11 @@ def mb_open(g, kind, core):
     if kind == 'orbus':
         import native_orbus
         native_orbus.open_through(g, native_orbus.dummies(g, core))
+        return
+    if kind == 'keyforge':
+        import native_keyforge as K
+        K.X, K.Z = core[0], core[2]
+        K.open_table(g)
         return
     first = [(0, 1, 0)] if kind == 'iron' else [(0, 0, 1)]
     rest = [(dx, dy, dz) for dy in (1, 0, 2) for dz in (0, 1, -1) for dx in (0, -1, 1) if (dx, dy, dz) not in first]
@@ -1370,7 +1377,7 @@ def state_verify(g, again=False):
 
 # `iron-break`, `steel-break`, `combination-break`: the multiblock furnace holding items, broken, against the chest control
 # holding the same ones; counted item by item, once in the world.
-MB_BREAK = {'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
+MB_BREAK = {'keyforge-break': ('keyforge', [('ntm:key', 1, 0), ('ntm:padlock', 1, 1)]), 'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
             'steel-break': ('steel', [('minecraft:raw_iron', 6, 0), ('minecraft:raw_copper', 3, 1)]),
             'combination-break': ('combination', [('minecraft:coal', 8, 0), ('minecraft:bucket', 2, 2)])}
 
@@ -1421,14 +1428,14 @@ def mb_break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'minecraft:chest'))
+    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'minecraft:chest'))
     inside = mb_items(g, core, ids) if standing else 0
     ents = sum(entities(g, i) for i in ids)
     inv = sum(inventory(g, i) for i in ids)
     detail = {'block': state, 'inside': inside, 'entities': ents, 'inventory': inv, 'total': inside + ents + inv,
               'expected': sum(c for _, c, _ in loads), 'ledger': led, 'machine': machine_present(g, core)}
     counted(g, 'mb_items_exactly_once', detail, again)
-    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus')):
+    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge')):
         g.check('a_standing_furnace_is_a_live_machine', machine_present(g, core), detail)
 
 
@@ -1486,6 +1493,59 @@ def orbus_verify(g, again=False):
     g.check('the_orbus_kept_its_mode', tanks[0] is not None and tanks[0][3] == 'Output', tanks)
 
 
+# `keyforge-state`: a key with pins, a padlock that gets them and one that is rolled every tick, the world saved and killed at
+# each boundary: whatever the cut, the second holds the first's pins and the third three digits.
+def keyforge_parts(g):
+    import native_keyforge as K
+    K.X, K.Z = 140, 8
+    K.TABLE = (140, 100, 8)
+    return K
+
+
+def keyforge_prepare(g):
+    K = keyforge_parts(g)
+    g.ctl('wait-ready 120')
+    K.build(g)
+    K.open_table(g)
+    K.put(g, 'ntm:key', 0, '{pins:321}')
+    K.put(g, 'ntm:padlock', 1)
+    K.put(g, 'ntm:padlock_reinforced', 2)
+    g.close()
+    sprint(g, 30)
+    state = K.slots(g)
+    g.check('the_copy_is_made_before_the_base_save', state.get(1) == ('ntm:padlock', 321), state)
+    g.evidence['core'] = [140, 100, 8]
+    g.ctl('save')
+
+
+def keyforge_act(g):
+    K = keyforge_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 60)
+    g.evidence['after_act'] = K.slots(g)
+    save_expecting_death(g)
+
+
+def keyforge_verify(g, again=False):
+    K = keyforge_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s 140 100 12')
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        state = K.slots(g)
+    finally:
+        g.command('tick unfreeze')
+    counted(g, 'three_stacks_in_the_table', {'total': len(state), 'expected': 3, 'items': state}, again)
+    g.check('the_first_is_untouched', state.get(0) == ('ntm:key', 321), state)
+    g.check('the_second_holds_the_firsts_pins', state.get(1) == ('ntm:padlock', 321), state)
+    third = (state.get(2) or (None, None))[1]
+    g.check('the_third_holds_three_digits', third is not None and 100 <= third <= 999, state)
+    g.check('the_table_is_alive', machine_present(g, (140, 100, 8)), state)
+
+
 def drain(g):
     g.ctl('wait-ready 120')
     g.ctl('save')
@@ -1515,6 +1575,8 @@ STEPS = {
     'steel-state': (state_prepare, state_act, state_verify),
     'combination-state': (state_prepare, state_act, state_verify),
     'orbus-state': (orbus_prepare, orbus_act, orbus_verify),
+    'keyforge-state': (keyforge_prepare, keyforge_act, keyforge_verify),
+    'keyforge-break': (mb_break_prepare, break_act, mb_break_verify),
     'orbus-break': (mb_break_prepare, break_act, mb_break_verify),
     'iron-break': (mb_break_prepare, break_act, mb_break_verify),
     'steel-break': (mb_break_prepare, break_act, mb_break_verify),
