@@ -76,6 +76,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::exposure::BLOCK {
         return Some(crate::exposure::container());
     }
+    if block == crate::cyclotron::BLOCK {
+        return Some(crate::cyclotron::container());
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -130,6 +133,26 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         let output = SlotFilter { output: true, ..Default::default() };
         let mut rules = vec![SlotFilter::default(); crate::funnel::INPUTS];
         rules.extend(vec![output; crate::funnel::INPUTS]);
+        return rules;
+    }
+    if block == crate::cyclotron::BLOCK {
+        // `ContainerMachineCyclotron`: the three outputs are `SlotCraftingOutput`s; a shift-click puts a particle into the first three
+        // slots, a battery into the ninth and an upgrade into the last two, and anything else into the targets (here: the
+        // ingredients of the recipes).
+        let mut rules = vec![SlotFilter::default(); crate::cyclotron::SLOTS];
+        for i in crate::cyclotron::PARTICLES {
+            rules[i].quick_move = Some(crate::cyclotron::particles());
+        }
+        for i in crate::cyclotron::TARGETS {
+            rules[i].quick_move = Some(crate::cyclotron::targets());
+        }
+        for i in crate::cyclotron::OUTPUTS {
+            rules[i].output = true;
+        }
+        rules[crate::cyclotron::BATTERY].quick_move = Some(vec![crate::machine::CREATIVE_BATTERY.to_string()]);
+        for i in crate::cyclotron::UPGRADES {
+            rules[i].quick_move = Some(crate::upgrades::ITEMS.iter().map(|s| s.to_string()).collect());
+        }
         return rules;
     }
     if block == crate::exposure::BLOCK {
@@ -200,6 +223,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::keyforge::BLOCK {
         return crate::keyforge::allows(slot, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::cyclotron::BLOCK {
+        return crate::cyclotron::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if block == crate::exposure::BLOCK {
         return crate::exposure::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);

@@ -37194,7 +37194,304 @@
     },
     "ntm:machine_cyclotron": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineCyclotron, GUIMachineCyclotron 190x215 (machine/gui_cyclotron.png): the three particles (11, 18+18i), the three targets (101, 18+18i), the three outputs (131, 18+18i; SlotCraftingOutput), the battery (168,83) and the two upgrades (60,81) and (78,81); the power bar (168,18) 16x62, the progress arrow (48,27) 34 wide as `getProgressScaled(34)`, the lamp (172,4) while that is above 0, the three tanks (11,81), (11,90) and (107,81); MachineCyclotron: dims {2,0,2,2,2,2} offset 2 (5x5x3) with the twelve `makeExtra` ports, three on each side; the info panel's text is its tip; the block's model stays the casing's (the renderer model is not ported)",
+      "machine": {
+        "slots": [
+          {
+            "x": 11,
+            "y": 18
+          },
+          {
+            "x": 11,
+            "y": 36
+          },
+          {
+            "x": 11,
+            "y": 54
+          },
+          {
+            "x": 101,
+            "y": 18
+          },
+          {
+            "x": 101,
+            "y": 36
+          },
+          {
+            "x": 101,
+            "y": 54
+          },
+          {
+            "x": 131,
+            "y": 18,
+            "output": true
+          },
+          {
+            "x": 131,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 131,
+            "y": 54,
+            "output": true
+          },
+          {
+            "x": 168,
+            "y": 83
+          },
+          {
+            "x": 60,
+            "y": 81
+          },
+          {
+            "x": 78,
+            "y": 81
+          }
+        ],
+        "inventory": [
+          15,
+          133
+        ],
+        "data": 13,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            2,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -2,
+              0,
+              -1
+            ],
+            [
+              -2,
+              0,
+              0
+            ],
+            [
+              -2,
+              0,
+              1
+            ],
+            [
+              2,
+              0,
+              -1
+            ],
+            [
+              2,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              1
+            ],
+            [
+              -1,
+              0,
+              -2
+            ],
+            [
+              0,
+              0,
+              -2
+            ],
+            [
+              1,
+              0,
+              -2
+            ],
+            [
+              -1,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              2
+            ],
+            [
+              1,
+              0,
+              2
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_cyclotron.png",
+        "texture_from": "textures/gui/machine/gui_cyclotron.png",
+        "size": [
+          190,
+          215
+        ],
+        "title": [
+          79,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          15,
+          121
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              168,
+              18,
+              16,
+              62
+            ],
+            "uv": [
+              190,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              48,
+              27,
+              34,
+              34
+            ],
+            "uv": [
+              206,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              11,
+              81,
+              34,
+              7
+            ],
+            "color": 6,
+            "dir": "right"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              11,
+              90,
+              34,
+              7
+            ],
+            "color": 9,
+            "dir": "right"
+          },
+          {
+            "value": 10,
+            "max": 11,
+            "rect": [
+              107,
+              81,
+              34,
+              16
+            ],
+            "color": 12,
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              172,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              190,
+              63
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              168,
+              18,
+              16,
+              63
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              11,
+              81,
+              34,
+              7
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              11,
+              90,
+              34,
+              7
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          },
+          {
+            "rect": [
+              107,
+              81,
+              34,
+              16
+            ],
+            "lines": [
+              "{10} / {11} mB"
+            ]
+          },
+          {
+            "rect": [
+              49,
+              85,
+              8,
+              8
+            ],
+            "lines": [
+              "Acceptable Upgrades:",
+              " * Speed: Stacks to level 3",
+              " * Effectiveness: Stacks to level 3",
+              " * Power-Saving: Stacks to level 3"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_exposure_chamber": {
       "auto": false,

@@ -47,6 +47,12 @@ pub fn facing_dir(facing: &str) -> Option<crate::Pos> {
 pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
     use crate::energy::DIRS;
     // The exposure chamber's five ports, each open on the face `crate::exposure::PORTS` gives, turned with the facing.
+    if spec.kind == Kind::Cyclotron {
+        return facing
+            .and_then(facing_dir)
+            .map(|f| crate::cyclotron::PORTS.iter().map(|(_, face)| vec![crate::server::container_bridge::world_cell([0, 0, 0], f, *face)]).collect())
+            .unwrap_or_default();
+    }
     if spec.kind == Kind::ExposureChamber {
         return facing
             .and_then(facing_dir)
@@ -335,7 +341,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_cyclotron",
-        kind: Kind::Inert,
+        kind: Kind::Cyclotron,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1749,6 +1755,7 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Steam
         | Kind::Welder
         | Kind::Radiolysis
+        | Kind::Cyclotron
         | Kind::Combustion => vec![crate::energy::DIRS.to_vec()],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.

@@ -134,6 +134,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Funnel(f) => Some(f),
         Data::Radiolysis(r) => Some(&mut **r),
         Data::Exposure(e) => Some(&mut **e),
+        Data::Cyclotron(c) => Some(&mut **c),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         _ => None,
@@ -186,6 +187,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_funnel", Layout::Native),
     ("ntm:machine_radiolysis", Layout::Native),
     ("ntm:machine_exposure_chamber", Layout::Native),
+    ("ntm:machine_cyclotron", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
     // Energy batch 3 (`crate::combustion`): the generators' slots are their
@@ -382,6 +384,10 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
 /// Exact outward port cells, in the order of registry::ports. These do not
 /// become cables: the graph keeps each cell's faces and machine owner.
 pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
+    // The cyclotron's twelve ports (`crate::cyclotron::PORTS`).
+    if block == crate::cyclotron::BLOCK {
+        return facing.and_then(crate::registry::facing_dir).map(|f| crate::cyclotron::PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();
+    }
     // The exposure chamber's five ports, at the ends of its two legs and of its corridor (`getPorts`, `crate::exposure::PORTS`).
     if block == crate::exposure::BLOCK {
         return facing.and_then(crate::registry::facing_dir).map(|f| crate::exposure::PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();
@@ -430,6 +436,8 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TilePortShapes.comboven: the ring round the core on its two layers.
     ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),
+    // MachineCyclotron.getAllPorts: three on each side of the 5x5 footprint, at (-x, -z) of the NTM's.
+    ("ntm:machine_cyclotron", &[[-2, 0, -1], [-2, 0, 0], [-2, 0, 1], [2, 0, -1], [2, 0, 0], [2, 0, 1], [-1, 0, -2], [0, 0, -2], [1, 0, -2], [-1, 0, 2], [0, 0, 2], [1, 0, 2]]),
     // MachineRadiolysis.getAllPorts (`makeExtra` cells, the `flare` ports): the four beside the core on its layer (symmetric,
     // so the mirroring below does not move them).
     ("ntm:machine_radiolysis", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
@@ -1171,6 +1179,34 @@ mod tests {
         // The electrolyser's right-hand ports are three cells from its core.
         let cell = fluid_proxy_cells("ntm:machine_electrolyser", [0, 64, 0], Some("north"));
         assert!(cell.contains(&[-3, 64, 4]) && cell.contains(&[1, 64, -5]));
+    }
+
+    /// The cyclotron's twelve ports (`getAllPorts`): three on each side of its 5x5 footprint, each open outwards, whatever the
+    /// facing; the fluid proxies are the same cells.
+    #[test]
+    fn the_cyclotron_has_three_ports_on_each_side_of_its_footprint() {
+        use crate::cyclotron::{BLOCK, PORTS};
+        for facing in ["north", "south", "east", "west"] {
+            let f = crate::registry::facing_dir(facing).expect("a facing");
+            let core = [10, 64, 10];
+            let cells = energy_port_cells(BLOCK, core, Some(facing));
+            let ports = crate::registry::ports(crate::registry::spec(BLOCK).expect("a block"), Some(facing));
+            let fluid = fluid_proxy_cells(BLOCK, core, Some(facing));
+            assert_eq!((cells.len(), ports.len(), fluid.len()), (12, 12, 12), "{facing}");
+            for (i, (cell, face)) in PORTS.iter().enumerate() {
+                assert_eq!(cells[i], world_cell(core, f, *cell), "{facing} {i}");
+                assert_eq!(ports[i], vec![world_cell([0, 0, 0], f, *face)], "{facing} {i}");
+                assert!(fluid.contains(&cells[i]), "{facing} {i}");
+            }
+            // Three cells on each of the four sides of the footprint: the side is the axis on which a cell is two from the core.
+            let mut sides = std::collections::BTreeMap::new();
+            for c in &cells {
+                let (dx, dz) = (c[0] - core[0], c[2] - core[2]);
+                let side = if dx.abs() == 2 { (dx.signum(), 0) } else { (0, dz.signum()) };
+                *sides.entry(side).or_insert(0) += 1;
+            }
+            assert!(sides.values().all(|&n| n == 3) && sides.len() == 4, "{facing} {sides:?}");
+        }
     }
 
     /// The exposure chamber's five ports (`getPorts`): at the ends of the legs and the corridor on the placer's right, each open

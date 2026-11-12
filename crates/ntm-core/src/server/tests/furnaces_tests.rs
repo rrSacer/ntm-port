@@ -384,3 +384,21 @@ fn the_exposure_chamber_runs_a_capsule_through_the_engine_slots() {
     // The screen's seven values, then the four saved ones (power, progress, uses, the particle's code).
     assert_eq!((data.len(), data[1], data[4], data[5], data[9], data[10]), (11, 1_000_000, 7, 8, 7, 1), "{data:?}");
 }
+
+/// The cyclotron through the bridge: a creative battery, water in its tank by a network is not needed to start (the tank is given
+/// by the test), lithium dust and a lithium particle make beryllium dust and antimatter, and the screen's thirteen values follow.
+#[test]
+fn the_cyclotron_runs_a_lane_through_the_engine_slots() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_cyclotron[facing=north,honey_level=0]", 12);
+    put(&mut g, 0, Some(Stack::new("ntm:part_lithium", 2)));
+    put(&mut g, 3, Some(Stack::new("ntm:powder_lithium", 2)));
+    put(&mut g, 9, Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1)));
+    g.run(40);
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    // The screen's thirteen values, then the five saved ones (power, progress, water, steam, antimatter): with no water the
+    // tank is empty and nothing runs.
+    assert_eq!((data.len(), data[2], data[4], data[7], data[10]), (18, 0, 0, 0, 0), "{data:?}");
+    let s = slots(&g);
+    assert_eq!((s[0].clone(), s[3].clone(), s[6].clone()), (Some(Stack::new("ntm:part_lithium", 2)), Some(Stack::new("ntm:powder_lithium", 2)), None), "{s:?}");
+}
