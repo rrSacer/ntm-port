@@ -293,6 +293,12 @@ pub(super) fn contaminate(uuid: &str, millirad: i64) {
 }
 
 /// The fallout zones' rate at a position, milliRAD/s.
+/// The world's radiation by chunk at a position, as `getRadiation` reads it (0 before the server exists).
+pub(super) fn chunk_rad(dim: &str, pos: [f64; 3]) -> f32 {
+    let chunk = [(pos[0].floor() as i32) >> 4, (pos[2].floor() as i32) >> 4];
+    lock(&SERVER).as_ref().map_or(0.0, |(server, _)| server.native_chunk_radiation(dim, chunk))
+}
+
 pub(super) fn zone_rate(dim: &str, pos: [f64; 3]) -> u32 {
     lock(&SERVER).as_ref().map_or(0, |(server, _)| server.zone_rate(dim, pos))
 }

@@ -219,8 +219,8 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             } else {
                 let seed = legacy(game).unwrap_or_default();
                 let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
-                let (zone, resistance) = (zone_rate(game), player_resistance(game));
-                ins::geiger_lines(&ins::Readings { dose_millirad: dose, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance })
+                let (chunk_rad, zone, resistance) = (chunk_rad(game), zone_rate(game), player_resistance(game));
+                ins::geiger_lines(&ins::Readings { dose_millirad: dose, chunk_rad, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance })
             };
             lines.iter().for_each(|l| say(game, l));
         }
@@ -249,6 +249,14 @@ fn tell(game: &mut Game<'_>, line: &str) {
 /// `radBuf` in milliRAD/s: the radiation server's reading of the last second.
 fn rad_buffer(game: &Game<'_>) -> i64 {
     game.native_actor_uuid().map_or(0, |u| crate::game::ntm_glue::rad_buffer(&u))
+}
+
+/// `ChunkRadiationManager.getRadiation` at the player's block (`printGeigerData:161`).
+fn chunk_rad(game: &Game<'_>) -> f32 {
+    match (game.native_actor_uuid(), game.player.as_ref()) {
+        (Some(_), Some(p)) => crate::game::ntm_glue::chunk_rad(game.dim.id(), [p.position.x, p.position.y, p.position.z]),
+        _ => 0.0,
+    }
 }
 
 fn zone_rate(game: &Game<'_>) -> u32 {
