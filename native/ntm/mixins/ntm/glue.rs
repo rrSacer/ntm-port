@@ -367,13 +367,13 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let mut host=Host{game,buttons:Vec::new()};
     let Some((server,_))=guard.as_mut() else{return true};
     reconcile(server,&mut host);
-    // `ntmtest rad <cx> <cz> [r]`: the world's radiation map around a chunk, one `x,z:raw:next` per chunk the map holds
-    // or the next update writes (`raw` the map's value as its float bits, `none` when not in it; `next` what the next
-    // update gives it), and the ticks since the last update.
+    // `ntmtest rad <cx> <cz> [r]`: the world's radiation map around a chunk, one `x,z:raw:next:loaded` per chunk the
+    // map holds, the next update writes or that is loaded (`raw` the map's value as its float bits, `none` when not in
+    // it; `next` what the next update gives it; `loaded` 1 when a save writes it), and the ticks since the last update.
     if w.first()==Some(&"rad") && let (Some(x),Some(z))=(n(1),n(2)){
         let (timer,chunks)=server.native_chunk_radiation_probe(&dim,[x as i32,z as i32],n(3).unwrap_or(0.0) as i32);
         // Only the chunks the map holds or the next update writes: a wide radius stays a short reply.
-        let list:Vec<String>=chunks.iter().filter(|(_,raw,next)|raw.is_some()||*next!=0.0).map(|(c,raw,next)|format!("{},{}:{}:{}",c[0],c[1],raw.map_or("none".to_string(),|r|r.to_bits().to_string()),next.to_bits())).collect();
+        let list:Vec<String>=chunks.iter().filter(|(_,raw,next,loaded)|raw.is_some()||*next!=0.0||*loaded).map(|(c,raw,next,loaded)|format!("{},{}:{}:{}:{}",c[0],c[1],raw.map_or("none".to_string(),|r|r.to_bits().to_string()),next.to_bits(),u8::from(*loaded))).collect();
         let reply=format!("ntmtest ok=true timer={timer} rad={}",list.join(";"));
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
         return true;

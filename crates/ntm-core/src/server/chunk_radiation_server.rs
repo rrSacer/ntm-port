@@ -14,8 +14,8 @@
 use super::*;
 use crate::chunk_radiation;
 
-/// A chunk the probe read: where, its raw value (None: not in the map), the next update's.
-pub type Probed = ([i32; 2], Option<f32>, f32);
+/// A chunk the probe read: where, its raw value (None: not in the map), the next update's, whether it is loaded.
+pub type Probed = ([i32; 2], Option<f32>, f32, bool);
 
 impl Server {
     /// A chunk of `dim` loaded (`ChunkDataEvent.Load`): its saved value into the map, over what the map had.
@@ -77,8 +77,9 @@ impl Server {
         self.ready.chunk_field.get(dim).and_then(|m| m.get(chunk))
     }
 
-    /// The in-game proofs' probe: each chunk within `r` of `center`, its raw value (None: not in the map) and the one
-    /// the next update would give it (an update of a copy of the map), with the ticks since the last update.
+    /// The in-game proofs' probe: each chunk within `r` of `center`, its raw value (None: not in the map), the one the
+    /// next update would give it (an update of a copy of the map) and whether it is loaded (a save writes it), with the
+    /// ticks since the last update.
     pub fn native_chunk_radiation_probe(&self, dim: &str, center: [i32; 2], r: i32) -> (u32, Vec<Probed>) {
         let map = self.ready.chunk_field.get(dim).cloned().unwrap_or_default();
         let mut next = map.clone();
@@ -86,7 +87,8 @@ impl Server {
         let mut out = Vec::new();
         for x in center[0] - r..=center[0] + r {
             for z in center[1] - r..=center[1] + r {
-                out.push(([x, z], map.get([x, z]), next.get([x, z]).unwrap_or(0.0)));
+                let loaded = self.ready.chunk_field_loaded.get(dim).is_some_and(|l| l.contains(&[x, z]));
+                out.push(([x, z], map.get([x, z]), next.get([x, z]).unwrap_or(0.0), loaded));
             }
         }
         (self.ready.chunk_field_timer, out)
