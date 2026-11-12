@@ -1061,3 +1061,49 @@ Prova da 4c:
   As rodadas anteriores mostraram o defeito de altura do motor: a grama 256/256, o capim só pela metade, e a sonda de
   altura com 100 sobre a terra morta. A ponte entrou depois disso. A primeira contagem da neblina exigia múltiplo
   de 25, e o alcance de 32 blocos explica por que isso não vale.
+
+### 4d: as fontes do campo no port
+
+#### O inventário (condição da 4d: antes do código, com a linha do Java de cada fonte)
+
+Toda escrita do Java no campo (`ChunkRadiationManager.proxy.incrementRad/decrementRad/setRadiation`), fora do próprio
+handler, e o estado do que a chama no port:
+
+| Fonte | Java | O que faz | No port |
+|---|---|---|---|
+| `BlockHazard` (24 blocos: urânio, tório, netúnio, plutônio, MOX, schrabídio, solínio, rádio, actínio, trinitita, cório…) | `BlockHazard.java:120-146` | tick agendado a cada 20, `rad` = nível do `HazardRegistry` do item × 0,1 | os blocos existem (cubo estático): **4d** |
+| `BlockNuclearWaste` (`block_waste`, `_painted`, `_vitrified`) | `BlockNuclearWaste.java:14-23` → `BlockHazard` | o mesmo, mais radônio denso ao lado (1 em 2) | os blocos existem: **4d** (o radônio denso não existe no port: lacuna) |
+| `BlockHotHazard` (`block_polonium`, `block_pu238`) | herda `BlockHazard` | o mesmo | os blocos existem: **4d** |
+| `BlockHazardFalling` (`block_yellowcake`, `block_fallout`; `block_red_phosphorus` tem nível 0) | `BlockHazardFalling.java:39-66` | o mesmo, e cai como areia (`super.updateTick`) | os blocos existem (template cascalho): **4d** |
+| `BlockOre` com `rad` (`ore_schrabidium`, 0,1) | `BlockOre.java:199-226`, ModBlocks:1248 | tick aleatório e agendado a cada 20 | o bloco existe: **4d** |
+| `YellowBarrel` (`yellow_barrel` 5,0; `vitrified_barrel` 0,5) | `YellowBarrel.java:73-92` | tick agendado a cada 20, desde o `onBlockAdded` | os blocos existem: **4d** |
+| `YellowBarrel.explodeEntity` (35 ao explodir) | `YellowBarrel.java:114` | na explosão do barril (`BlockDetonatable`) | o barril não explode no port: lacuna |
+| `BlockSellafield` (`rad` 0,5 × (meta + 1)) | `BlockSellafield.java:56` | no tick aleatório, antes do decaimento | o tick aleatório existe (5d): **4d** |
+| `FT_VentRadiation.onFluidRelease` (trítio 0,001, UF6 0,2, PUF6 0,1, gás de resíduo 0,5 por mB) | `FT_VentRadiation.java:31`, chamado pelo flare `TileEntityMachineGasFlare.java:144` | o gás ventilado pelo flare | o flare existe e já emite `FlareEvent::Release`: **4d** |
+| o mesmo, pelo tanque que vaza depois de explodir, pelo tambor e pelo alto-forno | `TileEntityMachineFluidTank.java:134`, `TileEntityStorageDrum.java:145`, `TileEntityMachineBlastFurnace.java:125` | — | o tanque não explode no port, o tambor não existe e o alto-forno só derrama gás de combustão, sem radiação: lacuna ou nada |
+| `CommandRadiation` | `CommandRadiation.java:26,33` | `/ntmrad` | feito na 4a |
+| **RBMK**: barra sem tampa, fluxo para coluna sem tampa, fluxo sobre as colunas | `TileEntityRBMKRod.java:153`, `RBMKNeutronHandler.java:305,417,421` | `fluxQuantity × 0,05` | **o RBMK está ativo no port** (`Kind::Rbmk`, os fluxos de nêutrons simulados): decisão pedida ao coordenador |
+| Watz | `TileEntityWatz.java:196` | 1 000 ao derreter | Inert no port: lacuna |
+| Aniquilador | `TileEntityMachineAnnihilator.java:147` | `min(radiação × 5, 1 000)` | Inert no port: lacuna |
+| Gás de fusão do reator (`gas_meltdown`) | `BlockGasMeltdown.java:82` | 5 quando vê o céu | não existe no port: lacuna |
+| Absorvedor (`rad_absorber`, `decrementRad`) | `BlockAbsorber.java:71` | a cada 10 ticks, o nível do absorvedor | não existe no port: lacuna |
+| Névoa de fluido (`EntityMist`) | `EntityMist.java:88` | `radPerMB × 2` | não existe no port: lacuna |
+| Besta radioativa (`EntityRADBeast`) | `EntityRADBeast.java:144` | 100 ao morrer | não existe no port: lacuna |
+| Projétil químico (`EntityChemical`) | `EntityChemical.java:242,398` | `radPerMB × 5` | não existe no port: lacuna |
+| Explosão nuclear pequena (`ExplosionNukeSmall`: waffle, munição HIMARS e de artilharia, creeper nuclear, OVNI, míssil tier 0, bomba de fissura) | `ExplosionNukeSmall.java:45` | 50 / (distância + 1) em 5 × 5 chunks | nenhum chamador existe no port: lacuna |
+| Granada (`ItemGrenadeFilling`) e catapulta (`XFactoryCatapult`) | `ItemGrenadeFilling.java:243`, `XFactoryCatapult.java:127` | o mesmo desenho | não existem no port: lacuna |
+| Núcleo do DFC (`TileEntityCore`) | `TileEntityCore.java:129` | 100 | não existe no port: lacuna |
+| Máquina personalizada (`TileEntityCustomMachine`) | `TileEntityCustomMachine.java:291,293` | a radiação da receita | não existe no port: lacuna |
+| Reator de pesquisa (`TileEntityReactorResearch`) | `TileEntityReactorResearch.java:153,330` | a radiação do reator, 50 ao explodir | não existe no port: lacuna |
+
+Leitores do campo além do jogador e dos contadores Geiger: `ArmorFSB.java:387`, a leitura de um conjunto de armadura,
+que fica para a frente de armaduras.
+
+Dois comportamentos do Java que entram como são:
+- **O `rad` do `BlockHazard` e do `BlockHazardFalling`** é um campo do `Block`, que é um só por tipo, e só é escrito
+  no `onBlockAdded` (`BlockHazard.java:141`: "who wrote this???"). Numa sessão do jogo em que nenhum bloco do tipo
+  foi posto, o tick agendado que voltou com o mundo encontra `rad = 0`: não incrementa nem se reagenda, e a cadeia
+  daquele bloco acaba. Assim que um bloco do tipo é posto, o tipo inteiro passa a irradiar, mas só os blocos com tick
+  agendado. O port guarda os tipos armados durante o processo, como a JVM.
+- **O `BlockOre`** (`setTickRandomly(true)` com `rad`) irradia nos ticks aleatórios e, a partir deles, a cada 20 ticks
+  agendados.
