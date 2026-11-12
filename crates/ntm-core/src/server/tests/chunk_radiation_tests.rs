@@ -250,6 +250,138 @@ fn the_geiger_buffer_hears_the_field_through_the_gates() {
     assert_eq!(dose(&g), 0, "creative, and in the grace");
 }
 
+/// The 16 × 16 columns of chunk 0, 0 with `top` at y 64 (and `above` at 65 when given).
+fn lay(g: &mut Game, top: &str, above: Option<&str>) {
+    let mut w = g.world.borrow_mut();
+    for x in 0..16 {
+        for z in 0..16 {
+            w.blocks.insert((OW.to_string(), [x, 64, z]), top.into());
+            if let Some(a) = above {
+                w.blocks.insert((OW.to_string(), [x, 65, z]), a.into());
+            }
+        }
+    }
+}
+
+fn count(g: &Game, y: i32, block: &str) -> usize {
+    let w = g.world.borrow();
+    (0..16).flat_map(|x| (0..16).map(move |z| [x, y, z])).filter(|p| w.get(OW, *p).starts_with(block)).count()
+}
+
+/// 4c: `handleWorldDestruction`, every tick: a loaded chunk at 10 RAD/s or more has its surface turned, grass to dead
+/// earth and tall grass to air (five draws of the one entry, ten passes each, a column in three at its height or the
+/// block below).
+#[test]
+fn a_radiated_chunk_turns_its_grass_and_tall_grass() {
+    let mut g = fresh();
+    lay(&mut g, "minecraft:grass_block[snowy=false]", Some("minecraft:short_grass"));
+    g.server.native_chunk_radiation_loaded(OW, C);
+    g.server.native_chunk_field_for_test(OW).put(C, 50.0);
+    g.run(1);
+    let (earth, air) = (count(&g, 64, "ntm:waste_earth"), count(&g, 65, "minecraft:air"));
+    // The map holds the one chunk: its five draws are all of it, fifty passes, and nearly every column turns.
+    assert!(earth >= 250 && air >= 250, "{earth} dead earth, {air} tall grass gone of 256");
+    assert_eq!(count(&g, 64, "minecraft:grass_block"), 256 - earth);
+}
+
+#[test]
+fn below_10_rad_or_unloaded_nothing_turns() {
+    let mut g = fresh();
+    lay(&mut g, "minecraft:grass_block[snowy=false]", None);
+    g.server.native_chunk_radiation_loaded(OW, C);
+    g.server.native_chunk_field_for_test(OW).put(C, 9.99);
+    g.run(5);
+    assert_eq!(count(&g, 64, "minecraft:grass_block"), 256, "the threshold: getValue() < 10");
+    g.server.native_chunk_radiation_unloaded(OW, C);
+    g.server.native_chunk_field_for_test(OW).put(C, 5000.0);
+    g.run(5);
+    assert_eq!(count(&g, 64, "minecraft:grass_block"), 256, "chunkExists: not loaded");
+}
+
+/// Leaves (Material.leaves) become dead leaves six times in seven, air the seventh; dead leaves are left.
+#[test]
+fn leaves_turn_to_dead_leaves_or_air() {
+    let mut g = fresh();
+    lay(&mut g, "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]", None);
+    g.server.native_chunk_radiation_loaded(OW, C);
+    g.server.native_chunk_field_for_test(OW).put(C, 50.0);
+    g.run(3);
+    let (dead, air) = (count(&g, 64, "ntm:waste_leaves"), count(&g, 64, "minecraft:air"));
+    assert!(dead + air > 200 && dead > 3 * air && air > 0, "{dead} dead leaves, {air} air");
+    lay(&mut g, "ntm:waste_leaves[persistent=true]", None);
+    g.run(3);
+    assert_eq!(count(&g, 64, "ntm:waste_leaves"), 256);
+}
+
+/// The fog (`updateSystem:104-117`): a share written over 100 RAD/s, in 1 of 20, puts a fog in the chunk that gave
+/// it, its 25 quads as `ntm:rad_fog_<n>` around a column of that chunk, `getHeightValue` up to 4 above.
+#[test]
+fn the_fog_rises_from_the_chunk_that_spreads() {
+    let mut g = fresh();
+    lay(&mut g, "minecraft:stone", None);
+    g.server.native_chunk_radiation_loaded(OW, C);
+    let mut fogs = Vec::new();
+    for _ in 0..12 {
+        g.world.borrow_mut().shown.clear();
+        g.server.native_chunk_field_for_test(OW).clear();
+        g.server.native_chunk_field_for_test(OW).put(C, 5000.0);
+        g.run(20);
+        let shown = g.world.borrow().shown.clone();
+        let quads: Vec<_> = shown
+            .iter()
+            .filter_map(|(_, s)| match s {
+                crate::blast::visuals::Show::Particles { id, at, .. } if id.starts_with("ntm:rad_fog_") => Some((*id, *at)),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(quads.len() % 25, 0);
+        fogs.extend(quads.chunks(25).map(|q| q.to_vec()));
+    }
+    assert!(!fogs.is_empty(), "12 updates of 9 shares over 100, 1 in 20 each: some fog");
+    let layout = crate::chunk_radiation::fog_quads();
+    for fog in &fogs {
+        // The first quad's place less its offset is the fog's column: in chunk 0, 0, from 65 (the stone's height) up.
+        let origin = [fog[0].1[0] - layout[0].0[0], fog[0].1[1] - layout[0].0[1], fog[0].1[2] - layout[0].0[2]];
+        assert!((0.0..16.0).contains(&origin[0]) && (0.0..16.0).contains(&origin[2]), "{origin:?}");
+        assert!((65.0..70.0).contains(&origin[1]), "{origin:?}");
+        for (n, (id, at)) in fog.iter().enumerate() {
+            assert_eq!(*id, super::chunk_radiation_server::FOG_PARTICLES[n]);
+            for k in 0..3 {
+                assert!((at[k] - origin[k] - layout[n].0[k]).abs() < 1e-9);
+            }
+        }
+    }
+}
+
+/// `rad > fogRad`: at 150 RAD/s the largest share (its own, 150 × 0.6 × 0.99 − 0.05 ≈ 89) is below 100, no fog.
+#[test]
+fn no_fog_from_shares_at_or_below_100() {
+    let mut g = fresh();
+    lay(&mut g, "minecraft:stone", None);
+    g.server.native_chunk_radiation_loaded(OW, C);
+    for _ in 0..12 {
+        g.server.native_chunk_field_for_test(OW).clear();
+        g.server.native_chunk_field_for_test(OW).put(C, 150.0);
+        g.run(20);
+    }
+    let fog = g.world.borrow().shown.iter().filter(|(_, s)| matches!(s, crate::blast::visuals::Show::Particles { id, .. } if id.starts_with("ntm:rad_fog_"))).count();
+    assert_eq!(fog, 0);
+}
+
+/// A chunk not loaded gives no fog, though its share is over 100 and its columns have a height.
+#[test]
+fn no_fog_from_a_chunk_not_loaded() {
+    let mut g = fresh();
+    lay(&mut g, "minecraft:stone", None);
+    for _ in 0..12 {
+        g.server.native_chunk_field_for_test(OW).clear();
+        g.server.native_chunk_field_for_test(OW).put(C, 5000.0);
+        g.run(20);
+    }
+    let fog = g.world.borrow().shown.iter().filter(|(_, s)| matches!(s, crate::blast::visuals::Show::Particles { id, .. } if id.starts_with("ntm:rad_fog_"))).count();
+    assert_eq!(fog, 0);
+}
+
 /// Coordinator's condition 1 of 4a: the field's cost, in release (`cargo test --release -p ntm-core --lib
 /// chunk_radiation_cost -- --ignored --nocapture`). A world of 15 × 15 loaded chunks, all at 100 000 (the spread's
 /// widest map), with 50 000 block generations in the world's state, run for 50 000 updates (a million ticks): the tick
@@ -290,10 +422,10 @@ fn chunk_radiation_cost() {
         }
         // 19 ticks without the update (the timer alone), then the one with it.
         for _ in 0..19 {
-            g.server.chunk_radiation_tick();
+            g.server.chunk_radiation_tick(&mut g.sh);
         }
         let t = Instant::now();
-        g.server.chunk_radiation_tick();
+        g.server.chunk_radiation_tick(&mut g.sh);
         ticks.push(t.elapsed().as_secs_f64() * 1e3);
         // An autosave every 900 ticks (45 updates): the loaded chunks into their saves, the key written.
         if update % 45 == 0 {
@@ -309,4 +441,63 @@ fn chunk_radiation_cost() {
     }
     let bytes = g.world.borrow().kv.map.get(crate::persist::CHUNK_RADIATION_KEY).map_or(0, Vec::len);
     println!("saved key {bytes} B");
+}
+
+/// Slice 4c's cost, in release (`cargo test --release -p ntm-core --lib chunk_radiation_effects_cost -- --ignored
+/// --nocapture`): 4a's world (15 × 15 loaded chunks held at 100 000, every one over the threshold) under a grass
+/// surface, every tick timed: handleWorldDestruction each tick (five draws, ten passes of 256 heights and some 85
+/// reads each), the fog with the update. The heights are the test host's (a lookup down a hash map), not the
+/// engine's heightmap.
+#[test]
+#[ignore]
+fn chunk_radiation_effects_cost() {
+    use std::time::Instant;
+    let mut g = fresh();
+    {
+        let mut w = g.world.borrow_mut();
+        for x in -112..128 {
+            for z in -112..128 {
+                w.blocks.insert((OW.to_string(), [x, 64, z]), "minecraft:grass_block[snowy=false]".into());
+            }
+        }
+    }
+    for x in -7..=7 {
+        for z in -7..=7 {
+            g.server.native_chunk_radiation_loaded(OW, [x, z]);
+        }
+    }
+    let p = |v: &mut Vec<f64>, q: f64| {
+        v.sort_by(f64::total_cmp);
+        v[((v.len() - 1) as f64 * q) as usize]
+    };
+    let (mut update, mut plain) = (Vec::new(), Vec::new());
+    let mut fogs = 0;
+    for n in 1..=2_000u32 {
+        for x in -7..=7 {
+            for z in -7..=7 {
+                g.server.set_chunk_radiation(OW, [x, z], 100_000.0);
+            }
+        }
+        for t in 0..20 {
+            let shown = g.world.borrow().shown.len();
+            let start = Instant::now();
+            g.server.chunk_radiation_tick(&mut g.sh);
+            let ms = start.elapsed().as_secs_f64() * 1e3;
+            // The test host's writes land after the tick, as the game's do not: applied here, out of the timing.
+            g.world.borrow_mut().apply_writes();
+            if t == 19 { update.push(ms) } else { plain.push(ms) }
+            fogs += (g.world.borrow().shown.len() - shown) / 25;
+        }
+        if [100, 2_000].contains(&n) {
+            println!(
+                "updates ..{n}: tick without update median {:.3} ms p99 {:.3} max {:.3}; update tick median {:.3} ms p99 {:.3} max {:.3}; fogs {fogs}",
+                p(&mut plain, 0.5), p(&mut plain, 0.99), p(&mut plain, 1.0), p(&mut update, 0.5), p(&mut update, 0.99), p(&mut update, 1.0)
+            );
+            update.clear();
+            plain.clear();
+            fogs = 0;
+        }
+    }
+    let earth = g.world.borrow().blocks.values().filter(|b| b.starts_with("ntm:waste_earth")).count();
+    println!("dead earth {earth} of {}", 240 * 240);
 }

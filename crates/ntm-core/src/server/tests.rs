@@ -263,6 +263,24 @@ impl ServerHost for SHost {
     fn show(&mut self, dim: &str, show: &crate::blast::visuals::Show) {
         self.world.borrow_mut().shown.push((dim.into(), show.clone()));
     }
+    /// The y above each column's highest block, tall grass and ferns aside (a motion-blocking heightmap), looked for
+    /// from y 80 down: the tests' surfaces are below it.
+    fn surface_heights(&mut self, dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
+        let w = self.world.borrow();
+        let key = &mut (dim.to_string(), [0, 0, 0]);
+        columns
+            .iter()
+            .map(|&(x, z)| {
+                (-64..=80).rev().find_map(|y| {
+                    key.1 = [x, y, z];
+                    w.blocks
+                        .get(key)
+                        .filter(|b| !matches!(crate::blockstate::id_of(b), "minecraft:air" | "minecraft:short_grass" | "minecraft:fern"))
+                        .map(|_| y + 1)
+                })
+            })
+            .collect()
+    }
     fn set_player_value(&mut self, id: &str, key: &str, value: i64) {
         self.world.borrow_mut().values.insert((id.into(), key.into()), value);
     }

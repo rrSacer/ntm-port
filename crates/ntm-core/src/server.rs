@@ -168,6 +168,12 @@ pub trait ServerHost: Kv {
     /// Particles or a sound in `dim` (`crate::blast::visuals::Show`, not
     /// its effects).
     fn show(&mut self, _dim: &str, _show: &crate::blast::visuals::Show) {}
+    /// Each column's height in `dim` by the motion-blocking heightmap (the y above its highest block that blocks
+    /// motion or holds a fluid; the nearest to 1.7.10's `getHeightValue`, whose light opacity differs on glass,
+    /// fences and panes), None where it is not loaded.
+    fn surface_heights(&mut self, _dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
+        vec![None; columns.len()]
+    }
     /// A named number player `id`'s client reads (the Geiger's).
     fn set_player_value(&mut self, _id: &str, _key: &str, _value: i64) {}
     /// The stacks of the player acting in this callback (`player` their UUID), as a transfer reads and compares them.

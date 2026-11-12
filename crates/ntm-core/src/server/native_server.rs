@@ -115,7 +115,7 @@ impl Server {
         self.native_record_events(host);
         self.read_legacy(host);
         phases.mark("events");
-        if self.ready.facts_pending{self.chunk_radiation_tick();self.keep_world(host);self.sync_obligations(host);return;}
+        if self.ready.facts_pending{self.chunk_radiation_tick(host);self.keep_world(host);self.sync_obligations(host);return;}
         self.flush_machine_effects(host);
         self.settle_ghosts(host);
         phases.mark("effects");
@@ -182,7 +182,7 @@ impl Server {
         self.zirnox_irradiation(host);
         phases.mark("zirnox");
         // ChunkRadiationManager.updateSystem: ServerTickEvent, Phase.END, after the worlds and the players.
-        self.chunk_radiation_tick();
+        self.chunk_radiation_tick(host);
         phases.mark("chunk_radiation");
         self.native_save(host, true);
         phases.mark("save");

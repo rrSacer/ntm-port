@@ -17,6 +17,14 @@ use crate::chunk_radiation;
 /// `RadiationConfig.hellRad`: the least RAD/s a player in the Nether takes (`AMBIENT_00_nether`, 0.1 by default).
 pub const HELL_RAD: f64 = 0.1;
 
+/// `ntm:rad_fog_<n>`: the fog's 25 quads as mod particles, each of its own size.
+pub const FOG_PARTICLES: [&str; 25] = [
+    "ntm:rad_fog_0", "ntm:rad_fog_1", "ntm:rad_fog_2", "ntm:rad_fog_3", "ntm:rad_fog_4", "ntm:rad_fog_5", "ntm:rad_fog_6",
+    "ntm:rad_fog_7", "ntm:rad_fog_8", "ntm:rad_fog_9", "ntm:rad_fog_10", "ntm:rad_fog_11", "ntm:rad_fog_12",
+    "ntm:rad_fog_13", "ntm:rad_fog_14", "ntm:rad_fog_15", "ntm:rad_fog_16", "ntm:rad_fog_17", "ntm:rad_fog_18",
+    "ntm:rad_fog_19", "ntm:rad_fog_20", "ntm:rad_fog_21", "ntm:rad_fog_22", "ntm:rad_fog_23", "ntm:rad_fog_24",
+];
+
 /// A chunk the probe read: where, its raw value (None: not in the map), the next update's, whether it is loaded.
 pub type Probed = ([i32; 2], Option<f32>, f32, bool);
 
@@ -110,14 +118,98 @@ impl Server {
         self.ready.chunk_dose_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
     }
 
-    /// `ChunkRadiationManager.updateSystem`, at the end of a server tick: `updateSystem` every 20 ticks.
-    pub(super) fn chunk_radiation_tick(&mut self) {
+    /// `ChunkRadiationManager.updateSystem`, at the end of a server tick: `updateSystem` every 20 ticks, with its
+    /// fog; `handleWorldDestruction` every tick (`worldRadEffects`).
+    pub(super) fn chunk_radiation_tick(&mut self, host: &mut impl ServerHost) {
         self.ready.chunk_field_timer += 1;
         if self.ready.chunk_field_timer >= 20 {
-            for map in self.ready.chunk_field.values_mut() {
-                chunk_radiation::update_system(map);
+            let dims: Vec<String> = self.ready.chunk_field.keys().cloned().collect();
+            for dim in dims {
+                let mut wrote = Vec::new();
+                if let Some(map) = self.ready.chunk_field.get_mut(&dim) {
+                    chunk_radiation::update_system_with(map, |coord, rad| wrote.push((coord, rad)));
+                }
+                self.chunk_fog(host, &dim, &wrote);
             }
             self.ready.chunk_field_timer = 0;
+        }
+        self.world_destruction(host);
+    }
+
+    /// The world's draws for one purpose this tick (`world.rand`; the mod has none: a hash of the world, the tick
+    /// and the purpose).
+    fn field_random(&self, dim: &str, purpose: &str) -> crate::rbmk::jrandom::JavaRandom {
+        let key = format!("{dim}|{}|{purpose}", self.tick);
+        crate::rbmk::jrandom::JavaRandom::new(crate::hash::mix(crate::hash::fnv64(key.as_bytes())) as i64)
+    }
+
+    /// `updateSystem:104-117`, the fog: each share written over `fogRad`, in 1 of `fogCh`, and when the chunk that
+    /// gave it exists, a fog at a random column of that chunk (not the one that got the share), `getHeightValue` plus
+    /// 0 to 4 above. `ParticleRadiationFog` is drawn as its 25 quads, each a mod particle (`ntm:rad_fog_<n>`, of
+    /// that quad's size) at its place (`chunk_radiation::fog_quads`).
+    fn chunk_fog(&mut self, host: &mut impl ServerHost, dim: &str, wrote: &[([i32; 2], f32)]) {
+        let mut rand = self.field_random(dim, "fog");
+        for &(coord, rad) in wrote {
+            if !(rad > chunk_radiation::FOG_RAD && rand.next_int(chunk_radiation::FOG_CHANCE) == 0) {
+                continue;
+            }
+            if !self.ready.chunk_field_loaded.get(dim).is_some_and(|l| l.contains(&coord)) {
+                continue;
+            }
+            let x = coord[0] * 16 + rand.next_int(16);
+            let z = coord[1] * 16 + rand.next_int(16);
+            let Some(height) = host.surface_heights(dim, &[(x, z)]).first().copied().flatten() else {
+                continue;
+            };
+            let y = height + rand.next_int(5);
+            for (n, (at, _)) in chunk_radiation::fog_quads().iter().enumerate() {
+                host.show(
+                    dim,
+                    &crate::blast::visuals::Show::Particles {
+                        id: FOG_PARTICLES[n],
+                        color: [1.0; 4],
+                        at: [f64::from(x) + at[0], f64::from(y) + at[1], f64::from(z) + at[2]],
+                        spread: [0.0; 3],
+                        speed: 0.0,
+                        count: 1,
+                    },
+                );
+            }
+        }
+    }
+
+    /// `handleWorldDestruction:190-255`, every tick, each world: five entries drawn from its map (in the map's
+    /// order); each one at 10 RAD/s or more whose chunk is loaded goes ten times over its 16 × 16 columns, a column
+    /// in three at its height or the block below, grass to dead earth, tall grass to air, leaves to dead leaves (6 in
+    /// 7) or air. The heights are read at each pass: a pass sees what the one before it changed.
+    pub(super) fn world_destruction(&mut self, host: &mut impl ServerHost) {
+        let dims: Vec<String> = self.ready.chunk_field.keys().cloned().collect();
+        for dim in dims {
+            let entries: Vec<([i32; 2], f32)> = self.ready.chunk_field[&dim].iter().collect();
+            if entries.is_empty() {
+                continue;
+            }
+            let mut rand = self.field_random(&dim, "destruction");
+            for _ in 0..5 {
+                let (coords, value) = entries[rand.next_int(entries.len() as i32) as usize];
+                for _ in 0..10 {
+                    if value < 10.0 {
+                        continue;
+                    }
+                    if !self.ready.chunk_field_loaded.get(&dim).is_some_and(|l| l.contains(&coords)) {
+                        continue;
+                    }
+                    let heights = host.surface_heights(&dim, &chunk_radiation::chunk_columns(coords));
+                    chunk_radiation::destruction_pass(coords, &heights, &mut rand, |at, rand| {
+                        let Some(block) = host.get_block(&dim, at) else { return };
+                        if let Some(new) = chunk_radiation::destroyed(&block, || rand.next_int(7))
+                            && let Err(e) = host.set_blocks(&dim, &[(at, new.to_string())])
+                        {
+                            host.log(&format!("world destruction at {at:?}: {e}"));
+                        }
+                    });
+                }
+            }
         }
     }
 
