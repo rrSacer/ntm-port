@@ -141,9 +141,9 @@ def ducts(g, lay):
         for x in xs:
             p = cell(x, -1, 0)
             g.command(f'setblock {p[0]} {p[1]} {p[2]} ntm:fluid_duct_neo')
-        # Typed from the row beside (the cells over them can be an orbus's volume): each from two cells towards the placer.
+        # Typed from the row beside (the cells over them can be an orbus's volume): each from three cells away from the row, outside every volume.
         for x in xs:
-            type_duct(g, fluid, [cell(x, -1, 0)], cell(x, 0, 2))
+            type_duct(g, fluid, [cell(x, -1, 0)], cell(x, 0, 3))
     g.command('clear @s')
 
 
