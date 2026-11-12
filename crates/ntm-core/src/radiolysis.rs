@@ -195,10 +195,10 @@ impl Radiolysis {
         self.identify();
         self.setup_tanks();
         if self.heat > 100 {
-            if self.clock % crack_period(self.heat) == 0 {
+            if self.clock.is_multiple_of(crack_period(self.heat)) {
                 self.crack();
             }
-            if self.heat >= 200 && self.clock % 100 == 0 {
+            if self.heat >= 200 && self.clock.is_multiple_of(100) {
                 self.sterilize();
             }
         }
@@ -542,9 +542,7 @@ mod tests {
 
     #[test]
     fn what_the_screen_shows() {
-        let mut r = Radiolysis::default();
-        r.power = 123;
-        r.heat = 45;
+        let mut r = Radiolysis { power: 123, heat: 45, ..Default::default() };
         r.tanks[0].set_type("water");
         r.tanks[0].mb = 600;
         let d = r.screen_data();
