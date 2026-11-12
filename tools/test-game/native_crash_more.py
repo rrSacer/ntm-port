@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'radiolysis-break', 'exposure-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'radiolysis-break', 'exposure-break', 'cyclotron-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -710,7 +710,7 @@ def break_act(g):
         offsets = [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]
         if SCENARIO in ('keyforge-break', 'funnel-break'):
             offsets = [(0, 0, 0)]
-        if SCENARIO in ('orbus-break', 'radiolysis-break', 'exposure-break'):
+        if SCENARIO in ('orbus-break', 'radiolysis-break', 'exposure-break', 'cyclotron-break'):
             import native_orbus
             offsets = [(c[0] - core[0], c[1] - core[1], c[2] - core[2]) for c in native_orbus.dummies(g, core)]
         for dx, dy, dz in offsets:
@@ -1219,7 +1219,7 @@ def frozen_state(g, core, keys=('burn_time', 'max_burn_time', 'progress', 'proce
     return out
 
 
-MB_BLOCK = {'keyforge': ('ntm:machine_keyforge', '"rng"'), 'funnel': ('ntm:machine_funnel', '"mode"'), 'radiolysis': ('ntm:machine_radiolysis', '"clock"'), 'exposure': ('ntm:machine_exposure_chamber', '"consumption"'), 'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
+MB_BLOCK = {'keyforge': ('ntm:machine_keyforge', '"rng"'), 'funnel': ('ntm:machine_funnel', '"mode"'), 'radiolysis': ('ntm:machine_radiolysis', '"clock"'), 'exposure': ('ntm:machine_exposure_chamber', '"consumption"'), 'cyclotron': ('ntm:machine_cyclotron', '"progress"'), 'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
             'combination': ('ntm:furnace_combination', '"Combination"')}
 MB_AT = (140, 100, 8)
 
@@ -1233,8 +1233,8 @@ def mb_place(g, kind, fire=True):
     g.command('clear @s')
     item, marker = MB_BLOCK[kind]
     g.command(f'give @s {item} 1')
-    if kind in ('orbus', 'keyforge', 'funnel', 'radiolysis', 'exposure'):
-        if kind == 'exposure':
+    if kind in ('orbus', 'keyforge', 'funnel', 'radiolysis', 'exposure', 'cyclotron'):
+        if kind in ('exposure', 'cyclotron'):
             g.ground(x - 3, y, z, width=16, depth=10)
             g.command('clear @s')
             g.command(f'give @s {item} 1')
@@ -1267,6 +1267,10 @@ def mb_open(g, kind, core):
     if kind == 'exposure':
         import native_exposure as E
         E.open_chamber(g, core)
+        return
+    if kind == 'cyclotron':
+        import native_cyclotron as N
+        N.open_cyclotron(g, core)
         return
     if kind == 'keyforge':
         import native_keyforge as K
@@ -1391,7 +1395,7 @@ def state_verify(g, again=False):
 
 # `iron-break`, `steel-break`, `combination-break`: the multiblock furnace holding items, broken, against the chest control
 # holding the same ones; counted item by item, once in the world.
-MB_BREAK = {'keyforge-break': ('keyforge', [('ntm:key', 1, 0), ('ntm:padlock', 1, 1)]), 'funnel-break': ('funnel', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 2)]), 'radiolysis-break': ('radiolysis', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 12)]), 'exposure-break': ('exposure', [('ntm:particle_higgs', 2, 0), ('minecraft:dirt', 6, 5)]), 'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
+MB_BREAK = {'keyforge-break': ('keyforge', [('ntm:key', 1, 0), ('ntm:padlock', 1, 1)]), 'funnel-break': ('funnel', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 2)]), 'radiolysis-break': ('radiolysis', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 12)]), 'exposure-break': ('exposure', [('ntm:particle_higgs', 2, 0), ('minecraft:dirt', 6, 5)]), 'cyclotron-break': ('cyclotron', [('ntm:part_lithium', 2, 0), ('minecraft:dirt', 6, 3)]), 'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
             'steel-break': ('steel', [('minecraft:raw_iron', 6, 0), ('minecraft:raw_copper', 3, 1)]),
             'combination-break': ('combination', [('minecraft:coal', 8, 0), ('minecraft:bucket', 2, 2)])}
 
@@ -1442,14 +1446,14 @@ def mb_break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'minecraft:chest'))
+    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'ntm:machine_cyclotron', 'minecraft:chest'))
     inside = mb_items(g, core, ids) if standing else 0
     ents = sum(entities(g, i) for i in ids)
     inv = sum(inventory(g, i) for i in ids)
     detail = {'block': state, 'inside': inside, 'entities': ents, 'inventory': inv, 'total': inside + ents + inv,
               'expected': sum(c for _, c, _ in loads), 'ledger': led, 'machine': machine_present(g, core)}
     counted(g, 'mb_items_exactly_once', detail, again)
-    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber')):
+    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'ntm:machine_cyclotron')):
         g.check('a_standing_furnace_is_a_live_machine', machine_present(g, core), detail)
 
 
@@ -1723,6 +1727,75 @@ def exposure_verify(g, again=False):
     g.check('the_chamber_is_alive', machine_present(g, core), s)
 
 
+# `cyclotron-state`: two lithium particles and two lithium dusts in a cyclotron on a creative battery, with a speed and an effect
+# upgrade, its water coming over typed ducts from a store of barrels and its steam going to another store, the world saved and
+# killed at each boundary while the first cycle ends: whatever the cut, each particle is a lithium particle or the beryllium dust it
+# made (two together), so is each lithium dust (two), and the progress belongs to the slots: a cycle not yet made has the progress
+# it had at the base save or more, one made has begun again.
+def cyclotron_parts(g):
+    import native_cyclotron as N
+    N.X, N.Z = 140, 24
+    return N
+
+
+def cyclotron_prepare(g):
+    N = cyclotron_parts(g)
+    g.ctl('wait-ready 120')
+    lay = N.layout(g)
+    core = lay['core']
+    w_cells, s_cells = N.dummies(g, lay['water']), N.dummies(g, lay['steam'])
+    N.pour_barrels(g, w_cells, N.BARRELS)
+    sprint(g, 30)
+    N.set_output(g, w_cells)
+    N.identify(g, s_cells, 'spentsteam')
+    N.open_cyclotron(g, core)
+    N.put(g, 'ntm:part_lithium', 0, 2)
+    N.put(g, 'ntm:powder_lithium', 3, 2)
+    N.put(g, 'ntm:battery_creative', 9)
+    N.put(g, 'ntm:upgrade_speed_3', 10)
+    N.put(g, 'ntm:upgrade_effect_3', 11)
+    g.close()
+    sprint(g, 100)
+    st = N.state(g, core)
+    g.evidence.update(core=list(core), facing=lay['facing'], base_progress=st.get('progress'))
+    g.check('the_cycle_is_half_way_before_the_base_save', 100 < st.get('progress', 0) < 600, st.get('progress'))
+    g.ctl('save')
+
+
+def cyclotron_act(g):
+    N = cyclotron_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 120)
+    g.evidence['after_act'] = N.items(g, tuple(prep['core']))
+    save_expecting_death(g)
+
+
+def cyclotron_verify(g, again=False):
+    N = cyclotron_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    base = prep.get('base_progress') or 0
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 8))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        s, st = N.items(g, core), N.state(g, core)
+    finally:
+        g.command('tick unfreeze')
+    t = N.totals(s)
+    made = t.get('ntm:powder_beryllium', 0)
+    counted(g, 'four_items_exactly_once', {'total': t.get('ntm:part_lithium', 0) + t.get('ntm:powder_lithium', 0) + 2 * made, 'expected': 4, 'items': s}, again)
+    g.check('each_particle_is_there_or_made_its_dust', t.get('ntm:part_lithium', 0) + made == 2, s)
+    g.check('each_lithium_dust_is_there_or_became_beryllium', t.get('ntm:powder_lithium', 0) + made == 2, s)
+    progress = st.get('progress', -1)
+    g.check('the_progress_belongs_to_the_slots', (made == 0 and progress >= base) or (made == 1 and 0 <= progress < 400), [made, progress, base])
+    g.check('the_cyclotron_is_alive', machine_present(g, core), s)
+
+
 def drain(g):
     g.ctl('wait-ready 120')
     g.ctl('save')
@@ -1760,6 +1833,8 @@ STEPS = {
     'radiolysis-break': (mb_break_prepare, break_act, mb_break_verify),
     'exposure-state': (exposure_prepare, exposure_act, exposure_verify),
     'exposure-break': (mb_break_prepare, break_act, mb_break_verify),
+    'cyclotron-state': (cyclotron_prepare, cyclotron_act, cyclotron_verify),
+    'cyclotron-break': (mb_break_prepare, break_act, mb_break_verify),
     'orbus-break': (mb_break_prepare, break_act, mb_break_verify),
     'iron-break': (mb_break_prepare, break_act, mb_break_verify),
     'steel-break': (mb_break_prepare, break_act, mb_break_verify),
