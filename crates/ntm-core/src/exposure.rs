@@ -525,4 +525,12 @@ mod tests {
         e.give(MAX_POWER + 5);
         assert_eq!((e.power, e.demand(), e.role(), e.offer()), (MAX_POWER, 0, Role::Consumer, 0));
     }
+
+    #[test]
+    fn the_container_lets_hoppers_reach_the_four_slots_of_java() {
+        let c = container();
+        assert_eq!(c.slots, SLOTS);
+        assert!(c.faces.iter().all(|f| f == &[PARTICLE, CAPSULE, INGREDIENT, OUTPUT]), "`getAccessibleSlotsFromSide` is {{0, 2, 3, 4}} on every side");
+        assert_eq!((c.inputs, c.outputs), (vec![PARTICLE, INGREDIENT], vec![CAPSULE, OUTPUT]));
+    }
 }
