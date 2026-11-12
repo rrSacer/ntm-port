@@ -396,6 +396,12 @@ fn clamp_float(num: f32, min: f32, max: f32) -> f32 {
 
 /// `ChunkRadiationHandlerSimple.updateSystem`, one world: the spread and the decay, in the map's order.
 pub fn update_system(radiation: &mut ChunkMap) {
+    update_system_with(radiation, |_, _| {});
+}
+
+/// [`update_system`], `wrote(coord, rad)` told after each write of a share, in order: `coord` the chunk of the copy
+/// that gives it, `rad` what the receiving chunk holds now (`radiation.get(newCoord)`, `:104`), which the fog reads.
+pub fn update_system_with(radiation: &mut ChunkMap, mut wrote: impl FnMut([i32; 2], f32)) {
     let buff = ChunkMap::copy_of(radiation);
     radiation.clear();
     for (coord, value) in buff.iter() {
@@ -415,8 +421,74 @@ pub fn update_system(radiation: &mut ChunkMap) {
                 } else {
                     radiation.put(near, value * percent);
                 }
+                wrote(coord, radiation.get(near).expect("just written"));
             }
         }
+    }
+}
+
+/// `RadiationConfig.fogRad` and `fogCh`: a share leaving a chunk over 100 RAD/s, in 1 of 20 (`:105`).
+pub const FOG_RAD: f32 = 100.0;
+pub const FOG_CHANCE: i32 = 20;
+
+/// `ParticleRadiationFog.renderParticle`'s 25 quads: each one's place from the particle (the `glTranslatef` of the
+/// loop add up, there being no push and pop in it, plus that quad's own jitter) and its half size, as
+/// `new Random(50)` gives them at every frame. Each step goes on average 2.5 west, 2.5 north and 0.15 down: the
+/// fog lies along a diagonal some 60 blocks long.
+pub fn fog_quads() -> [([f64; 3], f64); 25] {
+    let mut rand = crate::rbmk::jrandom::JavaRandom::new(50);
+    let mut moved = [0f32; 3];
+    std::array::from_fn(|_| {
+        let d = [(rand.next_gaussian() - 1.0) * 2.5, (rand.next_gaussian() - 1.0) * 0.15, (rand.next_gaussian() - 1.0) * 2.5];
+        let size = rand.next_double() * 7.5;
+        // GL11.glTranslatef((float) dX, (float) dY, (float) dZ), cumulative.
+        for k in 0..3 {
+            moved[k] += d[k] as f32;
+        }
+        let jitter = [rand.next_gaussian() * 0.5, rand.next_gaussian() * 0.5, rand.next_gaussian() * 0.5];
+        (std::array::from_fn(|k| f64::from(moved[k]) + jitter[k]), size)
+    })
+}
+
+/// `handleWorldDestruction:218-247`, one of the ten passes over a chunk's columns (`a` then `b`, x then z): a column
+/// in three (`rand.nextInt(3) != 0` skips it), at its height less 0 or 1 (`- rand.nextInt(2)`); `heights` are the
+/// columns' in that order, None where not loaded. `cell` reads the block there and turns it, with the same random
+/// for the leaves' roll.
+pub fn destruction_pass(
+    chunk: [i32; 2],
+    heights: &[Option<i32>],
+    rand: &mut crate::rbmk::jrandom::JavaRandom,
+    mut cell: impl FnMut([i32; 3], &mut crate::rbmk::jrandom::JavaRandom),
+) {
+    for a in 0..16 {
+        for b in 0..16 {
+            if rand.next_int(3) != 0 {
+                continue;
+            }
+            let below = rand.next_int(2);
+            let Some(height) = heights[(a * 16 + b) as usize] else { continue };
+            cell([chunk[0] * 16 + a, height - below, chunk[1] * 16 + b], rand);
+        }
+    }
+}
+
+/// The columns of a chunk in [`destruction_pass`]'s order.
+pub fn chunk_columns(chunk: [i32; 2]) -> Vec<(i32, i32)> {
+    (0..16).flat_map(|a| (0..16).map(move |b| (chunk[0] * 16 + a, chunk[1] * 16 + b))).collect()
+}
+
+/// `handleWorldDestruction:230-246`, one cell: what it becomes, if anything. `roll7` is `rand.nextInt(7)`, drawn
+/// only for leaves. Grass becomes dead earth; tall grass (any meta: shrub, grass, fern) air; leaves
+/// (`Material.leaves`, the dead leaves aside) dead leaves 6 times in 7, air the 7th.
+pub fn destroyed(block: &str, roll7: impl FnOnce() -> i32) -> Option<&'static str> {
+    let id = crate::blockstate::id_of(block);
+    match id {
+        "minecraft:grass_block" => Some("ntm:waste_earth"),
+        "minecraft:short_grass" | "minecraft:fern" => Some("minecraft:air"),
+        _ if id.starts_with("minecraft:") && id.ends_with("_leaves") => {
+            Some(if roll7() <= 5 { "ntm:waste_leaves[persistent=true]" } else { "minecraft:air" })
+        }
+        _ => None,
     }
 }
 
@@ -514,6 +586,112 @@ mod tests {
         update_system(&mut m);
         assert!(m.get([0, 0]).unwrap() > MAX_RAD, "no ceiling on the decayed value");
         assert_eq!(get(&m, [0, 0]), MAX_RAD, "the reading is clamped");
+    }
+
+    #[test]
+    fn the_writes_are_told_with_their_source_and_the_receivers_value() {
+        let mut m = ChunkMap::new();
+        m.put([0, 0], 200.0);
+        let mut told = Vec::new();
+        update_system_with(&mut m, |c, rad| told.push((c, rad)));
+        assert_eq!(told.len(), 9);
+        assert!(told.iter().all(|(c, _)| *c == [0, 0]), "the source chunk, not the receiver (`coord`)");
+        assert!(told.contains(&([0, 0], (200.0f32 * 0.6) * 0.99 - 0.05)));
+        assert!(told.contains(&([0, 0], 200.0f32 * 0.075)));
+    }
+
+    #[test]
+    fn the_fog_lies_along_the_javas_diagonal() {
+        let quads = fog_quads();
+        assert_eq!(quads, fog_quads(), "the same layout each time (Random(50))");
+        assert!(quads.iter().all(|(_, size)| (0.0..7.5).contains(size)));
+        let last = quads[24].0;
+        assert!(last[0] < -30.0 && last[2] < -30.0 && last[1] < 0.0, "{last:?}");
+    }
+
+    /// tools/chunk-radiation-oracle: `new Random(50)`'s draws as `renderParticle` makes them, in the JVM, against
+    /// [`fog_quads`]. The sizes and the draws agree bit for bit; a place may be off in its last bit (one of the 75
+    /// is): the JVM's `nextGaussian` takes `StrictMath.log` (fdlibm), the port the platform's `ln`.
+    #[test]
+    fn the_fog_layout_matches_the_java_oracle() {
+        let fixture: serde_json::Value =
+            serde_json::from_str(include_str!("../../../tools/chunk-radiation-oracle/fixture.json")).unwrap();
+        let java: Vec<[u64; 4]> = fixture["fog"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|q| std::array::from_fn(|k| q[k].as_u64().unwrap()))
+            .collect();
+        assert_eq!(java.len(), 25);
+        for ((at, size), q) in fog_quads().iter().zip(&java) {
+            assert_eq!(size.to_bits(), q[3], "the size, bit for bit");
+            for k in 0..3 {
+                let j = f64::from_bits(q[k]);
+                assert!((at[k] - j).abs() <= 1e-12 * j.abs().max(1.0), "{} against {j}", at[k]);
+            }
+        }
+    }
+
+    /// The content's fog particles (tools/content-gen/fog_particles.py) have the sizes of [`fog_quads`].
+    #[test]
+    fn the_fog_particles_have_the_quads_sizes() {
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../content/assets/ntm/particles");
+        if !dir.exists() {
+            eprintln!("content missing: skipped");
+            return;
+        }
+        for (n, (_, size)) in fog_quads().iter().enumerate() {
+            let doc: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(dir.join(format!("rad_fog_{n}.json"))).unwrap()).unwrap();
+            let behaviour = &doc["horizon:behaviour"];
+            assert_eq!(behaviour["size"][0].as_f64().unwrap().to_bits(), size.to_bits(), "quad {n}");
+            assert_eq!((behaviour["lifetime"].as_i64(), behaviour["alpha"][0].as_f64()), (Some(400), Some(0.125)));
+        }
+    }
+
+    /// A pass visits a column in three, half of them at the block under the height; the leaves' roll comes from the
+    /// same random, after the cell's own draws.
+    #[test]
+    fn a_destruction_pass_visits_a_third_of_the_columns_half_one_below() {
+        let heights = vec![Some(65); 256];
+        let (mut visited, mut below, mut passes) = (0u32, 0u32, 0u32);
+        for seed in 0..400 {
+            let mut rand = crate::rbmk::jrandom::JavaRandom::new(seed);
+            destruction_pass([1, -1], &heights, &mut rand, |at, _| {
+                assert!((16..32).contains(&at[0]) && (-16..0).contains(&at[2]));
+                visited += 1;
+                below += u32::from(at[1] == 64);
+            });
+            passes += 1;
+        }
+        let per_pass = f64::from(visited) / f64::from(passes);
+        assert!((80.0..91.0).contains(&per_pass), "{per_pass} columns a pass, 256 / 3 expected");
+        let share = f64::from(below) / f64::from(visited);
+        assert!((0.47..0.53).contains(&share), "{share} at the block below");
+        // Each column at its own height (x first, then z: `a`, then `b`): a cell is at its column's.
+        let sloped: Vec<Option<i32>> = (0..16).flat_map(|a| (0..16).map(move |b| Some(100 + a * 16 + b))).collect();
+        let mut rand = crate::rbmk::jrandom::JavaRandom::new(3);
+        destruction_pass([1, -1], &sloped, &mut rand, |at, _| {
+            let column = 100 + (at[0] - 16) * 16 + (at[2] + 16);
+            assert!(at[1] == column || at[1] == column - 1, "{at:?}");
+        });
+        // A column not loaded takes its draws all the same.
+        let mut a = crate::rbmk::jrandom::JavaRandom::new(7);
+        let mut b = crate::rbmk::jrandom::JavaRandom::new(7);
+        destruction_pass([0, 0], &heights, &mut a, |_, _| {});
+        destruction_pass([0, 0], &vec![None; 256], &mut b, |_, _| panic!("not loaded"));
+        assert_eq!(a.next_int(1000), b.next_int(1000));
+    }
+
+    #[test]
+    fn world_destruction_turns_grass_tall_grass_and_leaves() {
+        assert_eq!(destroyed("minecraft:grass_block[snowy=false]", || panic!("no roll")), Some("ntm:waste_earth"));
+        assert_eq!(destroyed("minecraft:short_grass", || panic!()), Some("minecraft:air"));
+        assert_eq!(destroyed("minecraft:fern", || panic!()), Some("minecraft:air"));
+        assert_eq!(destroyed("minecraft:oak_leaves[distance=1,persistent=false,waterlogged=false]", || 5), Some("ntm:waste_leaves[persistent=true]"));
+        assert_eq!(destroyed("minecraft:birch_leaves", || 6), Some("minecraft:air"));
+        assert_eq!(destroyed("ntm:waste_leaves[persistent=true]", || panic!()), None);
+        assert_eq!(destroyed("minecraft:tall_grass[half=lower]", || panic!()), None, "double_plant, not tallgrass");
+        assert_eq!(destroyed("minecraft:dirt", || panic!()), None);
     }
 
     /// tools/chunk-radiation-oracle: the Java's `get/set/incrementRad/decrementRad/updateSystem`, run verbatim on seeded

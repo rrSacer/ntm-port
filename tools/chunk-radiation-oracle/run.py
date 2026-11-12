@@ -203,7 +203,29 @@ def run(scratch):
         # each dump: x, z and the value's bits, flat, in the walk's order
         dumps = [[int(n) & 0xFFFFFFFF if k % 3 == 2 else int(n) for k, n in enumerate(d.split())] for d in out.split('dump\n')[1:]]
         cases.append({'seed': seed, 'ops': ops, 'dumps': dumps})
-    return {'source': 'ChunkRadiationHandlerSimple get/set/increment/decrement/updateSystem, verbatim', 'cases': cases}
+    # ParticleRadiationFog.renderParticle's 25 quads: the loop's Random(50) draws, the glTranslatef summed in float.
+    fog_java = r'''
+public class FogOracle {
+    public static void main(String[] a) {
+        java.util.Random rand = new java.util.Random(50);
+        float mx = 0, my = 0, mz = 0;
+        for(int i = 0; i < 25; i++) {
+            double dX = (rand.nextGaussian() - 1D) * 2.5D;
+            double dY = (rand.nextGaussian() - 1D) * 0.15D;
+            double dZ = (rand.nextGaussian() - 1D) * 2.5D;
+            double size = rand.nextDouble() * 7.5F;
+            mx += (float) dX; my += (float) dY; mz += (float) dZ;
+            double jx = rand.nextGaussian() * 0.5, jy = rand.nextGaussian() * 0.5, jz = rand.nextGaussian() * 0.5;
+            System.out.println(Double.doubleToRawLongBits(mx + jx) + " " + Double.doubleToRawLongBits(my + jy) + " " + Double.doubleToRawLongBits(mz + jz) + " " + Double.doubleToRawLongBits(size));
+        }
+    }
+}
+'''
+    (scratch / 'FogOracle.java').write_text(fog_java)
+    subprocess.run(['javac', '-d', str(scratch), str(scratch / 'FogOracle.java')], check=True)
+    out = subprocess.run(['java', '-cp', str(scratch), 'FogOracle'], capture_output=True, text=True, check=True).stdout
+    fog = [[int(n) & 0xFFFFFFFFFFFFFFFF for n in line.split()] for line in out.splitlines()]
+    return {'source': 'ChunkRadiationHandlerSimple get/set/increment/decrement/updateSystem, verbatim', 'cases': cases, 'fog': fog}
 
 
 if __name__ == '__main__':
