@@ -477,6 +477,33 @@ pub fn chunk_columns(chunk: [i32; 2]) -> Vec<(i32, i32)> {
     (0..16).flat_map(|a| (0..16).map(move |b| (chunk[0] * 16 + a, chunk[1] * 16 + b))).collect()
 }
 
+/// The NTM blocks whose template does not block motion (`blocksMotion`: a poppy's or a one-layer snow's empty
+/// collision); every other one's does (a full cube, or a shape that reaches the block's height, as the bars, the
+/// ladders and the doors). Kept in step with the content by a test.
+const NTM_NOT_MOTION_BLOCKING: [&str; 7] = [
+    "ntm:fallout",
+    "ntm:plant_flower__cd0",
+    "ntm:plant_flower__cd1",
+    "ntm:plant_flower__foxglove",
+    "ntm:plant_flower__nightshade",
+    "ntm:plant_flower__tobacco",
+    "ntm:plant_flower__weed",
+];
+
+/// Whether an NTM block counts in the motion-blocking heightmap, as its template would.
+pub fn ntm_blocks_motion(block: &str) -> bool {
+    let id = crate::blockstate::id_of(block);
+    id.starts_with("ntm:") && !NTM_NOT_MOTION_BLOCKING.contains(&id)
+}
+
+/// A column's motion-blocking height with the NTM's blocks counted: the engine's heightmap leaves a mod's block out
+/// (its `heightmap_state`; decision of 4c, an engine ticket), the world-surface one counts it. Between the two
+/// (`motion` the first, `surface` the second), the highest NTM block that blocks motion, read by `block(y)`, is the
+/// top; a vanilla block there does not count (the motion-blocking map would have it).
+pub fn height_with_ntm(motion: i32, surface: i32, mut block: impl FnMut(i32) -> Option<String>) -> i32 {
+    (motion..surface).rev().find(|&y| block(y).is_some_and(|b| ntm_blocks_motion(&b))).map_or(motion, |y| y + 1)
+}
+
 /// `handleWorldDestruction:230-246`, one cell: what it becomes, if anything. `roll7` is `rand.nextInt(7)`, drawn
 /// only for leaves. Grass becomes dead earth; tall grass (any meta: shrub, grass, fern) air; leaves
 /// (`Material.leaves`, the dead leaves aside) dead leaves 6 times in 7, air the 7th.
@@ -680,6 +707,39 @@ mod tests {
         destruction_pass([0, 0], &heights, &mut a, |_, _| {});
         destruction_pass([0, 0], &vec![None; 256], &mut b, |_, _| panic!("not loaded"));
         assert_eq!(a.next_int(1000), b.next_int(1000));
+    }
+
+    #[test]
+    fn the_height_counts_the_ntm_blocks_the_engine_leaves_out() {
+        let column = |blocks: &'static [(i32, &'static str)]| move |y: i32| blocks.iter().find(|b| b.0 == y).map(|b| b.1.to_string());
+        // Stone at 99 (the engine's 100), dead earth at 100, tall grass at 101 (the surface 102): 101.
+        assert_eq!(height_with_ntm(100, 102, column(&[(99, "minecraft:stone"), (100, "ntm:waste_earth"), (101, "minecraft:short_grass")])), 101);
+        // Dead leaves over air over stone: the dead leaves' top.
+        assert_eq!(height_with_ntm(100, 104, column(&[(103, "ntm:waste_leaves[persistent=true]"), (101, "minecraft:air")])), 104);
+        // An NTM flower or a fallout layer does not count; a vanilla one between is already left out.
+        assert_eq!(height_with_ntm(100, 102, column(&[(100, "ntm:plant_flower__weed"), (101, "ntm:fallout")])), 100);
+        assert_eq!(height_with_ntm(100, 100, column(&[])), 100);
+    }
+
+    /// [`NTM_NOT_MOTION_BLOCKING`] is the content's blocks on a poppy or snow template.
+    #[test]
+    fn the_non_blocking_ntm_blocks_are_the_contents() {
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../content/data/ntm/horizon/block");
+        if !dir.exists() {
+            eprintln!("content missing: skipped");
+            return;
+        }
+        let mut found: Vec<String> = std::fs::read_dir(&dir)
+            .unwrap()
+            .filter_map(|e| {
+                let path = e.unwrap().path();
+                let doc: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(&path).ok()?).ok()?;
+                matches!(doc["template"].as_str(), Some("minecraft:poppy" | "minecraft:snow"))
+                    .then(|| format!("ntm:{}", path.file_stem().unwrap().to_string_lossy()))
+            })
+            .collect();
+        found.sort();
+        assert_eq!(found, NTM_NOT_MOTION_BLOCKING);
     }
 
     #[test]
