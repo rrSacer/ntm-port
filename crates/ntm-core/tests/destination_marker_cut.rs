@@ -223,7 +223,7 @@ fn replaying_the_old_source_item_without_repeating_explosion_matches_both_cuts()
 }
 
 #[test]
-fn the_current_order_guard_also_suppresses_an_earlier_owed_item() {
+fn a_later_receipt_does_not_suppress_an_earlier_owed_item() {
     let mut destination = ChunkLedger::default();
     destination.applied.insert(effect_id(SERIAL, 1));
     let mut host = CutHost {
@@ -254,14 +254,14 @@ fn the_current_order_guard_also_suppresses_an_earlier_owed_item() {
     server.native_settle(&mut host);
     assert_eq!(
         host.emitted_ids,
-        [effect_id(SERIAL, 1)],
-        "the guard skipped an Items effect even though the old home owed it"
+        [effect_id(SERIAL, 0), effect_id(SERIAL, 1)],
+        "both old-source items are still owed"
     );
-    assert_eq!(host.physical_items, 2);
+    assert_eq!(host.physical_items, 3);
     // The equivalent older vanilla source has both its items; the saved destination contains the later item too.
-    assert_ne!(
+    assert_eq!(
         host.physical_items, 3,
-        "the first old-source item is absent relative to the vanilla cut"
+        "the old source and saved destination match the vanilla cut"
     );
 }
 

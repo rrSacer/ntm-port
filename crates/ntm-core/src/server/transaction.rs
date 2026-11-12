@@ -403,7 +403,7 @@ impl Server {
                 // A later item/entity effect in its destination's record proves every earlier effect ran in order.
                 // The home's older record may still owe the explosion, which has no persistent mark of its own.
                 // Advance without a new receipt: replaying it now could destroy the very item that proves it ran.
-                let later_seen = batch.replayed && batch.effects.iter().enumerate().skip(1).any(|(k, later)| {
+                let later_seen = batch.replayed && matches!(effect, WorldEffect::Blocks { .. } | WorldEffect::Explosion { .. } | WorldEffect::PileExplosion { .. }) && batch.effects.iter().enumerate().skip(1).any(|(k, later)| {
                     let (dim, pos) = match later {
                         WorldEffect::Items { dim, pos, .. } | WorldEffect::EncodedItems { dim, pos, .. }
                         | WorldEffect::Entities { dim, pos, .. } => (dim, pos),
