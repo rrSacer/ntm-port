@@ -125,6 +125,8 @@ def run(args):
               'combustion': [('all',)],
               'catalog': [('setup',)],
               'furnace-brick': [('setup', 'capture-state'), ('check-state',)],
+              # Onda 1, slice 6: the ashpits under a firebox and an oven, the wood burner's ash, kept over a reopen.
+              'ash': [('setup', 'capture-state'), ('check-state',)],
               'furnaces': [('all',)],
               'welders': [('all',)],
               'broken': [('setup', 'capture-state'), ('check-state',)],
@@ -213,7 +215,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['audio-lifecycle', 'sounds', 'items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'furnace-brick', 'furnaces', 'welders', 'broken', 'orbus', 'keyforge', 'funnel', 'radiolysis', 'rbmk-t00', 'comparator', 'pile-meltdown', 'stations', 'recipes'])
+    parser.add_argument('scenario', choices=['audio-lifecycle', 'sounds', 'items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'furnace-brick', 'ash', 'furnaces', 'welders', 'broken', 'rbmk-t00', 'comparator', 'pile-meltdown', 'stations', 'recipes', 'orbus', 'keyforge', 'funnel', 'radiolysis'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)

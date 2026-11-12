@@ -1,8 +1,6 @@
 //! Radiation on the players (docs/radiacao.md, stage L4): once a second
-//! each player's rate is what they carry plus the fallout zones where they
-//! stand. Past the joining grace the dose grows by what they carry (the
-//! zones' dose is the bombs', `bomb_server.rs`) and their client's Geiger
-//! reads both values. Sickness and death act every tick (`sickness_tick`).
+//! each player's rate is what they carry. Past the joining grace the dose
+//! grows by it, and their client's Geiger reads both values. Sickness and death act every tick (`sickness_tick`).
 use super::*;
 use crate::radiation::{self, Harm};
 
@@ -32,12 +30,6 @@ impl Server {
     pub fn note_contamination(&mut self, id: &str, millirad: i64) {
         let env = self.radiation_env.entry(id.into()).or_insert(0);
         *env = env.saturating_add(millirad);
-    }
-    /// `ChunkRadiationManager.getRadiation` for the port: the rate of the
-    /// fallout zones where `pos` is.
-    pub fn zone_rate(&self, dim: &str, pos: [f64; 3]) -> u32 {
-        let now = self.ready.world.ticks;
-        self.ready.world.bombs.zones.iter().map(|z| z.rate(dim, pos, now)).fold(0u32, u32::saturating_add)
     }
     /// `ContaminationUtil.contaminate:287`: a player who joined or respawned less than 200 ticks ago
     /// (`ticksExisted < 200`) takes no dose; `blasts.entered` drops the dead, so a respawn starts it again.
@@ -119,8 +111,6 @@ impl Server {
             let carried = host.inventory_stacks(&p.id).unwrap_or_default();
             let held = carried.iter().fold(0u64,|sum,s|sum.saturating_add(crate::zirnox::radiation_rate(s).or_else(||crate::radioisotopes::radiation_rate(s)).map_or_else(||radiation::rate_of([(s.id.as_str(),s.count)]),|rate|u64::from(rate)*u64::from(s.count))));
             let held = u32::try_from(held).unwrap_or(u32::MAX);
-            let now = self.ready.world.ticks;
-            let zones = self.ready.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add);
             let grace = self.in_grace(&p.id);
             let protected = (f64::from(held)*host.radiation_factor(&p.id)) as u32;
             let Some(()) = self.update_player_dose(host,&p.id,|dose| {
@@ -130,7 +120,7 @@ impl Server {
             // `radBuf = radEnv; radEnv = 0` once a second: the continuous
             // sources of this second plus the point contaminations since the last.
             let events = self.radiation_env.remove(&p.id).unwrap_or(0);
-            let continuous = i64::from(held.saturating_add(zones).saturating_add(self.ready.zirnox_radiation_rate.get(&p.id).copied().unwrap_or(0)));
+            let continuous = i64::from(held.saturating_add(self.ready.zirnox_radiation_rate.get(&p.id).copied().unwrap_or(0)));
             let shown = (i64::try_from(dose.millirad).unwrap_or(i64::MAX), continuous.saturating_add(events));
             let last = self.radiation_shown.get(&p.id).copied();
             if last.map(|l| l.0) != Some(shown.0) {

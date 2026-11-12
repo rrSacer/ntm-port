@@ -311,15 +311,10 @@ pub(super) fn contaminate(uuid: &str, millirad: i64) {
     }
 }
 
-/// The fallout zones' rate at a position, milliRAD/s.
 /// The world's radiation by chunk at a position, as `getRadiation` reads it (0 before the server exists).
 pub(super) fn chunk_rad(dim: &str, pos: [f64; 3]) -> f32 {
     let chunk = [(pos[0].floor() as i32) >> 4, (pos[2].floor() as i32) >> 4];
     lock(&SERVER).as_ref().map_or(0.0, |(server, _)| server.native_chunk_radiation(dim, chunk))
-}
-
-pub(super) fn zone_rate(dim: &str, pos: [f64; 3]) -> u32 {
-    lock(&SERVER).as_ref().map_or(0, |(server, _)| server.zone_rate(dim, pos))
 }
 
 /// A player used `stack` in the air: the detonator sets its bomb off.
@@ -407,6 +402,13 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         // Only the chunks the map holds or the next update writes: a wide radius stays a short reply.
         let list:Vec<String>=chunks.iter().filter(|(_,raw,next,loaded)|raw.is_some()||*next!=0.0||*loaded).map(|(c,raw,next,loaded)|format!("{},{}:{}:{}:{}",c[0],c[1],raw.map_or("none".to_string(),|r|r.to_bits().to_string()),next.to_bits(),u8::from(*loaded))).collect();
         let reply=format!("ntmtest ok=true timer={timer} rad={}",list.join(";"));
+        host.game.native_feedback(horizon_client::text::Text::literal(reply));
+        return true;
+    }
+    // `ntmtest dose`: the acting player's dose as the server keeps it (milliRAD, every tick, where the client's value
+    // comes once a second) and their last `radBuf`.
+    if w.first()==Some(&"dose"){
+        let reply=format!("ntmtest ok=true dose={} buf={}",server.player_dose(&me).millirad,server.rad_buf(&me));
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
         return true;
     }

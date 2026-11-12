@@ -33,12 +33,8 @@ pub struct Config {
     pub particles: u32,
     /// Blast damage to players (`damage`).
     pub damage: bool,
-    /// The blast's radiation pulse and the fallout's area radiation.
+    /// The blast's radiation pulse (`EntityNukeExplosionMK5.radiate`).
     pub radiation: bool,
-    /// Area radiation at ground zero, milliRAD/s per 100 blocks of radius.
-    pub zone_peak: u32,
-    /// Ticks for the area radiation to halve.
-    pub zone_half_life: u64,
     /// Block writes per tick of a nuke (256..=60 000).
     pub budget: usize,
     /// Largest radius a nuke gets (bigger ones are cut to it).
@@ -59,8 +55,6 @@ impl Default for Config {
             particles: 24,
             damage: true,
             radiation: true,
-            zone_peak: 10_000,
-            zone_half_life: 12_000,
             budget: crate::explosion::DEFAULT_BUDGET,
             max_radius: crate::explosion::MAX_RADIUS,
             fuel: 22,
@@ -92,12 +86,10 @@ impl Config {
             "particulas" | "partículas" => self.particles = num(value)?.clamp(0, 200) as u32,
             "dano" | "damage" => self.damage = on_off(value)?,
             "radiacao" | "radiação" => self.radiation = on_off(value)?,
-            "zona" => self.zone_peak = num(value)?.clamp(0, 1_000_000) as u32,
-            "meiavida" | "meia-vida" => self.zone_half_life = num(value)?.clamp(20, 10_000_000) as u64,
             "orcamento" | "orçamento" => self.budget = num(value)?.clamp(256, 60_000) as usize,
             "fuel" | "combustivel" => self.fuel = num(value)?.clamp(4, 34) as u32,
             "raio" | "raiomax" => self.max_radius = num(value)?.clamp(1, i64::from(crate::explosion::MAX_RADIUS)) as i32,
-            _ => return Err(format!("chave desconhecida {key}: modo fallout efeitos particulas dano radiacao zona meiavida orcamento raiomax fuel")),
+            _ => return Err(format!("chave desconhecida {key}: modo fallout efeitos particulas dano radiacao orcamento raiomax fuel")),
         }
         Ok(())
     }
@@ -105,15 +97,13 @@ impl Config {
     pub fn describe(&self) -> String {
         let b = |v: bool| if v { "on" } else { "off" };
         format!(
-            "modo {} | fallout {} | efeitos {} (partículas {}) | dano {} | radiação {} (zona {} mRAD/s por 100 de raio, meia-vida {} ticks) | orçamento {}/tick | raiomax {} | fuel {} M",
+            "modo {} | fallout {} | efeitos {} (partículas {}) | dano {} | radiação {} | orçamento {}/tick | raiomax {} | fuel {} M",
             self.mode.name(),
             b(self.fallout),
             b(self.effects),
             self.particles,
             b(self.damage),
             b(self.radiation),
-            self.zone_peak,
-            self.zone_half_life,
             self.budget,
             self.max_radius,
             self.fuel
@@ -137,5 +127,15 @@ mod tests {
         assert_eq!(cfg.max_radius, 17);
         assert_eq!(cfg.budget, 1024);
         assert_eq!(serde_json::to_value(&cfg).unwrap()["mode"], "Otimizado");
+    }
+
+    /// The zones' settings (slice 4e: the zones are gone) in a world saved before: read past, the rest kept.
+    #[test]
+    fn the_zones_settings_of_an_old_world_are_read_past() {
+        let cfg = Config::load(Some(br#"{"radiation":false,"zone_peak":5000,"zone_half_life":600,"max_radius":17}"#.to_vec()));
+        assert!(!cfg.radiation);
+        assert_eq!(cfg.max_radius, 17);
+        assert!(serde_json::to_value(&cfg).unwrap().get("zone_peak").is_none());
+        assert!(Config::default().set("zona", "5000").is_err());
     }
 }

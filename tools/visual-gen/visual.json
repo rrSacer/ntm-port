@@ -36063,8 +36063,112 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_ashpit": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineAshpit {0,0,1,1,1,1} offset 1, ContainerAshpit (five SlotTakeOnly at 44 + 18i, 27; nothing goes in, TileEntityMachineBase.isItemValidForSlot), GUIAshpit 176x168 (gui_ashpit.png), RenderAshpit (heater_oven's model with ashpit.png; case 2: 180, then -90; the Door slides 0.75 along z by doorAngle / 135 while a player has it open; InnerBurning while isFull, at its own light)",
+      "machine": {
+        "slots": [
+          {
+            "x": 44,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 80,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 98,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 116,
+            "y": 27,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          86
+        ],
+        "data": 5,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            0,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_ashpit.png",
+        "texture_from": "textures/gui/machine/gui_ashpit.png",
+        "size": [
+          176,
+          168
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          74
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/heating_oven.obj",
+        "obj_from": "models/machines/heating_oven.obj",
+        "texture": "ntm:textures/models/machines/ashpit.png",
+        "texture_from": "textures/models/machines/ashpit.png",
+        "rotation": 90,
+        "radius": 2.0,
+        "show": {
+          "InnerBurning": {
+            "property": "honey_level",
+            "not": "0"
+          },
+          "Inner": {
+            "property": "honey_level",
+            "is": "0"
+          }
+        },
+        "loop_animation": {
+          "name": "animation.machine_ashpit.open",
+          "length": 1.0,
+          "loop": false,
+          "bones": {
+            "Door": {
+              "position": {
+                "0.0": [
+                  0,
+                  0,
+                  0
+                ],
+                "1.0": [
+                  0,
+                  0,
+                  12
+                ]
+              }
+            }
+          }
+        },
+        "open": "animation.machine_ashpit.open"
+      }
     },
     "ntm:furnace_iron": {
       "auto": false,

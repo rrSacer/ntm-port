@@ -523,7 +523,7 @@ impl Server {
         // else when the writer is done with them (`native_writes_finished`). A save without the hook before it takes
         // all of them.
         let taken = self.taken.take().unwrap_or_else(|| self.taking());
-        // Written at every save, the clock with it: what runs on it (a balefire's damage, the zones) comes back as of
+        // Written at every save, the clock with it: what runs on it (a balefire's damage) comes back as of
         // this save, not as of the last keep of the clock alone.
         if let Err(e) = self.write_world(host) {
             host.log(&format!("machine effect receipts/removals: {e}"));

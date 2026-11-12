@@ -151,6 +151,8 @@ impl BrickFurnace {
                             Ash::Wood => self.ash_wood += time,
                             Ash::Coal => self.ash_coal += time,
                             Ash::Misc => self.ash_misc += time,
+                            // `getAshFromFuel` gives only these three.
+                            Ash::Fly | Ash::Soot => {}
                         }
                         if Self::process_ash(&mut self.slots, self.ash_wood, Ash::Wood) {
                             self.ash_wood -= ASH_THRESHOLD;

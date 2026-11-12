@@ -108,30 +108,37 @@ impl Server {
             if rad <= 0.0 {
                 continue;
             }
-            let amount = f64::from(rad / 20.0) * 1000.0;
-            let env = self.field.env_carry.entry(p.id.clone()).or_insert(0.0);
-            *env += amount;
-            let whole = env.trunc();
-            *env -= whole;
-            self.note_contamination(&p.id, whole as i64);
-            if p.creative || self.in_grace(&p.id) {
-                continue;
-            }
-            // calculateRadiationMod is a float: amount * mod in float, as the Java's `amount * mod`.
-            let factor = host.radiation_factor(&p.id) as f32;
-            let dosed = f64::from(rad / 20.0 * factor) * 1000.0;
-            let carry = self.field.dose_carry.get(&p.id).copied().unwrap_or(0.0) + dosed;
-            let whole = carry.trunc();
-            if whole == 0.0 {
-                self.field.dose_carry.insert(p.id.clone(), carry);
-                continue;
-            }
-            if self.update_player_dose(host, &p.id, |dose| crate::radiation::add_dose(dose, whole as u64)).is_some() {
-                self.field.dose_carry.insert(p.id.clone(), carry - whole);
-            }
+            self.contaminate_radiation(host, &p, rad / 20.0, false);
         }
         self.field.env_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
         self.field.dose_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
+    }
+
+    /// `ContaminationUtil.contaminate(player, RADIATION, CREATIVE or RAD_BYPASS, amount):265-300`, `amount` in RAD:
+    /// `radEnv` first, then no dose for a creative player (`:284`) or one in their first 200 ticks (`:287`), then the
+    /// dose times `calculateRadiationMod` (the armor), or times 1 with `RAD_BYPASS` (`:295`). The fractions of a
+    /// milliRAD are carried in the player's float, as the Java's.
+    pub(super) fn contaminate_radiation(&mut self, host: &mut impl ServerHost, p: &PlayerInfo, amount: f32, bypass: bool) {
+        let env = self.field.env_carry.entry(p.id.clone()).or_insert(0.0);
+        *env += f64::from(amount) * 1000.0;
+        let whole = env.trunc();
+        *env -= whole;
+        self.note_contamination(&p.id, whole as i64);
+        if p.creative || self.in_grace(&p.id) {
+            return;
+        }
+        // calculateRadiationMod is a float: amount * mod in float, as the Java's `amount * mod`.
+        let factor = if bypass { 1.0 } else { host.radiation_factor(&p.id) as f32 };
+        let dosed = f64::from(amount * factor) * 1000.0;
+        let carry = self.field.dose_carry.get(&p.id).copied().unwrap_or(0.0) + dosed;
+        let whole = carry.trunc();
+        if whole == 0.0 {
+            self.field.dose_carry.insert(p.id.clone(), carry);
+            return;
+        }
+        if self.update_player_dose(host, &p.id, |dose| crate::radiation::add_dose(dose, whole as u64)).is_some() {
+            self.field.dose_carry.insert(p.id.clone(), carry - whole);
+        }
     }
 
     /// `ChunkRadiationManager.updateSystem`, at the end of a server tick: `updateSystem` every 20 ticks, with its

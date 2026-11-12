@@ -1152,3 +1152,223 @@ Dois comportamentos do Java que entram como são:
   pequenas, granada, catapulta, núcleo do DFC, máquina personalizada, reator de pesquisa): lacuna, como na
   tabela acima.
 - O radônio denso do `BlockNuclearWaste`: o bloco não existe no port.
+
+### 4e: as zonas de bomba e o que uma cratera irradia no Java
+
+#### O inventário (antes do código)
+
+O plano da fatia 4 dizia "as zonas de bomba trocadas pelo campo". O Java não confirma esse plano: uma cratera
+**não escreve nada no campo por chunk**.
+
+| O que acontece depois de uma bomba | Java | Escreve no campo? | No port |
+|---|---|---|---|
+| Pulso de radiação nos primeiros 10 ticks | `EntityNukeExplosionMK5.java:66-67,102` (`radiate`: 2 500 000 / (5t + 1), alcance 2 × comprimento, só com `strength ≥ 75`) | não: contamina as entidades direto | feito (`bomb_server::radiation_pulse`) |
+| A chuva de fallout em 2,5 R | `EntityNukeExplosionMK5.java:89-95` → `EntityFalloutRain.java:57-220` | não | feita (`explosion/fallout.rs`), com diferenças na tabela (abaixo) |
+| Pedra, terra, areia, grama, ferro → `sellafield_slaked`, meta 9..0 em faixas de 5% até 50% | `FalloutConfigJSON.java:87-108` | não: `BlockSellafieldSlaked` não tem tick nem radiação, a meta só escurece a cor (`BlockSellafieldSlaked.colorMultiplier`) | uma faixa só, sem nível |
+| Minérios → minérios de sellafield (`BlockSellafieldOre`, que herda o `slaked`) | `FalloutConfigJSON.java:89-99` | não | não converte |
+| Areia → `waste_trinitite` (5%) | `FalloutConfigJSON.java:113-120`; `BlockTrinitite` é um `BlockOre` sem `rad` | não | feito |
+| Micélio → `waste_mycelium` | `FalloutConfigJSON.java:110-112`; a poção ao pisar está em `WasteEarth.java:81-96` | não | a conversão não existe na chuva (só no ZIRNOX); a poção ao pisar existe (`walking.rs`) |
+| Camada `fallout` no topo | `EntityFalloutRain.java:172-180` | não: só a poção ao pisar (fatia 5d) | feito (5d) |
+| Madeira, folhas, argila, fogo | `FalloutConfigJSON.java:56-77,121-123`; `EntityFalloutRain.java:182-185` | não | feito |
+| Fogo de balefire | `Balefire.java:156-159`: poção de radiação nível 9 por 5 s ao tocar | não | a verificar |
+
+O único `BlockOre` com `rad` no Java é o `ore_schrabidium` (`ModBlocks.java:1248`). Nenhum bloco que a chuva cria
+é fonte do campo (fatia 4d).
+
+**As zonas do port** (`blast::Zone`) são uma criação do port, sem par no Java. Cada zona é um círculo de 2,5 R com
+pico de 10 RAD/s × R / 100 no centro, caindo com o quadrado da distância e com meia-vida de 12 000 ticks. Elas
+somam na dose de quem está dentro (`area_dose`) e na linha "chunk" do Geiger (decisão D2 da 4b, até a 4e). O
+balefire também cria uma zona. Usos: `blast/mod.rs`, `blast/config.rs` (`zona`, `meiavida`), `bomb_server.rs`,
+`radiation_server.rs`, `instruments.rs`, `persist.rs` (as zonas vão para o save), `transaction.rs`, a cola nativa
+(`glue.rs`, `item_hooks.rs`) e os testes.
+
+Decisão pedida ao coordenador antes do código.
+
+Decisões do coordenador: (A) remover as zonas; D2, a tabela cosmética da chuva, fica como lacuna para a frente de
+explosões e conteúdo; o fogo de balefire fica como lacuna (A); as correções do pulso foram aprovadas.
+
+#### O que entrou
+
+- **As zonas saíram.** Isso inclui:
+  - `blast::Zone`, `area_dose` e `area_rate`;
+  - a soma na linha "chunk" do Geiger, que agora lê só o campo;
+  - as chaves `zona` e `meiavida` do `/ntmbomba config`;
+  - a gravação das zonas no save.
+  Um mundo salvo antes, com zonas ou com essas chaves, abre normalmente: o serde ignora as chaves, o resto do que o
+  mundo guardou continua, e o próximo save sai sem elas. Testes: `a_world_kept_with_zones_loads_without_them` e
+  `the_zones_settings_of_an_old_world_are_read_past`.
+- **O pulso do MK5 ficou fiel** (`EntityNukeExplosionMK5.java:66-67,102-136`, com
+  `ContaminationUtil.contaminate:265-300`). O inventário achou nele estas divergências, além das zonas:
+  - Os updates que irradiam são t = 2..9. O `ticksExisted` cresce antes do `onUpdate` (`World.java:2290-2298` do
+    1.7.10), e o primeiro update ainda não tem explosão. O total é `Σ 2 500 000 / (5t + 1)` ≈ 864 138 RAD. O port
+    somava t = 0..9 (3 780 000) de uma vez: 4,4 vezes mais.
+  - Um update por tick, a partir do tick da detonação (que é o update 1), e cada um com a geometria do seu tick: a
+    posição do jogador e os blocos no caminho naquele momento. Os oito updates acontecem sempre. A entidade do Java
+    vive mais do que isso: a explosão em lotes de força 75 ou mais leva mais updates, até no ar, porque os raios são
+    calculados mesmo sem blocos. A cratera do port, que no ar termina quase de imediato, não corta o pulso. Só o
+    `/ntmbomba cancelar` o encerra, porque ele mata a entidade.
+  - A área é a caixa `getEntitiesWithinAABB` de ±2 × length, comparada com a caixa do jogador (0,6 × 1,8), e não
+    uma esfera.
+  - A resistência é somada bloco a bloco: um passo por bloco ao longo do vetor unitário, de `i = 1` enquanto
+    `i < len`, com `getExplosionResistance`, em float. Antes eram até 48 amostras escaladas. A dose do update é
+    `rads / max(res, 1) / len²`, em float.
+  - `RAD_BYPASS`: a armadura não reduz o pulso (antes reduzia).
+  - O `radEnv` recebe o valor antes das barreiras, então o Geiger de quem está em criativo ouve o pulso. A dose
+    respeita o criativo e a carência de 200 ticks (antes o pulso ignorava a carência).
+  - O pulso só acontece com fallout e `strength = 2r ≥ 75`, ou seja, raio ≥ 38. O balefire não tem pulso
+    (`EntityBalefire` não chama `radiate`).
+  - O raio é o que o servidor usa, depois do `raiomax`. Com o `raiomax` padrão (500), é o raio da bomba; com um
+    `raiomax` abaixo de 38, não há pulso.
+- **Micélio na chuva** (`FalloutConfigJSON.java:87-112`): o micélio é `Material.grass`, então até 45% a entrada da
+  grama o escoria; depois disso ele vira `waste_mycelium`. Essa entrada não é `sol`, então não conta na
+  profundidade da coluna. O perfil da chuva ganhou um 12º campo; um perfil guardado com 11 campos continua lendo.
+- **`ntmtest dose`**: um gancho de prova que lê a dose do servidor a cada tick.
+
+#### Prova da 4e (binário `e8022e5d…`, pacote `79dba264…`)
+
+- Biblioteca 717/717; `watz_pwr_parity` passa; `clippy -D warnings` limpo no núcleo e no stage nativo.
+  - Testes novos: o pulso no jogo de teste (8 updates com os valores da fórmula, armadura ignorada, criativo com Geiger
+    e sem dose, nada depois); a bomba no ar, que ainda dá os 8 updates; o save e a config antigos com zonas; o micélio
+    na chuva; o perfil de 11 campos.
+  - O `save_model` (o modelo do save, que não importa o `ntm_core`) foi interrompido depois de 1,5 h em debug e não foi
+    rodado nesta fatia; nada da 4e passa por ele.
+- Mutantes manuais, 4/4 pegos:
+  - o update 1 irradiando;
+  - o limiar 74;
+  - `RAD_BYPASS` ignorado;
+  - sem o piso `max(res, 1)`.
+- Família `crater` em jogo, 7/7 (`docs/evidence/onda1-f4/items-4e.json`). Uma bomba de teste de raio 40 no ar; o
+  jogador a 50 blocos, atrás de uma parede de lã que barra o dano da explosão e não o pulso; tudo congelado e lido do
+  servidor tick a tick (`ntmtest dose`):
+  - 8 updates seguidos: 90 863, 62 469, 47 595, 38 442, 32 242, 27 764, 24 378 e 21 728 milliRAD, os valores do Java
+    (345,481 RAD no total);
+  - o campo por chunk vazio depois do pulso e depois da chuva;
+  - nenhuma dose a mais com o jogador parado até o fim da cratera e da chuva;
+  - micélio a 42 blocos (d 0,42) virou `sellafield_slaked`; a 60 (d 0,6) virou `waste_mycelium`.
+- Duas coisas que a prova encontrou:
+  - Sem a parede, o jogador morre no primeiro tick pelo dano da explosão, antes de qualquer `radiate`. É fiel: no
+    Java o `dealDamage` roda em todo update, o primeiro também.
+  - A primeira versão ligava o pulso à cratera ainda sendo cavada. No ar, a cratera do port termina quase de imediato
+    e cortava o pulso, então o pulso foi separado dela.
+
+#### Lacunas da 4e
+
+- **Fogo de balefire** (decisão A do coordenador): o bloco `ntm:balefire` não existe no port. A explosão de balefire
+  põe fogo vanilla. A poção ao tocar (`Balefire.java:156-159`) entra junto com o bloco e sua propagação de 15
+  gerações, na frente de conteúdo e explosões.
+- **Dose em mobs**: o `radiate` do Java irradia toda `EntityLivingBase`. O port não tem dose em mobs.
+- **A tabela cosmética da chuva** (D2): o `slaked` com nível de cor 0..9; os minérios que viram minérios de
+  sellafield; o *falloff* gaussiano perto do `maxDist` de cada entrada; folhas e cogumelos.
+- **A busca de topo da chuva**: cada coluna começa perto do topo das vizinhas mais 8 e sobe enquanto não acha ar. Um
+  bloco flutuando acima disso escapa da chuva, enquanto o Java varre a coluna de 255 para baixo. Fica para a frente de
+  explosões.
+- **O `raiomax`**: o pulso usa o raio cortado pelo `raiomax` do servidor. Abaixo de 38, não há pulso. Com o padrão
+  (500), o raio é o da bomba.
+
+## Fatia 6: as cinzas (`powder_ash`) e o cinzeiro (`machine_ashpit`)
+
+### O inventário (antes do código)
+
+| Peça | Java | O que faz | No port |
+|---|---|---|---|
+| Cinzeiro | `TileEntityAshpit.java` | 5 slots, níveis `wood/coal/misc/fly/soot`; a cada tick, uma cinza por tipo quando o nível passa do limiar (2000; fuligem 8000); todos os slots saem por qualquer lado; os níveis vão no NBT | `Kind::Inert` |
+| Bug do cinzeiro | `TileEntityAshpit.processAsh` | ao abrir uma pilha nova num slot vazio, subtrai o limiar de `ashLevelWood` qualquer que seja o tipo, além do que o chamador subtrai do tipo (o nível de madeira pode ficar negativo); um slot vazio vence uma pilha parcial mais adiante | entra como é |
+| Fornalha e forno de aquecimento | `TileEntityFireboxBase.java:73-98` | ao consumir um combustível, o cinzeiro **logo abaixo do núcleo** (`getTileEntity(x, y-1, z)`) ganha o `baseTime` do combustível (o tempo do módulo de queima, **antes** do `getTimeMult` do forno, 0,125) no tipo de `getAshFromFuel:171-187` | ativos (`Kind::Firebox`), sem cinza; a tabela do forno guarda o tempo já multiplicado |
+| Chaminés de tijolo e industrial | `TileEntityChimneyBase.java:40-60` | a fumaça recebida por cano (`SMOKE*`) vira `ashLevelFly`/`ashLevelSoot` do cinzeiro abaixo | `Kind::Inert`; nenhuma máquina do port emite fumaça (`TileEntityMachinePolluting` ficou de fora) |
+| Queimador a lenha | `TileEntityMachineWoodBurner.java:95-110,204-219` | a cinza vai ao próprio slot 1 (`while processAsh`, limiar 2000); consome o combustível sempre que `burnTime <= 0`, ligado ou não (só a geração depende de `isOn`, `:118`) | versão simplificada (um campo de combustível com botão, sem slot de cinza, consome só ligado, sem queima líquida) |
+| Forno de tijolo | `TileEntityFurnaceBrick.java:85-92,163-176` | cinza no slot 3 | feito na Onda 2 (`furnace_brick.rs`), sem o bug do cinzeiro (o Java desse forno não o tem) |
+
+Decisão de escopo pedida ao coordenador antes do código.
+
+Decisões do coordenador: D1 (A), as chaminés ficam como lacuna até o sistema de fumaça; D2 (A), no queimador a lenha
+entra o mínimo fiel na parte que toca as cinzas.
+
+#### O que entrou
+
+- **Cinzeiro** (`crate::ashpit`, `Kind::Ashpit`), seguindo `TileEntityAshpit` linha a linha:
+  - 5 slots e os níveis `wood/coal/misc/fly/soot`, como ints do Java;
+  - limiares 2000, e 8000 para a fuligem; uma cinza por tipo por tick;
+  - o bug do `processAsh` (pilha nova tira o limiar da madeira, e um slot vazio vence a pilha parcial);
+  - os níveis no `save_state`, junto com os slots.
+  Os slots são só de saída (`SlotTakeOnly`, `output` no arquivo da máquina): nada entra, nem por funil.
+  Visual: o multibloco 3×3 (`{0,0,1,1,1,1}` offset 1); a tela `gui_ashpit`; o modelo do forno de aquecimento com a
+  textura do cinzeiro, com a porta deslizando enquanto a tela está aberta e o interior cheio enquanto há cinza.
+- **Fornalha e forno de aquecimento**: ao acender um combustível, guardam o tipo (`getAshFromFuel`) e o `baseTime`
+  dele. Depois das máquinas, o servidor o passa ao cinzeiro logo abaixo do núcleo (`ash_tick`). O `baseTime` é o
+  tempo da tabela da fornalha, também para o forno: os dois usam o mesmo módulo de queima e a fornalha tem
+  `timeMult` 1. Verificado nas 85 entradas: o tempo do forno é sempre `floor(fornalha × 0,125)`.
+- **Queimador a lenha**, mínimo fiel:
+  - o tempo do módulo de queima (troncos ×4, madeira ×2) vai ao nível de cinza do tipo, com uma cinza no slot 1 a
+    cada 2000, em `while`;
+  - acende o próximo combustível sempre que a queima acaba, ligado ou não;
+  - no tick em que acende, não gera nada (no Java a queima é `else if`).
+  O tempo de queima passou a ser o do módulo (antes era o vanilla), porque no Java é o mesmo valor que vai para a
+  cinza.
+- `fuel::family`: as escadas de madeira passam a ser da família madeira (`stairWood` do Forge).
+
+O que a primeira prova em jogo encontrou: o servidor nativo lê os slots de cada máquina de `data/machine_files.json`
+(gerado pelo `tools/machine-gen/build.py` a partir do conteúdo), e não do pacote em tempo de execução. Sem a entrada
+do cinzeiro, o motor deu zero slots e o primeiro `processAsh` derrubou o servidor por índice fora dos limites. A
+entrada foi gerada (só ela; o resto do arquivo saiu igual). O cinzeiro e o queimador agora toleram um vetor de slots
+mais curto: o nível espera e nada cai.
+
+#### Prova da fatia 6 (binário `751927b5…`, pacote `eebe930a…`)
+
+- Biblioteca 728/728; `clippy -D warnings` limpo no núcleo e no stage nativo.
+  - Testes novos: o cinzeiro (o bug da madeira, a vez do slot vazio, a fuligem a 8000, cheio, sem slots, os níveis no
+    `save_state`); a fornalha e o forno no servidor alimentando o cinzeiro de baixo, e nada se o cinzeiro estiver ao
+    lado; o queimador (cinza no slot 1, ligado ou não, o bloco de carvão em oito cinzas de uma vez, nenhuma geração
+    no tick em que acende); o módulo de queima do queimador.
+- Mutantes manuais, 5/5 pegos:
+  - sem o bug da madeira;
+  - o cinzeiro procurado acima;
+  - o forno com a queima no lugar do tempo-base;
+  - `if` no lugar do `while`;
+  - o queimador acendendo só ligado.
+- Cenário `ash` em jogo, com reabertura do mundo (`docs/evidence/onda1-f6/ash-6.json`), todos os checks passaram:
+  - o carvão de uma fornalha e o de um forno sobre seus cinzeiros dão uma cinza de carvão no tick seguinte, com
+    `coal` 0 e `wood` −2000. O forno queima 250 ticks, um oitavo, e mesmo assim o cinzeiro recebe os 2000 do
+    tempo-base;
+  - o segundo carvão do forno faz a pilha crescer para 2 sem tocar na madeira;
+  - um queimador desligado acende um bloco de carvão: 16 000 de queima parada, oito cinzas de carvão no slot 1 e o
+    segundo bloco esperando;
+  - depois de reabrir, os dois cinzeiros e o queimador voltam iguais (níveis, cinzas e queima).
+
+#### Lacunas da fatia 6
+
+- **Chaminés** (D1 A): as cinzas volantes e a fuligem vêm da fumaça que as máquinas emitem
+  (`TileEntityMachinePolluting`), que o port não tem. Os níveis `fly` e `soot` do cinzeiro existem e ficam em zero.
+- **Queimador a lenha** (D2 A): faltam a queima líquida, o tanque e a recarga de bateria pelo slot, além das
+  portas do queimador. A fuligem de poluição (`PollutionHandler`) também falta.
+- **A ordem de atualização no mesmo tick**: no Java, o cinzeiro pode processar antes ou depois da fornalha, conforme
+  a ordem da lista de *tile entities*. No port, a fornalha passa a cinza depois das máquinas, e o cinzeiro a
+  transforma no tick seguinte. A diferença é de no máximo um tick.
+- **A animação da porta e o `isFull`** estão no visual; não foram conferidos por captura de tela nesta fatia.
+
+## Encerramento da Onda 1
+
+Todas as fatias do escopo (`onda-1-escopo.md`) foram revisadas e integradas na `main`:
+1. proteção;
+2. máscaras e trajes;
+3. descontaminação;
+5. doença, morte e poção de radiação;
+4a a 4e. radiação do mundo por chunk, leituras, neblina e destruição, fontes, crateras;
+6. cinzas.
+
+Cada fatia segue o Java com as linhas citadas, bugs incluídos, e tem provas em jogo e evidências em `docs/evidence/`.
+
+Não há pendência dentro do escopo da Onda 1. As lacunas abaixo são do que o Java faz e o port ainda não tem, ou do
+que depende de outro sistema. Cada uma já aparece na sua fatia; aqui ficam agrupadas pela frente que deve levá-las.
+
+| Frente sugerida | Lacunas (fatia de origem) |
+|---|---|
+| **Dose em mobs** | O port só guarda dose de jogadores. Ficam de fora: a descontaminação de mobs (3); a contaminação pelo campo (4b); o `radiate` do MK5 em mobs (4e); as transformações do `handleRadiationEffect` (creeper, vaca, aldeão, pato) e os mobs imunes (5) |
+| **Poluição, fumaça e gases** | O `filter_exposure` sem fonte ambiental (2); as chaminés, com `fly` e `soot` (6); a fuligem do queimador e da fornalha (6); o gás de fusão e o radônio denso do resíduo (4d) |
+| **Explosões e conteúdo de bombas** | O bloco `ntm:balefire`, sua propagação e a poção ao tocar (4e); a tabela cosmética da chuva e a busca de topo que perde blocos flutuantes (4e); o barril amarelo que explode (4d); a explosão nuclear pequena, a granada e a catapulta (4d) |
+| **Máquinas ainda Inert ou ausentes** | Flare (`FT_VentRadiation`), Watz, aniquilador, absorvedor, núcleo do DFC, reator de pesquisa, máquina personalizada (4d); a queima líquida, o tanque, a bateria e as portas do queimador a lenha (6) |
+| **Entidades e itens ausentes** | Besta radioativa, projétil químico, névoa de fluido, item glitch e caranguejo de taint (4d, 5); as outras fontes de `HbmPotion.radiation` e de dano `ntm:radiation` (5); a lista de contaminação do jogador (3, 5d) |
+| **Motor** | O atraso de queda de um bloco de mod (4d). A ponte de altura do heightmap continua no lugar, com o ticket do motor registrado (4c). O gancho de comandos do jogador local, para o `/effect clear` (5d) |
+| **Visual e som** | As camadas de tela e os modelos vestidos das máscaras, os passos do liquidator e os tooltips (2); a partícula `townaura` da descontaminação (3); as texturas por posição do sellafield (5d); a porta e o interior do cinzeiro sem captura de tela (6) |
+| **Blocos** | A camada de fallout que solta item e empilha (5d) |
+| **Efeitos que o port ainda não tem** | O resto do `handleRadiationFX` acima de 200 RAD (vômito, suor, partículas) (4b); a poção `mutation` e o `isRadImmune` (5); as conquistas (5) |
+| **Regras globais do projeto** | A durabilidade com um uso a mais do 1.7.10, a aba criativa dos revestimentos e o `ShadyUtil` (1); as leituras do OpenComputers e do Energy Control (4b) |

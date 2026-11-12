@@ -673,7 +673,8 @@ mod screens {
         assert_eq!(f.screen_data(), vec![100_000 - 50, 100_000, 0, 100], "cheia antes do tick, que gasta 50");
     }
 
-    /// The wood burner burns what its fuel slot holds; button 0 stops it.
+    /// The wood burner burns what its fuel slot holds; button 0 stops it. The tick it lights a fuel it makes
+    /// nothing (`TileEntityMachineWoodBurner.updateEntity:97-123`: the burn is an `else if`).
     #[test]
     fn the_wood_burner_burns_its_slot() {
         let mut w = WoodBurner::default();
@@ -682,9 +683,55 @@ mod screens {
         w.tick();
         w.sync_out();
         assert_eq!(w.slots[0], Some(Stack::new("minecraft:coal", 1)));
+        assert_eq!(w.screen_data()[..5], [0, 100_000, 1600, 1600, 1]);
+        w.sync_in();
+        w.tick();
         assert_eq!(w.screen_data()[..5], [100, 100_000, 1599, 1600, 1]);
         w.button(0);
         assert!(!w.on);
+    }
+
+    /// Slice 6: the module's time (a log x4: 1200) goes into the fuel's kind of ash, one ash in slot 1 each 2000;
+    /// off, it still lights the next fuel once its burn is out, and its burn then stays.
+    #[test]
+    fn the_wood_burner_leaves_its_ash_in_slot_1_on_or_off() {
+        let mut w = WoodBurner { on: false, ..WoodBurner::default() };
+        w.slots[0] = Some(Stack::new("minecraft:oak_log", 3));
+        let run = |w: &mut WoodBurner| {
+            w.sync_in();
+            w.tick();
+            w.sync_out();
+        };
+        run(&mut w);
+        assert_eq!((w.burn, w.ash_wood, w.slots[0].as_ref().map(|s| s.count)), (1200, 1200, Some(2)), "off, it lit the log");
+        run(&mut w);
+        assert_eq!((w.burn, w.slots[0].as_ref().map(|s| s.count)), (1200, Some(2)), "off: the burn stays, nothing more lit");
+        w.on = true;
+        // Drained as it goes: a full buffer stops the burn (`power < maxPower`).
+        for _ in 0..1200 {
+            w.power = 0;
+            run(&mut w);
+        }
+        assert_eq!(w.burn, 0);
+        run(&mut w);
+        assert_eq!((w.ash_wood, w.slots[1].clone()), (400, Some(Stack::new("ntm:powder_ash__wood", 1))), "2400: one ash, 400 left");
+        // Coal ash does not stack on the wood's: its level waits.
+        w.slots[0] = Some(Stack::new("minecraft:coal", 2));
+        w.burn = 0;
+        run(&mut w);
+        w.burn = 0;
+        run(&mut w);
+        assert_eq!((w.ash_coal, w.slots[1].clone()), (3200, Some(Stack::new("ntm:powder_ash__wood", 1))));
+    }
+
+    /// `while processAsh`: a coal block's 16 000 make its eight coal ashes the tick it is lit.
+    #[test]
+    fn the_wood_burner_makes_all_its_ash_at_once() {
+        let mut w = WoodBurner::default();
+        w.slots[0] = Some(Stack::new("minecraft:coal_block", 1));
+        w.sync_in();
+        w.tick();
+        assert_eq!((w.ash_coal, w.slots[1].clone()), (0, Some(Stack::new("ntm:powder_ash__coal", 8))));
     }
 
     /// The barrel: a full tank in slot 2 pours, its empty one out at 3; an

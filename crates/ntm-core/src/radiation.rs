@@ -1,8 +1,8 @@
 //! Radiation (docs/radiacao.md): the items' rates, the players' doses and
 //! sickness. Values are NTM gameplay RAD, not physical dosimetry. The
 //! server reads each player's inventory once a second
-//! (`server/radiation_server.rs`); the bombs' pulses and zones add to the
-//! same doses.
+//! (`server/radiation_server.rs`); the nukes' pulses and the chunk field
+//! add to the same doses.
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 

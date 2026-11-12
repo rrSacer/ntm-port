@@ -25616,7 +25616,7 @@
       },
       "category": "machine",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
-      "behavior_gap": "Inert source identity only. No processing, inventory, item use, locking/key pairing, opening, redstone, linked multiblock, moving collision, model animation, hazards or technical state is implemented. Source casing/icon projected on one static block/item. No resolvable block icon in source declaration/class; source block_steel fallback, faithful atlas/model deferred.",
+      "behavior_gap": "Slice 6 (onda-1-protecao.md): TileEntityAshpit's slots and ash levels run on the server; the firebox and heating oven over it fill it. Chimney fly ash and soot need the absent smoke (gap).",
       "source_has_tile": true,
       "source_ancestry": [
         "MachineAshpit",

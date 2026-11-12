@@ -251,8 +251,8 @@ pub(super) fn geiger_report(game: &mut Game<'_>) {
     let buffer = rad_buffer(game);
     let seed = legacy(game).unwrap_or_default();
     let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
-    let (chunk_rad, zone, resistance) = (chunk_rad(game), zone_rate(game), player_resistance(game));
-    let lines = ins::geiger_lines(&ins::Readings { dose_millirad: dose, chunk_rad, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance });
+    let (chunk_rad, resistance) = (chunk_rad(game), player_resistance(game));
+    let lines = ins::geiger_lines(&ins::Readings { dose_millirad: dose, chunk_rad, buffer_millirad_s: buffer, resistance });
     lines.iter().for_each(|l| tell(game, l));
 }
 
@@ -261,13 +261,6 @@ fn chunk_rad(game: &Game<'_>) -> f32 {
     match (game.native_actor_uuid(), game.player.as_ref()) {
         (Some(_), Some(p)) => crate::game::ntm_glue::chunk_rad(game.dim.id(), [p.position.x, p.position.y, p.position.z]),
         _ => 0.0,
-    }
-}
-
-fn zone_rate(game: &Game<'_>) -> u32 {
-    match (game.native_actor_uuid(), game.player.as_ref()) {
-        (Some(_), Some(p)) => crate::game::ntm_glue::zone_rate(game.dim.id(), [p.position.x, p.position.y, p.position.z]),
-        _ => 0,
     }
 }
 

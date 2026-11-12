@@ -3,10 +3,9 @@
 //! radiation and effects, and `/ntmbomba`.
 use super::*;
 use crate::{
-    blast::{self, Config, PULSE_EVERY, PULSE_MAX, Pulse, Queued, Recorder, Zone, vanilla, visuals},
+    blast::{self, Config, PULSE_EVERY, PULSE_MAX, Pulse, Queued, Recorder, vanilla, visuals},
     bomb::{Blast, FUSE_TICKS},
     machine::Data,
-    radiation,
 };
 use std::cell::RefCell;
 
@@ -65,21 +64,30 @@ fn eye(p: &PlayerInfo) -> [f64; 3] {
     [p.pos[0], p.pos[1] + 1.62, p.pos[2]]
 }
 
-/// Explosion resistance along the line from `a` to `b`, sampled at up to
-/// 48 points and scaled to the line's length (`EntityNukeExplosionMK5
-/// .radiate` sums it block by block).
-fn shielding(host: &mut impl ServerHost, dim: &str, a: [f64; 3], b: [f64; 3]) -> f64 {
-    let len = dist(a, b);
-    let n = (len as usize).clamp(1, 48);
-    let mut sum = 0.0;
-    for i in 1..n {
-        let t = i as f64 / n as f64;
-        let p = [0, 1, 2].map(|k| (a[k] + (b[k] - a[k]) * t).floor() as i32);
-        if let Some(s) = host.get_block(dim, p) {
-            sum += f64::from(vanilla::resistance(&s).max(0.0));
-        }
+/// `radiate`'s resistance: from the center along the unit vector to the eyes, one block each step `i` from 1 while
+/// `i < len` (`(int)Math.floor(pos + vec * i)`), each block's `getExplosionResistance(null)`, summed in float.
+fn line_resistance(host: &mut impl ServerHost, dim: &str, c: [f64; 3], v: [f64; 3], len: f64) -> f32 {
+    if len <= 0.0 {
+        return 0.0;
     }
-    sum * len / n as f64
+    let n = v.map(|x| x / len);
+    let mut res = 0f32;
+    let mut i = 1;
+    while f64::from(i) < len {
+        let p = [0, 1, 2].map(|k| (c[k] + n[k] * f64::from(i)).floor() as i32);
+        if let Some(s) = host.get_block(dim, p) {
+            res += vanilla::resistance(&s);
+        }
+        i += 1;
+    }
+    res
+}
+
+/// Whether a player's box (0.6 × 1.8 from their feet) meets the box of `range` around `c` (`AxisAlignedBB
+/// .intersectsWith`, strict).
+fn in_box(c: [f64; 3], range: f64, pos: [f64; 3]) -> bool {
+    let (lo, hi) = ([pos[0] - 0.3, pos[1], pos[2] - 0.3], [pos[0] + 0.3, pos[1] + 1.8, pos[2] + 0.3]);
+    (0..3).all(|k| hi[k] > c[k] - range && lo[k] < c[k] + range)
 }
 
 /// Whether a block stands between `a` and `b` (`Library.isObstructed`),
@@ -120,7 +128,7 @@ impl Server {
         self.blasts.lit.insert(key, false);
     }
 
-    /// Each tick of a world in play: bombs, explosions, damage, zones.
+    /// Each tick of a world in play: bombs, explosions, damage.
     pub(super) fn bombs_tick(&mut self, host: &mut impl ServerHost) {
         let tick = self.tick;
         if self.blasts.wid.is_none() {
@@ -154,6 +162,7 @@ impl Server {
         self.blasts.nukes.fuel = u64::from(self.bomb_config(host).fuel) * 1_000_000;
         self.bombs_admit(host);
         self.bomb_pulses(host);
+        self.nukes_radiate(host);
         // The explosions (one at a time gets the tick's fuel; none in the
         // tick a charge went off, which spent it).
         let mut rec = Recorder::default();
@@ -181,17 +190,6 @@ impl Server {
                     host.log(&format!("{id}: explosion not saved: {reason}"));
                 }
                 _ => {}
-            }
-        }
-        if tick.is_multiple_of(20) {
-            self.area_dose(host);
-        }
-        if tick.is_multiple_of(200)
-            && let Some(r) = self.ready()
-        {
-            let now = r.world.ticks;
-            if r.world.bombs.zones.iter().any(|z| z.spent(now)) {
-                r.world.bombs.zones.retain(|z| !z.spent(now));
             }
         }
     }
@@ -389,20 +387,11 @@ impl Server {
                 } else if cfg.damage {
                     self.blasts.pulses.push(pulse);
                 }
-                let radioactive = fallout || matches!(blast, Blast::Balefire { .. });
-                if cfg.radiation && radioactive {
-                    self.radiation_pulse(host, &dim, c, radius, &players);
-                    let zone = Zone {
-                        dim: dim.clone(),
-                        center: pos,
-                        radius: (2.5 * radius as f32) as i32,
-                        peak: (u64::from(cfg.zone_peak) * radius as u64 / 100).min(u64::from(u32::MAX)) as u32,
-                        t0: now,
-                        half_life: cfg.zone_half_life,
-                    };
-                    if let Some(r) = self.ready() {
-                        r.world.bombs.zones.push(zone);
-                    }
+                // `radiate` is the MK5's alone, with fallout and `strength >= 75` (`EntityBalefire` has none); the Java
+                // leaves no lingering area (`EntityFalloutRain` writes no radiation). The entity is updated this tick
+                // too (`nukes_radiate` comes after `bombs_admit`): `ticksExisted` 1, no explosion yet, nothing.
+                if cfg.radiation && fallout && blast::Radiating::radiates(radius) {
+                    self.blasts.radiating.push(blast::Radiating { id: id.to_string(), dim: dim.clone(), center: c, range: 2.0 * f64::from(radius), t: 0 });
                 }
             }
         }
@@ -412,25 +401,35 @@ impl Server {
         }
     }
 
-    /// The first ticks' radiation of `EntityNukeExplosionMK5.radiate`:
-    /// 2.5 M/(5t+1) RAD for t < 10, over the shielding and the distance².
-    fn radiation_pulse(&mut self, host: &mut impl ServerHost, dim: &str, c: [f64; 3], radius: i32, players: &[PlayerInfo]) {
-        const TOTAL: f64 = 3_780_000.0; // Σ 2 500 000/(5t+1), t = 0..9
-        let reach = 2.0 * f64::from(radius);
-        for p in players.iter().filter(|p| !p.creative) {
-            let e = eye(p);
-            let len = dist(c, e).max(1.0);
-            if len > reach {
-                continue;
-            }
-            let res = shielding(host, dim, c, e).max(1.0);
-            let millirad = (TOTAL / (res * len * len) * 1000.0) as u64;
-            if millirad == 0 {
-                continue;
-            }
-            self.expose_player(host,&p.id,millirad);
-            host.log(&format!("blast radiation: {} RAD to {}", millirad / 1000, p.name));
+    /// `EntityNukeExplosionMK5.radiate:102-136` for each nuke in its first updates, one update a tick: every player
+    /// whose box meets the box of `range` around the center (`getEntitiesWithinAABB`) takes
+    /// `rads / max(resistance, 1) / len²` through `contaminate(.., RAD_BYPASS, ..)`, `len` from the center to their
+    /// eyes and the resistance summed block by block along that line. Mobs take none: the port has no mob dose.
+    fn nukes_radiate(&mut self, host: &mut impl ServerHost) {
+        if self.blasts.radiating.is_empty() {
+            return;
         }
+        // All eight: the Java's entity outlives them (its batched explosion of strength 75 and more takes more updates,
+        // in the air too), and the port's crater, which ends sooner in the air, has no part in them.
+        let mut radiating = std::mem::take(&mut self.blasts.radiating);
+        for r in &mut radiating {
+            r.t += 1;
+            let Some(rads) = blast::Radiating::rads(r.t) else { continue };
+            for p in self.players.iter().filter(|p| p.dim == r.dim && in_box(r.center, r.range, p.pos)).cloned().collect::<Vec<_>>() {
+                let e = eye(&p);
+                let v = [0, 1, 2].map(|k| e[k] - r.center[k]);
+                let len = dist(r.center, e);
+                let res = line_resistance(host, &r.dim, r.center, v, len).max(1.0);
+                let amount = rads / res / (len * len) as f32;
+                if !amount.is_finite() {
+                    continue;
+                }
+                self.contaminate_radiation(host, &p, amount, true);
+                host.log(&format!("{}: radiate t={} {amount:.3} RAD to {}", r.id, r.t, p.name));
+            }
+        }
+        radiating.retain(|r| r.t < 9);
+        self.blasts.radiating = radiating;
     }
 
     /// Blast damage while the craters are dug: each pulse ends with its crater, as the entity's `dealDamage` does.
@@ -462,35 +461,6 @@ impl Server {
                 }
             }
         }
-    }
-
-    /// One second of the fallout zones' radiation, for each player in one:
-    /// the server knows where they are, so this needs no sample from the
-    /// client (`radiation_done` only shows the rate in the Geiger).
-    fn area_dose(&mut self,host:&mut impl ServerHost) {
-        // A carência de entrada da amostra do inventário vale aqui também,
-        // por jogador: desde quando cada um está no mundo.
-        let tick = self.tick;
-        let entered = &self.blasts.entered;
-        let in_grace = |id: &str| entered.get(id).is_none_or(|t| tick.saturating_sub(*t) < radiation::GRACE_TICKS);
-        let doses: Vec<(String, u32)> = self
-            .players
-            .iter()
-            .filter(|p| !in_grace(&p.id))
-            .map(|p| (p.id.clone(), self.area_rate(&p.id)))
-            .filter(|(_, r)| *r > 0)
-            .collect();
-        for (id, rate) in doses { self.expose_player(host,&id,u64::from(rate)); }
-    }
-
-    /// Area radiation at the player's place now (milliRAD/s).
-    pub(super) fn area_rate(&self, player: &str) -> u32 {
-        let r = &self.ready;
-        // Criativo e espectador não se contaminam (`ContaminationUtil`;
-        // `PlayerInfo.creative` cobre os dois, ver o server mod).
-        let Some(p) = self.players.iter().find(|p| p.id == player && !p.creative) else { return 0 };
-        let now = r.world.ticks;
-        r.world.bombs.zones.iter().map(|z| z.rate(&p.dim, p.pos, now)).fold(0u32, u32::saturating_add)
     }
 
     /// The detonator used by player `id` in the native game, on block
@@ -621,12 +591,6 @@ impl Server {
                 for (id, n) in self.blasts.nukes.lingering() {
                     out.push(format!("{id}: fallout esperando {n} chunk(s)"));
                 }
-                if let Some(r) = self.ready() {
-                    let now = r.world.ticks;
-                    for z in &r.world.bombs.zones {
-                        out.push(format!("zona {} {:?} raio {}: {:.3} RAD/s no centro", z.dim, z.center, z.radius, f64::from(z.rate(&z.dim, [f64::from(z.center[0]), 0.0, f64::from(z.center[2])], now)) / 1000.0));
-                    }
-                }
                 out.extend(self.blasts.log.iter().map(|l| format!("detonada: {l}")));
                 Ok(out.join("\n"))
             }
@@ -693,6 +657,7 @@ impl Server {
                     self.blasts.nukes.cancel(id, &mut &engine);
                 }
                 self.blasts.pulses.clear();
+                self.blasts.radiating.clear();
                 if let Some(r) = self.ready() {
                     r.world.bombs.queue.clear();
                     r.world.bombs.balefires.clear();

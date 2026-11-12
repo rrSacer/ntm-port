@@ -91,23 +91,28 @@ fn p1_6_a_nuke_set_off_before_a_restart_stops_with_it_as_the_mk5_entity_does() {
     assert!(w.borrow().kv.map.keys().all(|k| !k.starts_with("nx.")), "{:?}", w.borrow().kv.map.keys());
 }
 
-/// P2-9: the area radiation's entry grace is per player: one who joins
-/// later (not the client's) gets the dose once their own grace is over.
+/// P2-9: `contaminate`'s grace (`ticksExisted < 200`, `ContaminationUtil:287`) is per player: one who joins later
+/// takes no dose from the chunk field until their own 200 ticks are over. (It read the port's bomb zones, which slice
+/// 4e removed: the Java has none.)
 #[test]
-fn p2_9_area_dose_grace_is_per_player() {
+fn p2_9_contamination_grace_is_per_player() {
     let mut g = bomb_game(8);
     set_creative(&mut g, false);
-    g.ready().world.bombs.zones.push(crate::blast::Zone { dim: OW.into(), center: [500, 70, 500], radius: 50, peak: 10_000, t0: 0, half_life: 1_000_000 });
     g.run(crate::radiation::GRACE_TICKS as usize + 20);
     let other = PlayerInfo { id: "p2".into(), name: "Alex".into(), dim: OW.into(), pos: [500.5, 70.0, 500.5], creative: false };
     let mut first = player();
     first.creative = false;
     g.server.set_players(vec![first, other]);
+    g.server.native_chunk_radiation_loaded(OW, [31, 31]);
+    let set = |g: &mut Game| assert!(g.server.native_radiation_command(OW, [500.5, 70.0, 500.5], "ntmrad set 1000").unwrap().is_ok());
+    set(&mut g);
     g.run(40);
     let dose = |g: &mut Game| g.ready().world.radiation.get("p2").map_or(0, |d| d.millirad);
     assert_eq!(dose(&mut g), 0, "sem carência para quem acabou de entrar");
     g.run(crate::radiation::GRACE_TICKS as usize + 40);
-    assert!(dose(&mut g) > 0, "a zona nunca deu dose ao segundo jogador");
+    set(&mut g);
+    g.run(5);
+    assert!(dose(&mut g) > 0, "o campo nunca deu dose ao segundo jogador");
 }
 
 /// P2-10: the detonator's bomb was replaced by another block (no break

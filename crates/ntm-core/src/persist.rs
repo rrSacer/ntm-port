@@ -1,8 +1,8 @@
 //! The world the server runs (docs/nativo.md). Each machine's state is its
 //! block entity's and the cables are found again from the blocks, so the
-//! world keeps only the rest: bombs set off and not yet exploded, their
-//! zones, the detonators' links, the players' doses, the ticks played (the
-//! zones' clock). That goes to the host's [`Kv`] under [`KEY`] whenever it
+//! world keeps only the rest: bombs set off and not yet exploded, the
+//! detonators' links, the players' doses, the ticks played (the balefires'
+//! clock). That goes to the host's [`Kv`] under [`KEY`] whenever it
 //! changes, and every [`TICKS_EVERY`] ticks for the clock alone.
 //!
 //! What a machine's removal or step still owes the world (a removal waiting for its group, a batch of effects in
@@ -393,5 +393,24 @@ mod tests {
         assert_eq!((back.radiation, back.bombs.next, back.ticks, back.machines.len()), (w.radiation, 3, 9, 0));
         kv.set(KEY, b"not json").unwrap();
         assert_eq!(WorldState::load(&mut kv), WorldState::default());
+    }
+
+    /// A world saved before slice 4e kept its bombs' zones (the port's lingering areas, gone: the Java has none): it
+    /// loads with everything else it kept, and its next save has no zones.
+    #[test]
+    fn a_world_kept_with_zones_loads_without_them() {
+        let mut kv = MemKv::default();
+        let mut w = WorldState::default();
+        w.radiation.insert("p".into(), crate::radiation::Dose { millirad: 7 });
+        w.bombs.next = 3;
+        w.bombs.links.insert("p".into(), ("ntm:nuke_boy".into(), [1, 70, 1]));
+        w.ticks = 9;
+        let mut old: serde_json::Value = serde_json::from_slice(&w.kept(w.ticks)).unwrap();
+        old["bombs"]["zones"] = serde_json::json!([{"dim": "minecraft:overworld", "center": [0, 70, 0], "radius": 25, "peak": 2500, "t0": 0, "half_life": 12000}]);
+        kv.set(KEY, &serde_json::to_vec(&old).unwrap()).unwrap();
+        let back = WorldState::load(&mut kv);
+        assert_eq!((&back.radiation, back.bombs.next, &back.bombs.links, back.ticks), (&w.radiation, 3, &w.bombs.links, 9));
+        let again: serde_json::Value = serde_json::from_slice(&back.kept(back.ticks)).unwrap();
+        assert!(again["bombs"].get("zones").is_none(), "{again}");
     }
 }

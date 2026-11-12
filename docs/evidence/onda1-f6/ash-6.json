@@ -1,0 +1,61 @@
+{
+ "binary_sha256": "751927b597d90aff0d0116f060b32658d113e186acdf87a77fb1397b047ea52e",
+ "bundle_sha256": "eebe930a4a39dacf367092946374fbeb2f536d9df732bda37bdc6216051bc23f",
+ "scenario": "ash",
+ "phases": {
+  "capture-state": {
+   "ok": true,
+   "checks": {}
+  },
+  "check-state": {
+   "ok": true,
+   "checks": {
+    "check-state:firebox_pit_survived_the_reopen": {
+     "ok": true,
+     "detail": "[{\"levels\": {\"wood\": -2000, \"coal\": 0, \"misc\": 0, \"fly\": 0, \"soot\": 0}, \"ashes\": [[\"ntm:powder_ash__coal\", 1]], \"raw\": \"40, 100, 8 has the following block data: '{\\\"generation\\\":2,\\\"block\\\":\\\"ntm:machine_ashpit\\\",\\\"facing\\\":\\\"north\\\",\\\"data\\\":{\\\"k\\\":\\\"Ashpit\\\",\\\"slots\\\":[{\\\"id\\\":\\\"ntm:powder_ash__co"
+    },
+    "check-state:oven_pit_survived_the_reopen": {
+     "ok": true,
+     "detail": "[{\"levels\": {\"wood\": -2000, \"coal\": 0, \"misc\": 0, \"fly\": 0, \"soot\": 0}, \"ashes\": [[\"ntm:powder_ash__coal\", 2]], \"raw\": \"48, 100, 8 has the following block data: '{\\\"generation\\\":2,\\\"block\\\":\\\"ntm:machine_ashpit\\\",\\\"facing\\\":\\\"north\\\",\\\"data\\\":{\\\"k\\\":\\\"Ashpit\\\",\\\"slots\\\":[{\\\"id\\\":\\\"ntm:powder_ash__co"
+    },
+    "check-state:burner_survived_the_reopen": {
+     "ok": true,
+     "detail": "[{\"burn\": 16000, \"ash_coal\": 0, \"on\": \"false\", \"ash_in_slot_1\": 8, \"coal_blocks\": 1}, {\"burn\": 16000, \"ash_coal\": 0, \"on\": \"false\", \"ash_in_slot_1\": 8, \"coal_blocks\": 1}]"
+    }
+   }
+  },
+  "setup": {
+   "ok": true,
+   "checks": {
+    "setup:firebox_pit_is_a_machine": {
+     "ok": true,
+     "detail": "\"40, 100, 8 has the following block data: '{\\\"generation\\\":2,\\\"block\\\":\\\"ntm:machine_ashpit\\\",\\\"facing\\\":\\\"north\\\",\\\"data\\\":{\\\"k\\\":\\\"Ashpit\\\",\\\"slots\\\":[null,null,null,null,null],\\\"wood\\\":0,\\\"coal\\\":0,\\\"misc\\\":0,\\\"fly\\\":0,\\\"soot\""
+    },
+    "setup:firebox_coal_leaves_one_coal_ash_and_takes_the_wood_too": {
+     "ok": true,
+     "detail": "{\"levels\": {\"wood\": -2000, \"coal\": 0, \"misc\": 0, \"fly\": 0, \"soot\": 0}, \"ashes\": [[\"ntm:powder_ash__coal\", 1]], \"raw\": \"40, 100, 8 has the following block data: '{\\\"generation\\\":2,\\\"block\\\":\\\"ntm:machine_ashpit\\\",\\\"facing\\\":\\\"north\\\",\\\"data\\\":{\\\"k\\\":\\\"Ashpit\\\",\\\"slots\\\":[{\\\"id\\\":\\\"ntm:powder_ash__coa"
+    },
+    "setup:oven_pit_is_a_machine": {
+     "ok": true,
+     "detail": "\"48, 100, 8 has the following block data: '{\\\"generation\\\":2,\\\"block\\\":\\\"ntm:machine_ashpit\\\",\\\"facing\\\":\\\"north\\\",\\\"data\\\":{\\\"k\\\":\\\"Ashpit\\\",\\\"slots\\\":[null,null,null,null,null],\\\"wood\\\":0,\\\"coal\\\":0,\\\"misc\\\":0,\\\"fly\\\":0,\\\"soot\""
+    },
+    "setup:oven_coal_leaves_one_coal_ash_and_takes_the_wood_too": {
+     "ok": true,
+     "detail": "{\"levels\": {\"wood\": -2000, \"coal\": 0, \"misc\": 0, \"fly\": 0, \"soot\": 0}, \"ashes\": [[\"ntm:powder_ash__coal\", 1]], \"raw\": \"48, 100, 8 has the following block data: '{\\\"generation\\\":2,\\\"block\\\":\\\"ntm:machine_ashpit\\\",\\\"facing\\\":\\\"north\\\",\\\"data\\\":{\\\"k\\\":\\\"Ashpit\\\",\\\"slots\\\":[{\\\"id\\\":\\\"ntm:powder_ash__coa"
+    },
+    "setup:the_ovens_burn_is_an_eighth": {
+     "ok": true,
+     "detail": "\"48, 101, 8 has the following block data: '{\\\"generation\\\":2,\\\"block\\\":\\\"ntm:heater_oven\\\",\\\"facing\\\":\\\"north\\\",\\\"data\\\":{\\\"k\\\":\\\"Firebox\\\",\\\"slots\\\":[{\\\"id\\\":\\\"minecraft:coal\\\",\\\"count\\\":1},null],\\\"heat\\\":54000,\\\"burn\\\":197,\\\"max_burn\\\":250,\\\"burn_heat\\\":1000,\\\"on\\\":true,\\\"oven\\\":true}}'\""
+    },
+    "setup:a_second_coal_grows_the_stack_and_leaves_the_wood": {
+     "ok": true,
+     "detail": "{\"levels\": {\"wood\": -2000, \"coal\": 0, \"misc\": 0, \"fly\": 0, \"soot\": 0}, \"ashes\": [[\"ntm:powder_ash__coal\", 2]], \"raw\": \"48, 100, 8 has the following block data: '{\\\"generation\\\":2,\\\"block\\\":\\\"ntm:machine_ashpit\\\",\\\"facing\\\":\\\"north\\\",\\\"data\\\":{\\\"k\\\":\\\"Ashpit\\\",\\\"slots\\\":[{\\\"id\\\":\\\"ntm:powder_ash__coa"
+    },
+    "setup:an_off_burner_lights_a_coal_block_into_eight_ashes": {
+     "ok": true,
+     "detail": "{\"burn\": 16000, \"ash_coal\": 0, \"on\": \"false\", \"ash_in_slot_1\": 8, \"coal_blocks\": 1}"
+    }
+   }
+  }
+ }
+}

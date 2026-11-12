@@ -244,7 +244,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_ashpit",
-        kind: Kind::Inert,
+        kind: Kind::Ashpit,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

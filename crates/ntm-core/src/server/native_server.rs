@@ -157,6 +157,7 @@ impl Server {
         self.simulate(host);
         // The RBMK's incrementRad of the steps accepted (TileEntityRBMKRod:153, RBMKNeutronHandler:305,417,421).
         self.apply_chunk_rad_pending();
+        self.ash_tick();
         phases.mark("simulate");
         self.stirling_finish();
         for m in self.ready.world.machines.values_mut() {

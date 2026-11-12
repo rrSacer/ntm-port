@@ -2,7 +2,8 @@
 //! `TileEntityFireboxBase.java:73-124`): burns solid fuel into heat for
 //! the machine above it (a crucible). Two fuel slots (the engine's), up to
 //! 100 000 TU; it burns while below the maximum and, idle, loses
-//! `max(heat/1000, 1)` a tick. Left out: the ash pit, smoke and soot.
+//! `max(heat/1000, 1)` a tick. The fuel it lights leaves its ash in the ashpit right under it (slice 6,
+//! `crate::ashpit`). Left out: smoke and soot.
 //!
 //! The heating oven (`TileEntityHeaterOven.java`, energy batch 1) is the
 //! same base with its own fuels (`crate::heater`: the burn module's mods and
@@ -32,11 +33,16 @@ pub struct Firebox {
     /// The heating oven.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub oven: bool,
+    /// The ash of the fuel lit this tick, for the ashpit under it (`TileEntityFireboxBase.java:85-91`): its kind
+    /// (`getAshFromFuel`) and its `baseTime`, the burn module's time before the oven's `getTimeMult`. The firebox's
+    /// and the oven's modules are the same and the firebox's mult is 1: its table's time.
+    #[serde(skip)]
+    pub ash_out: Option<(crate::fuel::Ash, u32)>,
 }
 
 impl Default for Firebox {
     fn default() -> Self {
-        Self { slots: vec![None; SLOTS], heat: 0, burn: 0, max_burn: 0, burn_heat: 0, on: false, oven: false }
+        Self { slots: vec![None; SLOTS], heat: 0, burn: 0, max_burn: 0, burn_heat: 0, on: false, oven: false, ash_out: None }
     }
 }
 
@@ -67,6 +73,7 @@ impl Firebox {
             for i in 0..SLOTS {
                 let Some(s) = &mut self.slots[i] else { continue };
                 let Some(f) = fuels.get(&s.id).filter(|f| f.ticks > 0) else { continue };
+                self.ash_out = Some((crate::fuel::ash(&s.id), t.firebox_fuels.get(&s.id).map_or(f.ticks, |base| base.ticks)));
                 self.burn = f.ticks;
                 self.max_burn = f.ticks;
                 self.burn_heat = f.heat;
