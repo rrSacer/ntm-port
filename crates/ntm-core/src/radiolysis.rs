@@ -108,6 +108,11 @@ impl Default for Radiolysis {
     }
 }
 
+/// The ticks between two cracks at `heat` (`(int) Math.max(-0.1 * (heat - 100) + 30, 5)`, line 125).
+pub fn crack_period(heat: i32) -> u64 {
+    (-0.1 * f64::from(heat - 100) + 30.0).max(5.0) as u64
+}
+
 impl Radiolysis {
     /// `Library.chargeItemsFromTE` on the battery slot: the creative battery takes everything; the port has no other charge in items.
     fn charge_battery(&mut self) {
@@ -190,8 +195,7 @@ impl Radiolysis {
         self.identify();
         self.setup_tanks();
         if self.heat > 100 {
-            let period = (-0.1 * f64::from(self.heat - 100) + 30.0).max(5.0) as u64;
-            if self.clock % period == 0 {
+            if self.clock % crack_period(self.heat) == 0 {
                 self.crack();
             }
             if self.heat >= 200 && self.clock % 100 == 0 {
@@ -429,6 +433,7 @@ mod tests {
         assert!(r.tanks[0].mb < before, "heat {} cracks", r.heat);
         assert_eq!(r.tanks[0].mb % 100, 0, "a hundred at a time");
         let cracked = (before - r.tanks[0].mb) / 100;
+        assert_eq!(cracked, 8, "500 heat cracks every 5 ticks: ticks 5, 10 ... 40 of the clock");
         assert_eq!((r.tanks[1].mb, r.tanks[2].mb), (cracked * 80, cracked * 20));
         // Not enough heat: nothing.
         let mut cold = Radiolysis::default();
@@ -465,7 +470,7 @@ mod tests {
 
     #[test]
     fn the_period_shortens_with_the_heat_down_to_five_ticks() {
-        let period = |heat: i32| (-0.1 * f64::from(heat - 100) + 30.0).max(5.0) as u64;
+        let period = crack_period;
         assert_eq!((period(101), period(200), period(300), period(350), period(1_000)), (29, 20, 10, 5, 5));
     }
 
@@ -559,6 +564,8 @@ mod tests {
         r.fluid_take("peroxide", 100);
         r.fluid_give("water", 250);
         assert_eq!((r.tanks[1].mb, r.tanks[0].mb), (200, 250));
+        assert_eq!(r.fluid_offer("water"), 0, "the input is never offered");
+        assert_eq!(r.fluid_demand(""), 0, "no type is no demand");
         assert_eq!((r.role(), r.offer(), r.demand()), (Role::Provider, 0, 0));
     }
 
@@ -576,5 +583,40 @@ mod tests {
         assert!(can(0, &dirt, SlotAction::Insert, SlotOrigin::Manual) && !can(13, &dirt, SlotAction::Insert, SlotOrigin::Manual));
         assert!(can(13, &dirt, SlotAction::Extract, SlotOrigin::Automation) && !can(12, &dirt, SlotAction::Extract, SlotOrigin::Automation));
         assert_eq!(crate::native::container(BLOCK), Some(container()));
+    }
+
+    #[test]
+    fn the_thresholds_are_over_a_hundred_heat_to_crack_and_two_hundred_to_sterilize() {
+        let chamber = |pellets: usize| {
+            let mut r = Radiolysis::default();
+            for i in 0..pellets {
+                put(&mut r, i, "ntm:pellet_rtg_polonium", 1);
+            }
+            r.slots[FLUID_IN] = Some(identifier("water"));
+            r.step();
+            r.tanks[0].mb = 1_000;
+            r.slots[STERILIZE_IN] = Some(contaminated("minecraft:iron_sword"));
+            r.clock = 100;
+            r.step();
+            r
+        };
+        let (two, three, four) = (chamber(2), chamber(3), chamber(4));
+        assert_eq!((two.heat, three.heat, four.heat), (100, 150, 200));
+        assert_eq!(two.tanks[0].mb, 1_000, "exactly 100 does not crack");
+        assert_eq!(three.tanks[0].mb, 900, "150 cracks (on the tick the clock is a multiple of 100 and of its period 25)");
+        assert!(three.slots[STERILIZE_IN].is_some() && four.slots[STERILIZE_IN].is_none(), "199 does not sterilize, 200 does");
+    }
+
+    #[test]
+    fn the_sterilized_stack_stops_at_sixty_four() {
+        let mut r = hot();
+        r.step();
+        for (have, left) in [(63, 0), (64, 1)] {
+            r.slots[STERILIZE_OUT] = Some(Stack::new("minecraft:iron_sword", have));
+            r.slots[STERILIZE_IN] = Some(contaminated("minecraft:iron_sword"));
+            r.clock = 100;
+            r.step();
+            assert_eq!(r.slots[STERILIZE_IN].as_ref().map_or(0, |s| s.count), left, "{have} in the second slot");
+        }
     }
 }

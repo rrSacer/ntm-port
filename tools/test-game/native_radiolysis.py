@@ -38,11 +38,20 @@ def state_text(g, p):
 
 
 def state(g, core):
-    """The machine's saved state: the enum's one variant, as a dict (its JSON, the `ntm` string of the block entity)."""
-    text = state_text(g, core)
-    found = re.search(r'\{.*\}', text)
+    """The chamber's own saved state: the dict holding its `clock`, inside the machine's JSON (the `ntm` string of the block entity)."""
+    found = re.search(r'\{.*\}', state_text(g, core))
     data = json.loads(found[0]) if found else {}
-    return next(iter(data.values())) if len(data) == 1 else data
+
+    def find(node):
+        if isinstance(node, dict):
+            if 'clock' in node and 'tanks' in node:
+                return node
+            for v in node.values():
+                r = find(v)
+                if r is not None:
+                    return r
+        return None
+    return find(data) or {}
 
 
 def tanks(g, core):
@@ -100,7 +109,8 @@ def build(g):
     g.ground(X, 100, Z, width=12)
     g.command('clear @s')
     g.command('give @s ntm:machine_radiolysis 1')
-    time.sleep(.5)
+    g.command(f'tp @s {X + 5 + .5} 100 {Z + 3.5}')
+    time.sleep(1)
     g.ctl(f'place {X + 5} 100 {Z} --item ntm:machine_radiolysis')
     time.sleep(1.5)
     g.command('clear @s')
