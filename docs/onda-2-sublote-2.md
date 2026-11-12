@@ -265,3 +265,22 @@ comando; (d) o limite de pilha do item de saída é 64 (o port não conhece o de
 empilham); (e) baterias que não a criativa; (f) os painéis de informação à esquerda da tela (ícones fora dela) não são desenhados:
 o calor vai na dica da barra de energia; (g) o shift-click do menu não foi provado em jogo; (h) as portas, em cada célula, não guardam a
 direção do Java (`canConnect` recusa só `DOWN`) além de ficarem abertas para fora; (i) o modelo do bloco continua sendo a caixa genérica.
+
+**Entrega da radiólise** (árvore com a main `318887c9` mesclada, cliente release `1b2d819f…`, `ntm.hmod` `e52ac80b…`, em
+`content-gen-evidence/onda2-s2/`; mesmo build do funil: `SKIP_UPSTREAM_CHECK=1` e o empacotador do próprio motor):
+
+- unidade: 20 testes em `radiolysis.rs` (receitas, calor e energia depois da oferta, bateria criativa, identificador, receita ausente,
+  craqueamento de 100 em 100, saída cheia, limites de 100 e 200 de calor, período, esterilização, comida, pilha de 64, regras de
+  mão e de funil, tela, rede, regras pela `native`), 1 pela ponte, o teste novo de `snbt::without_field`, 4 do extrator
+  (`tools/content-gen/test_radiolysis_data.py`); suíte `ntm-core` 771 passando e 0 falhas; clippy `--workspace --all-targets -D warnings`
+  limpo; a refatoração de `RTGUtil.updateRTGs` em `radioisotopes::update_rtgs` não mudou nenhum teste do RTG;
+- jogo, `run-native-reactors.py radiolysis` (15 verificações, 0 falhas): o identificador de água tipa a entrada e vai para o slot 11, a
+  água de um barril leste (4 baldes) vira peróxido e hidrogênio na razão de 4 para 1 (3 200 mB de peróxido no barril oeste, 800 de
+  hidrogênio no tanque), as três tanques ficam tipados pela receita, o calor é 200 com quatro pelotas de polônio, o armazém enche, a
+  espada contaminada sai do slot 13 sem a marca e as pelotas perdem vida; depois de salvar e reabrir, slots, tipos dos tanques e vida das
+  pelotas seguem como estavam e a câmara segue rodando; e `funnel` de novo, 18/18, no mesmo cliente;
+- cortes de save no modo estrito (`HORIZON_NO_EAGER_SAVE=1`): `radiolysis-state` 7/7 (quatro pelotas, o identificador e a espada
+  contaminada: cada item existe exatamente uma vez, o identificador num dos slots de fluido e a espada num dos de esterilização) e
+  `radiolysis-break` 7/7 (quebrar a câmara com itens dentro, contra o baú de controle);
+- mutantes: 36 escolhidos à mão, 36 mortos; cinco só morreram depois de testes mais fortes (limite de 100 de calor com o relógio no
+  múltiplo certo, exatamente 100 mB, saída com vaga exata, limpeza do contágio ao juntar, tanque sem tipo).
