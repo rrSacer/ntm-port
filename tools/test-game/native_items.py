@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout,chunk_field,geiger_block').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout,chunk_field,geiger_block,world_effects').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1689,7 +1689,73 @@ def geiger_block(g):
     reset(g, 'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout),('chunk_field',chunk_field),('geiger_block',geiger_block)]
+def world_effects(g):
+    """Onda 1, fatia 4c: the field's effects on the world (needs NTM_TEST_HOOKS=1).
+    `handleWorldDestruction` turns, every tick, the surface of a loaded chunk at 10 RAD/s or more (five draws of the
+    map, ten passes, a column in three at its height or the block below): grass to dead earth, tall grass to air,
+    leaves to dead leaves six times in seven, air the seventh. The fog (`updateSystem`): a share over 100 RAD/s, in 1 of
+    20, puts a fog in the chunk that gave it, its 25 quads as the NTM's mod particles (the client counts them as smoke,
+    and only when their sprites loaded)."""
+    def cells(x0, z0, y):
+        return [g.ctl(f'block {x} {y} {z}').get('state', '').split('[')[0] for x in range(x0, x0 + 16) for z in range(z0, z0 + 16)]
+    def land(x, z):
+        # Over the area, the player standing in its chunk: /ntmrad sets the sender's chunk.
+        for _ in range(40):
+            g.command(f'tp @s {x} 106 {z}')
+            pause(g, .25)
+            pos = g.ctl('state')['player']['position']
+            if abs(pos[0] - x) < .5 and abs(pos[2] - z) < .5:
+                return
+    reset(g, 'creative')
+    g.command('ntmrad clear')
+    # Chunk 3, 0 (x 48..63): grass at y 100 with tall grass on it, air above; chunk 4, 0 (x 64..79): leaves.
+    g.command('fill 48 99 0 79 99 15 minecraft:stone')
+    g.command('fill 48 100 0 63 100 15 minecraft:grass_block')
+    g.command('fill 64 100 0 79 100 15 minecraft:oak_leaves[persistent=true]')
+    g.command('fill 48 101 0 79 110 15 minecraft:air')
+    g.command('fill 48 101 0 63 101 15 minecraft:short_grass')
+    land(56.5, 7.5)
+    g.command('ntmrad set 1000')
+    land(72.5, 7.5)
+    g.command('ntmrad set 1000')
+    land(47.5, 7.5)
+    pause(g, 12)
+    grass, tall, leaves = cells(48, 0, 100), cells(48, 0, 101), cells(64, 0, 100)
+    # Where tall grass is left, and what the height reads there (the destruction's view of the column).
+    left = [(48 + i // 16, i % 16) for i, b in enumerate(tall) if b == 'minecraft:short_grass']
+    g.evidence['tall_grass_left'] = left[:40]
+    g.evidence['heights_where_left'] = [' '.join(g.command(f'ntmtest height {x} {z}').get('chat', [])) for x, z in left[:6]]
+    gone = [(48 + i // 16, i % 16) for i, b in enumerate(tall) if b == 'minecraft:air'][:6]
+    g.evidence['heights_where_gone'] = [' '.join(g.command(f'ntmtest height {x} {z}').get('chat', [])) for x, z in gone]
+    count = lambda xs, b: sum(1 for x in xs if x == b)
+    g.check('radiated_grass_becomes_dead_earth', count(grass, 'ntm:waste_earth') >= 128, {k: count(grass, k) for k in set(grass)})
+    g.check('radiated_tall_grass_goes', count(tall, 'minecraft:short_grass') <= 64, {k: count(tall, k) for k in set(tall)})
+    dead, air = count(leaves, 'ntm:waste_leaves'), count(leaves, 'minecraft:air')
+    g.check('radiated_leaves_become_dead_leaves_or_air', dead + air >= 128 and dead > 2 * air and air > 0, {k: count(leaves, k) for k in set(leaves)})
+    # The fog: a chunk held high (its own share over 100), the client's smoke counted around it.
+    g.command('ntmrad clear')
+    land(56.5, 7.5)
+    def smoke():
+        return (g.ctl('status').get('particles') or {}).get('smoke', 0)
+    # The world's own smoke over a window with no field, then the same window with the chunk held high: the
+    # difference is the fog's (25 particles a fog).
+    before = smoke()
+    for _ in range(12):
+        g.command('ntmrad clear')
+        pause(g, 1)
+    background = smoke() - before
+    before = smoke()
+    for _ in range(12):
+        g.command('ntmrad set 100000')
+        pause(g, 1)
+    made = smoke() - before
+    g.check('the_fog_shows_its_25_quads', made - background >= 25, {'smoke_made': made, 'background': background})
+    g.command('ntmrad clear')
+    g.command('fill 48 99 0 79 110 15 minecraft:air')
+    reset(g, 'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout),('chunk_field',chunk_field),('geiger_block',geiger_block),('world_effects',world_effects)]
 
 
 if __name__=='__main__':
