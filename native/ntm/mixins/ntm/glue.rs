@@ -75,6 +75,7 @@ pub(super) fn world(open: bool) {
         lock(&OWING).clear();
         lock(&ARRIVED).clear();
         lock(&RAD_CHUNKS).clear();
+        lock(&GEIGERS).clear();
         KV_ITEMS.store(0, std::sync::atomic::Ordering::Relaxed);
         lock(&LOADED_AT).clear();
     }
@@ -138,11 +139,17 @@ static KV_ITEMS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::ne
 
 /// A battery, a fluid tank and a barrel give a comparator a signal (`hasComparatorInputOverride`).
 pub(super) fn has_analog_output(level: &crate::game::GameLevel<'_>, state: horizon_world::registry::BlockStateId, output: &mut bool) {
-    if ntm_core::native::has_comparator(&level.facts.get(state).name) { *output = true; }
+    let name = &level.facts.get(state).name;
+    if ntm_core::native::has_comparator(name) || &**name == GEIGER { *output = true; }
 }
 
 /// `getComparatorInputOverride` from the machine's saved state, which the server commits each tick.
-pub(super) fn analog_output(level: &crate::game::GameLevel<'_>, pos: horizon_core::position::BlockPos, state: horizon_world::registry::BlockStateId, output: &mut i32) {
+pub(super) fn analog_output(level: &crate::game::GameLevel<'_>, dim: &str, pos: horizon_core::position::BlockPos, state: horizon_world::registry::BlockStateId, output: &mut i32) {
+    // GeigerCounter.getComparatorInputOverride: the field where it is, read when asked.
+    if &*level.facts.get(state).name == GEIGER {
+        *output = ntm_core::geiger_block::comparator(field_at(dim, [pos.x, pos.y, pos.z]));
+        return;
+    }
     if !ntm_core::native::has_comparator(&level.facts.get(state).name) { return; }
     let Some(horizon_client::containers::BlockEntity::Mod(m)) = level.world.block_entities.get(&(pos.x, pos.y, pos.z)) else { return };
     if let Some(Tag::String(json)) = m.nbt.get(&JavaString::from(STATE)) {
@@ -159,6 +166,10 @@ fn comparator_of(block: &str, json: Option<&JavaString>) -> u8 {
 /// A block changed on the server: kept when a machine or cable is in it.
 pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3], old: horizon_world::registry::BlockStateId, new: horizon_world::registry::BlockStateId) {
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
+    // A Geiger counter block taken away: a new one starts from 0 (a new TileEntityGeiger).
+    if old == GEIGER && new != GEIGER {
+        lock(&GEIGERS).remove(&(dim.to_string(), pos));
+    }
     if trace_effects() && ["minecraft:oak_fence","minecraft:chest","minecraft:oak_log","minecraft:oak_planks"].contains(&old.as_str()){
         eprintln!("ntm trace block {}",serde_json::json!({"tick":level.world.game_time,"dim":dim,"pos":pos,"old":old,"new":new}));
     }
@@ -204,6 +215,11 @@ fn reconcile(server:&mut Server,host:&mut Host<'_, '_>){
 /// machine may take it (the turbines' levers). True when it did.
 pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [i32; 3], face: [i32; 3], sneaking: bool) -> bool {
     if crate::game::ntm_armor_table::open(game,pos,sneaking){return true;}
+    // GeigerCounter.onBlockActivated: not sneaking, the techBoop and printGeigerData; sneaking, nothing (false).
+    if !sneaking && game.native_loaded_block(game.dim.id(), pos).is_some_and(|b| ntm_core::blockstate::id_of(&b) == GEIGER) {
+        crate::game::ntm_items::geiger_report(game);
+        return true;
+    }
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     let dim = game.dim.id().to_string();
@@ -397,6 +413,42 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let reply=match result{Ok(())=>"ntmtest ok=true".to_string(),Err(e)=>format!("ntmtest ok=false reason={e}")};
     host.game.native_feedback(horizon_client::text::Text::literal(reply));
     true
+}
+
+// ------------------------------------------------------------- the Geiger counter block
+// `TileEntityGeiger` keeps nothing: its counters live here while its chunk is loaded, from 0 each time it is made.
+
+const GEIGER: &str = "ntm:geiger";
+
+/// Each Geiger counter block's `timer` and `ticker`, by (dimension, position).
+static GEIGERS: Mutex<std::collections::BTreeMap<(String, [i32; 3]), ntm_core::geiger_block::GeigerBlock>> =
+    Mutex::new(std::collections::BTreeMap::new());
+
+/// `getRadiation` at a block: the world's radiation by chunk (0 before the server exists, or while it is busy).
+fn field_at(dim: &str, pos: [i32; 3]) -> f32 {
+    SERVER.try_lock().ok().and_then(|g| g.as_ref().map(|(server, _)| server.native_chunk_radiation(dim, [pos[0] >> 4, pos[2] >> 4]))).unwrap_or(0.0)
+}
+
+/// `TileEntityGeiger.updateEntity`: the reading every 10 ticks with the neighbours told, a click every 5 at the
+/// block's corner (`playSoundEffect(xCoord, yCoord, zCoord, ..)`).
+fn geiger_tick(game: &mut crate::game::Game<'_>, pos: [i32; 3]) {
+    let dim = game.dim.id().to_string();
+    let step = {
+        let mut geigers = lock(&GEIGERS);
+        let geiger = geigers.entry((dim.clone(), pos)).or_default();
+        geiger.tick(|| field_at(&dim, pos), |n| (crate::game::ntm_items::random_unit(game) * n as f32) as u32 % n.max(1))
+    };
+    if step.notify {
+        game.native_update_output_neighbors(&dim, pos);
+    }
+    if let Some(r) = step.click {
+        crate::game::ntm_items::play_at(game, &format!("hbm:item.geiger{r}"), [f64::from(pos[0]), f64::from(pos[1]), f64::from(pos[2])]);
+    }
+}
+
+/// A chunk's Geiger counter blocks leave with it: made again from 0 when it loads.
+fn geigers_unloaded(dim: &str, chunk: [i32; 2]) {
+    lock(&GEIGERS).retain(|(d, p), _| !(d == dim && p[0] >> 4 == chunk[0] && p[2] >> 4 == chunk[1]));
 }
 
 // ----------------------------------------------------------------- the ledger
@@ -906,6 +958,7 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
 pub(super) fn chunk_unloaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {
     // Before the server takes the block changes: the chunk's value is saved as it leaves.
     lock(&RAD_CHUNKS).push((dim.to_string(), chunk, false));
+    geigers_unloaded(dim, chunk);
     if let Ok(mut guard) = SERVER.try_lock() && let Some((server, _)) = guard.as_mut() {
         let mut host = Host { game, buttons: Vec::new() };
         feed_changes(server, &mut host);
@@ -1616,13 +1669,13 @@ fn show_in_place(game: &mut crate::game::Game<'_>, show: &ntm_core::blast::visua
 /// A new machine block's block entity, empty: the server keeps the
 /// machine's state in it.
 pub(super) fn entity(block: &str, entity: &mut Option<(String, Compound)>) {
-    if entity.is_none() && is_machine(block) {
+    if entity.is_none() && (is_machine(block) || block == GEIGER) {
         *entity = Some((block.to_string(), Compound::new()));
     }
 }
 
 pub(super) fn ticks(block: &str, ticks: &mut bool) {
-    if is_machine(block) {
+    if is_machine(block) || block == GEIGER {
         *ticks = true;
     }
 }
@@ -1765,6 +1818,10 @@ fn rod_doubles(tag: &mut Tag) {
 /// from its saved state when the server doesn't know it (the world was
 /// opened again); the server's phases run it at the tick's end.
 pub(super) fn tick(game: &mut crate::game::Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
+    if entity.id == GEIGER {
+        geiger_tick(game, pos);
+        return;
+    }
     if !is_machine(&entity.id) {
         return;
     }

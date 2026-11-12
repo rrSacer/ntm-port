@@ -211,18 +211,10 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     }
     let say = |game: &mut Game<'_>, line: &str| tell(game, line);
     match id {
-        "ntm:geiger_counter" | "ntm:dosimeter" => {
+        "ntm:geiger_counter" => geiger_report(game),
+        "ntm:dosimeter" => {
             play(game, "hbm:item.techBoop");
-            let buffer = rad_buffer(game);
-            let lines = if id == "ntm:dosimeter" {
-                ins::dosimeter_lines(buffer)
-            } else {
-                let seed = legacy(game).unwrap_or_default();
-                let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
-                let (chunk_rad, zone, resistance) = (chunk_rad(game), zone_rate(game), player_resistance(game));
-                ins::geiger_lines(&ins::Readings { dose_millirad: dose, chunk_rad, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance })
-            };
-            lines.iter().for_each(|l| say(game, l));
+            ins::dosimeter_lines(rad_buffer(game)).iter().for_each(|l| say(game, l));
         }
         "ntm:digamma_diagnostic" => {
             play(game, "hbm:item.techBoop");
@@ -249,6 +241,19 @@ fn tell(game: &mut Game<'_>, line: &str) {
 /// `radBuf` in milliRAD/s: the radiation server's reading of the last second.
 fn rad_buffer(game: &Game<'_>) -> i64 {
     game.native_actor_uuid().map_or(0, |u| crate::game::ntm_glue::rad_buffer(&u))
+}
+
+/// The `techBoop` at the player and `ContaminationUtil.printGeigerData`: the hand counter's right click, and the
+/// Geiger counter block's (`GeigerCounter.onBlockActivated`).
+pub(super) fn geiger_report(game: &mut Game<'_>) {
+    use ntm_core::instruments as ins;
+    play(game, "hbm:item.techBoop");
+    let buffer = rad_buffer(game);
+    let seed = legacy(game).unwrap_or_default();
+    let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
+    let (chunk_rad, zone, resistance) = (chunk_rad(game), zone_rate(game), player_resistance(game));
+    let lines = ins::geiger_lines(&ins::Readings { dose_millirad: dose, chunk_rad, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance });
+    lines.iter().for_each(|l| tell(game, l));
 }
 
 /// `ChunkRadiationManager.getRadiation` at the player's block (`printGeigerData:161`).
@@ -831,6 +836,24 @@ fn play(game: &mut Game<'_>, java: &str) {
         .iter()
         .position(|s| *s == category)
     else {
+        return;
+    };
+    let pitch = sound.pitch + random(game) * sound.spread;
+    game.with_level(|_, level, _| level.native_play_sound(sound.event, at, source, sound.volume, pitch));
+}
+
+/// [`random`] for the other modules (the Geiger counter block's rolls).
+pub(super) fn random_unit(game: &Game<'_>) -> f32 {
+    random(game)
+}
+
+/// Plays the registered original event at a position, as `World.playSoundEffect` does.
+pub(super) fn play_at(game: &mut Game<'_>, java: &str, at: [f64; 3]) {
+    let Some(sound) = ntm_core::consumables::sound(java) else {
+        return;
+    };
+    let category = ntm_core::sounds::category(sound.event).unwrap_or("blocks");
+    let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| *s == category) else {
         return;
     };
     let pitch = sound.pitch + random(game) * sound.spread;
