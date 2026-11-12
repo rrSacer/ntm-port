@@ -120,14 +120,14 @@ def lay_out(g, core, facing):
     are at (-x, -z) of the core: (-1, 0, 1) at the bottom and (-1, 4, 0) at the top, their free faces down and up."""
     cell = lambda x, y, z: world_cell(core, facing, (x, y, z))
     low_duct, low_barrel = cell(-1, -1, 1), cell(-2, -1, 1)
-    high_duct, high_barrel = cell(-1, 5, 0), cell(-1, 6, 0)
+    high_duct, high_barrel = cell(-1, 5, 0), cell(-2, 5, 0)
     for p in (cell(-2, -2, 1), cell(-1, -2, 1), cell(0, -2, 1), cell(-1, 5, -1)):
         g.command(f'setblock {p[0]} {p[1]} {p[2]} minecraft:stone')
     for p in (low_duct, high_duct):
         g.command(f'setblock {p[0]} {p[1]} {p[2]} ntm:fluid_duct_neo')
     for p in (low_barrel, high_barrel):
         g.command(f'setblock {p[0]} {p[1]} {p[2]} ntm:barrel_steel[facing=north]')
-    # Typed from beside them: the bottom one from the cell under the core's column, the top one from a stone over the box.
+    # Typed from beside them: the bottom one from the cell under the core's column, the top one from a stone over the box (its barrel beside the duct, so the duct's top face is in the player's view).
     air = cell(0, -1, 1)
     g.command(f'setblock {air[0]} {air[1]} {air[2]} minecraft:air')
     type_duct(g, 'water', [low_duct], air)

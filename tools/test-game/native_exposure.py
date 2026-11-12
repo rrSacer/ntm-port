@@ -194,7 +194,9 @@ def check(g):
     g.check('the_progress_goes_on_from_where_it_was', st.get('progress', 0) >= saved['progress'], [saved['progress'], st.get('progress')])
     sprint(g, 200)
     s = items(g, core)
-    g.check('the_next_ingot_comes_out', s.get(3) == ('ntm:ingot_schraranium', 2), s)
+    t = totals(s)
+    g.check('the_next_ingot_comes_out', s.get(3, ('', 0))[0] == 'ntm:ingot_schraranium' and s[3][1] >= 2, s)
+    g.check('no_ingot_is_lost_or_made_twice', t.get('ntm:ingot_uranium', 0) + t.get('ntm:ingot_schraranium', 0) == 6, s)
 
 
 if __name__ == '__main__':
