@@ -117,29 +117,28 @@ fn region_marker_before_entity_file_hides_what_old_home_still_owes() {
     );
 }
 #[test]
-fn owed_drain_cannot_decide_from_the_region_marker_alone() {
+fn owed_drain_from_an_old_home_reemits_even_if_the_destination_is_marked() {
     let id = effect_id(SERIAL, 1);
     let mut old_source = ChunkLedger::default();
     assert!(old_source.owe(id, DEST, vec!["{id:'ntm:sawblade',count:1}".into()]));
     let mut region_b = ChunkLedger::default();
     region_b.applied.insert(id);
-    // Two legal cuts have identical source and destination region records but different entity files.
-    for (old_entity_file_count, correct_to_spawn) in [(0, true), (1, false)] {
+    // A is old with one owed item. Its vanilla counterpart has one in the old output slot.
+    // Both old and new destination entity files are possible with the same region marker.
+    for saved_destination_items in [0, 1] {
         let mut source = old_source.clone();
         let due = source.take_owed(|_| true);
         assert_eq!(due.len(), 1);
         assert!(region_b.knows(id));
-        assert_eq!(correct_to_spawn, old_entity_file_count == 0);
-        // Always spawning duplicates the second cut; always skipping loses the first against the old vanilla chest.
-        let always_spawn = old_entity_file_count + due.len();
-        let always_skip = old_entity_file_count;
+        let vanilla_total = 1 + saved_destination_items;
+        assert_eq!(
+            saved_destination_items + due.len(),
+            vanilla_total,
+            "paying the old debt matches the vanilla cut"
+        );
         assert_ne!(
-            if correct_to_spawn {
-                always_skip
-            } else {
-                always_spawn
-            },
-            1
+            saved_destination_items, vanilla_total,
+            "skipping the debt loses the old source's copy"
         );
     }
 }
@@ -249,4 +248,35 @@ fn the_current_order_guard_also_suppresses_an_earlier_owed_item() {
         host.physical_items, 3,
         "the first old-source item is absent relative to the vanilla cut"
     );
+}
+
+#[test]
+fn a_tag_lost_on_pickup_leaves_no_destination_evidence_to_stop_a_second_blast() {
+    // Save 1: old source still owes [explosion, item], old destination region has no marker, entity file is empty.
+    // The first explosion and item spawn happen; the player picks up the entity. Player data alone reaches disk
+    // before a crash. Entity attachments are not copied into ItemStack by ItemEntity.playerTouch.
+    let saved_player_items = 1;
+    let mut host = CutHost {
+        kv: MemKv::default(),
+        destination: ChunkLedger::default(),
+        physical_items: 0,
+        explosions: 0,
+        reemit_old_debt: true,
+        emitted_ids: vec![],
+    };
+    let mut server = Server::native(&mut host, 0);
+    server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
+    server.native_settle(&mut host);
+    assert_eq!(
+        host.physical_items + saved_player_items,
+        2,
+        "the old vanilla source plus the saved player item"
+    );
+    assert_eq!(
+        host.explosions, 1,
+        "with neither a region marker nor a remaining tagged entity, the earlier blast is repeated"
+    );
+    // An identical disk view can also come from a player who had the same item before the still-pending blast.
+    // This witness does not model movement, merge, or an in-game save; it exercises the real server's replay decision
+    // with a host limited to the two proposed proofs (destination marker or still-existing entity tag).
 }

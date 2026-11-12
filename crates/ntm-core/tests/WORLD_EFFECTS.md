@@ -151,8 +151,9 @@ explosão e item; B é o chunk vizinho. O controle vanilla conserva 1 no baú/dr
   vanilla 1. A guarda também evita a explosão (correto para o efeito físico).
 - A antigo, região **e** entidades B novas, com 1 item em B: suprimir item pelo marcador dá NTM 1, vanilla 2 (o
   item que a origem antiga volta a ter mais o salvo em B). O coordenador confirmou formalmente este análogo vanilla.
-- Uma casa antiga que deve um item e um marcador B idêntico podem coexistir com entidades B antigas ou novas; decidir
-  o owed/drain apenas pelo marcador, sempre soltando ou sempre suprimindo, falha em um dos dois.
+- Uma casa antiga que deve um item e um marcador B idêntico podem coexistir com entidades B antigas ou novas.
+  Reemitir a dívida antiga preserva a cópia da origem em ambos os cortes; suprimir pelo marcador perde essa cópia.
+  O teste anterior desta investigação usava como controle fixo 1 e errou ao considerar 2 uma duplicação indevida.
 - No recorte limitado dos dois casos de A antigo e marcador B novo, usar o marcador para pular **somente a explosão**
   e pagar novamente o item da origem produz 1 ou 2, igual ao vanilla. É candidato parcial, não valida unload, ordem de
   entidade antes de região, coleta, merge, movimentação nem Entities/EncodedItems.
@@ -170,3 +171,12 @@ usa a guarda atual do `Server` com um host sintético que reemite o devido de ca
 contra vanilla 3 (os dois itens da origem antiga e a lâmina no arquivo de entidades novo). A correção aprovada pelo
 coordenador deverá restringir a guarda de efeito físico, sem suprimir o item devido; esta sonda demonstra o defeito
 atual com o host candidato, não afirma que a cola já grave a marca em B.
+
+Sexta sonda, `a_tag_lost_on_pickup_leaves_no_destination_evidence_to_stop_a_second_blast`: reconstrói A antigo com
+batelada, B antigo sem marca ou entidade e arquivo do jogador novo com o item já coletado. Nesse host sintético, o
+`Server` real reemite o item da origem (total 2, como o controle) mas também volta a chamar a explosão. O caso é um
+modelo do corte; não foi produzido em jogo. Uma tag apenas na entidade sumiu ao entrar no inventário: no pin,
+`item_entities.rs:249-266` passa `item.stack.clone()` para `give`, e `native_item_picked_up_v2` recebe stack,
+thrower e posição, sem o ID da entidade. O mesmo estado de arquivos pode ter um item preexistente no jogador e uma
+explosão ainda devida. A sonda delimita o alcance da proposta de tag; não prova que toda solução sem motor seja
+impossível. O coordenador descartou flush síncrono extra. Seis sondas passaram; Clippy do teste limpo.
