@@ -129,6 +129,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Zirnox(z) if !z.destroyed => Some(&mut **z),
         Data::Rbmk(c) => Some(&mut **c),
         Data::BrickFurnace(f) => Some(f),
+        Data::KeyForge(f) => Some(f),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         _ => None,
@@ -176,6 +177,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:barrel_steel", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:machine_orbus", Layout::Native),
+    ("ntm:machine_keyforge", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
     // Energy batch 3 (`crate::combustion`): the generators' slots are their

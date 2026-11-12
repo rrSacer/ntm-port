@@ -40,6 +40,7 @@ pub mod fraction;
 pub mod gascent;
 pub mod hash;
 pub mod heater;
+pub mod keyforge;
 pub mod kv;
 pub mod consumables;
 pub mod instruments;

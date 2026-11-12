@@ -64,6 +64,9 @@ pub fn container(block: &str) -> Option<Container> {
     if let Some(c) = crate::furnaces::container(block).or_else(|| crate::welders::container(block)) {
         return Some(c);
     }
+    if block == crate::keyforge::BLOCK {
+        return Some(crate::keyforge::container());
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -105,6 +108,12 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
     }
     if crate::welders::Model::of(block).is_some() {
         return crate::welders::filters(block);
+    }
+    if block == crate::keyforge::BLOCK {
+        // `ContainerMachineKeyForge.transferStackInSlot`: a shift-click from the inventory fills the first slot only.
+        let first = SlotFilter::default();
+        let held = SlotFilter { quick_move: Some(Vec::new()), ..Default::default() };
+        return vec![first, held.clone(), held];
     }
     if is_brick_furnace(block) {
         // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
@@ -155,6 +164,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if let Some(allowed) = crate::furnaces::allows(block, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;
+    }
+    if block == crate::keyforge::BLOCK {
+        return crate::keyforge::allows(slot, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if is_brick_furnace(block) {
         // The plain slots 0 and 1 take anything from a hand (1.7.10's

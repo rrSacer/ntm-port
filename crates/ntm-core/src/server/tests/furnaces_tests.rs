@@ -286,3 +286,32 @@ fn the_arc_welder_welds_on_a_creative_battery_and_keeps_its_state() {
     // The screen's ten values, then the saved ones (eight, and the high words of the three energy longs).
     assert_eq!(data.len(), 10 + 11);
 }
+
+/// The locksmith table through the bridge: the pins ride in the item's `custom_data` into the machine's slots and back to
+/// the engine's, copied from the first to the second and re-rolled in the third.
+#[test]
+fn the_locksmith_table_copies_and_randomizes_pins_through_the_bridge() {
+    use crate::keyforge::{pins, set_pins};
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_keyforge[facing=north,honey_level=0]", 3);
+    let mut key = Stack::new("ntm:key", 1);
+    set_pins(&mut key, 456);
+    put(&mut g, 0, Some(key));
+    put(&mut g, 1, Some(Stack::new("ntm:padlock", 1)));
+    put(&mut g, 2, Some(Stack::new("ntm:padlock_reinforced", 1)));
+    g.run(4);
+    let s = slots(&g);
+    assert_eq!(pins(s[0].as_ref().unwrap()), 456, "the first is untouched");
+    assert_eq!(pins(s[1].as_ref().unwrap()), 456, "the second got its pins");
+    let first = pins(s[2].as_ref().unwrap());
+    assert!((100..=999).contains(&first), "{first}");
+    g.run(8);
+    let later = pins(slots(&g)[2].as_ref().unwrap());
+    assert!((100..=999).contains(&later));
+    // A fake key in the second slot is left as it was.
+    let mut fake = Stack::new("ntm:key_fake", 1);
+    set_pins(&mut fake, 7);
+    put(&mut g, 1, Some(fake));
+    g.run(4);
+    assert_eq!(pins(slots(&g)[1].as_ref().unwrap()), 7);
+}

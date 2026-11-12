@@ -4095,6 +4095,27 @@
 1
 ]
 },
+"ntm:machine_keyforge": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 44,
+"y": 36
+},
+{
+"x": 80,
+"y": 36
+},
+{
+"x": 116,
+"y": 36
+}
+],
+"synced": []
+},
 "ntm:machine_liquefactor": {
 "inventory": [
 8,

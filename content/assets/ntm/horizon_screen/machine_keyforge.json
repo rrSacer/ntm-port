@@ -1,0 +1,45 @@
+{
+  "texture": "ntm:textures/gui/machine/gui_keyforge.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    92
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        12,
+        28,
+        16,
+        16
+      ],
+      "lines": [
+        "Linking",
+        "The first slot will copy the key/lock's",
+        "pin configuration and paste it to the second slot."
+      ]
+    },
+    {
+      "rect": [
+        12,
+        44,
+        16,
+        16
+      ],
+      "lines": [
+        "Setup",
+        "The third slot will randomize the",
+        "key/lock's pin configuration."
+      ]
+    }
+  ],
+  "title_color": "#ffffff"
+}

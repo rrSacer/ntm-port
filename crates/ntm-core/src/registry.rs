@@ -384,7 +384,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_keyforge",
-        kind: Kind::Inert,
+        kind: Kind::KeyForge,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
