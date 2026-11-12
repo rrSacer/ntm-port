@@ -339,3 +339,28 @@ fn the_funnel_compresses_a_column_and_its_button_cycles_the_mode() {
     assert_eq!(slots(&g)[7].as_ref().map(|x| x.count), Some(4));
     assert_eq!(g.world.borrow().engine[&(OW.to_string(), AT)].1.first(), Some(&1));
 }
+
+/// The radiolysis chamber through the bridge: ten polonium pellets give 500 heat, the identifier in the first fluid slot types the
+/// input and goes to the second, an item with the contagion comes out of the sterilization slot clean, and the pellets lose life.
+#[test]
+fn the_radiolysis_chamber_runs_its_pellets_identifier_and_sterilization_through_the_bridge() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_radiolysis[facing=north,honey_level=0]", 15);
+    for i in 0..10 {
+        put(&mut g, i, Some(Stack::new("ntm:pellet_rtg_polonium", 1)));
+    }
+    let mut id = Stack::new("ntm:fluid_identifier_multi", 1);
+    id.custom = Some("{ntm_fluid:\"water\"}".into());
+    put(&mut g, 10, Some(id.clone()));
+    let mut sword = Stack::new("minecraft:iron_sword", 1);
+    sword.custom = Some("{ntmContagion:1b}".into());
+    put(&mut g, 12, Some(sword));
+    g.run(250);
+    let s = slots(&g);
+    assert_eq!((s[10].clone(), s[11].clone()), (None, Some(id)), "{s:?}");
+    assert_eq!((s[12].clone(), s[13].clone()), (None, Some(Stack::new("minecraft:iron_sword", 1))), "{s:?}");
+    assert!(s[..10].iter().all(|p| p.as_ref().is_some_and(|p| p.id == "ntm:pellet_rtg_polonium" && p.custom.as_deref().is_some_and(|c| c.contains("PELLET_DEPLETION")))), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    assert_eq!((data.len(), data[1], data[2]), (12, 1_000_000, 500), "{data:?}");
+    assert!(data[0] > 0, "the heat's power is in the store");
+}

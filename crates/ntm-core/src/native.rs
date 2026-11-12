@@ -70,6 +70,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::funnel::BLOCK {
         return Some(crate::funnel::container());
     }
+    if block == crate::radiolysis::BLOCK {
+        return Some(crate::radiolysis::container());
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -126,6 +129,14 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         rules.extend(vec![output; crate::funnel::INPUTS]);
         return rules;
     }
+    if block == crate::radiolysis::BLOCK {
+        // `ContainerRadiolysis`: the fluid identifier's and the sterilized item's out slots are `SlotTakeOnly`s.
+        let mut rules = vec![SlotFilter::default(); crate::radiolysis::SLOTS];
+        for i in [crate::radiolysis::FLUID_OUT, crate::radiolysis::STERILIZE_OUT] {
+            rules[i].output = true;
+        }
+        return rules;
+    }
     if is_brick_furnace(block) {
         // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
         // slot 1 first and then slot 0, anything else into slot 0 only: the
@@ -178,6 +189,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::keyforge::BLOCK {
         return crate::keyforge::allows(slot, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::radiolysis::BLOCK {
+        return crate::radiolysis::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if block == crate::funnel::BLOCK {
         return crate::funnel::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);

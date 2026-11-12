@@ -131,6 +131,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::BrickFurnace(f) => Some(f),
         Data::KeyForge(f) => Some(f),
         Data::Funnel(f) => Some(f),
+        Data::Radiolysis(r) => Some(&mut **r),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         _ => None,
@@ -180,6 +181,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_orbus", Layout::Native),
     ("ntm:machine_keyforge", Layout::Native),
     ("ntm:machine_funnel", Layout::Native),
+    ("ntm:machine_radiolysis", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
     // Energy batch 3 (`crate::combustion`): the generators' slots are their
@@ -379,7 +381,8 @@ pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Po
     if block == crate::radioisotopes::RADGEN {
         return facing.and_then(crate::registry::facing_dir).map(|d|vec![[core[0]-d[0]*3,core[1],core[2]-d[2]*3]]).unwrap_or_default();
     }
-    if matches!(block, "ntm:machine_stirling" | "ntm:machine_stirling_steel" | "ntm:machine_stirling_creative") {
+    // The radiolysis chamber's four `flare` ports are the cells beside its core, each open outwards like the stirling's.
+    if matches!(block, "ntm:machine_stirling" | "ntm:machine_stirling_steel" | "ntm:machine_stirling_creative" | crate::radiolysis::BLOCK) {
         crate::energy::DIRS.iter().filter(|d| d[1] == 0).map(|d| [core[0]+d[0], core[1], core[2]+d[2]]).collect()
     } else { Vec::new() }
 }
@@ -421,6 +424,8 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     ("ntm:machine_solar_boiler", &[[0,2,0]]),
     // MachineOrbus.getAllPorts (`rotatePorts` puts them on the core's own frame): the 2x2 columns at the bottom and at
     // the top (y 4), the core being the first bottom one. Their directions (down, up) are not kept.
+    // MachineRadiolysis.getAllPorts (`makeExtra` cells, the `flare` ports): the four beside the core on its layer.
+    ("ntm:machine_radiolysis", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
     ("ntm:machine_orbus", &[[0, 0, -1], [1, 0, -1], [1, 0, 0], [0, 4, -1], [0, 4, 0], [1, 4, -1], [1, 4, 0]]),
     // MachineExcavator.getAllPorts: (±1, 1, 3) and (±3, 1, 0). The whole
     // layer above the core holds them and reaches the core through the cell

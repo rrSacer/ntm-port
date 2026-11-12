@@ -59,6 +59,7 @@ pub mod screens;
 pub mod shredder;
 pub mod radiation;
 pub mod radioisotopes;
+pub mod radiolysis;
 pub mod registry;
 pub mod server;
 pub mod snbt;

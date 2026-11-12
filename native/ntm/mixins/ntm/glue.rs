@@ -1837,6 +1837,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         _ if ntm_core::native::is_brick_furnace(block) => Some(SlotPolicy(brick_slot_policy)),
         ntm_core::keyforge::BLOCK => Some(SlotPolicy(keyforge_slot_policy)),
         ntm_core::funnel::BLOCK => Some(SlotPolicy(funnel_slot_policy)),
+        ntm_core::radiolysis::BLOCK => Some(SlotPolicy(radiolysis_slot_policy)),
         ntm_core::furnaces::IRON => Some(SlotPolicy(iron_furnace_slot_policy)),
         ntm_core::furnaces::STEEL => Some(SlotPolicy(steel_furnace_slot_policy)),
         ntm_core::furnaces::COMBINATION => Some(SlotPolicy(combination_furnace_slot_policy)),
@@ -1869,6 +1870,10 @@ fn keyforge_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemSta
 fn funnel_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::funnel::BLOCK, slots, slot, item, action, origin)
+}
+fn radiolysis_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::radiolysis::BLOCK, slots, slot, item, action, origin)
 }
 fn arc_welder_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
@@ -1939,6 +1944,10 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
         || &*s.item == ntm_core::server::native_server::IDENTIFIER || &*s.item == ntm_core::broken::ID
         || ntm_core::keyforge::is_pin_item(&s.item) {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
+    } else if let Some(custom) = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt)
+        // Any item may carry the contagion (`ntmContagion`) the radiolysis chamber sterilizes.
+        && custom.contains(ntm_core::radiolysis::CONTAGION) {
+        t.custom = Some(custom);
     }
     Some(t)
 }
@@ -1963,6 +1972,10 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
             rod_doubles(&mut tag);
         }
         it.data_mut().set_other("minecraft:custom_data",Some(tag));
+    } else if let Some(it) = result.as_mut() && new.custom.is_none()
+        && it.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt).is_some_and(|c| c.contains(ntm_core::radiolysis::CONTAGION)) {
+        // The logic took the contagion off the item's only custom data: it has none left.
+        it.data_mut().set_other("minecraft:custom_data",None);
     }
     result
 }

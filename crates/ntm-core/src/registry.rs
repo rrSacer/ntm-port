@@ -363,10 +363,10 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_radiolysis",
-        kind: Kind::Inert,
+        kind: Kind::Radiolysis,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Sides,
     },
     BlockSpec {
         id: "ntm:machine_drain",
@@ -1741,6 +1741,7 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Drill
         | Kind::Steam
         | Kind::Welder
+        | Kind::Radiolysis
         | Kind::Combustion => vec![crate::energy::DIRS.to_vec()],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
