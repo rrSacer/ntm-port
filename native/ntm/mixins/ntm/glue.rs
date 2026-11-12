@@ -1836,6 +1836,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::radioisotopes::RADGEN => Some(SlotPolicy(radgen_slot_policy)),
         _ if ntm_core::native::is_brick_furnace(block) => Some(SlotPolicy(brick_slot_policy)),
         ntm_core::keyforge::BLOCK => Some(SlotPolicy(keyforge_slot_policy)),
+        ntm_core::funnel::BLOCK => Some(SlotPolicy(funnel_slot_policy)),
         ntm_core::furnaces::IRON => Some(SlotPolicy(iron_furnace_slot_policy)),
         ntm_core::furnaces::STEEL => Some(SlotPolicy(steel_furnace_slot_policy)),
         ntm_core::furnaces::COMBINATION => Some(SlotPolicy(combination_furnace_slot_policy)),
@@ -1864,6 +1865,10 @@ fn radgen_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack
 fn keyforge_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::keyforge::BLOCK, slots, slot, item, action, origin)
+}
+fn funnel_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::funnel::BLOCK, slots, slot, item, action, origin)
 }
 fn arc_welder_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {

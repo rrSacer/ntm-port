@@ -1,0 +1,2156 @@
+{
+  "schema": 1,
+  "station": "funnel",
+  "source": "TileEntityMachineFunnel.getFrom9/getFrom4 over CraftingManager (vanilla 1.7.10 curated list, then the catalog)",
+  "from9": {
+    "minecraft:coal": {
+      "output": [
+        "minecraft:coal_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:diamond": {
+      "output": [
+        "minecraft:diamond_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:emerald": {
+      "output": [
+        "minecraft:emerald_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:gold_ingot": {
+      "output": [
+        "minecraft:gold_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:gold_nugget": {
+      "output": [
+        "minecraft:gold_ingot",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:iron_ingot": {
+      "output": [
+        "minecraft:iron_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:lapis_lazuli": {
+      "output": [
+        "minecraft:lapis_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:melon_slice": {
+      "output": [
+        "minecraft:melon",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:redstone": {
+      "output": [
+        "minecraft:redstone_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:wheat": {
+      "output": [
+        "minecraft:hay_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "ntm:bedrock_ore_fragment__aluminium": {
+      "output": [
+        "ntm:powder_aluminium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__aluminium.json"
+    },
+    "ntm:bedrock_ore_fragment__asbestos": {
+      "output": [
+        "ntm:powder_asbestos",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__asbestos.json"
+    },
+    "ntm:bedrock_ore_fragment__bauxite": {
+      "output": [
+        "ntm:stone_resource__bauxite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__bauxite.json"
+    },
+    "ntm:bedrock_ore_fragment__beryllium": {
+      "output": [
+        "ntm:powder_beryllium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__beryllium.json"
+    },
+    "ntm:bedrock_ore_fragment__bismuth": {
+      "output": [
+        "ntm:powder_bismuth",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__bismuth.json"
+    },
+    "ntm:bedrock_ore_fragment__borax": {
+      "output": [
+        "ntm:powder_borax",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__borax.json"
+    },
+    "ntm:bedrock_ore_fragment__boron": {
+      "output": [
+        "ntm:powder_boron",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__boron.json"
+    },
+    "ntm:bedrock_ore_fragment__chlorocalcite": {
+      "output": [
+        "ntm:powder_chlorocalcite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__chlorocalcite.json"
+    },
+    "ntm:bedrock_ore_fragment__cinnabar": {
+      "output": [
+        "ntm:cinnebar",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__cinnabar.json"
+    },
+    "ntm:bedrock_ore_fragment__coal": {
+      "output": [
+        "ntm:powder_coal",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__coal.json"
+    },
+    "ntm:bedrock_ore_fragment__cobalt": {
+      "output": [
+        "ntm:powder_cobalt",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__cobalt.json"
+    },
+    "ntm:bedrock_ore_fragment__copper": {
+      "output": [
+        "ntm:powder_copper",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__copper.json"
+    },
+    "ntm:bedrock_ore_fragment__cryolite": {
+      "output": [
+        "ntm:chunk_ore__cryolite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__cryolite.json"
+    },
+    "ntm:bedrock_ore_fragment__diamond": {
+      "output": [
+        "ntm:powder_diamond",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__diamond.json"
+    },
+    "ntm:bedrock_ore_fragment__emerald": {
+      "output": [
+        "ntm:powder_emerald",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__emerald.json"
+    },
+    "ntm:bedrock_ore_fragment__fluorite": {
+      "output": [
+        "ntm:fluorite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__fluorite.json"
+    },
+    "ntm:bedrock_ore_fragment__gold": {
+      "output": [
+        "ntm:powder_gold",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__gold.json"
+    },
+    "ntm:bedrock_ore_fragment__ilmenite": {
+      "output": [
+        "ntm:chunk_ore__ilmenite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__ilmenite.json"
+    },
+    "ntm:bedrock_ore_fragment__iron": {
+      "output": [
+        "ntm:powder_iron",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__iron.json"
+    },
+    "ntm:bedrock_ore_fragment__lanthanium": {
+      "output": [
+        "ntm:powder_lanthanium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__lanthanium.json"
+    },
+    "ntm:bedrock_ore_fragment__lead": {
+      "output": [
+        "ntm:powder_lead",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__lead.json"
+    },
+    "ntm:bedrock_ore_fragment__lignite": {
+      "output": [
+        "ntm:powder_lignite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__lignite.json"
+    },
+    "ntm:bedrock_ore_fragment__lithium": {
+      "output": [
+        "ntm:powder_lithium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__lithium.json"
+    },
+    "ntm:bedrock_ore_fragment__molysite": {
+      "output": [
+        "ntm:powder_molysite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__molysite.json"
+    },
+    "ntm:bedrock_ore_fragment__neodymium": {
+      "output": [
+        "ntm:powder_neodymium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__neodymium.json"
+    },
+    "ntm:bedrock_ore_fragment__niobium": {
+      "output": [
+        "ntm:powder_niobium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__niobium.json"
+    },
+    "ntm:bedrock_ore_fragment__niter": {
+      "output": [
+        "ntm:niter",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__niter.json"
+    },
+    "ntm:bedrock_ore_fragment__phosphorus": {
+      "output": [
+        "ntm:powder_fire",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__phosphorus.json"
+    },
+    "ntm:bedrock_ore_fragment__polonium": {
+      "output": [
+        "ntm:powder_polonium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__polonium.json"
+    },
+    "ntm:bedrock_ore_fragment__radium": {
+      "output": [
+        "ntm:powder_ra226",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__radium.json"
+    },
+    "ntm:bedrock_ore_fragment__rareearth": {
+      "output": [
+        "ntm:chunk_ore__rare",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__rareearth.json"
+    },
+    "ntm:bedrock_ore_fragment__redstone": {
+      "output": [
+        "minecraft:redstone",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__redstone.json"
+    },
+    "ntm:bedrock_ore_fragment__silicon": {
+      "output": [
+        "ntm:ingot_silicon",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__silicon.json"
+    },
+    "ntm:bedrock_ore_fragment__sodalite": {
+      "output": [
+        "ntm:gem_sodalite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__sodalite.json"
+    },
+    "ntm:bedrock_ore_fragment__sodium": {
+      "output": [
+        "ntm:powder_sodium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__sodium.json"
+    },
+    "ntm:bedrock_ore_fragment__strontium": {
+      "output": [
+        "ntm:powder_strontium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__strontium.json"
+    },
+    "ntm:bedrock_ore_fragment__sulfur": {
+      "output": [
+        "ntm:sulfur",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__sulfur.json"
+    },
+    "ntm:bedrock_ore_fragment__tantalium": {
+      "output": [
+        "ntm:powder_tantalium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__tantalium.json"
+    },
+    "ntm:bedrock_ore_fragment__technetium": {
+      "output": [
+        "ntm:ingot_technetium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__technetium.json"
+    },
+    "ntm:bedrock_ore_fragment__thorium": {
+      "output": [
+        "ntm:powder_thorium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__thorium.json"
+    },
+    "ntm:bedrock_ore_fragment__titanium": {
+      "output": [
+        "ntm:powder_titanium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__titanium.json"
+    },
+    "ntm:bedrock_ore_fragment__tungsten": {
+      "output": [
+        "ntm:powder_tungsten",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__tungsten.json"
+    },
+    "ntm:bedrock_ore_fragment__u238": {
+      "output": [
+        "ntm:ingot_u238",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__u238.json"
+    },
+    "ntm:bedrock_ore_fragment__uranium": {
+      "output": [
+        "ntm:powder_uranium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__uranium.json"
+    },
+    "ntm:bedrock_ore_fragment__zirconium": {
+      "output": [
+        "ntm:powder_zirconium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bedrock_fragment__zirconium.json"
+    },
+    "ntm:cell_antimatter": {
+      "output": [
+        "ntm:pellet_antimatter",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__20e3ffc3804d64d33d.json"
+    },
+    "ntm:dust": {
+      "output": [
+        "ntm:block_scrap",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__dc357b60e7ccf96cb9.json"
+    },
+    "ntm:dust_tiny": {
+      "output": [
+        "ntm:dust",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__9cad9a232d29233ab4.json"
+    },
+    "ntm:egg_balefire_shard": {
+      "output": [
+        "ntm:egg_balefire",
+        1
+      ],
+      "stack": 1,
+      "source": "catalog bulk__28dbd397a5cc05a98a.json"
+    },
+    "ntm:fallout__item": {
+      "output": [
+        "ntm:block_fallout",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__7150615ffaf21711b0.json"
+    },
+    "ntm:fluorite": {
+      "output": [
+        "ntm:block_fluorite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_fluorite_from_fluorite.json"
+    },
+    "ntm:fragment_coltan": {
+      "output": [
+        "ntm:block_coltan",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__1052f6c6435bab5a2e.json"
+    },
+    "ntm:fragment_meteorite": {
+      "output": [
+        "ntm:block_meteor_broken",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__d960fd7428098e8154.json"
+    },
+    "ntm:ingot_actinium": {
+      "output": [
+        "ntm:block_actinium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__456c3bb33baeb6780e.json"
+    },
+    "ntm:ingot_aluminium": {
+      "output": [
+        "ntm:block_aluminium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_aluminium_from_ingot_aluminium.json"
+    },
+    "ntm:ingot_asbestos": {
+      "output": [
+        "ntm:block_asbestos",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_asbestos_from_ingot_asbestos.json"
+    },
+    "ntm:ingot_australium": {
+      "output": [
+        "ntm:block_australium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__8186f859868a3c6be8.json"
+    },
+    "ntm:ingot_bakelite": {
+      "output": [
+        "ntm:block_bakelite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__018198426d7a0a3df8.json"
+    },
+    "ntm:ingot_beryllium": {
+      "output": [
+        "ntm:block_beryllium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_beryllium_from_ingot_beryllium.json"
+    },
+    "ntm:ingot_bismuth": {
+      "output": [
+        "ntm:block_bismuth",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__016146ab582e91cfa8.json"
+    },
+    "ntm:ingot_boron": {
+      "output": [
+        "ntm:block_boron",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c36a8738e7c1a42272.json"
+    },
+    "ntm:ingot_cadmium": {
+      "output": [
+        "ntm:block_cadmium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__87dd8235bdf7b2e021.json"
+    },
+    "ntm:ingot_cdalloy": {
+      "output": [
+        "ntm:block_cdalloy",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__cd4569bdd353013ed6.json"
+    },
+    "ntm:ingot_cobalt": {
+      "output": [
+        "ntm:block_cobalt",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__fc0248ee2dedcbc089.json"
+    },
+    "ntm:ingot_combine_steel": {
+      "output": [
+        "ntm:block_combine_steel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__a3bc2741fb40861780.json"
+    },
+    "ntm:ingot_copper": {
+      "output": [
+        "ntm:block_copper",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__2deb5ea9fad1f0d8c5.json"
+    },
+    "ntm:ingot_desh": {
+      "output": [
+        "ntm:block_desh",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__ed7906cc680f37a356.json"
+    },
+    "ntm:ingot_dineutronium": {
+      "output": [
+        "ntm:block_dineutronium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__fc2004151392e9f723.json"
+    },
+    "ntm:ingot_dura_steel": {
+      "output": [
+        "ntm:block_dura_steel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__11f094d396384152b6.json"
+    },
+    "ntm:ingot_euphemium": {
+      "output": [
+        "ntm:block_euphemium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__73dc0c1f39d971de54.json"
+    },
+    "ntm:ingot_fiberglass": {
+      "output": [
+        "ntm:block_fiberglass",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__ce3818e19b46e5d0fe.json"
+    },
+    "ntm:ingot_graphite": {
+      "output": [
+        "ntm:block_graphite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__0e3f8d28addecee650.json"
+    },
+    "ntm:ingot_lanthanium": {
+      "output": [
+        "ntm:block_lanthanium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__efec728e5f802437d9.json"
+    },
+    "ntm:ingot_lead": {
+      "output": [
+        "ntm:block_lead",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_lead_from_ingot_lead.json"
+    },
+    "ntm:ingot_magnetized_tungsten": {
+      "output": [
+        "ntm:block_magnetized_tungsten",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f8d7b02548cab06473.json"
+    },
+    "ntm:ingot_mox_fuel": {
+      "output": [
+        "ntm:block_mox_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__bc17d18d999ae7a13f.json"
+    },
+    "ntm:ingot_neptunium": {
+      "output": [
+        "ntm:block_neptunium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c905e8e8fa06ab2a77.json"
+    },
+    "ntm:ingot_phosphorus": {
+      "output": [
+        "ntm:block_white_phosphorus",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__e279316b850b9b57af.json"
+    },
+    "ntm:ingot_plutonium": {
+      "output": [
+        "ntm:block_plutonium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__e781c59f55d904133e.json"
+    },
+    "ntm:ingot_plutonium_fuel": {
+      "output": [
+        "ntm:block_plutonium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__261f580fe8bf76aa8b.json"
+    },
+    "ntm:ingot_polonium": {
+      "output": [
+        "ntm:block_polonium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__376abe8acbb3fd414c.json"
+    },
+    "ntm:ingot_polymer": {
+      "output": [
+        "ntm:block_polymer",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__7e3c2adb8747623563.json"
+    },
+    "ntm:ingot_pu238": {
+      "output": [
+        "ntm:block_pu238",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__30322a1970d7e01be6.json"
+    },
+    "ntm:ingot_pu239": {
+      "output": [
+        "ntm:block_pu239",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__30a79d86ceae23771d.json"
+    },
+    "ntm:ingot_pu240": {
+      "output": [
+        "ntm:block_pu240",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f3a71d616ea5cee124.json"
+    },
+    "ntm:ingot_pu_mix": {
+      "output": [
+        "ntm:block_pu_mix",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__d15b7fba3f4ebb2489.json"
+    },
+    "ntm:ingot_ra226": {
+      "output": [
+        "ntm:block_ra226",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__0330b241d014b1a651.json"
+    },
+    "ntm:ingot_raw__slag": {
+      "output": [
+        "ntm:block_slag",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__b38921a36d646e6f3b.json"
+    },
+    "ntm:ingot_red_copper": {
+      "output": [
+        "ntm:block_red_copper",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_red_copper_from_ingot_red_copper.json"
+    },
+    "ntm:ingot_rubber": {
+      "output": [
+        "ntm:block_rubber",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__d7f94fcad20a83a67b.json"
+    },
+    "ntm:ingot_schrabidate": {
+      "output": [
+        "ntm:block_schrabidate",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__28a72c33154a33837a.json"
+    },
+    "ntm:ingot_schrabidium": {
+      "output": [
+        "ntm:block_schrabidium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__051a6a473126450f3b.json"
+    },
+    "ntm:ingot_schrabidium_fuel": {
+      "output": [
+        "ntm:block_schrabidium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c0ab56ab321e8a08b3.json"
+    },
+    "ntm:ingot_schraranium": {
+      "output": [
+        "ntm:block_schraranium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__26169c2e50549afd90.json"
+    },
+    "ntm:ingot_smore": {
+      "output": [
+        "ntm:block_smore",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__e6ecadfd87239ea8f9.json"
+    },
+    "ntm:ingot_solinium": {
+      "output": [
+        "ntm:block_solinium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__3b85d1017d6e05b0bd.json"
+    },
+    "ntm:ingot_starmetal": {
+      "output": [
+        "ntm:block_starmetal",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__ff85237ab8d6c6d085.json"
+    },
+    "ntm:ingot_steel": {
+      "output": [
+        "ntm:block_steel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__a54bf05ceb1dcfcdf6.json"
+    },
+    "ntm:ingot_tantalium": {
+      "output": [
+        "ntm:block_tantalium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__0e46cc528f6c58f7cb.json"
+    },
+    "ntm:ingot_tcalloy": {
+      "output": [
+        "ntm:block_tcalloy",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__a0ba799a1ec706c0d1.json"
+    },
+    "ntm:ingot_th232": {
+      "output": [
+        "ntm:block_thorium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_thorium_from_ingot_th232.json"
+    },
+    "ntm:ingot_thorium_fuel": {
+      "output": [
+        "ntm:block_thorium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__5ae6e327eb970de61f.json"
+    },
+    "ntm:ingot_titanium": {
+      "output": [
+        "ntm:block_titanium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_titanium_from_ingot_titanium.json"
+    },
+    "ntm:ingot_tungsten": {
+      "output": [
+        "ntm:block_tungsten",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_tungsten_from_ingot_tungsten.json"
+    },
+    "ntm:ingot_u233": {
+      "output": [
+        "ntm:block_u233",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__7178cbc8957ef0d591.json"
+    },
+    "ntm:ingot_u235": {
+      "output": [
+        "ntm:block_u235",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__ce6665054b4f8b8455.json"
+    },
+    "ntm:ingot_u238": {
+      "output": [
+        "ntm:block_u238",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__542cd946bc432eaa0d.json"
+    },
+    "ntm:ingot_uranium": {
+      "output": [
+        "ntm:block_uranium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_uranium_from_ingot_uranium.json"
+    },
+    "ntm:ingot_uranium_fuel": {
+      "output": [
+        "ntm:block_uranium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__16cfcef35903a50de6.json"
+    },
+    "ntm:ingot_zirconium": {
+      "output": [
+        "ntm:block_zirconium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__1c10161ae2a68689a8.json"
+    },
+    "ntm:lithium": {
+      "output": [
+        "ntm:block_lithium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_lithium_from_lithium.json"
+    },
+    "ntm:niter": {
+      "output": [
+        "ntm:block_niter",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_niter_from_niter.json"
+    },
+    "ntm:nuclear_waste": {
+      "output": [
+        "ntm:block_waste",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__3fd51b4f1a46bceda6.json"
+    },
+    "ntm:nuclear_waste_tiny": {
+      "output": [
+        "ntm:nuclear_waste",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__9f996b9de127dc1c61.json"
+    },
+    "ntm:nuclear_waste_vitrified": {
+      "output": [
+        "ntm:block_waste_vitrified",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__8c3c7034da6a5f65ba.json"
+    },
+    "ntm:nuclear_waste_vitrified_tiny": {
+      "output": [
+        "ntm:nuclear_waste_vitrified",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__7a59a744a25ea466e2.json"
+    },
+    "ntm:nugget_actinium": {
+      "output": [
+        "ntm:ingot_actinium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__2ee6a742af4ea7f8d7.json"
+    },
+    "ntm:nugget_am241": {
+      "output": [
+        "ntm:ingot_am241",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__44266ade123c1654e7.json"
+    },
+    "ntm:nugget_am242": {
+      "output": [
+        "ntm:ingot_am242",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__7e124524319d706f4e.json"
+    },
+    "ntm:nugget_am_mix": {
+      "output": [
+        "ntm:ingot_am_mix",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__79c3d78b4de6c4df52.json"
+    },
+    "ntm:nugget_americium_fuel": {
+      "output": [
+        "ntm:ingot_americium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__75dc503d9815804328.json"
+    },
+    "ntm:nugget_arsenic": {
+      "output": [
+        "ntm:ingot_arsenic",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__2af2bcd0873620eaef.json"
+    },
+    "ntm:nugget_au198": {
+      "output": [
+        "ntm:ingot_au198",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__b7cea82f1113220102.json"
+    },
+    "ntm:nugget_australium": {
+      "output": [
+        "ntm:ingot_australium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__e080a10d88546a40c9.json"
+    },
+    "ntm:nugget_beryllium": {
+      "output": [
+        "ntm:ingot_beryllium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__b265a22660194af689.json"
+    },
+    "ntm:nugget_bismuth": {
+      "output": [
+        "ntm:ingot_bismuth",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__11c97da3a952cd0afd.json"
+    },
+    "ntm:nugget_co60": {
+      "output": [
+        "ntm:ingot_co60",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__7c58a929c24a32c65a.json"
+    },
+    "ntm:nugget_dineutronium": {
+      "output": [
+        "ntm:ingot_dineutronium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__41c7ebf1bd92fdc1e9.json"
+    },
+    "ntm:nugget_euphemium": {
+      "output": [
+        "ntm:ingot_euphemium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__1f0e32041a2d1fc0d0.json"
+    },
+    "ntm:nugget_gh336": {
+      "output": [
+        "ntm:ingot_gh336",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__9e556b11a9310250ac.json"
+    },
+    "ntm:nugget_hes": {
+      "output": [
+        "ntm:ingot_hes",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__8984628d698d40fa39.json"
+    },
+    "ntm:nugget_lead": {
+      "output": [
+        "ntm:ingot_lead",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f9d7f78cb3d4dc7377.json"
+    },
+    "ntm:nugget_les": {
+      "output": [
+        "ntm:ingot_les",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__bb0aec599d499b64fb.json"
+    },
+    "ntm:nugget_mercury_tiny": {
+      "output": [
+        "ntm:nugget_mercury",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__2fa8a7f15f2866d19f.json"
+    },
+    "ntm:nugget_mox_fuel": {
+      "output": [
+        "ntm:ingot_mox_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__60bdc9e12d8b8dcf6c.json"
+    },
+    "ntm:nugget_neptunium": {
+      "output": [
+        "ntm:ingot_neptunium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__98664fb0bdde37d96a.json"
+    },
+    "ntm:nugget_neptunium_fuel": {
+      "output": [
+        "ntm:ingot_neptunium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c15e7f795e7c698f4b.json"
+    },
+    "ntm:nugget_niobium": {
+      "output": [
+        "ntm:ingot_niobium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__dd0b236d4829b8cec5.json"
+    },
+    "ntm:nugget_osmiridium": {
+      "output": [
+        "ntm:ingot_osmiridium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__bf48a1e147cad6d6f6.json"
+    },
+    "ntm:nugget_pb209": {
+      "output": [
+        "ntm:ingot_pb209",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__3ee00290e64d44b7ad.json"
+    },
+    "ntm:nugget_plutonium": {
+      "output": [
+        "ntm:ingot_plutonium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__38bb78986960d6c8f9.json"
+    },
+    "ntm:nugget_plutonium_fuel": {
+      "output": [
+        "ntm:ingot_plutonium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__551d0791830dbe3aa5.json"
+    },
+    "ntm:nugget_polonium": {
+      "output": [
+        "ntm:ingot_polonium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__bfc38558b0a75b6a36.json"
+    },
+    "ntm:nugget_pu238": {
+      "output": [
+        "ntm:ingot_pu238",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__6a67c10536cd1865d6.json"
+    },
+    "ntm:nugget_pu239": {
+      "output": [
+        "ntm:ingot_pu239",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__7943502a0cd4b7f3c0.json"
+    },
+    "ntm:nugget_pu240": {
+      "output": [
+        "ntm:ingot_pu240",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c76908f41ec4589404.json"
+    },
+    "ntm:nugget_pu241": {
+      "output": [
+        "ntm:ingot_pu241",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f7ecfadf2cfc486238.json"
+    },
+    "ntm:nugget_pu_mix": {
+      "output": [
+        "ntm:ingot_pu_mix",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c9fa1ec5d7717bc9f6.json"
+    },
+    "ntm:nugget_ra226": {
+      "output": [
+        "ntm:ingot_ra226",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__2f2070d9f58f5e6268.json"
+    },
+    "ntm:nugget_raw__aluminium": {
+      "output": [
+        "ntm:ingot_aluminium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog ingot_aluminium_from_nugget_raw__aluminium.json"
+    },
+    "ntm:nugget_raw__lithium": {
+      "output": [
+        "ntm:lithium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog lithium_from_nugget_raw__lithium.json"
+    },
+    "ntm:nugget_raw__titanium": {
+      "output": [
+        "ntm:ingot_titanium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog ingot_titanium_from_nugget_raw__titanium.json"
+    },
+    "ntm:nugget_raw__tungsten": {
+      "output": [
+        "ntm:ingot_tungsten",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog ingot_tungsten_from_nugget_raw__tungsten.json"
+    },
+    "ntm:nugget_schrabidium": {
+      "output": [
+        "ntm:ingot_schrabidium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__572a67c5587cb8f7cf.json"
+    },
+    "ntm:nugget_schrabidium_fuel": {
+      "output": [
+        "ntm:ingot_schrabidium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__95516feefd8dd78f0e.json"
+    },
+    "ntm:nugget_silicon": {
+      "output": [
+        "ntm:ingot_silicon",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__67ba33632bc08f7245.json"
+    },
+    "ntm:nugget_solinium": {
+      "output": [
+        "ntm:ingot_solinium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__8a7d9e7f411600e1dd.json"
+    },
+    "ntm:nugget_sr90": {
+      "output": [
+        "ntm:ingot_sr90",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__ef5cc8ae9568e793eb.json"
+    },
+    "ntm:nugget_tantalium": {
+      "output": [
+        "ntm:ingot_tantalium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__086431e054ae909938.json"
+    },
+    "ntm:nugget_technetium": {
+      "output": [
+        "ntm:ingot_technetium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__59139c5b41868a38b0.json"
+    },
+    "ntm:nugget_th232": {
+      "output": [
+        "ntm:ingot_th232",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__ae1fd67c64ae4cbaac.json"
+    },
+    "ntm:nugget_thorium_fuel": {
+      "output": [
+        "ntm:ingot_thorium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f14da89c367b731bea.json"
+    },
+    "ntm:nugget_u233": {
+      "output": [
+        "ntm:ingot_u233",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__65cef2cee55e0f1eba.json"
+    },
+    "ntm:nugget_u235": {
+      "output": [
+        "ntm:ingot_u235",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__13f7885be431cc88cc.json"
+    },
+    "ntm:nugget_u238": {
+      "output": [
+        "ntm:ingot_u238",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__2738f6f66f98f4787e.json"
+    },
+    "ntm:nugget_uranium": {
+      "output": [
+        "ntm:ingot_uranium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__848aec55d1d2827988.json"
+    },
+    "ntm:nugget_uranium_fuel": {
+      "output": [
+        "ntm:ingot_uranium_fuel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f86a0095aa189af899.json"
+    },
+    "ntm:nugget_zirconium": {
+      "output": [
+        "ntm:ingot_zirconium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__225b3d19fdee9da429.json"
+    },
+    "ntm:plate_polymer": {
+      "output": [
+        "ntm:block_insulator",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c2030d02a00426e383.json"
+    },
+    "ntm:powder_actinium_tiny": {
+      "output": [
+        "ntm:powder_actinium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__11417255e0bc05a4c0.json"
+    },
+    "ntm:powder_boron_tiny": {
+      "output": [
+        "ntm:powder_boron",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__0eafb3cc21335e6078.json"
+    },
+    "ntm:powder_cerium_tiny": {
+      "output": [
+        "ntm:powder_cerium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__605f32c521e0e83f8a.json"
+    },
+    "ntm:powder_coal_tiny": {
+      "output": [
+        "ntm:powder_coal",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__e7cd10a000c23cddcf.json"
+    },
+    "ntm:powder_cobalt_tiny": {
+      "output": [
+        "ntm:powder_cobalt",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__3d5bf70ccfcddb9235.json"
+    },
+    "ntm:powder_cs137_tiny": {
+      "output": [
+        "ntm:powder_cs137",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__e435898e33f7218f08.json"
+    },
+    "ntm:powder_fire": {
+      "output": [
+        "ntm:block_red_phosphorus",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__70e8a472baa759f1d3.json"
+    },
+    "ntm:powder_i131_tiny": {
+      "output": [
+        "ntm:powder_i131",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__58465375e7e2f3485c.json"
+    },
+    "ntm:powder_lanthanium_tiny": {
+      "output": [
+        "ntm:powder_lanthanium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__dbedc5f27ab01ddc1a.json"
+    },
+    "ntm:powder_lithium_tiny": {
+      "output": [
+        "ntm:powder_lithium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f154bc4b36d748d394.json"
+    },
+    "ntm:powder_meteorite_tiny": {
+      "output": [
+        "ntm:powder_meteorite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f3394bd666eb248e86.json"
+    },
+    "ntm:powder_neodymium_tiny": {
+      "output": [
+        "ntm:powder_neodymium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__1231c3211c6ee536f2.json"
+    },
+    "ntm:powder_niobium_tiny": {
+      "output": [
+        "ntm:powder_niobium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__44986a9302ae37f341.json"
+    },
+    "ntm:powder_paleogenite_tiny": {
+      "output": [
+        "ntm:powder_paleogenite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__2eb1ccd3ed74501f53.json"
+    },
+    "ntm:powder_sr90_tiny": {
+      "output": [
+        "ntm:powder_sr90",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__20eff5cca6abd84dbf.json"
+    },
+    "ntm:powder_steel_tiny": {
+      "output": [
+        "ntm:powder_steel",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__b931cccc1edd9cb749.json"
+    },
+    "ntm:powder_xe135_tiny": {
+      "output": [
+        "ntm:powder_xe135",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__de47c6584b9814e640.json"
+    },
+    "ntm:powder_yellowcake": {
+      "output": [
+        "ntm:block_yellowcake",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__2065e17c7e01041114.json"
+    },
+    "ntm:sulfur": {
+      "output": [
+        "ntm:block_sulfur",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog block_sulfur_from_sulfur.json"
+    },
+    "ntm:trinitite": {
+      "output": [
+        "ntm:block_trinitite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c19ea6a4f525909479.json"
+    },
+    "ntm:wire_fine__aluminium": {
+      "output": [
+        "ntm:ingot_aluminium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__b8d5417ffc682847ba.json"
+    },
+    "ntm:wire_fine__carbon": {
+      "output": [
+        "ntm:ingot_graphite",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__dab19b12995469ce44.json"
+    },
+    "ntm:wire_fine__copper": {
+      "output": [
+        "ntm:ingot_copper",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__dcaa38c11c4456a806.json"
+    },
+    "ntm:wire_fine__gold": {
+      "output": [
+        "minecraft:gold_ingot",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__782ba439185ead97de.json"
+    },
+    "ntm:wire_fine__magnetized_tungsten": {
+      "output": [
+        "ntm:ingot_magnetized_tungsten",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__eecd99507c20bbd533.json"
+    },
+    "ntm:wire_fine__red_copper": {
+      "output": [
+        "ntm:ingot_red_copper",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__de1a974921719a2797.json"
+    },
+    "ntm:wire_fine__schrabidium": {
+      "output": [
+        "ntm:ingot_schrabidium",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__85c562339a1aad03c5.json"
+    },
+    "ntm:wire_fine__tungsten": {
+      "output": [
+        "ntm:ingot_tungsten",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__cb9ab2ae2e3ef93923.json"
+    }
+  },
+  "from4": {
+    "minecraft:acacia_planks": {
+      "output": [
+        "minecraft:crafting_table",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:birch_planks": {
+      "output": [
+        "minecraft:crafting_table",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:brick": {
+      "output": [
+        "minecraft:bricks",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:clay_ball": {
+      "output": [
+        "minecraft:clay",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:dark_oak_planks": {
+      "output": [
+        "minecraft:crafting_table",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:glowstone_dust": {
+      "output": [
+        "minecraft:glowstone",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:jungle_planks": {
+      "output": [
+        "minecraft:crafting_table",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:nether_brick": {
+      "output": [
+        "minecraft:nether_bricks",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:oak_planks": {
+      "output": [
+        "minecraft:crafting_table",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:quartz": {
+      "output": [
+        "minecraft:quartz_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:sand": {
+      "output": [
+        "minecraft:sandstone",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:snowball": {
+      "output": [
+        "minecraft:snow_block",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:spruce_planks": {
+      "output": [
+        "minecraft:crafting_table",
+        1
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "minecraft:stone": {
+      "output": [
+        "minecraft:stone_bricks",
+        4
+      ],
+      "stack": 64,
+      "source": "vanilla 1.7.10"
+    },
+    "ntm:basalt_brick": {
+      "output": [
+        "ntm:basalt_tiles",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__43086933ddb35dbf66.json"
+    },
+    "ntm:basalt_polished": {
+      "output": [
+        "ntm:basalt_brick",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__64d140b9ac05c520b2.json"
+    },
+    "ntm:basalt_smooth": {
+      "output": [
+        "ntm:basalt_polished",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__90e85bffe33f207d1d.json"
+    },
+    "ntm:block_meteor_broken": {
+      "output": [
+        "ntm:meteor_polished",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__e63561f1bd4f089862.json"
+    },
+    "ntm:concrete_smooth": {
+      "output": [
+        "ntm:concrete",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__8d74cd765dc3d5fc0c.json"
+    },
+    "ntm:deco_pipe": {
+      "output": [
+        "ntm:deco_pipe_quad",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__309fde6856aca18893.json"
+    },
+    "ntm:depth_brick": {
+      "output": [
+        "ntm:depth_tiles",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__9cf4c301281dc07da6.json"
+    },
+    "ntm:depth_nether_brick": {
+      "output": [
+        "ntm:depth_nether_tiles",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__80979fc629c0360397.json"
+    },
+    "ntm:ducrete_smooth": {
+      "output": [
+        "ntm:ducrete",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__c49e72866adb94e99a.json"
+    },
+    "ntm:fragment_meteorite": {
+      "output": [
+        "ntm:block_meteor_cobble",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__69e4057e74148468e1.json"
+    },
+    "ntm:gneiss_tile": {
+      "output": [
+        "ntm:gneiss_brick",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__d49fb5969b09bf0687.json"
+    },
+    "ntm:ingot_firebrick": {
+      "output": [
+        "ntm:brick_fire",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__df829b513e6f2a14f3.json"
+    },
+    "ntm:lightstone__tile": {
+      "output": [
+        "ntm:lightstone__bricks",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__e9847ced0797b41597.json"
+    },
+    "ntm:lightstone__unrefined": {
+      "output": [
+        "ntm:lightstone__tile",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f1863d46cf4313e490.json"
+    },
+    "ntm:meteor_polished": {
+      "output": [
+        "ntm:meteor_brick",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__f3012722b872fca043.json"
+    },
+    "ntm:nitra_small": {
+      "output": [
+        "ntm:nitra",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__7dc066e8850907cbe5.json"
+    },
+    "ntm:part_generic__glass_polarized": {
+      "output": [
+        "ntm:glass_polarized",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__a1ca6978279f6d0d02.json"
+    },
+    "ntm:powder_balefire": {
+      "output": [
+        "ntm:egg_balefire_shard",
+        1
+      ],
+      "stack": 16,
+      "source": "catalog bulk__7314517514030b5696.json"
+    },
+    "ntm:rod_empty": {
+      "output": [
+        "ntm:rod_quad_empty",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__d9f354343ddd67dde6.json"
+    },
+    "ntm:scrap": {
+      "output": [
+        "ntm:block_scrap",
+        1
+      ],
+      "stack": 64,
+      "source": "catalog bulk__8582a8fba43540e323.json"
+    },
+    "ntm:steel_beam": {
+      "output": [
+        "ntm:steel_grate",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__b425f4445f9a397369.json"
+    },
+    "ntm:stone_depth": {
+      "output": [
+        "ntm:depth_brick",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__9a08f2bad6e4ca1b27.json"
+    },
+    "ntm:stone_depth_nether": {
+      "output": [
+        "ntm:depth_nether_brick",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__0e554ed0bd1a9f0504.json"
+    },
+    "ntm:stone_gneiss": {
+      "output": [
+        "ntm:gneiss_tile",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__95cad9823d01769333.json"
+    },
+    "ntm:vinyl_tile__large": {
+      "output": [
+        "ntm:vinyl_tile__small",
+        4
+      ],
+      "stack": 64,
+      "source": "catalog bulk__594296997fee41b054.json"
+    }
+  },
+  "collisions": [
+    {
+      "size": 9,
+      "input": "ntm:ingot_beryllium",
+      "kept": "catalog block_beryllium_from_ingot_beryllium.json",
+      "ignored": "catalog bulk__1d450fac3ce5b6bec0.json",
+      "ignored_output": [
+        "ntm:block_beryllium",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:ingot_th232",
+      "kept": "catalog block_thorium_from_ingot_th232.json",
+      "ignored": "catalog bulk__28214c385d5a13c547.json",
+      "ignored_output": [
+        "ntm:block_thorium",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:lithium",
+      "kept": "catalog block_lithium_from_lithium.json",
+      "ignored": "catalog bulk__293042c33a4cf28bea.json",
+      "ignored_output": [
+        "ntm:block_lithium",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:ingot_asbestos",
+      "kept": "catalog block_asbestos_from_ingot_asbestos.json",
+      "ignored": "catalog bulk__40918354c57dcb4ba3.json",
+      "ignored_output": [
+        "ntm:block_asbestos",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:sulfur",
+      "kept": "catalog block_sulfur_from_sulfur.json",
+      "ignored": "catalog bulk__4cd7f191871ed8ec31.json",
+      "ignored_output": [
+        "ntm:block_sulfur",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:ingot_red_copper",
+      "kept": "catalog block_red_copper_from_ingot_red_copper.json",
+      "ignored": "catalog bulk__5621b985e14ea3d0f3.json",
+      "ignored_output": [
+        "ntm:block_red_copper",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:niter",
+      "kept": "catalog block_niter_from_niter.json",
+      "ignored": "catalog bulk__68ad4fd88ae8f38a8c.json",
+      "ignored_output": [
+        "ntm:block_niter",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:ingot_uranium",
+      "kept": "catalog block_uranium_from_ingot_uranium.json",
+      "ignored": "catalog bulk__8d05436acccde2a689.json",
+      "ignored_output": [
+        "ntm:block_uranium",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:fluorite",
+      "kept": "catalog block_fluorite_from_fluorite.json",
+      "ignored": "catalog bulk__90ddbcafc7c07aae73.json",
+      "ignored_output": [
+        "ntm:block_fluorite",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:ingot_titanium",
+      "kept": "catalog block_titanium_from_ingot_titanium.json",
+      "ignored": "catalog bulk__9d45e6fb30f7177067.json",
+      "ignored_output": [
+        "ntm:block_titanium",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:ingot_tungsten",
+      "kept": "catalog block_tungsten_from_ingot_tungsten.json",
+      "ignored": "catalog bulk__b5d239b080e752b560.json",
+      "ignored_output": [
+        "ntm:block_tungsten",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:ingot_aluminium",
+      "kept": "catalog block_aluminium_from_ingot_aluminium.json",
+      "ignored": "catalog bulk__bc4a7c9e84c18a2241.json",
+      "ignored_output": [
+        "ntm:block_aluminium",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:ingot_lead",
+      "kept": "catalog block_lead_from_ingot_lead.json",
+      "ignored": "catalog bulk__bdfe0c91240eded16e.json",
+      "ignored_output": [
+        "ntm:block_lead",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:nugget_beryllium",
+      "kept": "catalog bulk__b265a22660194af689.json",
+      "ignored": "catalog ingot_beryllium_from_nugget_beryllium.json",
+      "ignored_output": [
+        "ntm:ingot_beryllium",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:nugget_lead",
+      "kept": "catalog bulk__f9d7f78cb3d4dc7377.json",
+      "ignored": "catalog ingot_lead_from_nugget_lead.json",
+      "ignored_output": [
+        "ntm:ingot_lead",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:nugget_th232",
+      "kept": "catalog bulk__ae1fd67c64ae4cbaac.json",
+      "ignored": "catalog ingot_th232_from_nugget_th232.json",
+      "ignored_output": [
+        "ntm:ingot_th232",
+        1
+      ]
+    },
+    {
+      "size": 9,
+      "input": "ntm:nugget_uranium",
+      "kept": "catalog bulk__848aec55d1d2827988.json",
+      "ignored": "catalog ingot_uranium_from_nugget_uranium.json",
+      "ignored_output": [
+        "ntm:ingot_uranium",
+        1
+      ]
+    }
+  ],
+  "skipped": [],
+  "coverage": {
+    "from9": 207,
+    "from4": 39,
+    "collisions": 17,
+    "skipped": 0
+  }
+}

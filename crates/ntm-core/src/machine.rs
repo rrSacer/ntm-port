@@ -91,6 +91,8 @@ pub enum Kind {
     BrickFurnace,
     /// The locksmith table (`crate::keyforge`).
     KeyForge,
+    /// The funnel that compresses items (`crate::funnel`).
+    Funnel,
     /// The K3 furnaces of several slots (`crate::furnaces`).
     Furnace,
     /// The arc welder and the soldering station (`crate::welders`).
@@ -197,6 +199,7 @@ pub enum Data {
     Rbmk(Box<crate::rbmk::persist::RbmkColumn>),
     BrickFurnace(crate::furnace_brick::BrickFurnace),
     KeyForge(crate::keyforge::KeyForge),
+    Funnel(crate::funnel::Funnel),
     Furnace(Box<crate::furnaces::Furnace>),
     Welder(Box<crate::welders::Welder>),
     Inert { name: String },
@@ -300,6 +303,7 @@ impl Machine {
             }),
             Kind::BrickFurnace => Data::BrickFurnace(Default::default()),
             Kind::KeyForge => Data::KeyForge(Default::default()),
+            Kind::Funnel => Data::Funnel(Default::default()),
             Kind::Welder => match crate::welders::Welder::of(block_id) {
                 Some(w) => Data::Welder(Box::new(w)),
                 None => Data::Inert { name: block_id.into() },
@@ -383,6 +387,7 @@ impl Machine {
             Data::SolarStirling(_) => Kind::SolarStirling,
             Data::BrickFurnace(_) => Kind::BrickFurnace,
             Data::KeyForge(_) => Kind::KeyForge,
+            Data::Funnel(_) => Kind::Funnel,
             Data::Furnace(_) => Kind::Furnace,
             Data::Welder(_) => Kind::Welder,
             Data::Inert { .. } => Kind::Inert,
@@ -431,6 +436,7 @@ impl Machine {
             Data::SolarStirling(m) => &**m,
             Data::BrickFurnace(m) => m,
             Data::KeyForge(m) => m,
+            Data::Funnel(m) => m,
             Data::Furnace(m) => &**m,
             Data::Welder(m) => &**m,
             Data::Inert { name } => name,
@@ -479,6 +485,7 @@ impl Machine {
             Data::SolarStirling(m) => &mut **m,
             Data::BrickFurnace(m) => m,
             Data::KeyForge(m) => m,
+            Data::Funnel(m) => m,
             Data::Furnace(m) => &mut **m,
             Data::Welder(m) => &mut **m,
             Data::Inert { name } => name,

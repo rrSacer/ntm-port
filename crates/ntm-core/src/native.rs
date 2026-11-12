@@ -67,6 +67,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::keyforge::BLOCK {
         return Some(crate::keyforge::container());
     }
+    if block == crate::funnel::BLOCK {
+        return Some(crate::funnel::container());
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -114,6 +117,14 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         let first = SlotFilter::default();
         let held = SlotFilter { quick_move: Some(Vec::new()), ..Default::default() };
         return vec![first, held.clone(), held];
+    }
+    if block == crate::funnel::BLOCK {
+        // `ContainerFunnel`: the nine results are `SlotCraftingOutput`s; a shift-click moves the inputs and results
+        // out to the inventory (last to first) and the inventory's items into the nine inputs.
+        let output = SlotFilter { output: true, ..Default::default() };
+        let mut rules = vec![SlotFilter::default(); crate::funnel::INPUTS];
+        rules.extend(vec![output; crate::funnel::INPUTS]);
+        return rules;
     }
     if is_brick_furnace(block) {
         // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
@@ -167,6 +178,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::keyforge::BLOCK {
         return crate::keyforge::allows(slot, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::funnel::BLOCK {
+        return crate::funnel::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if is_brick_furnace(block) {
         // The plain slots 0 and 1 take anything from a hand (1.7.10's

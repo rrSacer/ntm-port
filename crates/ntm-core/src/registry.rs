@@ -559,7 +559,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_funnel",
-        kind: Kind::Inert,
+        kind: Kind::Funnel,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

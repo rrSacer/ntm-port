@@ -37983,7 +37983,169 @@
     },
     "ntm:machine_funnel": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFunnel, GUIFunnel 176x168 (processing/gui_funnel.png): nine inputs at (8+18i, 18), nine SlotCraftingOutput results at (8+18i, 54), the mode button at (159,73) 10x10 drawn from the texture at (176, mode*10); TileEntityMachineFunnel: no multiblock, no power; the block's model stays the casing's (the renderer model is not ported); the button's tooltip lists the three modes (GUIFunnel's shows the current one only)",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 26,
+            "y": 18
+          },
+          {
+            "x": 44,
+            "y": 18
+          },
+          {
+            "x": 62,
+            "y": 18
+          },
+          {
+            "x": 80,
+            "y": 18
+          },
+          {
+            "x": 98,
+            "y": 18
+          },
+          {
+            "x": 116,
+            "y": 18
+          },
+          {
+            "x": 134,
+            "y": 18
+          },
+          {
+            "x": 152,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 54
+          },
+          {
+            "x": 26,
+            "y": 54
+          },
+          {
+            "x": 44,
+            "y": 54
+          },
+          {
+            "x": 62,
+            "y": 54
+          },
+          {
+            "x": 80,
+            "y": 54
+          },
+          {
+            "x": 98,
+            "y": 54
+          },
+          {
+            "x": 116,
+            "y": 54
+          },
+          {
+            "x": 134,
+            "y": 54
+          },
+          {
+            "x": 152,
+            "y": 54
+          }
+        ],
+        "inventory": [
+          8,
+          86
+        ],
+        "data": 1
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_funnel.png",
+        "texture_from": "textures/gui/processing/gui_funnel.png",
+        "size": [
+          176,
+          168
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          74
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              159,
+              73,
+              10,
+              10
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 0,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              159,
+              73,
+              10,
+              10
+            ],
+            "uv": [
+              176,
+              10
+            ]
+          },
+          {
+            "value": 0,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              159,
+              73,
+              10,
+              10
+            ],
+            "uv": [
+              176,
+              20
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              159,
+              73,
+              10,
+              10
+            ],
+            "lines": [
+              "Mode",
+              "0: 3x3 then 2x2",
+              "1: 3x3 only",
+              "2: 2x2 only"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_siren": {
       "auto": false,

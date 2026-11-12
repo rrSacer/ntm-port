@@ -315,3 +315,27 @@ fn the_locksmith_table_copies_and_randomizes_pins_through_the_bridge() {
     g.run(4);
     assert_eq!(pins(slots(&g)[1].as_ref().unwrap()), 7);
 }
+
+/// The funnel through the bridge: nine items of a column become the result in the bottom row, and the button cycles
+/// the mode (the screen's value).
+#[test]
+fn the_funnel_compresses_a_column_and_its_button_cycles_the_mode() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_funnel[facing=north,honey_level=0]", 18);
+    put(&mut g, 4, Some(Stack::new("minecraft:gold_ingot", 20)));
+    put(&mut g, 7, Some(Stack::new("minecraft:glowstone_dust", 5)));
+    g.run(3);
+    let s = slots(&g);
+    assert_eq!(count(&s, "minecraft:gold_block"), 2, "{s:?}");
+    assert_eq!(s[4].as_ref().map(|x| x.count), Some(2), "{s:?}");
+    assert_eq!(s[4 + 9].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:gold_block", 2)));
+    assert_eq!(s[7 + 9].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:glowstone", 1)), "{s:?}");
+    assert_eq!(s[7].as_ref().map(|x| x.count), Some(1));
+    // Mode 3x3 only: a stack of four is left alone.
+    g.world.borrow_mut().presses.push((OW.to_string(), AT, 0));
+    g.run(1);
+    put(&mut g, 7, Some(Stack::new("minecraft:glowstone_dust", 4)));
+    g.run(3);
+    assert_eq!(slots(&g)[7].as_ref().map(|x| x.count), Some(4));
+    assert_eq!(g.world.borrow().engine[&(OW.to_string(), AT)].1.first(), Some(&1));
+}

@@ -37,6 +37,7 @@ pub mod furnace_steel;
 pub mod furnaces;
 pub mod foundry;
 pub mod fraction;
+pub mod funnel;
 pub mod gascent;
 pub mod hash;
 pub mod heater;
