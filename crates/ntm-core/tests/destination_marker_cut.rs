@@ -21,6 +21,7 @@ struct CutHost {
     physical_items: usize,
     explosions: usize,
     reemit_old_debt: bool,
+    emitted_ids: Vec<u64>,
 }
 impl Kv for CutHost {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -59,6 +60,7 @@ impl ServerHost for CutHost {
     ) -> bool {
         if self.reemit_old_debt || !self.destination.knows(id) {
             self.physical_items += 1;
+            self.emitted_ids.push(id);
         }
         true
     }
@@ -95,6 +97,7 @@ fn region_marker_before_entity_file_hides_what_old_home_still_owes() {
         physical_items: 0,
         explosions: 0,
         reemit_old_debt: false,
+        emitted_ids: vec![],
     }; // old entity file
     let mut server = Server::native(&mut host, 0);
     server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
@@ -152,6 +155,7 @@ fn a_newer_destination_and_older_home_may_contain_two_vanilla_copies() {
         physical_items: 1, // This time both region B and entities B reached disk.
         explosions: 0,
         reemit_old_debt: false,
+        emitted_ids: vec![],
     };
     let mut server = Server::native(&mut host, 0);
     server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
@@ -183,6 +187,7 @@ fn replaying_the_old_source_item_without_repeating_explosion_matches_both_cuts()
             physical_items: existing_in_saved_entities,
             explosions: 0,
             reemit_old_debt: true,
+            emitted_ids: vec![],
         };
         let mut server = Server::native(&mut host, 0);
         server.native_obligations_loaded(
@@ -203,4 +208,45 @@ fn replaying_the_old_source_item_without_repeating_explosion_matches_both_cuts()
             "old vanilla source plus its saved destination file"
         );
     }
+}
+
+#[test]
+fn the_current_order_guard_also_suppresses_an_earlier_owed_item() {
+    let mut destination = ChunkLedger::default();
+    destination.applied.insert(effect_id(SERIAL, 1));
+    let mut host = CutHost {
+        kv: MemKv::default(),
+        destination,
+        physical_items: 1,
+        explosions: 0,
+        reemit_old_debt: true,
+        emitted_ids: vec![],
+    };
+    let mut batch = old_home_batch();
+    batch.effects = VecDeque::from([
+        WorldEffect::Items {
+            dim: DIM.into(),
+            pos: SOURCE,
+            items: vec![("ntm:iron".into(), 1)],
+        },
+        WorldEffect::Items {
+            dim: DIM.into(),
+            pos: DEST,
+            items: vec![("ntm:sawblade".into(), 1)],
+        },
+    ]);
+    let mut server = Server::native(&mut host, 0);
+    server.native_obligations_loaded(DIM, [0, 0], vec![], vec![batch], BTreeSet::new());
+    server.native_settle(&mut host);
+    assert_eq!(
+        host.emitted_ids,
+        [effect_id(SERIAL, 1)],
+        "the guard skipped an Items effect even though the old home owed it"
+    );
+    assert_eq!(host.physical_items, 2);
+    // The equivalent older vanilla source has both its items; the saved destination contains the later item too.
+    assert_ne!(
+        host.physical_items, 3,
+        "the first old-source item is absent relative to the vanilla cut"
+    );
 }

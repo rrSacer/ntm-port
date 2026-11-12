@@ -163,3 +163,10 @@ retorna velocidade, não ID; a cola vê `next_entity` e UUID. Uma tag de entidad
 merge e deslocamento e não prova sozinha que os dados de região/entidade representam o mesmo corte. Nenhuma alteração
 no motor ou no host foi feita nesta investigação. Os casos adicionais, o modelo de paridade e a prova com controle em
 jogo são obrigatórios antes de aprovar a fatia 4.
+
+Um quinto contracaso (`the_current_order_guard_also_suppresses_an_earlier_owed_item`, 5/5 no total, Clippy limpo)
+usa a guarda atual do `Server` com um host sintético que reemite o devido de casa antiga. Na batelada
+`[Items(ferro), Items(lâmina)]`, com o efeito posterior marcado, a guarda pula também o ferro: depois do replay, NTM 2
+contra vanilla 3 (os dois itens da origem antiga e a lâmina no arquivo de entidades novo). A correção aprovada pelo
+coordenador deverá restringir a guarda de efeito físico, sem suprimir o item devido; esta sonda demonstra o defeito
+atual com o host candidato, não afirma que a cola já grave a marca em B.
