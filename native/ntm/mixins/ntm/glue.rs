@@ -1818,9 +1818,9 @@ fn rod_doubles(tag: &mut Tag) {
 /// from its saved state when the server doesn't know it (the world was
 /// opened again); the server's phases run it at the tick's end.
 pub(super) fn tick(game: &mut crate::game::Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
+    // An inert machine besides (as the decontaminator): the server knows it, the glue ticks it.
     if entity.id == GEIGER {
         geiger_tick(game, pos);
-        return;
     }
     if !is_machine(&entity.id) {
         return;
