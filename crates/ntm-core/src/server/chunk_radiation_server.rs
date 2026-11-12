@@ -14,6 +14,9 @@
 use super::*;
 use crate::chunk_radiation;
 
+/// `RadiationConfig.hellRad`: the least RAD/s a player in the Nether takes (`AMBIENT_00_nether`, 0.1 by default).
+pub const HELL_RAD: f64 = 0.1;
+
 /// A chunk the probe read: where, its raw value (None: not in the map), the next update's, whether it is loaded.
 pub type Probed = ([i32; 2], Option<f32>, f32, bool);
 
@@ -59,6 +62,52 @@ impl Server {
         if self.ready.world.chunk_radiation.differs(dim, chunk, rad) {
             self.ready.world.chunk_radiation.set(dim, chunk, rad);
         }
+    }
+
+    /// `EntityEffectHandler.handleRadiationFX:262-279`, every tick, for each player: the field's value where they stand
+    /// (`getRadiation` at their block, clamped), at least `hellRad` in the Nether, goes through
+    /// `ContaminationUtil.contaminate(.., RADIATION, CREATIVE, rad / 20F)`:
+    /// - `radEnv` takes the amount before any gate (the Geiger hears it: [`Server::note_contamination`]);
+    /// - a creative player takes no dose (`:284`), nor one in their first 200 ticks (`:287`);
+    /// - the dose takes the amount times `calculateRadiationMod` (the armor, `ServerHost::radiation_factor`).
+    ///
+    /// `isRadImmune` (`:268`) holds a player only under `HbmPotion.mutation`, which the port has not. The Java's float
+    /// sums are the port's milliRAD; the fractions of a milliRAD each tick leaves are carried to the next, so a weak
+    /// field doses over time as the Java's does instead of nothing.
+    pub(super) fn chunk_radiation_contaminate(&mut self, host: &mut impl ServerHost) {
+        for p in self.players.clone() {
+            let chunk = [(p.pos[0].floor() as i32) >> 4, (p.pos[2].floor() as i32) >> 4];
+            let mut rad = self.native_chunk_radiation(&p.dim, chunk);
+            if p.dim == "minecraft:the_nether" && HELL_RAD > 0.0 && f64::from(rad) < HELL_RAD {
+                rad = HELL_RAD as f32;
+            }
+            if rad <= 0.0 {
+                continue;
+            }
+            let amount = f64::from(rad / 20.0) * 1000.0;
+            let env = self.ready.chunk_env_carry.entry(p.id.clone()).or_insert(0.0);
+            *env += amount;
+            let whole = env.trunc();
+            *env -= whole;
+            self.note_contamination(&p.id, whole as i64);
+            if p.creative || self.in_grace(&p.id) {
+                continue;
+            }
+            // calculateRadiationMod is a float: amount * mod in float, as the Java's `amount * mod`.
+            let factor = host.radiation_factor(&p.id) as f32;
+            let dosed = f64::from(rad / 20.0 * factor) * 1000.0;
+            let carry = self.ready.chunk_dose_carry.get(&p.id).copied().unwrap_or(0.0) + dosed;
+            let whole = carry.trunc();
+            if whole == 0.0 {
+                self.ready.chunk_dose_carry.insert(p.id.clone(), carry);
+                continue;
+            }
+            if self.update_player_dose(host, &p.id, |dose| crate::radiation::add_dose(dose, whole as u64)).is_some() {
+                self.ready.chunk_dose_carry.insert(p.id.clone(), carry - whole);
+            }
+        }
+        self.ready.chunk_env_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
+        self.ready.chunk_dose_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
     }
 
     /// `ChunkRadiationManager.updateSystem`, at the end of a server tick: `updateSystem` every 20 ticks.

@@ -130,6 +130,126 @@ fn the_saved_field_is_its_own_key_and_a_chunk_at_zero_leaves_it() {
     assert_eq!(saved(&g), Saved::default());
 }
 
+fn survivor(dim: &str) -> PlayerInfo {
+    PlayerInfo { dim: dim.into(), creative: false, ..player() }
+}
+
+fn dose(g: &Game) -> u64 {
+    g.server.player_dose("p1").millirad
+}
+
+/// One tick that is not an update's (the field is read before the tick's update, so a tick off the 20 reads what was
+/// set): what the tick added to the dose.
+fn tick_dose(g: &mut Game) -> u64 {
+    let before = dose(g);
+    g.run(1);
+    dose(g) - before
+}
+
+/// 4b: `handleRadiationFX` gives each player `contaminate(CREATIVE, rad / 20F)` every tick from the field where they
+/// stand: rad / 20 RAD a tick, as milliRAD; nothing in the first 200 ticks, nothing to a creative player.
+#[test]
+fn the_field_doses_a_player_rad_over_20_a_tick_after_the_grace() {
+    let mut g = fresh();
+    g.server.set_players(vec![survivor(OW)]);
+    g.server.native_chunk_radiation_loaded(OW, C);
+    g.run(1);
+    set(&mut g, C, "100").unwrap();
+    assert_eq!(tick_dose(&mut g), 0, "the first 200 ticks: ContaminationUtil:287");
+    g.run(205);
+    set(&mut g, C, "100").unwrap();
+    while g.server.ready.chunk_field_timer >= 18 {
+        g.run(1);
+        set(&mut g, C, "100").unwrap();
+    }
+    assert_eq!(tick_dose(&mut g), 5_000, "100 RAD/s: 5 RAD a tick");
+    // calculateRadiationMod: a full grey hazmat, 10^-2 as a float. 100 RAD/s * 0.01: 50 milliRAD a tick.
+    set(&mut g, C, "100").unwrap();
+    g.world.borrow_mut().radiation_factor = f64::from(10f32.powf(-2.0));
+    assert_eq!(tick_dose(&mut g), 50);
+    g.world.borrow_mut().radiation_factor = 1.0;
+    set(&mut g, C, "100000").unwrap();
+    let room = crate::radiation::MAX_DOSE - dose(&g);
+    assert_eq!(tick_dose(&mut g), room, "5000 RAD a tick, up to the 2500 RAD cap (incrementRadiation)");
+    g.server.set_players(vec![PlayerInfo { creative: true, ..survivor(OW) }]);
+    g.ready().world.radiation.clear();
+    set(&mut g, C, "100").unwrap();
+    assert_eq!(tick_dose(&mut g), 0, "creative: ContaminationUtil:284");
+}
+
+/// A weak field doses over time: the fraction of a milliRAD each tick leaves is carried, as the Java's float sum.
+#[test]
+fn a_weak_field_doses_through_the_carried_fraction() {
+    let mut g = fresh();
+    g.server.set_players(vec![survivor(OW)]);
+    g.server.native_chunk_radiation_loaded(OW, C);
+    g.run(220);
+    let mut total = 0;
+    for _ in 0..40 {
+        // 0.01 RAD/s: 0.5 milliRAD a tick, held against the update.
+        set(&mut g, C, "0.01").unwrap();
+        total += tick_dose(&mut g);
+    }
+    assert!((19..=20).contains(&total), "{total} milliRAD over 40 ticks at 0.5 a tick");
+    // radEnv carries its fractions too: 0.5 milliRAD a tick is 10 milliRAD a second in the Geiger's buffer.
+    while !g.server.tick.is_multiple_of(20) {
+        set(&mut g, C, "0.01").unwrap();
+        g.run(1);
+    }
+    for _ in 0..20 {
+        set(&mut g, C, "0.01").unwrap();
+        g.run(1);
+    }
+    assert!((9..=10).contains(&g.server.rad_buf("p1")), "{}", g.server.rad_buf("p1"));
+}
+
+/// The player's block is floor(pos): just west and north of 0, 0 is chunk -1, -1.
+#[test]
+fn the_player_reads_the_chunk_of_their_floored_block() {
+    let mut g = fresh();
+    g.server.set_players(vec![PlayerInfo { pos: [-0.5, 70.0, -0.5], ..survivor(OW) }]);
+    g.server.native_chunk_radiation_loaded(OW, [-1, -1]);
+    g.server.native_chunk_radiation_loaded(OW, C);
+    g.run(220);
+    g.server.native_radiation_command(OW, [-0.5, 70.0, -0.5], "ntmrad clear").unwrap().unwrap();
+    while g.server.ready.chunk_field_timer >= 18 {
+        g.run(1);
+    }
+    g.server.native_radiation_command(OW, [-0.5, 70.0, -0.5], "ntmrad set 100").unwrap().unwrap();
+    assert_eq!(raw(&g, [-1, -1]), Some(100.0));
+    assert_eq!(tick_dose(&mut g), 5_000);
+}
+
+/// In the Nether the field is at least hellRad, 0.1 RAD/s: 5 milliRAD a tick with no field at all; the overworld
+/// with no field doses nothing.
+#[test]
+fn the_nether_is_at_least_hell_rad() {
+    let mut g = fresh();
+    g.server.set_players(vec![survivor("minecraft:the_nether")]);
+    g.run(220);
+    let gained: u64 = (0..20).map(|_| tick_dose(&mut g)).sum();
+    // (float) 0.1D / 20F, times 1000, a tick: 5 milliRAD, give or take the float's last digit carried.
+    assert!((99..=100).contains(&gained), "{gained}");
+    g.server.set_players(vec![survivor(OW)]);
+    let gained: u64 = (0..20).map(|_| tick_dose(&mut g)).sum();
+    assert_eq!(gained, 0);
+}
+
+/// `radEnv` takes the amount before the gates: a creative player's Geiger hears the field.
+#[test]
+fn the_geiger_buffer_hears_the_field_through_the_gates() {
+    let mut g = fresh();
+    g.server.native_chunk_radiation_loaded(OW, C);
+    g.run(1);
+    for _ in 0..60 {
+        set(&mut g, C, "40").unwrap();
+        g.run(1);
+    }
+    // 40 RAD/s: 2 RAD a tick, 20 ticks a second.
+    assert_eq!(g.server.rad_buf("p1"), 40_000);
+    assert_eq!(dose(&g), 0, "creative, and in the grace");
+}
+
 /// Coordinator's condition 1 of 4a: the field's cost, in release (`cargo test --release -p ntm-core --lib
 /// chunk_radiation_cost -- --ignored --nocapture`). A world of 15 × 15 loaded chunks, all at 100 000 (the spread's
 /// widest map), with 50 000 block generations in the world's state, run for 50 000 updates (a million ticks): the tick

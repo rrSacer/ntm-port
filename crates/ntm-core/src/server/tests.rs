@@ -13,6 +13,8 @@ type Owed = (Vec<crate::persist::Removal>, Vec<CommittedEffects>);
 
 #[derive(Clone)]
 struct World {
+    /// `calculateRadiationMod` of the players (`ServerHost::radiation_factor`): 1 without armor.
+    radiation_factor: f64,
     blocks: HashMap<(String, Pos), String>,
     /// Chunks (dimension, cx, cz) not loaded.
     unloaded: BTreeSet<(String, i32, i32)>,
@@ -64,6 +66,7 @@ struct World {
 impl World {
     fn new() -> Self {
         let mut w = World {
+            radiation_factor: 1.0,
             blocks: HashMap::new(),
             unloaded: BTreeSet::new(),
             writes: Vec::new(),
@@ -141,6 +144,9 @@ impl Kv for SHost {
 }
 
 impl ServerHost for SHost {
+        fn radiation_factor(&mut self, _id: &str) -> f64 {
+            self.world.borrow().radiation_factor
+        }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}

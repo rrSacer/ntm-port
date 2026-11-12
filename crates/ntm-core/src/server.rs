@@ -419,6 +419,9 @@ struct Ready {
     chunk_field_loaded: BTreeMap<String, BTreeSet<[i32; 2]>>,
     /// `ChunkRadiationManager.eggTimer`: server ticks since the last update, counted from the server's start.
     chunk_field_timer: u32,
+    /// The fractions of a milliRAD the field's `contaminate` left, by player: into `radEnv` and into the dose.
+    chunk_env_carry: BTreeMap<String, f64>,
+    chunk_dose_carry: BTreeMap<String, f64>,
     /// What was last kept, without the clock: debug builds check every skipped write against it.
     #[cfg(debug_assertions)]
     kept: Vec<u8>,

@@ -177,6 +177,8 @@ impl Server {
         // before the radiation potion's dose (updatePotionEffects, later in the player's update).
         self.zirnox_world_effects(host);
         self.sickness_tick(host);
+        // handleRadiationFX follows handleRadiationEffect in EntityEffectHandler.onUpdate:119-122.
+        self.chunk_radiation_contaminate(host);
         self.zirnox_irradiation(host);
         phases.mark("zirnox");
         // ChunkRadiationManager.updateSystem: ServerTickEvent, Phase.END, after the worlds and the players.
