@@ -163,6 +163,16 @@ impl FluidStore {
         true
     }
 
+    /// `FluidTank.setType(0, 1, slots)`: an identifier of another type than the tank's in slot 0 types the tank (emptying it) and
+    /// goes to slot 1, which has to be empty; a bare identifier names no type (`NONE`), the tank's own when it has none.
+    fn identify(&mut self) {
+        let Some(kind) = self.slots[0].as_ref().and_then(crate::combustion::identifier_type) else { return };
+        if self.slots[1].is_none() && self.tank.fluid != kind {
+            self.tank.set_type(&kind);
+            self.slots[1] = self.slots[0].take();
+        }
+    }
+
     /// What it gives a tick: `getProviderSpeed`, `max(floor, fill / 100)`.
     fn send_rate(&self) -> u64 {
         if self.rate_floor == 0 { u64::MAX } else { u64::from(self.rate_floor.max(self.tank.mb / 100)) }
@@ -204,6 +214,8 @@ impl crate::server::container_bridge::Slotted for FluidStore {
         &mut self.slots
     }
     fn sync_in(&mut self) {
+        // `TileEntityBarrel.updateEntity` (line 108, which the big tank and the orbus extend): `tank.setType(0, 1, slots)`.
+        self.identify();
         self.swap(2, 3, |t, item| {
             let c = fluid::contents(item).filter(|c| t.accepts(&c.fluid) && t.free() >= c.mb)?;
             t.fill(&c.fluid, c.mb);
@@ -384,5 +396,35 @@ mod tests {
         d.action(actions::PAGE_BACK, None, &mut fx);
         assert!(d.page > 0, "volta para a última página");
         assert!(d.view().widgets.len() <= 9, "cabe na tela");
+    }
+
+    fn identifier(fluid: &str) -> crate::server::container_bridge::Stack {
+        crate::server::container_bridge::Stack { custom: Some(format!("{{ntm_fluid:\"{fluid}\"}}")), ..crate::server::container_bridge::Stack::new("ntm:fluid_identifier_multi", 1) }
+    }
+
+    #[test]
+    fn an_identifier_in_the_first_slot_types_the_store_and_goes_to_the_second() {
+        use crate::server::container_bridge::Slotted;
+        let mut s = FluidStore::new(512_000, 1_000);
+        s.slots[0] = Some(identifier("spentsteam"));
+        s.sync_in();
+        assert_eq!((s.tank.fluid.as_str(), s.slots[0].clone(), s.slots[1].clone()), ("spentsteam", None, Some(identifier("spentsteam"))));
+        // The same type does nothing, and another type with the second slot taken does nothing either.
+        s.tank.mb = 700;
+        s.slots[0] = Some(identifier("spentsteam"));
+        s.sync_in();
+        assert!(s.slots[0].is_some() && s.tank.mb == 700);
+        s.slots[0] = Some(identifier("water"));
+        s.sync_in();
+        assert_eq!((s.tank.fluid.as_str(), s.tank.mb), ("spentsteam", 700));
+        // With the second slot free, another type empties it.
+        s.slots[1] = None;
+        s.sync_in();
+        assert_eq!((s.tank.fluid.as_str(), s.tank.mb, s.slots[0].clone()), ("water", 0, None));
+        // A bare identifier of no type leaves an untyped store as it is.
+        let mut e = FluidStore::new(16_000, 0);
+        e.slots[0] = Some(crate::server::container_bridge::Stack::new("ntm:fluid_identifier_multi", 1));
+        e.sync_in();
+        assert!(e.slots[0].is_some() && e.slots[1].is_none() && e.tank.fluid.is_empty());
     }
 }
