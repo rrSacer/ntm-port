@@ -1552,6 +1552,63 @@ def keyforge_verify(g, again=False):
     g.check('the_table_is_alive', machine_present(g, (140, 100, 8)), state)
 
 
+# `funnel-state`: ninety gold ingots in two columns of a funnel in the 3x3-only mode, compressing one block per column per tick,
+# the world saved and killed at each boundary: whatever the cut, the ingots and the blocks (nine each) are the ninety and the
+# mode is kept.
+def funnel_parts(g):
+    import native_funnel as F
+    F.X, F.Z = 140, 8
+    F.FUNNEL = (140, 100, 8)
+    return F
+
+
+def funnel_total(items):
+    return sum(c for i, c in items.values() if i == 'minecraft:gold_ingot') + 9 * sum(c for i, c in items.values() if i == 'minecraft:gold_block')
+
+
+def funnel_prepare(g):
+    F = funnel_parts(g)
+    g.ctl('wait-ready 120')
+    F.build(g)
+    F.open_funnel(g)
+    F.press_mode(g)
+    g.put('minecraft:gold_ingot', 64, 0)
+    g.put('minecraft:gold_ingot', 26, 1)
+    g.close()
+    sprint(g, 2)
+    state = F.items(g)
+    g.check('part_of_it_is_compressed_before_the_base_save', funnel_total(state) == 90 and any(v[0] == 'minecraft:gold_block' for v in state.values()), state)
+    g.evidence['core'] = [140, 100, 8]
+    g.ctl('save')
+
+
+def funnel_act(g):
+    F = funnel_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 4)
+    g.evidence['after_act'] = F.items(g)
+    save_expecting_death(g)
+
+
+def funnel_verify(g, again=False):
+    F = funnel_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s 140 100 12')
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        state = F.items(g)
+        text = ' '.join(g.command('data get block 140 100 8 ntm').get('chat', [])).replace('\\"', '"')
+    finally:
+        g.command('tick unfreeze')
+    counted(g, 'ninety_ingots_in_ingots_and_blocks', {'total': funnel_total(state), 'expected': 90, 'items': state}, again)
+    g.check('the_ingots_and_blocks_are_the_ninety', funnel_total(state) == 90, state)
+    g.check('the_mode_is_3x3_only', '"mode":1' in text.replace(' ', ''), text[:300])
+    g.check('the_funnel_is_alive', machine_present(g, (140, 100, 8)), state)
+
+
 def drain(g):
     g.ctl('wait-ready 120')
     g.ctl('save')
@@ -1583,6 +1640,8 @@ STEPS = {
     'orbus-state': (orbus_prepare, orbus_act, orbus_verify),
     'keyforge-state': (keyforge_prepare, keyforge_act, keyforge_verify),
     'keyforge-break': (mb_break_prepare, break_act, mb_break_verify),
+    'funnel-state': (funnel_prepare, funnel_act, funnel_verify),
+    'funnel-break': (mb_break_prepare, break_act, mb_break_verify),
     'orbus-break': (mb_break_prepare, break_act, mb_break_verify),
     'iron-break': (mb_break_prepare, break_act, mb_break_verify),
     'steel-break': (mb_break_prepare, break_act, mb_break_verify),
