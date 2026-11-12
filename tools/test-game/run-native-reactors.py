@@ -135,6 +135,7 @@ def run(args):
               'funnel': [('setup', 'capture-state'), ('check-state',)],
               'radiolysis': [('setup', 'capture-state'), ('check-state',)],
               'exposure': [('setup', 'capture-state'), ('check-state',)],
+              'cyclotron': [('setup', 'capture-state'), ('check-state',)],
               'rbmk-t00': [('setup',), ('check-state',)],
               'comparator': [('setup',)],
               'pile-meltdown': [('meltdown',)],
@@ -216,7 +217,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['audio-lifecycle', 'sounds', 'items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'furnace-brick', 'ash', 'furnaces', 'welders', 'broken', 'rbmk-t00', 'comparator', 'pile-meltdown', 'stations', 'recipes', 'orbus', 'keyforge', 'funnel', 'radiolysis', 'exposure'])
+    parser.add_argument('scenario', choices=['audio-lifecycle', 'sounds', 'items', 'zirnox', 'pile', 'dims', 'dims-idle', 'dims-idle-clean', 'bombs', 'mining', 'inventory-proxy', 'radioisotopes', 'solar', 'combustion', 'catalog', 'furnace-brick', 'ash', 'furnaces', 'welders', 'broken', 'rbmk-t00', 'comparator', 'pile-meltdown', 'stations', 'recipes', 'orbus', 'keyforge', 'funnel', 'radiolysis', 'exposure', 'cyclotron'])
     parser.add_argument('--binary', type=Path, required=True)
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path)
