@@ -587,6 +587,14 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // TileEntityGeiger keeps no state: the native glue ticks it (its counters, clicks and comparator, slice 4b).
+    BlockSpec {
+        id: "ntm:geiger",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
     BlockSpec {
         id: "ntm:machine_battery",
         kind: Kind::Battery,
