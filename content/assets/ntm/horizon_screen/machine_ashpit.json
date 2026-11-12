@@ -1,0 +1,16 @@
+{
+  "texture": "ntm:textures/gui/machine/gui_ashpit.png",
+  "size": [
+    176,
+    168
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    74
+  ]
+}
