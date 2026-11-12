@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'furnace-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -707,7 +707,11 @@ def break_act(g):
     if SCENARIO in MB_BREAK and not VANILLA:
         # A multiblock's core hides behind its cells: the player breaks the first cell he can see (any cell breaks it).
         seen = None
-        for dx, dy, dz in [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]:
+        offsets = [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]
+        if SCENARIO == 'orbus-break':
+            import native_orbus
+            offsets = [(c[0] - core[0], c[1] - core[1], c[2] - core[2]) for c in native_orbus.dummies(g, core)]
+        for dx, dy, dz in offsets:
             cell = (core[0] + dx, core[1] + dy, core[2] + dz)
             try:
                 g.ctl('break %d %d %d --timeout 30' % cell)
@@ -1213,7 +1217,7 @@ def frozen_state(g, core, keys=('burn_time', 'max_burn_time', 'progress', 'proce
     return out
 
 
-MB_BLOCK = {'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
+MB_BLOCK = {'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
             'combination': ('ntm:furnace_combination', '"Combination"')}
 MB_AT = (140, 100, 8)
 
@@ -1227,6 +1231,11 @@ def mb_place(g, kind, fire=True):
     g.command('clear @s')
     item, marker = MB_BLOCK[kind]
     g.command(f'give @s {item} 1')
+    if kind == 'orbus':
+        g.command(f'tp @s {x + .5} {y} {z + 3.5}')
+        g.ctl(f'place {x} {y} {z} --item {item}')
+        time.sleep(1.5)
+        return find_core(g, (x, y, z), marker), None
     if kind == 'iron':
         g.ctl(f'place {x} {y} {z} --item {item}')
         time.sleep(1.5)
@@ -1245,6 +1254,10 @@ def mb_place(g, kind, fire=True):
 
 def mb_open(g, kind, core):
     """The screen, through a cell of the multiblock a player can click from the south; patient, the host may be loaded."""
+    if kind == 'orbus':
+        import native_orbus
+        native_orbus.open_through(g, native_orbus.dummies(g, core))
+        return
     first = [(0, 1, 0)] if kind == 'iron' else [(0, 0, 1)]
     rest = [(dx, dy, dz) for dy in (1, 0, 2) for dz in (0, 1, -1) for dx in (0, -1, 1) if (dx, dy, dz) not in first]
     g.close()
@@ -1357,7 +1370,7 @@ def state_verify(g, again=False):
 
 # `iron-break`, `steel-break`, `combination-break`: the multiblock furnace holding items, broken, against the chest control
 # holding the same ones; counted item by item, once in the world.
-MB_BREAK = {'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
+MB_BREAK = {'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
             'steel-break': ('steel', [('minecraft:raw_iron', 6, 0), ('minecraft:raw_copper', 3, 1)]),
             'combination-break': ('combination', [('minecraft:coal', 8, 0), ('minecraft:bucket', 2, 2)])}
 
@@ -1408,15 +1421,69 @@ def mb_break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    standing = state.startswith(('ntm:furnace_', 'minecraft:chest'))
+    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'minecraft:chest'))
     inside = mb_items(g, core, ids) if standing else 0
     ents = sum(entities(g, i) for i in ids)
     inv = sum(inventory(g, i) for i in ids)
     detail = {'block': state, 'inside': inside, 'entities': ents, 'inventory': inv, 'total': inside + ents + inv,
               'expected': sum(c for _, c, _ in loads), 'ledger': led, 'machine': machine_present(g, core)}
     counted(g, 'mb_items_exactly_once', detail, again)
-    if state.startswith('ntm:furnace_'):
+    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus')):
         g.check('a_standing_furnace_is_a_live_machine', machine_present(g, core), detail)
+
+
+# `orbus-state`: five buckets in the orbus, in output mode with nothing to take them; the act lays a duct to a barrel at a
+# bottom port and one at a top port, so the water leaves while the world is saved and killed. Whatever the cut, the three
+# tanks hold the five thousand between them, and the orbus keeps its mode.
+def orbus_parts(g):
+    import native_orbus as O
+    O.X, O.Z = 140, 8
+    return O
+
+
+def orbus_prepare(g):
+    O = orbus_parts(g)
+    g.ctl('wait-ready 120')
+    core, facing = O.build(g)
+    cells = O.dummies(g, core)
+    O.pour(g, cells, 5)
+    O.set_output(g, cells)
+    held = O.tank(g, core)
+    g.check('five_buckets_in_output_mode', held[1] == 5000 and held[3] == 'Output', held)
+    g.evidence.update(core=list(core), facing=facing)
+    g.ctl('save')
+
+
+def orbus_act(g):
+    O = orbus_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core, facing = tuple(prep['core']), prep['facing']
+    O.lay_out(g, core, facing)
+    sprint(g, 40)
+    g.evidence['after_act'] = O.tank(g, core)
+    save_expecting_death(g)
+
+
+def orbus_verify(g, again=False):
+    O = orbus_parts(g)
+    from native_combustion import world_cell
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core, facing = tuple(prep['core']), prep['facing']
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 8))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        tanks = [O.tank(g, core)] + [O.tank(g, world_cell(core, facing, c)) for c in ((3, 0, -1), (3, 4, 0))]
+    finally:
+        g.command('tick unfreeze')
+    held = [t for t in tanks if t]
+    counted(g, 'five_thousand_between_the_tanks', {'total': sum(t[1] for t in held), 'expected': 5000, 'tanks': tanks}, again)
+    g.check('the_orbus_is_alive', machine_present(g, core), tanks)
+    g.check('the_orbus_kept_its_mode', tanks[0] is not None and tanks[0][3] == 'Output', tanks)
 
 
 def drain(g):
@@ -1447,6 +1514,8 @@ STEPS = {
     'iron-state': (state_prepare, state_act, state_verify),
     'steel-state': (state_prepare, state_act, state_verify),
     'combination-state': (state_prepare, state_act, state_verify),
+    'orbus-state': (orbus_prepare, orbus_act, orbus_verify),
+    'orbus-break': (mb_break_prepare, break_act, mb_break_verify),
     'iron-break': (mb_break_prepare, break_act, mb_break_verify),
     'steel-break': (mb_break_prepare, break_act, mb_break_verify),
     'combination-break': (mb_break_prepare, break_act, mb_break_verify),
