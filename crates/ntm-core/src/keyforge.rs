@@ -215,6 +215,19 @@ mod tests {
         assert!(seen.len() > 100, "{} different ones in 200 ticks", seen.len());
     }
 
+    /// `rand.nextInt(900) + 100`: every value from 100 to 999 comes up and none outside.
+    #[test]
+    fn the_rolls_cover_the_three_digit_range_exactly() {
+        let mut f = KeyForge::default();
+        let mut hit = vec![false; 1_000];
+        for _ in 0..40_000 {
+            let p = f.random_pins();
+            assert!((100..=999).contains(&p), "{p}");
+            hit[p as usize] = true;
+        }
+        assert!(hit[100..=999].iter().all(|h| *h), "every value of the range is drawn");
+    }
+
     #[test]
     fn what_is_no_key_or_lock_is_left_alone() {
         let mut f = KeyForge::default();
