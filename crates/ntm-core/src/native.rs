@@ -466,6 +466,20 @@ mod tests {
         assert!(has_comparator("ntm:barrel_steel") && !has_comparator("ntm:machine_zirnox"));
     }
 
+    /// `TileEntityMachineOrbus`: a barrel of 512 000 mB whose speeds floor at 1 000; it has no comparator (a
+    /// `BlockDummyable` without the override), unlike the barrel and the tank.
+    #[test]
+    fn the_orbus_is_a_barrel_of_512000_at_a_floor_of_1000() {
+        let m = crate::machine::Machine::new(crate::machine::Kind::FluidStore, "ntm:machine_orbus", None);
+        let crate::machine::Data::FluidStore(f) = &m.data else { panic!() };
+        assert_eq!((f.tank.cap, f.rate_floor), (512_000, 1_000));
+        assert_eq!(crate::registry::spec("ntm:machine_orbus").map(|s| s.kind), Some(crate::machine::Kind::FluidStore));
+        assert!(!has_comparator("ntm:machine_orbus"));
+        // The tank (256 000, floor 500) and the barrel (16 000, none) are as they were.
+        let crate::machine::Data::FluidStore(t) = &crate::machine::Machine::new(crate::machine::Kind::FluidStore, "ntm:machine_fluidtank", None).data else { panic!() };
+        assert_eq!((t.tank.cap, t.rate_floor), (256_000, 500));
+    }
+
     #[test]
     fn zirnox_slot_policy_keeps_active_rods_and_allows_manual_removal() {
         let active = crate::server::container_bridge::Stack::new(&crate::zirnox::table().fuels[0].item, 1);
