@@ -104,7 +104,7 @@ def layout(g, with_orbus=True):
     g.ground(X - 16, 100, Z - 6, width=36, depth=14)
     g.command('clear @s')
     g.command('give @s ntm:machine_cyclotron 1')
-    g.command(f'tp @s {X + .5} 100 {Z + 3.5}')
+    g.command(f'tp @s {X + .5} 100 {Z + 3.5} facing {X + .5} 100 {Z}')
     time.sleep(1)
     g.ctl(f'place {X} 100 {Z} --item ntm:machine_cyclotron')
     time.sleep(1.5)
@@ -116,12 +116,13 @@ def layout(g, with_orbus=True):
     out = {'core': core, 'facing': facing, 'cell': cell}
     if not with_orbus:
         return out
+    ducts(g, core, cell)
     for key, local in (('water', (-10, 0, -1)), ('steam', (10, 0, -1))):
         target = cell(*local)
         placer = cell(local[0], local[1], local[2] - 1)
         g.command('clear @s')
         g.command('give @s ntm:machine_orbus 1')
-        g.command(f'tp @s {placer[0] + .5} 100 {placer[2] + 3.5}')
+        g.command(f'tp @s {placer[0] + .5} 100 {placer[2] + 3.5} facing {placer[0] + .5} 100 {placer[2]}')
         time.sleep(1)
         g.ctl(f'place {placer[0]} {placer[1]} {placer[2]} --item ntm:machine_orbus')
         time.sleep(1.5)
@@ -132,18 +133,22 @@ def layout(g, with_orbus=True):
     return out
 
 
-def ducts(g, lay):
-    """Typed ducts under the west side and the east side: the water's from the store to the cyclotron's west port, the steam's
-    from its east port to the other store (the two rows leave the middle under the cyclotron free, so the networks stay apart)."""
-    cell = lay['cell']
-    rows = {'water': range(-11, -1), 'steam': range(2, 11)}
-    for fluid, xs in rows.items():
-        for x in xs:
-            p = cell(x, -1, 0)
+def ducts(g, core, cell):
+    """Typed ducts from the cyclotron's side ports to the cells under the stores' ports: the water's from the west port out and
+    down, the steam's from the east port out and down (the two rows are apart, so the networks stay apart). They are laid and typed
+    before the stores are placed, because the volume of a store hides the ducts under it."""
+    rows = {
+        'water': [(x, 0, 0) for x in range(-3, -9, -1)] + [(x, -1, 0) for x in range(-8, -12, -1)],
+        'steam': [(x, 0, 0) for x in range(3, 8)] + [(x, -1, 0) for x in range(7, 10)],
+    }
+    for fluid, local in rows.items():
+        for l in local:
+            p = cell(*l)
             g.command(f'setblock {p[0]} {p[1]} {p[2]} ntm:fluid_duct_neo')
-        # Typed from the row beside (the cells over them can be an orbus's volume): each from three cells away from the row, outside every volume.
-        for x in xs:
-            type_duct(g, fluid, [cell(x, -1, 0)], cell(x, 0, 3))
+        for l in local:
+            # From the cell over it, or beside it when that is a duct.
+            over = (l[0], 0, 1) if l[1] == 0 or (l[0], 0, 0) in local else (l[0], 0, 0)
+            type_duct(g, fluid, [cell(*l)], cell(*over))
     g.command('clear @s')
 
 
@@ -189,7 +194,6 @@ def setup(g):
     sprint(g, 30)
     set_output(g, w_cells)
     identify(g, s_cells, 'spentsteam')
-    ducts(g, lay)
     water = tank(g, lay['water'])
     g.check('the_barrels_filled_the_store', water is not None and water[0] == 'water' and water[1] == BARRELS * 16_000, water)
     open_cyclotron(g, core)
@@ -234,7 +238,6 @@ def capture(g):
     sprint(g, 30)
     set_output(g, w_cells)
     identify(g, s_cells, 'spentsteam')
-    ducts(g, lay)
     open_cyclotron(g, core)
     put(g, 'ntm:part_lithium', 0, 2)
     put(g, 'ntm:powder_lithium', 3, 2)

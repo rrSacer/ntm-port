@@ -505,8 +505,7 @@ mod tests {
 
     #[test]
     fn what_the_screen_shows() {
-        let mut c = Cyclotron::default();
-        c.progress = 345;
+        let mut c = Cyclotron { progress: 345, ..Default::default() };
         c.tanks[0].mb = 1_234;
         let d = c.screen_data();
         assert_eq!((d.len(), d[1], d[2], d[3], d[4], d[5], d[7], d[8], d[10], d[11]), (13, 100_000_000, 17, 34, 1_234, 32_000, 0, 32_000, 0, 8_000));
