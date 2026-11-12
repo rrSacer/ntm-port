@@ -276,7 +276,7 @@ direção do Java (`canConnect` recusa só `DOWN`) além de ficarem abertas para
   limpo; a refatoração de `RTGUtil.updateRTGs` em `radioisotopes::update_rtgs` não mudou nenhum teste do RTG;
 - jogo, `run-native-reactors.py radiolysis` (15 verificações, 0 falhas): o identificador de água tipa a entrada e vai para o slot 11, a
   água de um barril leste (4 baldes) vira peróxido e hidrogênio na razão de 4 para 1 (3 200 mB de peróxido no barril oeste, 800 de
-  hidrogênio no tanque), as três tanques ficam tipados pela receita, o calor é 200 com quatro pelotas de polônio, o armazém enche, a
+  hidrogênio no tanque), os três tanques ficam tipados pela receita, o calor é 200 com quatro pelotas de polônio, o armazém enche, a
   espada contaminada sai do slot 13 sem a marca e as pelotas perdem vida; depois de salvar e reabrir, slots, tipos dos tanques e vida das
   pelotas seguem como estavam e a câmara segue rodando; e `funnel` de novo, 18/18, no mesmo cliente;
 - cortes de save no modo estrito (`HORIZON_NO_EAGER_SAVE=1`): `radiolysis-state` 7/7 (quatro pelotas, o identificador e a espada
