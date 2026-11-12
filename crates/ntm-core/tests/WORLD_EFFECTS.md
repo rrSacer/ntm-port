@@ -180,3 +180,12 @@ modelo do corte; não foi produzido em jogo. Uma tag apenas na entidade sumiu ao
 thrower e posição, sem o ID da entidade. O mesmo estado de arquivos pode ter um item preexistente no jogador e uma
 explosão ainda devida. A sonda delimita o alcance da proposta de tag; não prova que toda solução sem motor seja
 impossível. O coordenador descartou flush síncrono extra. Seis sondas passaram; Clippy do teste limpo.
+
+As sondas agora distinguem também arquivo de entidades novo com região B antiga: uma entidade ainda tagueada em B
+permite ao host sintético provar a explosão anterior; quando o drop se funde a uma entidade antiga sem tag e apenas o
+arquivo de entidades é gravado, o replay torna a explodir e pode perder as duas unidades salvas contra vanilla.
+Se o drop foi salvo após mover-se ao chunk C, procurar a tag somente em B também não prova o efeito; o item distante
+sobrevive, mas a explosão física se repete. As três sondas constroem os registros representativos em memória e usam o
+`Server` real; **não** simulam ainda as transições de save do motor nem substituem o verificador exaustivo ou corte em
+jogo. `cargo test --test destination_marker_cut` e Clippy desse teste: 9/9 e sem avisos. A guarda de produção ainda é a
+da fatia 2, e a restrição aprovada ainda precisa ser implementada após o modelo.

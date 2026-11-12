@@ -22,6 +22,8 @@ struct CutHost {
     explosions: usize,
     reemit_old_debt: bool,
     emitted_ids: Vec<u64>,
+    tagged_at_destination: bool,
+    destroy_items_on_blast: bool,
 }
 impl Kv for CutHost {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -44,10 +46,15 @@ impl ServerHost for CutHost {
     fn tell(&mut self, _: &str, _: &str) {}
     fn log(&mut self, _: &str) {}
     fn effect_seen(&mut self, id: u64, _: &str, pos: Pos) -> bool {
-        pos == DEST && self.destination.knows(id)
+        pos == DEST
+            && (self.destination.knows(id)
+                || self.tagged_at_destination && id == effect_id(SERIAL, 1))
     }
     fn explode(&mut self, _: &str, _: [f64; 3], _: f32, _: bool, _: bool) -> bool {
         self.explosions += 1;
+        if self.destroy_items_on_blast {
+            self.physical_items = 0;
+        }
         true
     }
     fn apply_items(
@@ -98,6 +105,8 @@ fn region_marker_before_entity_file_hides_what_old_home_still_owes() {
         explosions: 0,
         reemit_old_debt: false,
         emitted_ids: vec![],
+        tagged_at_destination: false,
+        destroy_items_on_blast: false,
     }; // old entity file
     let mut server = Server::native(&mut host, 0);
     server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
@@ -155,6 +164,8 @@ fn a_newer_destination_and_older_home_may_contain_two_vanilla_copies() {
         explosions: 0,
         reemit_old_debt: false,
         emitted_ids: vec![],
+        tagged_at_destination: false,
+        destroy_items_on_blast: false,
     };
     let mut server = Server::native(&mut host, 0);
     server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
@@ -187,6 +198,8 @@ fn replaying_the_old_source_item_without_repeating_explosion_matches_both_cuts()
             explosions: 0,
             reemit_old_debt: true,
             emitted_ids: vec![],
+            tagged_at_destination: false,
+            destroy_items_on_blast: false,
         };
         let mut server = Server::native(&mut host, 0);
         server.native_obligations_loaded(
@@ -220,6 +233,8 @@ fn the_current_order_guard_also_suppresses_an_earlier_owed_item() {
         explosions: 0,
         reemit_old_debt: true,
         emitted_ids: vec![],
+        tagged_at_destination: false,
+        destroy_items_on_blast: false,
     };
     let mut batch = old_home_batch();
     batch.effects = VecDeque::from([
@@ -263,6 +278,8 @@ fn a_tag_lost_on_pickup_leaves_no_destination_evidence_to_stop_a_second_blast() 
         explosions: 0,
         reemit_old_debt: true,
         emitted_ids: vec![],
+        tagged_at_destination: false,
+        destroy_items_on_blast: false,
     };
     let mut server = Server::native(&mut host, 0);
     server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
@@ -279,4 +296,79 @@ fn a_tag_lost_on_pickup_leaves_no_destination_evidence_to_stop_a_second_blast() 
     // An identical disk view can also come from a player who had the same item before the still-pending blast.
     // This witness does not model movement, merge, or an in-game save; it exercises the real server's replay decision
     // with a host limited to the two proposed proofs (destination marker or still-existing entity tag).
+}
+
+#[test]
+fn a_saved_tagged_entity_can_prove_the_blast_when_its_region_is_old() {
+    let mut host = CutHost {
+        kv: MemKv::default(),
+        destination: ChunkLedger::default(),
+        physical_items: 1,
+        explosions: 0,
+        reemit_old_debt: true,
+        emitted_ids: vec![],
+        tagged_at_destination: true,
+        destroy_items_on_blast: true,
+    };
+    let mut server = Server::native(&mut host, 0);
+    server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
+    server.native_settle(&mut host);
+    assert_eq!(host.explosions, 0);
+    assert_eq!(
+        host.physical_items, 2,
+        "saved tagged output plus the old vanilla source"
+    );
+}
+
+#[test]
+fn a_merged_item_that_loses_its_entity_tag_can_be_destroyed_on_replay() {
+    // The emitted item merged into an older untagged ItemEntity, which reached disk; B's region did not.
+    let mut host = CutHost {
+        kv: MemKv::default(),
+        destination: ChunkLedger::default(),
+        physical_items: 2,
+        explosions: 0,
+        reemit_old_debt: true,
+        emitted_ids: vec![],
+        tagged_at_destination: false,
+        destroy_items_on_blast: true,
+    };
+    let mut server = Server::native(&mut host, 0);
+    server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
+    server.native_settle(&mut host);
+    assert_eq!(host.explosions, 1);
+    assert_eq!(
+        host.physical_items, 1,
+        "the blast destroyed the two merged saved items before replaying one"
+    );
+    assert_ne!(
+        host.physical_items, 3,
+        "vanilla holds the two saved items plus one from old source"
+    );
+}
+
+#[test]
+fn a_tagged_output_saved_after_moving_away_is_not_evidence_at_its_origin() {
+    // The output moved to chunk C and C's entities were saved; B's old region and entity file carry no proof.
+    let mut host = CutHost {
+        kv: MemKv::default(),
+        destination: ChunkLedger::default(),
+        physical_items: 1,
+        explosions: 0,
+        reemit_old_debt: true,
+        emitted_ids: vec![],
+        tagged_at_destination: false,
+        destroy_items_on_blast: false,
+    };
+    let mut server = Server::native(&mut host, 0);
+    server.native_obligations_loaded(DIM, [0, 0], vec![], vec![old_home_batch()], BTreeSet::new());
+    server.native_settle(&mut host);
+    assert_eq!(
+        host.physical_items, 2,
+        "the moved saved item and old source match vanilla"
+    );
+    assert_eq!(
+        host.explosions, 1,
+        "an origin-only tag search cannot prove the earlier blast"
+    );
 }
