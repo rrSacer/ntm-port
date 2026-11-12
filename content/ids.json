@@ -40997,6 +40997,9 @@
       "source_dimension": "overworld/special substrate (not inferred)",
       "worldgen_status": "catalog only; no additional worldgen translated",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/ore_schrabidium.png",
+      "block_properties": {
+        "random_ticks": true
+      },
       "source_registry": "hbm:tile.ore_schrabidium",
       "names": {
         "en_us": "Schrabidium Ore",
