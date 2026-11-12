@@ -325,4 +325,26 @@ mod tests {
         assert!(from9("ntm:ingot_uranium").is_some());
         assert!(from9("minecraft:dirt").is_none() && from4("minecraft:dirt").is_none());
     }
+
+    #[test]
+    fn the_slots_the_menu_and_the_hoppers_see() {
+        use crate::native::{SlotAction, SlotOrigin, slot_allows, slot_filters};
+        let filters = slot_filters(BLOCK);
+        assert_eq!(filters.len(), SLOTS);
+        assert!(filters[..INPUTS].iter().all(|f| !f.output), "the top nine are plain slots");
+        assert!(filters[INPUTS..].iter().all(|f| f.output), "the bottom nine are SlotCraftingOutputs");
+        let c = container();
+        assert_eq!((c.slots, c.faces[0].clone(), c.faces[1].clone()), (SLOTS, (9..18).collect::<Vec<_>>(), (0..9).collect::<Vec<_>>()));
+        assert!((2..6).all(|f| c.faces[f] == c.faces[1]), "the sides reach the inputs like the top");
+        let slots: Slots = vec![None; SLOTS];
+        let dirt = Stack::new("minecraft:dirt", 1);
+        let gold = Stack::new("minecraft:iron_ingot", 1);
+        let can = |slot, item: &Stack, a, o| slot_allows(BLOCK, &slots, slot, item, a, o);
+        assert!(can(0, &dirt, SlotAction::Insert, SlotOrigin::Manual));
+        assert!(!can(0, &dirt, SlotAction::Insert, SlotOrigin::Automation));
+        assert!(can(0, &gold, SlotAction::Insert, SlotOrigin::Automation));
+        assert!(!can(9, &gold, SlotAction::Insert, SlotOrigin::Manual));
+        assert!(can(9, &gold, SlotAction::Extract, SlotOrigin::Automation));
+        assert!(!can(0, &gold, SlotAction::Extract, SlotOrigin::Automation));
+    }
 }
