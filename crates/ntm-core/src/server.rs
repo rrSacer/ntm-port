@@ -419,21 +419,18 @@ struct Ready {
     kept_sickness: Option<u64>,
     /// The stamp of the chunks' saved radiation as last kept (`persist::CHUNK_RADIATION_KEY`); None: write it next time.
     kept_chunk_radiation: Option<u64>,
-    /// The world's radiation by chunk (`server::chunk_radiation`): each world's map as the Java holds it.
-    chunk_field: BTreeMap<String, crate::chunk_radiation::ChunkMap>,
-    /// The chunks loaded, by world (the hooks of loading and unloading): the ones a save writes.
-    chunk_field_loaded: BTreeMap<String, BTreeSet<[i32; 2]>>,
-    /// `ChunkRadiationManager.eggTimer`: server ticks since the last update, counted from the server's start.
-    chunk_field_timer: u32,
-    /// The fractions of a milliRAD the field's `contaminate` left, by player: into `radEnv` and into the dose.
-    chunk_env_carry: BTreeMap<String, f64>,
-    chunk_dose_carry: BTreeMap<String, f64>,
+    /// What the RBMK's steps gave the world's radiation by chunk (`incrementRad`, `RadEvent`), in order, until the
+    /// field takes them after the machines: a step refused takes its events back with the rest of `Ready`.
+    chunk_rad_pending: Vec<(String, [i32; 3], f32)>,
     /// What was last kept, without the clock: debug builds check every skipped write against it.
     #[cfg(debug_assertions)]
     kept: Vec<u8>,
 }
 
 pub struct Server {
+    /// The world's radiation by chunk (`server::chunk_radiation_server::Field`): out of `Ready`, which every group of
+    /// machines copies for its transaction.
+    field: chunk_radiation_server::Field,
     /// Bombs and explosions (`server/bomb_server.rs`, docs/bombas.md).
     blasts: crate::blast::Runtime,
     /// Fluid networks (`server/fluid_server.rs`, docs/fluidos.md).
