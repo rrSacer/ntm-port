@@ -16,6 +16,9 @@ Scenarios (NTM_CUT_SCENARIO):
   field        (slice 4a) the world's radiation by chunk: `/ntmrad set 100000` on the player's chunk, whose save is
            the NTM storage's own key (`chunk_radiation`), committed after the chunks. Control: the table's two stacks
            moved into the Ender chest.
+  armed        (slice 4d) BlockHazard's rad, a field of the one Block of its type written only by onBlockAdded: the prepare
+           puts polonium at A and saves; the act, a new run of the game, watches A's tick come back with rad 0 (no
+           increment, its chain ends), puts polonium at B (the type armed: B gives 75 every 20) and watches A stay dead.
 Modes: prepare (the world saved with the starting state), act (do it, then a save the failpoint may end; NTM_CRASH_NO_SAVE,
 NTM_CRASH_PAUSE_SAVE as run-crash-proof), verify / again (after a reopen: count).
 """
@@ -101,6 +104,8 @@ def field_store(g):
 
 
 def count(g):
+    if SCENARIO == 'armed':
+        return {'items': {}}
     if SCENARIO == 'field' and not VANILLA:
         return {'items': {}, 'field': {'store': field_store(g), 'probe': field_probe(g)}}
     if SCENARIO == 'table' or VANILLA:
@@ -134,6 +139,43 @@ def step_on_mycelium(g):
     time.sleep(.3)
 
 
+ARMED_A, ARMED_B = (56, 100, 40), (88, 100, 40)  # chunks 3, 2 and 5, 2
+
+
+def game_time(g):
+    """The server's game time in ticks (`time query gametime`)."""
+    return int(re.search(r'(\d+)', ' '.join(g.ctl('command time query gametime').get('chat', [])))[1])
+
+
+def armed_watch(g, cx, cz, ticks):
+    """Frozen, one tick at a time: what the sources gave chunk cx, cz in each tick that is not the field's update."""
+    # Frozen before the baseline: a tick between the two would count as a gain at n = 0.
+    g.command('tick freeze')
+    out, (_, last) = [], field_value(g, cx, cz)
+    for n in range(ticks):
+        start = game_time(g)
+        g.command('tick step 1')
+        while game_time(g) < start + 1:
+            time.sleep(.05)
+        timer, value = field_value(g, cx, cz)
+        if timer != 0 and value - last > 1e-6:
+            out.append((n, round(value - last, 4)))
+        last = value
+    g.command('tick unfreeze')
+    return out
+
+
+def field_value(g, cx, cz):
+    text = ' '.join(g.command(f'ntmtest rad {cx} {cz} 0').get('chat', []))
+    m = re.search(r'timer=(\d+) rad=(\S*)', text)
+    value = 0.0
+    for item in filter(None, (m.group(2) if m else '').split(';')):
+        c, raw, _, _ = item.split(':')
+        if c == f'{cx},{cz}' and raw != 'none':
+            value = struct.unpack('<f', struct.pack('<I', int(raw)))[0]
+    return (int(m.group(1)) if m else -1), value
+
+
 def table_slot(screen, n):
     return next((x.get('item') for x in screen.get('slots', []) if x['slot'] == 300 + n), None)
 
@@ -152,6 +194,14 @@ def prepare(g):
         g.command('tp @s 24.5 101 11.5')
         for slot, item in enumerate(ITEMS):
             g.command(f'item replace entity @s hotbar.{slot} with {item}')
+    elif SCENARIO == 'armed':
+        g.command('fill 48 99 32 95 99 47 minecraft:stone')
+        g.command('fill 48 100 32 95 110 47 minecraft:air')
+        g.command('tp @s 72.5 100 40.5')
+        time.sleep(1)
+        g.command('ntmrad clear')
+        g.command(f'setblock {ARMED_A[0]} {ARMED_A[1]} {ARMED_A[2]} ntm:block_polonium')
+        g.evidence['a_in_the_first_run'] = armed_watch(g, 3, 2, 45)
     elif SCENARIO == 'field':
         g.command('tp @s 20.5 101 11.5')
         time.sleep(1)
@@ -195,6 +245,14 @@ def act(g):
     elif SCENARIO == 'migration' and not VANILLA:
         # Past this session's first 200 ticks, so the moved potion doses before the cut (review P2-1).
         time.sleep(16)
+    elif SCENARIO == 'armed':
+        # A new run of the game: A's tick came back with the world; the type is not armed.
+        g.command('tp @s 72.5 100 40.5')
+        time.sleep(1)
+        g.evidence['a_not_armed'] = armed_watch(g, 3, 2, 45)
+        g.command(f'setblock {ARMED_B[0]} {ARMED_B[1]} {ARMED_B[2]} ntm:block_polonium')
+        g.evidence['b_armed'] = armed_watch(g, 5, 2, 45)
+        g.evidence['a_after_b'] = armed_watch(g, 3, 2, 45)
     elif SCENARIO == 'field' and not VANILLA:
         # Some updates of the reopened field, then the chunk at 100 000 again: the value before the cut, read with
         # what the next update gives, right before the save the failpoint may end.

@@ -69,6 +69,7 @@ impl Server {
         let mut bridge=container_bridge::Bridge::default();
         for r in &world.removals {if r.engine_slots{bridge.last.insert(r.key.clone(),Vec::new());}}
         Server {
+            field: Default::default(),
             blasts: crate::blast::Runtime::default(),
             fluidnet: fluid_server::FluidNet::default(),
             tick,
@@ -154,6 +155,8 @@ impl Server {
         self.solar_tick(host);
         phases.mark("solar");
         self.simulate(host);
+        // The RBMK's incrementRad of the steps accepted (TileEntityRBMKRod:153, RBMKNeutronHandler:305,417,421).
+        self.apply_chunk_rad_pending();
         phases.mark("simulate");
         self.stirling_finish();
         for m in self.ready.world.machines.values_mut() {

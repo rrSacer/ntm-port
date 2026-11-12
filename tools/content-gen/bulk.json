@@ -20511,7 +20511,10 @@
       "category": "ore",
       "source_dimension": "overworld/special substrate (not inferred)",
       "worldgen_status": "catalog only; no additional worldgen translated",
-      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ore_schrabidium.png"
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/ore_schrabidium.png",
+      "block_properties": {
+        "random_ticks": true
+      }
     },
     {
       "id": "ore_seared__asbestos",

@@ -12,7 +12,7 @@
 //!   storage is committed after the chunks: a cut between the two leaves the chunks of this save with the values of
 //!   the last commit (docs/onda-1-protecao.md, 4a).
 use super::*;
-use crate::chunk_radiation;
+use crate::chunk_radiation::{self, ChunkMap};
 
 /// `RadiationConfig.hellRad`: the least RAD/s a player in the Nether takes (`AMBIENT_00_nether`, 0.1 by default).
 pub const HELL_RAD: f64 = 0.1;
@@ -28,17 +28,33 @@ pub const FOG_PARTICLES: [&str; 25] = [
 /// A chunk the probe read: where, its raw value (None: not in the map), the next update's, whether it is loaded.
 pub type Probed = ([i32; 2], Option<f32>, f32, bool);
 
+/// The world's radiation by chunk in memory: each world's map as the Java holds it, the chunks loaded, the update's
+/// timer and the fractions of a milliRAD `contaminate` left. Not part of `Ready`: every group of machines copies
+/// `Ready` for its transaction; the RBMK's writes reach it through `Ready::chunk_rad_pending`.
+#[derive(Clone, Debug, Default)]
+pub(super) struct Field {
+    /// Each world's map (`SimpleRadiationPerWorld.radiation`).
+    pub(super) maps: BTreeMap<String, ChunkMap>,
+    /// The chunks loaded, by world (the hooks of loading and unloading): the ones a save writes.
+    pub(super) loaded: BTreeMap<String, BTreeSet<[i32; 2]>>,
+    /// `ChunkRadiationManager.eggTimer`: server ticks since the last update, counted from the server's start.
+    pub(super) timer: u32,
+    /// The fractions of a milliRAD the field's `contaminate` left, by player: into `radEnv` and into the dose.
+    pub(super) env_carry: BTreeMap<String, f64>,
+    pub(super) dose_carry: BTreeMap<String, f64>,
+}
+
 impl Server {
     /// A chunk of `dim` loaded (`ChunkDataEvent.Load`): its saved value into the map, over what the map had.
     pub fn native_chunk_radiation_loaded(&mut self, dim: &str, chunk: [i32; 2]) {
         let saved = self.ready.world.chunk_radiation.get(dim, chunk);
-        self.ready.chunk_field.entry(dim.to_string()).or_default().put(chunk, saved);
-        self.ready.chunk_field_loaded.entry(dim.to_string()).or_default().insert(chunk);
+        self.field.maps.entry(dim.to_string()).or_default().put(chunk, saved);
+        self.field.loaded.entry(dim.to_string()).or_default().insert(chunk);
     }
 
     /// A chunk of `dim` unloaded: its save takes the map's value (0 when it has none); the map keeps it.
     pub fn native_chunk_radiation_unloaded(&mut self, dim: &str, chunk: [i32; 2]) {
-        let Some(loaded) = self.ready.chunk_field_loaded.get_mut(dim) else { return };
+        let Some(loaded) = self.field.loaded.get_mut(dim) else { return };
         if !loaded.remove(&chunk) {
             return;
         }
@@ -47,14 +63,14 @@ impl Server {
 
     /// The field's value at a chunk as `getRadiation` reads it (clamped to 0..100 000; 0 in a world with none).
     pub fn native_chunk_radiation(&self, dim: &str, chunk: [i32; 2]) -> f32 {
-        self.ready.chunk_field.get(dim).map_or(0.0, |m| chunk_radiation::get(m, chunk))
+        self.field.maps.get(dim).map_or(0.0, |m| chunk_radiation::get(m, chunk))
     }
 
     /// A save takes the chunks: each loaded chunk's value into its save.
     pub(super) fn save_loaded_chunk_radiation(&mut self) {
         let loaded: Vec<(String, [i32; 2])> = self
-            .ready
-            .chunk_field_loaded
+            .field
+            .loaded
             .iter()
             .flat_map(|(dim, chunks)| chunks.iter().map(move |c| (dim.clone(), *c)))
             .collect();
@@ -66,7 +82,7 @@ impl Server {
     /// `receiveChunkSave`: the map's value, as it is (0 when it has none), into the chunk's save. The saved part's stamp
     /// moves only when the value does.
     fn save_chunk_radiation(&mut self, dim: &str, chunk: [i32; 2]) {
-        let rad = self.ready.chunk_field.get(dim).and_then(|m| m.get(chunk)).unwrap_or(0.0);
+        let rad = self.field.maps.get(dim).and_then(|m| m.get(chunk)).unwrap_or(0.0);
         if self.ready.world.chunk_radiation.differs(dim, chunk, rad) {
             self.ready.world.chunk_radiation.set(dim, chunk, rad);
         }
@@ -93,7 +109,7 @@ impl Server {
                 continue;
             }
             let amount = f64::from(rad / 20.0) * 1000.0;
-            let env = self.ready.chunk_env_carry.entry(p.id.clone()).or_insert(0.0);
+            let env = self.field.env_carry.entry(p.id.clone()).or_insert(0.0);
             *env += amount;
             let whole = env.trunc();
             *env -= whole;
@@ -104,34 +120,34 @@ impl Server {
             // calculateRadiationMod is a float: amount * mod in float, as the Java's `amount * mod`.
             let factor = host.radiation_factor(&p.id) as f32;
             let dosed = f64::from(rad / 20.0 * factor) * 1000.0;
-            let carry = self.ready.chunk_dose_carry.get(&p.id).copied().unwrap_or(0.0) + dosed;
+            let carry = self.field.dose_carry.get(&p.id).copied().unwrap_or(0.0) + dosed;
             let whole = carry.trunc();
             if whole == 0.0 {
-                self.ready.chunk_dose_carry.insert(p.id.clone(), carry);
+                self.field.dose_carry.insert(p.id.clone(), carry);
                 continue;
             }
             if self.update_player_dose(host, &p.id, |dose| crate::radiation::add_dose(dose, whole as u64)).is_some() {
-                self.ready.chunk_dose_carry.insert(p.id.clone(), carry - whole);
+                self.field.dose_carry.insert(p.id.clone(), carry - whole);
             }
         }
-        self.ready.chunk_env_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
-        self.ready.chunk_dose_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
+        self.field.env_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
+        self.field.dose_carry.retain(|id, _| self.players.iter().any(|p| &p.id == id));
     }
 
     /// `ChunkRadiationManager.updateSystem`, at the end of a server tick: `updateSystem` every 20 ticks, with its
     /// fog; `handleWorldDestruction` every tick (`worldRadEffects`).
     pub(super) fn chunk_radiation_tick(&mut self, host: &mut impl ServerHost) {
-        self.ready.chunk_field_timer += 1;
-        if self.ready.chunk_field_timer >= 20 {
-            let dims: Vec<String> = self.ready.chunk_field.keys().cloned().collect();
+        self.field.timer += 1;
+        if self.field.timer >= 20 {
+            let dims: Vec<String> = self.field.maps.keys().cloned().collect();
             for dim in dims {
                 let mut wrote = Vec::new();
-                if let Some(map) = self.ready.chunk_field.get_mut(&dim) {
+                if let Some(map) = self.field.maps.get_mut(&dim) {
                     chunk_radiation::update_system_with(map, |coord, rad| wrote.push((coord, rad)));
                 }
                 self.chunk_fog(host, &dim, &wrote);
             }
-            self.ready.chunk_field_timer = 0;
+            self.field.timer = 0;
         }
         self.world_destruction(host);
     }
@@ -153,7 +169,7 @@ impl Server {
             if !(rad > chunk_radiation::FOG_RAD && rand.next_int(chunk_radiation::FOG_CHANCE) == 0) {
                 continue;
             }
-            if !self.ready.chunk_field_loaded.get(dim).is_some_and(|l| l.contains(&coord)) {
+            if !self.field.loaded.get(dim).is_some_and(|l| l.contains(&coord)) {
                 continue;
             }
             let x = coord[0] * 16 + rand.next_int(16);
@@ -183,9 +199,9 @@ impl Server {
     /// in three at its height or the block below, grass to dead earth, tall grass to air, leaves to dead leaves (6 in
     /// 7) or air. The heights are read at each pass: a pass sees what the one before it changed.
     pub(super) fn world_destruction(&mut self, host: &mut impl ServerHost) {
-        let dims: Vec<String> = self.ready.chunk_field.keys().cloned().collect();
+        let dims: Vec<String> = self.field.maps.keys().cloned().collect();
         for dim in dims {
-            let entries: Vec<([i32; 2], f32)> = self.ready.chunk_field[&dim].iter().collect();
+            let entries: Vec<([i32; 2], f32)> = self.field.maps[&dim].iter().collect();
             if entries.is_empty() {
                 continue;
             }
@@ -196,7 +212,7 @@ impl Server {
                     if value < 10.0 {
                         continue;
                     }
-                    if !self.ready.chunk_field_loaded.get(&dim).is_some_and(|l| l.contains(&coords)) {
+                    if !self.field.loaded.get(&dim).is_some_and(|l| l.contains(&coords)) {
                         continue;
                     }
                     let heights = host.surface_heights(&dim, &chunk_radiation::chunk_columns(coords));
@@ -215,24 +231,24 @@ impl Server {
 
     /// The raw value the world's map holds at a chunk (None: not in the map), for the in-game proofs.
     pub fn native_chunk_radiation_raw(&self, dim: &str, chunk: [i32; 2]) -> Option<f32> {
-        self.ready.chunk_field.get(dim).and_then(|m| m.get(chunk))
+        self.field.maps.get(dim).and_then(|m| m.get(chunk))
     }
 
     /// The in-game proofs' probe: each chunk within `r` of `center`, its raw value (None: not in the map), the one the
     /// next update would give it (an update of a copy of the map) and whether it is loaded (a save writes it), with the
     /// ticks since the last update.
     pub fn native_chunk_radiation_probe(&self, dim: &str, center: [i32; 2], r: i32) -> (u32, Vec<Probed>) {
-        let map = self.ready.chunk_field.get(dim).cloned().unwrap_or_default();
+        let map = self.field.maps.get(dim).cloned().unwrap_or_default();
         let mut next = map.clone();
         chunk_radiation::update_system(&mut next);
         let mut out = Vec::new();
         for x in center[0] - r..=center[0] + r {
             for z in center[1] - r..=center[1] + r {
-                let loaded = self.ready.chunk_field_loaded.get(dim).is_some_and(|l| l.contains(&[x, z]));
+                let loaded = self.field.loaded.get(dim).is_some_and(|l| l.contains(&[x, z]));
                 out.push(([x, z], map.get([x, z]), next.get([x, z]).unwrap_or(0.0), loaded));
             }
         }
-        (self.ready.chunk_field_timer, out)
+        (self.field.timer, out)
     }
 
     /// `CommandRadiation` (`/ntmrad`): `set <amount>` puts the sender's chunk at the amount (0 to 100 000, through
@@ -247,7 +263,7 @@ impl Server {
         const USAGE: &str = "/ntmrad <set/clear>";
         Some(match args.as_slice() {
             ["clear"] => {
-                if let Some(map) = self.ready.chunk_field.get_mut(dim) {
+                if let Some(map) = self.field.maps.get_mut(dim) {
                     map.clear();
                 }
                 Ok("Cleared radiation data!".into())
@@ -274,13 +290,29 @@ impl Server {
     /// The world's map, for the tests.
     #[cfg(test)]
     pub(crate) fn native_chunk_field_for_test(&mut self, dim: &str) -> &mut crate::chunk_radiation::ChunkMap {
-        self.ready.chunk_field.entry(dim.to_string()).or_default()
+        self.field.maps.entry(dim.to_string()).or_default()
+    }
+
+    /// `incrementRad` at a block: the field's value of its chunk plus `rad`, through `setRadiation` (only in a loaded
+    /// chunk, clamped). The world's sources call it (4d).
+    pub fn native_increment_radiation(&mut self, dim: &str, pos: [i32; 3], rad: f32) {
+        let chunk = [pos[0] >> 4, pos[2] >> 4];
+        if self.field.loaded.get(dim).is_some_and(|l| l.contains(&chunk)) {
+            chunk_radiation::increment(self.field.maps.entry(dim.to_string()).or_default(), chunk, rad);
+        }
+    }
+
+    /// The RBMK's writes of the steps accepted this tick, in order.
+    pub(super) fn apply_chunk_rad_pending(&mut self) {
+        for (dim, pos, rad) in std::mem::take(&mut self.ready.chunk_rad_pending) {
+            self.native_increment_radiation(&dim, pos, rad);
+        }
     }
 
     /// `setRadiation`: clamped to 0..100 000, only in a loaded chunk (`world.blockExists`).
     pub(super) fn set_chunk_radiation(&mut self, dim: &str, chunk: [i32; 2], rad: f32) {
-        if self.ready.chunk_field_loaded.get(dim).is_some_and(|l| l.contains(&chunk)) {
-            chunk_radiation::set(self.ready.chunk_field.entry(dim.to_string()).or_default(), chunk, rad);
+        if self.field.loaded.get(dim).is_some_and(|l| l.contains(&chunk)) {
+            chunk_radiation::set(self.field.maps.entry(dim.to_string()).or_default(), chunk, rad);
         }
     }
 }

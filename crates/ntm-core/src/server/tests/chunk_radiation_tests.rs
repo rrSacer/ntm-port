@@ -158,7 +158,7 @@ fn the_field_doses_a_player_rad_over_20_a_tick_after_the_grace() {
     assert_eq!(tick_dose(&mut g), 0, "the first 200 ticks: ContaminationUtil:287");
     g.run(205);
     set(&mut g, C, "100").unwrap();
-    while g.server.ready.chunk_field_timer >= 18 {
+    while g.server.field.timer >= 18 {
         g.run(1);
         set(&mut g, C, "100").unwrap();
     }
@@ -212,7 +212,7 @@ fn the_player_reads_the_chunk_of_their_floored_block() {
     g.server.native_chunk_radiation_loaded(OW, C);
     g.run(220);
     g.server.native_radiation_command(OW, [-0.5, 70.0, -0.5], "ntmrad clear").unwrap().unwrap();
-    while g.server.ready.chunk_field_timer >= 18 {
+    while g.server.field.timer >= 18 {
         g.run(1);
     }
     g.server.native_radiation_command(OW, [-0.5, 70.0, -0.5], "ntmrad set 100").unwrap().unwrap();
@@ -435,7 +435,7 @@ fn chunk_radiation_cost() {
             saves.push(t.elapsed().as_secs_f64() * 1e3);
         }
         if [100, 1_000, 10_000, 50_000].contains(&update) {
-            let entries = g.server.ready.chunk_field[OW].len();
+            let entries = g.server.field.maps[OW].len();
             report(&format!("updates ..{update}"), &mut ticks, &mut saves, entries);
         }
     }
