@@ -1152,3 +1152,34 @@ Dois comportamentos do Java que entram como são:
   pequenas, granada, catapulta, núcleo do DFC, máquina personalizada, reator de pesquisa): lacuna, como na
   tabela acima.
 - O radônio denso do `BlockNuclearWaste`: o bloco não existe no port.
+
+### 4e: as zonas de bomba e o que uma cratera irradia no Java
+
+#### O inventário (antes do código)
+
+O plano da fatia 4 dizia "as zonas de bomba trocadas pelo campo". O Java não confirma esse plano: uma cratera
+**não escreve nada no campo por chunk**.
+
+| O que acontece depois de uma bomba | Java | Escreve no campo? | No port |
+|---|---|---|---|
+| Pulso de radiação nos primeiros 10 ticks | `EntityNukeExplosionMK5.java:66-67,102` (`radiate`: 2 500 000 / (5t + 1), alcance 2 × comprimento, só com `strength ≥ 75`) | não: contamina as entidades direto | feito (`bomb_server::radiation_pulse`) |
+| A chuva de fallout em 2,5 R | `EntityNukeExplosionMK5.java:89-95` → `EntityFalloutRain.java:57-220` | não | feita (`explosion/fallout.rs`), com diferenças na tabela (abaixo) |
+| Pedra, terra, areia, grama, ferro → `sellafield_slaked`, meta 9..0 em faixas de 5% até 50% | `FalloutConfigJSON.java:87-108` | não: `BlockSellafieldSlaked` não tem tick nem radiação, a meta só escurece a cor (`BlockSellafieldSlaked.colorMultiplier`) | uma faixa só, sem nível |
+| Minérios → minérios de sellafield (`BlockSellafieldOre`, que herda o `slaked`) | `FalloutConfigJSON.java:89-99` | não | não converte |
+| Areia → `waste_trinitite` (5%) | `FalloutConfigJSON.java:113-120`; `BlockTrinitite` é um `BlockOre` sem `rad` | não | feito |
+| Micélio → `waste_mycelium` | `FalloutConfigJSON.java:110-112`; a poção ao pisar está em `WasteEarth.java:81-96` | não | a conversão não existe na chuva (só no ZIRNOX); a poção ao pisar existe (`walking.rs`) |
+| Camada `fallout` no topo | `EntityFalloutRain.java:172-180` | não: só a poção ao pisar (fatia 5d) | feito (5d) |
+| Madeira, folhas, argila, fogo | `FalloutConfigJSON.java:56-77,121-123`; `EntityFalloutRain.java:182-185` | não | feito |
+| Fogo de balefire | `Balefire.java:156-159`: poção de radiação nível 9 por 5 s ao tocar | não | a verificar |
+
+O único `BlockOre` com `rad` no Java é o `ore_schrabidium` (`ModBlocks.java:1248`). Nenhum bloco que a chuva cria
+é fonte do campo (fatia 4d).
+
+**As zonas do port** (`blast::Zone`) são uma criação do port, sem par no Java. Cada zona é um círculo de 2,5 R com
+pico de 10 RAD/s × R / 100 no centro, caindo com o quadrado da distância e com meia-vida de 12 000 ticks. Elas
+somam na dose de quem está dentro (`area_dose`) e na linha "chunk" do Geiger (decisão D2 da 4b, até a 4e). O
+balefire também cria uma zona. Usos: `blast/mod.rs`, `blast/config.rs` (`zona`, `meiavida`), `bomb_server.rs`,
+`radiation_server.rs`, `instruments.rs`, `persist.rs` (as zonas vão para o save), `transaction.rs`, a cola nativa
+(`glue.rs`, `item_hooks.rs`) e os testes.
+
+Decisão pedida ao coordenador antes do código.
