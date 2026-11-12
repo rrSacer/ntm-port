@@ -8,10 +8,6 @@ fn ntm_analog_output(
     output: &mut i32,
 ) {
     let _ = face;
-    let dim = match dimension {
-        horizon_world::level::Dimension::Overworld => "minecraft:overworld",
-        horizon_world::level::Dimension::Nether => "minecraft:the_nether",
-        horizon_world::level::Dimension::End => "minecraft:the_end",
-    };
+    let dim = crate::game::ntm_glue::level_dim_id(dimension);
     crate::game::ntm_glue::analog_output(level, dim, pos, state, output);
 }

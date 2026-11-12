@@ -166,6 +166,9 @@ fn comparator_of(block: &str, json: Option<&JavaString>) -> u8 {
 /// A block changed on the server: kept when a machine or cable is in it.
 pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3], old: horizon_world::registry::BlockStateId, new: horizon_world::registry::BlockStateId) {
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
+    if old != new {
+        field_block_added(dim, pos, &new);
+    }
     // A Geiger counter block taken away: a new one starts from 0 (a new TileEntityGeiger).
     if old == GEIGER && new != GEIGER {
         lock(&GEIGERS).remove(&(dim.to_string(), pos));
@@ -456,6 +459,99 @@ fn geiger_tick(game: &mut crate::game::Game<'_>, pos: [i32; 3]) {
 /// A chunk's Geiger counter blocks leave with it: made again from 0 when it loads.
 fn geigers_unloaded(dim: &str, chunk: [i32; 2]) {
     lock(&GEIGERS).retain(|(d, p), _| !(d == dim && p[0] >> 4 == chunk[0] && p[2] >> 4 == chunk[1]));
+}
+
+// ------------------------------------------------------------- the field's source blocks
+// Slice 4d (ntm_core::field_sources): blocks that give the world's radiation by chunk on their ticks. The first tick of a
+// block is scheduled from its `onBlockAdded` (the block change), each tick schedules the next, as the Java's do.
+
+/// The `BlockHazard` types whose `rad` a block of theirs added has set: a field of the Java's one `Block` of the type,
+/// kept for the whole run of the game (not cleared with the world, as the JVM keeps it).
+static ARMED: Mutex<std::collections::BTreeSet<String>> = Mutex::new(std::collections::BTreeSet::new());
+
+/// First ticks to schedule, (dimension, position, block): the block change has no tick queue at hand; the server tick
+/// schedules them, in the same game tick.
+static FIELD_SCHEDULE: Mutex<Vec<(String, [i32; 3], String)>> = Mutex::new(Vec::new());
+
+pub(super) fn level_dim_id(d: horizon_world::level::Dimension) -> &'static str {
+    match d {
+        horizon_world::level::Dimension::Overworld => "minecraft:overworld",
+        horizon_world::level::Dimension::Nether => "minecraft:the_nether",
+        horizon_world::level::Dimension::End => "minecraft:the_end",
+    }
+}
+
+/// A source block added (`onBlockAdded`): a hazard type armed; its first tick in `tickRate`.
+fn field_block_added(dim: &str, pos: [i32; 3], new: &str) {
+    use ntm_core::field_sources::{block_source, Kind};
+    let Some(source) = block_source(new) else { return };
+    let id = ntm_core::blockstate::id_of(new).to_string();
+    if source.kind == Kind::Hazard {
+        lock(&ARMED).insert(id.clone());
+    }
+    lock(&FIELD_SCHEDULE).push((dim.to_string(), pos, id));
+}
+
+/// The first ticks queued since: scheduled in the level in place (another level's are its own game's).
+fn schedule_field_ticks(game: &mut crate::game::Game<'_>) {
+    let queued = std::mem::take(&mut *lock(&FIELD_SCHEDULE));
+    if queued.is_empty() {
+        return;
+    }
+    let dim = game.dim.id().to_string();
+    game.with_level(|_, level, ticks| {
+        for (_, pos, block) in queued.iter().filter(|q| q.0 == dim) {
+            level.native_schedule_block_tick(ticks, *pos, block, ntm_core::field_sources::TICK_RATE);
+        }
+    });
+}
+
+/// `incrementRad` at a block, into the server's field (its chunk loaded).
+fn field_increment(dim: &str, pos: [i32; 3], rad: f32) {
+    match SERVER.try_lock() {
+        Ok(mut guard) => {
+            if let Some((server, _)) = guard.as_mut() {
+                arrived(server);
+                server.native_increment_radiation(dim, pos, rad);
+            }
+        }
+        Err(_) => eprintln!("ntm: the field's source at {pos:?} found the server busy: {rad} RAD/s not given"),
+    }
+}
+
+/// A source block's tick (`updateTick`): its `rad` given and its next tick scheduled; a hazard type not armed does
+/// neither (`rad` 0: the chain ends). `random` is a random tick (`BlockOre`'s), the others are scheduled ones.
+fn field_tick(level: &mut crate::game::GameLevel<'_>, ticks: &mut horizon_world::level::Ticks, dim: &str, pos: [i32; 3], name: &str, random: bool) {
+    use ntm_core::field_sources::{block_source, Kind, TICK_RATE};
+    let Some(source) = block_source(name) else { return };
+    if random && source.kind != Kind::Ore {
+        return;
+    }
+    if source.kind == Kind::Hazard && !lock(&ARMED).contains(name) {
+        return;
+    }
+    field_increment(dim, pos, source.rad);
+    level.native_schedule_block_tick(ticks, pos, name, TICK_RATE);
+}
+
+/// The `tick_block` hook: a scheduled tick of a source block. Its own (the template's: a falling block's fall) runs
+/// after it, as `BlockHazardFalling` calls `super.updateTick`.
+pub(super) fn field_scheduled_tick(level: &mut crate::game::GameLevel<'_>, ticks: &mut horizon_world::level::Ticks, dimension: horizon_world::level::Dimension, pos: horizon_core::position::BlockPos, state: horizon_world::registry::BlockStateId) {
+    if !level.native_authoritative {
+        return;
+    }
+    let name = level.facts.get(state).name.to_string();
+    field_tick(level, ticks, level_dim_id(dimension), [pos.x, pos.y, pos.z], &name, false);
+}
+
+/// The random tick of a source block (`BlockOre`'s) and of sellafield (`BlockSellafield.updateTick:56`, its `rad`
+/// before it decays).
+pub(super) fn field_random_tick(level: &mut crate::game::GameLevel<'_>, ticks: &mut horizon_world::level::Ticks, dim: &str, pos: [i32; 3], name: &str) {
+    if let Some(rad) = ntm_core::field_sources::sellafield_rad(name) {
+        field_increment(dim, pos, rad);
+        return;
+    }
+    field_tick(level, ticks, dim, pos, name, true);
 }
 
 // ----------------------------------------------------------------- the ledger
@@ -979,6 +1075,7 @@ pub(super) fn chunk_unloaded(game: &mut crate::game::Game<'_>, dim: &str, chunk:
 
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
+    schedule_field_ticks(game);
     horizon_client::spans::time("ntm_ledger_tick", || ledger_tick(game));
     let mut retry=Vec::new();
     for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){
