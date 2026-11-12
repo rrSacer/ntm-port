@@ -326,3 +326,23 @@ uma cápsula carregada e o slot de entrada vazio o Java recusa um ingrediente qu
 o aceita (a política só vê os slots do motor, e a partícula interna não é um deles: guardá-la num slot soltaria uma cápsula ao quebrar a máquina);
 (c) o modelo do bloco continua a caixa genérica e o rotor não gira; (d) os painéis de informação das melhorias não são desenhados; (e) o
 shift-click do menu não foi provado em jogo; (f) só a bateria criativa carrega no slot 5 (igual às outras máquinas).
+
+**Entrega da câmara de exposição e da correção da orbus** (cliente release `69342871…`, `ntm.hmod` `d468ea81…`, em
+`content-gen-evidence/onda2-s2/`; mesmo build do funil: `SKIP_UPSTREAM_CHECK=1` e o empacotador do próprio motor):
+
+- unidade: 17 testes em `exposure.rs` (receitas, carga e usos, ritmo de 200 ticks, uma partícula faz oito, sem energia, saída cheia ou de
+  outro item, a cápsula vazia que não cabe, as melhorias em inteiros, o estado que viaja com os slots, a tela, as regras de mão e de
+  funil, as regras pela `native`, o container, a energia), 1 pela ponte (`the_exposure_chamber_runs_a_capsule_through_the_engine_slots`),
+  1 das portas (cada porta é célula do volume e abre para fora dele), 5 do extrator (`tools/content-gen/test_exposure_data.py`); e o
+  teste das portas da orbus, que agora confere as células esperadas e que as espelhadas não são portas; suíte `ntm-core` 787 passando e
+  0 falhas; clippy `--workspace --all-targets -D warnings` limpo;
+- jogo, `run-native-reactors.py exposure` (23 verificações, 0 falhas): dois ingredientes saem a cada 200 ticks com a cápsula vazia no
+  slot 2 e uma cápsula esperando, a melhoria de velocidade 3 leva o tempo a 50 e o consumo a 20 000, um funil numa perna põe a
+  cápsula escura e os lingotes de plutônio (e nada do que nenhuma receita pede: a terra e o graveto ficam no baú e no funil) e um
+  funil embaixo da outra perna tira a cápsula vazia e o euphemium; depois de salvar e reabrir, os slots, a partícula carregada e os usos
+  são os mesmos e o progresso segue de onde estava (nenhum lingote some nem se faz duas vezes); `orbus` 8/8 com as portas corrigidas;
+  `radiolysis` de novo, 15/15, no mesmo cliente;
+- cortes de save no modo estrito (`HORIZON_NO_EAGER_SAVE=1`): `exposure-state` 7/7 (duas cápsulas e dez lingotes: as cápsulas, no slot
+  ou como a vazia que a carregada deixa, são duas, os lingotes dez, e a partícula carregada está onde está a cápsula vazia),
+  `exposure-break` 7/7 (quebrar a câmara com itens dentro, contra o baú de controle) e `orbus-state` 7/7;
+- mutantes: 38 escolhidos à mão, 38 mortos (dois só depois de um teste do container: `inputs` e `outputs`).
