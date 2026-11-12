@@ -1,5 +1,5 @@
 {
- "binary_sha256": "85f5071ef5430560974556019b12fa4bc8a62b3ac440b931359b2f06aaca9ab3",
+ "binary_sha256": "58a64a8a7973ac0168714dbf9e2a5001b43f75d2354e8e8cd59b60444bc8c364",
  "bundle_sha256": "202b11c9361d0fba75c307b71283022abd66f8e3453500dc09309b5b5d6c4142",
  "families": [
   "chunk_field",
@@ -9,9 +9,9 @@
   "setup:the_field_doses_rad_over_20_a_tick": {
    "ok": true,
    "actual": {
-    "window": 14,
-    "gained": 7000,
-    "timer": 6
+    "window": 20,
+    "gained": 10000,
+    "timer": 0
    }
   },
   "setup:creative_takes_no_dose_from_the_field": {
@@ -23,7 +23,7 @@
   "setup:the_geiger_chunk_line_reads_the_field": {
    "ok": true,
    "actual": {
-    "chat": "Player resistance: 0.0% (0.0) | Player contamination: 0.0 RAD | Total environmental radiation: 10.6 RAD/s | Current chunk radiation: 7.5 RAD/s | ===== ☢ GEIGER COUNTER ☢ ===== | The game time is 436 tick(s) | Replaced 1 slot(s) on ItemsTest with [Handheld Geiger Counter] | ntmtest ok=true timer=17 rad=1,0:1095069860:1089499942:1 | Radiation set. | {dose:0L,schema:1} | {dose:0L,schema:1} | Radiation set.",
+    "chat": "Player resistance: 0.0% (0.0) | Player contamination: 0.0 RAD | Total environmental radiation: 10.6 RAD/s | Current chunk radiation: 7.5 RAD/s | ===== ☢ GEIGER COUNTER ☢ ===== | The game time is 416 tick(s) | Replaced 1 slot(s) on ItemsTest with [Handheld Geiger Counter] | ntmtest ok=true timer=17 rad=1,0:1095069860:1089499942:1 | Radiation set. | {dose:0L,schema:1} | {dose:0L,schema:1} | Radiation set.",
     "raw": 12.34000015258789,
     "next": 7.514056205749512
    }
@@ -104,7 +104,7 @@
   },
   "setup:a_right_click_on_the_geiger_block_reports": {
    "ok": true,
-   "actual": "Player resistance: 0.0% (0.0) | Player contamination: 0.0 RAD | Total environmental radiation: 1.5 RAD/s | Current chunk radiation: 12.3 RAD/s | ===== ☢ GEIGER COUNTER ☢ ===== | Radiation set. | The game is running normally | ntmtest ok=true timer=14 rad=1,0:none:0:1 | 25, 101, 11 has the following block data: 0 | The game time is 1434 tick(s) | The game time is 1433 tick(s) | The game time is 1428 tick(s)"
+   "actual": "Player resistance: 0.0% (0.0) | Player contamination: 0.0 RAD | Total environmental radiation: 1.5 RAD/s | Current chunk radiation: 12.3 RAD/s | ===== ☢ GEIGER COUNTER ☢ ===== | Radiation set. | The game is running normally | ntmtest ok=true timer=14 rad=1,0:none:0:1 | 25, 101, 11 has the following block data: 0 | The game time is 1414 tick(s) | The game time is 1413 tick(s) | The game time is 1408 tick(s)"
   }
  }
 }

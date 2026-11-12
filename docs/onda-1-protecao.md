@@ -951,9 +951,9 @@ Prova da 4b:
   - O conteúdo tem 4 testes que conferem no fonte as caixas por `meta`, o giro do `RenderGeiger`, a força e as
     receitas.
 - **Em jogo** (famílias `chunk_field` e `geiger_block` de `native_items.py`, com `NTM_TEST_HOOKS=1`; binário
-  `85f5071e…`, pacote `202b11c9…`; resumo em `docs/evidence/onda1-f4/items-4b.json`). As 11 verificações passaram:
+  `58a64a8a…`, pacote `202b11c9…`; resumo em `docs/evidence/onda1-f4/items-4b.json`). As 11 verificações passaram:
   - **A dose:** com o mundo congelado e avançado tick a tick numa janela sem atualização do campo, deu exatamente 500
-    miliRAD por tick a 10 RAD/s (7 000 em 14 ticks). O criativo não leva dose.
+    miliRAD por tick a 10 RAD/s (10 000 em 20 ticks). O criativo não leva dose.
   - **A linha "chunk" do Geiger:** é o campo truncado ao décimo, ou o da atualização que cai antes do clique.
   - **A descarga** (pedida pelo coordenador na revisão da 4a), longe dos chunks do spawn, que nunca descarregam:
     - o campo vai a 100 000 em x 3000, e o jogador se afasta 6000 blocos;
