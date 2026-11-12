@@ -231,6 +231,7 @@ impl Server {
     /// batches whose records it takes with their markers are noted: a waited save writes those before the storage.
     pub fn native_world_saving(&mut self, host: &mut impl ServerHost) {
         self.native_settle(host);
+        self.save_loaded_chunk_radiation();
         self.taken = Some(self.taking());
         let legacy = self.ready.world.legacy.ids();
         self.captured = Some(self.marked.intersection(&legacy).cloned().collect());

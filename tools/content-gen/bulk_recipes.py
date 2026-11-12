@@ -86,6 +86,9 @@ class Resolver:
         vanilla_ores={'ingotIron':'iron_ingot','ingotGold':'gold_ingot','ingotCopper':'copper_ingot','ingotBrick':'brick','ingotBrickNether':'nether_brick','ingotNetherBrick':'nether_brick','nuggetIron':'iron_nugget','nuggetGold':'gold_nugget','dustRedstone':'redstone','dustGlowstone':'glowstone_dust','dustGunpowder':'gunpowder','gemDiamond':'diamond','gemEmerald':'emerald','gemQuartz':'quartz','gemLapis':'lapis_lazuli','blockIron':'iron_block','blockGold':'gold_block','blockDiamond':'diamond_block','blockEmerald':'emerald_block','blockGlass':'glass','blockGlassColorless':'glass','paneGlass':'glass_pane','paneGlassColorless':'glass_pane','sand':'sand','stone':'stone','cobblestone':'cobblestone','stickWood':'stick','slimeball':'slime_ball'}
         vanilla_ores['blockRedstone']='redstone_block'
         for ore,item in vanilla_ores.items():self.ore[ore].add('minecraft:'+item)
+        # Forge 1.7.10 OreDictionary.initVanillaEntries: paneGlass is the plain pane and the stained one with the
+        # wildcard (all 16 colours); paneGlassColorless stays the plain pane.
+        self.ore['paneGlass'].update('minecraft:'+color+'_stained_glass_pane' for color in COLORS)
         for color in COLORS:self.ore['dye'+''.join(x.title() for x in color.split('_'))].add('minecraft:'+color+'_dye')
         # Forge's generic dye key includes all vanilla dye metadata and NTM's
         # explicit registrations (including wildcard enum families).
@@ -104,6 +107,9 @@ class Resolver:
         if meta is not None:
             for r in candidates:
                 if r.get('metadata')==meta:return r['id']
+            # A block with no declared subtype is metadata 0 in 1.7.10 (ItemStack default).
+            plain=[r for r in candidates if 'metadata' not in r]
+            if meta==0 and len(plain)==1:return plain[0]['id']
             raise Unsupported(f'missing subtype {var}:{meta}')
         plain=[r for r in candidates if 'metadata' not in r]
         if len(plain)==1:return plain[0]['id']
@@ -265,7 +271,9 @@ def generate(src,out,rows,emit):
             # These newly imported tools need DictGroup ANY_PLASTIC. Reuse
             # the machine resolver's existing exact group expansion while
             # keeping the previous vanilla catalog's conservative profile.
-            if file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.hand_drill(?:_desh)?\)',args.strip()):
+            # The onda 1 protection items need DictGroup ANY_RUBBER/ANY_PLASTIC the same way.
+            onda1=re.match(r'new ItemStack\(ModItems\.(cladding_rubber|liquidator_(?:helmet|plate|legs|boots)|gas_mask_mono|ashglasses|jackt2?)(?:, 1)?\)',args.strip())
+            if (file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.hand_drill(?:_desh)?\)',args.strip())) or (file.name in ('ConsumableRecipes.java','ArmorRecipes.java','CraftingManager.java') and onda1):
                 if pile_resolver is None:
                     from machine_recipes import MachineResolver
                     pile_resolver=MachineResolver(src,rows)

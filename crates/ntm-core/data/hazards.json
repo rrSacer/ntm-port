@@ -17731,12 +17731,14 @@
     },
     {
       "id": "ntm:sellafield",
-      "radiation_rad_s": 0,
-      "radiation_millirad_s": 0,
+      "radiation_rad_s": 0.5,
+      "radiation_millirad_s": 500,
       "other_hazards": {},
-      "sources": [],
-      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
-      "resolution": "no matched source registration"
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:222"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
     },
     {
       "id": "ntm:sellafield_bedrock",
@@ -25995,6 +25997,571 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:deco_pipe",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_rusted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_green",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_green_rusted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_red",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_marked",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_rim",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_rim_rusted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_rim_green",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_rim_green_rusted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_rim_red",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_rim_marked",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_framed",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_framed_rusted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_framed_green",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_framed_green_rusted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_framed_red",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_framed_marked",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_quad",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_quad_rusted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_quad_green",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_quad_green_rusted",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_quad_red",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:deco_pipe_quad_marked",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:ladder_sturdy",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:ladder_gold",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:ladder_copper",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:ladder_titanium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:ladder_steel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:barbed_wire",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:barbed_wire_fire",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:barbed_wire_poison",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:barbed_wire_acid",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:barbed_wire_wither",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:barbed_wire_ultradeath",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:red_barrel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:pink_barrel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:yellow_barrel",
+      "radiation_rad_s": 150.0,
+      "radiation_millirad_s": 150000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:210"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:vitrified_barrel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:lox_barrel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:taint_barrel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cm_flux",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cm_heat",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:waste_natural_uranium",
+      "radiation_rad_s": 6.46875,
+      "radiation_millirad_s": 6469,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:255"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_uranium",
+      "radiation_rad_s": 5.625,
+      "radiation_millirad_s": 5625,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:256"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_thorium",
+      "radiation_rad_s": 4.21875,
+      "radiation_millirad_s": 4219,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:257"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_mox",
+      "radiation_rad_s": 5.625,
+      "radiation_millirad_s": 5625,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:258"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_plutonium",
+      "radiation_rad_s": 7.03125,
+      "radiation_millirad_s": 7031,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:259"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_u233",
+      "radiation_rad_s": 5.625,
+      "radiation_millirad_s": 5625,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:260"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_u235",
+      "radiation_rad_s": 6.1875,
+      "radiation_millirad_s": 6188,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:261"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_schrabidium",
+      "radiation_rad_s": 8.4375,
+      "radiation_millirad_s": 8438,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:262"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_zfb_mox",
+      "radiation_rad_s": 2.8125,
+      "radiation_millirad_s": 2812,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:263"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_plate_u233",
+      "radiation_rad_s": 14.625,
+      "radiation_millirad_s": 14625,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:273"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_plate_u235",
+      "radiation_rad_s": 11.25,
+      "radiation_millirad_s": 11250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:274"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_plate_mox",
+      "radiation_rad_s": 18.0,
+      "radiation_millirad_s": 18000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:275"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_plate_pu239",
+      "radiation_rad_s": 15.1875,
+      "radiation_millirad_s": 15188,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:276"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_plate_sa326",
+      "radiation_rad_s": 11.25,
+      "radiation_millirad_s": 11250,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:277"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_plate_ra226be",
+      "radiation_rad_s": 67.5,
+      "radiation_millirad_s": 67500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:278"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:waste_plate_pu238be",
+      "radiation_rad_s": 3.0,
+      "radiation_millirad_s": 3000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:279"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
       "id": "ntm:machine_liquefactor",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
@@ -31264,6 +31831,304 @@
     },
     {
       "id": "ntm:ingot_chainsteel",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cladding_paint",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cladding_rubber",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cladding_lead",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cladding_desh",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:cladding_ghiorsium",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gas_mask",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gas_mask_mono",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:gas_mask_olde",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:goggles",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:ashglasses",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:mask_rag",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:mask_piss",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:hazmat_paa_helmet",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:hazmat_paa_plate",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:hazmat_paa_legs",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:hazmat_paa_boots",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:liquidator_helmet",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:liquidator_plate",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:liquidator_legs",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:liquidator_boots",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:asbestos_helmet",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:asbestos_plate",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:asbestos_legs",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:asbestos_boots",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:jackt",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:jackt2",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
+      "id": "ntm:sellafield__1",
+      "radiation_rad_s": 1.0,
+      "radiation_millirad_s": 1000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:223"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:sellafield__2",
+      "radiation_rad_s": 2.5,
+      "radiation_millirad_s": 2500,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:224"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:sellafield__3",
+      "radiation_rad_s": 4.0,
+      "radiation_millirad_s": 4000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:225"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:sellafield__4",
+      "radiation_rad_s": 5.0,
+      "radiation_millirad_s": 5000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:226"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:sellafield__5",
+      "radiation_rad_s": 10.0,
+      "radiation_millirad_s": 10000,
+      "other_hazards": {},
+      "sources": [
+        "src/main/java/com/hbm/hazard/HazardRegistry.java:227"
+      ],
+      "note": "Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.",
+      "resolution": "resolved source registration"
+    },
+    {
+      "id": "ntm:geiger",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,
       "other_hazards": {},

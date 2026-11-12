@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/microwave.obj",
+  "texture": "ntm:textures/models/machines/microwave.png",
+  "rotation": 0,
+  "radius": 1.9,
+  "hide": []
+}

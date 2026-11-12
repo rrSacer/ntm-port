@@ -140,14 +140,40 @@ pub trait ServerHost: Kv {
     fn player_dose(&mut self, _id:&str, legacy:&crate::radiation::Dose)->Option<crate::radiation::Dose>{Some(legacy.clone())}
     fn commit_player_dose(&mut self,_id:&str,_expected:&crate::radiation::Dose,_desired:&crate::radiation::Dose)->bool{true}
     fn radiation_factor(&mut self,_id:&str)->f64{1.0}
+    /// The radiation potion (`HbmPotion.radiation`) in player `id`'s own storage: (ticks left, amplifier), (0, 0)
+    /// for none. `legacy` seeds a storage that has no dose yet. None: the host has no player storage, and the
+    /// world's map (`zirnox.irradiated`) is the state.
+    fn player_irradiation(&mut self,_id:&str,_legacy:&crate::radiation::Dose)->Option<crate::zirnox::StoredPotion>{None}
+    /// Writes it if the storage still holds `expected`.
+    fn commit_player_irradiation(&mut self,_id:&str,_legacy:&crate::radiation::Dose,_expected:crate::zirnox::StoredPotion,_desired:crate::zirnox::StoredPotion)->bool{false}
+    /// Player `id`'s status effect `effect`: Some(None) when they don't have it, Some((ticks left, amplifier)) when
+    /// they do (None: the host can't tell).
+    fn effect_state(&mut self,_id:&str,_effect:&str)->Option<Option<(u32,u8)>>{None}
+    /// Takes status effect `effect` from player `id` (`removePotionEffect`).
+    fn remove_effect(&mut self,_id:&str,_effect:&str){}
+    /// Whether player `id` takes no step this tick (`Entity.moveEntity`): sneaking on the ground, or riding.
+    fn step_blocked(&mut self,_id:&str)->bool{false}
+    /// Whether player `id`'s position was set this tick, not moved (`setPositionAndUpdate`: a command, a pearl, a
+    /// portal): no step. Asked once a tick for each player.
+    fn teleported(&mut self,_id:&str)->bool{false}
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
-    /// A status effect on player `id` (`poison`).
-    fn effect(&mut self, _id: &str, _effect: &str, _seconds: u32, _amplifier: u8) {}
+    /// A status effect on player `id` (`poison`) for `ticks`.
+    fn effect(&mut self, _id: &str, _effect: &str, _ticks: u32, _amplifier: u8) {}
+    /// The world's seed (`World.getSeed`): it seeds the sickness rolls' random (radiation::SicknessRng).
+    fn world_seed(&mut self) -> i64 {
+        0
+    }
     /// Particles or a sound in `dim` (`crate::blast::visuals::Show`, not
     /// its effects).
     fn show(&mut self, _dim: &str, _show: &crate::blast::visuals::Show) {}
+    /// Each column's height in `dim` by the motion-blocking heightmap (the y above its highest block that blocks
+    /// motion or holds a fluid; the nearest to 1.7.10's `getHeightValue`, whose light opacity differs on glass,
+    /// fences and panes), None where it is not loaded.
+    fn surface_heights(&mut self, _dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
+        vec![None; columns.len()]
+    }
     /// A named number player `id`'s client reads (the Geiger's).
     fn set_player_value(&mut self, _id: &str, _key: &str, _value: i64) {}
     /// The stacks of the player acting in this callback (`player` their UUID), as a transfer reads and compares them.
@@ -372,6 +398,14 @@ struct Ready {
     /// The redstone signal batteries and bombs received this tick.
     native_signal: BTreeMap<Key, u8>,
     zirnox_radiation_rate: BTreeMap<String,u32>,
+    /// Players given the radiation potion this tick: its effect reaches them at the end of the tick, so its absence
+    /// now is no cure.
+    irradiated_now: BTreeSet<String>,
+    /// The `ntm:radiation` effect each player had at the last reading ((0, 0): none): only an effect that grew since
+    /// counts as an application (`/effect give`); one the engine holds still (a guest not loaded yet) does not.
+    radiation_effect_read: BTreeMap<String, (u32, u8)>,
+    /// Each player's step counters (`distanceWalkedOnStepModified`, `nextStepDistance`): an entity's, not saved.
+    walks: BTreeMap<String, crate::walking::Walk>,
     /// RBMK columns whose meltdown is due and already logged (once per column and state; T16 runs it).
     rbmk_melting: BTreeSet<Key>,
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
@@ -381,6 +415,19 @@ struct Ready {
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
     kept_rbmk: Option<u64>,
+    /// The stamp of the sickness random as last kept (`persist::SICKNESS_KEY`); None: write it next time.
+    kept_sickness: Option<u64>,
+    /// The stamp of the chunks' saved radiation as last kept (`persist::CHUNK_RADIATION_KEY`); None: write it next time.
+    kept_chunk_radiation: Option<u64>,
+    /// The world's radiation by chunk (`server::chunk_radiation`): each world's map as the Java holds it.
+    chunk_field: BTreeMap<String, crate::chunk_radiation::ChunkMap>,
+    /// The chunks loaded, by world (the hooks of loading and unloading): the ones a save writes.
+    chunk_field_loaded: BTreeMap<String, BTreeSet<[i32; 2]>>,
+    /// `ChunkRadiationManager.eggTimer`: server ticks since the last update, counted from the server's start.
+    chunk_field_timer: u32,
+    /// The fractions of a milliRAD the field's `contaminate` left, by player: into `radEnv` and into the dose.
+    chunk_env_carry: BTreeMap<String, f64>,
+    chunk_dose_carry: BTreeMap<String, f64>,
     /// What was last kept, without the clock: debug builds check every skipped write against it.
     #[cfg(debug_assertions)]
     kept: Vec<u8>,
@@ -694,6 +741,7 @@ mod fluid_server;
 mod foundry_server;
 pub mod native_server;
 mod radiation_server;
+mod chunk_radiation_server;
 
 #[cfg(test)]
 mod tests;

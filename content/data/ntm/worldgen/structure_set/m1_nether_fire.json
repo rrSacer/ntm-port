@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "ntm:m1_nether_fire",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 1,
+    "separation": 0,
+    "salt": 2167238,
+    "spread_type": "linear"
+  }
+}

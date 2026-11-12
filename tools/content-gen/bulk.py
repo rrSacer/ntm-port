@@ -115,7 +115,7 @@ def main():
     # Rows already in bulk.json stay byte-identical on regeneration, and names
     # another catalog (m3.json, bombs.json) already declares are never claimed here.
     frozen={r['id']:r for r in json.loads((HERE/'bulk.json').read_text())['entries']} if (HERE/'bulk.json').exists() else {}
-    claimed={r['source_variable'] for f in ('m3.json','bombs.json','item_hooks.json') if (HERE/f).exists() for r in json.loads((HERE/f).read_text())['entries']}
+    claimed={r['source_variable'] for f in ('m3.json','bombs.json') if (HERE/f).exists() for r in json.loads((HERE/f).read_text())['entries']}
     source={'item':(java/'items/ModItems.java').read_text()+'\n'+(java/'items/ModItemsArmor.java').read_text(),'block':(java/'blocks/ModBlocks.java').read_text()}
     item_main_lines=len((java/'items/ModItems.java').read_text().splitlines())
     enum=enums(java); rows=[]; audit=[]; machines=[]
@@ -332,7 +332,10 @@ def main():
     registered={kind:set(re.findall(r'GameRegistry\.register'+kind.title()+r'\(\s*(\w+)\s*,|\bregister\(\s*(\w+)\s*\)',text)) for kind,text in source.items()}
     accounted={kind:{r['source_variable'] for r in rows+existing+audit+machines if r.get('type')==kind} for kind in source}
     unresolved=[{'type':kind,'source_variable':(a or b),'reason':'Registered declaration not classified by scanner (cast/alias/dynamic expression); inspect source'} for kind,variables in registered.items() for a,b in sorted(variables) if (a or b) not in accounted[kind] and (a or b) not in bomb_variables]
-    write_json(HERE/'bulk-coverage.json',{'schema':1,'stage':a.stage,'imported':len(rows),'source_declarations':sum(len(declarations(t)) for t in source.values()),'categories':{cat:sum(r['category']==cat for r in rows) for cat in sorted({r['category'] for r in rows})},'gaps':audit,'unresolved_registrations':unresolved})
+    # A variable another full declaration (m3, bombs) covers is not a gap here; item_hooks only overrides base rows.
+    elsewhere=[r for r in audit if r.get('source_variable') in claimed]
+    audit=[r for r in audit if r.get('source_variable') not in claimed]
+    write_json(HERE/'bulk-coverage.json',{'schema':1,'stage':a.stage,'imported':len(rows),'source_declarations':sum(len(declarations(t)) for t in source.values()),'categories':{cat:sum(r['category']==cat for r in rows) for cat in sorted({r['category'] for r in rows})},'gaps':audit,'claimed_elsewhere':len(elsewhere),'unresolved_registrations':unresolved})
     print(json.dumps({'stage':a.stage,'imported':len(rows),'machine_backlog':len(machines),'gaps':len(audit)},ensure_ascii=False))
 
 if __name__=='__main__': main()

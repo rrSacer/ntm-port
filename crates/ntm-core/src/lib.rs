@@ -19,8 +19,10 @@ pub mod coker;
 pub mod combustion;
 pub mod solar_stirling;
 pub mod crafter;
+pub mod doors_security;
 pub mod electrolyser;
 pub mod energy;
+pub mod energy_network;
 pub mod explosion;
 pub mod excavator;
 pub mod fluid;
@@ -60,6 +62,9 @@ pub mod server;
 pub mod snbt;
 pub mod steam;
 pub mod view;
+pub mod walking;
+pub mod chunk_radiation;
+pub mod geiger_block;
 
 /// The pool allocator of the explosion engine, for the server mod's
 /// `#[global_allocator]` (single-threaded WebAssembly only).
@@ -118,6 +123,8 @@ pub fn warm_tables() {
 pub mod pile;
 
 pub mod zirnox;
+pub mod petroleo_e;
+pub mod watz_pwr;
 
 pub mod rbmk;
 

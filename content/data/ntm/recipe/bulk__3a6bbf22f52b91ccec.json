@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:ashglasses",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I I",
+    "GPG"
+  ],
+  "key": {
+    "I": "#ntm:bulk/ingotanyrubber",
+    "G": "ntm:glass_ash",
+    "P": "#ntm:bulk/ingotanyplastic"
+  }
+}

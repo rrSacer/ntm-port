@@ -96,6 +96,9 @@ def misturador(game):
     game.command(f'setblock {x - 2} {y} {z} ntm:barrel_steel[facing=south]')
     game.command(f'setblock {x - 1} {y} {z} ntm:fluid_duct_neo')
     game.command('give @s ntm:machine_mixer 1')
+    # One block east of where `ground` leaves the player: from there the ray to the floor
+    # under the mixer only grazes the duct's corner edge, which a ray may count as a hit.
+    game.command(f'tp @s {x - 1.5} {y} {z + 3.5}')
     game.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
     game.command('clear @s')
     type_duct(game, 'water', [(x - 1, y, z)], (x - 1, y, z + 3))

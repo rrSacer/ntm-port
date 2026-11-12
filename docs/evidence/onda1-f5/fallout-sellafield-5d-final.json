@@ -1,0 +1,60 @@
+{
+ "round": "5d final review fixes",
+ "binary_sha256": "93144e73f6d7ae1d3c4089b2754b6145916fe9365fa7002f92db218c47717ddc",
+ "bundle_sha256": "dca249694fb01df23c3fcd05f995eb844d4a2af4ea3954c22962579bd47f265e",
+ "fallout_family": [
+  14,
+  14
+ ],
+ "cut_irradiation": {
+  "ok": true,
+  "points": [
+   {
+    "point": "none",
+    "ok": true,
+    "early_exits_mod": 0,
+    "early_exits_control": 0
+   },
+   {
+    "point": "kill",
+    "ok": true,
+    "early_exits_mod": 0,
+    "early_exits_control": 0
+   },
+   {
+    "point": "save_begin",
+    "ok": true,
+    "early_exits_mod": 0,
+    "early_exits_control": 0
+   },
+   {
+    "point": "level_saved",
+    "ok": true,
+    "early_exits_mod": 0,
+    "early_exits_control": 0
+   },
+   {
+    "point": "players_saved",
+    "ok": true,
+    "early_exits_mod": 0,
+    "early_exits_control": 0
+   },
+   {
+    "point": "world_saved",
+    "ok": true,
+    "early_exits_mod": 0,
+    "early_exits_control": 0
+   },
+   {
+    "point": "kv_committed",
+    "ok": true,
+    "early_exits_mod": 0,
+    "early_exits_control": 0
+   }
+  ]
+ },
+ "tests": {
+  "cargo_lib": "580 passed, 3 ignored",
+  "clippy": "clean (ntm-core and stage)"
+ }
+}

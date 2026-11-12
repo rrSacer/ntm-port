@@ -32,19 +32,52 @@ pub struct Remnants {
     /// Expiring radiation potion from fuel/graphite debris, by player UUID.
     pub irradiated: BTreeMap<String, (u32, u8)>,
 }
+/// The radiation potion on a player (`HbmPotion.radiation`): (ticks left, amplifier); (0, 0) is none.
+pub type Irradiation = (u32, u8);
+
+/// `PotionEffect.combine` (1.7.10), what `addPotionEffect` does to an effect the entity already has: a higher
+/// amplifier takes over with its duration, the same amplifier keeps the longer duration, a lower one changes
+/// nothing.
+pub fn combine(state: &mut Irradiation, duration: u32, amplifier: u8) {
+    let (n, a) = state;
+    if *n == 0 {
+        *state = (duration, amplifier);
+    } else if amplifier > *a {
+        *a = amplifier;
+        *n = duration;
+    } else if amplifier == *a {
+        *n = (*n).max(duration);
+    }
+}
+/// The radiation potion as the player's storage keeps it: the potion and the world's entry it took in (`migrated`,
+/// (0, 0) for none). A world from before 5c keeps its potions in `Remnants::irradiated`; the storage takes such an
+/// entry once, and the mark goes in the same write, so the entry left in a world's storage by a save cut between the
+/// player's file and the world's storage is not taken in again.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct StoredPotion {
+    pub potion: Irradiation,
+    pub migrated: Irradiation,
+    /// The potion's effect has no curative items (`BlockFallout`: `setCurativeItems(new ArrayList())`): milk does not
+    /// end it. `PotionEffect.combine` keeps the first effect's list, so it is set only by an application to no potion.
+    pub milkproof: bool,
+}
+
+/// `stored` with the world's entry `pending` taken in: by [`combine`] the first time, dropped once its mark is
+/// there. The bool: the entry is done with, and leaves the world's map.
+pub fn absorb(stored: StoredPotion, pending: Option<Irradiation>) -> (StoredPotion, bool) {
+    match pending {
+        None => (stored, false),
+        Some(entry) if entry == stored.migrated => (stored, true),
+        Some((n, a)) => {
+            let mut potion = stored.potion;
+            combine(&mut potion, n, a);
+            (StoredPotion { potion, migrated: (n, a), milkproof: stored.milkproof && stored.potion.0 > 0 }, true)
+        }
+    }
+}
 impl Remnants {
     pub fn irradiate(&mut self, id: &str, duration: u32, amplifier: u8) {
-        self.irradiated
-            .entry(id.into())
-            .and_modify(|(n, a)| {
-                if amplifier > *a {
-                    *a = amplifier;
-                    *n = duration;
-                } else if amplifier == *a {
-                    *n = (*n).max(duration);
-                }
-            })
-            .or_insert((duration, amplifier));
+        combine(self.irradiated.entry(id.into()).or_insert((0, 0)), duration, amplifier);
     }
 }
 
@@ -483,6 +516,34 @@ impl Slotted for Zirnox {
 #[cfg(test)]
 mod tests {
     use super::*;
+    /// `PotionEffect.combine` (1.7.10): a higher amplifier takes over with its duration (even a shorter one), the
+    /// A world's entry is taken in once: the mark it leaves makes the same entry, found again after a save cut,
+    /// a no-op; another entry is taken in by `combine` and becomes the mark.
+    #[test]
+    fn a_worlds_potion_is_taken_in_once() {
+        let fresh = StoredPotion::default();
+        let (once, done) = absorb(fresh, Some((600, 3)));
+        assert_eq!((once, done), (StoredPotion { potion: (600, 3), migrated: (600, 3), milkproof: false }, true));
+        let used = StoredPotion { potion: (156, 3), ..once };
+        assert_eq!(absorb(used, Some((600, 3))), (used, true), "the same entry again: dropped, not summed");
+        assert_eq!(absorb(used, None), (used, false));
+        assert_eq!(absorb(used, Some((900, 3))).0, StoredPotion { potion: (900, 3), migrated: (900, 3), milkproof: false });
+    }
+    /// same amplifier keeps the longer duration, a lower amplifier changes nothing; none takes the new one.
+    #[test]
+    fn the_radiation_potion_combines_as_potion_effect_combine() {
+        for (before, (duration, amplifier), after) in [
+            ((0, 0), (600, 3), (600, 3)),
+            ((600, 3), (100, 7), (100, 7)),
+            ((600, 3), (900, 3), (900, 3)),
+            ((600, 3), (100, 3), (600, 3)),
+            ((600, 7), (1200, 4), (600, 7)),
+        ] {
+            let mut state = before;
+            combine(&mut state, duration, amplifier);
+            assert_eq!(state, after, "{before:?} + {:?}", (duration, amplifier));
+        }
+    }
     fn rod(id: usize, n: i32) -> Stack {
         let mut s = Stack::new(&table().fuels[id].item, 1);
         s.custom = Some(format!("{{life:{n},name:'kept',nested:{{life:99}}}}"));

@@ -2542,25 +2542,6 @@
           2
         ]
       },
-      "liquid": {
-        "liquids": [
-          {
-            "texture": "ntm:textures/models/machines/lava_gray.png",
-            "texture_from": "textures/models/machines/lava_gray.png",
-            "box": [
-              0.125,
-              0.125,
-              0.125,
-              0.875,
-              0.875,
-              0.875
-            ],
-            "value": 0,
-            "max": 1,
-            "color": 2
-          }
-        ]
-      },
       "block_model": {
         "source": "RenderFoundryTank, alone (no tank beside, above or below): floor and walls 0.125",
         "textures": {
@@ -2662,6 +2643,167 @@
               "up": "top"
             }
           ]
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/foundry_tank.obj",
+        "texture": "ntm:textures/models/machines/foundry_tank.png",
+        "rotation": 0,
+        "radius": 1.0,
+        "boxes": {
+          "Floor": [
+            [
+              [
+                0,
+                0,
+                0
+              ],
+              [
+                16,
+                2,
+                16
+              ],
+              {
+                "up": "foundry_tank_bottom",
+                "down": "foundry_tank_bottom"
+              }
+            ]
+          ],
+          "WallNorth": [
+            [
+              [
+                0,
+                0,
+                0
+              ],
+              [
+                16,
+                16,
+                2
+              ],
+              {
+                "up": "foundry_tank_top",
+                "north": "foundry_tank_side",
+                "south": "foundry_tank_inner"
+              }
+            ]
+          ],
+          "WallSouth": [
+            [
+              [
+                0,
+                0,
+                14
+              ],
+              [
+                16,
+                16,
+                16
+              ],
+              {
+                "up": "foundry_tank_top",
+                "south": "foundry_tank_side",
+                "north": "foundry_tank_inner"
+              }
+            ]
+          ],
+          "WallWest": [
+            [
+              [
+                0,
+                0,
+                0
+              ],
+              [
+                2,
+                16,
+                16
+              ],
+              {
+                "up": "foundry_tank_top",
+                "west": "foundry_tank_side",
+                "east": "foundry_tank_inner"
+              }
+            ]
+          ],
+          "WallEast": [
+            [
+              [
+                14,
+                0,
+                0
+              ],
+              [
+                16,
+                16,
+                16
+              ],
+              {
+                "up": "foundry_tank_top",
+                "east": "foundry_tank_side",
+                "west": "foundry_tank_inner"
+              }
+            ]
+          ]
+        },
+        "show": {
+          "WallNorth": {
+            "neighbor": [
+              0,
+              0,
+              -1
+            ],
+            "not_blocks": [
+              "ntm:foundry_tank"
+            ]
+          },
+          "WallSouth": {
+            "neighbor": [
+              0,
+              0,
+              1
+            ],
+            "not_blocks": [
+              "ntm:foundry_tank"
+            ]
+          },
+          "WallWest": {
+            "neighbor": [
+              -1,
+              0,
+              0
+            ],
+            "not_blocks": [
+              "ntm:foundry_tank"
+            ]
+          },
+          "WallEast": {
+            "neighbor": [
+              1,
+              0,
+              0
+            ],
+            "not_blocks": [
+              "ntm:foundry_tank"
+            ]
+          }
+        },
+        "liquids": [
+          {
+            "texture": "ntm:textures/models/machines/lava_gray.png",
+            "texture_from": "textures/models/machines/lava_gray.png",
+            "box": [
+              0.125,
+              0.125,
+              0.125,
+              0.875,
+              0.875,
+              0.875
+            ],
+            "value": 0,
+            "max": 1,
+            "color": 2
+          }
         ]
       }
     },
@@ -31735,32 +31877,25 @@
       "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
     },
     "ntm:rbmk_key_pad": {
-      "auto": false,
-      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:rbmk_gauge": {
-      "auto": false,
-      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:rbmk_numitron": {
-      "auto": false,
-      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:rbmk_graph": {
-      "auto": false,
-      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:rbmk_lever": {
-      "auto": false,
-      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:rbmk_indicator": {
-      "auto": false,
-      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:rbmk_terminal": {
-      "auto": false,
-      "source": "Reactor R2 (RBMK) content fallback only; faithful models/multiblocks and native logic deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:rbmk_autoloader": {
       "source": "RBMKAutoloader {8,0,0,0,0,0} offset 0; RenderRBMKAutoloader (Base, Piston at 4 - 4 * renderPiston blocks); ContainerRBMKAutoloader (3x3 in at 17,18, 3x3 take-only out at 107,18, inventory at 8,100), GUIRBMKAutoloader 176x182 (machine/gui_autoloader.png: title white, cycle % in green, -/+ buttons)",
@@ -37091,8 +37226,7 @@
       "auto": false
     },
     "ntm:machine_microwave": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:machine_teleporter": {
       "auto": false,
@@ -37107,8 +37241,8 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:fan": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "Inert fan: HBM's RenderFan turns about x and z by metadata, which the extractor does not read; no model until it does (gap)",
+      "auto": false
     },
     "ntm:machine_keyforge": {
       "auto": false,
@@ -37131,8 +37265,7 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_thresher": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
     },
     "ntm:machine_annihilator": {
       "auto": false,
@@ -37629,6 +37762,17 @@
     "ntm:decon": {
       "auto": false,
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:geiger": {
+      "source": "GeigerCounter, RenderGeiger: the geiger_counter OBJ turned by the meta (2: 0, 4: 90, 3: 180, 5: 270), which is the way the placer looks; the beehive's facing is the other way, so 180 more",
+      "model": {
+        "obj": "ntm:models/obj/geiger_counter.obj",
+        "obj_from": "models/blocks/geiger_counter.obj",
+        "texture": "ntm:textures/models/geiger.png",
+        "texture_from": "textures/models/ModelGeiger.png",
+        "rotation": 180,
+        "radius": 1.0
+      }
     }
   },
   "textures": {

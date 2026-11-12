@@ -1,0 +1,129 @@
+{
+ "scenario": "herbal",
+ "engine": "130153a4ac (player-attachments-fix)",
+ "binary": "client-after",
+ "rule": "dose == 300000 - 100000 and herbal timer > 0 once the pill left the inventory",
+ "points": [
+  {
+   "point": "none",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 0
+    },
+    "state": {
+     "dose": 200000,
+     "herbal": 11557,
+     "effects": [
+      "mining_fatigue",
+      "nausea",
+      "potion_sickness",
+      "weakness"
+     ]
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "kill",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": []
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "save_begin",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": []
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "level_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": []
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "players_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 0
+    },
+    "state": {
+     "dose": 200000,
+     "herbal": 11765,
+     "effects": [
+      "mining_fatigue",
+      "nausea",
+      "potion_sickness",
+      "weakness"
+     ]
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "world_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 0
+    },
+    "state": {
+     "dose": 200000,
+     "herbal": 11189,
+     "effects": [
+      "mining_fatigue",
+      "nausea",
+      "potion_sickness",
+      "weakness"
+     ]
+    }
+   },
+   "control": null
+  },
+  {
+   "point": "kv_committed",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 0
+    },
+    "state": {
+     "dose": 200000,
+     "herbal": 11708,
+     "effects": [
+      "mining_fatigue",
+      "potion_sickness",
+      "weakness"
+     ]
+    }
+   },
+   "control": null
+  }
+ ]
+}

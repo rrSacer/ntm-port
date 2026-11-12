@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "ntm:rbmk_fuel_heu235",
+    "ntm:sellafield__3",
     "ntm:watz_pellet__nqd"
   ]
 }

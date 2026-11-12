@@ -144,13 +144,25 @@
     "ntm:rod_zirnox_plutonium_fuel_depleted",
     "ntm:rod_zirnox_u233_fuel_depleted",
     "ntm:rod_zirnox_uranium_fuel_depleted",
+    "ntm:sellafield__2",
+    "ntm:sellafield__3",
     "ntm:solid_fuel_presto_triplet_bf",
     "ntm:tsar_core",
+    "ntm:waste_natural_uranium",
+    "ntm:waste_plate_pu238be",
+    "ntm:waste_plate_pu239",
+    "ntm:waste_plate_sa326",
+    "ntm:waste_plate_u233",
+    "ntm:waste_plate_u235",
+    "ntm:waste_plutonium",
+    "ntm:waste_u235",
+    "ntm:waste_zfb_mox",
     "ntm:watz_pellet__hes",
     "ntm:watz_pellet__les",
     "ntm:watz_pellet__mes",
     "ntm:watz_pellet__nqd",
     "ntm:watz_pellet__nqr",
-    "ntm:watz_pellet__schrabidium"
+    "ntm:watz_pellet__schrabidium",
+    "ntm:yellow_barrel"
   ]
 }

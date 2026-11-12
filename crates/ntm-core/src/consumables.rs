@@ -655,7 +655,9 @@ mod tests {
         let Some(Cure::Effects(ids)) = &bag.cure else {
             panic!("cure list")
         };
-        assert_eq!(ids.len(), 8);
+        // ItemSyringe:116-128 and ItemPill:36-46 also remove `HbmPotion.radiation` (slice 5c).
+        assert_eq!(ids.len(), 9);
+        assert!(ids.iter().any(|i| i == "ntm:radiation"));
         assert!(
             [
                 "blindness",

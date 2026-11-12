@@ -148,6 +148,7 @@ def build(source=SOURCE, output=ROOT / 'content'):
     name, texture = registration(items, 'broken_item', 'item')
     rows.append({'id': name, 'source_variable': 'broken_item', 'type': 'item', 'category': 'component',
                  'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png',
+                 'creative_hidden': True,  # ModItems.java:4384 sets no creative tab: a machine makes it, a player never picks it
                  'names': {loc: tr['item.broken_item.name'] for loc, tr in translations.items()},
                  'behavior_gap': 'The product (id) lives in custom_data {ntm_broken:{id}}; the name and the layered icon of the product (BrokenItem.getItemStackDisplayName/getIcon) are not reproduced'})
     import bedrock_catalog
@@ -156,6 +157,8 @@ def build(source=SOURCE, output=ROOT / 'content'):
     rows.extend(bedrock_processing_catalog.build(source))
     import catalog_completion
     rows.extend(catalog_completion.build(source))
+    import catalog_t4
+    rows.extend(catalog_t4.build(source))
     import petroleum_catalog
     rows.extend(petroleum_catalog.build(source))
     import reactor_catalog

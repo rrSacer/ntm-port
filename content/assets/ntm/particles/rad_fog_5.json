@@ -1,0 +1,22 @@
+{
+  "textures": [
+    "ntm:rad_fog"
+  ],
+  "horizon:behaviour": {
+    "velocity": [
+      0,
+      0,
+      0
+    ],
+    "lifetime": 400,
+    "size": [
+      0.14926400181014654,
+      0.14926400181014654
+    ],
+    "alpha": [
+      0.125,
+      0
+    ],
+    "animation": "first"
+  }
+}

@@ -272,11 +272,11 @@
       "sound": "hbm:item.syringe"
     },
     "ntm:med_bag": {
-      "origin": "ItemSyringe.onItemRightClick med_bag, ModItems.java:2827: setHealth(getMaxHealth()), no sound, no container",
+      "origin": "ItemSyringe.onItemRightClick med_bag:116-128, ModItems.java:2827: setHealth(getMaxHealth()), removes the bad effects and HbmPotion.radiation (ntm:radiation), no sound, no container",
       "sickness_gate": true,
       "consume": "always",
       "heal": 1000000,
-      "cure": {"effects": ["blindness", "nausea", "mining_fatigue", "hunger", "slowness", "poison", "weakness", "wither"]}
+      "cure": {"effects": ["blindness", "nausea", "mining_fatigue", "hunger", "slowness", "poison", "weakness", "wither", "ntm:radiation"]}
     },
     "ntm:syringe_taint": {
       "origin": "ItemSyringe.onItemRightClick syringe_taint, ModItems.java:2824: no sickness check; both containers are added, none replaces the slot",
@@ -394,9 +394,9 @@
       "sound": "random.burp"
     },
     "ntm:pill_iodine": {
-      "origin": "ItemPill, ModItems.java:2834: removes the bad effects; HbmPotion.radiation is not an effect in the port",
+      "origin": "ItemPill:36-46, ModItems.java:2834: removes the bad effects and HbmPotion.radiation (ntm:radiation)",
       "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
-      "cure": {"effects": ["blindness", "nausea", "mining_fatigue", "hunger", "slowness", "poison", "weakness", "wither"]},
+      "cure": {"effects": ["blindness", "nausea", "mining_fatigue", "hunger", "slowness", "poison", "weakness", "wither", "ntm:radiation"]},
       "sound": "random.burp"
     },
     "ntm:plan_c": {

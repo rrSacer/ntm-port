@@ -1,0 +1,121 @@
+{
+ "head_before_doc": "7ed6d2ca + 775f3f6e",
+ "binary_sha256": "de5a93cf94b1058b53009d29b46b78d75794f17bb84462f050abd56ea84a16ad",
+ "bundle_sha256": "87f5e937051bd6c628830ed8585a7e8c70ad5a13f1fa2ef9930f7c42dbc46372",
+ "engine": "pin eb5d3eed58, unchanged",
+ "mutant_client": {
+  "sha256": "b9ab6c920ec95702f8d8fa7b95e42ce3a5a7f6e5222153f68a677ceb5dd16504",
+  "what": "transaction.rs before 71b633f9 (same binary as the previous round)",
+  "result": "ruin_dose_reaches_the_player_storage fails: start 0, dose 0"
+ },
+ "zirnox_runs": [
+  [
+   140,
+   140
+  ],
+  [
+   140,
+   140
+  ],
+  [
+   140,
+   140
+  ]
+ ],
+ "pile": [
+  85,
+  85
+ ],
+ "pile_meltdown": [
+  32,
+  32
+ ],
+ "cargo": {
+  "lib": "539 passed, 3 ignored",
+  "integration": "118 passed",
+  "save_model_release": "11/11",
+  "clippy": "clean"
+ },
+ "ruin_checks": {
+  "ruin-dose:ruin_dose_reaches_the_player_storage": [
+   {
+    "ok": true,
+    "actual": {
+     "start": 1400,
+     "dose": 22400
+    }
+   },
+   {
+    "ok": true,
+    "actual": {
+     "start": 1400,
+     "dose": 22400
+    }
+   },
+   {
+    "ok": true,
+    "actual": {
+     "start": 1400,
+     "dose": 22400
+    }
+   }
+  ],
+  "ruin-dose-check:ruin_dose_survives_reopening": [
+   {
+    "ok": true,
+    "actual": {
+     "saved": 23800,
+     "reopened": 23800
+    }
+   },
+   {
+    "ok": true,
+    "actual": {
+     "saved": 23800,
+     "reopened": 23800
+    }
+   },
+   {
+    "ok": true,
+    "actual": {
+     "saved": 23800,
+     "reopened": 23800
+    }
+   }
+  ],
+  "ruin-dose-check:ruin_kills_with_radiation": [
+   {
+    "ok": true,
+    "actual": {
+     "chat": "ZirnoxTest died from radiation poisoning. | Set own game mode to Survival Mode | true | Teleported ZirnoxTest to 115.500000, 101.000000, 0.500000 | Successfully filled 9 block(s) | Successfully filled 20 block(s) | {dose:23800L,schema:1}"
+    }
+   },
+   {
+    "ok": true,
+    "actual": {
+     "chat": "ZirnoxTest died from radiation poisoning. | Set own game mode to Survival Mode | true | Teleported ZirnoxTest to 115.500000, 101.000000, 0.500000 | Successfully filled 9 block(s) | Successfully filled 20 block(s) | {dose:23800L,schema:1}"
+    }
+   },
+   {
+    "ok": true,
+    "actual": {
+     "chat": "ZirnoxTest died from radiation poisoning. | Set own game mode to Survival Mode | true | Teleported ZirnoxTest to 115.500000, 101.000000, 0.500000 | Successfully filled 9 block(s) | Successfully filled 20 block(s) | {dose:23800L,schema:1}"
+    }
+   }
+  ],
+  "ruin-dose-check:ruin_death_leaves_the_storage_at_zero": [
+   {
+    "ok": true,
+    "actual": 0
+   },
+   {
+    "ok": true,
+    "actual": 0
+   },
+   {
+    "ok": true,
+    "actual": 0
+   }
+  ]
+ }
+}

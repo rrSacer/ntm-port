@@ -15,6 +15,9 @@ EFFECTS = [
     ('death', 'death', False, 0x111111, (4, 1)),
     ('potion_sickness', 'potionsickness', False, 0xFF8080, (3, 1)),
     ('taint', 'taint', True, 0x800080, (0, 0)),
+    # Onda 1, fatia 5c (D3): the radiation potion shows as this effect; the dose and the time left live in the
+    # player's storage (ntm-core `zirnox_irradiation`), the effect is their flag.
+    ('radiation', 'radiation', True, 0x84C128, (1, 0)),
 ]
 SHEET = 'src/main/resources/assets/hbm/textures/gui/potions.png'
 

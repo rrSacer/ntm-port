@@ -129,7 +129,14 @@ def pitch_and_arc(g):
     replace(g, (280, 100, 8), 0, 'ntm:chunk_ore__rare', 64)
     first = wait(g, 'centrifuge_channel_created_from_real_processing', lambda v: len(v) == 1 and v[0]['decoded'], lambda: voices(g, 'ntm:block.centrifugeoperate'))
     initial = first[0]
-    wait(g, 'active_pitch_changes_on_same_channel', lambda v: len(v) == 1 and v[0]['channel'] == initial['channel'] and v[0]['pitch'] > initial['pitch'],
+    # The ramp (`sounds::motion`) goes from 0.51 to 1.0 in 25 ticks: a slow first sample may already be at the top. The
+    # change is judged from the pitch the channel started with (the mixer's own record of its start), not that sample.
+    def started_pitch():
+        audit = audio(g).get('audit', [])
+        return next((e['pitch'] for e in audit if e.get('channel') == initial['channel'] and e.get('action') == 'start'),
+                    initial['pitch'])
+    base = min(started_pitch(), initial['pitch'])
+    wait(g, 'active_pitch_changes_on_same_channel', lambda v: len(v) == 1 and v[0]['channel'] == initial['channel'] and v[0]['pitch'] > base,
          lambda: voices(g, 'ntm:block.centrifugeoperate'))
     g.command('setblock 280 100 8 minecraft:air')
     await_destroy(g, {initial['channel']}, 'centrifuge_channel_destroyed', require_stop=True)
@@ -183,6 +190,8 @@ def nuclear_and_close(g):
     age, distance = re.search(r'ntm nuclear arrived age=(\d+) distance=([\d.eE+-]+)', text).groups()
     g.check('nuclear_distance_and_age_gate', 0 < int(age) < 150 and float(distance) < (int(age)*1.5+1)*1.5, [age, distance])
     nuke = wait(g, 'message_creates_decoded_stream_channel', lambda v: len(v) == 1 and v[0]['decoded'] and v[0]['state'] == 'Playing', lambda: voices(g, 'ntm:weapon.nuclearexplosion'))
+    # The playback is logged when the sound starts, a little after the message: read the log again now.
+    text = (g.folder/'client-first.log').read_text(errors='replace')[offset:]
     used = g.ctl('status')['sounds']['used']
     g.check('nuclear_uses_real_streaming_pool', used[1] >= 1, used)
     g.check('message_receipt_precedes_nuclear_playback', text.index('ntm nuclear received') < text.index('ntm nuclear arrived') < text.index('sound resolved event=ntm:weapon.nuclearexplosion'), text[-2500:])

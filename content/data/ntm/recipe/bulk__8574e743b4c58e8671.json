@@ -1,0 +1,17 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:fluid_duct_neo",
+    "count": 8
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SAS",
+    "   ",
+    "SAS"
+  ],
+  "key": {
+    "S": "#ntm:bulk/platesteel",
+    "A": "#ntm:bulk/platealuminum"
+  }
+}

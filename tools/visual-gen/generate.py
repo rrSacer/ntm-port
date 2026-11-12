@@ -481,6 +481,9 @@ def auto_models(args, src, hand):
         m = e.get('model')
         if block in hand or block not in ids or not m or not m.get('files'):
             continue
+        # A turn the extractor could not read (about x or z): the model's pose would be wrong.
+        if any(u.startswith('case 2 turns') for u in e.get('unread', [])):
+            continue
         obj = src / m['obj']
         names, reach = obj_info(obj)
         name = block.split(':', 1)[1]

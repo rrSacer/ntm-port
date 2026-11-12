@@ -16,6 +16,7 @@ use horizon_world::{
 use ntm_core::{
     item_hooks::{self, Animation, Hazard},
     radiation::Dose,
+    zirnox::StoredPotion,
 };
 
 /// `HbmPotion.potionsickness`, the effect the herbal pill applies. Its curative
@@ -41,7 +42,7 @@ fn codec(value: &Compound) -> Result<Compound, AttachmentError> {
     if !value.is_empty() && value.get(&JavaString::from("schema")) != Some(&Tag::Int(1)) {
         return Err(AttachmentError::Decode);
     }
-    for key in ["dose", "radaway", "sickness", "herbal"] {
+    for key in ["dose", "radaway", "sickness", "herbal", "irradiated", "irradiated_level", "irradiated_migrated", "irradiated_migrated_level", "irradiated_milkproof"] {
         if let Some(value) = value.get(&JavaString::from(key)) {
             match value {
                 Tag::Long(n) if *n >= 0 => {}
@@ -210,18 +211,10 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     }
     let say = |game: &mut Game<'_>, line: &str| tell(game, line);
     match id {
-        "ntm:geiger_counter" | "ntm:dosimeter" => {
+        "ntm:geiger_counter" => geiger_report(game),
+        "ntm:dosimeter" => {
             play(game, "hbm:item.techBoop");
-            let buffer = rad_buffer(game);
-            let lines = if id == "ntm:dosimeter" {
-                ins::dosimeter_lines(buffer)
-            } else {
-                let seed = legacy(game).unwrap_or_default();
-                let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
-                let (zone, resistance) = (zone_rate(game), -radiation_factor(game).log10());
-                ins::geiger_lines(&ins::Readings { dose_millirad: dose, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance })
-            };
-            lines.iter().for_each(|l| say(game, l));
+            ins::dosimeter_lines(rad_buffer(game)).iter().for_each(|l| say(game, l));
         }
         "ntm:digamma_diagnostic" => {
             play(game, "hbm:item.techBoop");
@@ -248,6 +241,27 @@ fn tell(game: &mut Game<'_>, line: &str) {
 /// `radBuf` in milliRAD/s: the radiation server's reading of the last second.
 fn rad_buffer(game: &Game<'_>) -> i64 {
     game.native_actor_uuid().map_or(0, |u| crate::game::ntm_glue::rad_buffer(&u))
+}
+
+/// The `techBoop` at the player and `ContaminationUtil.printGeigerData`: the hand counter's right click, and the
+/// Geiger counter block's (`GeigerCounter.onBlockActivated`).
+pub(super) fn geiger_report(game: &mut Game<'_>) {
+    use ntm_core::instruments as ins;
+    play(game, "hbm:item.techBoop");
+    let buffer = rad_buffer(game);
+    let seed = legacy(game).unwrap_or_default();
+    let dose = read_dose(game, &seed).map_or(0, |d| d.millirad);
+    let (chunk_rad, zone, resistance) = (chunk_rad(game), zone_rate(game), player_resistance(game));
+    let lines = ins::geiger_lines(&ins::Readings { dose_millirad: dose, chunk_rad, zone_millirad_s: zone, buffer_millirad_s: buffer, resistance });
+    lines.iter().for_each(|l| tell(game, l));
+}
+
+/// `ChunkRadiationManager.getRadiation` at the player's block (`printGeigerData:161`).
+fn chunk_rad(game: &Game<'_>) -> f32 {
+    match (game.native_actor_uuid(), game.player.as_ref()) {
+        (Some(_), Some(p)) => crate::game::ntm_glue::chunk_rad(game.dim.id(), [p.position.x, p.position.y, p.position.z]),
+        _ => 0.0,
+    }
 }
 
 fn zone_rate(game: &Game<'_>) -> u32 {
@@ -311,7 +325,7 @@ fn pipette(game: &mut Game<'_>, stack: &ItemStack, say: impl Fn(&mut Game<'_>, &
         return;
     }
     let capacity = short(&data, "capacity").unwrap_or(max);
-    let sneaking = game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft);
+    let sneaking = game.keys.raw(&winit::keyboard::KeyCode::ShiftLeft);
     let next = ins::pipette_capacity(&stack.item, capacity, sneaking);
     let slot = game.held_slot();
     let done = patch_stack(game, slot, stack, |d| {
@@ -454,7 +468,7 @@ fn remove_filter(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     // `keys` holds the logical sneak (the mapping of `key.sneak`, however it is
     // bound or toggled); the physical keys are `physical_keys`. A guest's turn
     // maps its sneaking into it, as `Game::use_hand` reads it.
-    if !game.keys.contains(&winit::keyboard::KeyCode::ShiftLeft) {
+    if !game.keys.raw(&winit::keyboard::KeyCode::ShiftLeft) {
         return false;
     }
     let installed = custom(stack)
@@ -620,14 +634,25 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
             desired.armor[index] = Some(ItemStack::new(&id, 1));
         }
     }
-    // `clearActivePotions` takes the radaway potion and the herbal sickness
-    // along; a list of `removePotionEffect` takes the ones it names.
+    // `clearActivePotions` takes the radaway potion, the herbal sickness and the radiation potion along; a list of
+    // `removePotionEffect` takes the ones it names. The radiation potion is ended here, in its storage (slice 5d):
+    // the fallout's has no curative items, so its effect gone is no cure the server would see (milk).
     match &spec.cure {
         Some(item_hooks::Cure::All) => {
-            for key in ["radaway", "herbal"] {
+            for key in ["radaway", "herbal", "irradiated", "irradiated_level", "irradiated_milkproof"] {
                 if number(&desired.state, key) > 0 {
                     set(&mut desired.state, key, 0);
                 }
+            }
+        }
+        Some(item_hooks::Cure::Effects(ids)) if ids.iter().any(|id| id == ntm_core::radiation::RADIATION_EFFECT) => {
+            for key in ["irradiated", "irradiated_level", "irradiated_milkproof"] {
+                if number(&desired.state, key) > 0 {
+                    set(&mut desired.state, key, 0);
+                }
+            }
+            if ids.iter().any(|id| id == SICKNESS) && number(&desired.state, "herbal") > 0 {
+                set(&mut desired.state, "herbal", 0);
             }
         }
         Some(item_hooks::Cure::Effects(ids))
@@ -811,6 +836,24 @@ fn play(game: &mut Game<'_>, java: &str) {
         .iter()
         .position(|s| *s == category)
     else {
+        return;
+    };
+    let pitch = sound.pitch + random(game) * sound.spread;
+    game.with_level(|_, level, _| level.native_play_sound(sound.event, at, source, sound.volume, pitch));
+}
+
+/// [`random`] for the other modules (the Geiger counter block's rolls).
+pub(super) fn random_unit(game: &Game<'_>) -> f32 {
+    random(game)
+}
+
+/// Plays the registered original event at a position, as `World.playSoundEffect` does.
+pub(super) fn play_at(game: &mut Game<'_>, java: &str, at: [f64; 3]) {
+    let Some(sound) = ntm_core::consumables::sound(java) else {
+        return;
+    };
+    let category = ntm_core::sounds::category(sound.event).unwrap_or("blocks");
+    let Some(source) = horizon_client::settings::SOUND_SOURCES.iter().position(|s| *s == category) else {
         return;
     };
     let pitch = sound.pitch + random(game) * sound.spread;
@@ -1119,6 +1162,55 @@ pub(super) fn write_dose(game: &mut Game<'_>, before: &Dose, after: &Dose) -> bo
     set(&mut desired.state, "dose", after.millirad);
     game.native_commit_player(&STATE, &expected, desired, Default::default())
 }
+/// The radiation potion (`HbmPotion.radiation`) in the attachment: `irradiated` ticks left at amplifier
+/// `irradiated_level` (Onda 1, slice 5c, D3), and the world's entry it took in (`irradiated_migrated`,
+/// `irradiated_migrated_level`), written with it. `legacy` seeds an attachment that has no dose yet.
+pub(super) fn read_irradiation(game: &mut Game<'_>, legacy: &Dose) -> Option<StoredPotion> {
+    let mut snap = game.native_player_snapshot(&STATE)?;
+    init(&mut snap, legacy.clone());
+    Some(read_state(&snap))
+}
+pub(super) fn write_irradiation(game: &mut Game<'_>, legacy: &Dose, before: StoredPotion, after: StoredPotion) -> bool {
+    let Some(expected) = game.native_player_snapshot(&STATE) else {
+        return false;
+    };
+    let mut current = expected.clone();
+    init(&mut current, legacy.clone());
+    if read_state(&current) != before {
+        return false;
+    }
+    let mut desired = current;
+    for (ticks, level, (n, a)) in [("irradiated", "irradiated_level", after.potion), ("irradiated_migrated", "irradiated_migrated_level", after.migrated)] {
+        set(&mut desired.state, ticks, u64::from(n));
+        set(&mut desired.state, level, if n == 0 { 0 } else { u64::from(a) });
+    }
+    set(&mut desired.state, "irradiated_milkproof", u64::from(after.milkproof && after.potion.0 > 0));
+    game.native_commit_player(&STATE, &expected, desired, Default::default())
+}
+fn read_state(s: &NativePlayerSnapshot) -> StoredPotion {
+    let pair = |ticks: &str, level: &str| {
+        let n = u32::try_from(number(&s.state, ticks)).unwrap_or(u32::MAX);
+        let a = u8::try_from(number(&s.state, level)).unwrap_or(u8::MAX);
+        if n == 0 { (0, 0) } else { (n, a) }
+    };
+    let potion = pair("irradiated", "irradiated_level");
+    StoredPotion {
+        potion,
+        migrated: pair("irradiated_migrated", "irradiated_migrated_level"),
+        milkproof: potion.0 > 0 && number(&s.state, "irradiated_milkproof") > 0,
+    }
+}
+/// The player's status effect `effect`: (ticks left, amplifier), None when they don't have it.
+pub(super) fn effect_state(game: &Game<'_>, effect: &str) -> Option<(u32, u8)> {
+    game.potions.effects.get(effect).map(|e| (e.duration.max(0) as u32, e.amplifier.clamp(0, 255) as u8))
+}
+/// `removePotionEffect`: takes status effect `effect` from the player.
+pub(super) fn remove_effect(game: &mut Game<'_>, effect: &str) {
+    if game.potions.effects.get(effect).is_some() {
+        game.potions.effects.list.retain(|e| e.id != effect);
+        game.apply_effect_status();
+    }
+}
 /// The acting player's stacks with their state, for a transfer with machines (`ServerHost::player_slots`). None: no
 /// acting player, or a state the codec refuses (then no transfer moves anything).
 pub(super) fn transfer_snapshot(game: &mut Game<'_>) -> Option<NativePlayerSnapshot> {
@@ -1136,12 +1228,49 @@ pub(super) fn transfer_commit(
     let benefits = NativePlayerBenefits { drops, silent_equipment: true, ..Default::default() };
     game.native_commit_player(&STATE, expected, desired, benefits)
 }
-pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
-    // HazmatRegistry.getResistance: the armor plus 0.2 while Rad-X is active.
-    item_hooks::dose_factor(
-        game.armor.iter().flatten().map(|s| s.item.as_ref()),
+/// `HazmatRegistry.getResistance(EntityPlayer)`: the four armor pieces with
+/// their cladding, plus 0.2 while Rad-X is active.
+pub(super) fn player_resistance(game: &Game<'_>) -> f32 {
+    // `armorInventory[0..3]` is boots to helmet, and the float narrows after each piece: the order counts.
+    item_hooks::player_resistance(
+        game.armor.iter().rev().flatten().map(worn_resistance),
         game.potions.effects.get("ntm:radx").is_some(),
     )
+}
+/// `ContaminationUtil.calculateRadiationMod` for the acting player.
+pub(super) fn radiation_factor(game: &Game<'_>) -> f64 {
+    f64::from(item_hooks::radiation_mod(player_resistance(game)))
+}
+/// `HazmatRegistry.getResistance(ItemStack)` of a worn stack: the
+/// `hfr_cladding` number (`getFloat`, any numeric tag) and
+/// the item in the cladding slot of `ntm_armor_mods`.
+pub(super) fn worn_resistance(stack: &ItemStack) -> f64 {
+    let data = match stack.data().and_then(|d| d.other("minecraft:custom_data")) {
+        Some(Tag::Compound(c)) => Some(c),
+        _ => None,
+    };
+    // NBTTagCompound.getFloat: any numeric tag (`hasKey(key, 99)`), as float; 0 for anything else.
+    let hfr_cladding = match data.and_then(|c| c.get(&JavaString::from("hfr_cladding"))) {
+        Some(Tag::Byte(n)) => f32::from(*n),
+        Some(Tag::Short(n)) => f32::from(*n),
+        Some(Tag::Int(n)) => *n as f32,
+        Some(Tag::Long(n)) => *n as f32,
+        Some(Tag::Float(bits)) => f32::from_bits(*bits),
+        Some(Tag::Double(bits)) => f64::from_bits(*bits) as f32,
+        _ => 0.0,
+    };
+    let slot = JavaString::from(format!("mod_slot_{}", item_hooks::CLADDING_SLOT).as_str());
+    let cladding_mod = data
+        .and_then(|c| match c.get(&JavaString::from("ntm_armor_mods")) {
+            Some(Tag::Compound(mods)) => mods.get(&slot),
+            _ => None,
+        })
+        .and_then(item_from_nbt);
+    item_hooks::piece_resistance(&item_hooks::Piece {
+        id: &stack.item,
+        hfr_cladding,
+        cladding_mod: cladding_mod.as_ref().map(|m| m.item.as_ref()),
+    })
 }
 
 /// Atomic stack custom-data edit. The caller supplies the complete expected
@@ -1229,43 +1358,86 @@ fn install_filter(game: &mut Game<'_>, filter: &ItemStack) -> bool {
 
 /// Exposure-specific filter wear, in the same CAS as protection state. Gamma
 /// uses HazmatRegistry independently and never spends a particle filter.
+/// A stack and what `getProtectionFromItem` reads of it, owned.
+struct OwnedWorn {
+    id: String,
+    filter: Option<String>,
+    mods: Vec<OwnedWorn>,
+}
+impl OwnedWorn {
+    fn of(stack: &ItemStack) -> Self {
+        let data = custom(stack).unwrap_or_default();
+        let filter = data.get(&JavaString::from("hfrFilter")).and_then(item_from_nbt).map(|f| f.item.to_string());
+        let mods = match data.get(&JavaString::from("ntm_armor_mods")) {
+            Some(Tag::Compound(mods)) => (0..9)
+                .filter_map(|i| mods.get(&JavaString::from(format!("mod_slot_{i}").as_str())).and_then(item_from_nbt))
+                .map(|m| OwnedWorn::of(&m))
+                .collect(),
+            _ => Vec::new(),
+        };
+        OwnedWorn { id: stack.item.to_string(), filter, mods }
+    }
+    fn view(&self) -> item_hooks::Worn<'_> {
+        item_hooks::Worn { id: &self.id, filter: self.filter.as_deref(), mods: self.mods.iter().map(OwnedWorn::view).collect() }
+    }
+}
+/// A gas or particle source meeting the acting player, as the Java writes it:
+/// `if(ArmorRegistry.hasProtection(entity, 3, clazz)) ArmorUtil.damageGasMaskFilter(entity, wear)`.
+/// True when the helmet protects (by itself, by a filter or by a mod); the
+/// filter, when there is one, is worn in the same commit and removed past
+/// 20000. A helmet that protects without an `IGasMask` filter (the rag masks,
+/// goggles) wears nothing.
 pub(super) fn filter_exposure(game: &mut Game<'_>, hazard: Hazard, wear: u32) -> bool {
     let Some(expected) = game.native_player_snapshot(&STATE) else {
         return false;
     };
+    let Some(worn) = expected.armor[0].as_ref().map(OwnedWorn::of) else {
+        return false;
+    };
+    if !item_hooks::has_protection(Some(&worn.view()), hazard) {
+        return false;
+    }
     let mut desired = expected.clone();
     let Some(helmet) = desired.armor[0].as_mut() else {
         return false;
     };
-    let Some(mut mask) = mask_of(helmet) else {
-        return false;
+    let module = mod0(helmet);
+    let module_mask = module.as_ref().filter(|m| item_hooks::is_gas_mask(&m.item));
+    let target = item_hooks::filter_wear(
+        item_hooks::is_gas_mask(&helmet.item),
+        filter_of(helmet).is_some(),
+        module_mask.is_some(),
+        module_mask.and_then(filter_of).is_some(),
+    );
+    // ArmorUtil.damageGasMaskFilter(mask): +damage, and past the filter's max
+    // damage `removeFilter(mask)` on the stack it writes to.
+    let worn = |mut f: ItemStack| {
+        f.damage = f.damage.saturating_add(wear);
+        (f.damage <= 20_000).then_some(f)
     };
-    let Some(Tag::Compound(mut data)) = mask
-        .data()
-        .and_then(|d| d.other("minecraft:custom_data"))
-        .cloned()
-    else {
-        return false;
-    };
-    let Some(mut filter) = data
-        .get(&JavaString::from("hfrFilter"))
-        .and_then(item_from_nbt)
-    else {
-        return false;
-    };
-    if !item_hooks::filter_protects(&mask.item, &filter.item, hazard) {
-        return false;
-    }
-    filter.damage = filter.damage.saturating_add(wear);
-    if filter.damage > 20_000 {
-        data.remove(&JavaString::from("hfrFilter"));
-    } else {
-        data.insert("hfrFilter".into(), item_to_nbt(&filter));
-    }
-    mask.data_mut()
-        .set_other("minecraft:custom_data", Some(Tag::Compound(data)));
-    if !put_mask(helmet, mask) {
-        return false;
+    match target {
+        item_hooks::FilterWear::None => return true,
+        item_hooks::FilterWear::Helmet => {
+            let Some(f) = filter_of(helmet) else { return false };
+            if set_filter(helmet, worn(f)).is_none() {
+                return false;
+            }
+        }
+        item_hooks::FilterWear::Mod => {
+            let (Some(mut m), Some(f)) = (module.clone(), module_mask.and_then(filter_of)) else { return false };
+            if set_filter(&mut m, worn(f)).is_none() || set_mod0(helmet, &m).is_none() {
+                return false;
+            }
+        }
+        item_hooks::FilterWear::CopyIntoHelmet => {
+            // JAVA_FILTER_COPY_BUG: the worn copy goes into the helmet, the mod keeps its filter
+            // (ArmorUtil.java:335-351); a copy past its max damage is "removed" from the
+            // helmet, which had none, so nothing changes.
+            let Some(f) = module_mask.and_then(filter_of) else { return false };
+            if set_filter(helmet, worn(f)).is_none() {
+                return false;
+            }
+        }
     }
     game.native_commit_player(
         &STATE,
@@ -1276,6 +1448,42 @@ pub(super) fn filter_exposure(game: &mut Game<'_>, hazard: Hazard, wear: u32) ->
             ..Default::default()
         },
     )
+}
+/// `ArmorUtil.getGasMaskFilter`: the `hfrFilter` stack of a mask.
+fn filter_of(stack: &ItemStack) -> Option<ItemStack> {
+    custom(stack)?.get(&JavaString::from("hfrFilter")).and_then(item_from_nbt)
+}
+/// `installGasMaskFilter` (Some) or `removeFilter` (None) on a stack.
+fn set_filter(stack: &mut ItemStack, filter: Option<ItemStack>) -> Option<()> {
+    let mut data = custom(stack)?;
+    match filter {
+        Some(f) => {
+            data.insert("hfrFilter".into(), item_to_nbt(&f));
+        }
+        None => {
+            data.remove(&JavaString::from("hfrFilter"));
+        }
+    }
+    stack.data_mut().set_other("minecraft:custom_data", Some(Tag::Compound(data)));
+    Some(())
+}
+/// Write the `helmet_only` mod back into an existing `ntm_armor_mods`.
+fn set_mod0(helmet: &mut ItemStack, module: &ItemStack) -> Option<()> {
+    let mut data = custom(helmet)?;
+    let Tag::Compound(mods) = data.get_mut(&JavaString::from("ntm_armor_mods"))? else {
+        return None;
+    };
+    mods.insert("mod_slot_0".into(), item_to_nbt(module));
+    helmet.data_mut().set_other("minecraft:custom_data", Some(Tag::Compound(data)));
+    Some(())
+}
+/// The stack in the `helmet_only` mod slot (`ArmorModHandler.helmet_only` = 0).
+fn mod0(helmet: &ItemStack) -> Option<ItemStack> {
+    let data = custom(helmet)?;
+    let Tag::Compound(mods) = data.get(&JavaString::from("ntm_armor_mods"))? else {
+        return None;
+    };
+    item_from_nbt(mods.get(&JavaString::from("mod_slot_0"))?)
 }
 fn trace(game: &Game<'_>, event: &str, item: &str) {
     if std::env::var_os("NTM_TRACE_ITEMS").is_some() {
@@ -1347,6 +1555,9 @@ pub(super) fn command(game: &mut Game<'_>, line: &str) -> bool {
                     "bacteria" => Some(Hazard::Bacteria),
                     "gamma" => Some(Hazard::Gamma),
                     "co" => Some(Hazard::CarbonMonoxide),
+                    "inert" => Some(Hazard::InertGas),
+                    "sand" => Some(Hazard::Sand),
+                    "light" => Some(Hazard::Light),
                     _ => None,
                 };
                 if let Some(hazard) = hazard {

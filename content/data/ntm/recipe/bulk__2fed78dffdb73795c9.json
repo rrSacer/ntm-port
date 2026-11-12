@@ -1,0 +1,14 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:mask_piss",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR"
+  ],
+  "key": {
+    "R": "ntm:rag_piss"
+  }
+}

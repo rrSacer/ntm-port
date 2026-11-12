@@ -1,0 +1,7 @@
+{
+  "obj": "ntm:models/obj/lever.obj",
+  "texture": "ntm:textures/models/network/lever.png",
+  "rotation": 90.0,
+  "radius": 1.6,
+  "hide": []
+}

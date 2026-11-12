@@ -61,6 +61,8 @@ impl Server {
         let unread = obligations::legacy_homes(&world.legacy);
         let kept_rev = Some(world.stamps());
         let rbmk_stamp = world.rbmk_stamp();
+        let sickness_stamp = world.sickness_stamp();
+        let chunk_radiation_stamp = world.chunk_radiation_stamp();
         #[cfg(debug_assertions)]
         let kept = world.kept(0);
         let broken=world.removals.iter().map(|r|(r.key.clone(),r.machine.block.clone())).collect();
@@ -81,6 +83,8 @@ impl Server {
                 topo_dirty: true,
                 kept_rev,
                 kept_rbmk: Some(rbmk_stamp),
+                kept_sickness: Some(sickness_stamp),
+                kept_chunk_radiation: Some(chunk_radiation_stamp),
                 #[cfg(debug_assertions)]
                 kept,
                 ..Ready::default()
@@ -104,13 +108,14 @@ impl Server {
         let mut phases = Phases::new(host.trace_phases());
         self.ready.frozen.clear();
         self.ready.zirnox_radiation_rate.clear();
+        self.ready.irradiated_now.clear();
         if let Some(players) = host.players() {
             self.players = players;
         }
         self.native_record_events(host);
         self.read_legacy(host);
         phases.mark("events");
-        if self.ready.facts_pending{self.keep_world(host);self.sync_obligations(host);return;}
+        if self.ready.facts_pending{self.chunk_radiation_tick(host);self.keep_world(host);self.sync_obligations(host);return;}
         self.flush_machine_effects(host);
         self.settle_ghosts(host);
         phases.mark("effects");
@@ -162,11 +167,23 @@ impl Server {
         phases.mark("foundry");
         self.bombs_tick(host);
         phases.mark("bombs");
+        self.decon_tick(host);
         self.radiation_tick(host);
         phases.mark("radiation");
         if !frozen.is_empty(){self.ready.topo_dirty=true;self.ready.world.machines.append(&mut frozen);}
-        self.zirnox_effects(host);
+        // A player's EntityEffectHandler runs in NetHandlerPlayServer.processPlayer, during the network tick that
+        // MinecraftServer.updateTimeLightAndEntities opens after every world's tile entities: the sickness and the death
+        // see this tick's machines, ruins, decontaminators and inventory dose (PlayerTickEvent comes first), and come
+        // before the radiation potion's dose (updatePotionEffects, later in the player's update).
+        self.zirnox_world_effects(host);
+        self.sickness_tick(host);
+        // handleRadiationFX follows handleRadiationEffect in EntityEffectHandler.onUpdate:119-122.
+        self.chunk_radiation_contaminate(host);
+        self.zirnox_irradiation(host);
         phases.mark("zirnox");
+        // ChunkRadiationManager.updateSystem: ServerTickEvent, Phase.END, after the worlds and the players.
+        self.chunk_radiation_tick(host);
+        phases.mark("chunk_radiation");
         self.native_save(host, true);
         phases.mark("save");
         self.keep_world(host);
@@ -214,7 +231,11 @@ impl Server {
         // Without the clock, which changes every tick.
         let clock = r.world.ticks.is_multiple_of(crate::persist::TICKS_EVERY);
         // The rest of the world only when it changed (or for the clock): a stepping reactor rewrites its own key alone.
-        let written = if self.world_part_changed() || clock { self.write_world(host) } else { self.write_rbmk(host) };
+        let written = if self.world_part_changed() || clock {
+            self.write_world(host)
+        } else {
+            self.write_rbmk(host).and_then(|()| self.write_sickness(host)).and_then(|()| self.write_chunk_radiation(host))
+        };
         if let Err(e) = written {
             host.log(&format!("world state: {e}"));
         }

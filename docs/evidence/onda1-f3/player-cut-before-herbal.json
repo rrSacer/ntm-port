@@ -1,0 +1,143 @@
+{
+ "scenario": "herbal",
+ "engine": "a31497f38 (before the fix)",
+ "binary": "client-before",
+ "rule": "dose == 300000 - 100000 and herbal timer > 0 once the pill left the inventory; ok is the first (weaker) rule the run used, ok_strict the one the runner uses now",
+ "points": [
+  {
+   "point": "none",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 0
+    },
+    "state": {
+     "dose": 200000,
+     "herbal": 11853,
+     "effects": [
+      "mining_fatigue",
+      "nausea",
+      "potion_sickness",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": true
+  },
+  {
+   "point": "kill",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "nausea",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": true
+  },
+  {
+   "point": "save_begin",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "nausea",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": true
+  },
+  {
+   "point": "level_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 1
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "nausea",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": true
+  },
+  {
+   "point": "players_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 0
+    },
+    "state": {
+     "dose": 300000,
+     "effects": [
+      "mining_fatigue",
+      "nausea",
+      "potion_sickness",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": false
+  },
+  {
+   "point": "world_saved",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 0
+    },
+    "state": {
+     "dose": 200000,
+     "effects": [
+      "mining_fatigue",
+      "nausea",
+      "potion_sickness",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": false
+  },
+  {
+   "point": "kv_committed",
+   "ok": true,
+   "mod": {
+    "items": {
+     "ntm:pill_herbal": 0
+    },
+    "state": {
+     "dose": 200000,
+     "effects": [
+      "mining_fatigue",
+      "nausea",
+      "potion_sickness",
+      "weakness"
+     ]
+    }
+   },
+   "control": null,
+   "ok_strict": false
+  }
+ ]
+}

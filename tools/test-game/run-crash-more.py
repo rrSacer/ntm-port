@@ -301,6 +301,32 @@ def against_control(outcome, control):
     return {**outcome, 'control': control, 'against_control': same, 'item_checks': checks, 'ok': ok}
 
 
+def eager_verdict(outcome, control):
+    """A death outside a save after eager chunk saves wrote files (`crash_proof.wrote_outside_a_save`): when that pass
+    ran differs between the worlds, so the mod's world is not held equal to the control. It holds what the files held at
+    both reopens, item by item; no item is lost that the control keeps (L) nor held more often than in the base or the
+    control (D); neither world's storage keeps what a chunk owes."""
+    verdict = {'disk': None, 'first': total(outcome, 'first_reopen'), 'second': total(outcome, 'second_reopen')}
+    crash_proof.item_checks(verdict, outcome, control)
+    checks = {
+        'as_the_files_items': all(o.get('items') is not None and all(o.get(r) == o.get('items') for r in crash_proof.REOPENS)
+                                  for o in (outcome, control)),
+        'storage_clean': all(o.get(k) == 0 for o in (outcome, control) for k in crash_proof.KV_ITEMS),
+        'no_worse_item': verdict['no_worse_item'],
+        'no_duplicate_item': verdict['no_duplicate_item'],
+    }
+    same = {r: (total(outcome, r), total(control, r)) for r in ('first_reopen', 'second_reopen')}
+    better = all(a is not None and b is not None and a > b for a, b in same.values())
+    if crash_proof.cut(outcome) == crash_proof.cut(control):
+        # Both worlds wrote the same chunks: they must hold the same, item by item, as without eager saves.
+        checks['same_items'] = all(a is not None and a == b for a, b in same.values()) and all(
+            outcome.get(r) == control.get(r) for r in crash_proof.REOPENS)
+    ok = outcome['ok'] and control['ok'] and all(checks.values())
+    return {**outcome, 'control': control, 'against_control': same, 'item_checks': checks, 'ok': ok,
+            'criterion': 'L/D', 'criterion_reason': crash_proof.criterion(outcome['point'], outcome, control)[1],
+            'proof': False, 'better_than_control': better}
+
+
 def main():
     import resource
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))  # failpoint aborts must not dump gigabytes of game memory
@@ -362,10 +388,13 @@ def main():
                     copy_env[key] = str(folder / sub)
                 outcomes[control] = play(args, where, scratch, copy_env, args.scenario, point, control)
             exact = point in crash_proof.KILLS and args.scenario not in WRITES_IN_ACT
+            # Eager chunk saves wrote files outside a save in a world: not the last save; judged by L and D item by item.
+            eager = exact and crash_proof.wrote_outside_a_save(outcomes[False], outcomes[True])
+            exact = exact and not eager
             if args.scenario in EMITTING:
                 _, expected, control_expected = EMITTING[args.scenario]
                 outcome = crash_proof.emission_verdict(outcomes[False], outcomes[True], expected, control_expected, exact)
-                if point in crash_proof.KILLS and not exact:
+                if point in crash_proof.KILLS and not exact and not eager:
                     # A death outside a save after the action wrote a chunk (unloaded it): each chunk is its last
                     # write, in both worlds, so both reopens hold what the control's hold, exactly, item by item.
                     same = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
@@ -373,6 +402,8 @@ def main():
                                                             and all(outcomes[False].get(r) == outcomes[True].get(r)
                                                                     for r in crash_proof.REOPENS))
                     outcome['ok'] = crash_proof.judge(outcome)
+            elif eager and controlled:
+                outcome = eager_verdict(outcomes[False], outcomes[True])
             else:
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
                 if exact and controlled:

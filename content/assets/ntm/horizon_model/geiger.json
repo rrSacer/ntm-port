@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/geiger_counter.obj",
+  "texture": "ntm:textures/models/geiger.png",
+  "rotation": 180,
+  "radius": 1.0
+}

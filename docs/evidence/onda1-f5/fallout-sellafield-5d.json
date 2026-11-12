@@ -1,0 +1,710 @@
+{
+ "slice": "5d",
+ "binary_sha256": "b456388f2eccb4cadfc2d5a7815a0fd1438f6647f4a9ba6924ebda31c1e541ba",
+ "bundle_sha256": "dca249694fb01df23c3fcd05f995eb844d4a2af4ea3954c22962579bd47f265e",
+ "pre_teleport_client_sha256": "85bcaf26143d7da70270efb6bd68034ca0a475d1cb73e2a3298dfa135ae00a81",
+ "engine": "pin eb5d3eed58, unchanged",
+ "items": [
+  301,
+  301
+ ],
+ "zirnox": [
+  142,
+  142
+ ],
+ "families": {
+  "setup:full_sneak_use_drops_removed_filter": {
+   "ok": true,
+   "actual": {
+    "held": {
+     "components": "{\"minecraft:custom_data\":{}}",
+     "count": 1,
+     "durability_left": 165,
+     "item": "ntm:gas_mask_m65",
+     "max_damage": 165
+    },
+    "dropped": {
+     "ntm:gas_mask_filter": 1
+    }
+   }
+  },
+  "setup:sneaking_does_not_open_the_table": {
+   "ok": true,
+   "actual": {
+    "buttons": [],
+    "screen": "playing"
+   }
+  },
+  "setup:chocolate_milk_blast_breaks_the_floor": {
+   "ok": true,
+   "actual": {
+    "before": "minecraft:stone",
+    "after": "minecraft:air"
+   }
+  },
+  "setup:chocolate_milk_kills_a_survival_drinker": {
+   "ok": true,
+   "actual": {
+    "absorption": 0.0,
+    "air": 300,
+    "block_pos": [
+     20,
+     100,
+     11
+    ],
+    "death_time": 16,
+    "effects": [],
+    "eye": [
+     20.5,
+     102.5416000032425,
+     11.5
+    ],
+    "fall_flying": false,
+    "flying": false,
+    "food": 20,
+    "fov_modifier": 1.0,
+    "health": 0.0,
+    "hurt_time": 0,
+    "on_ground": false,
+    "pitch": -86.47411346435547,
+    "portal_effect": 0.0,
+    "position": [
+     20.5,
+     100.92159999847412,
+     11.5
+    ],
+    "saturation": 12.0,
+    "shield_cooldown": 0,
+    "shield_cooldown_shown": 0.0,
+    "sneaking": false,
+    "sprinting": false,
+    "velocity": [
+     0.0,
+     0.8247573704449735,
+     0.0
+    ],
+    "xp": {
+     "level": 0,
+     "progress": 0.0,
+     "total": 0
+    },
+    "yaw": 171.86990356445312
+   }
+  },
+  "setup:milk_ends_the_radaway_treatment": {
+   "ok": true,
+   "actual": {
+    "treated": {
+     "dose": 483000,
+     "radaway": 483
+    },
+    "cleared": {
+     "dose": 434000,
+     "radaway": 0
+    },
+    "later": {
+     "dose": 434000,
+     "radaway": 0
+    }
+   }
+  },
+  "setup:iodine_cures_poison": {
+   "ok": true,
+   "actual": {}
+  },
+  "setup:milk_does_not_cure_the_herbal_sickness": {
+   "ok": true,
+   "actual": {
+    "potion_sickness": [
+     0,
+     11890
+    ]
+   }
+  },
+  "setup:hazmat_helmet_gives_the_filter_back_when_sneak_used": {
+   "ok": true,
+   "actual": {
+    "counts": {
+     "ntm:gas_mask_filter_combo": 1,
+     "ntm:hazmat_helmet": 1
+    },
+    "tag": "{\"armor\": [{\"item\": null, \"part\": \"head\", \"slot\": 500}, {\"item\": null, \"part\": \"chest\", \"slot\": 501}, {\"item\": null, \"part\": \"legs\", \"slot\": 502}, {\"item\": null, \"part\": \"feet\", \"slot\": 503}], \"carried\": null, \"counts\": {\"ntm:gas_mask_filter_combo\": 1, \"ntm:hazmat_helmet\": 1}, \"held\": {\"components\": \"{\\\"minecraft:custom_data\\\":{}}\", \"count\": 1, \"durability_left\": 660, \"item\": \"ntm:hazmat_helmet\", \"max_damage\": 660}, \"hotbar\": [{\"components\": \"{\\\"minecraft:custom_data\\\":{}}\", \"count\": 1, \"durability_left\": 660, \"item\": \"ntm:hazmat_helmet\", \"max_damage\": 660, \"slot\": 0}, {\"components\": \"{\\\"minecraft:damage\\\":80}\", \"count\": 1, \"damage\": 80, \"durability_left\": 19920, \"item\": \"ntm:gas_mask_filter_combo\", \"max_damage\": 20000, \"slot\": 1}, {\"item\": null, \"slot\": 2}, {\"item\": null, \"slot\": 3}, {\"item\": null, \"slot\": 4}, {\"item\": null, \"slot\": 5}, {\"item\": null, \"slot\": 6}, {\"item\": null, \"slot\": 7}, {\"item\": null, \"slot\": 8}], \"main\": [{\"item\": null, \"slot\": 9}, {\"item\": null, \"slot\": 10}, {\"item\": null, \"slot\": 11}, {\"item\": null, \"slot\": 12}, {\"item\": null, \"slot\": 13}, {\"item\": null, \"slot\": 14}, {\"item\": null, \"slot\": 15}, {\"item\": null, \"slot\": 16}, {\"item\": null, \"slot\": 17}, {\"item\": null, \"slot\": 18}, {\"item\": null, \"slot\": 19}, {\"item\": null, \"slot\": 20}, {\"item\": null, \"slot\": 21}, {\"item\": null, \"slot\": 22}, {\"item\": null, \"slot\": 23}, {\"item\": null, \"slot\": 24}, {\"item\": null, \"slot\": 25}, {\"item\": null, \"slot\": 26}, {\"item\": null, \"slot\": 27}, {\"item\": null, \"slot\": 28}, {\"item\": null, \"slot\": 29}, {\"item\": null, \"slot\": 30}, {\"item\": null, \"slot\": 31}, {\"item\": null, \"slot\": 32}, {\"item\": null, \"slot\": 33}, {\"item\": null, \"slot\": 34}, {\"item\": null, \"slot\": 35}], \"offhand\": {\"item\": null, \"slot\": 504}, \"selected\": 1}"
+   }
+  },
+  "setup:hazmat_helmet_red_gives_the_filter_back_when_sneak_used": {
+   "ok": true,
+   "actual": {
+    "counts": {
+     "ntm:gas_mask_filter_combo": 1,
+     "ntm:hazmat_helmet_red": 1
+    },
+    "tag": "{\"armor\": [{\"item\": null, \"part\": \"head\", \"slot\": 500}, {\"item\": null, \"part\": \"chest\", \"slot\": 501}, {\"item\": null, \"part\": \"legs\", \"slot\": 502}, {\"item\": null, \"part\": \"feet\", \"slot\": 503}], \"carried\": null, \"counts\": {\"ntm:gas_mask_filter_combo\": 1, \"ntm:hazmat_helmet_red\": 1}, \"held\": {\"components\": \"{\\\"minecraft:custom_data\\\":{}}\", \"count\": 1, \"durability_left\": 660, \"item\": \"ntm:hazmat_helmet_red\", \"max_damage\": 660}, \"hotbar\": [{\"components\": \"{\\\"minecraft:custom_data\\\":{}}\", \"count\": 1, \"durability_left\": 660, \"item\": \"ntm:hazmat_helmet_red\", \"max_damage\": 660, \"slot\": 0}, {\"components\": \"{\\\"minecraft:damage\\\":80}\", \"count\": 1, \"damage\": 80, \"durability_left\": 19920, \"item\": \"ntm:gas_mask_filter_combo\", \"max_damage\": 20000, \"slot\": 1}, {\"item\": null, \"slot\": 2}, {\"item\": null, \"slot\": 3}, {\"item\": null, \"slot\": 4}, {\"item\": null, \"slot\": 5}, {\"item\": null, \"slot\": 6}, {\"item\": null, \"slot\": 7}, {\"item\": null, \"slot\": 8}], \"main\": [{\"item\": null, \"slot\": 9}, {\"item\": null, \"slot\": 10}, {\"item\": null, \"slot\": 11}, {\"item\": null, \"slot\": 12}, {\"item\": null, \"slot\": 13}, {\"item\": null, \"slot\": 14}, {\"item\": null, \"slot\": 15}, {\"item\": null, \"slot\": 16}, {\"item\": null, \"slot\": 17}, {\"item\": null, \"slot\": 18}, {\"item\": null, \"slot\": 19}, {\"item\": null, \"slot\": 20}, {\"item\": null, \"slot\": 21}, {\"item\": null, \"slot\": 22}, {\"item\": null, \"slot\": 23}, {\"item\": null, \"slot\": 24}, {\"item\": null, \"slot\": 25}, {\"item\": null, \"slot\": 26}, {\"item\": null, \"slot\": 27}, {\"item\": null, \"slot\": 28}, {\"item\": null, \"slot\": 29}, {\"item\": null, \"slot\": 30}, {\"item\": null, \"slot\": 31}, {\"item\": null, \"slot\": 32}, {\"item\": null, \"slot\": 33}, {\"item\": null, \"slot\": 34}, {\"item\": null, \"slot\": 35}], \"offhand\": {\"item\": null, \"slot\": 504}, \"selected\": 1}"
+   }
+  },
+  "setup:hazmat_helmet_grey_gives_the_filter_back_when_sneak_used": {
+   "ok": true,
+   "actual": {
+    "counts": {
+     "ntm:gas_mask_filter_combo": 1,
+     "ntm:hazmat_helmet_grey": 1
+    },
+    "tag": "{\"armor\": [{\"item\": null, \"part\": \"head\", \"slot\": 500}, {\"item\": null, \"part\": \"chest\", \"slot\": 501}, {\"item\": null, \"part\": \"legs\", \"slot\": 502}, {\"item\": null, \"part\": \"feet\", \"slot\": 503}], \"carried\": null, \"counts\": {\"ntm:gas_mask_filter_combo\": 1, \"ntm:hazmat_helmet_grey\": 1}, \"held\": {\"components\": \"{\\\"minecraft:custom_data\\\":{}}\", \"count\": 1, \"durability_left\": 660, \"item\": \"ntm:hazmat_helmet_grey\", \"max_damage\": 660}, \"hotbar\": [{\"components\": \"{\\\"minecraft:custom_data\\\":{}}\", \"count\": 1, \"durability_left\": 660, \"item\": \"ntm:hazmat_helmet_grey\", \"max_damage\": 660, \"slot\": 0}, {\"components\": \"{\\\"minecraft:damage\\\":80}\", \"count\": 1, \"damage\": 80, \"durability_left\": 19920, \"item\": \"ntm:gas_mask_filter_combo\", \"max_damage\": 20000, \"slot\": 1}, {\"item\": null, \"slot\": 2}, {\"item\": null, \"slot\": 3}, {\"item\": null, \"slot\": 4}, {\"item\": null, \"slot\": 5}, {\"item\": null, \"slot\": 6}, {\"item\": null, \"slot\": 7}, {\"item\": null, \"slot\": 8}], \"main\": [{\"item\": null, \"slot\": 9}, {\"item\": null, \"slot\": 10}, {\"item\": null, \"slot\": 11}, {\"item\": null, \"slot\": 12}, {\"item\": null, \"slot\": 13}, {\"item\": null, \"slot\": 14}, {\"item\": null, \"slot\": 15}, {\"item\": null, \"slot\": 16}, {\"item\": null, \"slot\": 17}, {\"item\": null, \"slot\": 18}, {\"item\": null, \"slot\": 19}, {\"item\": null, \"slot\": 20}, {\"item\": null, \"slot\": 21}, {\"item\": null, \"slot\": 22}, {\"item\": null, \"slot\": 23}, {\"item\": null, \"slot\": 24}, {\"item\": null, \"slot\": 25}, {\"item\": null, \"slot\": 26}, {\"item\": null, \"slot\": 27}, {\"item\": null, \"slot\": 28}, {\"item\": null, \"slot\": 29}, {\"item\": null, \"slot\": 30}, {\"item\": null, \"slot\": 31}, {\"item\": null, \"slot\": 32}, {\"item\": null, \"slot\": 33}, {\"item\": null, \"slot\": 34}, {\"item\": null, \"slot\": 35}], \"offhand\": {\"item\": null, \"slot\": 504}, \"selected\": 1}"
+   }
+  },
+  "setup:pipette_capacity_steps_down_when_sneaking": {
+   "ok": true,
+   "actual": {
+    "chat": "950/1000mB | The game time is 18589 tick(s) | Replaced 1 slot(s) on ItemsTest with [Pipette] | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Removed every effect from ItemsTest | true | No items were found on player ItemsTest | Set own game mode to Survival Mode | Removed 11 item(s) from player ItemsTest | The game time is 18443 tick(s)",
+    "tag": "{\"minecraft:custom_data\":{capacity:950s,fill:0s,type:0s}}"
+   }
+  },
+  "setup:laboratory_pipette_steps_by_one": {
+   "ok": true,
+   "actual": "49/50mB | The game time is 18873 tick(s) | Replaced 1 slot(s) on ItemsTest with [Laboratory Grade Pipette] | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Target has no effects to remove | true | Removed 1 item(s) from player ItemsTest | 950/1000mB | The game time is 18589 tick(s) | Replaced 1 slot(s) on ItemsTest with [Pipette]"
+  },
+  "setup:copy_bug_sneak_hands_out_the_copy_and_the_mod_keeps_its_filter": {
+   "ok": true,
+   "actual": {
+    "loose": 1,
+    "helmet": "{\"minecraft:custom_data\":{ntm_armor_mods:{mod_slot_0:{components:{\"minecraft:custom_data\":{hfrFilter:{count:1,id:\"ntm:gas_mask_filter\"}}},count:1,id:\"ntm:attachment_mask\"}}}}"
+   }
+  },
+  "setup:mycelium_irradiation_keeps_growing_the_dose": {
+   "ok": true,
+   "actual": {
+    "growth": 8400
+   }
+  },
+  "setup:mycelium_gives_the_radiation_effect": {
+   "ok": true,
+   "actual": {
+    "effect": [
+     3,
+     561
+    ],
+    "attachment": [
+     556,
+     3
+    ]
+   }
+  },
+  "setup:an_effect_given_on_the_mycelium_reaches_the_attachment": {
+   "ok": true,
+   "actual": {
+    "effect": [
+     9,
+     334
+    ],
+    "attachment": [
+     329,
+     9
+    ]
+   }
+  },
+  "setup:milk_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     562,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:iodine_pill_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     560,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:sellafield_levels_are_placed": {
+   "ok": true,
+   "actual": [
+    "ntm:sellafield",
+    "ntm:sellafield__1",
+    "ntm:sellafield__2",
+    "ntm:sellafield__3",
+    "ntm:sellafield__4",
+    "ntm:sellafield__5"
+   ]
+  },
+  "setup:sellafield_levels_carry_their_radiation": {
+   "ok": true,
+   "actual": {
+    "ntm:sellafield": 500,
+    "ntm:sellafield__1": 1000,
+    "ntm:sellafield__2": 2500,
+    "ntm:sellafield__3": 4000,
+    "ntm:sellafield__4": 5000,
+    "ntm:sellafield__5": 10000
+   }
+  },
+  "setup:walking_flat_on_fallout_gives_nothing": {
+   "ok": true,
+   "actual": {
+    "potion": [
+     0,
+     0,
+     0
+    ],
+    "pos": [
+     28.835452927183095,
+     101.0,
+     11.5
+    ]
+   }
+  },
+  "setup:jumping_on_fallout_gives_its_milkproof_potion": {
+   "ok": true,
+   "actual": {
+    "potion": [
+     11984,
+     0,
+     1
+    ],
+    "effect": [
+     0,
+     11975
+    ],
+    "effects": [
+     {
+      "amplifier": 0,
+      "duration_ticks": 11975,
+      "id": "ntm:radiation"
+     }
+    ]
+   }
+  },
+  "setup:milk_does_not_cure_the_fallout_potion": {
+   "ok": true,
+   "actual": {
+    "potion": [
+     11800,
+     0,
+     1
+    ],
+    "effects": [
+     "radiation"
+    ],
+    "dose_growth": 1600
+   }
+  },
+  "setup:an_iodine_pill_ends_the_fallout_potion": {
+   "ok": true,
+   "actual": {
+    "potion": [
+     0,
+     0,
+     0
+    ],
+    "effects": []
+   }
+  },
+  "setup:fallout_spares_creative_players": {
+   "ok": true,
+   "actual": [
+    0,
+    0,
+    0
+   ]
+  },
+  "setup:walking_on_sellafield__3_gives_amplifier_3": {
+   "ok": true,
+   "actual": [
+    552,
+    3,
+    0
+   ]
+  },
+  "setup:walking_on_sellafield__5_gives_amplifier_10": {
+   "ok": true,
+   "actual": [
+    558,
+    10,
+    0
+   ]
+  },
+  "setup:standing_on_sellafield_counts_the_potion_down": {
+   "ok": true,
+   "actual": {
+    "before": 548,
+    "after": 504,
+    "ticks": 44
+   }
+  },
+  "setup:sneaking_on_sellafield_takes_no_step": {
+   "ok": true,
+   "actual": {
+    "potion": [
+     0,
+     0,
+     0
+    ],
+    "pos": [
+     23.69798354524513,
+     101.0,
+     11.5
+    ]
+   }
+  },
+  "setup:riding_over_sellafield_takes_no_step": {
+   "ok": true,
+   "actual": [
+    0,
+    0,
+    0
+   ]
+  },
+  "setup:walking_the_same_lane_takes_a_step": {
+   "ok": true,
+   "actual": [
+    572,
+    3,
+    0
+   ]
+  },
+  "setup:teleporting_onto_the_mycelium_takes_no_step": {
+   "ok": true,
+   "actual": [
+    0,
+    0,
+    0
+   ]
+  },
+  "setup:walking_onto_the_mycelium_takes_a_step": {
+   "ok": true,
+   "actual": [
+    566,
+    3,
+    0
+   ]
+  },
+  "setup:sellafield_goes_down_levels_on_random_ticks": {
+   "ok": true,
+   "actual": {
+    "counts": {
+     "ntm:sellafield__1": 3,
+     "ntm:sellafield_slaked": 17,
+     "ntm:sellafield": 9,
+     "ntm:sellafield__3": 1,
+     "ntm:sellafield__2": 3
+    }
+   }
+  }
+ },
+ "teleport_mutant_in_game": {
+  "setup:teleporting_onto_the_mycelium_takes_no_step": {
+   "ok": false,
+   "actual": [
+    585,
+    3,
+    0
+   ]
+  }
+ },
+ "save_cuts": {
+  "irradiation": {
+   "ok": true,
+   "budget": null,
+   "points": [
+    {
+     "point": "none",
+     "ok": true,
+     "first_reopen": {
+      "dose": 312000,
+      "irradiated": 461,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kill",
+     "ok": true,
+     "first_reopen": {
+      "dose": 300000,
+      "effects": [
+       "nausea"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "save_begin",
+     "ok": true,
+     "first_reopen": {
+      "dose": 300000,
+      "effects": [
+       "nausea"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "level_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 300000,
+      "effects": [
+       "nausea"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "players_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 307200,
+      "irradiated": 492,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "world_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 307200,
+      "irradiated": 491,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kv_committed",
+     "ok": true,
+     "first_reopen": {
+      "dose": 307800,
+      "irradiated": 496,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    }
+   ]
+  },
+  "migration": {
+   "ok": true,
+   "budget": {
+    "potions": [
+     [
+      559,
+      3
+     ]
+    ],
+    "doses": [
+     311000
+    ],
+    "g0": 614
+   },
+   "points": [
+    {
+     "point": "none",
+     "ok": true,
+     "first_reopen": {
+      "dose": 348200,
+      "irradiated": 105,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kill",
+     "ok": true,
+     "first_reopen": {
+      "dose": 319200,
+      "irradiated": 445,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        518,
+        3
+       ]
+      ]
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "save_begin",
+     "ok": true,
+     "first_reopen": {
+      "dose": 319200,
+      "irradiated": 445,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        518,
+        3
+       ]
+      ]
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "level_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 319200,
+      "irradiated": 445,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        518,
+        3
+       ]
+      ]
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "players_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 348800,
+      "irradiated": 102,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        518,
+        3
+       ]
+      ]
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "world_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 348600,
+      "irradiated": 103,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kv_committed",
+     "ok": true,
+     "first_reopen": {
+      "dose": 349000,
+      "irradiated": 101,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    }
+   ]
+  }
+ },
+ "tests": {
+  "cargo": "578 lib (3 ignored) + 118 integration",
+  "content": "312 OK",
+  "save_model_release": "11/11",
+  "clippy": "clean (ntm-core and stage)",
+  "step_oracle": "801 steps, 4 walks, bit for bit"
+ }
+}

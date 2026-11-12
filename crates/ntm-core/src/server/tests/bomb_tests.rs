@@ -115,7 +115,11 @@ fn a_little_boy_assembled_in_its_slots_goes_off_by_redstone() {
     assert!(w.hurts.iter().any(|h| h.0 == "p1" && h.2 == "minecraft:explosion"), "sem dano");
     drop(w);
     let dose = g.ready().world.radiation.get("p1").map_or(0, |d| d.millirad);
-    assert!(dose > 0, "sem dose");
+    // The blast's dose passes 1000 RAD: radiation kills and the dose starts again from 0 (EntityEffectHandler
+    // .handleRadiationEffect:223-226, slice 5b).
+    let died = g.world.borrow().hurts.iter().any(|h| h.0 == "p1" && h.2 == crate::radiation::RADIATION_DAMAGE);
+    assert!(died, "a dose da bomba não matou");
+    assert_eq!(dose, 0);
     assert_eq!(g.ready().world.bombs.zones.len(), 1);
     assert!(g.server.area_rate("p1") > 0);
     // A zona soma dose a cada segundo, sem depender da amostra do cliente.

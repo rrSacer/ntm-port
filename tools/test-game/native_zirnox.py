@@ -3,9 +3,10 @@
 
 No reactor state or rod life is injected. /tick sprint advances ordinary server
 simulation for the source's 20,000/50,000-life breeding/depletion checks.
-Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|automation|failure|soils
+Usage: native_zirnox.py GAME setup|inactive|convert|capture-state|check-state|automation|failure|ruin-dose|soils|ruin-dose-check
 """
 import json
+import os
 import re
 import sys
 import time
@@ -77,19 +78,39 @@ def lever(g,c,on):
         g.command(f'tp @s {p[0]+2.5} {p[1]} {p[2]+.5}')
         g.ctl('interact '+pos_text(p)+' east')
         time.sleep(.4)
-    g.check('lever_'+str(on)+'_'+str(len(g.evidence['steps'])),('powered=true' in block(g,p))==on,block(g,p))
+    g.check(nth(g,'lever_'+str(on)),('powered=true' in block(g,p))==on,block(g,p))
+
+
+def nth(g,kind):
+    """`kind_n`, the n-th check of that kind in this phase: a name that does not move with the steps a loaded
+    machine's retries add (it was the step count)."""
+    counters=g.evidence.setdefault('counters',{})
+    counters[kind]=counters.get(kind,0)+1
+    return f'{kind}_{counters[kind]}'
+
+
+def menu_open(g,timeout=20):
+    """The screen once a menu is open (coordinator, 10/11: wait on the state, not a fixed 0.7 s; a loaded
+    machine answers the click late), or the last screen seen when `timeout` seconds pass without one."""
+    deadline=time.monotonic()+timeout
+    while True:
+        # A deliberate failure for the mutation run (a menu that never opens); never set otherwise.
+        if os.environ.get('NTM_ZIRNOX_MUTANT')=='menu_never':g.close()
+        screen=g.ctl('screen')
+        if screen.get('screen')=='container' or time.monotonic()>=deadline:return screen
+        time.sleep(.1)
 
 
 def open_reactor(g,core):
     g.close();g.command(f'tp @s {core[0]+.5} {core[1]} {core[2]+4.5}')
-    p=add(core,(0,1,2));g.ctl('interact '+pos_text(p)+' south');time.sleep(.7)
-    g.check('reactor_menu_'+str(len(g.evidence['steps'])),g.ctl('screen').get('screen')=='container',g.ctl('screen'))
+    p=add(core,(0,1,2));g.ctl('interact '+pos_text(p)+' south');screen=menu_open(g)
+    g.check(nth(g,'reactor_menu'),screen.get('screen')=='container',screen)
 
 
 def open_tank(g,p):
     g.close();g.command(f'tp @s {p[0]-3.5} {p[1]-1} {p[2]+.5}')
-    g.ctl('interact '+pos_text(p)+' west');time.sleep(.7)
-    g.check('tank_menu_'+str(len(g.evidence['steps'])),g.ctl('screen').get('screen')=='container',g.ctl('screen'))
+    g.ctl('interact '+pos_text(p)+' west');screen=menu_open(g)
+    g.check(nth(g,'tank_menu'),screen.get('screen')=='container',screen)
 
 
 def type_ports(g,fluid,positions):
@@ -303,7 +324,7 @@ def check(g):
             accepted=(cursor is not None and cursor.get('item')==rod and not cell.get('item')) if carried else (not cursor and cell.get('item')==rod)
             if accepted or time.monotonic()>deadline:break
             time.sleep(.1)
-        g.check('cursor_move_ack_'+str(len(g.evidence['steps'])),accepted,{'cursor':cursor,'slot':cell})
+        g.check(nth(g,'cursor_move_ack'),accepted,{'cursor':cursor,'slot':cell})
     g.check('rod_life_survives_manual_moves',life(g,core)==before,{'before':before,'after':life(g,core)})
     manual_non_fuel(g,core)
     import os
@@ -340,11 +361,13 @@ def automation(g):
     g.command('fill '+pos_text(add(core,(-1,-4,-1)))+' '+pos_text(add(core,(1,-4,3)))+' minecraft:stone')
     g.command('fill '+pos_text(low)+' '+pos_text(high)+' minecraft:air')
     g.command('setblock '+pos_text(hopper)+' minecraft:hopper[facing=down]')
-    # A hopper moves one item per eight ticks. Give all 24 slots ample time.
-    time.sleep(12)
+    # A hopper moves one item per eight ticks. Give all 24 slots ample time, counted in game ticks (the
+    # 12 s it was, at 20 ticks a second).
+    start=game_time(g)
+    while game_time(g)<start+240:time.sleep(.2)
     g.command('clear @s')
     g.command(f'tp @s {hopper[0]+.5} {hopper[1]-2} {hopper[2]+2.5}')
-    g.ctl('interact '+pos_text(hopper)+' south');time.sleep(.7)
+    g.ctl('interact '+pos_text(hopper)+' south');menu_open(g)
     g.check('automation_hopper_menu',len(g.slots())==5,g.ctl('screen'))
     received=Counter()
     for s in g.slots():
@@ -431,6 +454,65 @@ def failure(g):
     g.snapshot('zirnox-failure')
 
 
+def dose(g):
+    text=' '.join(g.command('ntmitem inspect').get('chat',[]))
+    found=re.search(r'dose:\s*(\d+)[lL]?',text)
+    if not found:raise AssertionError(text)
+    return int(found.group(1))
+
+
+def ruin_dose(g):
+    """The ruin left by `failure` irradiates a survival player (`TileEntityZirnoxDestroyed.radiate`). Its dose is given
+    inside the ruin's machine step and must reach the player's own storage (the attachment `ntmitem inspect` reads),
+    not only the world's mirror. Behind the obsidian of `failure`, with an empty inventory and no bomb zone, the ruin is
+    the only source: before slice 5b's fix the attachment stayed at 0."""
+    g.close();g.command('clear @s');g.command('effect clear @s')
+    g.command('setblock 138 100 2 minecraft:obsidian');g.command('gamemode survival');g.command('tp @s 138.5 101 2.5 90 0')
+    # The ruin doses every tick: the reading after `dose 0` already has a tick or two of it.
+    g.command('ntmitem dose 0');start=dose(g)
+    sprint(g,60);time.sleep(1)
+    got=dose(g);p=g.ctl('state')['player']
+    g.check('ruin_dose_reaches_the_player_storage',start<got<1_000_000 and p.get('death_time') is None,{'start':start,'dose':got,'player':p})
+    # Creative stops the dose (the ruin skips creative players) for the reopening.
+    g.command('gamemode creative');time.sleep(1);kept=dose(g)
+    (g.folder/'zirnox-ruin-dose.json').write_text(json.dumps({'dose':kept}))
+    g.ctl('save')
+
+
+def ruin_dose_check(g):
+    saved=json.loads((g.folder/'zirnox-ruin-dose.json').read_text())['dose'];time.sleep(2)
+    got=dose(g)
+    g.check('ruin_dose_survives_reopening',saved>0 and got==saved,{'saved':saved,'reopened':got})
+    # Unshielded, six blocks from the ruin (115,101,6), its dose (500000 or 75000 / distance², in RAD) passes 1000 at
+    # once: the player's update, after the ruin's tick, kills them with `ModDamageSource.radiation` and leaves 0. This
+    # session's player has just joined: the ruin waits out their first 200 ticks (`ContaminationUtil.contaminate:287`).
+    g.command('fill 112 101 -1 118 105 5 minecraft:air');g.command('fill 114 100 -1 116 100 1 minecraft:obsidian')
+    g.command('tp @s 115.5 101 0.5 0 0');g.command('ntmitem dose 0');g.command('gamemode survival')
+    deadline=time.monotonic()+20
+    while time.monotonic()<deadline:
+        p=g.ctl('state')['player']
+        if p.get('death_time') is not None or p['health']<=0:break
+        time.sleep(.2)
+    chat=' | '.join(g.ctl('chat-log 12').get('chat',[]))
+    dead=p.get('death_time') is not None or p['health']<=0
+    g.check('ruin_kills_with_radiation',dead and 'died from radiation poisoning' in chat,{'player':p,'chat':chat[:300]})
+    if not dead:return
+    # Respawned at the ruin, the player is spared its first 200 ticks (`ContaminationUtil.contaminate:287`), then dies.
+    g.ctl('respawn');back=game_time(g);g.ctl('wait-ready 60');g.command('tp @s 115.5 101 0.5 0 0')
+    while game_time(g)<back+60:time.sleep(.2)
+    p=g.ctl('state')['player'];spared=dose(g)
+    g.check('ruin_spares_a_respawn_for_200_ticks',p.get('death_time') is None and p['health']>0 and spared==0,{'player':p,'dose':spared})
+    deadline=time.monotonic()+30
+    while time.monotonic()<deadline:
+        p=g.ctl('state')['player']
+        if p.get('death_time') is not None or p['health']<=0:break
+        time.sleep(.2)
+    died_at=game_time(g)-back
+    g.check('ruin_kills_after_the_200_ticks',(p.get('death_time') is not None or p['health']<=0) and 180<=died_at<=260,{'ticks_after_respawn':died_at,'player':p})
+    g.command('gamemode creative');g.ctl('respawn');g.ctl('wait-ready 60');g.command('tp @s 138.5 101 2.5');time.sleep(1)
+    g.check('ruin_death_leaves_the_storage_at_zero',dose(g)==0,dose(g))
+
+
 def soils(g):
     g.close();g.command('clear @s')
     g.ground(160,101,8,width=20,height=12)
@@ -449,7 +531,7 @@ def soils(g):
     g.snapshot('zirnox-soils')
 
 
-PHASES={'setup':setup,'inactive':inactive,'convert':convert,'capture-state':capture,'check-state':check,'failure':failure,'soils':soils,'automation':automation}
+PHASES={'setup':setup,'inactive':inactive,'convert':convert,'capture-state':capture,'check-state':check,'failure':failure,'ruin-dose':ruin_dose,'ruin-dose-check':ruin_dose_check,'soils':soils,'automation':automation}
 if __name__=='__main__':
     g=Game(sys.argv[1],'zirnox-'+sys.argv[2]);g.ctl('wait-ready 120')
     g.evidence['phase']=sys.argv[2]

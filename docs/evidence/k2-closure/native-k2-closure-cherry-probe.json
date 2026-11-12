@@ -1,0 +1,987 @@
+{
+  "scenario": "k2-closure-cherry-probe",
+  "ok": true,
+  "steps": [
+    {
+      "command": "status",
+      "result": {
+        "block_entities": 4,
+        "border": {
+          "center": [
+            0.0,
+            0.0
+          ],
+          "size": 59999968.0
+        },
+        "carts": [],
+        "chunks": 10,
+        "creative": false,
+        "day_time": 13,
+        "debug": {
+          "advanced_tooltips": false,
+          "chunk_borders": false,
+          "clipboard": null,
+          "hitboxes": false,
+          "overlay": false,
+          "pause_menu": true,
+          "pause_on_lost_focus": true
+        },
+        "destroying": [],
+        "dimension": "minecraft:overworld",
+        "dirty_light": 0,
+        "display": {
+          "height": 720,
+          "refresh_hz": null,
+          "scale": 1.0,
+          "width": 1280
+        },
+        "fangs_vertices": 0,
+        "fight": {
+          "alive_crystals": 0,
+          "crystal_list": [],
+          "crystals": 0,
+          "dragon": null,
+          "exit_portal": null,
+          "killed": false,
+          "players": false,
+          "respawn": null
+        },
+        "fishing": null,
+        "fps": 115.54827117919922,
+        "frames": 201,
+        "generated_chunks": 10,
+        "heard": {},
+        "held": null,
+        "input": {
+          "counts": {
+            "agent": 0,
+            "game": 0,
+            "user": 0
+          },
+          "events": 0,
+          "last_origin": null,
+          "last_user_age_s": null,
+          "recording": null,
+          "replay": null,
+          "user_since_agent": 0
+        },
+        "keys": [],
+        "lightning": {
+          "bolts": 0,
+          "flash": 0,
+          "flashes": 0,
+          "struck": 0
+        },
+        "lod": {
+          "active_tiles": 0,
+          "cached_tiles": 0,
+          "detail_target_columns": 0,
+          "distance": 0,
+          "effective_distance": 0,
+          "far_detail": "full",
+          "levels": [],
+          "pending_observations": 0,
+          "refined_samples": 0,
+          "refined_target_columns": 0,
+          "resident_quads": 0,
+          "sampled_target_tiles": 0,
+          "source": "none",
+          "source_attempted": false,
+          "target_tiles": 0,
+          "terrain_distance": 6
+        },
+        "maps": [],
+        "meshed_sections": 29,
+        "mobs": 10,
+        "music": null,
+        "name_tags": [],
+        "objects": [],
+        "offhand": null,
+        "particles": {
+          "glow": 3,
+          "tinted_leaves": 5,
+          "underwater": 2
+        },
+        "pending_chunks": 0,
+        "pending_uploads": 0,
+        "physical_keys": [],
+        "pickups": {},
+        "pitch": 0.0,
+        "player": {
+          "food": 20,
+          "health": 20.0,
+          "max_health": null,
+          "on_ground": true,
+          "position": [
+            168.5,
+            70.0,
+            170.5
+          ],
+          "velocity": [
+            0.0,
+            -0.0784000015258789,
+            0.0
+          ]
+        },
+        "projectiles": [],
+        "render_distance": 6,
+        "renderer": {
+          "arena_bytes": 31457280,
+          "backend": "Vulkan",
+          "culled_sections": [
+            [
+              0,
+              1
+            ],
+            0.0
+          ],
+          "device_type": "discrete",
+          "drawn_sections": 1,
+          "driver": "radv Mesa 26.2.6-arch1.1",
+          "gpu": "AMD Radeon RX 7600 (RADV NAVI33)",
+          "gpu_allocated_bytes": 455096080,
+          "gpu_culling": false,
+          "gpu_frame": false,
+          "gpu_reserved_bytes": 540934144,
+          "present_mode": "Immediate",
+          "resident_sections": 9,
+          "section_draw_calls": 1,
+          "section_draws": 1,
+          "section_vertex_bytes": 577248,
+          "size": [
+            960,
+            540
+          ],
+          "uploaded_bytes": 1046016,
+          "vendor": "amd"
+        },
+        "riding": null,
+        "rockets": 0,
+        "screen": "playing",
+        "selected": 1,
+        "server": {
+          "address": "local",
+          "chat": [],
+          "chunks": 10,
+          "dead_players": [],
+          "decode_errors": 0,
+          "dimension": "minecraft:overworld",
+          "entities": {
+            "minecraft:bat": 1,
+            "minecraft:chicken": 4,
+            "minecraft:glow_squid": 3,
+            "minecraft:skeleton": 1,
+            "minecraft:zombie": 1
+          },
+          "entity_id": 1,
+          "food": 20,
+          "game_mode": 0,
+          "health": 20.0,
+          "joined": true,
+          "loaded": true,
+          "lying_players": [],
+          "name": "NtmTeste",
+          "own_body": false,
+          "player_equipment": [],
+          "player_model": true,
+          "player_positions": [],
+          "players": [
+            "NtmTeste"
+          ],
+          "status": "Loading terrain...",
+          "text_display_vertices": 0,
+          "text_displays": 0
+        },
+        "sidebar": null,
+        "sounds": {
+          "channels": 0,
+          "decoded": 0,
+          "decoded_mib": 0,
+          "events": [],
+          "handles": 0,
+          "instances": 0,
+          "playing": 0,
+          "queued": 0,
+          "ticking": 0,
+          "used": [
+            0,
+            0
+          ]
+        },
+        "stopped_sounds": {},
+        "streaming": {
+          "decorating": 0,
+          "finishing": 0,
+          "generating": 0,
+          "lighting": 0,
+          "meshing": 0,
+          "protos": 0,
+          "queued": 0
+        },
+        "target": null,
+        "ticks": 38,
+        "tridents": 0,
+        "uptime_seconds": 2.521708364,
+        "using": null,
+        "yaw": 0.0
+      }
+    },
+    {
+      "command": "status",
+      "result": {
+        "block_entities": 4,
+        "border": {
+          "center": [
+            0.0,
+            0.0
+          ],
+          "size": 59999968.0
+        },
+        "carts": [],
+        "chunks": 10,
+        "creative": false,
+        "day_time": 13,
+        "debug": {
+          "advanced_tooltips": false,
+          "chunk_borders": false,
+          "clipboard": null,
+          "hitboxes": false,
+          "overlay": false,
+          "pause_menu": true,
+          "pause_on_lost_focus": true
+        },
+        "destroying": [],
+        "dimension": "minecraft:overworld",
+        "dirty_light": 0,
+        "display": {
+          "height": 720,
+          "refresh_hz": null,
+          "scale": 1.0,
+          "width": 1280
+        },
+        "fangs_vertices": 0,
+        "fight": {
+          "alive_crystals": 0,
+          "crystal_list": [],
+          "crystals": 0,
+          "dragon": null,
+          "exit_portal": null,
+          "killed": false,
+          "players": false,
+          "respawn": null
+        },
+        "fishing": null,
+        "fps": 115.54827117919922,
+        "frames": 202,
+        "generated_chunks": 10,
+        "heard": {},
+        "held": null,
+        "input": {
+          "counts": {
+            "agent": 0,
+            "game": 0,
+            "user": 0
+          },
+          "events": 0,
+          "last_origin": null,
+          "last_user_age_s": null,
+          "recording": null,
+          "replay": null,
+          "user_since_agent": 0
+        },
+        "keys": [],
+        "lightning": {
+          "bolts": 0,
+          "flash": 0,
+          "flashes": 0,
+          "struck": 0
+        },
+        "lod": {
+          "active_tiles": 0,
+          "cached_tiles": 0,
+          "detail_target_columns": 0,
+          "distance": 0,
+          "effective_distance": 0,
+          "far_detail": "full",
+          "levels": [],
+          "pending_observations": 0,
+          "refined_samples": 0,
+          "refined_target_columns": 0,
+          "resident_quads": 0,
+          "sampled_target_tiles": 0,
+          "source": "none",
+          "source_attempted": false,
+          "target_tiles": 0,
+          "terrain_distance": 6
+        },
+        "maps": [],
+        "meshed_sections": 29,
+        "mobs": 10,
+        "music": null,
+        "name_tags": [],
+        "objects": [],
+        "offhand": null,
+        "particles": {
+          "glow": 3,
+          "tinted_leaves": 5,
+          "underwater": 2
+        },
+        "pending_chunks": 0,
+        "pending_uploads": 0,
+        "physical_keys": [],
+        "pickups": {},
+        "pitch": 0.0,
+        "player": {
+          "food": 20,
+          "health": 20.0,
+          "max_health": null,
+          "on_ground": true,
+          "position": [
+            168.5,
+            70.0,
+            170.5
+          ],
+          "velocity": [
+            0.0,
+            -0.0784000015258789,
+            0.0
+          ]
+        },
+        "projectiles": [],
+        "render_distance": 6,
+        "renderer": {
+          "arena_bytes": 31457280,
+          "backend": "Vulkan",
+          "culled_sections": [
+            [
+              0,
+              1
+            ],
+            0.0
+          ],
+          "device_type": "discrete",
+          "drawn_sections": 1,
+          "driver": "radv Mesa 26.2.6-arch1.1",
+          "gpu": "AMD Radeon RX 7600 (RADV NAVI33)",
+          "gpu_allocated_bytes": 455096080,
+          "gpu_culling": false,
+          "gpu_frame": false,
+          "gpu_reserved_bytes": 540934144,
+          "present_mode": "Immediate",
+          "resident_sections": 9,
+          "section_draw_calls": 1,
+          "section_draws": 1,
+          "section_vertex_bytes": 577248,
+          "size": [
+            960,
+            540
+          ],
+          "uploaded_bytes": 1046016,
+          "vendor": "amd"
+        },
+        "riding": null,
+        "rockets": 0,
+        "screen": "playing",
+        "selected": 1,
+        "server": {
+          "address": "local",
+          "chat": [],
+          "chunks": 10,
+          "dead_players": [],
+          "decode_errors": 0,
+          "dimension": "minecraft:overworld",
+          "entities": {
+            "minecraft:bat": 1,
+            "minecraft:chicken": 4,
+            "minecraft:glow_squid": 3,
+            "minecraft:skeleton": 1,
+            "minecraft:zombie": 1
+          },
+          "entity_id": 1,
+          "food": 20,
+          "game_mode": 0,
+          "health": 20.0,
+          "joined": true,
+          "loaded": true,
+          "lying_players": [],
+          "name": "NtmTeste",
+          "own_body": false,
+          "player_equipment": [],
+          "player_model": true,
+          "player_positions": [],
+          "players": [
+            "NtmTeste"
+          ],
+          "status": "Loading terrain...",
+          "text_display_vertices": 0,
+          "text_displays": 0
+        },
+        "sidebar": null,
+        "sounds": {
+          "channels": 0,
+          "decoded": 0,
+          "decoded_mib": 0,
+          "events": [],
+          "handles": 0,
+          "instances": 0,
+          "playing": 0,
+          "queued": 0,
+          "ticking": 0,
+          "used": [
+            0,
+            0
+          ]
+        },
+        "stopped_sounds": {},
+        "streaming": {
+          "decorating": 0,
+          "finishing": 0,
+          "generating": 0,
+          "lighting": 0,
+          "meshing": 0,
+          "protos": 0,
+          "queued": 0
+        },
+        "target": null,
+        "ticks": 38,
+        "tridents": 0,
+        "uptime_seconds": 2.5299914,
+        "using": null,
+        "yaw": 0.0
+      }
+    },
+    {
+      "command": "status",
+      "result": {
+        "block_entities": 4,
+        "border": {
+          "center": [
+            0.0,
+            0.0
+          ],
+          "size": 59999968.0
+        },
+        "carts": [],
+        "chunks": 10,
+        "creative": false,
+        "day_time": 13,
+        "debug": {
+          "advanced_tooltips": false,
+          "chunk_borders": false,
+          "clipboard": null,
+          "hitboxes": false,
+          "overlay": false,
+          "pause_menu": true,
+          "pause_on_lost_focus": true
+        },
+        "destroying": [],
+        "dimension": "minecraft:overworld",
+        "dirty_light": 0,
+        "display": {
+          "height": 720,
+          "refresh_hz": null,
+          "scale": 1.0,
+          "width": 1280
+        },
+        "fangs_vertices": 0,
+        "fight": {
+          "alive_crystals": 0,
+          "crystal_list": [],
+          "crystals": 0,
+          "dragon": null,
+          "exit_portal": null,
+          "killed": false,
+          "players": false,
+          "respawn": null
+        },
+        "fishing": null,
+        "fps": 115.54827117919922,
+        "frames": 203,
+        "generated_chunks": 10,
+        "heard": {},
+        "held": null,
+        "input": {
+          "counts": {
+            "agent": 0,
+            "game": 0,
+            "user": 0
+          },
+          "events": 0,
+          "last_origin": null,
+          "last_user_age_s": null,
+          "recording": null,
+          "replay": null,
+          "user_since_agent": 0
+        },
+        "keys": [],
+        "lightning": {
+          "bolts": 0,
+          "flash": 0,
+          "flashes": 0,
+          "struck": 0
+        },
+        "lod": {
+          "active_tiles": 0,
+          "cached_tiles": 0,
+          "detail_target_columns": 0,
+          "distance": 0,
+          "effective_distance": 0,
+          "far_detail": "full",
+          "levels": [],
+          "pending_observations": 0,
+          "refined_samples": 0,
+          "refined_target_columns": 0,
+          "resident_quads": 0,
+          "sampled_target_tiles": 0,
+          "source": "none",
+          "source_attempted": false,
+          "target_tiles": 0,
+          "terrain_distance": 6
+        },
+        "maps": [],
+        "meshed_sections": 29,
+        "mobs": 10,
+        "music": null,
+        "name_tags": [],
+        "objects": [],
+        "offhand": null,
+        "particles": {
+          "glow": 3,
+          "tinted_leaves": 5,
+          "underwater": 2
+        },
+        "pending_chunks": 0,
+        "pending_uploads": 0,
+        "physical_keys": [],
+        "pickups": {},
+        "pitch": 0.0,
+        "player": {
+          "food": 20,
+          "health": 20.0,
+          "max_health": null,
+          "on_ground": true,
+          "position": [
+            168.5,
+            70.0,
+            170.5
+          ],
+          "velocity": [
+            0.0,
+            -0.0784000015258789,
+            0.0
+          ]
+        },
+        "projectiles": [],
+        "render_distance": 6,
+        "renderer": {
+          "arena_bytes": 31457280,
+          "backend": "Vulkan",
+          "culled_sections": [
+            [
+              0,
+              1
+            ],
+            0.0
+          ],
+          "device_type": "discrete",
+          "drawn_sections": 1,
+          "driver": "radv Mesa 26.2.6-arch1.1",
+          "gpu": "AMD Radeon RX 7600 (RADV NAVI33)",
+          "gpu_allocated_bytes": 455096080,
+          "gpu_culling": false,
+          "gpu_frame": false,
+          "gpu_reserved_bytes": 540934144,
+          "present_mode": "Immediate",
+          "resident_sections": 9,
+          "section_draw_calls": 1,
+          "section_draws": 1,
+          "section_vertex_bytes": 577248,
+          "size": [
+            960,
+            540
+          ],
+          "uploaded_bytes": 1046016,
+          "vendor": "amd"
+        },
+        "riding": null,
+        "rockets": 0,
+        "screen": "playing",
+        "selected": 1,
+        "server": {
+          "address": "local",
+          "chat": [],
+          "chunks": 10,
+          "dead_players": [],
+          "decode_errors": 0,
+          "dimension": "minecraft:overworld",
+          "entities": {
+            "minecraft:bat": 1,
+            "minecraft:chicken": 4,
+            "minecraft:glow_squid": 3,
+            "minecraft:skeleton": 1,
+            "minecraft:zombie": 1
+          },
+          "entity_id": 1,
+          "food": 20,
+          "game_mode": 0,
+          "health": 20.0,
+          "joined": true,
+          "loaded": true,
+          "lying_players": [],
+          "name": "NtmTeste",
+          "own_body": false,
+          "player_equipment": [],
+          "player_model": true,
+          "player_positions": [],
+          "players": [
+            "NtmTeste"
+          ],
+          "status": "Loading terrain...",
+          "text_display_vertices": 0,
+          "text_displays": 0
+        },
+        "sidebar": null,
+        "sounds": {
+          "channels": 0,
+          "decoded": 0,
+          "decoded_mib": 0,
+          "events": [],
+          "handles": 0,
+          "instances": 0,
+          "playing": 0,
+          "queued": 0,
+          "ticking": 0,
+          "used": [
+            0,
+            0
+          ]
+        },
+        "stopped_sounds": {},
+        "streaming": {
+          "decorating": 0,
+          "finishing": 0,
+          "generating": 0,
+          "lighting": 0,
+          "meshing": 0,
+          "protos": 0,
+          "queued": 0
+        },
+        "target": null,
+        "ticks": 38,
+        "tridents": 0,
+        "uptime_seconds": 2.538348207,
+        "using": null,
+        "yaw": 0.0
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.0 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.1 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.2 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.3 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.4 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.5 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.6 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.7 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.8 with minecraft:air",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Air]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace entity @s hotbar.0 with ntm:bottle_cherry 1",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) on NtmTeste with [Bottle of Nuka Cherry]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "select 1",
+      "result": {
+        "held": {
+          "count": 1,
+          "item": "ntm:bottle_cherry"
+        },
+        "ok": true,
+        "selected": 1
+      }
+    },
+    {
+      "command": "inventory",
+      "result": {
+        "armor": [
+          {
+            "item": null,
+            "part": "head",
+            "slot": 500
+          },
+          {
+            "item": null,
+            "part": "chest",
+            "slot": 501
+          },
+          {
+            "item": null,
+            "part": "legs",
+            "slot": 502
+          },
+          {
+            "item": null,
+            "part": "feet",
+            "slot": 503
+          }
+        ],
+        "carried": null,
+        "counts": {
+          "ntm:bottle_cherry": 1
+        },
+        "held": {
+          "count": 1,
+          "item": "ntm:bottle_cherry"
+        },
+        "hotbar": [
+          {
+            "count": 1,
+            "item": "ntm:bottle_cherry",
+            "slot": 0
+          },
+          {
+            "item": null,
+            "slot": 1
+          },
+          {
+            "item": null,
+            "slot": 2
+          },
+          {
+            "item": null,
+            "slot": 3
+          },
+          {
+            "item": null,
+            "slot": 4
+          },
+          {
+            "item": null,
+            "slot": 5
+          },
+          {
+            "item": null,
+            "slot": 6
+          },
+          {
+            "item": null,
+            "slot": 7
+          },
+          {
+            "item": null,
+            "slot": 8
+          }
+        ],
+        "main": [
+          {
+            "item": null,
+            "slot": 9
+          },
+          {
+            "item": null,
+            "slot": 10
+          },
+          {
+            "item": null,
+            "slot": 11
+          },
+          {
+            "item": null,
+            "slot": 12
+          },
+          {
+            "item": null,
+            "slot": 13
+          },
+          {
+            "item": null,
+            "slot": 14
+          },
+          {
+            "item": null,
+            "slot": 15
+          },
+          {
+            "item": null,
+            "slot": 16
+          },
+          {
+            "item": null,
+            "slot": 17
+          },
+          {
+            "item": null,
+            "slot": 18
+          },
+          {
+            "item": null,
+            "slot": 19
+          },
+          {
+            "item": null,
+            "slot": 20
+          },
+          {
+            "item": null,
+            "slot": 21
+          },
+          {
+            "item": null,
+            "slot": 22
+          },
+          {
+            "item": null,
+            "slot": 23
+          },
+          {
+            "item": null,
+            "slot": 24
+          },
+          {
+            "item": null,
+            "slot": 25
+          },
+          {
+            "item": null,
+            "slot": 26
+          },
+          {
+            "item": null,
+            "slot": 27
+          },
+          {
+            "item": null,
+            "slot": 28
+          },
+          {
+            "item": null,
+            "slot": 29
+          },
+          {
+            "item": null,
+            "slot": 30
+          },
+          {
+            "item": null,
+            "slot": 31
+          },
+          {
+            "item": null,
+            "slot": 32
+          },
+          {
+            "item": null,
+            "slot": 33
+          },
+          {
+            "item": null,
+            "slot": 34
+          },
+          {
+            "item": null,
+            "slot": 35
+          }
+        ],
+        "offhand": {
+          "item": null,
+          "slot": 504
+        },
+        "selected": 1
+      }
+    }
+  ],
+  "checks": {
+    "cherry-probe:survival_world": {
+      "ok": true,
+      "actual": false
+    },
+    "cherry-probe:cherry_reported_as_itself": {
+      "ok": true,
+      "actual": {
+        "ntm:bottle_cherry": 1
+      }
+    }
+  },
+  "phase": "cherry-probe",
+  "notes": {
+    "chat_reply": "Replaced 1 slot(s) on NtmTeste with [Bottle of Nuka Cherry]",
+    "inventory_after_give": {
+      "ntm:bottle_cherry": 1
+    }
+  }
+}

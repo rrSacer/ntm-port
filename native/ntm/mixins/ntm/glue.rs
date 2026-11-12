@@ -74,6 +74,8 @@ pub(super) fn world(open: bool) {
         lock(&LEDGERS).clear();
         lock(&OWING).clear();
         lock(&ARRIVED).clear();
+        lock(&RAD_CHUNKS).clear();
+        lock(&GEIGERS).clear();
         KV_ITEMS.store(0, std::sync::atomic::Ordering::Relaxed);
         lock(&LOADED_AT).clear();
     }
@@ -137,11 +139,17 @@ static KV_ITEMS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::ne
 
 /// A battery, a fluid tank and a barrel give a comparator a signal (`hasComparatorInputOverride`).
 pub(super) fn has_analog_output(level: &crate::game::GameLevel<'_>, state: horizon_world::registry::BlockStateId, output: &mut bool) {
-    if ntm_core::native::has_comparator(&level.facts.get(state).name) { *output = true; }
+    let name = &level.facts.get(state).name;
+    if ntm_core::native::has_comparator(name) || &**name == GEIGER { *output = true; }
 }
 
 /// `getComparatorInputOverride` from the machine's saved state, which the server commits each tick.
-pub(super) fn analog_output(level: &crate::game::GameLevel<'_>, pos: horizon_core::position::BlockPos, state: horizon_world::registry::BlockStateId, output: &mut i32) {
+pub(super) fn analog_output(level: &crate::game::GameLevel<'_>, dim: &str, pos: horizon_core::position::BlockPos, state: horizon_world::registry::BlockStateId, output: &mut i32) {
+    // GeigerCounter.getComparatorInputOverride: the field where it is, read when asked.
+    if &*level.facts.get(state).name == GEIGER {
+        *output = ntm_core::geiger_block::comparator(field_at(dim, [pos.x, pos.y, pos.z]));
+        return;
+    }
     if !ntm_core::native::has_comparator(&level.facts.get(state).name) { return; }
     let Some(horizon_client::containers::BlockEntity::Mod(m)) = level.world.block_entities.get(&(pos.x, pos.y, pos.z)) else { return };
     if let Some(Tag::String(json)) = m.nbt.get(&JavaString::from(STATE)) {
@@ -158,6 +166,10 @@ fn comparator_of(block: &str, json: Option<&JavaString>) -> u8 {
 /// A block changed on the server: kept when a machine or cable is in it.
 pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3], old: horizon_world::registry::BlockStateId, new: horizon_world::registry::BlockStateId) {
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
+    // A Geiger counter block taken away: a new one starts from 0 (a new TileEntityGeiger).
+    if old == GEIGER && new != GEIGER {
+        lock(&GEIGERS).remove(&(dim.to_string(), pos));
+    }
     if trace_effects() && ["minecraft:oak_fence","minecraft:chest","minecraft:oak_log","minecraft:oak_planks"].contains(&old.as_str()){
         eprintln!("ntm trace block {}",serde_json::json!({"tick":level.world.game_time,"dim":dim,"pos":pos,"old":old,"new":new}));
     }
@@ -203,6 +215,11 @@ fn reconcile(server:&mut Server,host:&mut Host<'_, '_>){
 /// machine may take it (the turbines' levers). True when it did.
 pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [i32; 3], face: [i32; 3], sneaking: bool) -> bool {
     if crate::game::ntm_armor_table::open(game,pos,sneaking){return true;}
+    // GeigerCounter.onBlockActivated: not sneaking, the techBoop and printGeigerData; sneaking, nothing (false).
+    if !sneaking && game.native_loaded_block(game.dim.id(), pos).is_some_and(|b| ntm_core::blockstate::id_of(&b) == GEIGER) {
+        crate::game::ntm_items::geiger_report(game);
+        return true;
+    }
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     let dim = game.dim.id().to_string();
@@ -292,6 +309,12 @@ pub(super) fn contaminate(uuid: &str, millirad: i64) {
 }
 
 /// The fallout zones' rate at a position, milliRAD/s.
+/// The world's radiation by chunk at a position, as `getRadiation` reads it (0 before the server exists).
+pub(super) fn chunk_rad(dim: &str, pos: [f64; 3]) -> f32 {
+    let chunk = [(pos[0].floor() as i32) >> 4, (pos[2].floor() as i32) >> 4];
+    lock(&SERVER).as_ref().map_or(0.0, |(server, _)| server.native_chunk_radiation(dim, chunk))
+}
+
 pub(super) fn zone_rate(dim: &str, pos: [f64; 3]) -> u32 {
     lock(&SERVER).as_ref().map_or(0, |(server, _)| server.zone_rate(dim, pos))
 }
@@ -324,6 +347,20 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
         return true;
     }
     if line.split_whitespace().next()==Some("ntmtest"){return test_hook(game,player,line);}
+    if line.split_whitespace().next()==Some("ntmrad"){
+        let mut guard=lock(&SERVER);
+        let mut host=Host{game,buttons:Vec::new()};
+        let (server,_)=guard.get_or_insert_with(||(Server::native(&mut host,0),0));
+        reconcile(server,&mut host);
+        arrived(server);
+        if let Some(reply)=server.native_radiation_command(&player.dimension,player.position,line){
+            match reply{
+                Ok(text)=>host.game.native_feedback(horizon_client::text::Text::literal(text)),
+                Err(text)=>host.game.native_feedback(horizon_client::text::Text::literal(format!("\u{a7}c{text}"))),
+            }
+        }
+        return true;
+    }
     if line.split_whitespace().next()!=Some("ntmbomba"){return false;}
     let who=PlayerInfo{id:game.native_actor_uuid().unwrap_or_else(||player.uuid.to_string()),name:player.name.clone(),dim:player.dimension.clone(),pos:player.position,creative:player.game_mode==1};
     let mut guard=lock(&SERVER);
@@ -352,6 +389,24 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let mut host=Host{game,buttons:Vec::new()};
     let Some((server,_))=guard.as_mut() else{return true};
     reconcile(server,&mut host);
+    // `ntmtest height <x> <z>`: the column's motion-blocking height and the blocks at it and the two under it.
+    if w.first()==Some(&"height") && let (Some(x),Some(z))=(n(1),n(2)){
+        let h=ntm_core::server::ServerHost::surface_heights(&mut host,&dim,&[(x as i32,z as i32)])[0];
+        let around=h.map(|h|(h-2..=h).map(|y|host.game.native_loaded_block(&dim,[x as i32,y,z as i32]).unwrap_or_default()).collect::<Vec<_>>().join(",")).unwrap_or_default();
+        host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok=true height={h:?} below2..at={around}")));
+        return true;
+    }
+    // `ntmtest rad <cx> <cz> [r]`: the world's radiation map around a chunk, one `x,z:raw:next:loaded` per chunk the
+    // map holds, the next update writes or that is loaded (`raw` the map's value as its float bits, `none` when not in
+    // it; `next` what the next update gives it; `loaded` 1 when a save writes it), and the ticks since the last update.
+    if w.first()==Some(&"rad") && let (Some(x),Some(z))=(n(1),n(2)){
+        let (timer,chunks)=server.native_chunk_radiation_probe(&dim,[x as i32,z as i32],n(3).unwrap_or(0.0) as i32);
+        // Only the chunks the map holds or the next update writes: a wide radius stays a short reply.
+        let list:Vec<String>=chunks.iter().filter(|(_,raw,next,loaded)|raw.is_some()||*next!=0.0||*loaded).map(|(c,raw,next,loaded)|format!("{},{}:{}:{}:{}",c[0],c[1],raw.map_or("none".to_string(),|r|r.to_bits().to_string()),next.to_bits(),u8::from(*loaded))).collect();
+        let reply=format!("ntmtest ok=true timer={timer} rad={}",list.join(";"));
+        host.game.native_feedback(horizon_client::text::Text::literal(reply));
+        return true;
+    }
     let at=match (n(1),n(2),n(3)){(Some(x),Some(y),Some(z))=>Some([x as i32,y as i32,z as i32]),_=>None};
     let result:Result<(),&str>=match (w.first().copied(),at){
         (Some("eject"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>if server.native_test_eject(&dim,p,[x,y,z]){Ok(())}else{Err("no rod to put out")},_=>Err("usage")},
@@ -365,6 +420,42 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let reply=match result{Ok(())=>"ntmtest ok=true".to_string(),Err(e)=>format!("ntmtest ok=false reason={e}")};
     host.game.native_feedback(horizon_client::text::Text::literal(reply));
     true
+}
+
+// ------------------------------------------------------------- the Geiger counter block
+// `TileEntityGeiger` keeps nothing: its counters live here while its chunk is loaded, from 0 each time it is made.
+
+const GEIGER: &str = "ntm:geiger";
+
+/// Each Geiger counter block's `timer` and `ticker`, by (dimension, position).
+static GEIGERS: Mutex<std::collections::BTreeMap<(String, [i32; 3]), ntm_core::geiger_block::GeigerBlock>> =
+    Mutex::new(std::collections::BTreeMap::new());
+
+/// `getRadiation` at a block: the world's radiation by chunk (0 before the server exists, or while it is busy).
+fn field_at(dim: &str, pos: [i32; 3]) -> f32 {
+    SERVER.try_lock().ok().and_then(|g| g.as_ref().map(|(server, _)| server.native_chunk_radiation(dim, [pos[0] >> 4, pos[2] >> 4]))).unwrap_or(0.0)
+}
+
+/// `TileEntityGeiger.updateEntity`: the reading every 10 ticks with the neighbours told, a click every 5 at the
+/// block's corner (`playSoundEffect(xCoord, yCoord, zCoord, ..)`).
+fn geiger_tick(game: &mut crate::game::Game<'_>, pos: [i32; 3]) {
+    let dim = game.dim.id().to_string();
+    let step = {
+        let mut geigers = lock(&GEIGERS);
+        let geiger = geigers.entry((dim.clone(), pos)).or_default();
+        geiger.tick(|| field_at(&dim, pos), |n| (crate::game::ntm_items::random_unit(game) * n as f32) as u32 % n.max(1))
+    };
+    if step.notify {
+        game.native_update_output_neighbors(&dim, pos);
+    }
+    if let Some(r) = step.click {
+        crate::game::ntm_items::play_at(game, &format!("hbm:item.geiger{r}"), [f64::from(pos[0]), f64::from(pos[1]), f64::from(pos[2])]);
+    }
+}
+
+/// A chunk's Geiger counter blocks leave with it: made again from 0 when it loads.
+fn geigers_unloaded(dim: &str, chunk: [i32; 2]) {
+    lock(&GEIGERS).retain(|(d, p), _| !(d == dim && p[0] >> 4 == chunk[0] && p[2] >> 4 == chunk[1]));
 }
 
 // ----------------------------------------------------------------- the ledger
@@ -680,7 +771,7 @@ fn ledger_add(game: &mut crate::game::Game<'_>, dim: &str, id: u64, pos: [i32; 3
 fn spawn_items(g: &mut crate::game::Game<'_>, pos: [i32; 3], items: &[String]) {
     for item in items {
         match horizon_world::nbt::parse_snbt(item).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t)) {
-            Some(stack) => g.spawn_item(stack, pos.map(|v| f64::from(v) + 0.5), crate::game::dispenser::new_item_motion(), 0),
+            Some(stack) => { g.spawn_item_own(stack, pos.map(|v| f64::from(v) + 0.5), 0); }
             None => eprintln!("ntm: invalid owed item NBT {item:?}"),
         }
     }
@@ -830,8 +921,19 @@ fn store_obligations(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2
 type Arrived = (String, [i32; 2], Vec<ntm_core::persist::Removal>, Vec<ntm_core::server::CommittedEffects>, std::collections::BTreeSet<ntm_core::persist::Obligation>);
 static ARRIVED: Mutex<Vec<Arrived>> = Mutex::new(Vec::new());
 
-/// What the chunks loaded since owe, given to the server.
+/// Chunks loaded (true) and unloaded (false) since the server last took them, in their order, for the world's
+/// radiation by chunk (`Server::native_chunk_radiation_loaded`/`_unloaded`).
+static RAD_CHUNKS: Mutex<Vec<(String, [i32; 2], bool)>> = Mutex::new(Vec::new());
+
+/// What the chunks loaded since owe, and the chunks loaded and unloaded since, given to the server.
 fn arrived(server: &mut Server) {
+    for (dim, chunk, loaded) in std::mem::take(&mut *lock(&RAD_CHUNKS)) {
+        if loaded {
+            server.native_chunk_radiation_loaded(&dim, chunk);
+        } else {
+            server.native_chunk_radiation_unloaded(&dim, chunk);
+        }
+    }
     for (dim, chunk, removals, batches, migrated) in std::mem::take(&mut *lock(&ARRIVED)) {
         server.native_obligations_loaded(&dim, chunk, removals, batches, migrated);
     }
@@ -842,6 +944,7 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
     if dim_of(dim) != Some(game.dim) {
         return;
     }
+    lock(&RAD_CHUNKS).push((dim.to_string(), chunk, true));
     let key = chunk_key(dim, chunk);
     lock(&LOADED_AT).insert(key.clone(), game.ticks);
     let ledger = ledger_load(game, chunk);
@@ -860,6 +963,9 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
 /// a removed machine's contents out into the entities that leave with it, and what each chunk owes is in its record
 /// before that record is written (R7-2).
 pub(super) fn chunk_unloaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {
+    // Before the server takes the block changes: the chunk's value is saved as it leaves.
+    lock(&RAD_CHUNKS).push((dim.to_string(), chunk, false));
+    geigers_unloaded(dim, chunk);
     if let Ok(mut guard) = SERVER.try_lock() && let Some((server, _)) = guard.as_mut() {
         let mut host = Host { game, buttons: Vec::new() };
         feed_changes(server, &mut host);
@@ -1201,13 +1307,13 @@ impl ServerHost for Host<'_, '_> {
         if self.game.native_loaded_block(dim,pos).is_none(){return false;}
         let items:Option<Vec<_>>=items.iter().map(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t))).collect();
         let Some(items)=items else{eprintln!("ntm: invalid retained item NBT at {dim} {pos:?}");return false};
-        in_place(self.game,dim,|g|for i in items{g.spawn_item(i,pos.map(|v|f64::from(v)+0.5),crate::game::dispenser::new_item_motion(),0);}).is_some()
+        in_place(self.game,dim,|g|for i in items{g.spawn_item_own(i,pos.map(|v|f64::from(v)+0.5),0);}).is_some()
     }
     fn drop_items(&mut self,dim:&str,p:[i32;3],items:&[(String,u32)])->bool {
         if self.game.native_loaded_block(dim,p).is_none(){return false;}
         let at=p.map(|v|f64::from(v)+0.5);
         in_place(self.game,dim,|g|{
-            for (id,n) in items {g.spawn_item(ItemStack::new(id,*n),at,crate::game::dispenser::new_item_motion(),0);}
+            for (id,n) in items {g.spawn_item_own(ItemStack::new(id,*n),at,0);}
         }).is_some()
     }
     fn apply_items(&mut self,id:u64,dim:&str,p:[i32;3],items:&[(String,u32)],owners:&[(String,[i32;3])])->bool{
@@ -1292,7 +1398,7 @@ impl ServerHost for Host<'_, '_> {
         let darken = match dimension {
             Dim::Nether => 11,
             Dim::End => {
-                let sky = self.game.res.end_environment().sample(world.day_time,None,None);
+                let sky = self.game.res.end_environment().sample(&horizon_client::environment::Sample{day_time:world.day_time,..Default::default()});
                 (15.0 - 15.0 * sky.sky_light_level).round() as i32
             }
             Dim::Overworld => {
@@ -1422,6 +1528,73 @@ impl ServerHost for Host<'_, '_> {
         self.game.native_visit_player(id,|g|crate::game::ntm_items::write_dose(g,expected,desired)).unwrap_or(false)
     }
     fn radiation_factor(&mut self,id:&str)->f64{self.game.native_visit_player(id,|g|crate::game::ntm_items::radiation_factor(g)).unwrap_or(1.0)}
+    fn player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<ntm_core::zirnox::StoredPotion>{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::read_irradiation(g,legacy)).flatten()
+    }
+    fn commit_player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose,expected:ntm_core::zirnox::StoredPotion,desired:ntm_core::zirnox::StoredPotion)->bool{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::write_irradiation(g,legacy,expected,desired)).unwrap_or(false)
+    }
+    /// `Entity.moveEntity` takes no step "onGround && isSneaking()" for a player, nor while `ridingEntity` is set
+    /// (Onda 1, slice 5d, D3). The one place the NTM reads these, and the engine's API (NativePlayerInfo) does not
+    /// carry them: engine fields read directly, at the pin of compatibility.json (`eb5d3eed58`):
+    /// - a LAN guest: `lan::guest::Guest::{on_ground, sneaking, vehicle}` (crates/horizon-client/src/lan/guest.rs);
+    /// - the player in place: `Player::ground.on_ground`, `Game::keys.held(Action::Sneak)` and `Game::riding`.
+    ///
+    /// A pin that renames or drops them breaks this build, never silently. Asked of the engine as API for later
+    /// (docs/onda-1-protecao.md, slice 5d).
+    fn step_blocked(&mut self,id:&str)->bool{
+        let Ok(uuid)=u128::from_str_radix(&id.replace('-',""),16) else{return false};
+        let game=&*self.game;
+        if let Some(g)=game.lan.iter().flat_map(|h|h.hub.guests.iter()).find(|g|g.placed&&g.uuid==uuid){
+            let guest:&horizon_client::lan::guest::Guest=g;
+            return guest.on_ground&&guest.sneaking||guest.vehicle.is_some();
+        }
+        if game.level.player_uuid.map(horizon_client::lan::playerdata::ints_uuid)==Some(uuid){
+            let on_ground:bool=game.player.as_ref().is_some_and(|p|p.ground.on_ground);
+            let riding:&Option<u32>=&game.riding;
+            return on_ground&&game.keys.held(horizon_client::actions::Action::Sneak)||riding.is_some();
+        }
+        false
+    }
+    /// A teleport takes no step (`setPositionAndUpdate` skips `Entity.moveEntity`; slice 5d, review P2-1). Read here,
+    /// with `step_blocked`, from engine fields at the same pin:
+    /// - a LAN guest: `Guest::teleport_counter` (the id of the last position the server set), `awaiting_teleport` and
+    ///   `landing` (moves ignored until the client takes the new position);
+    /// - the player in place: `Player::steps` (`MovementDistances::{movement, flight}`, `Entity.moveDist` and
+    ///   `flyDist`), which grow by 0.6 x what the physics moved them: a horizontal move longer than that is a teleport,
+    ///   also in a tick of walking (`walking::teleported_by_distance`; a fall moves no step distance either way, and
+    ///   rides are blocked).
+    ///
+    /// Remembers each player's last mark; asked once a tick for each player.
+    fn teleported(&mut self,id:&str)->bool{
+        static SEEN:OnceLock<Mutex<HashMap<u128,(u64,f64,f64)>>>=OnceLock::new();
+        let Ok(uuid)=u128::from_str_radix(&id.replace('-',""),16) else{return false};
+        let game=&*self.game;
+        let mut seen=lock(SEEN.get_or_init(Default::default));
+        if let Some(g)=game.lan.iter().flat_map(|h|h.hub.guests.iter()).find(|g|g.placed&&g.uuid==uuid){
+            let guest:&horizon_client::lan::guest::Guest=g;
+            let counter:i32=guest.teleport_counter;
+            let pending=guest.awaiting_teleport.is_some()||guest.landing;
+            let last=seen.insert(uuid,(counter as u32 as u64,0.0,0.0));
+            return pending||last.is_some_and(|(c,..)|c!=counter as u32 as u64);
+        }
+        if game.level.player_uuid.map(horizon_client::lan::playerdata::ints_uuid)==Some(uuid)
+            && let Some(p)=game.player.as_ref()
+        {
+            let steps:horizon_world::movement_emission::MovementDistances=p.steps;
+            let walked=steps.movement+steps.flight;
+            let (x,z)=(p.position.x,p.position.z);
+            let last=seen.insert(uuid,(u64::from(walked.to_bits()),x,z));
+            return last.is_some_and(|(w,lx,lz)|ntm_core::walking::teleported_by_distance(((x-lx).powi(2)+(z-lz).powi(2)).sqrt(),walked-f32::from_bits(w as u32)));
+        }
+        false
+    }
+    fn effect_state(&mut self,id:&str,effect:&str)->Option<Option<(u32,u8)>>{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::effect_state(g,effect))
+    }
+    fn remove_effect(&mut self,id:&str,effect:&str){
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::remove_effect(g,effect));
+    }
     fn inventory_stacks(&mut self,id:&str)->Option<Vec<Stack>> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {id:c.item,count:c.count,damage:0,custom:c.custom_data}).collect())
     }
@@ -1433,13 +1606,39 @@ impl ServerHost for Host<'_, '_> {
             eprintln!("ntm: hurt {id}: {e}");
         }
     }
-    fn effect(&mut self, id: &str, effect: &str, seconds: u32, amplifier: u8) {
-        if let Err(e) = self.game.native_effect(id, effect, seconds * 20, amplifier, true) {
+    fn effect(&mut self, id: &str, effect: &str, ticks: u32, amplifier: u8) {
+        // The test runs count the sickness rolls by band from this line (tools/test-game/native_items.py).
+        static TRACE: OnceLock<bool> = OnceLock::new();
+        if *TRACE.get_or_init(|| std::env::var_os("NTM_TRACE_ITEMS").is_some()) {
+            eprintln!("ntm trace effect {}", serde_json::json!({"tick": self.game.world.game_time, "player": id, "effect": effect, "ticks": ticks, "amplifier": amplifier}));
+        }
+        if let Err(e) = self.game.native_effect(id, effect, ticks, amplifier, true) {
             eprintln!("ntm: effect {id}: {e}");
         }
     }
+    fn world_seed(&mut self) -> i64 {
+        self.game.level.seed
+    }
     /// Particles and sounds in the dimension in play (`native_send_particles`,
     /// API 11; `native_play_sound`, API 32).
+    /// The motion-blocking heights of the level being ticked (`native_surface_heights`, API 127): another level's
+    /// columns, or a refused read, are not loaded. The engine's map leaves the NTM's blocks out (an engine ticket):
+    /// where the world-surface map, which counts them, is above it, the highest NTM block that blocks motion between
+    /// the two is the top (`chunk_radiation::height_with_ntm`, the bridge of 4c).
+    fn surface_heights(&mut self, dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
+        use super::native_world_edit::NativeHeightmap;
+        let none = || vec![None; columns.len()];
+        let Ok(motion) = self.game.native_surface_heights(dim, columns, NativeHeightmap::MotionBlocking) else { return none() };
+        let Ok(surface) = self.game.native_surface_heights(dim, columns, NativeHeightmap::WorldSurface) else { return none() };
+        columns
+            .iter()
+            .zip(motion.iter().zip(&surface))
+            .map(|(&(x, z), (m, s))| match (*m, *s) {
+                (Some(m), Some(s)) if s > m => Some(ntm_core::chunk_radiation::height_with_ntm(m, s, |y| self.game.native_loaded_block(dim, [x, y, z]))),
+                (m, _) => m,
+            })
+            .collect()
+    }
     fn show(&mut self, dim: &str, show: &ntm_core::blast::visuals::Show) {
         if dim_of(dim) != Some(self.game.dim) {
             // Particles and sounds reach only the players of the level in place.
@@ -1464,8 +1663,16 @@ fn show_in_place(game: &mut crate::game::Game<'_>, show: &ntm_core::blast::visua
     use ntm_core::blast::visuals::Show;
     let (what, sent) = match show {
         Show::Particles { id, color, at, spread, speed, count } => {
-            let Some(ty) = ParticleType::from_name(id) else { return };
-            let mut options = ParticleOptions::simple(ty);
+            // The NTM's own particles (the radiation fog's quads): a mod particle type, by its namespaced name.
+            let mut options = match ParticleType::from_name(id) {
+                Some(ty) => ParticleOptions::simple(ty),
+                None if id.starts_with("ntm:") => {
+                    let mut options = ParticleOptions::simple(ParticleType::Smoke);
+                    options.mod_particle = Some(id.to_string());
+                    options
+                }
+                None => return,
+            };
             options.color = *color;
             (id, game.with_level(|_, level, _| level.native_send_particles(&options, None, *at, *spread, *speed, *count)))
         }
@@ -1495,13 +1702,13 @@ fn show_in_place(game: &mut crate::game::Game<'_>, show: &ntm_core::blast::visua
 /// A new machine block's block entity, empty: the server keeps the
 /// machine's state in it.
 pub(super) fn entity(block: &str, entity: &mut Option<(String, Compound)>) {
-    if entity.is_none() && is_machine(block) {
+    if entity.is_none() && (is_machine(block) || block == GEIGER) {
         *entity = Some((block.to_string(), Compound::new()));
     }
 }
 
 pub(super) fn ticks(block: &str, ticks: &mut bool) {
-    if is_machine(block) {
+    if is_machine(block) || block == GEIGER {
         *ticks = true;
     }
 }
@@ -1676,6 +1883,10 @@ fn rod_doubles(tag: &mut Tag) {
 /// from its saved state when the server doesn't know it (the world was
 /// opened again); the server's phases run it at the tick's end.
 pub(super) fn tick(game: &mut crate::game::Game<'_>, pos: [i32; 3], entity: &mut ModBlockEntity) {
+    // An inert machine besides (as the decontaminator): the server knows it, the glue ticks it.
+    if entity.id == GEIGER {
+        geiger_tick(game, pos);
+    }
     if !is_machine(&entity.id) {
         return;
     }

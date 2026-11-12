@@ -1,0 +1,281 @@
+{
+ "binary": "onda1-fatia5 351b2d47 on engine eb5d3eed58",
+ "items_checks": 268,
+ "all_ok": true,
+ "sickness": {
+  "setup:sickness_band_300_rolls_as_the_java": {
+   "ok": true,
+   "actual": {
+    "counts": {
+     "nausea": 35,
+     "weakness": 29
+    },
+    "bounds": {
+     "nausea": [
+      14,
+      66
+     ],
+     "weakness": [
+      4,
+      44
+     ]
+    },
+    "wrong": [],
+    "ticks": 12008,
+    "state": {
+     "dose": 300000,
+     "radaway": 0
+    }
+   }
+  },
+  "setup:sickness_band_500_rolls_as_the_java": {
+   "ok": true,
+   "actual": {
+    "counts": {
+     "nausea": 30,
+     "slowness": 20,
+     "weakness": 48
+    },
+    "bounds": {
+     "nausea": [
+      14,
+      66
+     ],
+     "slowness": [
+      4,
+      44
+     ],
+     "weakness": [
+      14,
+      66
+     ]
+    },
+    "wrong": [],
+    "ticks": 12009,
+    "state": {
+     "dose": 500000,
+     "radaway": 0
+    }
+   }
+  },
+  "setup:sickness_band_700_rolls_as_the_java": {
+   "ok": true,
+   "actual": {
+    "counts": {
+     "nausea": 44,
+     "slowness": 43,
+     "weakness": 39,
+     "poison": 17
+    },
+    "bounds": {
+     "nausea": [
+      14,
+      66
+     ],
+     "slowness": [
+      14,
+      66
+     ],
+     "weakness": [
+      14,
+      66
+     ],
+     "poison": [
+      4,
+      44
+     ]
+    },
+    "wrong": [],
+    "ticks": 12008,
+    "state": {
+     "dose": 700000,
+     "radaway": 0
+    }
+   }
+  },
+  "setup:sickness_band_900_rolls_as_the_java": {
+   "ok": true,
+   "actual": {
+    "counts": {
+     "nausea": 43,
+     "slowness": 35,
+     "weakness": 44,
+     "poison": 22,
+     "wither": 21
+    },
+    "bounds": {
+     "nausea": [
+      14,
+      66
+     ],
+     "slowness": [
+      14,
+      66
+     ],
+     "weakness": [
+      14,
+      66
+     ],
+     "poison": [
+      4,
+      44
+     ],
+     "wither": [
+      1,
+      34
+     ]
+    },
+    "wrong": [],
+    "ticks": 12008,
+    "state": {
+     "dose": 900000,
+     "radaway": 0
+    }
+   }
+  }
+ },
+ "earlier_run": "the same 268/268 on engine 6a79054fa9 before absorbing main 6bf570b7",
+ "review_fix_run": {
+  "binary": "onda1-fatia5 with the review fixes, engine eb5d3eed58",
+  "sickness": {
+   "setup:sickness_band_300_rolls_as_the_java": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "nausea": 39,
+      "weakness": 24
+     },
+     "bounds": {
+      "nausea": [
+       14,
+       66
+      ],
+      "weakness": [
+       4,
+       44
+      ]
+     },
+     "wrong": [],
+     "ticks": 12009,
+     "state": {
+      "dose": 300000
+     }
+    }
+   },
+   "setup:sickness_band_500_rolls_as_the_java": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "nausea": 38,
+      "slowness": 33,
+      "weakness": 27
+     },
+     "bounds": {
+      "nausea": [
+       14,
+       66
+      ],
+      "slowness": [
+       4,
+       44
+      ],
+      "weakness": [
+       14,
+       66
+      ]
+     },
+     "wrong": [],
+     "ticks": 12005,
+     "state": {
+      "dose": 500000
+     }
+    }
+   },
+   "setup:sickness_band_700_rolls_as_the_java": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "nausea": 38,
+      "slowness": 37,
+      "weakness": 44,
+      "poison": 28
+     },
+     "bounds": {
+      "nausea": [
+       14,
+       66
+      ],
+      "slowness": [
+       14,
+       66
+      ],
+      "weakness": [
+       14,
+       66
+      ],
+      "poison": [
+       4,
+       44
+      ]
+     },
+     "wrong": [],
+     "ticks": 12012,
+     "state": {
+      "dose": 700000
+     }
+    }
+   },
+   "setup:sickness_band_900_rolls_as_the_java": {
+    "ok": true,
+    "actual": {
+     "counts": {
+      "nausea": 36,
+      "slowness": 45,
+      "weakness": 33,
+      "poison": 25,
+      "wither": 20
+     },
+     "bounds": {
+      "nausea": [
+       14,
+       66
+      ],
+      "slowness": [
+       14,
+       66
+      ],
+      "weakness": [
+       14,
+       66
+      ],
+      "poison": [
+       4,
+       44
+      ],
+      "wither": [
+       1,
+       34
+      ]
+     },
+     "wrong": [],
+     "ticks": 12012,
+     "state": {
+      "dose": 900000
+     }
+    }
+   }
+  }
+ },
+ "keep_cost_ms_per_tick": {
+  "before": {
+   "0": 0.0008,
+   "5000": 0.5157,
+   "50000": 5.68
+  },
+  "after": {
+   "0": 0.0001,
+   "5000": 0.0001,
+   "50000": 0.0001
+  }
+ }
+}

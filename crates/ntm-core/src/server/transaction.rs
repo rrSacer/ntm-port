@@ -104,6 +104,11 @@ struct Deferred<'a, H> {
     resource:bool,
     world_writes:Vec<CellWrite>,
     critical: std::collections::VecDeque<WorldEffect>,
+    /// Doses a step wrote, by player: what a later read in the same step sees. The player's own storage takes them
+    /// after the commit, each write expecting the one before it.
+    doses: BTreeMap<String, crate::radiation::Dose>,
+    /// The same for the radiation potion in the player's storage.
+    irradiations: BTreeMap<String, crate::zirnox::StoredPotion>,
 }
 impl<H: ServerHost> Kv for Deferred<'_, H> {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -206,13 +211,55 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         let (p, k) = (p.to_string(), k.to_string());
         self.effects.push((self.origins.clone(),Box::new(move |h| h.hurt(&p, a, &k))));
     }
-    fn effect(&mut self, p: &str, e: &str, s: u32, a: u8) {
+    fn effect(&mut self, p: &str, e: &str, t: u32, a: u8) {
         let (p, e) = (p.to_string(), e.to_string());
-        self.effects.push((self.origins.clone(),Box::new(move |h| h.effect(&p, &e, s, a))));
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.effect(&p, &e, t, a))));
     }
     fn show(&mut self, d: &str, s: &crate::blast::visuals::Show) {
         let (d, s) = (d.to_string(), s.clone());
         self.effects.push((self.origins.clone(),Box::new(move |h| h.show(&d, &s))));
+    }
+    fn radiation_factor(&mut self, id: &str) -> f64 {
+        self.host.radiation_factor(id)
+    }
+    fn player_dose(&mut self, id: &str, legacy: &crate::radiation::Dose) -> Option<crate::radiation::Dose> {
+        match self.doses.get(id) {
+            Some(staged) => Some(staged.clone()),
+            None => self.host.player_dose(id, legacy),
+        }
+    }
+    fn commit_player_dose(&mut self, id: &str, expected: &crate::radiation::Dose, desired: &crate::radiation::Dose) -> bool {
+        self.doses.insert(id.into(), desired.clone());
+        let (id, expected, desired) = (id.to_string(), expected.clone(), desired.clone());
+        self.effects.push((self.origins.clone(),Box::new(move |h| {
+            if !h.commit_player_dose(&id, &expected, &desired) {
+                h.log(&format!("ntm: the dose of {id} changed under a machine step; its write was dropped"));
+            }
+        })));
+        true
+    }
+    fn player_irradiation(&mut self, id: &str, legacy: &crate::radiation::Dose) -> Option<crate::zirnox::StoredPotion> {
+        match self.irradiations.get(id) {
+            Some(staged) => Some(*staged),
+            None => self.host.player_irradiation(id, legacy),
+        }
+    }
+    fn commit_player_irradiation(&mut self, id: &str, legacy: &crate::radiation::Dose, expected: crate::zirnox::StoredPotion, desired: crate::zirnox::StoredPotion) -> bool {
+        self.irradiations.insert(id.into(), desired);
+        let (id, legacy) = (id.to_string(), legacy.clone());
+        self.effects.push((self.origins.clone(),Box::new(move |h| {
+            if !h.commit_player_irradiation(&id, &legacy, expected, desired) {
+                h.log(&format!("ntm: the radiation potion of {id} changed under a machine step; its write was dropped"));
+            }
+        })));
+        true
+    }
+    fn effect_state(&mut self, id: &str, effect: &str) -> Option<Option<(u32, u8)>> {
+        self.host.effect_state(id, effect)
+    }
+    fn remove_effect(&mut self, id: &str, effect: &str) {
+        let (id, effect) = (id.to_string(), effect.to_string());
+        self.effects.push((self.origins.clone(),Box::new(move |h| h.remove_effect(&id, &effect))));
     }
 }
 
@@ -240,7 +287,7 @@ impl Server {
     /// against the whole state serialized: a change that left the stamps behind would leave the storage behind the
     /// world.
     pub(super) fn world_changed(&self) -> bool {
-        self.world_part_changed() || self.rbmk_changed()
+        self.world_part_changed() || self.rbmk_changed() || self.sickness_changed() || self.chunk_radiation_changed()
     }
 
     /// Whether the RBMK layers changed since they were last written.
@@ -263,6 +310,8 @@ impl Server {
         host.set(crate::persist::KEY, &self.ready.world.kept(self.ready.world.ticks))?;
         self.ready.kept_rev = Some(self.ready.world.stamps());
         self.write_rbmk(host)?;
+        self.write_sickness(host)?;
+        self.write_chunk_radiation(host)?;
         #[cfg(debug_assertions)]
         {
             self.ready.kept = self.ready.world.kept(0);
@@ -275,6 +324,34 @@ impl Server {
         if self.rbmk_changed() {
             host.set(crate::persist::RBMK_KEY, &self.ready.world.kept_rbmk())?;
             self.ready.kept_rbmk = Some(self.ready.world.rbmk_stamp());
+        }
+        Ok(())
+    }
+
+    /// Whether the sickness random changed since it was last written.
+    pub(super) fn sickness_changed(&self) -> bool {
+        self.ready.kept_sickness != Some(self.ready.world.sickness_stamp())
+    }
+
+    /// The sickness random to the host's storage, under its own key: a tick with someone sick rewrites only it.
+    pub(super) fn write_sickness(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
+        if self.sickness_changed() {
+            host.set(crate::persist::SICKNESS_KEY, &self.ready.world.kept_sickness())?;
+            self.ready.kept_sickness = Some(self.ready.world.sickness_stamp());
+        }
+        Ok(())
+    }
+
+    /// Whether the chunks' saved radiation changed since it was last written.
+    pub(super) fn chunk_radiation_changed(&self) -> bool {
+        self.ready.kept_chunk_radiation != Some(self.ready.world.chunk_radiation_stamp())
+    }
+
+    /// The chunks' saved radiation to the host's storage, under its own key: it changes when a chunk is saved.
+    pub(super) fn write_chunk_radiation(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
+        if self.chunk_radiation_changed() {
+            host.set(crate::persist::CHUNK_RADIATION_KEY, &self.ready.world.kept_chunk_radiation())?;
+            self.ready.kept_chunk_radiation = Some(self.ready.world.chunk_radiation_stamp());
         }
         Ok(())
     }
@@ -549,7 +626,7 @@ impl Server {
             generations:(*before.world.generations).clone(),
             origins:before.world.machines.iter().filter(|(k,_)|k.0==dim).map(|(k,m)|CellGuard::machine(k,m)).collect(),
             valid:true,
-            resource:false,world_writes:Vec::new(),
+            resource:false,world_writes:Vec::new(),doses:BTreeMap::new(),irradiations:BTreeMap::new(),
         };
         let outcome =
             self.native_pile_use_inner(&mut staged, dim, at, face, held, depletion, player);
@@ -782,7 +859,7 @@ impl Server {
             generations:(*before.world.generations).clone(),
                     origins:before.world.machines.iter().map(|(k,m)|CellGuard::machine(k,m)).collect(),
                     valid:true,
-                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),
+                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),doses:BTreeMap::new(),irradiations:BTreeMap::new(),
                 };
                 let removed: Vec<_> = keys
                     .iter()
@@ -979,5 +1056,109 @@ impl Server {
         buttons.retain(|i| self.ready.world.machines.get(&i.guard.key()).is_some_and(|m|m.generation==i.guard.generation));
         self.ready.pending_buttons = buttons;
         self.track_effect_cells();
+    }
+}
+
+#[cfg(test)]
+mod dose_tests {
+    use super::*;
+    use crate::radiation::Dose;
+
+    /// A player's dose storage that refuses a write expecting another dose, and the armor's factor.
+    #[derive(Default)]
+    struct Attached {
+        doses: BTreeMap<String, u64>,
+        writes: Vec<(u64, u64)>,
+        logs: Vec<String>,
+        irradiation: BTreeMap<String, crate::zirnox::StoredPotion>,
+        removed: Vec<String>,
+    }
+    impl Kv for Attached {
+        fn get(&mut self, _: &str) -> Option<Vec<u8>> { None }
+        fn set(&mut self, _: &str, _: &[u8]) -> Result<(), String> { Ok(()) }
+        fn delete(&mut self, _: &str) {}
+    }
+    impl ServerHost for Attached {
+        fn get_block(&mut self, _: &str, _: Pos) -> Option<String> { None }
+        fn set_blocks(&mut self, _: &str, _: &[(Pos, String)]) -> Result<(), String> { Ok(()) }
+        fn tell(&mut self, _: &str, _: &str) {}
+        fn log(&mut self, text: &str) { self.logs.push(text.into()); }
+        fn radiation_factor(&mut self, _: &str) -> f64 { 0.25 }
+        fn player_dose(&mut self, id: &str, legacy: &Dose) -> Option<Dose> {
+            Some(self.doses.get(id).map_or_else(|| legacy.clone(), |&millirad| Dose { millirad }))
+        }
+        fn player_irradiation(&mut self, id: &str, _: &Dose) -> Option<crate::zirnox::StoredPotion> {
+            Some(self.irradiation.get(id).copied().unwrap_or_default())
+        }
+        fn commit_player_irradiation(&mut self, id: &str, _: &Dose, expected: crate::zirnox::StoredPotion, desired: crate::zirnox::StoredPotion) -> bool {
+            if self.irradiation.get(id).copied().unwrap_or_default() != expected { return false; }
+            self.irradiation.insert(id.into(), desired);
+            true
+        }
+        fn effect_state(&mut self, _: &str, effect: &str) -> Option<Option<(u32, u8)>> { Some((effect == "seen").then_some((5, 1))) }
+        fn remove_effect(&mut self, id: &str, effect: &str) { self.removed.push(format!("{id} {effect}")); }
+        fn commit_player_dose(&mut self, id: &str, expected: &Dose, desired: &Dose) -> bool {
+            if self.doses.get(id).copied().unwrap_or(0) != expected.millirad { return false; }
+            self.writes.push((expected.millirad, desired.millirad));
+            self.doses.insert(id.into(), desired.millirad);
+            true
+        }
+    }
+    fn staged(host: &mut Attached) -> Deferred<'_, Attached> {
+        Deferred { host, slots: BTreeMap::new(), effects: Vec::new(), generations: BTreeMap::new(), cells: BTreeMap::new(),
+            vacant: BTreeSet::new(), origins: Vec::new(), valid: true, resource: false, world_writes: Vec::new(),
+            critical: std::collections::VecDeque::new(), doses: BTreeMap::new(), irradiations: BTreeMap::new() }
+    }
+
+    /// A machine step's dose writes reach the player's storage after the commit, in order, each expecting the one
+    /// before it; a read in the step sees the step's own write; the armor's factor is the host's.
+    #[test]
+    fn a_machine_steps_doses_reach_the_players_storage_in_order() {
+        let mut host = Attached::default();
+        host.doses.insert("p".into(), 1_000);
+        let mut step = staged(&mut host);
+        assert_eq!(step.radiation_factor("p"), 0.25);
+        for add in [500, 700] {
+            let expected = step.player_dose("p", &Dose::default()).unwrap();
+            let desired = Dose { millirad: expected.millirad + add };
+            assert!(step.commit_player_dose("p", &expected, &desired));
+        }
+        assert_eq!(step.player_dose("p", &Dose::default()).unwrap().millirad, 2_200);
+        let effects = std::mem::take(&mut step.effects);
+        assert_eq!(host.doses["p"], 1_000, "nothing reaches the storage before the commit");
+        for (_, effect) in effects { effect(&mut host); }
+        assert_eq!(host.writes, [(1_000, 1_500), (1_500, 2_200)]);
+        assert!(host.logs.is_empty());
+    }
+
+    /// The radiation potion goes the way of the dose: a read in the step sees the step's write, the storage takes
+    /// the writes in order after the commit, and so does an effect's removal; the effect check reads the host.
+    #[test]
+    fn a_machine_steps_radiation_potion_reaches_the_players_storage_in_order() {
+        let mut host = Attached::default();
+        let mut step = staged(&mut host);
+        let legacy = Dose::default();
+        let at = |potion| crate::zirnox::StoredPotion { potion, migrated: (0, 0), milkproof: false };
+        assert!(step.commit_player_irradiation("p", &legacy, at((0, 0)), at((600, 3))));
+        assert_eq!(step.player_irradiation("p", &legacy), Some(at((600, 3))));
+        assert!(step.commit_player_irradiation("p", &legacy, at((600, 3)), at((1200, 4))));
+        step.remove_effect("p", "ntm:radiation");
+        assert_eq!(step.effect_state("p", "seen"), Some(Some((5, 1))));
+        let effects = std::mem::take(&mut step.effects);
+        assert!(host.irradiation.is_empty() && host.removed.is_empty(), "nothing before the commit");
+        for (_, effect) in effects { effect(&mut host); }
+        assert_eq!(host.irradiation["p"], at((1200, 4)));
+        assert_eq!(host.removed, ["p ntm:radiation"]);
+        assert!(host.logs.is_empty());
+    }
+
+    /// Dropped with the step: a step that is not committed leaves the storage as it was.
+    #[test]
+    fn an_uncommitted_steps_dose_never_reaches_the_storage() {
+        let mut host = Attached::default();
+        let mut step = staged(&mut host);
+        assert!(step.commit_player_dose("p", &Dose::default(), &Dose { millirad: 9 }));
+        drop(step);
+        assert!(host.writes.is_empty() && host.doses.is_empty());
     }
 }

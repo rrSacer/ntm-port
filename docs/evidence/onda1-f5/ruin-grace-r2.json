@@ -1,0 +1,51 @@
+{
+ "binary_sha256": "88837ca093cbc66dde2ae42928181929b9a8d9018bc524e41cc0abcd23802888",
+ "bundle_sha256": "87f5e937051bd6c628830ed8585a7e8c70ad5a13f1fa2ef9930f7c42dbc46372",
+ "engine": "pin eb5d3eed58, unchanged",
+ "zirnox": [
+  142,
+  142
+ ],
+ "mutant_client": {
+  "sha256": "de5a93cf94b1058b53009d29b46b78d75794f17bb84462f050abd56ea84a16ad",
+  "what": "the previous round, without the grace",
+  "result": "ruin_spares_a_respawn_for_200_ticks fails: dead at 60 ticks"
+ },
+ "cargo": {
+  "lib": "540 passed, 3 ignored",
+  "integration": "118 passed",
+  "save_model_release": "11/11",
+  "clippy": "clean (ntm-core and stage)"
+ },
+ "ruin_dose_check": {
+  "ruin-dose-check:ruin_dose_survives_reopening": {
+   "ok": true,
+   "actual": {
+    "saved": 23800,
+    "reopened": 23800
+   }
+  },
+  "ruin-dose-check:ruin_kills_with_radiation": {
+   "ok": true,
+   "actual": {
+    "chat": "ZirnoxTest died from radiation poisoning. | Set own game mode to Survival Mode | true | Teleported ZirnoxTest to 115.500000, 101.000000, 0.500000 | Successfully filled 9 block(s) | Successfully filled 20 block(s) | {dose:23800L,schema:1}"
+   }
+  },
+  "ruin-dose-check:ruin_spares_a_respawn_for_200_ticks": {
+   "ok": true,
+   "actual": {
+    "dose": 0
+   }
+  },
+  "ruin-dose-check:ruin_kills_after_the_200_ticks": {
+   "ok": true,
+   "actual": {
+    "ticks_after_respawn": 204
+   }
+  },
+  "ruin-dose-check:ruin_death_leaves_the_storage_at_zero": {
+   "ok": true,
+   "actual": 0
+  }
+ }
+}

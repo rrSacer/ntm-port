@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:gas_mask_olde",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "GPG",
+    " F "
+  ],
+  "key": {
+    "G": "#ntm:bulk/paneglass",
+    "P": "minecraft:leather",
+    "F": "#ntm:bulk/ingotiron"
+  }
+}

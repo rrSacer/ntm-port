@@ -1,0 +1,356 @@
+{
+ "round": "5c re-review 3 fixes (RR3-1, RR3-2)",
+ "binary_sha256": "5358d52fb6be8a26ea7aea04eb0565d4d0f1223e95de1d9790d829ab5ac93b20",
+ "bundle_sha256": "36eb93fa825c96d513171f050c74b769d7d90a26fbf56bd015b44afff589f56c",
+ "prepare_binary_sha256": "88837ca093cbc66dde2ae42928181929b9a8d9018bc524e41cc0abcd23802888",
+ "engine": "pin eb5d3eed58, unchanged",
+ "budget": {
+  "potions": [
+   [
+    559,
+    3
+   ]
+  ],
+  "doses": [
+   313400
+  ],
+  "g0": 626
+ },
+ "migration_cut": {
+  "ok": true,
+  "points": [
+   {
+    "point": "none",
+    "ok": true,
+    "first_reopen": {
+     "dose": 352800,
+     "irradiated": 98,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "second_reopen": {
+     "dose": 352800,
+     "irradiated": 21,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "control": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   },
+   {
+    "point": "kill",
+    "ok": true,
+    "first_reopen": {
+     "dose": 321800,
+     "irradiated": 444,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation",
+      "weakness"
+     ],
+     "kv_irradiated": [
+      [
+       517,
+       3
+      ]
+     ]
+    },
+    "second_reopen": {
+     "dose": 321800,
+     "irradiated": 367,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "control": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   },
+   {
+    "point": "save_begin",
+    "ok": true,
+    "first_reopen": {
+     "dose": 321800,
+     "irradiated": 445,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation",
+      "weakness"
+     ],
+     "kv_irradiated": [
+      [
+       517,
+       3
+      ]
+     ]
+    },
+    "second_reopen": {
+     "dose": 321800,
+     "irradiated": 369,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "control": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   },
+   {
+    "point": "level_saved",
+    "ok": true,
+    "first_reopen": {
+     "dose": 321800,
+     "irradiated": 444,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation",
+      "weakness"
+     ],
+     "kv_irradiated": [
+      [
+       517,
+       3
+      ]
+     ]
+    },
+    "second_reopen": {
+     "dose": 321800,
+     "irradiated": 369,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "control": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   },
+   {
+    "point": "players_saved",
+    "ok": true,
+    "first_reopen": {
+     "dose": 351400,
+     "irradiated": 100,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation",
+      "weakness"
+     ],
+     "kv_irradiated": [
+      [
+       517,
+       3
+      ]
+     ]
+    },
+    "second_reopen": {
+     "dose": 351400,
+     "irradiated": 23,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "control": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   },
+   {
+    "point": "world_saved",
+    "ok": true,
+    "first_reopen": {
+     "dose": 351400,
+     "irradiated": 101,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "second_reopen": {
+     "dose": 351400,
+     "irradiated": 24,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "control": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   },
+   {
+    "point": "kv_committed",
+    "ok": true,
+    "first_reopen": {
+     "dose": 351400,
+     "irradiated": 101,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "second_reopen": {
+     "dose": 351400,
+     "irradiated": 23,
+     "irradiated_level": 3,
+     "effects": [
+      "radiation"
+     ],
+     "kv_irradiated": []
+    },
+    "control": {
+     "ntm:hazmat_helmet_grey": 1,
+     "ntm:cladding_lead": 1
+    }
+   }
+  ]
+ },
+ "irradiation_family": {
+  "setup:mycelium_gives_the_radiation_effect": {
+   "ok": true,
+   "actual": {
+    "effect": [
+     3,
+     578
+    ],
+    "attachment": [
+     575,
+     3
+    ]
+   }
+  },
+  "setup:the_radiation_potion_doses_a_fifth_rad_a_tick": {
+   "ok": true,
+   "actual": {
+    "dose": 10000,
+    "ticks": 50
+   }
+  },
+  "setup:a_given_radiation_effect_doses": {
+   "ok": true,
+   "actual": {
+    "dose": 25000,
+    "ticks": 50,
+    "attachment": [
+     326,
+     9
+    ]
+   }
+  },
+  "setup:an_effect_given_on_the_mycelium_reaches_the_attachment": {
+   "ok": true,
+   "actual": {
+    "effect": [
+     9,
+     346
+    ],
+    "attachment": [
+     343,
+     9
+    ]
+   }
+  },
+  "setup:milk_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     577,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:iodine_pill_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     577,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:med_bag_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     577,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:antidote_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     577,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:effect_clear_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     577,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  }
+ },
+ "cargo": {
+  "lib": "559 passed, 3 ignored",
+  "integration": "118 passed",
+  "clippy": "clean (ntm-core and stage)"
+ }
+}

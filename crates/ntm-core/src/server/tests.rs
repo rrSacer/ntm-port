@@ -13,6 +13,8 @@ type Owed = (Vec<crate::persist::Removal>, Vec<CommittedEffects>);
 
 #[derive(Clone)]
 struct World {
+    /// `calculateRadiationMod` of the players (`ServerHost::radiation_factor`): 1 without armor.
+    radiation_factor: f64,
     blocks: HashMap<(String, Pos), String>,
     /// Chunks (dimension, cx, cz) not loaded.
     unloaded: BTreeSet<(String, i32, i32)>,
@@ -64,6 +66,7 @@ struct World {
 impl World {
     fn new() -> Self {
         let mut w = World {
+            radiation_factor: 1.0,
             blocks: HashMap::new(),
             unloaded: BTreeSet::new(),
             writes: Vec::new(),
@@ -141,6 +144,9 @@ impl Kv for SHost {
 }
 
 impl ServerHost for SHost {
+        fn radiation_factor(&mut self, _id: &str) -> f64 {
+            self.world.borrow().radiation_factor
+        }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
@@ -248,11 +254,32 @@ impl ServerHost for SHost {
     fn hurt(&mut self, id: &str, amount: f32, kind: &str) {
         self.world.borrow_mut().hurts.push((id.into(), amount, kind.into()));
     }
-    fn effect(&mut self, id: &str, effect: &str, seconds: u32, amplifier: u8) {
-        self.world.borrow_mut().effects.push((id.into(), effect.into(), seconds, amplifier));
+    fn effect(&mut self, id: &str, effect: &str, ticks: u32, amplifier: u8) {
+        self.world.borrow_mut().effects.push((id.into(), effect.into(), ticks, amplifier));
+    }
+    fn world_seed(&mut self) -> i64 {
+        WORLD_SEED
     }
     fn show(&mut self, dim: &str, show: &crate::blast::visuals::Show) {
         self.world.borrow_mut().shown.push((dim.into(), show.clone()));
+    }
+    /// The y above each column's highest block, tall grass and ferns aside (a motion-blocking heightmap), looked for
+    /// from y 80 down: the tests' surfaces are below it.
+    fn surface_heights(&mut self, dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
+        let w = self.world.borrow();
+        let key = &mut (dim.to_string(), [0, 0, 0]);
+        columns
+            .iter()
+            .map(|&(x, z)| {
+                (-64..=80).rev().find_map(|y| {
+                    key.1 = [x, y, z];
+                    w.blocks
+                        .get(key)
+                        .filter(|b| !matches!(crate::blockstate::id_of(b), "minecraft:air" | "minecraft:short_grass" | "minecraft:fern"))
+                        .map(|_| y + 1)
+                })
+            })
+            .collect()
     }
     fn set_player_value(&mut self, id: &str, key: &str, value: i64) {
         self.world.borrow_mut().values.insert((id.into(), key.into()), value);
@@ -273,6 +300,9 @@ struct Game {
     server: Server,
     sh: SHost,
 }
+
+/// The test world's seed (`ServerHost::world_seed`): what the sickness random is seeded from.
+const WORLD_SEED: i64 = 4242;
 
 fn player() -> PlayerInfo {
     PlayerInfo {
@@ -476,18 +506,26 @@ fn radiation_from_what_a_player_carries() {
     g.run(40);
     assert_eq!(value(&g, KEY_RATE), Some(64 * 350), "a taxa aparece já na carência");
     assert_eq!(value(&g, KEY_DOSE), Some(0), "nada de dose na carência");
+    assert_eq!(*g.ready().world.sickness, None, "nobody sick yet: no random kept");
     g.run(GRACE_TICKS as usize + 20 * 10);
     let dose = value(&g, KEY_DOSE).unwrap();
     assert!((9 * 64 * 350..=12 * 64 * 350).contains(&dose), "{dose}");
-    // 200 RAD: nausea and weakness, every second.
+    // 300 RAD, nothing carried: every tick nausea one time in 300 and weakness one in 500, for 100 ticks each
+    // (EntityEffectHandler:250-252), drawn from the world's sickness random.
+    g.world.borrow_mut().carried.clear();
     g.ready().world.radiation.get_mut("p1").unwrap().millirad = 300_000;
-    g.run(20);
+    g.world.borrow_mut().effects.clear();
+    g.run(6000);
     let effects = g.world.borrow().effects.clone();
-    assert!(effects.iter().any(|e| e.1 == "weakness" && e.3 == 0), "{effects:?}");
+    assert!(effects.iter().all(|e| (e.1 == "nausea" || e.1 == "weakness") && e.2 == 100 && e.3 == 0), "{effects:?}");
+    let count = |name: &str| effects.iter().filter(|e| e.1 == name).count();
+    assert!(count("nausea") > count("weakness") && count("weakness") > 0, "{effects:?}");
+    assert!(g.ready().world.sickness.is_some(), "the random is kept once someone was sick");
     // 1000 RAD: death, and the dose starts again.
+    g.world.borrow_mut().carried.insert("p1".into(), vec![("ntm:ingot_uranium".into(), 64)]);
     g.ready().world.radiation.get_mut("p1").unwrap().millirad = 999_999;
     g.run(40);
-    assert!(g.world.borrow().hurts.iter().any(|h| h.2 == "minecraft:generic_kill"), "{:?}", g.world.borrow().hurts);
+    assert!(g.world.borrow().hurts.iter().any(|h| h.2 == "ntm:radiation"), "{:?}", g.world.borrow().hurts);
     assert!(value(&g, KEY_DOSE).unwrap() < 999_999);
     // Creative: the rate, no dose.
     g.server.set_players(vec![player()]);
@@ -497,7 +535,128 @@ fn radiation_from_what_a_player_carries() {
     assert_eq!(value(&g, KEY_RATE), Some(64 * 350));
 }
 
+/// Slice 5a review: the sickness random is the world seed's. The first sick tick draws a 200-RAD band's two rolls
+/// from `java.util.Random(WORLD_SEED)`; another seed (0 among them) leaves another state.
+#[test]
+fn the_sickness_random_is_seeded_from_the_world_seed() {
+    use crate::rbmk::jrandom::JavaRandom;
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 300_000 });
+    g.run(1);
+    let mut expected = JavaRandom::new(WORLD_SEED);
+    expected.next_int(300);
+    expected.next_int(500);
+    let kept = (*g.ready().world.sickness).clone().expect("drawn once");
+    assert_eq!(kept.rng().state(), expected.state());
+    let mut other = JavaRandom::new(0);
+    other.next_int(300);
+    other.next_int(500);
+    assert_ne!(kept.rng().state(), other.state());
+}
+
+/// Slice 5a review: a blast's effects are given in seconds (`visuals::Show::Effect`) and reach the host in ticks.
+#[test]
+fn a_blasts_effect_seconds_reach_the_host_as_ticks() {
+    let mut g = game();
+    let show = crate::blast::visuals::Show::Effect { player: "p1".into(), id: "nausea", seconds: 8, amplifier: 0 };
+    super::bomb_server::show(&mut g.sh, OW, vec![show]);
+    assert_eq!(g.world.borrow().effects, [("p1".to_string(), "nausea".to_string(), 160, 0)]);
+}
+
+/// Slice 5a review: creative players are skipped (`handleRadiationEffect` returns for them), and there is no joining
+/// grace: a player sick from their first tick rolls at once.
+#[test]
+fn sickness_skips_creative_players_and_has_no_joining_grace() {
+    let mut g = game();
+    g.server.set_players(vec![player()]);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 900_000 });
+    g.run(3000);
+    assert!(g.world.borrow().effects.is_empty(), "creative: {:?}", g.world.borrow().effects);
+    assert_eq!(*g.ready().world.sickness, None, "nothing drawn for a creative player");
+    // A player who joins now, sick: their first tick is well inside radiation::GRACE_TICKS of joining, and the
+    // sickness draws on it.
+    let mut p = player();
+    p.id = "p2".into();
+    p.creative = false;
+    g.server.set_players(vec![player(), p]);
+    g.ready().world.radiation.insert("p2".into(), crate::radiation::Dose { millirad: 900_000 });
+    g.run(1);
+    assert!(g.ready().world.sickness.is_some(), "drawn on the first tick");
+    g.run(2000);
+    let effects = g.world.borrow().effects.clone();
+    assert!(!effects.is_empty() && effects.iter().all(|e| e.0 == "p2"), "{effects:?}");
+}
+
+/// Slice 5a review P2: the sickness random has its own key. A tick whose only change is a sick player's rolls writes
+/// that key alone, a few bytes; the world's key moves only with the rest of the world (its doses every second, the
+/// clock).
+#[test]
+fn a_sick_tick_rewrites_only_the_sickness_key() {
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 300_000 });
+    g.run(5);
+    let (mut own, mut world_moved) = (0, 0);
+    for _ in 0..60 {
+        let before = g.world.borrow().kv.written;
+        g.run(1);
+        let w = g.world.borrow();
+        let sickness = w.kv.map.get(crate::persist::SICKNESS_KEY).map_or(0, Vec::len) as u64;
+        let world = w.kv.map.get(crate::persist::KEY).map_or(0, Vec::len) as u64;
+        let written = w.kv.written - before;
+        if written == sickness {
+            own += 1;
+        } else {
+            // Anything more is the world's whole key, written because the rest of the world moved.
+            assert!(written >= world, "{written} B written: neither the sickness key ({sickness} B) alone nor the world's");
+            world_moved += 1;
+        }
+    }
+    assert!(own >= 50 && world_moved <= 10, "{own} ticks with the sickness key alone, {world_moved} with the world");
+}
+
+/// Slice 5b review P1: a player's EntityEffectHandler runs after the tile entities of the tick (processPlayer, in the
+/// network tick). At 1000.2 RAD on a decontaminator, the decontaminator's 0.5 RAD comes first: the player lives on
+/// 999.7 RAD.
+#[test]
+fn a_decontaminator_takes_its_half_rad_before_the_death_check() {
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.place([0, 69, 0], crate::radiation::DECON);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 1_000_200 });
+    g.run(1);
+    assert!(!g.world.borrow().hurts.iter().any(|h| h.2 == crate::radiation::RADIATION_DAMAGE), "{:?}", g.world.borrow().hurts);
+    assert_eq!(g.ready().world.radiation["p1"].millirad, 999_700);
+}
+
+/// Slice 5b review P2-4: one threshold. Just under 1000 RAD the player rolls the 800 band and lives; at 1000 they die
+/// in that tick and nothing is drawn.
+#[test]
+fn just_under_a_thousand_rad_rolls_and_a_thousand_kills_without_drawing() {
+    let mut g = game();
+    let mut p = player();
+    p.creative = false;
+    g.server.set_players(vec![p]);
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 999_999 });
+    g.run(1);
+    assert!(g.world.borrow().hurts.is_empty());
+    let drawn = (*g.ready().world.sickness).clone().expect("the 800 band drew its five rolls");
+    g.ready().world.radiation.insert("p1".into(), crate::radiation::Dose { millirad: 1_000_000 });
+    g.run(1);
+    assert_eq!(g.world.borrow().hurts.iter().filter(|h| h.2 == crate::radiation::RADIATION_DAMAGE).count(), 1);
+    assert_eq!(g.ready().world.radiation["p1"].millirad, 0);
+    assert_eq!(*g.ready().world.sickness, Some(drawn), "the death's tick drew nothing");
+}
+
 mod bomb_tests;
+mod chunk_radiation_tests;
 mod combustion_tests;
 mod solar_stirling_tests;
 mod fluid_tests;

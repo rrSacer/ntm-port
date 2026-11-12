@@ -126,41 +126,120 @@ pub fn add_dose(dose: &mut Dose, millirad: u64) {
 
 pub const MAX_DOSE: u64 = 2_500_000;
 
-/// What radiation sickness does to a player: an effect for some seconds,
-/// or damage of a kind.
+/// What radiation sickness does to a player: an effect for some ticks, or
+/// damage of a kind.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Harm {
-    Effect { id: &'static str, amplifier: u8, seconds: u32 },
+    Effect { id: &'static str, amplifier: u8, ticks: u32 },
     Hurt { amount: f32, kind: &'static str },
 }
 
-/// How long each sickness effect lasts: it outlives the second between
-/// doses, so it stays on while the dose is high.
-pub const SICKNESS_SECONDS: u32 = 5;
+/// `ModDamageSource.radiation`, `new DamageSource("radiation").setDamageBypassesArmor()`: the content damage type
+/// (decision D2 of slice 5; `tools/content-gen/damage_types.py`), which armor does not stop and Resistance does.
+pub const RADIATION_DAMAGE: &str = "ntm:radiation";
+/// `HbmPotion.radiation` as a status effect: the flag a player sees while the potion runs.
+pub const RADIATION_EFFECT: &str = "ntm:radiation";
 
-/// Deterministic approximation of NTM's random sickness rolls, once a
-/// second: effects by the dose's band, damage above 800 RAD, death at
-/// 1000 RAD (the dose starts again from zero). Effects expire by
-/// themselves; nothing clears effects from other sources. The host skips
-/// creative and spectator players.
-pub fn sickness(dose: &mut Dose) -> Vec<Harm> {
-    let rad = dose.millirad;
-    if rad >= 1_000_000 {
-        dose.millirad = 0;
-        return vec![Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }];
+/// At 1000 RAD radiation kills (`EntityEffectHandler.handleRadiationEffect:223-226`:
+/// `attackEntityFrom(ModDamageSource.radiation, 1000F)`, then the dose is 0, whatever the attack did).
+pub fn death(dose: &mut Dose) -> Option<Harm> {
+    if dose.millirad < 1_000_000 {
+        return None;
     }
-    let effects: &[(&'static str, u8)] = match rad {
-        800_000.. => &[("nausea", 0), ("slowness", 2), ("weakness", 2), ("poison", 2), ("wither", 1)],
-        600_000.. => &[("nausea", 0), ("slowness", 2), ("weakness", 2), ("poison", 1)],
-        400_000.. => &[("nausea", 0), ("slowness", 0), ("weakness", 1)],
-        200_000.. => &[("nausea", 0), ("weakness", 0)],
+    dose.millirad = 0;
+    Some(Harm::Hurt { amount: 1000.0, kind: RADIATION_DAMAGE })
+}
+
+/// One tick of `EntityEffectHandler.handleRadiationEffect:221-258` for a
+/// player between 200 and 1000 RAD: each effect of the dose's band is rolled
+/// with `world.rand.nextInt(n) == 0`, in the Java order, every call made
+/// whatever the earlier ones gave (`addPotionEffect(new PotionEffect(id,
+/// ticks, amplifier))`). Outside the bands nothing is drawn.
+pub fn sickness_roll(dose: &Dose, rng: &mut crate::rbmk::jrandom::JavaRandom) -> Vec<Harm> {
+    // (bound, effect, ticks, amplifier), as the Java lists them.
+    let rolls: &[(i32, &'static str, u32, u8)] = match dose.millirad {
+        1_000_000.. => &[],
+        800_000.. => &[(300, "nausea", 5 * 30, 0), (300, "slowness", 10 * 20, 2), (300, "weakness", 10 * 20, 2), (500, "poison", 3 * 20, 2), (700, "wither", 3 * 20, 1)],
+        600_000.. => &[(300, "nausea", 5 * 30, 0), (300, "slowness", 10 * 20, 2), (300, "weakness", 10 * 20, 2), (500, "poison", 3 * 20, 1)],
+        400_000.. => &[(300, "nausea", 5 * 30, 0), (500, "slowness", 5 * 20, 0), (300, "weakness", 5 * 20, 1)],
+        200_000.. => &[(300, "nausea", 5 * 20, 0), (500, "weakness", 5 * 20, 0)],
         _ => &[],
     };
-    let mut out: Vec<Harm> = effects.iter().map(|&(id, amplifier)| Harm::Effect { id, amplifier, seconds: SICKNESS_SECONDS }).collect();
-    if rad >= 800_000 {
-        out.push(Harm::Hurt { amount: 1.0, kind: "minecraft:magic" });
+    rolls
+        .iter()
+        .filter(|&&(bound, ..)| rng.next_int(bound) == 0)
+        .map(|&(_, id, ticks, amplifier)| Harm::Effect { id, amplifier, ticks })
+        .collect()
+}
+
+/// The sickness rolls' `java.util.Random` (decision D1 of slice 5, the shape of the RBMK's D3): one per world, seeded
+/// from the world's seed the first time someone is sick, by its seed and cached gaussian.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SicknessRng {
+    pub seed: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gaussian: Option<u64>,
+}
+
+impl SicknessRng {
+    pub fn seeded(world_seed: i64) -> Self {
+        let mut s = SicknessRng { seed: 0, gaussian: None };
+        s.set_rng(&crate::rbmk::jrandom::JavaRandom::new(world_seed));
+        s
+    }
+    pub fn rng(&self) -> crate::rbmk::jrandom::JavaRandom {
+        crate::rbmk::jrandom::JavaRandom::from_state(self.seed, self.gaussian.map(f64::from_bits))
+    }
+    pub fn set_rng(&mut self, rng: &crate::rbmk::jrandom::JavaRandom) {
+        let (seed, gaussian) = rng.state();
+        self.seed = seed;
+        self.gaussian = gaussian.map(f64::to_bits);
+    }
+}
+
+/// The decontaminator (`BlockDecon`, `TileEntityDecon`).
+pub const DECON: &str = "ntm:decon";
+/// `HbmLivingProps.incrementRadiation(e, -0.5F)`: per tick and per unit.
+pub const DECON_MILLIRAD: u64 = 500;
+/// `EntityPlayer.setSize(0.6F, 1.8F)`: the box `getEntitiesWithinAABB` meets.
+const PLAYER_HALF_WIDTH: f64 = 0.3;
+const PLAYER_HEIGHT: f64 = 1.8;
+
+/// Whether the decontaminator at `block` reaches a player standing at `feet`:
+/// `TileEntityDecon.updateEntity` takes the entities within
+/// `(x - 0.5, y, z - 0.5) .. (x + 1.5, y + 2, z + 1.5)`, and an entity is within
+/// a box when its own box intersects it (strict on every axis).
+pub fn decon_reaches(block: crate::Pos, feet: [f64; 3]) -> bool {
+    let [x, y, z] = block.map(f64::from);
+    let (lo, hi) = ([x - 0.5, y, z - 0.5], [x + 1.5, y + 2.0, z + 1.5]);
+    let (plo, phi) = (
+        [feet[0] - PLAYER_HALF_WIDTH, feet[1], feet[2] - PLAYER_HALF_WIDTH],
+        [feet[0] + PLAYER_HALF_WIDTH, feet[1] + PLAYER_HEIGHT, feet[2] + PLAYER_HALF_WIDTH],
+    );
+    (0..3).all(|i| plo[i] < hi[i] && phi[i] > lo[i])
+}
+
+/// Every block whose decontaminator box could reach a player at `feet`, the
+/// cells to look at.
+pub fn decon_cells(feet: [f64; 3]) -> Vec<crate::Pos> {
+    let [fx, fy, fz] = feet.map(|v| v.floor() as i32);
+    let mut out = Vec::new();
+    for x in fx - 2..=fx + 1 {
+        for y in fy - 2..=fy + 2 {
+            for z in fz - 2..=fz + 1 {
+                if decon_reaches([x, y, z], feet) {
+                    out.push([x, y, z]);
+                }
+            }
+        }
     }
     out
+}
+
+/// One tick of `n` decontaminators on a dose: `incrementRadiation(-0.5F)` each,
+/// clamped at 0 (`HbmLivingProps.setRadiation`).
+pub fn decontaminate(dose: &mut Dose, n: usize) {
+    dose.millirad = dose.millirad.saturating_sub(DECON_MILLIRAD.saturating_mul(n as u64));
 }
 
 #[cfg(test)]
@@ -270,13 +349,119 @@ mod tests {
             accumulate(&mut d, 22400);
         }
         assert_eq!(d.millirad, 224000);
-        assert!(sickness(&mut d).iter().any(|h| matches!(h, Harm::Effect { id: "weakness", .. })));
         accumulate(&mut d, 0);
         assert_eq!(d.millirad, 224000, "no natural player-dose decay in NTM");
-        d.millirad = 810000;
-        assert!(sickness(&mut d).contains(&Harm::Hurt { amount: 1.0, kind: "minecraft:magic" }));
+        assert_eq!(death(&mut d), None);
+        d.millirad = 999_999;
+        assert_eq!(death(&mut d), None);
         d.millirad = 1000000;
-        assert_eq!(sickness(&mut d), [Harm::Hurt { amount: 1000.0, kind: "minecraft:generic_kill" }]);
+        assert_eq!(death(&mut d), Some(Harm::Hurt { amount: 1000.0, kind: "ntm:radiation" }));
+        assert_eq!(d.millirad, 0);
+    }
+
+    /// Below 200 RAD and from 1000 nothing is drawn: the random is where it was.
+    #[test]
+    fn sickness_draws_only_in_its_bands() {
+        use crate::rbmk::jrandom::JavaRandom;
+        for millirad in [0, 199_999, 1_000_000, 2_500_000] {
+            let mut r = JavaRandom::new(7);
+            assert!(sickness_roll(&Dose { millirad }, &mut r).is_empty());
+            assert_eq!(r.state(), JavaRandom::new(7).state(), "{millirad}");
+        }
+        // Each band draws once per effect it lists, whatever the draws gave.
+        let bands: [(u64, &[i32]); 5] = [
+            (200_000, &[300, 500]),
+            (400_000, &[300, 500, 300]),
+            (600_000, &[300, 300, 300, 500]),
+            (800_000, &[300, 300, 300, 500, 700]),
+            (999_999, &[300, 300, 300, 500, 700]),
+        ];
+        for (millirad, bounds) in bands {
+            let mut r = JavaRandom::new(7);
+            sickness_roll(&Dose { millirad }, &mut r);
+            let mut expected = JavaRandom::new(7);
+            for &b in bounds {
+                expected.next_int(b);
+            }
+            assert_eq!(r.state(), expected.state(), "{millirad}");
+        }
+    }
+
+    /// The rolls against the Java's own `handleRadiationEffect`, compiled and run with the same seed over the same
+    /// doses (`tools/sickness-oracle`): the same effects on the same ticks, with their lengths and amplifiers.
+    #[test]
+    fn sickness_rolls_as_the_java_oracle() {
+        use crate::rbmk::jrandom::JavaRandom;
+        let fixture: serde_json::Value =
+            serde_json::from_str(include_str!("../../../tools/sickness-oracle/fixture.json")).unwrap();
+        // The doses tick by tick: each (RAD, ticks) of the schedule held in turn.
+        let doses: Vec<u64> = fixture["schedule"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .flat_map(|s| std::iter::repeat_n(s[0].as_u64().unwrap(), s[1].as_u64().unwrap() as usize))
+            .collect();
+        for case in fixture["cases"].as_array().unwrap() {
+            let mut r = JavaRandom::new(case["seed"].as_i64().unwrap());
+            let (mut seen, mut attacks) = (Vec::new(), Vec::new());
+            for (tick, &rad) in doses.iter().enumerate() {
+                let mut dose = Dose { millirad: rad * 1000 };
+                // The Java's chain: from 1000 RAD the attack and nothing drawn, below it the band's rolls.
+                if let Some(Harm::Hurt { amount, kind }) = death(&mut dose) {
+                    assert_eq!((kind, dose.millirad), (RADIATION_DAMAGE, 0));
+                    attacks.push(serde_json::json!([tick, "attack:radiation", amount]));
+                    continue;
+                }
+                for h in sickness_roll(&dose, &mut r) {
+                    if let Harm::Effect { id, amplifier, ticks } = h {
+                        seen.push(serde_json::json!([tick, id, ticks, amplifier]));
+                    }
+                }
+            }
+            let expected: Vec<serde_json::Value> = case["effects"].as_array().unwrap().clone();
+            assert!(!expected.is_empty());
+            assert_eq!(seen, expected, "seed {}", case["seed"]);
+            assert_eq!(&attacks, case["attacks"].as_array().unwrap(), "seed {}", case["seed"]);
+        }
+    }
+
+    /// TileEntityDecon's box against a 0.6 x 1.8 player.
+    #[test]
+    fn the_decontaminator_reaches_who_stands_over_it() {
+        // Standing on top, centred: y + 1 is the box's middle.
+        assert!(decon_reaches([0, 64, 0], [0.5, 65.0, 0.5]));
+        // The box reaches 0.5 to the sides: a player 1.79 away still touches it, 1.8 does not (strict).
+        assert!(decon_reaches([0, 64, 0], [1.5 + 0.29, 65.0, 0.5]));
+        assert!(!decon_reaches([0, 64, 0], [1.5 + 0.3, 65.0, 0.5]));
+        assert!(decon_reaches([0, 64, 0], [-0.5 - 0.29, 65.0, 0.5]));
+        assert!(!decon_reaches([0, 64, 0], [-0.5 - 0.3, 65.0, 0.5]));
+        // Height: from y to y + 2; feet at y + 2 are out, a head inside the block is in.
+        assert!(!decon_reaches([0, 64, 0], [0.5, 66.0, 0.5]));
+        assert!(decon_reaches([0, 64, 0], [0.5, 65.99, 0.5]));
+        assert!(!decon_reaches([0, 64, 0], [0.5, 64.0 - 1.8, 0.5]));
+        assert!(decon_reaches([0, 64, 0], [0.5, 64.0 - 1.79, 0.5]));
+        // The cells looked at are exactly the ones that reach.
+        let feet = [10.2, 70.0, -3.7];
+        let cells = decon_cells(feet);
+        for x in 5..15 {
+            for y in 64..76 {
+                for z in -9..2 {
+                    assert_eq!(cells.contains(&[x, y, z]), decon_reaches([x, y, z], feet), "{x} {y} {z}");
+                }
+            }
+        }
+        // Two decontaminators side by side both reach a player between them.
+        assert!(decon_reaches([0, 64, 0], [1.0, 65.0, 0.5]) && decon_reaches([1, 64, 0], [1.0, 65.0, 0.5]));
+    }
+
+    #[test]
+    fn each_decontaminator_takes_half_a_rad_a_tick() {
+        let mut d = Dose { millirad: 1_200 };
+        decontaminate(&mut d, 1);
+        assert_eq!(d.millirad, 700);
+        decontaminate(&mut d, 2);
+        assert_eq!(d.millirad, 0);
+        decontaminate(&mut d, 1);
         assert_eq!(d.millirad, 0);
     }
 }

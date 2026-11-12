@@ -1,0 +1,54 @@
+{
+ "binary": "onda1-fatia5b on engine eb5d3eed58",
+ "items_checks": 274,
+ "all_ok": true,
+ "zirnox_checks": 136,
+ "zirnox_all_ok": true,
+ "death": {
+  "setup:death_resets_dose_for_the_next_radiation_tick": {
+   "ok": true,
+   "actual": 0
+  },
+  "setup:radiation_kills_bare": {
+   "ok": true,
+   "actual": {
+    "dead": true,
+    "chat": "ItemsTest died from radiation poisoning. | true | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Target has no effects to remove | true | No items were found on player ItemsTest | Set own game mode to Survival Mode | Teleported ItemsTest to 20.500000, 101.000"
+   }
+  },
+  "setup:radiation_death_resets_the_dose_bare": {
+   "ok": true,
+   "actual": {
+    "dose": 0
+   }
+  },
+  "setup:radiation_kills_armored": {
+   "ok": true,
+   "actual": {
+    "dead": true,
+    "chat": "ItemsTest died from radiation poisoning. | true | Replaced 1 slot(s) on ItemsTest with [Diamond Boots] | Replaced 1 slot(s) on ItemsTest with [Diamond Leggings] | Replaced 1 slot(s) on ItemsTest with [Diamond Chestplate] | Replaced 1 slot(s) on ItemsTest with [Diamond Helmet] | ItemsTest has made th"
+   }
+  },
+  "setup:radiation_death_resets_the_dose_armored": {
+   "ok": true,
+   "actual": {
+    "dose": 0
+   }
+  },
+  "setup:resistance_survives_radiation_but_the_dose_resets": {
+   "ok": true,
+   "actual": {
+    "alive": true,
+    "state": {
+     "dose": 0
+    }
+   }
+  },
+  "setup:creative_is_not_killed_by_radiation": {
+   "ok": true,
+   "actual": {
+    "dose": 1000000
+   }
+  }
+ }
+}

@@ -88,7 +88,7 @@ as provas históricas acima dizem respeito à importação do catálogo.
 
 <!-- k2-status:start -->
 
-Resumo dos 116 itens: 52 ativo, 19 dependente, 45 parcial.
+Resumo dos 116 itens: 61 ativo, 19 dependente, 36 parcial.
 
 | Item | Classe Java | Estado | Origem Java | Dependências nominais |
 |---|---|---|---|---|
@@ -103,13 +103,13 @@ Resumo dos 116 itens: 52 ativo, 19 dependente, 45 parcial.
 | `ntm:boat_rubber` | ItemBoatRubber | dependente | `ItemBoatRubber`, ModItems.java:2950 | `EntityBoat` do mod (bote de borracha) |
 | `ntm:bobmazon` | ItemCatalog | dependente | `ItemCatalog`, ModItems.java:3894 | `GUIScreenBobmazon` e `BobmazonOfferFactory` (loja do cliente) |
 | `ntm:bomb_waffle` | ItemWaffle | parcial | ItemWaffle(20, false), ModItems.java:3610: ExplosionNukeSmall.explode(PARAMS_MEDIUM) has no counterpart in the port | `ExplosionNukeSmall.explode(PARAMS_MEDIUM)`, o "muke", não tem contraparte no `ntm-core` |
-| `ntm:bottle2_fritz` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle2_empty, cap_fritz), ModItems.java:2942 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle2_korl` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle2_empty, cap_korl), ModItems.java:2941 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_cherry` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2936 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_nuka` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2935 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_quantum` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_quantum), ModItems.java:2937 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_rad` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_rad), ModItems.java:2939 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
-| `ntm:bottle_sparkle` | ItemEnergy | parcial | ItemEnergy.makeBottle(bottle_empty, cap_sparkle), ModItems.java:2938 | exige `bottle_opener` no inventário (item só com identidade: `WeaponSpecial`) |
+| `ntm:bottle2_fritz` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle2_empty, cap_fritz), ModItems.java:2942 | - |
+| `ntm:bottle2_korl` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle2_empty, cap_korl), ModItems.java:2941 | - |
+| `ntm:bottle_cherry` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2936 | - |
+| `ntm:bottle_nuka` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_nuka), ModItems.java:2935 | - |
+| `ntm:bottle_quantum` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_quantum), ModItems.java:2937 | - |
+| `ntm:bottle_rad` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_rad), ModItems.java:2939 | - |
+| `ntm:bottle_sparkle` | ItemEnergy | ativo | ItemEnergy.makeBottle(bottle_empty, cap_sparkle), ModItems.java:2938 | - |
 | `ntm:boy_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick boy_kit, ModItems.java:3786 | - |
 | `ntm:can_bepis` | ItemEnergy | ativo | ItemEnergy.makeCan, ModItems.java:2931 | - |
 | `ntm:can_breen` | ItemEnergy | ativo | ItemEnergy.makeCan, ModItems.java:2932 | - |
@@ -166,7 +166,7 @@ Resumo dos 116 itens: 52 ativo, 19 dependente, 45 parcial.
 | `ntm:loot_misc` | ItemLootCrate | parcial | ItemLootCrate.onItemRightClick loot_misc, ModItems.java:3805 | itens Java ausentes do port: `mp_thruster_15_solid_hexdecuple`, `mp_thruster_15_balefire_large_rad`, `mp_stability_10_space`, `mp_stability_15_soyuz` |
 | `ntm:man_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick man_kit, ModItems.java:3787 | - |
 | `ntm:matchstick` | ItemMatch | ativo | `ItemMatch.onItemUse` | - |
-| `ntm:med_bag` | ItemSyringe | parcial | ItemSyringe.onItemRightClick med_bag, ModItems.java:2827: setHealth(getMaxHealth()), no sound, no container | `HbmPotion.radiation` (efeito que contamina) não existe: a dose vive no attachment do jogador |
+| `ntm:med_bag` | ItemSyringe | ativo | ItemSyringe.onItemRightClick med_bag:116-128, ModItems.java:2827: setHealth(getMaxHealth()), removes the bad effects and HbmPotion.radiation (ntm:radiation), no sound, no container | - |
 | `ntm:med_ipecac` | ItemLemon | ativo | ItemLemon(0, 0, false), ModItems.java:3622: NOT alwaysEdible (the constructor compares ModItems.med_ipecac before the field is assigned, so setAlwaysEdible never runs); the vomit particle packet has no mode and count 0, so only the sound shows | - |
 | `ntm:med_ptsd` | ItemLemon | ativo | ItemLemon(0, 0, false), ModItems.java:3623: NOT alwaysEdible (the constructor compares ModItems.med_ptsd before the field is assigned, so setAlwaysEdible never runs); the vomit particle packet has no mode and count 0, so only the sound shows | - |
 | `ntm:mike_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick mike_kit, ModItems.java:3788 | - |
@@ -181,7 +181,7 @@ Resumo dos 116 itens: 52 ativo, 19 dependente, 45 parcial.
 | `ntm:particle_digamma` | ItemDigamma | dependente | `ItemDigamma`, ModItems.java:2713 | `onEntityItemUpdate` (efeito ao cair no chão): sem gancho de tick de item solto (`ItemEntity.tick`, `onGround`, remover/trocar) no motor fixado; `EntityQuasar`; `onUpdate` contamina com digamma (sem sistema) |
 | `ntm:peas` | ItemPeas | parcial | ItemPeas, ModItems.java:3635: despawns EntityQuackos in 50 blocks, which the port does not have | `EntityQuackos` (entidade de mod) |
 | `ntm:pellet_antimatter` | ItemDrop | dependente | `ItemDrop`, ModItems.java:2721 | `onEntityItemUpdate` (efeito ao cair no chão): sem gancho de tick de item solto (`ItemEntity.tick`, `onGround`, remover/trocar) no motor fixado; `ExplosionVNT(20).makeAmat()` |
-| `ntm:pill_iodine` | ItemPill | parcial | ItemPill, ModItems.java:2834: removes the bad effects; HbmPotion.radiation is not an effect in the port | `HbmPotion.radiation` não existe (idem med_bag) |
+| `ntm:pill_iodine` | ItemPill | ativo | ItemPill:36-46, ModItems.java:2834: removes the bad effects and HbmPotion.radiation (ntm:radiation) | - |
 | `ntm:pill_red` | ItemPill | parcial | ItemPill, ModItems.java:2836: Astolfization one hour | o `PermaSyncHandler` só desenha uma marca no cliente; o efeito `ntm:death` existe, passivo, 1 hora |
 | `ntm:plan_c` | ItemPill | ativo | ItemPill, ModItems.java:2835: ten attackEntityFrom(euthanizedSelf, 1000); armor only is bypassed, Resistance still absorbs: minecraft:magic | - |
 | `ntm:plastic_bag` | ItemPlasticBag | dependente | `ItemPlasticBag`, ModItems.java:3358 | menu de inventário ligado à pilha (`InventoryPlasticBag`, 1 slot) |
@@ -243,4 +243,31 @@ Resumo dos 116 itens: 52 ativo, 19 dependente, 45 parcial.
 | `ntm:bdcl` | `hbm:player.groan` | `ntm:player.groan` | 1.0 / 1.0 |
 | `ntm:bdcl` (nos ticks 0, 5, 10, 15, 19 e 26 do uso: `count % 5 == 0 && count >= 10`) | `hbm:player.gulp` | `ntm:player.gulp` | 1.0 / 1.0 |
 
+### Pendências pós-Onda 0
+
+Estas lacunas não se fecham agora porque o ponto de ligação está em arquivos da Onda 0 (`native/ntm/mixins/ntm/horizon-mixin.toml`, zona intocável). O motor já tem o que falta, sem mudança nele, no pin `f22df7b81`:
+
+- Itens no chão (`beta`, `rag` na água, e as lacunas de `ItemDrop` que só precisam de remover ou trocar o item): `native_entity_tick_listened`, `native_entity_tick_pre` e `native_entity_tick_post` (API 146, sobre `minecraft:item`), e `native_set_item_entity` (API 42) para remover ou trocar a pilha. Ligar como injeções `HEAD` no `horizon-mixin.toml`.
+- Pipetas (`ItemPipette`) e fluidos infinitos (`ItemInfiniteFluid`): encher e esvaziar precisam do slot de fluido das máquinas (`IFillableItem`, `FluidLoaderInfinite`). Ligar ao `FluidStore` e a `machine.rs` depois do merge da Onda 0.
+
+
 <!-- k2-status:end -->
+
+## Prova em jogo: os 7 bottles (T2)
+
+Roteiro: `tools/test-game/run_k2_closure.py`. Build: o `horizon-client` compartilhado do fork (`/home/sacer/.cache/ntm-native-main/target/release/`), com o pacote de conteúdo `ntm.hmod` gerado por `tools/build-content.sh` com o empacotador compartilhado (`HORIZON_MOD`), carregado por `--dev-mod`. Um mundo novo de sobrevivência por execução: no criativo o bottle não consome e a tampa não sai (`Give.creative`), e um jogador morto ou irradiado não usa o bottle.
+
+Evidência: `docs/evidence/k2-closure/native-k2-closure-bottles.json` (57 checagens, 57 passam) e `docs/evidence/k2-closure/native-k2-closure-cherry-probe.json` (2 checagens, 2 passam).
+
+Cada bottle é testado na mesma sessão e no mesmo estado, em duas etapas:
+
+1. **Sem o abridor** (3 checagens por bottle): a tentativa é recusada. O bottle continua no inventário, sem vazio e sem tampa; os efeitos não mudam; a dose não muda.
+2. **Com o abridor** (5 checagens por bottle): o uso é aceito. O bottle vira o vazio (`bottle_empty` ou `bottle2_empty`) no mesmo slot, a tampa entra, o abridor não é consumido, os efeitos da tabela estão no jogador com o amplificador da tabela, e a dose sobe pelo `millirad` da tabela (0 nos `bottle2_*`, que não têm dose na tabela).
+
+Total: 1 checagem de modo sobrevivência + 7 × 8 = **57**. A contagem anterior (9/9 e 23/23) estava errada: o roteiro dava o mesmo nome a uma checagem de cada bottle, e o dicionário de evidência sobrescrevia, então contava uma só. Agora cada checagem tem nome próprio.
+
+**Cherry:** a dúvida "nuka no lugar de cherry" não se reproduziu em mundo limpo. A sonda (`cherry-probe`) deu o chat "Bottle of Nuka Cherry" e o inventário `ntm:bottle_cherry` (1). A sonda anterior, que mostrou `ntm:bottle_nuka`, rodava num mundo com sobras de bottles de rodadas antigas; a evidência daquela rodada não foi preservada. Sem causa estática: a tampa do cherry é `cap_nuka` no Java e na tabela.
+
+**Lacunas de prova:** o ataque do abridor em mobs (`WeaponSpecial`) não foi testado: não há API de dano a mobs. A cura (`heal`) não é lida em jogo: o roteiro não força dano antes do uso; ela fica coberta pelos testes Rust da tabela.
+
+**Divergência documentada (`complete()`):** `native/ntm/mixins/ntm/item_hooks.rs:516` recusa o fim do uso se `spec.sickness_gate` e o jogador estiver com `ntm:potion_sickness`. O Java `onEaten` não confere isso de novo; só o `onItemRightClick` confere. O efeito só aparece com o `potionSickness` ligado (padrão desligado; ver `docs/content-catalogo-k2.md:52`), e o port não suporta essa opção ligada. Por isso não altero o código agora: a divergência fica registrada e só vira defeito se a opção for suportada.

@@ -1,0 +1,534 @@
+{
+ "round": "5c review fixes",
+ "binary_sha256": "d0c35f1e8bd37858a96afe9b61dfcd2eee34ec949dfe289c600245e5f61f8aa0",
+ "bundle_sha256": "36eb93fa825c96d513171f050c74b769d7d90a26fbf56bd015b44afff589f56c",
+ "unfixed_binary_sha256": "59f23f19a582de61c48a73a6d83e48d955e2ee6a324f5614acef25e240e219c2",
+ "engine": "pin eb5d3eed58, unchanged",
+ "items": [
+  284,
+  284
+ ],
+ "zirnox": [
+  142,
+  142
+ ],
+ "cargo": {
+  "lib": "555 passed, 3 ignored",
+  "integration": "118 passed",
+  "save_model_release": "11/11",
+  "clippy": "clean (ntm-core and stage)"
+ },
+ "irradiation_family": {
+  "setup:death_resets_dose_for_the_next_radiation_tick": {
+   "ok": true,
+   "actual": 0
+  },
+  "setup:mycelium_irradiation_keeps_growing_the_dose": {
+   "ok": true,
+   "actual": {
+    "growth": 8400
+   }
+  },
+  "setup:decon_ends_the_irradiation": {
+   "ok": true,
+   "actual": {
+    "growth_after": 0
+   }
+  },
+  "setup:radiation_kills_bare": {
+   "ok": true,
+   "actual": {
+    "dead": true,
+    "chat": "ItemsTest died from radiation poisoning. | true | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | No entity was found | Target has no effects to remove | true | No items were found on player ItemsTest | Set own game mode to Survival Mode | Teleported ItemsTest to 20.500000, 101.000"
+   }
+  },
+  "setup:radiation_death_resets_the_dose_bare": {
+   "ok": true,
+   "actual": {
+    "dose": 0
+   }
+  },
+  "setup:radiation_kills_armored": {
+   "ok": true,
+   "actual": {
+    "dead": true,
+    "chat": "ItemsTest died from radiation poisoning. | true | Replaced 1 slot(s) on ItemsTest with [Diamond Boots] | Replaced 1 slot(s) on ItemsTest with [Diamond Leggings] | Replaced 1 slot(s) on ItemsTest with [Diamond Chestplate] | Replaced 1 slot(s) on ItemsTest with [Diamond Helmet] | ItemsTest has made th"
+   }
+  },
+  "setup:radiation_death_resets_the_dose_armored": {
+   "ok": true,
+   "actual": {
+    "dose": 0
+   }
+  },
+  "setup:radiation_kills_after_a_mob_hit_with_the_java_message": {
+   "ok": true,
+   "actual": {
+    "dead": true,
+    "chat": "ItemsTest died from radiation poisoning. | true | Applied 1.0 damage to ItemsTest | Summoned new Zombie | Teleported ItemsTest to 20.500000, 101.000000, 11.500000 | true | Killed 2 entities | Target has no effects to remove | true | Removed 2 item(s) from player ItemsTest | {dose:0L,schema:1} | {dos"
+   }
+  },
+  "setup:resistance_survives_radiation_but_the_dose_resets": {
+   "ok": true,
+   "actual": {
+    "alive": true,
+    "state": {
+     "dose": 0
+    }
+   }
+  },
+  "setup:radiation_does_not_wear_the_armor": {
+   "ok": true,
+   "actual": {
+    "alive": true,
+    "plate": [
+     {
+      "count": 1,
+      "durability_left": 528,
+      "item": "minecraft:diamond_chestplate",
+      "max_damage": 528,
+      "part": "chest",
+      "slot": 501
+     }
+    ],
+    "state": {
+     "dose": 0
+    }
+   }
+  },
+  "setup:creative_is_not_killed_by_radiation": {
+   "ok": true,
+   "actual": {
+    "dose": 1000000
+   }
+  },
+  "setup:mycelium_gives_the_radiation_effect": {
+   "ok": true,
+   "actual": {
+    "effect": [
+     3,
+     568
+    ],
+    "attachment": [
+     563,
+     3
+    ]
+   }
+  },
+  "setup:the_radiation_potion_doses_a_fifth_rad_a_tick": {
+   "ok": true,
+   "actual": {
+    "dose": 10800,
+    "ticks": 54
+   }
+  },
+  "setup:a_given_radiation_effect_doses": {
+   "ok": true,
+   "actual": {
+    "dose": 27000,
+    "ticks": 54,
+    "attachment": [
+     313,
+     9
+    ]
+   }
+  },
+  "setup:milk_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     567,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:iodine_pill_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     567,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:med_bag_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     567,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:antidote_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     567,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  },
+  "setup:effect_clear_ends_the_radiation_potion": {
+   "ok": true,
+   "actual": {
+    "given": [
+     567,
+     3
+    ],
+    "after": [
+     0,
+     0
+    ],
+    "effects": [],
+    "dose_growth": 0
+   }
+  }
+ },
+ "save_cuts": {
+  "migration-fixed": {
+   "ok": true,
+   "binary_sha256": "d0c35f1e8bd37858a96afe9b61dfcd2eee34ec949dfe289c600245e5f61f8aa0",
+   "prepare_binary_sha256": "88837ca093cbc66dde2ae42928181929b9a8d9018bc524e41cc0abcd23802888",
+   "points": [
+    {
+     "point": "none",
+     "ok": true,
+     "first_reopen": {
+      "dose": 349800,
+      "irradiated": 122,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kill",
+     "ok": true,
+     "first_reopen": {
+      "dose": 317400,
+      "irradiated": 469,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        539,
+        3
+       ]
+      ]
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "save_begin",
+     "ok": true,
+     "first_reopen": {
+      "dose": 317400,
+      "irradiated": 469,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        539,
+        3
+       ]
+      ]
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "level_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 317400,
+      "irradiated": 469,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        539,
+        3
+       ]
+      ]
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "players_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 346800,
+      "irradiated": 125,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        539,
+        3
+       ]
+      ]
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "world_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 347000,
+      "irradiated": 124,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kv_committed",
+     "ok": true,
+     "first_reopen": {
+      "dose": 347000,
+      "irradiated": 124,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    }
+   ]
+  },
+  "migration-unfixed": {
+   "ok": false,
+   "binary_sha256": "59f23f19a582de61c48a73a6d83e48d955e2ee6a324f5614acef25e240e219c2",
+   "prepare_binary_sha256": "88837ca093cbc66dde2ae42928181929b9a8d9018bc524e41cc0abcd23802888",
+   "points": [
+    {
+     "point": "players_saved",
+     "ok": false,
+     "first_reopen": {
+      "dose": 346800,
+      "irradiated": 468,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": [
+       [
+        540,
+        3
+       ]
+      ]
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kv_committed",
+     "ok": true,
+     "first_reopen": {
+      "dose": 346800,
+      "irradiated": 120,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    }
+   ]
+  },
+  "irradiation-fixed": {
+   "ok": true,
+   "binary_sha256": "d0c35f1e8bd37858a96afe9b61dfcd2eee34ec949dfe289c600245e5f61f8aa0",
+   "prepare_binary_sha256": null,
+   "points": [
+    {
+     "point": "none",
+     "ok": true,
+     "first_reopen": {
+      "dose": 317600,
+      "irradiated": 473,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kill",
+     "ok": true,
+     "first_reopen": {
+      "dose": 300000,
+      "effects": [
+       "nausea"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "save_begin",
+     "ok": true,
+     "first_reopen": {
+      "dose": 300000,
+      "effects": [
+       "nausea"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "level_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 300000,
+      "effects": [
+       "nausea"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "players_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 310800,
+      "irradiated": 503,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "world_saved",
+     "ok": true,
+     "first_reopen": {
+      "dose": 310800,
+      "irradiated": 503,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    },
+    {
+     "point": "kv_committed",
+     "ok": true,
+     "first_reopen": {
+      "dose": 311000,
+      "irradiated": 501,
+      "irradiated_level": 3,
+      "effects": [
+       "radiation",
+       "weakness"
+      ],
+      "kv_irradiated": []
+     },
+     "control_first_reopen": {
+      "ntm:hazmat_helmet_grey": 1,
+      "ntm:cladding_lead": 1
+     }
+    }
+   ]
+  }
+ }
+}

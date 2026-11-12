@@ -514,6 +514,51 @@ fn keep_world_cost() {
     assert!(costs[2] < costs[0] * 1.5 + 0.05, "no growth with the world: {costs:?}");
 }
 
+/// Slice 5a review P2 (measured in release: `cargo test --release -p ntm-core --lib keep_world_cost_with_sickness --
+/// --ignored --nocapture`): the keep of a tick whose only change is the sickness random (a player sick), beside a
+/// 15×15 reactor layer and 0, 5 000 and 50 000 cell generations. The random has its own key: the cost is its few
+/// bytes, not the world's.
+#[test]
+#[ignore]
+fn keep_world_cost_with_sickness() {
+    let mut l = Layer::new();
+    let c = CompState::fresh(OW, Y, A);
+    for x in 0..15 {
+        for z in 0..15 {
+            l.members.insert([x, z], crate::rbmk::persist::Member { seq: (x * 15 + z) as u64, block: "ntm:rbmk_rod_reasim".into(), comp: A });
+        }
+    }
+    l.comps.insert(A, c);
+    let mut costs = Vec::new();
+    for gens in [0usize, 5_000, 50_000] {
+        let mut g = game();
+        g.ready().world.rbmk.insert((OW.to_string(), Y), l.clone());
+        for i in 0..gens {
+            g.ready().world.generations.insert((OW.to_string(), [i as i32, 64, (i / 7) as i32]), 1);
+        }
+        g.server.keep_world(&mut g.sh);
+        let mut rng = crate::rbmk::jrandom::JavaRandom::new(1);
+        let mut total = std::time::Duration::ZERO;
+        for _ in 0..200u64 {
+            // A tick's rolls moved the random, nothing else.
+            rng.next_int(300);
+            let mut kept = crate::radiation::SicknessRng { seed: 0, gaussian: None };
+            kept.set_rng(&rng);
+            *g.ready().world.sickness = Some(kept);
+            let t = std::time::Instant::now();
+            g.server.keep_world(&mut g.sh);
+            total += t.elapsed();
+        }
+        let world = g.world.borrow().kv.map.get(crate::persist::KEY).map_or(0, Vec::len);
+        let sickness = g.world.borrow().kv.map.get(crate::persist::SICKNESS_KEY).map_or(0, Vec::len);
+        let per = total.as_secs_f64() * 1000.0 / 200.0;
+        println!("generations {gens}: world key {world} B, sickness key {sickness} B, keep per tick {per:.4} ms");
+        costs.push(per);
+    }
+    assert!(costs.iter().all(|c| *c < 1.0), "{costs:?}");
+    assert!(costs[2] < costs[0] * 1.5 + 0.05, "no growth with the world: {costs:?}");
+}
+
 /// The test hooks of the in-game proof (`NTM_TEST_HOOKS=1`): a rod leaves its channel once, as an item entity through
 /// the entity receipt of its reactor's step, or to the player's cursor, or as a drop, each in one commit.
 #[test]

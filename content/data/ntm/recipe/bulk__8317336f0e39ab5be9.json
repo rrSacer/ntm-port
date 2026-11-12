@@ -1,0 +1,18 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:cladding_rubber",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RCR",
+    "CDC",
+    "RCR"
+  ],
+  "key": {
+    "R": "#ntm:bulk/ingotanyrubber",
+    "C": "#ntm:bulk/dustcoal",
+    "D": "ntm:ducttape"
+  }
+}

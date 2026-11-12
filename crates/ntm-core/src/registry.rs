@@ -578,8 +578,18 @@ pub const BLOCKS: &[BlockSpec] = &[
         level: HONEY,
         ports: Ports::None,
     },
+    // TileEntityDecon keeps no state: no block entity is needed, and the
+    // server's `decon_tick` (radiation_server.rs) runs it every tick.
     BlockSpec {
         id: "ntm:decon",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    // TileEntityGeiger keeps no state: the native glue ticks it (its counters, clicks and comparator, slice 4b).
+    BlockSpec {
+        id: "ntm:geiger",
         kind: Kind::Inert,
         facing: Some("facing"),
         level: HONEY,
