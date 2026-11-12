@@ -197,7 +197,9 @@ def setup(g):
     set_output(g, w_cells)
     identify(g, s_cells, 'spentsteam')
     water = tank(g, lay['water'])
-    g.check('the_barrels_filled_the_store', water is not None and water[0] == 'water' and water[1] == BARRELS * 16_000, water)
+    own = tanks(g, core)
+    # The cyclotron's own tank has already taken its 32 000 mB over the typed ducts.
+    g.check('the_barrels_filled_the_store_and_the_ducts_carry_it', water is not None and water[0] == 'water' and water[1] + own[0][1] == BARRELS * 16_000 and own[0][1] > 0, [water, own])
     open_cyclotron(g, core)
     put(g, 'ntm:part_beryllium', 1)
     put(g, 'ntm:powder_thorium', 4)
