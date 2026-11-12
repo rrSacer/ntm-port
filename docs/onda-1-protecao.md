@@ -892,3 +892,85 @@ Rodadas anteriores:
   - o corredor comparava como double o f32 gravado pelo decimal mais curto. Agora compara em f32.
 - Uma terceira passou com um critério só de limite superior, que a revisão mostrou não pegar um chunk perdido. Foi
   substituído pelo de dois commits acima, e a rodada registrada é a desse critério.
+
+### 4b: o campo no jogador, o Geiger e o bloco contador Geiger
+
+O campo contamina o jogador (`EntityEffectHandler.handleRadiationFX:262-279`, `Server::chunk_radiation_contaminate`).
+A cada tick, cada jogador pega o valor do campo no seu bloco, que é `floor` da posição, lido por `getRadiation`, com
+o teto de 100 000. No Nether esse valor vale no mínimo `hellRad`, 0,1 RAD/s (`RadiationConfig.hellRad`). O resultado
+passa por `ContaminationUtil.contaminate(.., RADIATION, CREATIVE, rad / 20F)` (`:265-300`):
+- o `radEnv`, o buffer que o Geiger ouve, recebe a quantidade antes de qualquer porta (`note_contamination`);
+- o criativo não leva dose (`:284`), nem quem está nos primeiros 200 ticks (`:287`);
+- a dose é a quantidade vezes `calculateRadiationMod` (a armadura), até o teto de 2 500 RAD do `incrementRadiation`.
+
+A ordem segue `onUpdate:119-122`: depois de `handleRadiationEffect`, que é a doença, e antes das poções.
+`isRadImmune` só vale para um jogador com `HbmPotion.mutation`, que o port não tem. As frações de miliRAD que cada
+tick deixa passam para o tick seguinte, na dose e no `radEnv`. Assim um campo fraco, de 0,01 RAD/s por exemplo, dá a
+dose do Java ao longo do tempo, em vez de nada.
+
+O Geiger de mão (`printGeigerData:161`): a linha "chunk" é `((int)(getRadiation × 10)) / 10`. As zonas de bomba
+continuam somando nela até a 4e (decisão D2). O dosímetro não tem essa linha: ele lê o `radBuf`, que agora inclui o
+campo.
+
+O bloco contador Geiger (`GeigerCounter`, `TileEntityGeiger`) é conteúdo novo:
+- **O bloco** (ModBlocks:1635): ferro, dureza 15, resistência 0,25 e a aba de máquinas. As receitas são sem forma nos
+  dois sentidos com o contador de mão (`ToolRecipes:115`, `CraftingManager:609`) e saíram do gerador.
+- **O modelo e a orientação:** o modelo é o OBJ do `RenderGeiger`.
+  - O Java põe no bloco o `meta` do lado para onde o jogador olha (`onBlockPlacedBy`: yaw 0, sul, dá meta 3), e o
+    `RenderGeiger` gira o modelo por esse `meta`.
+  - O `beehive` do port vira para o jogador, o lado oposto. Então o modelo leva 180° a mais (`visual.json`), e cada
+    `facing` usa as caixas do `meta` oposto (`setBlockBoundsBasedOnState`; a de colisão é igual).
+  - Os testes conferem as duas contas no fonte (`test_radiation_blocks.GeigerCounterBlock`).
+- **O comportamento** (`geiger_block` no núcleo, glue nativa): o bloco não guarda nada, porque o `TileEntityGeiger`
+  não tem NBT. Seus contadores ficam na glue enquanto o chunk está carregado e recomeçam do 0 quando o bloco é feito,
+  posto ou carregado.
+  - A cada 10 ticks, lê o campo no bloco e avisa os vizinhos (`native_update_output_neighbors`, API 64).
+  - A cada 5 ticks, toca um clique da lista da leitura no canto do bloco (`playSoundEffect(xCoord, ..)`): a mesma
+    lista do contador de mão. Com a leitura em 0, toca `geiger1` com chance de 1 em 50.
+  - O comparador lê `min(ceil(rad / 5), 15)` na hora em que pergunta.
+  - O clique direito sem agachar dá o `techBoop` e o relatório do contador de mão.
+
+Diferença: o Java chama `notifyBlocksOfNeighborChange`, que avisa os seis vizinhos. Aqui é
+`updateNeighbourForOutputSignal`, que avisa os comparadores ao lado e os que estão atrás de um bloco condutor. Um
+comparador lê o sinal igual nos dois casos. A diferença é só para outros blocos vizinhos, que no Java recebem a
+notícia e aqui não.
+
+Lacunas:
+- **Leituras sem mod:** a do OpenComputers (`getRads`) e a do Energy Control / RoR (`provideExtraInfo`,
+  `provideRORValue`) não têm mod que as leia.
+- **O resto do `handleRadiationFX`:** os efeitos acima de 200, 600 e 900 RAD, ou seja, o vômito normal e o de sangue
+  com fome 60/19, o suor e as partículas do cliente (`:283-339`). Não estavam na 4b aprovada, e o port já tem a dose
+  para eles.
+- **Mobs:** a contaminação deles pelo campo depende da dose em mobs, como na fatia 5.
+
+Prova da 4b:
+- **Núcleo:**
+  - A contaminação tem testes de unidade: dose por tick, carência, criativo, armadura, o teto, o mínimo do Nether, a
+    fração levada adiante, o `radEnv` e o chunk do bloco `floor`. Os mutantes deram 12 de 12 mortos.
+  - O bloco contador Geiger tem 4 testes de unidade, e os mutantes deram 10 de 10 mortos.
+  - O conteúdo tem 4 testes que conferem no fonte as caixas por `meta`, o giro do `RenderGeiger`, a força e as
+    receitas.
+- **Em jogo** (famílias `chunk_field` e `geiger_block` de `native_items.py`, com `NTM_TEST_HOOKS=1`; binário
+  `85f5071e…`, pacote `202b11c9…`; resumo em `docs/evidence/onda1-f4/items-4b.json`). As 11 verificações passaram:
+  - **A dose:** com o mundo congelado e avançado tick a tick numa janela sem atualização do campo, deu exatamente 500
+    miliRAD por tick a 10 RAD/s (7 000 em 14 ticks). O criativo não leva dose.
+  - **A linha "chunk" do Geiger:** é o campo truncado ao décimo, ou o da atualização que cai antes do clique.
+  - **A descarga** (pedida pelo coordenador na revisão da 4a), longe dos chunks do spawn, que nunca descarregam:
+    - o campo vai a 100 000 em x 3000, e o jogador se afasta 6000 blocos;
+    - o save no disco tem exatamente o valor com que o chunk saiu (36 632,08);
+    - o chunk descarregado continua no mapa e decai, e 20 atualizações depois está em 925,2, porque os vizinhos
+      espalham de volta para ele;
+    - na recarga ele volta do save: 23 761,8, que é o save depois de uma atualização.
+  - **O bloco:**
+    - posto por quem olha para o norte, fica com `facing=south`, o meta 2 do Java;
+    - com o mundo congelado, o comparador lê 6 a 30 RAD/s e 0 com o campo vazio;
+    - com o campo mantido em 30, os cliques são todos `geiger6`;
+    - o clique direito dá o relatório.
+
+  As rodadas anteriores falharam por defeitos da própria família, não do port:
+  - a expressão regular esperava as cores, que o log do chat tira;
+  - a descarga foi testada primeiro num chunk do spawn;
+  - os valores gravados eram comparados como double;
+  - os limiares de decaimento eram estreitos demais;
+  - faltava o chão do bloco;
+  - os cliques eram contados fora da janela em que o campo estava em 30.
