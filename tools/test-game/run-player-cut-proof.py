@@ -86,6 +86,7 @@ def play(args, base, scratch, env, point, control):
         result['after_act'] = act.get('after_act')
         result['act_before'] = act.get('before')
         result['before_cut'] = act.get('before_cut')
+        result['act'] = act
         result['act_checks'] = {k: v['ok'] for k, v in act.get('checks', {}).items()}
         if acted and world.client.poll() is None:
             raise AssertionError('action failed before its save; see act evidence')
@@ -206,6 +207,17 @@ def field_coherent(mine):
     return ok, {'commit': commit, 'wrong': wrong, 'source': [base.get(source), (pre.get(source) or [None])[0], first.get(source), second.get(source)]}
 
 
+def armed_verdict(mine, prepared):
+    """`armed`: polonium at A gives 75 every 20 in the run that put it; in a new run its tick finds rad 0 and its
+    chain ends; polonium put at B arms the type, B gives 75 every 20, A stays dead."""
+    act = mine.get('act') or {}
+    first = prepared.get('a_in_the_first_run') or []
+    gives = lambda seen: len(seen) >= 2 and all(abs(d - 75.0) < 1e-3 for _, d in seen) and all(b - a == 20 for (a, _), (b, _) in zip(seen, seen[1:]))
+    out = {'a_in_the_first_run': first, 'a_not_armed': act.get('a_not_armed'), 'b_armed': act.get('b_armed'), 'a_after_b': act.get('a_after_b')}
+    out['ok'] = bool(mine.get('ok') and gives(first) and act.get('a_not_armed') == [] and gives(act.get('b_armed') or []) and act.get('a_after_b') == [])
+    return out
+
+
 def verdict(scenario, mine, control):
     point = mine['point']
     out = {'point': point, 'mod': mine, 'control': control}
@@ -229,7 +241,7 @@ def main():
     import resource
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('scenario', choices=['table', 'radaway', 'herbal', 'irradiation', 'migration', 'field'])
+    parser.add_argument('scenario', choices=['table', 'radaway', 'herbal', 'irradiation', 'migration', 'field', 'armed'])
     parser.add_argument('--prepare-binary', type=Path, help='the binary that prepares the base world (migration)')
     parser.add_argument('points', nargs='*')
     parser.add_argument('--binary', type=Path, required=True)
@@ -247,7 +259,7 @@ def main():
     env = os.environ.copy()
     env['NTM_CUT_SCENARIO'] = os.environ['NTM_CUT_SCENARIO'] = args.scenario
     # `field` reads the map through `ntmtest rad`.
-    if args.scenario == 'field':
+    if args.scenario in ('field', 'armed'):
         env['NTM_TEST_HOOKS'] = '1'
     env.update(HORIZON_NO_AUDIO='1', HORIZON_LAUNCHER_NO_SELF_UPDATE='1', HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='')
     (base / 'options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
@@ -294,7 +306,11 @@ def main():
         for point in args.points or POINTS:
             played = {c: play(args, bases[c], scratch, homed(scratch / ('point-' + point + ('-vanilla' if c else '')), c), point, c)
                       for c in controls}
-            outcome = verdict(args.scenario, played[False], played.get(True))
+            if args.scenario == 'armed':
+                prepared = json.loads((bases[False] / 'native-player-cut-armed-prepare.json').read_text())
+                outcome = {'point': point, **armed_verdict(played[False], prepared)}
+            else:
+                outcome = verdict(args.scenario, played[False], played.get(True))
             report['points'].append(outcome)
             print(json.dumps({'point': point, 'ok': outcome['ok'], 'field': outcome.get('field'), 'mod': played[False].get('first_reopen'),
                               'control': (played.get(True) or {}).get('first_reopen')}), flush=True)

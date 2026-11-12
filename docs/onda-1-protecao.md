@@ -1079,10 +1079,10 @@ handler, e o estado do que a chama no port:
 | `YellowBarrel` (`yellow_barrel` 5,0; `vitrified_barrel` 0,5) | `YellowBarrel.java:73-92` | tick agendado a cada 20, desde o `onBlockAdded` | os blocos existem: **4d** |
 | `YellowBarrel.explodeEntity` (35 ao explodir) | `YellowBarrel.java:114` | na explosão do barril (`BlockDetonatable`) | o barril não explode no port: lacuna |
 | `BlockSellafield` (`rad` 0,5 × (meta + 1)) | `BlockSellafield.java:56` | no tick aleatório, antes do decaimento | o tick aleatório existe (5d): **4d** |
-| `FT_VentRadiation.onFluidRelease` (trítio 0,001, UF6 0,2, PUF6 0,1, gás de resíduo 0,5 por mB) | `FT_VentRadiation.java:31`, chamado pelo flare `TileEntityMachineGasFlare.java:144` | o gás ventilado pelo flare | o flare existe e já emite `FlareEvent::Release`: **4d** |
+| `FT_VentRadiation.onFluidRelease` (trítio 0,001, UF6 0,2, PUF6 0,1, gás de resíduo 0,5 por mB) | `FT_VentRadiation.java:31`, chamado pelo flare `TileEntityMachineGasFlare.java:144` | o gás ventilado pelo flare | o flare é Inert no port: o modelo em `petroleo_e.rs` emite `FlareEvent::Release`, mas o servidor não o roda. Lacuna até o flare ser ligado |
 | o mesmo, pelo tanque que vaza depois de explodir, pelo tambor e pelo alto-forno | `TileEntityMachineFluidTank.java:134`, `TileEntityStorageDrum.java:145`, `TileEntityMachineBlastFurnace.java:125` | — | o tanque não explode no port, o tambor não existe e o alto-forno só derrama gás de combustão, sem radiação: lacuna ou nada |
 | `CommandRadiation` | `CommandRadiation.java:26,33` | `/ntmrad` | feito na 4a |
-| **RBMK**: barra sem tampa, fluxo para coluna sem tampa, fluxo sobre as colunas | `TileEntityRBMKRod.java:153`, `RBMKNeutronHandler.java:305,417,421` | `fluxQuantity × 0,05` | **o RBMK está ativo no port** (`Kind::Rbmk`, os fluxos de nêutrons simulados): decisão pedida ao coordenador |
+| **RBMK**: barra sem tampa, fluxo para coluna sem tampa, fluxo sobre as colunas | `TileEntityRBMKRod.java:153`, `RBMKNeutronHandler.java:305,417,421` | `fluxQuantity × 0,05` | **o RBMK está ativo no port**: decisão (A) do coordenador, as três emissões entram (**4d**), aplicadas ao campo depois de um passo aceito do grupo de máquinas |
 | Watz | `TileEntityWatz.java:196` | 1 000 ao derreter | Inert no port: lacuna |
 | Aniquilador | `TileEntityMachineAnnihilator.java:147` | `min(radiação × 5, 1 000)` | Inert no port: lacuna |
 | Gás de fusão do reator (`gas_meltdown`) | `BlockGasMeltdown.java:82` | 5 quando vê o céu | não existe no port: lacuna |
@@ -1107,3 +1107,48 @@ Dois comportamentos do Java que entram como são:
   agendado. O port guarda os tipos armados durante o processo, como a JVM.
 - **O `BlockOre`** (`setTickRandomly(true)` com `rad`) irradia nos ticks aleatórios e, a partir deles, a cada 20 ticks
   agendados.
+
+#### O que entrou
+
+- `ntm_core::field_sources`: a tabela das fontes de bloco (24 `BlockHazard`, resíduos, polônio e Pu-238,
+  `BlockHazardFalling`, `ore_schrabidium`, os dois barris) com o `rad` de cada uma, tirado do `HazardRegistry`
+  do port × 0,1 (`BlockHazard.java:142`); o sellafield dá 0,5 × (nível + 1) (`BlockSellafield.java:56`).
+- O tick agendado de 20 desde a colocação, o reagendamento a cada tick e o tick aleatório do minério e do
+  sellafield. Os tipos de `BlockHazard` armados ficam guardados durante o processo, nunca no save, como o campo
+  `rad` do `Block` na JVM.
+- O RBMK (decisão A): as três emissões (`TileEntityRBMKRod.java:153`, `RBMKNeutronHandler.java:305,417,421`)
+  entram no campo depois de um passo aceito do grupo de máquinas. Um passo recusado não deixa nada no campo.
+- O campo saiu de `Ready`, que é clonado em cada transação de um grupo de máquinas, e passou para o `Server`.
+  É um custo que vinha da 4a sem ter sido medido.
+
+#### Prova da 4d (binário `8642912c…`, pacote `38baab6d…`)
+
+- Biblioteca 617/617, `clippy -D warnings` limpo (núcleo e stage nativo). Mutantes 3/3 na ligação do RBMK.
+- Família `field_sources` em jogo, 6/6 (`docs/evidence/onda1-f4/items-4d.json`), tudo congelado e contado
+  tick a tick:
+  - polônio: 75 a cada 20 ticks;
+  - barril amarelo: 5 a cada 20;
+  - fallout: cai no passo 1, pousa em y 100 e dá 1,05 a cada 20 a partir do pouso;
+  - minério de schrabídio: múltiplos de 0,1 nos ticks aleatórios;
+  - sellafield: múltiplos de 0,5;
+  - RBMK com fonte Po-210/Be: emite em todos os ticks.
+- Cenário `armed` com corte do jogo (`docs/evidence/onda1-f4/player-cut-armed-4d.json`), o bug do
+  `onBlockAdded` como no Java:
+  - no jogo que pôs o polônio A, ele dá 75 a cada 20;
+  - depois de reabrir, A fica mudo;
+  - um polônio B posto arma o tipo e dá 75 a cada 20;
+  - A continua morto, porque o tick dele encontrou `rad = 0` e não se reagendou.
+
+#### Lacunas da 4d
+
+- **Atraso da queda (motor)**: no Java, um `BlockHazardFalling` de tipo já armado fica 20 ticks parado antes
+  de cair, porque o `BlockFalling.onBlockAdded` usa o `tickRate`, que é 20 com `rad > 0`. Na primeira colocação
+  da sessão, `rad` ainda é 0 nesse momento e ele cai em 2 ticks. No port, o modelo de cascalho agenda a queda
+  sempre em 2 ticks, antes do gancho do NTM. O motor ignora um tick duplicado, como o 1.7.10, então o
+  agendamento de 20 do NTM não substitui o de 2. Para igualar, seria preciso que o atraso de queda de um bloco
+  de mod fosse configurável no motor. Não mexi no motor: fica registrado.
+- O flare, o tanque que explode, o tambor, o barril que explode e todas as fontes Inert ou que não existem no
+  port (Watz, aniquilador, gás de fusão, absorvedor, névoa, besta, projétil químico, explosões nucleares
+  pequenas, granada, catapulta, núcleo do DFC, máquina personalizada, reator de pesquisa): lacuna, como na
+  tabela acima.
+- O radônio denso do `BlockNuclearWaste`: o bloco não existe no port.

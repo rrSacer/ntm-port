@@ -16,7 +16,7 @@ from native_game import Game
 USE_LENGTH={k:v.get('ticks',0) for k,v in json.loads((Path(__file__).resolve().parents[2]/'crates/ntm-core/data/consumables.json').read_text())['entries'].items()}
 
 
-FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout,chunk_field,geiger_block,world_effects').split(',')
+FAMILIES=os.environ.get('NTM_FAMILIES','energy,medicine,foods,kits,filters,instruments,blocks,vnt,protection,masks,decon,sickness,radiation_death,irradiation,sellafield_levels,fallout,chunk_field,geiger_block,world_effects,field_sources').split(',')
 
 
 FAMILY_RUNS=[]
@@ -1755,7 +1755,124 @@ def world_effects(g):
     reset(g, 'creative')
 
 
-FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout),('chunk_field',chunk_field),('geiger_block',geiger_block),('world_effects',world_effects)]
+def field_sources(g):
+    """Onda 1, fatia 4d: the field's sources that are blocks, and the RBMK (needs NTM_TEST_HOOKS=1). Frozen and stepped
+    one tick at a time, a chunk's value is read after each tick (`ntmtest rad`); a tick that is not the field's update
+    (the probe's timer not 0) shows what the sources gave it alone. BlockHazard (polonium, 750 x 0.1) and the yellow
+    barrel give their rad every 20 ticks from their onBlockAdded; the fallout gives its 1.05 where it lands; the
+    schrabidium ore and sellafield on their random ticks (0.1; 0.5 x (level + 1)); an RBMK with a Po-210/Be source on
+    its steps (open columns: their flux x 0.05)."""
+    import struct
+    as_float = lambda bits: struct.unpack('<f', struct.pack('<I', int(bits)))[0]
+    def probe(cx, cz):
+        text = ' '.join(g.command(f'ntmtest rad {cx} {cz} 0').get('chat', []))
+        m = re.search(r'timer=(\d+) rad=(\S*)', text)
+        value = 0.0
+        for item in filter(None, (m.group(2) if m else '').split(';')):
+            c, raw, _, _ = item.split(':')
+            if c == f'{cx},{cz}' and raw != 'none':
+                value = as_float(raw)
+        return int(m.group(1)) if m else -1, value
+    def step():
+        start = now(g)
+        g.command('tick step 1')
+        while now(g) < start + 1:
+            time.sleep(.05)
+    def watch(cx, cz, ticks):
+        """(tick, what the sources gave) for each tick of `ticks` that is not the field's update."""
+        out, (_, last) = [], probe(cx, cz)
+        for n in range(ticks):
+            step()
+            timer, value = probe(cx, cz)
+            if timer != 0:
+                out.append((n, value - last))
+            last = value
+        return out
+    gains = lambda seen: [(n, round(d, 4)) for n, d in seen if d > 1e-6]
+    reset(g, 'creative')
+    g.command('ntmrad clear')
+    g.command('gamerule minecraft:random_tick_speed 0')
+    # Loaded before it is filled: a `fill` over a chunk not loaded yet does nothing.
+    g.command('forceload add 48 32 111 47')
+    pause(g, 2)
+    g.command('fill 48 99 32 111 99 47 minecraft:stone')
+    g.command('fill 48 100 32 111 130 47 minecraft:air')
+    g.command('tp @s 80.5 100 40.5')
+    pause(g, 2)
+    g.command('tick freeze')
+    # BlockHazard: polonium in chunk 3, 2 (rad 75), every 20 ticks from its onBlockAdded.
+    g.command('setblock 56 100 40 ntm:block_polonium')
+    seen = gains(watch(3, 2, 45))
+    g.check('a_hazard_block_gives_its_rad_every_20_ticks', len(seen) >= 1 and all(abs(d - 75.0) < 1e-3 for _, d in seen)
+            and all(b - a == 20 for (a, _), (b, _) in zip(seen, seen[1:])), seen)
+    # The yellow barrel, chunk 4, 2: 5 every 20.
+    g.command('setblock 72 100 40 ntm:yellow_barrel')
+    seen = gains(watch(4, 2, 45))
+    g.check('the_yellow_barrel_gives_5_every_20_ticks', len(seen) >= 1 and all(abs(d - 5.0) < 1e-4 for _, d in seen)
+            and all(b - a == 20 for (a, _), (b, _) in zip(seen, seen[1:])), seen)
+    # BlockHazardFalling: fallout in the air of chunk 5, 2 falls; where it lands (re-added) it gives 10.5 x 0.1.
+    # Frozen and stepped: the fall is counted in ticks, so the watch starts where it landed on any machine.
+    # Asked of the server (`execute if block`): the authoritative world, not the client's copy.
+    at = lambda y: 'passed' in ' '.join(g.command(f'execute if block 88 {y} 40 ntm:block_fallout').get('chat', []))
+    g.command('setblock 88 120 40 ntm:block_fallout')
+    left = landed = None
+    for n in range(100):
+        step()
+        if left is None and not at(120):
+            left = n
+        if at(100):
+            landed = n
+            break
+    seen = gains(watch(5, 2, 45))
+    is_ = lambda y, b: 'passed' in ' '.join(g.command(f'execute if block 88 {y} 40 {b}').get('chat', []))
+    column = {y: next((b for b in ('ntm:block_fallout', 'minecraft:gravel', 'minecraft:stone') if is_(y, b)), 'other' if not is_(y, 'minecraft:air') else None)
+              for y in range(98, 122)}
+    g.check('fallout_lands_and_gives_its_rad', landed is not None and at(100) and len(seen) >= 1 and all(abs(d - 1.05) < 1e-4 for _, d in seen)
+            and all(b - a == 20 for (a, _), (b, _) in zip(seen, seen[1:])),
+            {'left_120_at_step': left, 'landed_at_step': landed, 'gains': seen, 'column': {y: b for y, b in column.items() if b}})
+    # Random ticks: the schrabidium ore (0.1 a tick) and sellafield (0.5 at level 0), chunk 6, 2 and 6, 3... alone each.
+    g.command('tick unfreeze')
+    g.command('setblock 100 100 40 ntm:ore_schrabidium')
+    g.command('gamerule minecraft:random_tick_speed 4096')
+    g.command('tick freeze')
+    seen = gains(watch(6, 2, 20))
+    g.command('gamerule minecraft:random_tick_speed 0')
+    g.check('the_schrabidium_ore_gives_0_1_on_its_ticks', len(seen) >= 3 and all(abs(d / 0.1 - round(d / 0.1)) < 1e-3 for _, d in seen), seen)
+    g.command('setblock 100 100 40 minecraft:stone')
+    g.command('ntmrad clear')
+    g.command('setblock 104 100 36 ntm:sellafield')
+    g.command('gamerule minecraft:random_tick_speed 4096')
+    seen = gains(watch(6, 2, 6))
+    g.command('gamerule minecraft:random_tick_speed 0')
+    g.check('sellafield_gives_half_its_level_plus_one', len(seen) >= 1 and all(abs(d / 0.5 - round(d / 0.5)) < 1e-3 for _, d in seen), seen)
+    g.command('tick unfreeze')
+    g.command('gamerule minecraft:random_tick_speed 3')
+    # The RBMK: a ReaSim channel with a Po-210/Be source in chunk 4, 3 (x 64..79, z 48..63), its columns open.
+    g.command('ntmrad clear')
+    g.command('fill 60 99 48 70 99 58 minecraft:stone')
+    g.command('fill 60 100 48 70 106 58 minecraft:air')
+    g.command('setblock 66 100 52 ntm:rbmk_rod_reasim[facing=north,honey_level=0]')
+    g.command('setblock 67 100 52 ntm:rbmk_reflector[facing=north,honey_level=0]')
+    g.command('tp @s 66.5 100 49.5')
+    pause(g, 1)
+    give_hand(g, 'ntm:rbmk_fuel_po210be', 1)
+    g.close()
+    g.ctl('interact 66 100 52 north')
+    pause(g, 3)
+    g.command('tick freeze')
+    seen = gains(watch(4, 3, 30))
+    g.check('a_running_rbmk_irradiates_its_chunk', len(seen) >= 20, seen[:8])
+    g.command('tick unfreeze')
+    g.command('clear @s')
+    # Two fills: one of 64 x 32 x 27 is over the command's 32 768 blocks and does nothing.
+    g.command('fill 48 99 32 111 130 45 minecraft:air')
+    g.command('fill 48 99 46 111 130 58 minecraft:air')
+    g.command('forceload remove 48 32 111 47')
+    g.command('ntmrad clear')
+    reset(g, 'creative')
+
+
+FAMILY_RUNS[:]=[('energy',energy),('medicine',medicine),('foods',foods),('kits',kits),('filters',other_filters),('instruments',instruments),('blocks',on_blocks),('protection',protection),('masks',masks),('decon',decon),('sickness',sickness),('radiation_death',radiation_death),('irradiation',irradiation),('sellafield_levels',sellafield_levels),('fallout',fallout),('chunk_field',chunk_field),('geiger_block',geiger_block),('world_effects',world_effects),('field_sources',field_sources)]
 
 
 if __name__=='__main__':

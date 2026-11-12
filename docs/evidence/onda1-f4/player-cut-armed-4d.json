@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "binary_sha256": "8642912cdcb2193ffbd0acc4be617da27e44d5ea4a8af3cecd3942d5d6705b12",
+  "bundle_sha256": "38baab6d25ee1f12083352bce3f05b1e6260dafb001948f8c62c4fd1c9d6b6ac",
+  "points": [
+    {
+      "point": "none",
+      "a_in_the_first_run": [
+        [
+          13,
+          75.0
+        ],
+        [
+          33,
+          75.0
+        ]
+      ],
+      "a_not_armed": [],
+      "b_armed": [
+        [
+          13,
+          75.0
+        ],
+        [
+          33,
+          75.0
+        ]
+      ],
+      "a_after_b": [],
+      "ok": true
+    }
+  ]
+}
