@@ -196,3 +196,24 @@ movido) × 16 combinações antigo/novo dos registros de B, entidades B/C e joga
 64 casos, 4 perdas e 12 explosões repetidas sobre saída que algum arquivo conserva; 10/10 testes de diagnóstico e
 Clippy passaram. É uma **sobreaproximação**: não prova que cada combinação seja alcançável pela ordem FIFO do motor,
 nem equivale a uma prova em jogo. Ela documenta onde o candidato simples falha e não declara a fatia 4 pronta.
+
+### Invariante de origem e coalescência do writer
+
+O coordenador aprovou explorar uma barreira **assíncrona** da origem, sem flush no tick: a cópia durável de A com o
+efeito consumido deveria preceder qualquer arquivo de terceiros que possa conter sua emissão. No pin, enfileirar A1
+antes de E_B não basta. `save.rs:3159-3171` consulta o snapshot pendente mais novo por alvo e pode pular A1 se A2 foi
+encaminhado depois de E_B; `world_update.rs:180-198` enfileira entidades antes da região no unload. Assim o writer pode
+pular A1, gravar E_B e cair antes de A2, deixando A antigo e E_B novo. Além disso, `save.rs:3175-3191` guarda um erro de
+I/O mas continua o laço: falhar A1 não impede, por si, que E_B seja escrito depois.
+
+`destination_fifo_witness.rs` transcreve essas regras no modelo e cobre os dois contracasos. Um **candidato de modelo**
+marca A1 como obrigatório (não coalescível) e bloqueia escritas posteriores se A1 falha; com A1 inicialmente
+encaminhado, explora todas as intercalações modeladas de enfileirar E_B e A2, gravar e falhar A1: **12 estados
+únicos, zero violações** da precedência. Dois mutantes internos do modelo — coalescer A1, ou ignorar falha de A1 — são
+pegos. `cargo test --test destination_fifo_witness`: 4/4; Clippy desse teste limpo após remover um argumento excedente.
+
+Isto é um modelo limitado, não patch do motor, nem prova da cola ou de paridade vanilla integral: não cobre múltiplas
+dimensões/writers, vários donos, falhas posteriores, persistência separada de jogador, descarregamentos e reaberturas,
+nem confirma que a cópia de A contém o BE e os débitos/recibos certos. Uma implementação precisaria manter os dados
+pendentes e retornar o erro a `flush`/`writes_finished` sem deadlock se o writer bloquear, e cobrir esses casos antes de
+ativar um consumidor. Nenhum arquivo do motor foi alterado.
