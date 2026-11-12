@@ -395,7 +395,8 @@ def main():
                 outcomes[control] = play(args, where, scratch, copy_env, args.scenario, point, control)
             exact = point in crash_proof.KILLS and args.scenario not in WRITES_IN_ACT
             # Eager chunk saves wrote files outside a save in a world: not the last save; judged by L and D item by item.
-            eager = exact and crash_proof.wrote_outside_a_save(outcomes[False], outcomes[True])
+            # (a scenario with no vanilla control, such as a machine's own state, has nothing to compare: not eager)
+            eager = exact and True in outcomes and crash_proof.wrote_outside_a_save(outcomes[False], outcomes[True])
             exact = exact and not eager
             if args.scenario in EMITTING:
                 _, expected, control_expected = EMITTING[args.scenario]
