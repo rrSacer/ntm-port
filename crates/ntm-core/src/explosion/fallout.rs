@@ -40,6 +40,7 @@ struct Info {
     air: bool,
     clay: bool,
     grassy: bool,
+    mycelium: bool,
     layer: bool,
 }
 
@@ -68,6 +69,7 @@ impl Classes {
                 air: m.kind == Kind::Air,
                 clay: name == "minecraft:clay",
                 grassy: matches!(name, "minecraft:grass_block" | "minecraft:mycelium" | "minecraft:podzol"),
+                mycelium: name == "minecraft:mycelium",
                 layer: self.layer.as_deref().is_some_and(|l| l.split('[').next() == Some(name)),
             };
         }
@@ -98,6 +100,9 @@ pub struct FalloutProfile {
     pub fire: Option<(f32, String)>,
     /// Argila vira isto (NTM: `hardened_clay`).
     pub clay: Option<String>,
+    /// Micélio além das faixas de grama vira isto (NTM: `waste_mycelium`, `FalloutConfigJSON.java:110-112`; o
+    /// micélio é `Material.grass`, então até 45% a entrada da grama, que vem antes, o escoria).
+    pub mycelium: Option<String>,
 }
 
 impl FalloutProfile {
@@ -119,6 +124,7 @@ impl FalloutProfile {
             layer: Some("minecraft:light_gray_carpet".into()),
             fire: Some((0.2, "minecraft:fire".into())),
             clay: Some("minecraft:terracotta".into()),
+            mycelium: None,
         }
     }
 
@@ -138,13 +144,15 @@ impl FalloutProfile {
             o(&self.layer),
             nb(&self.fire),
             o(&self.clay),
+            o(&self.mycelium),
         ]
         .join(";")
     }
 
     pub fn decode(s: &str) -> Result<Self, String> {
         let p: Vec<&str> = s.split(';').collect();
-        if p.len() != 11 {
+        // 11 campos: um perfil guardado antes do micélio (fatia 4e).
+        if !matches!(p.len(), 11 | 12) {
             return Err(format!("fallout: {s}"));
         }
         let num = |v: &str| v.parse::<f32>().map_err(|e| format!("fallout {v}: {e}"));
@@ -168,6 +176,7 @@ impl FalloutProfile {
             layer: opt(p[8]),
             fire: nb(p[9])?,
             clay: opt(p[10]),
+            mycelium: p.get(11).and_then(|v| opt(v)),
         })
     }
 
@@ -284,6 +293,12 @@ pub fn stomp(p: &FalloutProfile, cls: &mut Classes, x: i32, z: i32, d: f32, star
                 let limit = if info.grassy { p.grass_max } else { f32::INFINITY };
                 match p.slag_at(d).filter(|_| d < limit) {
                     Some(b) => put(b, y),
+                    // A entrada do micélio não é `sol`: não conta na profundidade da coluna.
+                    None if info.mycelium && p.mycelium.is_some() => {
+                        put(p.mycelium.as_deref().unwrap_or_default(), y);
+                        above_air = false;
+                        continue;
+                    }
                     None if m.kind == Kind::Sand => {
                         if let Some((chance, t)) = &p.trinitite
                             && rand01(x, y, z, 7) < *chance
@@ -596,5 +611,39 @@ mod tests {
             .filter(|&(x, z)| s.in_annulus(x, z))
             .collect();
         assert_eq!(seen, want);
+    }
+
+    /// A column of mycelium over dirt, the profile of a nuke's rain (`blast::profile`).
+    fn column(d: f32) -> Vec<(i32, String)> {
+        let p = FalloutProfile { mycelium: Some("ntm:waste_mycelium".into()), layer: None, ..FalloutProfile::ntm_placeholder() };
+        let mut world = |_x: i32, y: i32, _z: i32| {
+            Some(match y {
+                70.. => "minecraft:air",
+                69 => "minecraft:mycelium",
+                _ => "minecraft:dirt",
+            }.to_string())
+        };
+        let mut out = Vec::new();
+        stomp(&p, &mut Classes::default(), 5, 5, d, 80, &mut world, &mut out);
+        out.into_iter().map(|c| (c.y, c.state)).collect()
+    }
+
+    /// `FalloutConfigJSON.java:87-112`: mycelium is `Material.grass`, so the grass entries (to 45%) slag it first; past
+    /// them it turns into `waste_mycelium`, an entry that is not `sol`: the column goes on three solid blocks below it.
+    #[test]
+    fn mycelium_is_slagged_near_and_wasted_past_the_grass() {
+        let near = column(0.3);
+        assert_eq!(near.first(), Some(&(69, "minecraft:deepslate".to_string())), "{near:?}");
+        let far = column(0.6);
+        assert_eq!(far, vec![(69, "ntm:waste_mycelium".to_string())], "{far:?}");
+    }
+
+    /// A profile kept before slice 4e (eleven fields, no mycelium) decodes; the new one round-trips.
+    #[test]
+    fn an_eleven_field_profile_still_decodes() {
+        let p = FalloutProfile { mycelium: Some("ntm:waste_mycelium".into()), ..FalloutProfile::ntm_placeholder() };
+        assert_eq!(FalloutProfile::decode(&p.encode()), Ok(p.clone()));
+        let old = p.encode().rsplit_once(';').unwrap().0.to_string();
+        assert_eq!(FalloutProfile::decode(&old), Ok(FalloutProfile { mycelium: None, ..p }));
     }
 }
