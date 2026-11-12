@@ -574,6 +574,8 @@ fn ledger_store(g: &mut crate::game::Game<'_>, key: &ChunkKey, ledger: ntm_core:
     let value = if ledger.is_empty() { String::new() } else { ledger.to_json() };
     if g.attachment_map_quiet(Holder::Chunk([key.1, key.2])).is_ok_and(|map| map.set(&LEDGER_TYPE, value).is_ok()) {
         g.world.modified.insert((key.1, key.2));
+        // Protect this chunk only when the game naturally schedules its next snapshot; never force a save here.
+        g.save.require_next_chunk_save((key.1, key.2)).expect("source save barrier registration failed");
     }
     if ledger.owed.is_empty() {
         lock(&OWING).remove(key);
@@ -1267,6 +1269,10 @@ impl ServerHost for Host<'_, '_> {
             if trace_effects(){eprintln!("ntm trace ZIRNOX explosion result {}",serde_json::json!({"tick":g.world.game_time,"applied":applied}));}
             applied
         }).unwrap_or(false)
+    }
+    fn explode(&mut self, dim: &str, at: [f64;3], power: f32, fire: bool, breaks: bool) -> bool {
+        let blast = if breaks { crate::game::native_explosions::NativeBlast::Block } else { crate::game::native_explosions::NativeBlast::Keep };
+        in_place(self.game, dim, |g| g.native_explode(dim, at, power, fire, blast)).unwrap_or(false)
     }
     fn pile_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
         in_place(self.game, dim, |g| g.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block)).unwrap_or(false)
