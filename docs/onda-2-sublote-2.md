@@ -152,7 +152,7 @@ coloca e o z para quem coloca) não tinha sido aplicada, e a tabela usava as tup
 passavam porque punham os dutos ao lado das mesmas células erradas. Agora as portas são `[[0,0,1], [-1,0,1], [-1,0,0], [0,4,1],
 [0,4,0], [-1,4,1], [-1,4,0]]` (mais o núcleo), o teste unitário confere as células esperadas e que as espelhadas não são portas, e o
 teste de jogo põe um duto por baixo da porta de baixo e outro por cima da de cima (as faces livres, e as do Java: `DOWN` e `UP`), cada
-um com o seu barril. Reprovado e refeito: jogo 8/8 e corte `orbus-state` 7/7 no cliente novo.
+um com o seu barril. Refeito: jogo 8/8 e corte `orbus-state` 7/7 no cliente novo.
 
 ### `machine_keyforge` (grupo 2a)
 
@@ -323,6 +323,6 @@ saída, o progresso corre e, no fim do tempo, um ingrediente vira a saída e um 
 
 Lacunas: (a) a receita do modo caro; (b) a regra de `isItemValidForSlot` que usa a partícula interna (linha 205) como referência: com
 uma cápsula carregada e o slot de entrada vazio o Java recusa um ingrediente que o funil traz com o slot do ingrediente vazio, e o port
-o aceita (a política só vê os slots do motor, e a partícula interna não é um deles: guardá-la num slot dropperia uma cápsula ao quebrar);
+o aceita (a política só vê os slots do motor, e a partícula interna não é um deles: guardá-la num slot soltaria uma cápsula ao quebrar a máquina);
 (c) o modelo do bloco continua a caixa genérica e o rotor não gira; (d) os painéis de informação das melhorias não são desenhados; (e) o
 shift-click do menu não foi provado em jogo; (f) só a bateria criativa carrega no slot 5 (igual às outras máquinas).
