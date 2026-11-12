@@ -174,3 +174,56 @@ servidor pela ponte (os pinos vão do slot 0 ao 1, o 2 rola três dígitos, a ch
 `run-native-reactors.py keyforge` (8 verificações, 0 falhas): a segunda recebe os pinos da primeira, a terceira muda a cada leitura
 com três dígitos, a chave falsa guarda os seus pinos, um funil embaixo tira o item do slot 1 e um funil em cima não põe nada (guarda
 as três chaves do baú), e depois de salvar e reabrir o mundo os dois primeiros slots seguem iguais e o terceiro continua rolando.
+
+### `machine_funnel` (grupo 2a)
+
+`TileEntityMachineFunnel` (o funil de compressão): 18 slots, sem energia, sem fluido, sem multibloco. Os nove de cima recebem itens e
+os nove de baixo recebem o resultado. A cada tick, para cada coluna `i`, se o slot `i` tem 9 ou mais itens e uma grade 3x3 cheia dele
+tem receita, 9 itens viram o resultado; senão, se tem 4 ou mais e uma grade 2x2 cheia dele tem receita, 4 viram o resultado
+(`updateEntity`, linhas 38-64; `getFrom9`/`getFrom4`, linhas 120-142, perguntam à lista do `CraftingManager`). O botão da tela troca o
+modo (`receiveControl`, linha 166): 3x3 e depois 2x2, só 3x3, só 2x2.
+
+| Regra | Java | Port |
+| --- | --- | --- |
+| Compressão | 9 antes de 4; a contagem da receita 2x2 sai inteira (4 pedras dão 4 tijolos de pedra) | `Funnel::step`, uma compressão por coluna por tick |
+| Saída ocupada | outro item ou sem espaço (`getMaxStackSize` do resultado): nada acontece, e **não** tenta a receita 2x2 | igual; o limite vem de `max_stack_size` do catálogo (64 para o vanilla) |
+| Modos | `mode` 0, 1, 2; o botão soma 1 e volta a 0 depois de 2 | `Slotted::button`; o modo é salvo no estado da máquina e na tela (valor 0) |
+| Mão | `Slot` comum nos nove de cima; `SlotCraftingOutput` nos de baixo (só tira) | `slot_filters` (os de baixo com `output`) e `slot_allows` |
+| Funil/duto | `isItemValidForSlot`: só os nove de cima, e um item sem receita só entra num slot já ocupado (linhas 85-90) | `funnel::allows` |
+| Lados | `getAccessibleSlotsFromSide`: de baixo os resultados, dos outros lados as entradas | `container().faces` |
+| Receitas | a lista do `CraftingManager` de 1.7.10 | tabela embutida `data/machines/funnel.json`, gerada por `tools/content-gen/funnel_compression.py` |
+
+**A tabela.** O port não tem o `CraftingManager` do 1.7.10, então a tabela junta, na ordem da lista do Java (a primeira receita de um
+item vence): (1) as receitas do vanilla 1.7.10 que enchem uma grade com um item só, mapeadas para as identidades da 26.3 e conferidas
+em `registries.json` (lingotes/gemas/redstone/carvão em blocos, pepitas de ouro em lingote, trigo em fardo de feno, fatias em melancia,
+pó de glowstone, quartzo, bolas de argila, tijolo, tijolo do Nether, bolas de neve, areia, pedra e as seis tábuas em mesa de trabalho);
+(2) as receitas do catálogo (`content/data/ntm/recipe`: moldadas 3x3/2x2 de uma chave só e sem forma de 9/4 ingredientes iguais), com
+as tags expandidas nos seus itens. Hoje: 207 entradas de 9 e 39 de 4; 17 colisões (todas com o mesmo resultado, a primeira vence e a
+outra fica listada); nada pulado. O carvão vegetal **não** comprime (a receita do bloco de carvão do 1.7.10 pede `coal` de dano 0).
+
+Lacunas: (a) o jar do 1.7.10 está ofuscado e sem fonte nesta máquina, então a lista do vanilla foi escrita à mão a partir das classes
+`CraftingManager`, `RecipesIngots` e `RecipesCrafting` do 1.7.10 e **não tem linhas citadas**; se aparecer um desvio, é aqui;
+(b) o OreDict de 1.7.10 que casa itens de outras mods com as receitas do vanilla (por exemplo `plankWood` com tábuas da mod) vale só
+para o que o catálogo e a lista acima já cobrem; (c) a dica do botão lista os três modos (a do Java mostra só o atual: o visual-gen não
+tem dica condicional); (d) um duto que tira dos lados (o Java deixa tirar as entradas por `canExtractItem` dos lados) não consegue no
+port, só o funil de baixo, que tira os resultados; (e) o modelo do bloco continua sendo a caixa genérica (o renderizador não foi
+portado); (f) o shift-click do menu não foi provado em jogo: o Java manda os 18 slots para o inventário (de trás para a frente) e o inventário para os nove de cima (`ContainerFunnel.transferStackInSlot`); no port vale o padrão do motor para os slots sem regra de shift.
+
+Provas: veja a entrega abaixo (hashes e logs em `content-gen-evidence/onda2-s2/`).
+
+**Entrega do funil** (cliente release `559a2afe…`, `ntm.hmod` `c2cf924d…`, em `content-gen-evidence/onda2-s2/`; o build usou
+`SKIP_UPSTREAM_CHECK=1` porque o Horizon oficial avançou para `f24ee1ac` depois do pin, e o empacotador do próprio motor, porque o
+do `Games/horizon` recusa o menu da mesa de armadura que veio da main):
+
+- unidade: 9 testes em `funnel.rs` mais 2 (regras de slot e faces pela `native`), 1 pela ponte
+  (`the_funnel_compresses_a_column_and_its_button_cycles_the_mode`) e 5 do extrator (`tools/content-gen/test_funnel.py`, que também
+  confere que o arquivo embutido é o que as fontes dão);
+- jogo, `run-native-reactors.py funnel` (18 verificações, 0 falhas): 9 lingotes de ouro dão um bloco por vez e sobram os restantes,
+  4 de pó de glowstone dão glowstone e sobra 1, o que não tem receita fica, o botão passa por só 3x3 (4 de pó ficam), só 2x2 (o pó
+  vai e 9 de ouro não) e volta ao padrão (o ouro vai), um funil em cima põe o ferro e a terra que se junta a um slot ocupado e não
+  põe graveto em slot vazio, um funil embaixo tira os resultados; depois de salvar e reabrir, o modo e os itens seguem iguais e 4 de
+  pó ainda comprimem;
+- cortes de save no modo estrito (`HORIZON_NO_EAGER_SAVE=1`): `funnel-state` 7/7 (90 lingotes de ouro em duas colunas, comprimindo, o
+  total em lingotes e blocos fica 90 e o modo fica) e `funnel-break` 7/7 (quebrar o funil com itens dentro);
+- mutantes: 18 escolhidos à mão, 17 mortos. O que sobrevive (`count < 4` trocado por `count < 3` na escolha do modo 3x3) é
+  equivalente: o teste seguinte `count < size` já descarta um stack de 3.
