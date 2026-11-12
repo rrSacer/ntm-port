@@ -126,9 +126,14 @@ def setup(g):
     sprint(g, 60)
     text = ' '.join(g.command(f'data get block {X} 98 {Z} Items').get('chat', []))
     g.check('a_hopper_under_it_takes_the_second_slot_out', 'ntm:key_fake' in text, text[:200])
-    above = ' '.join(g.command(f'data get block {X} 102 {Z} Items').get('chat', []))
+    # The hopper over it pulls the chest's keys into itself and can only hold them: nothing goes into the table.
+    held = ' '.join(g.command(f'data get block {X} 101 {Z} Items').get('chat', []))
+    chest = ' '.join(g.command(f'data get block {X} 102 {Z} Items').get('chat', []))
     after = slots(g)
-    g.check('a_hopper_over_it_puts_nothing_in', 'ntm:key' in above and after.get(0, ('', 0))[0] == 'ntm:key' and after.get(0)[1] == 456, [above[:120], after])
+    in_the_hopper = sum(int(n) for n in re.findall(r'[cC]ount: ?(\d+)', held))
+    in_the_chest = sum(int(n) for n in re.findall(r'[cC]ount: ?(\d+)', chest))
+    g.check('a_hopper_over_it_puts_nothing_in', in_the_hopper + in_the_chest == 3 and after.get(0) == ('ntm:key', 456) and set(after) <= {0, 2},
+            [held[:120], chest[:80], after])
 
 
 def capture(g):
