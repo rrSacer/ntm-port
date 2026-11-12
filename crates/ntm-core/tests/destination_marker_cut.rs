@@ -153,6 +153,66 @@ fn owed_drain_from_an_old_home_reemits_even_if_the_destination_is_marked() {
 }
 
 #[test]
+fn owed_items_encoded_stacks_and_entities_follow_independent_source_and_entity_cuts() {
+    use ntm_core::ledger::OwedEntity;
+    let mut source = ChunkLedger::default();
+    let ids = [
+        effect_id(SERIAL, 0),
+        effect_id(SERIAL, 1),
+        effect_id(SERIAL, 2),
+    ];
+    let named = "{id:'ntm:iron',count:1}".to_string();
+    let encoded = "{id:'ntm:tool',count:1,tag:{damage:17}}".to_string();
+    let entity = OwedEntity {
+        kind: "minecraft:armor_stand".into(),
+        pos: [16.5, 65.0, 0.5],
+    };
+    assert!(source.owe(ids[0], DEST, vec![named.clone()]));
+    assert!(source.owe(ids[1], DEST, vec![encoded.clone()]));
+    assert!(source.owe_entities(
+        ids[2],
+        DEST,
+        vec![(entity.clone(), "{Invisible:1b}".into())]
+    ));
+    let old_source = source.to_json();
+    assert!(source.take_owed(|_| false).is_empty());
+    assert!(source.take_owed_entities(|_| false).is_empty());
+    assert_eq!(source.take_owed(|_| true).len(), 2);
+    assert_eq!(
+        source.take_owed_entities(|_| true),
+        vec![(entity.clone(), "{Invisible:1b}".into())]
+    );
+    let paid_source = source.to_json();
+    for source_saved in [false, true] {
+        for entities_saved in [false, true] {
+            let mut reopened = ChunkLedger::from_json(if source_saved {
+                &paid_source
+            } else {
+                &old_source
+            });
+            let stacks = reopened.take_owed(|_| true);
+            let entities = reopened.take_owed_entities(|_| true);
+            let vanilla_source = usize::from(!source_saved);
+            let vanilla_ground = usize::from(entities_saved);
+            assert_eq!(
+                stacks.len() + 2 * vanilla_ground,
+                2 * (vanilla_source + vanilla_ground)
+            );
+            assert_eq!(
+                entities.len() + vanilla_ground,
+                vanilla_source + vanilla_ground
+            );
+            if !source_saved {
+                assert_eq!(stacks, vec![(DEST, named.clone()), (DEST, encoded.clone())]);
+                assert_eq!(entities, vec![(entity.clone(), "{Invisible:1b}".into())]);
+            }
+            assert!(reopened.take_owed(|_| true).is_empty());
+            assert!(reopened.take_owed_entities(|_| true).is_empty());
+        }
+    }
+}
+
+#[test]
 fn a_newer_destination_and_older_home_may_contain_two_vanilla_copies() {
     let id = effect_id(SERIAL, 1);
     let mut destination = ChunkLedger::default();
