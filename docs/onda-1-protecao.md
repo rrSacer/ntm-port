@@ -841,43 +841,54 @@ Prova da 4a, no núcleo:
   (B)). A otimização da emulação só volta se uma medição representativa, ou um orçamento explícito, mostrar problema.
 
 Corte de save (condição 3 do coordenador; `run-player-cut-proof.py field`; resumo em
-`docs/evidence/onda1-f4/field-cut-4a.json`). Binário `d25547c4…`, pacote `dca24969…`.
+`docs/evidence/onda1-f4/field-cut-4a.json`). Binário `e32de08a…`, pacote `dca24969…`.
 
 O roteiro:
-1. O preparo põe `/ntmrad set 100000` no chunk 1,0, espera 6 s e salva. O último commit fica com 97 chunks; o chunk
-   1,0 tem 6 012,8.
-2. A ação reabre, espera 4 s, põe o chunk de novo a 100 000, lê o mapa com `ntmtest rad` e salva no ponto de corte.
+1. O preparo põe `/ntmrad set 100000` no chunk 1,0, espera 6 s e salva. O último commit fica com 90 chunks; o 1,0 tem
+   6 011,8.
+2. A ação reabre, espera 4 s e põe o chunk a 100 000 de novo. Lê o mapa com `ntmtest rad`: o valor cru de cada chunk,
+   o da próxima atualização e se ele está carregado. Depois salva no ponto de corte.
 3. Depois de cada corte, o mundo é reaberto duas vezes. Lê-se a chave no disco antes de a sessão salvar.
 
-O critério: nenhum chunk da chave pode passar do maior entre três valores, comparados em f32:
-- o do último commit;
-- o do mapa logo antes do save;
-- o que a próxima atualização daria, porque uma atualização pode cair entre a leitura e o save.
+O critério (revisão do coordenador): a chave na primeira reabertura é um dos dois commits, chunk por chunk, comparada
+em f32.
+- **Último commit:** igual ao commit anterior, exatamente, com cada chunk e nenhum a mais.
+- **Novo commit:** o save da ação, que é um instante só do mapa. Cada chunk carregado está ou todo no valor de logo
+  antes do save, ou todo no da próxima atualização (uma atualização pode cair entre a leitura e o save). Um chunk não
+  carregado mantém exatamente o seu save.
+- **Reprovado:** um chunk ausente vale 0, e é perda a menos que o instante o tivesse em 0. Também reprova um chunk
+  acima do seu valor, dois instantes misturados ou um descarregado regravado.
+- **A fonte:** o chunk 1,0 está nas duas reaberturas.
+- **O controle:** é o vanilla, com as duas peças indo para o baú do Ender.
 
-Além disso, o chunk-fonte nunca se perde. O controle é o vanilla: as duas peças vão para o baú do Ender.
+O verificador tem testes próprios em `tools/test-game/test_field_cut_verdict.py`, incluindo o mutante pedido na
+revisão: um chunk que não é a fonte, truncado tanto do último commit quanto do novo.
 
-| Ponto | Chave do campo na reabertura | Chunk 1,0 (commit anterior → antes do save → 1ª reabertura) | Controle (peças no baú do Ender) |
+| Ponto | Chave na 1ª reabertura | Chunk 1,0 (commit anterior → antes do save → 1ª reabertura) | Controle (peças no baú do Ender) |
 |---|---|---|---|
-| `none` | nova | 6 012,8 → 100 000 → 56 616,8 | sim |
-| `kill` | último commit | 6 012,8 → 58 008,4 → 6 012,8 | não |
-| `save_begin` | último commit | 6 012,8 → 100 000 → 6 012,8 | não |
-| `level_saved` | último commit | 6 012,8 → 100 000 → 6 012,8 | não |
-| `players_saved` | último commit | 6 012,8 → 100 000 → 6 012,8 | sim |
-| `world_saved` | nova | 6 012,8 → 100 000 → 56 782,4 | sim |
-| `kv_committed` | nova | 6 012,8 → 100 000 → 56 782,4 | sim |
+| `none` | novo commit | 6 011,8 → 100 000 → 57 904,5 | sim |
+| `kill` | último commit | 6 011,8 → 100 000 → 6 011,8 | não |
+| `save_begin` | último commit | 6 011,8 → 100 000 → 6 011,8 | não |
+| `level_saved` | último commit | 6 011,8 → 58 008,0 → 6 011,8 | não |
+| `players_saved` | último commit | 6 011,8 → 100 000 → 6 011,8 | sim |
+| `world_saved` | novo commit | 6 011,8 → 100 000 → 57 904,5 | sim |
+| `kv_committed` | novo commit | 6 011,8 → 100 000 → 57 904,5 | sim |
 
 O resultado:
-- Os sete pontos passaram, e o controle está coerente em todos.
-- Nenhum chunk ficou acima do seu limite, e o chunk-fonte esteve presente nas duas reaberturas de todos os pontos.
+- Os sete pontos passaram, e o controle está coerente em todos. Os 90 chunks da chave estão carregados antes do corte.
+- O mutante da revisão foi aplicado a esta evidência: em cada ponto, cada um dos 89 chunks que não são a fonte foi
+  tirado, um de cada vez, da primeira reabertura. Os 89 foram rejeitados nos sete pontos, 623 de 623.
+- Nos pontos de novo commit, o 1,0 lido na reabertura (57 904,5) é o valor de uma atualização depois da leitura, e
+  todos os outros chunks estão no mesmo instante.
 - A diferença de atomicidade aparece em `level_saved` e `players_saved`. Ali as regiões, e em `players_saved` também
-  o arquivo do jogador, como mostra o controle, já estão gravadas. O campo volta ao último commit, que é o
-  armazenamento do NTM, gravado depois. No Java, o valor iria junto com o NBT do chunk. Aqui volta um valor de um save
-  anterior. Isso pode ser mais alto ou mais baixo que o do instante do corte, mas nunca é um valor que o campo não
-  teve.
+  o arquivo do jogador, como mostra o controle, já estão gravadas, e o campo volta ao último commit, que é o
+  armazenamento do NTM, gravado depois. No Java, o valor iria junto com o NBT do chunk. Aqui volta o valor exato de um
+  save anterior: pode ser mais alto ou mais baixo que o do instante do corte, mas nenhum chunk se perde.
 
-Na primeira rodada, a prova falhou duas vezes por defeitos dela mesma, não do campo:
-- a sonda lia um raio de 2 chunks, e o spread dos segundos da ação vai mais longe. Agora o raio é 16, e a sonda
-  lista só os chunks do mapa;
-- o armazenamento grava cada f32 pelo decimal mais curto, e o corredor o comparava como double. Agora compara em f32.
-
-A rodada registrada é a seguinte, com o mesmo binário.
+Rodadas anteriores:
+- Duas falharam por defeitos da própria prova, não do campo:
+  - a sonda tinha raio 2, e o spread dos segundos da ação vai mais longe. Agora o raio é 16, e a sonda lista os
+    chunks do mapa e os carregados;
+  - o corredor comparava como double o f32 gravado pelo decimal mais curto. Agora compara em f32.
+- Uma terceira passou com um critério só de limite superior, que a revisão mostrou não pegar um chunk perdido. Foi
+  substituído pelo de dois commits acima, e a rodada registrada é a desse critério.
