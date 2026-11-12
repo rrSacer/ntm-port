@@ -1,0 +1,146 @@
+{
+ "binary_sha256": "4be27ab0181999e0f622ff97ae40328398f7b7e74d64aedb3aa672100879a0b7",
+ "bundle_sha256": "a34a78c4b6792017ec5579c8378d68f9c6efb2b0311f540c43af5ce74cd0411d",
+ "families": [
+  "chunk_field",
+  "geiger_block",
+  "world_effects"
+ ],
+ "checks": {
+  "setup:the_field_doses_rad_over_20_a_tick": {
+   "ok": true,
+   "actual": {
+    "window": 3,
+    "gained": 1500,
+    "timer": 17
+   }
+  },
+  "setup:creative_takes_no_dose_from_the_field": {
+   "ok": true,
+   "actual": {
+    "dose": 0
+   }
+  },
+  "setup:the_geiger_chunk_line_reads_the_field": {
+   "ok": true,
+   "actual": {
+    "chat": "Player resistance: 0.0% (0.0) | Player contamination: 0.0 RAD | Total environmental radiation: 10.6 RAD/s | Current chunk radiation: 7.5 RAD/s | ===== ☢ GEIGER COUNTER ☢ ===== | The game time is 396 tick(s) | Replaced 1 slot(s) on ItemsTest with [Handheld Geiger Counter] | ntmtest ok=true timer=17 rad=1,0:1095069860:1089499942:1 | Radiation set. | {dose:0L,schema:1} | {dose:0L,schema:1} | Radiation set.",
+    "raw": 12.34000015258789,
+    "next": 7.514056205749512
+   }
+  },
+  "setup:the_chunk_unloads_and_saves_its_value": {
+   "ok": true,
+   "actual": {
+    "last_loaded": [
+     17,
+     59399.953125,
+     36632.08203125,
+     true
+    ],
+    "unloaded": [
+     15,
+     36632.08203125,
+     24202.46484375,
+     false
+    ],
+    "saved": 36632.08203125
+   }
+  },
+  "setup:an_unloaded_chunk_stays_in_the_map_and_decays": {
+   "ok": true,
+   "actual": {
+    "away": [
+     5,
+     925.2127685546875,
+     841.8756713867188,
+     false
+    ],
+    "saved": 36632.08203125
+   }
+  },
+  "setup:a_reloaded_chunk_takes_its_saved_value": {
+   "ok": true,
+   "actual": {
+    "back": [
+     3,
+     23761.80078125,
+     16428.23828125,
+     true
+    ],
+    "saved": 36632.08203125,
+    "away": [
+     5,
+     925.2127685546875,
+     841.8756713867188,
+     false
+    ]
+   }
+  },
+  "setup:the_geiger_block_placed_looking_north_faces_south": {
+   "ok": true,
+   "actual": "ntm:geiger[facing=south,honey_level=0]"
+  },
+  "setup:the_geiger_comparator_reads_30_rad_as_6": {
+   "ok": true,
+   "actual": {
+    "signal_timer": [
+     6,
+     14
+    ]
+   }
+  },
+  "setup:the_geiger_block_clicks_its_list_at_30_rad": {
+   "ok": true,
+   "actual": "[\"sound resolved event=ntm:item.geiger6 file=<ogg> stream=false source=7 decoded=Some((3840, 11025))\", \"sound resolved event=ntm:item.geiger6 file=<ogg> stream=false source=7 decoded=Some((3840, 11025))\", \"sound resolved event=ntm:item.geiger6 file=<ogg> stream=false source=7 decoded=Some((3840, 11025))\", \"sound resolved event=ntm:item.geiger6 file=<ogg> stream=false source=7 decoded=Some((3840, 11025))\"]"
+  },
+  "setup:the_geiger_comparator_reads_an_empty_field_as_0": {
+   "ok": true,
+   "actual": {
+    "signal_timer": [
+     0,
+     14
+    ]
+   }
+  },
+  "setup:a_right_click_on_the_geiger_block_reports": {
+   "ok": true,
+   "actual": "Player resistance: 0.0% (0.0) | Player contamination: 0.0 RAD | Total environmental radiation: 1.5 RAD/s | Current chunk radiation: 12.3 RAD/s | ===== ☢ GEIGER COUNTER ☢ ===== | Radiation set. | The game is running normally | ntmtest ok=true timer=14 rad=1,0:none:0:1 | 25, 101, 11 has the following block data: 0 | The game time is 1394 tick(s) | The game time is 1393 tick(s) | The game time is 1388 tick(s)"
+  },
+  "setup:radiated_grass_becomes_dead_earth": {
+   "ok": true,
+   "actual": {
+    "ntm:waste_earth": 256
+   }
+  },
+  "setup:radiated_tall_grass_goes": {
+   "ok": true,
+   "actual": {
+    "minecraft:air": 256
+   }
+  },
+  "setup:radiated_leaves_become_dead_leaves_or_air": {
+   "ok": true,
+   "actual": {
+    "minecraft:air": 25,
+    "ntm:waste_leaves": 231
+   }
+  },
+  "setup:the_fog_shows_its_25_quads": {
+   "ok": true,
+   "actual": {
+    "smoke_made": 530,
+    "background": 0
+   }
+  }
+ },
+ "heights_where_left": [],
+ "heights_where_gone": [
+  "ntmtest ok=true height=Some(101) below2..at=minecraft:stone,ntm:waste_earth,minecraft:air",
+  "ntmtest ok=true height=Some(101) below2..at=minecraft:stone,ntm:waste_earth,minecraft:air",
+  "ntmtest ok=true height=Some(101) below2..at=minecraft:stone,ntm:waste_earth,minecraft:air",
+  "ntmtest ok=true height=Some(101) below2..at=minecraft:stone,ntm:waste_earth,minecraft:air",
+  "ntmtest ok=true height=Some(101) below2..at=minecraft:stone,ntm:waste_earth,minecraft:air",
+  "ntmtest ok=true height=Some(101) below2..at=minecraft:stone,ntm:waste_earth,minecraft:air"
+ ]
+}

@@ -974,3 +974,90 @@ Prova da 4b:
   - os limiares de decaimento eram estreitos demais;
   - faltava o chão do bloco;
   - os cliques eram contados fora da janela em que o campo estava em 30.
+
+### 4c: a neblina e a destruição do mundo
+
+**A neblina** (`ChunkRadiationHandlerSimple.updateSystem:104-117`). A cada escrita de uma parte num vizinho, se o
+vizinho ficou acima de `fogRad` (100 RAD/s), em 1 de `fogCh` (20), e se o chunk que deu a parte existe, nasce uma
+neblina. A posição é uma coluna aleatória desse chunk de origem, não do vizinho que recebeu a parte, que é como o
+Java faz (`coord`, não `newCoord`). A altura é `getHeightValue` mais 0 a 4.
+
+O `ParticleRadiationFog` é desenhado como os 25 quads do seu `renderParticle`, e cada um vira uma partícula de mod do
+motor (`ntm:rad_fog_<n>`), decisão D1 (A):
+- **Os lugares e os tamanhos** saem do `new Random(50)`. Os `glTranslatef` do laço se somam, porque não há push/pop
+  dentro dele, e cada passo vai em média 2,5 para oeste, 2,5 para o norte e 0,15 para baixo. A neblina fica numa
+  diagonal de uns 60 blocos. O oráculo Java confere os lugares e os tamanhos
+  (`chunk_radiation::tests::the_fog_layout_matches_the_java_oracle`). Os tamanhos batem bit a bit. Um dos 75
+  lugares difere no último bit, porque o `nextGaussian` da JVM usa `StrictMath.log` (fdlibm) e o port usa o `ln` da
+  plataforma.
+- **Vida e cor:** 400 ticks, porque o `onUpdate` sobe o `maxAge` para 400. A partícula fica parada, sem
+  `moveEntity`. A textura é `fog.png` vezes a cor `glColor4f(0,85; 0,9; 0,5)`, porque o motor desenha partícula de mod
+  em branco (`tools/content-gen/fog_particles.py`).
+- **Diferenças:**
+  - O alfa vai em linha reta de 0,125 a 0. No Java ele é `sin(idade·π/400)·0,125`: entra suave, chega a 0,125 aos
+    200 ticks e some. As partículas de mod do motor só interpolam o alfa em linha reta.
+  - A luz é a do mundo, e o Java desenha com brilho cheio (`setBrightness(240)`).
+  - No Java dedicado, o `ServerProxy.effectNT` é vazio e a neblina só aparece no single-player. O port mostra a
+    neblina sempre.
+  - Alcance: cada quad sai do servidor como partícula e chega a quem está a até 32 blocos dele (`sendParticles`). O
+    Java cria a partícula no próprio cliente e desenha os 25 quads juntos. Como a neblina se estende por uns 60
+    blocos, o jogador vê só os quads perto de si. Por isso a contagem em jogo não é múltipla de 25.
+
+**A destruição do mundo** (`handleWorldDestruction:190-255`). Roda a cada tick (`worldRadEffects`) e, em cada mundo,
+sorteia cinco entradas do mapa, na ordem do mapa. Para cada uma com 10 RAD/s ou mais e chunk carregado, faz dez
+passadas pelas 16 × 16 colunas, `a` e depois `b`, isto é, x e depois z. Em cada passada:
+- uma coluna em três é visitada, na sua altura ou no bloco de baixo;
+- grama vira terra morta;
+- capim alto, em qualquer meta (arbusto, capim, samambaia), vira ar;
+- folhas (`Material.leaves`, menos as folhas mortas) viram folhas mortas 6 vezes em 7 e ar na 7ª.
+
+A altura é lida a cada passada, e os blocos são lidos e escritos direto no mundo. Assim, uma passada vê o que a
+anterior mudou, como no Java.
+- **A altura** (`getHeightValue`), decisão D2 (A): o heightmap `MOTION_BLOCKING` do motor
+  (`native_surface_heights`, API 127). No 1.7.10 ela é o primeiro bloco acima do último com `lightOpacity > 0`. Os
+  dois coincidem em folhas, água, capim, flores, tochas e neve fina. Diferem em vidro, cercas e grades, que bloqueiam
+  movimento mas tinham opacidade 0.
+- **Defeito do motor e ponte** (decisão do coordenador na 4c). O heightmap `MOTION_BLOCKING` do motor deixa de fora
+  os blocos do mod: o `heightmap_state` não os conta. Isso foi medido em jogo: numa coluna com pedra em 99,
+  `ntm:waste_earth` em 100 e ar acima, a altura saiu 100, e não 101. Sem a ponte, quando a grama virava terra morta a
+  altura caía, e o capim de cima nunca mais era visitado: só metade dele sumia.
+  - A correção da raiz está registrada como ticket do motor.
+  - A ponte, na glue: lê também o `WORLD_SURFACE`, que conta os blocos do mod. Onde ele passa do `MOTION_BLOCKING`, o
+    topo é o bloco do NTM mais alto entre os dois que bloqueia movimento pelo seu template
+    (`chunk_radiation::height_with_ntm`). Todos os templates do conteúdo bloqueiam, menos `poppy` (as plantas) e
+    `snow` (o fallout, uma camada): `blocksMotion` é a caixa de colisão com tamanho médio ≥ 0,729 ou de altura
+    inteira, e as grades, as escadas e as portas a têm. Um teste mantém essa lista igual à do conteúdo.
+- **As folhas mortas** vão com `persistent=true`, como as das bombas do port.
+- **`leaves_layer`** (`Material.leaves`, opacidade 0) não existe no port.
+
+**O sorteio** é por hash do mundo, do tick e do propósito (neblina ou destruição), com um `java.util.Random` por
+propósito e tick, porque o mod não tem o `world.rand`.
+
+Prova da 4c:
+- **Núcleo:**
+  - testes de unidade da regra de cada bloco, da passada (a taxa de colunas visitadas, a metade no bloco de baixo, a
+    altura de cada coluna, os sorteios de uma coluna fora do mundo), da destruição e da neblina no servidor, do limiar
+    da neblina, do chunk não carregado e da ponte da altura;
+  - o oráculo Java do layout da neblina;
+  - mutantes: 17 de 17 mortos na neblina e na destruição, 3 de 3 na ponte da altura;
+  - a lib inteira, 613 de 613 (com a ponte), e clippy limpo.
+- **Conteúdo:** o teste das partículas confere a textura (`fog.png` vezes a cor do Java), os 400 ticks, a partícula
+  parada e o alfa; o núcleo confere os 25 tamanhos contra o layout.
+- **Custo** (teste `chunk_radiation_effects_cost`, release, o mundo da 4a sob uma camada de grama, 2 000
+  atualizações):
+  - tick sem atualização: mediana 0,02 ms. A maior parte dos sorteios cai em chunks não carregados ou abaixo de 10.
+    Quando cai num chunk carregado, o p99 vai a 3–8 ms e o máximo a 10 ms;
+  - tick com atualização: mediana 2,1 ms (1,4 na 4a; a neblina soma ~0,7 ms) e p99 5,3 ms;
+  - cerca de 100 neblinas por atualização, o que o Java também dá: 225 chunks × 9 partes acima de 100, 1 em 20.
+
+  As alturas desse teste são as do host de teste, e não o heightmap do motor.
+- **Em jogo** (famílias `chunk_field`, `geiger_block` e `world_effects`; binário `4be27ab0…`, pacote `a34a78c4…`;
+  resumo em `docs/evidence/onda1-f4/items-4c.json`). As 15 verificações passaram:
+  - com a ponte da altura, numa área de 16 × 16 radiada: grama 256/256 em terra morta, capim alto 256/256 em ar,
+    folhas 231 em folhas mortas e 25 em ar (6/7 esperado);
+  - a neblina: 530 partículas contra 0 de fundo numa janela igual sem campo;
+  - as 11 verificações da 4b seguem passando.
+
+  As rodadas anteriores mostraram o defeito de altura do motor: a grama 256/256, o capim só pela metade, e a sonda de
+  altura com 100 sobre a terra morta. A ponte entrou depois disso. A primeira contagem da neblina exigia múltiplo
+  de 25, e o alcance de 32 blocos explica por que isso não vale.
