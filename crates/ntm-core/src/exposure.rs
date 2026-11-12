@@ -475,6 +475,8 @@ mod tests {
         assert_eq!(d, vec![MAX_POWER as i32 - 10_000, 1_000_000, 1, 201, 8, 8, 1]);
         e.power = 100;
         assert_eq!(e.screen_data()[6], 0, "the lamp is off without a tick's power");
+        e.power = 10_000;
+        assert_eq!(e.screen_data()[6], 1, "exactly a tick's power lights it (`consumption <= power`)");
     }
 
     #[test]
