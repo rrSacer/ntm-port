@@ -12,6 +12,9 @@ pub enum Ash {
     Wood,
     Coal,
     Misc,
+    /// The chimneys' (`EnumAshType.FLY`, `SOOT`): no fuel gives them.
+    Fly,
+    Soot,
 }
 
 impl Ash {
@@ -20,6 +23,8 @@ impl Ash {
             Ash::Wood => "ntm:powder_ash__wood",
             Ash::Coal => "ntm:powder_ash__coal",
             Ash::Misc => "ntm:powder_ash__misc",
+            Ash::Fly => "ntm:powder_ash__fly",
+            Ash::Soot => "ntm:powder_ash__soot",
         }
     }
 }
@@ -179,7 +184,8 @@ pub fn family(item: &str) -> Family {
     {
         return Family::Log;
     }
-    if wood_of(p, "_planks") || wood_of(p, "_slab") || p == "stick" {
+    // `plankWood`, `slabWood`, `stairWood` and `stickWood` (Forge's `OreDictionary.java:67-72`).
+    if wood_of(p, "_planks") || wood_of(p, "_slab") || wood_of(p, "_stairs") || p == "stick" {
         return Family::Wood;
     }
     Family::Other
@@ -191,6 +197,8 @@ pub struct Module(pub [f64; 8]);
 
 impl Module {
     pub const NONE: Module = Module([1.0; 8]);
+    /// `TileEntityMachineWoodBurner.burnModule`: logs x4, wood x2.
+    pub const WOOD_BURNER: Module = Module::NONE.with(Family::Log, 4.0).with(Family::Wood, 2.0);
 
     pub const fn with(mut self, family: Family, time: f64) -> Self {
         self.0[family as usize] = time;
@@ -368,6 +376,23 @@ mod tests {
         assert_eq!(burn_time("minecraft:daylight_detector"), 300);
         assert_eq!(burn_time("minecraft:stone_pressure_plate"), 0);
         assert_eq!(burn_time("minecraft:iron_ingot"), 0);
+    }
+
+    /// `TileEntityMachineWoodBurner.burnModule`: logs x4 (`logWood`), wood x2 (`plankWood`, `slabWood`, `stairWood`,
+    /// `stickWood`, the wood briquette's `briquetteWood`); saplings (`treeSapling`) and coal as they are.
+    #[test]
+    fn the_wood_burners_module() {
+        let m = Module::WOOD_BURNER;
+        assert_eq!(m.burn_time("minecraft:oak_log"), 1200);
+        assert_eq!(m.burn_time("minecraft:oak_planks"), 600);
+        assert_eq!(m.burn_time("minecraft:oak_slab"), 300);
+        assert_eq!(m.burn_time("minecraft:oak_stairs"), 600);
+        assert_eq!(m.burn_time("minecraft:stick"), 200);
+        assert_eq!(m.burn_time("ntm:briquette__wood"), 800);
+        assert_eq!(m.burn_time("minecraft:oak_sapling"), 100);
+        assert_eq!(m.burn_time("minecraft:coal"), 1600);
+        assert_eq!(m.burn_time("minecraft:charcoal"), 1600);
+        assert_eq!(m.burn_time("minecraft:stone"), 0);
     }
 
     #[test]

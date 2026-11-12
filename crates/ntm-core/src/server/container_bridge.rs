@@ -99,6 +99,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Shredder(s) => Some(s),
         Data::BlastFurnace(b) => Some(b),
         Data::Firebox(f) => Some(f),
+        Data::Ashpit(a) => Some(a),
         Data::Crucible(c) => Some(c),
         Data::Mold(c) | Data::Basin(c) => Some(c),
         Data::Channel(c) => Some(c),
@@ -160,6 +161,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_blast_furnace", Layout::Native),
     ("ntm:heater_firebox", Layout::Native),
     ("ntm:heater_oven", Layout::Native),
+    ("ntm:machine_ashpit", Layout::Native),
     // The machines of the old screen only, with native screens now.
     ("ntm:machine_battery", Layout::Native),
     ("ntm:teste", Layout::Native),

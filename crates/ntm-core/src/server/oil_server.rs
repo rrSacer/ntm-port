@@ -82,6 +82,28 @@ impl Server {
         }
     }
 
+    /// The ash of the fuel each firebox and heating oven lit this tick, into the ashpit right under its core
+    /// (`TileEntityFireboxBase.java:83-91`: `getTileEntity(x, y - 1, z) instanceof TileEntityAshpit`); without one,
+    /// nowhere.
+    pub(super) fn ash_tick(&mut self) {
+        let lit: Vec<(Key, (crate::fuel::Ash, u32))> = self
+            .ready
+            .world
+            .machines
+            .iter_mut()
+            .filter_map(|(k, m)| match &mut m.data {
+                Data::Firebox(f) => f.ash_out.take().map(|a| (k.clone(), a)),
+                _ => None,
+            })
+            .collect();
+        for ((dim, at), (ash, time)) in lit {
+            let under = (dim, [at[0], at[1] - 1, at[2]]);
+            if let Some(Data::Ashpit(pit)) = self.ready.world.machines.get_mut(&under).map(|m| &mut m.data) {
+                pit.add(ash, time as i32);
+            }
+        }
+    }
+
     /// The oil drills' work under them (`TileEntityOilDrillBase.updateEntity`):
     /// down the pipe to the first other block, sucked if it is a deposit,
     /// else drilled into pipe.

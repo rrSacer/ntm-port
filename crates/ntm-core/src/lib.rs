@@ -31,6 +31,7 @@ pub mod fuel;
 pub mod oredict;
 pub mod upgrades;
 pub mod welders;
+pub mod ashpit;
 pub mod furnace_brick;
 pub mod furnace_combination;
 pub mod furnace_steel;

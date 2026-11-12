@@ -2469,6 +2469,40 @@
 ],
 "synced": []
 },
+"ntm:machine_ashpit": {
+"inventory": [
+8,
+86
+],
+"slots": [
+{
+"output": true,
+"x": 44,
+"y": 27
+},
+{
+"output": true,
+"x": 62,
+"y": 27
+},
+{
+"output": true,
+"x": 80,
+"y": 27
+},
+{
+"output": true,
+"x": 98,
+"y": 27
+},
+{
+"output": true,
+"x": 116,
+"y": 27
+}
+],
+"synced": []
+},
 "ntm:machine_assembly_machine": {
 "inventory": [
 8,
