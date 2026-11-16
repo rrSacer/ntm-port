@@ -139,7 +139,7 @@ def ducts(g, core, cell):
     before the stores are placed, because the volume of a store hides the ducts under it."""
     rows = {
         'water': [(x, 0, 0) for x in range(-3, -9, -1)] + [(x, -1, 0) for x in range(-8, -12, -1)],
-        'steam': [(x, 0, 0) for x in range(3, 8)] + [(x, -1, 0) for x in range(7, 10)],
+        'spentsteam': [(x, 0, 0) for x in range(3, 8)] + [(x, -1, 0) for x in range(7, 10)],
     }
     for fluid, local in rows.items():
         # The low ones first, each typed from the cell over it, before the high ones are laid over them; then the high ones from the
@@ -203,7 +203,6 @@ def setup(g):
     open_cyclotron(g, core)
     put(g, 'ntm:part_beryllium', 1)
     put(g, 'ntm:powder_thorium', 4)
-    put(g, 'ntm:battery_creative', 9)
     put(g, 'ntm:upgrade_speed_3', 10)
     put(g, 'ntm:upgrade_effect_3', 11)
     g.close()
@@ -217,7 +216,12 @@ def setup(g):
     g.command(f'setblock {taker_chest[0]} {taker_chest[1]} {taker_chest[2]} minecraft:chest')
     for n, (item, count) in enumerate([('minecraft:dirt', 2), ('ntm:part_lithium', 1), ('ntm:powder_lithium', 1)]):
         g.command(f'item replace block {feeder_chest[0]} {feeder_chest[1]} {feeder_chest[2]} container.{n} with {item} {count}')
+    sprint(g, 30)  # Feed both inputs before powering the machine.
     start = {'water': tank(g, lay['water'])[1], 'steam': tank(g, lay['steam'])[1], 'own': tanks(g, core)}
+    g.check('the_steam_tanks_start_empty', start['steam'] == 0 and start['own'][1][1] == 0, start)
+    open_cyclotron(g, core)
+    put(g, 'ntm:battery_creative', 9)
+    g.close()
     sprint(g, 400)
     cyc, out = items(g, core), items(g, taker_chest)
     t = tanks(g, core)
@@ -245,9 +249,9 @@ def capture(g):
     open_cyclotron(g, core)
     put(g, 'ntm:part_lithium', 0, 2)
     put(g, 'ntm:powder_lithium', 3, 2)
-    put(g, 'ntm:battery_creative', 9)
     put(g, 'ntm:upgrade_speed_3', 10)
     put(g, 'ntm:upgrade_effect_3', 11)
+    put(g, 'ntm:battery_creative', 9)
     g.close()
     sprint(g, 100)
     st, s = state(g, core), items(g, core)
