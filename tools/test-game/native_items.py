@@ -220,8 +220,12 @@ def setup(g):
     def candy_again():
         g.command('effect clear @s');g.command('ntmitem dose 0');give_hand(g,'ntm:cotton_candy',2);g.ctl('look-at 20 160 8')
     active,held=short_hold(g,.5,candy_again)
-    g.check('real_eating_started',active.get('using') is not None,active)
-    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,{'counts':counts(g),'holds':held})
+    # `using` is {slot, ticks}. Judge the observation on that clock;
+    # a control reply after completion is not evidence of a cancelled use.
+    using=active.get('using')
+    elapsed=using['ticks'] if isinstance(using, dict) else (using[1] if isinstance(using, list) else None)
+    g.check('real_eating_started',elapsed is not None and 0<=elapsed<32,active)
+    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,{'counts':counts(g),'holds':held,'observed_use_ticks':elapsed})
     for attempt in range(8):
         candy_again()
         # Three seconds of hunger (25 points of exhaustion a second): enough to take the saturation of a candy

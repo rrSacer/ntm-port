@@ -188,16 +188,19 @@ def restart_arm(g):
     ids = {kind: explosion_id(log(g)[start:], x) for kind, (x, _) in RESTART.items()}
     digging = lambda: ' '.join(g.command('ntmbomba status').get('chat', []))
     wait(g, 'both_digging', lambda: all(i in digging() for i in ids.values()), digging, 30)
-    g.ctl('save')
-    # The save holds both digging: they are still at it once it is done.
+    # Freeze before the 80 block queries and hold through the runner's closing
+    # save. Socket latency must not let the crater finish between observation,
+    # save and quit. The reopened world is unfrozen explicitly below.
+    g.command('tick freeze')
     status = digging()
     g.evidence['restart_arm'] = {'ids': ids, 'status': status, 'dug': {k: dug(g, x) for k, (x, _) in RESTART.items()}}
-    g.check('both_still_digging_after_the_save', all(i in status for i in ids.values()), g.evidence['restart_arm'])
+    g.check('both_still_digging_before_the_save', all(i in status for i in ids.values()), g.evidence['restart_arm'])
     # Still in its crater (not yet in its fallout, which comes back read): what the reopened world checks.
     phase = re.search(r'%s (\w+) R=' % ids['nuke'], status)
     g.check('the_nuke_still_in_its_crater_at_the_save', phase and phase.group(1) in ('Planning', 'Writing', 'Waiting'),
             g.evidence['restart_arm'])
     (g.folder / 'bombs-restart.json').write_text(json.dumps(g.evidence['restart_arm']))
+    g.ctl('save')
 
 
 def restart_check(g):
@@ -205,6 +208,7 @@ def restart_check(g):
     read back); the balefire's comes back and is finished (`EntityBalefire` keeps its state)."""
     g.evidence['phase'] = 'restart-check'
     g.ctl('wait-ready 120')
+    g.command('tick unfreeze')
     armed = json.loads((g.folder / 'bombs-restart.json').read_text())
     ids = armed['ids']
     for x, _ in RESTART.values():
