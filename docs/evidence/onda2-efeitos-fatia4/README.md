@@ -143,3 +143,35 @@ registro e a dívida é julgada no disco (`phase1_debt_valid`, que já soma iten
 **Veredito:** a prova em duas fases **não validou** os invariantes de dívida/drenagem do NTM, porque a dívida não
 ocorreu. Ela comprova só conservação 6/6 no corte e após as reaberturas, além do controle vanilla em duas fases.
 `entities_written` segue **não aprovado** para paridade da quebra direta. Os consumidores continuam desligados.
+
+
+## Sonda da rota das varetas com B ausente (16/11)
+
+Aprovada pelo coordenador, só em cópia de teste. Mesmo binário release; rastreio pelas variáveis de execução já
+existentes `NTM_TRACE_EFFECTS=1` e `NTM_TRACE_PHASES=1`, sem build e sem alteração de produção. Corte `none`. A cópia
+do roteiro passou a registrar seis leituras após a quebra: residência de B e da saída (48,102,13), varetas vivas no
+raio de 150 e o tick. Evidência em [route-probe1/](route-probe1/) e [route-probe2/](route-probe2/).
+
+**Fatos:**
+- Rastreio: um único lote com `blocks 125` (a pilha volta a tijolo, inclusive as células x=48–49 que ficam em B) e
+  cinco `items [48, 102, 13]` (4 Ra-226Be e 1 Zr), cada um aplicado uma só vez, sem nova tentativa. Em seguida,
+  `storage written at tick 1284` (o save do fim do ato).
+- Ticks 1133 a 1282, após a quebra: dívida 0, B e a saída ausentes, **nenhuma vareta no mundo vivo**.
+- No disco (tentativa 2): as 5 varetas estão no arquivo de entidades de B, em (48,5; 102,5; 13,5), com `Age=0`.
+  Após reabrir, a célula (49,102,10) de B é `ntm:pile_brick`.
+- Os critérios de residência coincidem. `ledger_add_here`, `home_loaded`, `drop_items`/`loaded_state` e o `block` do
+  controle consultam todos `world.chunks`. `ledger_store` grava a dívida no chunk dono carregado e em `LEDGERS`; se
+  tivesse havido dívida, o `ntmledger` a mostraria.
+
+**Conclusão parcial:** a dívida não foi registrada porque, no momento em que `ledger_add_here` rodou, B constava
+como residente. A rota usada foi `spawn_items`; as entidades nasceram já dentro de B e foram gravadas com ele. A janela
+de aplicação fica entre os ticks 1282 e 1284, ou seja, no save. Sem build não foi possível identificar o que torna B
+acessível nesse instante. Candidatos: `world_saving` → `native_settle` processando a quebra adiada (A residente sem
+ticking não roda o passo antes) com B reentrando por streaming; ou o gancho de descarregamento
+(`retire_unloaded` → `native_chunks_changed` → `put_back`), que devolve a coluna a `world.chunks` enquanto os mods
+são avisados. A ordem do lote (o efeito `blocks` precisa das células de B e segura os `items` que vêm depois) explica
+por que nada saiu antes disso.
+
+**Para fechar:** um log de tick e de `world.chunks` dentro de `flush_machine_effects`/`ledger_add_here`, numa cópia de
+cola compilada à parte (exige build e target próprio), ou uma leitura do caminho de save do motor. Nada foi alterado
+em produção; os consumidores seguem desligados.
