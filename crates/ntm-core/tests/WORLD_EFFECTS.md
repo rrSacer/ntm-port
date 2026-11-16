@@ -187,8 +187,8 @@ arquivo de entidades é gravado, o replay torna a explodir e pode perder as duas
 Se o drop foi salvo após mover-se ao chunk C, procurar a tag somente em B também não prova o efeito; o item distante
 sobrevive, mas a explosão física se repete. As três sondas constroem os registros representativos em memória e usam o
 `Server` real; **não** simulam ainda as transições de save do motor nem substituem o verificador exaustivo ou corte em
-jogo. `cargo test --test destination_marker_cut` e Clippy desse teste: 9/9 e sem avisos. A guarda de produção ainda é a
-da fatia 2, e a restrição aprovada ainda precisa ser implementada após o modelo.
+jogo. `cargo test --test destination_marker_cut` e Clippy desse teste: 9/9 e sem avisos. Naquela execução, a guarda
+de produção ainda era a da fatia 2; a restrição a efeitos físicos foi implementada na rodada posterior.
 
 A matriz `tag_and_marker_cut_matrix_covers_pickup_merge_and_movement` percorre 4 histórias (parado, coletado, fundido,
 movido) × 16 combinações antigo/novo dos registros de B, entidades B/C e jogador, sempre com A antigo. Cada caso chama
@@ -237,3 +237,46 @@ Essa primitiva só ordena bateladas que o chamador efetivamente enfileirou na me
 própria, não coordena dimensões ou arquivos de jogador e não prova o conteúdo do snapshot ou a paridade em jogo. Não
 foi integrada ao motor principal nem ao mod. A cola, o caminho owed/drain, a guarda de explosão e a prova em jogo
 permanecem pendentes antes de habilitar consumidores da fatia 4.
+
+### Integração em andamento (12/11)
+
+O replay passou a aplicar `later_seen` apenas a blocos e explosões (`17464373`), deixando itens e entidades da origem
+antiga devidos. O mutante que suprimiu os itens novamente foi morto pelo corte com duas saídas. Foram aprovados 591
+testes de unidade (3 ignorados), os 11 cortes sintéticos `destination_marker_cut` e Clippy do núcleo. O corte de
+`owed/drain` (`9e659b8e`) distingue itens, SNBT codificado e entidades em registros antigo/novo independentes; é um
+modelo, não a prova do host.
+
+A cola e o pin estão em `4a2e9080`: explosão genérica escolhe `Keep` ou `Block`, e a gravação do ledger marca a
+origem para proteger a próxima gravação viva naturalmente agendada. Motor `95273a4133`, sobre `5c3e305e62`: três
+testes do writer, Clippy e dois mutantes específicos da marca passaram. O build nativo release e o Clippy da árvore
+transformada passaram; não se mudou a ordem de unload. A marca não força save e não é consumida por snapshot não vivo.
+
+Na primeira tentativa de `coupled-break`, o roteiro original começou a busca em x=-8, com origem e destino já
+descarregados. Uma cópia temporária iniciou a busca em x=24 e encontrou a configuração exigida em x=8 em ambos os
+mundos. O corte sem interrupção passou com 6 itens no NTM e no vanilla, no disco e nas duas reaberturas. O corte
+`kill` em modo eager deu NTM 5 e vanilla 0; o próprio harness classifica o modo eager como `proof=false`, portanto não
+é prova do contrato. A execução em modo estrito está em andamento. Persistem a prova de replay físico e os cortes em
+jogo de explosão/entidade: nenhum consumidor novo deve ser ativado antes deles.
+
+Auditoria posterior do pin intermediário `95273a4133`: `save_chunks_eagerly` e saída também usam `save_later` em
+snapshots vivos preparados com BEs, e o unload usa o mesmo método depois das entidades. Assim, a distinção por
+`live_save` era insuficiente; o pin intermediário **não** é a integração final. Uma nova entrada para snapshots
+preparados cobre esses três caminhos sem mudar a flag de failpoint nem a ordem do unload; a geração segue isolada.
+As provas no pin intermediário, incluindo `none` e `kill` em modo estrito com 6/6, não validam o novo pin. No corte
+`kv_committed` o controle não abriu porque o caminho do socket excedeu 108 bytes; não é resultado de paridade.
+
+
+### Retomada auditada (16/11)
+
+A matriz final do pin `bb06eab65c` já havia terminado: não se repetiu o build. Cinco cortes estritos passaram
+(`none`, `kill`, `kv_committed`, `save_begin`: 6/6; `chunks_written`: 0/0, resíduo igual). O corte
+`entities_written` conserva 6 itens no NTM e no vanilla no disco e nas duas reaberturas, mas permanece reprovado por
+`same_cut=false`: NTM concentra as saídas em B, o baú vanilla solta cinco em A e uma em B. A saída do canal NTM segue
+`TileEntityPileCore.java:545–564`; não se alterou produção para mascarar a diferença.
+
+Uma pré-validação autorizada com dropper vanilla em A apontado para B não conseguiu pagar as cinco varetas e foi
+interrompida antes do corte e do lado NTM. Ela mostrou também que `execute if loaded=false` não prova descarga da
+coluna: B continuava residente (`control block` dava `loaded=true`). Portanto o cenário original não é prova de
+entrada na rota owed/drain da cola. O mutante `PreparedSnapshotUnprotected` foi morto por asserção; fonte restaurada.
+Relatórios, patches da fixture e limites estão em [evidência da fatia 4](../../../docs/evidence/onda2-efeitos-fatia4/README.md).
+Não declarar a matriz ou o replay físico aprovados. Os consumidores novos permanecem desligados.

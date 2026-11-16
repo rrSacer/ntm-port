@@ -1,0 +1,269 @@
+{
+  "motor": "bb06eab65c05202136701e73b835d1933cce4705",
+  "ntm": "d79c5681",
+  "matrix_passed": false,
+  "cuts": [
+    {
+      "cut": "none",
+      "passed": true,
+      "ntm": [
+        6,
+        6,
+        6
+      ],
+      "vanilla": [
+        6,
+        6,
+        6
+      ],
+      "same_cut": true,
+      "matched": null,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            5,
+            0
+          ],
+          [
+            3,
+            0,
+            1,
+            0
+          ]
+        ],
+        "entities": [
+          [
+            3,
+            0,
+            0,
+            6
+          ]
+        ]
+      },
+      "control_written": {
+        "region": [
+          [
+            2,
+            0,
+            5,
+            0
+          ],
+          [
+            3,
+            0,
+            1,
+            0
+          ]
+        ],
+        "entities": [
+          [
+            2,
+            0,
+            0,
+            5
+          ],
+          [
+            3,
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "cut": "kill",
+      "passed": true,
+      "ntm": [
+        6,
+        6,
+        6
+      ],
+      "vanilla": [
+        6,
+        6,
+        6
+      ],
+      "same_cut": true,
+      "matched": null,
+      "written": {
+        "region": [],
+        "entities": []
+      },
+      "control_written": {
+        "region": [],
+        "entities": []
+      }
+    },
+    {
+      "cut": "kv_committed",
+      "passed": true,
+      "ntm": [
+        6,
+        6,
+        6
+      ],
+      "vanilla": [
+        6,
+        6,
+        6
+      ],
+      "same_cut": true,
+      "matched": null,
+      "written": {
+        "region": [],
+        "entities": []
+      },
+      "control_written": {
+        "region": [],
+        "entities": []
+      }
+    },
+    {
+      "cut": "save_begin",
+      "passed": true,
+      "ntm": [
+        6,
+        6,
+        6
+      ],
+      "vanilla": [
+        6,
+        6,
+        6
+      ],
+      "same_cut": true,
+      "matched": null,
+      "written": {
+        "region": [],
+        "entities": []
+      },
+      "control_written": {
+        "region": [],
+        "entities": []
+      }
+    },
+    {
+      "cut": "chunks_written",
+      "passed": true,
+      "ntm": [
+        0,
+        0,
+        0
+      ],
+      "vanilla": [
+        0,
+        0,
+        0
+      ],
+      "same_cut": true,
+      "matched": null,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            5,
+            0
+          ],
+          [
+            3,
+            0,
+            1,
+            0
+          ]
+        ],
+        "entities": []
+      },
+      "control_written": {
+        "region": [
+          [
+            2,
+            0,
+            5,
+            0
+          ],
+          [
+            3,
+            0,
+            1,
+            0
+          ]
+        ],
+        "entities": []
+      }
+    },
+    {
+      "cut": "entities_written",
+      "passed": false,
+      "ntm": [
+        6,
+        6,
+        6
+      ],
+      "vanilla": [
+        6,
+        6,
+        6
+      ],
+      "same_cut": false,
+      "matched": null,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            5,
+            0
+          ],
+          [
+            3,
+            0,
+            1,
+            0
+          ]
+        ],
+        "entities": [
+          [
+            3,
+            0,
+            0,
+            6
+          ]
+        ]
+      },
+      "control_written": {
+        "region": [
+          [
+            2,
+            0,
+            5,
+            0
+          ],
+          [
+            3,
+            0,
+            1,
+            0
+          ]
+        ],
+        "entities": [
+          [
+            2,
+            0,
+            0,
+            5
+          ],
+          [
+            3,
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    }
+  ]
+}
