@@ -1,0 +1,42 @@
+2026-11-16T17:45:04.815Z === started (pid 139153, agent cca6526f-e0b2-4414-9309-95c124eab3be, shell: /bin/sh)
+2026-11-16T17:45:04.889Z err| Traceback (most recent call last):
+2026-11-16T17:45:04.889Z err|   File "/tmp/claude-0/-root--traycer-epics-5f50e725-564a-4cb7-848c-7bc5799a5749/a2e45d62-7909-425c-a421-a434fe3ec7d5/scratchpad/ntm_phase2_reopen.py", line 8, in <module>
+2026-11-16T17:45:04.889Z err|     spec.loader.exec_module(more)
+2026-11-16T17:45:04.889Z err|     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+2026-11-16T17:45:04.889Z err|   File "<frozen importlib._bootstrap_external>", line 763, in exec_module
+2026-11-16T17:45:04.889Z err|   File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+2026-11-16T17:45:04.889Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/run-crash-more.py", line 32, in <module>
+2026-11-16T17:45:04.889Z err|     spec.loader.exec_module(crash_proof)
+2026-11-16T17:45:04.889Z err|     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+2026-11-16T17:45:04.889Z err|   File "<frozen importlib._bootstrap_external>", line 763, in exec_module
+2026-11-16T17:45:04.889Z err|   File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+2026-11-16T17:45:04.889Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/run-crash-proof.py", line 27, in <module>
+2026-11-16T17:45:04.889Z err|     from native_game import Game
+2026-11-16T17:45:04.889Z err| ModuleNotFoundError: No module named 'native_game'
+2026-11-16T17:45:04.904Z === exited (code 1)
+2026-11-16T17:45:14.497Z === started (pid 139272, agent cca6526f-e0b2-4414-9309-95c124eab3be, shell: /bin/sh)
+2026-11-16T17:45:39.312Z err| Traceback (most recent call last):
+2026-11-16T17:45:39.312Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/native_crash_more.py", line 1127, in <module>
+2026-11-16T17:45:39.312Z err|     {'prepare': prepare, 'act': act, 'verify': verify, 'again': lambda g: verify(g, True), 'drain': drain}[mode](g)
+2026-11-16T17:45:39.312Z err|     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+2026-11-16T17:45:39.312Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/native_crash_more.py", line 360, in coupled_break_verify
+2026-11-16T17:45:39.312Z err|     g.check('outputs_only_in_B', sum(e['item']['count'] for e in outputs) == 6 and all((int(e['pos'][0] // 16), int(e['pos'][2] // 16)) == (3, 0) for e in outputs), outputs)
+2026-11-16T17:45:39.312Z err|     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-16T17:45:39.312Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/native_game.py", line 102, in check
+2026-11-16T17:45:39.312Z err|     raise AssertionError(f'{name}: {actual}')
+2026-11-16T17:45:39.312Z err| AssertionError: setup:outputs_only_in_B: [{'distance': 3.1622776601683795, 'id': 2, 'item': {'count': 1, 'item': 'ntm:pile_rod__ra226be'}, 'kind': 'item', 'pos': [52.5, 100.0, 12.5], 'type': 'minecraft:item'}, {'distance': 4.031073903738743, 'id': 3, 'item': {'count': 1, 'item': 'ntm:pile_rod__zr'}, 'kind': 'item', 'pos': [49.86477631328778, 100.0, 13.757959367589292], 'type': 'minecraft:item'}, {'distance': 5.764758188863838, 'id': 4, 'item': {'count': 4, 'item': 'ntm:pile_rod__ra226be'}, 'kind': 'item', 'pos': [47.85382362371045, 100.0, 14.33675913762349], 'type': 'minecraft:item'}]
+2026-11-16T17:46:03.281Z err| Traceback (most recent call last):
+2026-11-16T17:46:03.282Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/native_crash_more.py", line 1127, in <module>
+2026-11-16T17:46:03.282Z err|     {'prepare': prepare, 'act': act, 'verify': verify, 'again': lambda g: verify(g, True), 'drain': drain}[mode](g)
+2026-11-16T17:46:03.282Z err|     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+2026-11-16T17:46:03.282Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/native_crash_more.py", line 1127, in <lambda>
+2026-11-16T17:46:03.282Z err|     {'prepare': prepare, 'act': act, 'verify': verify, 'again': lambda g: verify(g, True), 'drain': drain}[mode](g)
+2026-11-16T17:46:03.282Z err|                                                                           ~~~~~~^^^^^^^^^
+2026-11-16T17:46:03.282Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/native_crash_more.py", line 360, in coupled_break_verify
+2026-11-16T17:46:03.282Z err|     g.check('outputs_only_in_B', sum(e['item']['count'] for e in outputs) == 6 and all((int(e['pos'][0] // 16), int(e['pos'][2] // 16)) == (3, 0) for e in outputs), outputs)
+2026-11-16T17:46:03.282Z err|     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-16T17:46:03.282Z err|   File "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/probes/two-phase-test-game/native_game.py", line 102, in check
+2026-11-16T17:46:03.282Z err|     raise AssertionError(f'{name}: {actual}')
+2026-11-16T17:46:03.282Z err| AssertionError: setup:outputs_only_in_B: [{'distance': 3.1622776601683795, 'id': 3, 'item': {'count': 1, 'item': 'ntm:pile_rod__ra226be'}, 'kind': 'item', 'pos': [52.5, 100.0, 12.5], 'type': 'minecraft:item'}, {'distance': 4.031073903738743, 'id': 4, 'item': {'count': 1, 'item': 'ntm:pile_rod__zr'}, 'kind': 'item', 'pos': [49.86477631328778, 100.0, 13.757959367589292], 'type': 'minecraft:item'}, {'distance': 5.764758188863838, 'id': 2, 'item': {'count': 4, 'item': 'ntm:pile_rod__ra226be'}, 'kind': 'item', 'pos': [47.85382362371045, 100.0, 14.33675913762349], 'type': 'minecraft:item'}]
+2026-11-16T17:46:03.781Z | {"phase1_disk": {"entities": 6, "blocks": 0, "machines": 0, "owed": 0, "player": 0, "total": 6}, "first_rc": 1, "phase2_disk": {"entities": 6, "blocks": 0, "machines": 0, "owed": 0, "player": 0, "total": 6}, "phase2_written": {"region": [], "entities": [[2, 0, 0, 4], [3, 0, 6, 2]]}, "again_rc": 1, "again_disk": {"entities": 6, "blocks": 0, "machines": 0, "owed": 0, "player": 0, "total": 6}}
+2026-11-16T17:46:03.792Z === exited (code 0)

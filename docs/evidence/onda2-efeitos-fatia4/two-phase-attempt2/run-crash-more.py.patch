@@ -1,0 +1,57 @@
+--- ../test-game/run-crash-more.py	2026-11-11 18:42:16.199720020 -0300
++++ run-crash-more.py	2026-11-16 13:23:46.793814252 -0300
+@@ -219,6 +219,12 @@
+         result['items'] = crash_proof.disk_count.items(folder, items_of(scenario))
+         result['kv_items'] = crash_proof.disk_count.kv_items(folder)
+         result['written'] = crash_proof.disk_count.written(base, folder, items_of(scenario))
++        expected_owed, expected_blocks = (0, 5) if control else (5, 0)
++        result['phase1_debt_valid'] = (result['disk']['owed'] == expected_owed and result['disk']['blocks'] == expected_blocks and result['disk']['entities'] == 1 and result['disk']['total'] == 6)
++        if not result['phase1_debt_valid']:
++            raise AssertionError('phase 1 does not hold expected source debt/stock plus old B entity')
++        phase1_snapshot = folder.parent / (folder.name + '-phase1')
++        crash_proof.clone_world(folder, phase1_snapshot, shutil.ignore_patterns('control.sock'))
+         if scenario.startswith('coupled') and point.startswith(('live_chunk:', 'region_record:')) and not control:
+             before, after = saved_coupled(base, scenario), result['disk_before_reopen']
+             changed = [c for c in ('2', '3') if before[c] != after[c]]
+@@ -241,6 +247,8 @@
+         world.quit()
+         result['items_after'] = crash_proof.disk_count.items(folder, items_of(scenario))
+         result['kv_items_after'] = crash_proof.disk_count.kv_items(folder)
++        result['phase2_disk'] = crash_proof.disk_count.count(folder, items_of(scenario))
++        result['phase2_written'] = crash_proof.disk_count.written(phase1_snapshot, folder, items_of(scenario))
+         world.launch()
+         verified = world.script('again', check=False)
+         result['second_reopen'] = evidence(folder, 'again').get('counted_again')
+@@ -346,7 +354,7 @@
+         if controlled:
+             bases[True] = scratch / 'base-vanilla'
+             shutil.copytree(base, bases[True])
+-        for control, where in bases.items():
++        for control, where in sorted(bases.items(), reverse=True):
+             prepare_env = dict(env, NTM_CRASH_VANILLA='1' if control else '0')
+             for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
+                              ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
+@@ -357,7 +365,7 @@
+             world.quit()
+         for point in args.points or DEFAULT_POINTS[args.scenario]:
+             outcomes = {}
+-            for control, where in bases.items():
++            for control, where in sorted(bases.items(), reverse=True):
+                 copy_env = dict(env, NTM_CRASH_VANILLA='1' if control else '0')
+                 folder = point_folder(scratch, point, control)
+                 for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
+@@ -397,6 +405,14 @@
+                     shutil.rmtree(point_folder(scratch, point, control), ignore_errors=True)
+             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
+         crash_proof.match_cuts(report['points'])
++        report['scope'] = 'two-phase debt/drain invariants only; not physical break or explosion replay parity'
++        for outcome in report['points']:
++            control = outcome.get('control', {})
++            mine = outcome.get('phase2_disk', {})
++            theirs = control.get('phase2_disk', {})
++            outcome['phase2_same_cut'] = crash_proof.cut({'written': outcome.get('phase2_written')}) == crash_proof.cut({'written': control.get('phase2_written')}) and outcome.get('phase2_written') is not None
++            outcome['phase2_paid'] = all(v.get('entities') == 6 and v.get('owed') == 0 and v.get('blocks') == 0 and v.get('machines') == 0 and v.get('total') == 6 for v in [mine, theirs])
++            outcome['ok'] = outcome['ok'] and outcome['phase2_same_cut'] and outcome['phase2_paid']
+         for outcome in report['points']:
+             if outcome['ok']:
+                 for control in bases:

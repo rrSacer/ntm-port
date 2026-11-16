@@ -100,3 +100,46 @@ uma alteração irrelevante em A faria o registro de origem participar do mesmo 
 drenagem NTM e disparo vanilla consumiriam A e produziriam B=6, com outro corte nos mesmos arquivos. Essa prova
 validaria estoque pendente, drenagem e ordenação de gravação; não equivaleria à paridade completa do instante da
 quebra nem à prova de replay físico. Nenhum consumidor foi ativado e o corte original permanece não aprovado.
+
+
+## Prova em duas fases, execução (16/11)
+
+Autorizada pelo coordenador como validação de invariantes de dívida/drenagem, **não** como paridade da quebra direta.
+Mesmo cliente e pacote (SHA-256 acima); só a cópia do roteiro em `probes/two-phase-test-game` mudou; zero alteração
+de produção; consumidores desligados; scripts protegidos conferidos por SHA-256.
+
+**Tentativa 1** ([two-phase-attempt1/](two-phase-attempt1/)): falhou no roteiro, não no jogo.
+- Vanilla: fase 1 válida (A=5 no dropper, B=1). Na fase 2 o dropper de A, voltado para leste, mira o funil vazio da
+  transferência em B, e o funil devolve cada disparo: o estoque fica em 5 em qualquer número de pulsos. Isso também
+  explica a pré-validação do dropper acima ("ainda contém 5"), que não decorria só do ticking.
+- NTM: o roteiro exigia `pending>=5` no registro em memória logo após a quebra; o registro ficou zerado.
+
+**Correções da fixture** ([two-phase-attempt2/native_crash_more.py.patch](two-phase-attempt2/native_crash_more.py.patch)):
+o funil vazio é removido (verificado vazio) antes dos disparos vanilla da fase 2; o NTM só registra 6 leituras do
+registro e a dívida é julgada no disco (`phase1_debt_valid`, que já soma itens devidos e lotes do registro de A).
+
+**Tentativa 2** ([two-phase-attempt2/](two-phase-attempt2/)), corte `entities_written`, `same_cut=true`:
+
+| Leitura | Vanilla A / B | NTM A / B |
+| --- | --- | --- |
+| Disco no corte (fase 1) | 5 (estoque) / 1 | 0 / 6 (entidades) |
+| Dívida no registro de A | não se aplica | 0 em memória (6 leituras) e 0 no disco |
+| 1ª reabertura, após pagamento | 0 / 6 | 4 / 2 (6 no total) |
+| Disco após a fase 2 | 0 / 6 | 4 / 2 (6 no total) |
+| 2ª reabertura | 0 / 6 | 4 / 2 (6 no total) |
+
+- Vanilla: as duas fases passaram (estoque preservado em A com B ausente; com B residente, 5 disparos, A consumido e
+  B=6; o arquivo de entidades de B passou de 1 para 6; nenhuma duplicação nas duas reaberturas).
+- NTM: **a premissa da fase 1 não se reproduziu.** Com a coluna B ausente pela consulta de bloco, a quebra do núcleo
+  ejetou as 5 varetas como entidades em (48,5; 102,5; 13,5), dentro de B, com `Age=0` e movimento inicial. Elas nunca
+  receberam tick e o save as gravou no arquivo de entidades de B. A rota de dívida e drenagem não foi exercitada
+  ([entity-positions.json](two-phase-attempt2/entity-positions.json)).
+- Conservação NTM: 6 de 6 no corte e nas duas reaberturas, com 5 Ra-226Be e 1 Zr, sem perda nem duplicação. Após
+  reabrir, a física levou a pilha de 4 até x=47,85 (A), e por isso a verificação posicional `outputs_only_in_B` reprovou.
+- Rota exata não determinada: `ledger_add_here` e `drop_items` testam residência de B antes de gerar a entidade; não
+  se verificou qual caminho gerou as entidades nem por que B passou nesse teste. Referência Java:
+  `TileEntityPileCore.dropItem` usa `spawnEntityInWorld`, que em 1.7.10 descarta a entidade num chunk inexistente.
+
+**Veredito:** a prova em duas fases **não validou** os invariantes de dívida/drenagem do NTM, porque a dívida não
+ocorreu. Ela comprova só conservação 6/6 no corte e após as reaberturas, além do controle vanilla em duas fases.
+`entities_written` segue **não aprovado** para paridade da quebra direta. Os consumidores continuam desligados.
