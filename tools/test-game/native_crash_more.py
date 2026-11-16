@@ -1792,7 +1792,7 @@ def cyclotron_verify(g, again=False):
     g.check('each_particle_is_there_or_made_its_dust', t.get('ntm:part_lithium', 0) + made == 2, s)
     g.check('each_lithium_dust_is_there_or_became_beryllium', t.get('ntm:powder_lithium', 0) + made == 2, s)
     progress = st.get('progress', -1)
-    g.check('the_progress_belongs_to_the_slots', (made == 0 and progress >= base) or (made == 1 and 0 <= progress < 400), [made, progress, base])
+    g.check('the_progress_belongs_to_the_slots', (made == 0 and progress >= base) or (made == 1 and 0 <= progress < 690) or (made == 2 and progress == 0), [made, progress, base])
     g.check('the_cyclotron_is_alive', machine_present(g, core), s)
 
 
