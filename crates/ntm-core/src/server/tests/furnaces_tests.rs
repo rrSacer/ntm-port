@@ -402,3 +402,28 @@ fn the_cyclotron_runs_a_lane_through_the_engine_slots() {
     let s = slots(&g);
     assert_eq!((s[0].clone(), s[3].clone(), s[6].clone()), (Some(Stack::new("ntm:part_lithium", 2)), Some(Stack::new("ntm:powder_lithium", 2)), None), "{s:?}");
 }
+
+/// The annihilator through the bridge: items in slot 0 disappear into the world pool,
+/// the monitor item in slot 8 updates data slot 0, and request slot 9 consumes one per tick.
+#[test]
+fn the_annihilator_runs_items_monitor_and_request_through_the_bridge() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_annihilator[facing=south,honey_level=0]", 11);
+    put(&mut g, 0, Some(Stack::new("minecraft:iron_ore", 10)));
+    put(&mut g, 8, Some(Stack::new("minecraft:iron_ore", 1)));
+    put(&mut g, 9, Some(Stack::new("minecraft:iron_ore", 2)));
+    g.run(1);
+    let s = slots(&g);
+    assert!(s[0].is_none(), "{s:?}");
+    assert_eq!(s[9], Some(Stack::new("minecraft:iron_ore", 1)), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    assert_eq!(data, vec![10], "monitor tracks the 10 destroyed before request: {data:?}");
+    g.run(1);
+    let s = slots(&g);
+    assert!(s[9].is_none(), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    assert_eq!(data, vec![11], "monitor reads 11 before tick 2 request runs: {data:?}");
+    g.run(1);
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    assert_eq!(data, vec![12], "monitor tracks total 12: {data:?}");
+}

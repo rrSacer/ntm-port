@@ -62,6 +62,56 @@ pub fn chimney_cell(core: Pos, facing: Option<&str>) -> Pos {
         .unwrap_or([core[0], core[1] + CHIMNEY[1], core[2]])
 }
 
+mod u128_str {
+    use super::*;
+    use serde::de::{self, Visitor};
+    use std::fmt;
+
+    struct U128Visitor;
+    impl<'de> Visitor<'de> for U128Visitor {
+        type Value = u128;
+        fn expecting(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            f.write_str("a decimal string or unsigned integer")
+        }
+        fn visit_u64<E: de::Error>(self, v: u64) -> Result<u128, E> {
+            Ok(u128::from(v))
+        }
+        fn visit_u128<E: de::Error>(self, v: u128) -> Result<u128, E> {
+            Ok(v)
+        }
+        fn visit_str<E: de::Error>(self, v: &str) -> Result<u128, E> {
+            v.parse::<u128>().map_err(de::Error::custom)
+        }
+    }
+
+    pub fn serialize<S: Serializer>(v: &u128, s: S) -> Result<S::Ok, S::Error> {
+        s.serialize_str(&v.to_string())
+    }
+
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<u128, D::Error> {
+        d.deserialize_any(U128Visitor)
+    }
+}
+
+mod pool_items_map {
+    use super::*;
+
+    pub fn serialize<S: Serializer>(map: &BTreeMap<PoolKey, u128>, s: S) -> Result<S::Ok, S::Error> {
+        let entries: Vec<(&PoolKey, String)> = map.iter().map(|(k, v)| (k, v.to_string())).collect();
+        entries.serialize(s)
+    }
+
+    pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<BTreeMap<PoolKey, u128>, D::Error> {
+        let entries = Vec::<(PoolKey, String)>::deserialize(d)?;
+        let mut out = BTreeMap::new();
+        for (k, v) in entries {
+            let n = v.parse::<u128>().map_err(serde::de::Error::custom)?;
+            out.insert(k, n);
+        }
+        Ok(out)
+    }
+}
+
 mod vec_map {
     use super::*;
 
@@ -97,6 +147,7 @@ pub enum PoolKey {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Milestone {
+    #[serde(with = "u128_str")]
     pub amount: u128,
     pub payout: Stack,
 }
@@ -148,7 +199,7 @@ pub fn highest_payout_from_key(
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Pool {
-    #[serde(default, with = "vec_map")]
+    #[serde(default, with = "pool_items_map")]
     pub items: BTreeMap<PoolKey, u128>,
 }
 
@@ -177,6 +228,7 @@ pub struct PendingPush {
     pub seq: u64,
     pub pool: String,
     pub keys: Vec<PoolKey>,
+    #[serde(with = "u128_str")]
     pub amount: u128,
 }
 
@@ -280,6 +332,7 @@ pub struct Annihilator {
     pub slots: Slots,
     pub tank: Tank,
     pub pool: String,
+    #[serde(with = "u128_str")]
     pub monitor: u128,
     #[serde(default)]
     pub seq: u64,
@@ -344,7 +397,6 @@ impl Annihilator {
         pool_mgr: &mut Pools,
         site: &(String, Pos),
         generation: u64,
-        core: Pos,
         facing: Option<&str>,
         confirmed_seq: u64,
         table: &[Recipe],
@@ -354,6 +406,7 @@ impl Annihilator {
         if self.pool.is_empty() {
             return rads;
         }
+        let core = site.1;
         let chimney = chimney_cell(core, facing);
 
         if let Some(stack) = self.slots[INPUT].take() {
@@ -546,7 +599,7 @@ mod tests {
 
         a.slots[INPUT] = Some(Stack::new("minecraft:iron_ore", 5));
         a.slots[MONITOR] = Some(Stack::new("minecraft:iron_ore", 1));
-        a.step_world(&mut pools, &s, 0, s.1, Some("south"), 0, &[]);
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &[]);
 
         assert!(a.slots[INPUT].is_none());
         assert_eq!(pools.get(DEFAULT_POOL, &PoolKey::Item("minecraft:iron_ore".into())), 5);
@@ -559,7 +612,7 @@ mod tests {
         // Removing monitor item retains last monitorBigInt (Java behavior).
         a.slots[MONITOR] = None;
         a.slots[INPUT] = Some(Stack::new("minecraft:iron_ore", 3));
-        a.step_world(&mut pools, &s, 0, s.1, Some("south"), 0, &[]);
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &[]);
         assert_eq!(a.monitor, 5);
 
         // Fluid identifier sets tank without leaving slot 1, and drains into pool.
@@ -572,7 +625,7 @@ mod tests {
         assert_eq!(a.tank.mb, 1_250);
 
         a.slots[MONITOR] = Some(id_stack("water"));
-        a.step_world(&mut pools, &s, 0, s.1, Some("south"), 0, &[]);
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &[]);
         assert_eq!(a.tank.mb, 0);
         assert_eq!(pools.get(DEFAULT_POOL, &PoolKey::Fluid("water".into())), 1_250);
         assert_eq!(a.monitor, 1_250);
@@ -631,21 +684,21 @@ mod tests {
 
         // Dict payout wins over Comp and Item; crossing both 4 and 8 picks highest (emerald x2).
         a.slots[INPUT] = Some(Stack::new("minecraft:iron_ore", 8));
-        a.step_world(&mut pools, &s, 0, s.1, Some("south"), 0, &table);
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &table);
         assert_eq!(a.slots[2], Some(Stack::new("minecraft:emerald", 2)));
 
         // Already past 8: feeding 1 more via input yields no duplicate payout.
         a.slots[INPUT] = Some(Stack::new("minecraft:iron_ore", 1));
-        a.step_world(&mut pools, &s, 0, s.1, Some("south"), 0, &table);
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &table);
         assert!(a.slots[3].is_none());
 
         // Request slot (`always_payout = true`) consumes 1 per tick and pays out into slot 10.
         a.slots[REQUEST] = Some(Stack::new("minecraft:iron_ore", 2));
-        a.step_world(&mut pools, &s, 0, s.1, Some("south"), 0, &table);
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &table);
         assert_eq!(a.slots[REQUEST], Some(Stack::new("minecraft:iron_ore", 1)));
         assert_eq!(a.slots[PAYOUT], Some(Stack::new("minecraft:emerald", 2)));
 
-        a.step_world(&mut pools, &s, 0, s.1, Some("south"), 0, &table);
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &table);
         assert!(a.slots[REQUEST].is_none());
         assert_eq!(a.slots[PAYOUT], Some(Stack::new("minecraft:emerald", 4)));
     }
@@ -664,7 +717,7 @@ mod tests {
         assert!(expected_vent > 0.0);
         a.fluid_give("sas3", 100);
 
-        let rads = a.step_world(&mut pools, &s, 0, s.1, Some("south"), 0, &[]);
+        let rads = a.step_world(&mut pools, &s, 0, Some("south"), 0, &[]);
         // Facing south -> fwd = (0, 0, -1) -> chimney = core + [0, 9, -3].
         assert_eq!(rads[0].0, [10, 73, 17]);
         assert!((rads[0].1 - 1.75).abs() < 1e-4, "{rads:?}");
@@ -678,7 +731,7 @@ mod tests {
         let mut pools = Pools::default();
         let s = site();
         a.slots[INPUT] = Some(Stack::new("minecraft:cobblestone", 12));
-        a.step_world(&mut pools, &s, 1, s.1, Some("south"), 0, &[]);
+        a.step_world(&mut pools, &s, 1, Some("south"), 0, &[]);
         assert_eq!(a.pending.len(), 1);
         let push = a.pending[0].clone();
 

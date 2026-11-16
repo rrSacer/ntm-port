@@ -392,7 +392,6 @@ impl Server {
                 &mut self.ready.annihilator,
                 k,
                 m.generation,
-                k.1,
                 m.facing.as_deref(),
                 confirmed,
                 recipes,
