@@ -175,3 +175,30 @@ por que nada saiu antes disso.
 **Para fechar:** um log de tick e de `world.chunks` dentro de `flush_machine_effects`/`ledger_add_here`, numa cópia de
 cola compilada à parte (exige build e target próprio), ou uma leitura do caminho de save do motor. Nada foi alterado
 em produção; os consumidores seguem desligados.
+
+
+## Caminho de save do motor: leitura estática (16/11)
+
+Leitura sem build no pin integrado `bb06eab65c`, feita pelo coordenador e conferida aqui. Por decisão do coordenador,
+não houve build instrumentado.
+
+**Confirmado:** a aplicação na janela entre os ticks 1282 e 1284 acontece dentro do save.
+`Game::save_game_with` (`game.rs:9126`) chama `native_world_saving(wait)` (`game.rs:9141`) antes de qualquer gravação.
+Na cola, `world_saving` faz `feed_changes`, depois `Server::native_world_saving` → `native_settle`. Esse caminho roda
+`removal_steps`/`flush_machine_effects` para a quebra que ainda não fora processada, já que A estava residente mas sem
+ticking. Isso explica por que, durante as seis leituras, não havia dívida nem varetas.
+
+**Corrigido:** o caminho não é `save_chunks_eagerly`/`save_eagerly_heard`. Essa função retorna antes de qualquer
+trabalho quando `failpoint::no_eager_save()` é verdadeiro (`game.rs:9167–9172`, `save.rs:2234`), o que vale com
+`HORIZON_NO_EAGER_SAVE=1` (todas as rodadas) e com failpoint armado. O caminho é o save explícito do roteiro.
+
+**Em aberto:** `native_world_saving` é o primeiro passo de `save_game_with`. Ele roda antes de `streaming.save` e de
+`save_level` (`saving.rs:290`), e nada antes dele devolve B a `world.chunks` (o `put_back` só existe em
+`native_chunks_changed`). O código lido não mostra, portanto, por que `ledger_add_here` encontrou B residente nesse
+instante. O fato medido continua o mesmo: as entidades nasceram em B (`Age=0`) e foram gravadas no arquivo de B pelo
+`save_entities` desse save. Fechar esse ponto exigiria um log em build próprio, que o coordenador dispensou.
+
+**Decisão do coordenador:** `entities_written` segue **não aprovado** para a quebra direta instantânea. No Java 1.7.10,
+`spawnEntityInWorld` descartaria as varetas num chunk ausente; no Horizon elas foram aplicadas pelo settle do save e
+gravadas em B. A conservação medida foi 6 de 6, sem perda nem duplicação. Os consumidores seguem desligados e não
+houve alteração de produção.
