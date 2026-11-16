@@ -287,7 +287,7 @@ impl Server {
     /// against the whole state serialized: a change that left the stamps behind would leave the storage behind the
     /// world.
     pub(super) fn world_changed(&self) -> bool {
-        self.world_part_changed() || self.rbmk_changed() || self.sickness_changed() || self.chunk_radiation_changed()
+        self.world_part_changed() || self.rbmk_changed() || self.sickness_changed() || self.chunk_radiation_changed() || self.annihilator_changed()
     }
 
     /// Whether the RBMK layers changed since they were last written.
@@ -312,6 +312,7 @@ impl Server {
         self.write_rbmk(host)?;
         self.write_sickness(host)?;
         self.write_chunk_radiation(host)?;
+        self.write_annihilator(host)?;
         #[cfg(debug_assertions)]
         {
             self.ready.kept = self.ready.world.kept(0);
@@ -354,6 +355,52 @@ impl Server {
             self.ready.kept_chunk_radiation = Some(self.ready.world.chunk_radiation_stamp());
         }
         Ok(())
+    }
+
+    pub(super) fn annihilator_changed(&self) -> bool {
+        self.ready.kept_annihilator != Some(self.ready.world.annihilator_stamp())
+    }
+
+    pub(super) fn write_annihilator(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
+        if self.annihilator_changed() {
+            host.set(crate::persist::ANNIHILATOR_KEY, &self.ready.world.kept_annihilator())?;
+            self.ready.kept_annihilator = Some(self.ready.world.annihilator_stamp());
+        }
+        Ok(())
+    }
+
+    fn prune_annihilator_pending(&mut self) {
+        let world_ann = &self.ready.world.annihilator;
+        for (k, m) in &mut self.ready.world.machines {
+            if let crate::machine::Data::Annihilator(a) = &mut m.data {
+                let confirmed = world_ann.applied_seq(k, m.generation);
+                a.pending.retain(|p| p.seq > confirmed);
+            }
+        }
+    }
+
+    fn annihilator_tick(&mut self, keys: &[Key], removed_keys: &BTreeSet<Key>) {
+        let recipes = crate::annihilator::recipes();
+        for k in keys {
+            if removed_keys.contains(k) || self.ready.broken.contains_key(k) {
+                continue;
+            }
+            let Some(m) = self.ready.world.machines.get_mut(k) else { continue };
+            let crate::machine::Data::Annihilator(a) = &mut m.data else { continue };
+            let confirmed = self.ready.world.annihilator.applied_seq(k, m.generation);
+            let rads = a.step_world(
+                &mut self.ready.annihilator,
+                k,
+                m.generation,
+                k.1,
+                m.facing.as_deref(),
+                confirmed,
+                recipes,
+            );
+            for (pos, amount) in rads {
+                self.ready.chunk_rad_pending.push((k.0.clone(), pos, amount));
+            }
+        }
     }
 
     pub(super) fn track_effect_cells(&mut self) {
@@ -523,6 +570,16 @@ impl Server {
         // else when the writer is done with them (`native_writes_finished`). A save without the hook before it takes
         // all of them.
         let taken = self.taken.take().unwrap_or_else(|| self.taking());
+        let taken_annihilator = self.taken_annihilator.take().unwrap_or_else(|| self.ready.annihilator.clone());
+        if wait {
+            if *self.ready.world.annihilator != taken_annihilator {
+                *self.ready.world.annihilator = taken_annihilator;
+            }
+            self.awaiting_annihilator = None;
+            self.prune_annihilator_pending();
+        } else {
+            self.awaiting_annihilator = Some(taken_annihilator);
+        }
         // Written at every save, the clock with it: what runs on it (a balefire's damage) comes back as of
         // this save, not as of the last keep of the clock alone.
         if let Err(e) = self.write_world(host) {
@@ -552,6 +609,12 @@ impl Server {
     pub fn native_writes_finished(&mut self) {
         if let Some(taken) = self.awaiting.take() {
             self.confirm(&taken);
+        }
+        if let Some(taken) = self.awaiting_annihilator.take() {
+            if *self.ready.world.annihilator != taken {
+                *self.ready.world.annihilator = taken;
+            }
+            self.prune_annihilator_pending();
         }
     }
 
@@ -923,6 +986,7 @@ impl Server {
                         _ => {}
                     }
                 }
+                self.annihilator_tick(&keys, &removed_keys);
                 self.excavator_tick(&mut staged);
                 self.drill_tick(&mut staged);
                 self.bombs_triggers(&mut staged);

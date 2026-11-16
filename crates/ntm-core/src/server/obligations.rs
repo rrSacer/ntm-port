@@ -233,6 +233,7 @@ impl Server {
         self.native_settle(host);
         self.save_loaded_chunk_radiation();
         self.taken = Some(self.taking());
+        self.taken_annihilator = Some(self.ready.annihilator.clone());
         let legacy = self.ready.world.legacy.ids();
         self.captured = Some(self.marked.intersection(&legacy).cloned().collect());
     }

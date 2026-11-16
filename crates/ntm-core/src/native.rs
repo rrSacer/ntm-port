@@ -76,6 +76,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::exposure::BLOCK {
         return Some(crate::exposure::container());
     }
+    if block == crate::annihilator::BLOCK {
+        return Some(crate::annihilator::container());
+    }
     if block == crate::cyclotron::BLOCK {
         return Some(crate::cyclotron::container());
     }
@@ -133,6 +136,23 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         let output = SlotFilter { output: true, ..Default::default() };
         let mut rules = vec![SlotFilter::default(); crate::funnel::INPUTS];
         rules.extend(vec![output; crate::funnel::INPUTS]);
+        return rules;
+    }
+    if block == crate::annihilator::BLOCK {
+        // `ContainerMachineAnnihilator`: slot 0 accepts anything, slot 1 takes fluid identifiers
+        // (`quick_reverse` so shift-clicking an identifier targets slot 1 before slot 0),
+        // outputs 2..8 and payout 10 are `SlotCraftingOutput`s, slots 8..10 are not shift-click targets.
+        let mut rules = vec![SlotFilter::default(); crate::annihilator::SLOTS];
+        rules[crate::annihilator::INPUT].quick_reverse = true;
+        rules[crate::annihilator::FLUID_ID].accept = Some(vec![crate::server::native_server::IDENTIFIER.into()]);
+        rules[crate::annihilator::FLUID_ID].quick_reverse = true;
+        for i in crate::annihilator::OUTPUTS {
+            rules[i].output = true;
+        }
+        rules[crate::annihilator::MONITOR].quick_move = Some(Vec::new());
+        rules[crate::annihilator::REQUEST].quick_move = Some(Vec::new());
+        rules[crate::annihilator::PAYOUT].output = true;
+        rules[crate::annihilator::PAYOUT].quick_move = Some(Vec::new());
         return rules;
     }
     if block == crate::cyclotron::BLOCK {
@@ -223,6 +243,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::keyforge::BLOCK {
         return crate::keyforge::allows(slot, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::annihilator::BLOCK {
+        return crate::annihilator::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if block == crate::cyclotron::BLOCK {
         return crate::cyclotron::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);

@@ -419,6 +419,10 @@ struct Ready {
     kept_sickness: Option<u64>,
     /// The stamp of the chunks' saved radiation as last kept (`persist::CHUNK_RADIATION_KEY`); None: write it next time.
     kept_chunk_radiation: Option<u64>,
+    /// Live annihilator pools (`Ready`-scoped so failed machine steps roll them back cleanly).
+    annihilator: crate::annihilator::Pools,
+    /// The stamp of `world.annihilator` as last written (`persist::ANNIHILATOR_KEY`).
+    kept_annihilator: Option<u64>,
     /// What the RBMK's steps gave the world's radiation by chunk (`incrementRad`, `RadEvent`), in order, until the
     /// field takes them after the machines: a step refused takes its events back with the rest of `Ready`.
     chunk_rad_pending: Vec<(String, [i32; 3], f32)>,
@@ -462,6 +466,8 @@ pub struct Server {
     /// did not wait, confirmed once the writer has put everything it queued on the disk (`native_writes_finished`).
     taken: Option<transaction::Taken>,
     awaiting: Option<transaction::Taken>,
+    taken_annihilator: Option<crate::annihilator::Pools>,
+    awaiting_annihilator: Option<crate::annihilator::Pools>,
     /// Drawn when the server starts: the names of the batches it puts out are its own, whatever an older storage or
     /// a newer chunk record names (a storage set back by a death names no batch twice).
     nonce: u64,

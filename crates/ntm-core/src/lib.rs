@@ -19,6 +19,7 @@ pub mod coker;
 pub mod combustion;
 pub mod solar_stirling;
 pub mod crafter;
+pub mod annihilator;
 pub mod cyclotron;
 pub mod doors_security;
 pub mod electrolyser;

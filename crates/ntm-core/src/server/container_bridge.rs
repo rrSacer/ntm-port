@@ -134,6 +134,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Funnel(f) => Some(f),
         Data::Radiolysis(r) => Some(&mut **r),
         Data::Exposure(e) => Some(&mut **e),
+        Data::Annihilator(a) => Some(&mut **a),
         Data::Cyclotron(c) => Some(&mut **c),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
@@ -187,6 +188,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_funnel", Layout::Native),
     ("ntm:machine_radiolysis", Layout::Native),
     ("ntm:machine_exposure_chamber", Layout::Native),
+    ("ntm:machine_annihilator", Layout::Native),
     ("ntm:machine_cyclotron", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
@@ -437,6 +439,8 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),
     // MachineCyclotron.getAllPorts: three on each side of the 5x5 footprint, at (-x, -z) of the NTM's.
+    // MachineAnnihilator.getPorts: front port and the two side ports near it.
+    ("ntm:machine_annihilator", &[[-1, 0, -3], [1, 0, -3], [0, 0, -4]]),
     ("ntm:machine_cyclotron", &[[-2, 0, -1], [-2, 0, 0], [-2, 0, 1], [2, 0, -1], [2, 0, 0], [2, 0, 1], [-1, 0, -2], [0, 0, -2], [1, 0, -2], [-1, 0, 2], [0, 0, 2], [1, 0, 2]]),
     // MachineRadiolysis.getAllPorts (`makeExtra` cells, the `flare` ports): the four beside the core on its layer (symmetric,
     // so the mirroring below does not move them).
