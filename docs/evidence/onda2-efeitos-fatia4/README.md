@@ -77,3 +77,26 @@ Além disso, o cenário original não prova que o host entrou na rota owed/drain
 por uma condição mais forte de ticking. A prova futura precisa observar ausência real da coluna pela mesma API da
 cola, manter a origem acessível e estabelecer um controle vanilla com a mesma posição de saída e o mesmo corte.
 Os consumidores de efeitos continuam desligados até a prova do contrato de replay físico.
+
+
+## Residência real e proposta de prova limitada (16/11)
+
+A sonda vanilla com o mesmo cliente não disparou efeitos NTM e distinguiu os dois critérios:
+
+| Jogador x | A residente | B residente | A execute-loaded | B execute-loaded |
+| --- | --- | --- | --- | --- |
+| 24,5 | sim | sim | sim | sim |
+| 8,5 | sim | sim | sim | não |
+| −7,5 | sim | não | não | não |
+
+Relatório: [residency-probe.json](residency-probe.json); sonda reproduzível:
+[residency-probe.py](residency-probe.py). Assim A continua acessível pela consulta de coluna da cola enquanto B
+está realmente ausente, mas o estado de ticking difere do usado pela fixture original. Isso não demonstra por si
+só que um dispositivo vanilla deve funcionar nesse estado.
+
+Proposta enviada ao coordenador, ainda não executada: comparar em duas fases a dívida NTM em A com estoque vanilla
+que permanece no dropper A até B voltar. No primeiro corte ambos guardariam A=5 mais a entidade antiga B=1;
+uma alteração irrelevante em A faria o registro de origem participar do mesmo save. Após reabrir e carregar B,
+drenagem NTM e disparo vanilla consumiriam A e produziriam B=6, com outro corte nos mesmos arquivos. Essa prova
+validaria estoque pendente, drenagem e ordenação de gravação; não equivaleria à paridade completa do instante da
+quebra nem à prova de replay físico. Nenhum consumidor foi ativado e o corte original permanece não aprovado.
