@@ -380,3 +380,26 @@ usam tanques maiores; o de jogo usa um orbus cheio de barris como fonte e outro 
 Lacunas: (a) as faixas por célula (acima); (b) as quatro receitas que o catálogo não tem; (c) os plugues decorativos (`plugs`, itens que
 se põem com o botão direito e só mudam o modelo) e o modelo e a animação do bloco; (d) o painel de informação das melhorias é uma dica
 de texto; (e) o shift-click não foi provado em jogo; (f) só a bateria criativa carrega no slot 9.
+
+**Entrega do cíclotron** (cliente release `91d64a9c…`, `ntm.hmod` `93a08c7c…`, em `content-gen-evidence/onda2-s2/`; mesmo build do
+funil: `SKIP_UPSTREAM_CHECK=1` e o empacotador do próprio motor):
+
+- unidade: 14 testes em `cyclotron.rs` (38 receitas do catálogo, melhorias de velocidade/potência/efeito em inteiros incluindo a ordem
+  `500 / (efeito + 1) * velocidade`, ciclo de 690 ticks com 345 000 mB de água e antimatéria, velocidade 3 em 173 ticks, múltiplas
+  faixas ao mesmo tempo, esperas e perdas de progresso por falta de energia/água/espaço/receita, pilha até o limite, teto de
+  antimatéria, `save_state`/`load_state`, tela em 13 inteiros, regras de mão e de funil, regras pela `native`, container, rede de água
+  não ofertando o tanque de entrada e portas), 1 pela ponte (`the_cyclotron_runs_a_lane_through_the_engine_slots`), 1 das portas
+  (`the_cyclotron_has_three_ports_on_each_side_of_its_footprint`), 5 do extrator (`tools/content-gen/test_cyclotron_data.py`); suíte
+  `ntm-core` 804 passando e 0 falhas no lib (+ 47 nos 9 binários de integração, 5 ignorados pré-existentes); clippy
+  `--workspace --all-targets -- -D warnings` limpo;
+- jogo, `run-native-reactors.py cyclotron` (27 verificações em 3 fases — `setup` 16/16, `capture-state` 8/8, `check-state` 3/3 —, 0 falhas,
+  `backend_warnings: []`): dois orbus ligados por dutos tipados trazem água (12 barris = 192 000 mB) e recolhem vapor gasto, um funil
+  alimenta partícula/pó na faixa 0 e recusa terra (que fica fora do cíclotron), a faixa 1 recebe partícula de berílio e pó de tório,
+  melhorias `speed_3` + `effect_3` reduzem o consumo para ~86 000 mB no ciclo, as duas saídas chegam ao baú inferior e o tanque de
+  antimatéria soma 75 mB com conservação exata da água; depois de salvar e reabrir (`speed_1` + `effect_3`), os slots e o progresso
+  seguem de onde estavam e completam a saída esperada;
+- cortes de save no modo estrito (`HORIZON_NO_EAGER_SAVE=1`): `cyclotron-state` 7/7 (dois conjuntos de `part_lithium` + `powder_lithium`
+  com `speed_1` + `effect_3`, conservando os 4 insumos entre saídas feitas e slots sem perda nem duplicação, com progresso coerente e
+  conservação de água/antimatéria) e `cyclotron-break` 7/7 (quebrar o cíclotron com itens dentro, contra o baú de controle);
+- mutantes: 42 escolhidos à mão, 42 mortos (dois só depois de reforçar os testes unitários: a ordem inteira `500 / (efeito + 1) * velocidade`
+  combinando `speed_1` + `effect_2`, e a oferta de fluido `tanks[1..]` com água no tanque de entrada).

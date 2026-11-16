@@ -373,6 +373,7 @@ mod tests {
             (&["ntm:upgrade_effect_1"][..], (1, 1_000_000, 250)),
             (&["ntm:upgrade_effect_2"][..], (1, 1_000_000, 166)),
             (&["ntm:upgrade_effect_3"][..], (1, 1_000_000, 125)),
+            (&["ntm:upgrade_speed_1", "ntm:upgrade_effect_2"][..], (2, 1_000_000, 332)),
             (&["ntm:upgrade_speed_3", "ntm:upgrade_effect_3"][..], (4, 1_000_000, 500)),
             (&["ntm:upgrade_speed_2", "ntm:upgrade_speed_3"][..], (4, 1_000_000, 2_000)),
         ];
@@ -550,13 +551,14 @@ mod tests {
     #[test]
     fn the_network_sees_the_water_as_a_demand_and_the_steam_and_antimatter_as_offers() {
         let mut c = Cyclotron::default();
+        c.tanks[0].mb = 500;
         c.tanks[1].mb = 300;
         c.tanks[2].mb = 40;
-        assert_eq!((c.fluid_demand(WATER), c.fluid_demand(STEAM)), (32_000, 0));
+        assert_eq!((c.fluid_demand(WATER), c.fluid_demand(STEAM)), (31_500, 0));
         assert_eq!((c.fluid_offer(STEAM), c.fluid_offer(ANTIMATTER), c.fluid_offer(WATER)), (300, 40, 0));
         c.fluid_take(STEAM, 100);
         c.fluid_give(WATER, 250);
-        assert_eq!((c.tanks[1].mb, c.tanks[0].mb), (200, 250));
+        assert_eq!((c.tanks[1].mb, c.tanks[0].mb), (200, 750));
         let mut e = Cyclotron::default();
         e.give(MAX_POWER + 5);
         assert_eq!((e.power, e.demand(), e.role(), e.offer()), (MAX_POWER, 0, Role::Consumer, 0));
