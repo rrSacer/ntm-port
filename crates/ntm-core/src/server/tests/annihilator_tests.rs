@@ -94,9 +94,12 @@ fn save_cuts_preserve_annihilator_pools_without_loss_or_duplication() {
     }
 
     // Cut C: `kv_committed` (`wait = false` save BEFORE chunks flush):
-    // Storage MUST NOT advance ahead of chunks (`ANNIHILATOR_KEY` stays at Phase 1 = 5).
+    // Even if a tick mutates `ready.annihilator` between `native_world_saving` and `native_world_saved`,
+    // the save uses `taken_annihilator` (12), while `ANNIHILATOR_KEY` stays at Phase 1 = 5 until writes finish.
     {
         g.server.native_world_saving(&mut g.sh);
+        put(&mut g, INPUT, Some(Stack::new("minecraft:cobblestone", 3)));
+        g.run(1);
         g.server.native_world_saved(&mut g.sh, false);
         let kv_mid = g.world.borrow().kv.map.clone();
         let mut h_kill = reopen_from_snapshots(kv_mid.clone(), Some(base_be.clone()), vec![None; SLOTS]);
@@ -110,8 +113,9 @@ fn save_cuts_preserve_annihilator_pools_without_loss_or_duplication() {
         assert_eq!(h_chunk.world.borrow().engine[&(OW.to_string(), AT)].1, vec![12]);
     }
 
-    // Cut D: after `native_writes_finished` + one tick (`keep_world`), `ANNIHILATOR_KEY` updates to 12.
+    // Cut D: after `native_writes_finished`, `world_changed()` sees `annihilator_changed()` and `keep_world` writes 12 (the taken snapshot, not 15).
     g.server.native_writes_finished();
+    assert!(g.server.world_changed());
     g.run(1);
     assert_eq!(saved_pools(&g.world.borrow()).get(DEFAULT_POOL, &PoolKey::Item("minecraft:cobblestone".into())), 12);
 
@@ -139,7 +143,9 @@ fn fluid_ports_accept_only_from_three_front_cells_and_require_identifier() {
             put(&mut g, FLUID_ID, Some(id_stack("water")));
         }
         // Place a creative/full barrel next to the duct so water flows through it.
-        let barrel_pos = [duct_pos[0], duct_pos[1] + 1, duct_pos[2]];
+        let barrel_pos = [duct_pos[0], duct_pos[1] - 1, duct_pos[2]];
+        assert_ne!(duct_pos, AT);
+        assert_ne!(barrel_pos, AT);
         g.place(duct_pos, duct_state);
         g.place(barrel_pos, "ntm:machine_fluidtank[facing=north,honey_level=0]");
         g.world
@@ -169,6 +175,8 @@ fn fluid_ports_accept_only_from_three_front_cells_and_require_identifier() {
     // Back cell (`[0, 0, 4]` -> `[4, 70, -5]`) and core side (`[5, 70, 0]`) are NOT fluid ports.
     assert_eq!(setup([4, 70, -5], true), 0, "back cell is not a fluid port");
     assert_eq!(setup([6, 70, 0], true), 0, "core side is not a fluid port");
+    assert_eq!(setup([4, 69, 0], true), 0, "below core is not a fluid port");
+    assert_eq!(setup([5, 70, 4], true), 0, "beside front port is not open sideways");
 }
 
 #[test]
@@ -224,4 +232,21 @@ fn native_slot_filters_target_fluid_id_first_on_shift_click() {
     assert_eq!(filters[MONITOR].quick_move, Some(Vec::new()));
     assert_eq!(filters[REQUEST].quick_move, Some(Vec::new()));
     assert_eq!(filters[PAYOUT].quick_move, Some(Vec::new()));
+    let empty = vec![None; SLOTS];
+    assert!(!crate::native::slot_allows(
+        BLOCK,
+        &empty,
+        FLUID_ID,
+        &Stack::new("minecraft:stone", 1),
+        crate::native::SlotAction::Insert,
+        crate::native::SlotOrigin::Manual,
+    ));
+    assert!(crate::native::slot_allows(
+        BLOCK,
+        &empty,
+        FLUID_ID,
+        &id_stack("water"),
+        crate::native::SlotAction::Insert,
+        crate::native::SlotOrigin::Manual,
+    ));
 }

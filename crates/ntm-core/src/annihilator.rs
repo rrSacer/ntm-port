@@ -158,7 +158,7 @@ pub struct Recipe {
     pub milestones: Vec<Milestone>,
 }
 
-/// `AnnihilatorRecipes`: in Java all 15 built-in recipes are gated on `GeneralConfig.enable528`
+/// `AnnihilatorRecipes`: in Java all 16 built-in recipes are gated on `GeneralConfig.enable528`
 /// (off in K3-s2) and pay out `ntm:blueprints` (absent from `content/ids.json`), so the active
 /// default milestone table is empty.
 pub fn recipes() -> &'static [Recipe] {
@@ -214,11 +214,7 @@ impl Pool {
         let prev = self.items.get(&key).copied();
         let next = prev.unwrap_or(0).saturating_add(amount);
         self.items.insert(key.clone(), next);
-        let prev_cmp = match (prev, always_payout) {
-            (None, _) => Some(0),
-            (Some(_), true) => None,
-            (Some(p), false) => Some(p),
-        };
+        let prev_cmp = if always_payout { None } else { prev };
         highest_payout_from_key(table, &key, prev_cmp, next)
     }
 }
@@ -634,6 +630,9 @@ mod tests {
     #[test]
     fn identifier_switch_and_untyped_refusal() {
         let mut a = Annihilator::default();
+        assert_eq!(a.fluid_demand(""), 0);
+        a.fluid_give("", 100);
+        assert_eq!(a.tank.mb, 0);
         assert_eq!(a.fluid_demand("water"), 0);
         a.fluid_give("water", 500);
         assert_eq!(a.tank.mb, 0);
@@ -690,7 +689,29 @@ mod tests {
         // Already past 8: feeding 1 more via input yields no duplicate payout.
         a.slots[INPUT] = Some(Stack::new("minecraft:iron_ore", 1));
         a.step_world(&mut pools, &s, 0, Some("south"), 0, &table);
+        assert_eq!(a.slots[2], Some(Stack::new("minecraft:emerald", 2)));
         assert!(a.slots[3].is_none());
+
+        // Exact boundary (prev == m.amount), 0-milestone refusal, and tie-break (`>` keeps first).
+        let boundary_table = vec![Recipe {
+            key: PoolKey::Item("minecraft:gold_ore".into()),
+            milestones: vec![
+                Milestone { amount: 0, payout: Stack::new("minecraft:dirt", 1) },
+                Milestone { amount: 4, payout: Stack::new("minecraft:diamond", 1) },
+                Milestone { amount: 4, payout: Stack::new("minecraft:apple", 1) },
+            ],
+        }];
+        a.slots[INPUT] = Some(Stack::new("minecraft:gold_ore", 4));
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &boundary_table);
+        assert_eq!(a.slots[3], Some(Stack::new("minecraft:diamond", 1)));
+        a.slots[INPUT] = Some(Stack::new("minecraft:gold_ore", 1));
+        a.step_world(&mut pools, &s, 0, Some("south"), 0, &boundary_table);
+        assert!(a.slots[4].is_none());
+
+        // Payout stacking hits exact 64 ceiling (`<= 64`) without overflowing to next slot.
+        a.try_add_payout(Stack::new("minecraft:emerald", 62));
+        assert_eq!(a.slots[2], Some(Stack::new("minecraft:emerald", 64)));
+        assert!(a.slots[4].is_none());
 
         // Request slot (`always_payout = true`) consumes 1 per tick and pays out into slot 10.
         a.slots[REQUEST] = Some(Stack::new("minecraft:iron_ore", 2));
@@ -701,6 +722,8 @@ mod tests {
         a.step_world(&mut pools, &s, 0, Some("south"), 0, &table);
         assert!(a.slots[REQUEST].is_none());
         assert_eq!(a.slots[PAYOUT], Some(Stack::new("minecraft:emerald", 4)));
+        a.set_payout_slot(Stack::new("minecraft:emerald", 60));
+        assert_eq!(a.slots[PAYOUT], Some(Stack::new("minecraft:emerald", 64)));
     }
 
     #[test]
@@ -723,6 +746,18 @@ mod tests {
         assert!((rads[0].1 - 1.75).abs() < 1e-4, "{rads:?}");
         assert_eq!(rads[1].0, s.1);
         assert!((rads[1].1 - 200.0 * expected_vent).abs() < 1e-6, "{rads:?}");
+
+        // Request slot radioactive item also vents at chimney; empty pool name stops ticking.
+        a.slots[REQUEST] = Some(Stack::new("ntm:ingot_uranium", 1));
+        let req_rads = a.step_world(&mut pools, &s, 0, Some("south"), 0, &[]);
+        assert_eq!(req_rads.len(), 1);
+        assert_eq!(req_rads[0].0, [10, 73, 17]);
+        assert!((req_rads[0].1 - 1.75).abs() < 1e-4, "{req_rads:?}");
+
+        a.pool.clear();
+        a.slots[INPUT] = Some(Stack::new("ntm:ingot_uranium", 1));
+        assert!(a.step_world(&mut pools, &s, 0, Some("south"), 0, &[]).is_empty());
+        assert!(a.slots[INPUT].is_some());
     }
 
     #[test]
@@ -734,6 +769,8 @@ mod tests {
         a.step_world(&mut pools, &s, 1, Some("south"), 0, &[]);
         assert_eq!(a.pending.len(), 1);
         let push = a.pending[0].clone();
+        a.step_world(&mut pools, &s, 1, Some("south"), 1, &[]);
+        assert!(a.pending.is_empty());
 
         // Fresh Pools (simulating reload after chunks_written before ANNIHILATOR_KEY update).
         let mut replayed = Pools::default();
