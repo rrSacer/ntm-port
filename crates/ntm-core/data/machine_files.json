@@ -1752,6 +1752,48 @@
 ],
 "synced": []
 },
+"ntm:machine_annihilator": {
+"inventory": [
+8,
+126
+],
+"slots": [
+{
+"x": 17,
+"y": 45
+},
+{
+"accept": [
+"ntm:fluid_identifier_multi"
+],
+"x": 35,
+"y": 45
+},
+{
+"grid": [
+80,
+36,
+3,
+2
+],
+"output": true
+},
+{
+"x": 152,
+"y": 18
+},
+{
+"x": 152,
+"y": 62
+},
+{
+"output": true,
+"x": 152,
+"y": 80
+}
+],
+"synced": []
+},
 "ntm:machine_arc_furnace_large": {
 "inventory": [
 8,
