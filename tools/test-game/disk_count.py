@@ -89,12 +89,22 @@ def records(path):
 def _held(folder, chunk, prefixes):
     if folder == 'entities':
         return sum(_stack(e.get('Item'), prefixes) for e in chunk.get('Entities', []) or [] if e.get('id') == 'minecraft:item')
-    total = 0
-    for be in chunk.get('block_entities', []) or []:
-        items = sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
-        model = _model(be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
-        total += max(model, items)
-    return total
+    return sum(_be_atoms(be, prefixes) for be in chunk.get('block_entities', []) or [])
+
+
+def _be_atoms(be, prefixes):
+    """A block entity's atoms: its slots' and its NTM model's, item by item, each once where both list it (a pile
+    loader's model lists its slots too). A sawmill since step 3c keeps its stacks in the slots and its blade in the
+    model: a whole-count `max` lost one of the two."""
+    slots, model = {}, {}
+    for s in be.get('Items', []) or []:
+        _stack_items(s, prefixes, slots)
+    if isinstance(be.get('ntm'), str):
+        try:
+            _machine_items(json.loads(be['ntm']), prefixes, model)
+        except ValueError:
+            pass
+    return sum(max(slots.get(k, 0), model.get(k, 0)) for k in set(slots) | set(model))
 
 
 def written(before, after, prefixes, dims=('overworld',)):
@@ -209,13 +219,11 @@ def _count_dim(dim, prefixes, out):
     for path in sorted((dim / 'region').glob('r.*.mca')):
         for chunk in records(path):
             for be in chunk.get('block_entities', []) or []:
-                items = sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
-                # A machine whose model also lists its slots (a pile loader) holds them once.
-                model = _model(be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
-                if model:
-                    out['machines'] += max(model, items)
+                # A machine whose model also lists its slots (a pile loader) holds them once, item by item.
+                if isinstance(be.get('ntm'), str):
+                    out['machines'] += _be_atoms(be, prefixes)
                 else:
-                    out['blocks'] += items
+                    out['blocks'] += sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
             # What the chunk's record owes the world (its ledger): items a reopen puts out.
             owed = {}
             _owed_items(_ledger(chunk), prefixes, owed)

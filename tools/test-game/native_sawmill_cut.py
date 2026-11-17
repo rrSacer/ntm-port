@@ -123,7 +123,8 @@ def count(g):
                         if i in wood:
                             wood[i] += int(n)
         out['wood'] = wood
-    out['total'] = blades + sum((out.get('wood') or {}).values())
+    # `hopper` moves wood only: its atoms are the wood's, as its disk count (the installed blade is not one of them).
+    out['total'] = (0 if SCENARIO == 'hopper' else blades) + sum((out.get('wood') or {}).values())
     return out
 
 
