@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'radiolysis-break', 'exposure-break', 'cyclotron-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'radiolysis-break', 'exposure-break', 'annihilator-break', 'cyclotron-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -701,16 +701,26 @@ def break_act(g):
     g.command('gamemode survival @s')
     prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
     core = tuple(prep['core'])
-    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + (6 if SCENARIO == 'annihilator-break' and not VANILLA else 4)))
     g.command('give @s minecraft:diamond_pickaxe 1')
-    g.ctl('select minecraft:diamond_pickaxe')
+    for _ in range(25):
+        try:
+            g.ctl('select minecraft:diamond_pickaxe')
+            break
+        except RuntimeError:
+            time.sleep(.2)
+    else:
+        g.ctl('select minecraft:diamond_pickaxe')
     if SCENARIO in MB_BREAK and not VANILLA:
         # A multiblock's core hides behind its cells: the player breaks the first cell he can see (any cell breaks it).
         seen = None
         offsets = [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]
         if SCENARIO in ('keyforge-break', 'funnel-break'):
             offsets = [(0, 0, 0)]
-        if SCENARIO in ('orbus-break', 'radiolysis-break', 'exposure-break', 'cyclotron-break'):
+        if SCENARIO == 'annihilator-break':
+            import native_annihilator as A
+            offsets = [(c[0] - core[0], c[1] - core[1], c[2] - core[2]) for c in A.body(g, core)]
+        elif SCENARIO in ('orbus-break', 'radiolysis-break', 'exposure-break', 'cyclotron-break'):
             import native_orbus
             offsets = [(c[0] - core[0], c[1] - core[1], c[2] - core[2]) for c in native_orbus.dummies(g, core)]
         for dx, dy, dz in offsets:
@@ -1219,7 +1229,7 @@ def frozen_state(g, core, keys=('burn_time', 'max_burn_time', 'progress', 'proce
     return out
 
 
-MB_BLOCK = {'keyforge': ('ntm:machine_keyforge', '"rng"'), 'funnel': ('ntm:machine_funnel', '"mode"'), 'radiolysis': ('ntm:machine_radiolysis', '"clock"'), 'exposure': ('ntm:machine_exposure_chamber', '"consumption"'), 'cyclotron': ('ntm:machine_cyclotron', '"progress"'), 'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
+MB_BLOCK = {'keyforge': ('ntm:machine_keyforge', '"rng"'), 'funnel': ('ntm:machine_funnel', '"mode"'), 'radiolysis': ('ntm:machine_radiolysis', '"clock"'), 'exposure': ('ntm:machine_exposure_chamber', '"consumption"'), 'annihilator': ('ntm:machine_annihilator', '"monitor"'), 'cyclotron': ('ntm:machine_cyclotron', '"progress"'), 'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
             'combination': ('ntm:furnace_combination', '"Combination"')}
 MB_AT = (140, 100, 8)
 
@@ -1233,7 +1243,17 @@ def mb_place(g, kind, fire=True):
     g.command('clear @s')
     item, marker = MB_BLOCK[kind]
     g.command(f'give @s {item} 1')
-    if kind in ('orbus', 'keyforge', 'funnel', 'radiolysis', 'exposure', 'cyclotron'):
+    if kind in ('orbus', 'keyforge', 'funnel', 'radiolysis', 'exposure', 'cyclotron', 'annihilator'):
+        if kind == 'annihilator':
+            from native_recipes import core_of as recipe_core_of
+            g.ground(x - 5, y, z - 10, width=12, depth=18)
+            g.command(f'fill {x - 5} {y} {z - 10} {x + 6} {y + 12} {z + 7} minecraft:air')
+            g.command('clear @s')
+            g.command(f'give @s {item} 1')
+            g.command(f'tp @s {x + .5} {y} {z + 3.5} facing {x + .5} {y} {z}')
+            g.ctl(f'place {x} {y} {z} --item {item}')
+            time.sleep(1.5)
+            return recipe_core_of(g, 'ntm:machine_annihilator', x, y, z, reach=(6, 6)), None
         if kind in ('exposure', 'cyclotron'):
             g.ground(x - 3, y, z, width=16, depth=10)
             g.command('clear @s')
@@ -1267,6 +1287,10 @@ def mb_open(g, kind, core):
     if kind == 'exposure':
         import native_exposure as E
         E.open_chamber(g, core)
+        return
+    if kind == 'annihilator':
+        import native_annihilator as A
+        A.open_annihilator(g, core)
         return
     if kind == 'cyclotron':
         import native_cyclotron as N
@@ -1395,7 +1419,7 @@ def state_verify(g, again=False):
 
 # `iron-break`, `steel-break`, `combination-break`: the multiblock furnace holding items, broken, against the chest control
 # holding the same ones; counted item by item, once in the world.
-MB_BREAK = {'keyforge-break': ('keyforge', [('ntm:key', 1, 0), ('ntm:padlock', 1, 1)]), 'funnel-break': ('funnel', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 2)]), 'radiolysis-break': ('radiolysis', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 12)]), 'exposure-break': ('exposure', [('ntm:particle_higgs', 2, 0), ('minecraft:dirt', 6, 5)]), 'cyclotron-break': ('cyclotron', [('ntm:part_lithium', 2, 0), ('minecraft:dirt', 6, 3)]), 'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
+MB_BREAK = {'keyforge-break': ('keyforge', [('ntm:key', 1, 0), ('ntm:padlock', 1, 1)]), 'funnel-break': ('funnel', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 2)]), 'radiolysis-break': ('radiolysis', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 12)]), 'exposure-break': ('exposure', [('ntm:particle_higgs', 2, 0), ('minecraft:dirt', 6, 5)]), 'annihilator-break': ('annihilator', [('minecraft:dirt', 6, 8), ('ntm:fluid_identifier_multi', 1, 1)]), 'cyclotron-break': ('cyclotron', [('ntm:part_lithium', 2, 0), ('minecraft:dirt', 6, 3)]), 'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
             'steel-break': ('steel', [('minecraft:raw_iron', 6, 0), ('minecraft:raw_copper', 3, 1)]),
             'combination-break': ('combination', [('minecraft:coal', 8, 0), ('minecraft:bucket', 2, 2)])}
 
@@ -1446,14 +1470,14 @@ def mb_break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'ntm:machine_cyclotron', 'minecraft:chest'))
+    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'ntm:machine_annihilator', 'ntm:machine_cyclotron', 'minecraft:chest'))
     inside = mb_items(g, core, ids) if standing else 0
     ents = sum(entities(g, i) for i in ids)
     inv = sum(inventory(g, i) for i in ids)
     detail = {'block': state, 'inside': inside, 'entities': ents, 'inventory': inv, 'total': inside + ents + inv,
               'expected': sum(c for _, c, _ in loads), 'ledger': led, 'machine': machine_present(g, core)}
     counted(g, 'mb_items_exactly_once', detail, again)
-    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'ntm:machine_cyclotron')):
+    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'ntm:machine_annihilator', 'ntm:machine_cyclotron')):
         g.check('a_standing_furnace_is_a_live_machine', machine_present(g, core), detail)
 
 
@@ -1732,6 +1756,110 @@ def exposure_verify(g, again=False):
 # killed at each boundary while the first cycle ends: whatever the cut, each particle is a lithium particle or the beryllium dust it
 # made (two together), so is each lithium dust (two), and the progress belongs to the slots: a cycle not yet made has the progress
 # it had at the base save or more, one made has begun again.
+# `annihilator-state`: 10 cobblestones already destroyed into `Recycling` plus 16 locked in a feeder chest above the
+# port hopper (all inside chunk 8,0); the act removes the redstone lock so the hopper feeds while the world is saved and
+# killed at each boundary. At every cut, `monitor + chest + hopper + input_slot == 26`, with `Pools` checked across a
+# monitor key toggle.
+def annihilator_parts(g):
+    import native_annihilator as A
+    A.X, A.Z = 140, 12
+    return A
+
+
+def annihilator_prepare(g):
+    A = annihilator_parts(g)
+    from native_combustion import world_cell, facing_of
+    g.ctl('wait-ready 120')
+    core, facing = A.build(g, A.X, A.Z)
+    cell = lambda lx, ly, lz: world_cell(core, facing, (lx, ly, lz))
+    delta = lambda v: [a - b for a, b in zip(cell(*v), cell(0, 0, 0))]
+    dir_name = lambda d: next(n for n, v in (('east', [1, 0, 0]), ('west', [-1, 0, 0]), ('south', [0, 0, 1]), ('north', [0, 0, -1])) if v == d)
+    in_dir = dir_name(delta((1, 0, 0)))
+    hopper = cell(-2, 0, -3)
+    chest = cell(-2, 1, -3)
+    lock = cell(-3, 0, -3)
+    g.command(f'setblock {lock[0]} {lock[1]} {lock[2]} minecraft:redstone_block')
+    g.command(f'setblock {hopper[0]} {hopper[1]} {hopper[2]} minecraft:hopper[facing={in_dir}]')
+    g.command(f'setblock {chest[0]} {chest[1]} {chest[2]} minecraft:chest')
+    g.command(f'item replace block {chest[0]} {chest[1]} {chest[2]} container.0 with minecraft:cobblestone 16')
+    A.open_annihilator(g, core)
+    A.put(g, 'minecraft:cobblestone', 0, 10)
+    A.put(g, 'minecraft:cobblestone', 8, 1)
+    g.close()
+    sprint(g, 5)
+    st = A.state(g, core)
+    ch = A.items(g, chest)
+    hp = A.items(g, hopper)
+    g.check('base_monitor_is_10_and_16_locked_in_chest', st.get('monitor') == '10' and ch.get(0) == ('minecraft:cobblestone', 16) and not hp, [st, ch, hp])
+    g.evidence.update(core=list(core), facing=facing, chest=list(chest), hopper=list(hopper), lock=list(lock))
+    g.ctl('save')
+
+
+def annihilator_act(g):
+    A = annihilator_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    lock = tuple(prep['lock'])
+    core = tuple(prep['core'])
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command(f'setblock {lock[0]} {lock[1]} {lock[2]} minecraft:air')
+    sprint(g, 35)
+    g.evidence['after_act'] = {'state': A.state(g, core), 'items': A.items(g, core)}
+    save_expecting_death(g)
+
+
+def annihilator_verify(g, again=False):
+    A = annihilator_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    chest = tuple(prep['chest'])
+    hopper = tuple(prep['hopper'])
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 8))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        s = A.items(g, core)
+        st = A.state(g, core)
+        ch = A.items(g, chest)
+        hp = A.items(g, hopper)
+    finally:
+        g.command('tick unfreeze')
+    burned = int(st.get('monitor', 0))
+    ch_cnt = sum(n for i, n in ch.values() if i == 'minecraft:cobblestone')
+    hp_cnt = sum(n for i, n in hp.values() if i == 'minecraft:cobblestone')
+    in_cnt = s.get(0, ('', 0))[1] if s.get(0, ('', 0))[0] == 'minecraft:cobblestone' else 0
+    detail = {'burned': burned, 'chest': ch_cnt, 'hopper': hp_cnt, 'input': in_cnt, 'total': burned + ch_cnt + hp_cnt + in_cnt, 'expected': 26}
+    counted(g, 'twenty_six_cobblestones_exactly_once', detail, again)
+    g.check('the_annihilator_is_alive', machine_present(g, core), st)
+    # Force a fresh Pools lookup (ANNIHILATOR_KEY + WAL replay) via monitor key toggle.
+    A.open_annihilator(g, core)
+    A.clear_slot(g, 8)
+    A.put(g, 'minecraft:dirt', 8, 1)
+    g.close()
+    sprint(g, 2)
+    g.check('dirt_pool_is_zero', A.state(g, core).get('monitor') == '0', A.state(g, core))
+    A.open_annihilator(g, core)
+    A.clear_slot(g, 8)
+    A.put(g, 'minecraft:cobblestone', 8, 1)
+    g.close()
+    sprint(g, 2)
+    g.command('tick freeze')
+    try:
+        s2 = A.items(g, core)
+        st2 = A.state(g, core)
+        ch2 = A.items(g, chest)
+        hp2 = A.items(g, hopper)
+    finally:
+        g.command('tick unfreeze')
+    b2 = int(st2.get('monitor', 0))
+    c2 = sum(n for i, n in ch2.values() if i == 'minecraft:cobblestone')
+    h2 = sum(n for i, n in hp2.values() if i == 'minecraft:cobblestone')
+    i2 = s2.get(0, ('', 0))[1] if s2.get(0, ('', 0))[0] == 'minecraft:cobblestone' else 0
+    g.check('pools_after_toggle_still_conserve_26', b2 + c2 + h2 + i2 == 26 and b2 >= burned, [detail, b2, c2, h2, i2])
+
+
 def cyclotron_parts(g):
     import native_cyclotron as N
     N.X, N.Z = 140, 24
@@ -1833,6 +1961,8 @@ STEPS = {
     'radiolysis-break': (mb_break_prepare, break_act, mb_break_verify),
     'exposure-state': (exposure_prepare, exposure_act, exposure_verify),
     'exposure-break': (mb_break_prepare, break_act, mb_break_verify),
+    'annihilator-state': (annihilator_prepare, annihilator_act, annihilator_verify),
+    'annihilator-break': (mb_break_prepare, break_act, mb_break_verify),
     'cyclotron-state': (cyclotron_prepare, cyclotron_act, cyclotron_verify),
     'cyclotron-break': (mb_break_prepare, break_act, mb_break_verify),
     'orbus-break': (mb_break_prepare, break_act, mb_break_verify),
