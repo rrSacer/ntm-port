@@ -109,6 +109,11 @@ def setup(g):
     g.command(f'setblock {LOOSE[0]} {LOOSE[1]} {LOOSE[2]} ntm:fire_digamma')
     g.ticks(4)
     g.check('the_flame_stands_on_stone', is_(g, FLAME, 'ntm:fire_digamma') and is_(g, LOOSE, 'ntm:fire_digamma'), None)
+    # A block beside it changes (`onNeighborBlockChange`): on stone it stays.
+    g.command(f'setblock {LOOSE[0] + 1} {LOOSE[1]} {LOOSE[2]} minecraft:dirt')
+    g.ticks(4)
+    g.check('on_a_solid_top_a_neighbour_change_keeps_it', is_(g, LOOSE, 'ntm:fire_digamma'), None)
+    g.command(f'setblock {LOOSE[0] + 1} {LOOSE[1]} {LOOSE[2]} minecraft:air')
     g.command(f'setblock {LOOSE[0]} {LOOSE[1] - 1} {LOOSE[2]} minecraft:air')
     g.ticks(4)
     g.check('it_goes_when_its_ground_does', is_(g, LOOSE, 'minecraft:air'), None)
