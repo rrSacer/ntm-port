@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "source": "Hand rows over the K3 catalog (catalog_k3.py) for the machines of Onda 2, sublote 2, group 2b: what the K3 scan does not read (resistance) and each one's gap text. generate.py merges them by id.",
+  "entries": [
+    {
+      "id": "machine_industrial_generator",
+      "type": "block",
+      "behavior_gap": "A memorial in the 1.7.10 itself (MachineIGenerator): one cell, no screen (its openGui is commented out), an empty updateEntity and 21 slots no side reaches; ported: its ILookOverlay text (ntm-core look_overlay, drawn by the client HUD) and igen.obj at a sixth of its size. The 21 slots are not ported: nothing can put an item in them."
+    }
+  ]
+}

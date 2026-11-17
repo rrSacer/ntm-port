@@ -1,0 +1,12 @@
+{
+  "obj": "ntm:models/obj/igen.obj",
+  "texture": "ntm:textures/models/machines/igen.png",
+  "rotation": 180,
+  "scale": 0.16666667,
+  "translate": [
+    0,
+    0,
+    -0.5
+  ],
+  "radius": 1.5
+}

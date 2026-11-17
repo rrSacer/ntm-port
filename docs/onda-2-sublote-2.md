@@ -575,3 +575,29 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - `produced / 9` no lugar de `(produced / 900) * 100` só difere para um resíduo inteiro que não produza múltiplo de 900, e os 26 produzem 900.
   - Sem o ramo `CONVERSION`, UF6, PUF6 e DEATH carregam do mesmo jeito: todos têm receita direta ou por tradução.
 - O polaroid 11 (matéria em vez de fogo) não tem prova em jogo: a matéria de metadado 0 se espalharia por cerca de 14 células e alcançaria o SILEX da montagem. A escolha está coberta em teste de unidade, e o espalhamento da matéria tem prova própria na prova `digamma`.
+
+### `machine_industrial_generator` (grupo 2b)
+
+**O que o Java faz** (`MachineIGenerator`, `TileEntityMachineIGenerator`): é um memorial no próprio 1.7.10.
+- Uma célula: `getDimensions` todo 0 (o antigo `{2,0,3,2,1,1}` está comentado), offset 0.
+- Sem tela: o `openGui` está comentado; o clique só é consumido.
+- `updateEntity` vazio; 21 slots que nenhum lado alcança (`getAccessibleSlotsFromSide` vazio, `isItemValidForSlot` falso).
+- Dureza 5 e resistência 10; o `RenderIGenerator` desenha `igen.obj` (Body e Rotor) a um sexto do tamanho.
+- O texto ao olhar (`ILookOverlay.printHook`): "Industrial Generator Memorial" (0xff8000 sobre 0x804000) e "In memory of all that we have lost".
+
+**Portado**
+- O texto ao olhar, por um gancho genérico (`ntm-core/src/look_overlay.rs`; desenho em `native/ntm/mixins/ntm/client.rs`).
+  - O núcleo diz o título, as cores e as linhas de cada bloco; o HUD do cliente faz o `printGeneric`: o título em `(largura/2 + 8, altura/2 − 10)` sobre a cor de fundo um pixel abaixo e à direita, e as linhas de 10 em 10, brancas com sombra, ou na cor de `&[n&]`.
+  - O alcance é o do `objectMouseOver`: 5 no criativo, 4,5 fora.
+  - O `ClientConfig.DODD_RBMK_DIAGNOSTIC` vem ligado por padrão, e o port não tem configuração do cliente: sempre ligado.
+  - Só este bloco tem texto ao olhar no port. Os outros 83 blocos que usam `ILookOverlay` no Java ficam para quando cada um for portado.
+- O modelo `igen.obj` com escala 1/6, deslocado 0,5 em z nas unidades do modelo e girado 180, como o extrator lê o `case 2`. O rotor fica parado.
+- As linhas do catálogo que a varredura K3 não lê vão em `tools/content-gen/k3_overrides.json`, mesclado pelo `generate.py`.
+
+**Lacunas:** os 21 slots não foram portados, porque nada consegue pôr um item neles. Um texto com cor que não faz parse é desenhado como texto (o Java desenharia o nome da exceção em vermelho).
+
+**Provas** (cliente `c44bca3c859971d34ddbb431b3d9c48ebfaf6491402fc65be287792812e3a68d`, pacote `08cb0ba63a916b8019e55aa0b230ef5abd57016c56039f7ea948b58f60b3de53`)
+- `ntm-core`: 862 testes passando (4 novos do `look_overlay`); clippy limpo.
+- Em jogo (`run-native-reactors.py igenerator`): 5/5.
+  - Uma célula, sem parte de multibloco em volta; o clique não abre tela; reabre igual.
+  - A captura `content-gen-evidence/onda2-s2/igenerator/native-igenerator-overlay.png` mostra o título e a linha à direita da mira, e o modelo em miniatura dentro da célula.

@@ -37458,8 +37458,21 @@
       }
     },
     "ntm:machine_industrial_generator": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+     "source": "MachineIGenerator: one cell (getDimensions all 0, the old {2,0,3,2,1,1} commented out), no screen (its openGui commented out); RenderIGenerator draws igen.obj's Body and Rotor at a sixth of their size (glScaled 1/6), 0.5 back along z in the model's units, turned 180 for meta 2 as the extractor reads it; the Rotor stands still (updateEntity is empty)",
+     "model": {
+      "obj": "ntm:models/obj/igen.obj",
+      "obj_from": "models/machines/igen.obj",
+      "texture": "ntm:textures/models/machines/igen.png",
+      "texture_from": "textures/models/machines/igen.png",
+      "rotation": 180,
+      "scale": 0.16666667,
+      "translate": [
+       0,
+       0,
+       -0.5
+      ],
+      "radius": 1.5
+     }
     },
     "ntm:machine_cyclotron": {
       "auto": false,
