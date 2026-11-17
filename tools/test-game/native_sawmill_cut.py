@@ -323,8 +323,9 @@ def verify(g, again=False):
     g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
     time.sleep(6)
     now = count(g)
+    # Counted only: the verdict is the runner's, against the base and the vanilla control (a check here compared the
+    # count with itself, the review's P3).
     g.evidence['counted' + ('_again' if again else '')] = now
-    g.check('no_more_than_twice', now['total'] <= 2 * max(1, now['total']), now)
     g.ctl('save')
 
 

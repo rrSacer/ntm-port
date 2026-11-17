@@ -348,9 +348,10 @@ def _snbt_items(text, prefixes, out):
         _add(out, item, int(float(str(s.get('count', '1')).rstrip('bsilBSIL') or 0)), prefixes)
 
 
-def _machine_items(m, prefixes, out):
+def _machine_items(m, prefixes, out, installed=True):
     """The items an NTM machine's model (`ntm_core::machine::Machine`, as JSON) holds: a pile core's rods by kind, and
-    the stacks of its slots."""
+    the stacks of its slots; and a sawmill's installed blade, unless `installed` is false: a removed sawmill's blade is
+    in the item its break dropped, counted there (the review's P3)."""
     def walk(v):
         if isinstance(v, dict):
             if 'Core' in v and isinstance(v['Core'], dict):
@@ -365,7 +366,7 @@ def _machine_items(m, prefixes, out):
                         walk(x)
                 return
             _stack_items(v, prefixes, out)
-            if _installed_blade(v, prefixes):
+            if installed and _installed_blade(v, prefixes):
                 _add(out, BLADE, 1, prefixes)
             for x in v.values():
                 walk(x)
@@ -390,7 +391,7 @@ def _owed_items(ledger, prefixes, out):
         if e.get('state', 'Pending') == 'Pending':
             _snbt_items(e.get('item', ''), prefixes, out)
     for r in ledger.get('removals', []) or []:
-        _machine_items(r.get('machine', {}).get('data', {}), prefixes, out)
+        _machine_items(r.get('machine', {}).get('data', {}), prefixes, out, installed=False)
     for b in ledger.get('batches', []) or []:
         for effect in b.get('effects', []) or []:
             if 'Items' in effect:
