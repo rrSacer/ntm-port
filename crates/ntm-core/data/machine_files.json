@@ -5337,6 +5337,67 @@
 ],
 "synced": []
 },
+"ntm:machine_silex": {
+"inventory": [
+8,
+140
+],
+"slots": [
+{
+"x": 80,
+"y": 12
+},
+{
+"x": 8,
+"y": 24
+},
+{
+"x": 26,
+"y": 24
+},
+{
+"output": true,
+"x": 44,
+"y": 24
+},
+{
+"output": true,
+"x": 116,
+"y": 90
+},
+{
+"output": true,
+"x": 134,
+"y": 72
+},
+{
+"output": true,
+"x": 152,
+"y": 72
+},
+{
+"output": true,
+"x": 134,
+"y": 90
+},
+{
+"output": true,
+"x": 152,
+"y": 90
+},
+{
+"output": true,
+"x": 134,
+"y": 108
+},
+{
+"output": true,
+"x": 152,
+"y": 108
+}
+],
+"synced": []
+},
 "ntm:machine_solar_boiler": {
 "inventory": [
 8,

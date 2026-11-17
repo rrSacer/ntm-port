@@ -1,0 +1,85 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_silex.png",
+  "size": [
+    176,
+    222
+  ],
+  "title": [
+    34,
+    8,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    128
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        26,
+        72,
+        16,
+        52
+      ],
+      "uv": [
+        176,
+        57
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        45,
+        82,
+        69,
+        43
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 5,
+      "max": 6,
+      "rect": [
+        8,
+        42,
+        52,
+        7
+      ],
+      "color": 7,
+      "dir": "right"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        26,
+        72,
+        16,
+        52
+      ],
+      "lines": [
+        "{0} / {1} mB",
+        "Laser: {4}"
+      ]
+    },
+    {
+      "rect": [
+        8,
+        42,
+        52,
+        7
+      ],
+      "lines": [
+        "{5} / {6} mB"
+      ]
+    }
+  ]
+}

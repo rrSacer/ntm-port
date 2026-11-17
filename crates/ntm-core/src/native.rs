@@ -82,6 +82,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::annihilator::BLOCK {
         return Some(crate::annihilator::container());
     }
+    if block == crate::silex::BLOCK {
+        return Some(crate::silex::container());
+    }
     if block == crate::cyclotron::BLOCK {
         return Some(crate::cyclotron::container());
     }
@@ -156,6 +159,17 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         rules[crate::annihilator::REQUEST].quick_move = Some(Vec::new());
         rules[crate::annihilator::PAYOUT].output = true;
         rules[crate::annihilator::PAYOUT].quick_move = Some(Vec::new());
+        return rules;
+    }
+    if block == crate::silex::BLOCK {
+        // `ContainerSILEX`: the empty containers' slot is a `SlotTakeOnly`, the output and the queue `SlotCraftingOutput`s; a
+        // shift-click puts an identifier into its slot and anything else into the input (here: what has a recipe).
+        let mut rules = vec![SlotFilter::default(); crate::silex::SLOTS];
+        for i in std::iter::once(crate::silex::CONTAINER_OUT).chain(crate::silex::OUTPUT..crate::silex::SLOTS) {
+            rules[i].output = true;
+        }
+        rules[crate::silex::IDENTIFIER].quick_move = Some(vec!["ntm:fluid_identifier_multi".to_string()]);
+        rules[crate::silex::CONTAINER_IN].quick_move = Some(Vec::new());
         return rules;
     }
     if block == crate::cyclotron::BLOCK {
@@ -249,6 +263,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::annihilator::BLOCK {
         return crate::annihilator::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::silex::BLOCK {
+        return crate::silex::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if block == crate::cyclotron::BLOCK {
         return crate::cyclotron::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);

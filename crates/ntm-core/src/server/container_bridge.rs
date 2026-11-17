@@ -135,6 +135,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Radiolysis(r) => Some(&mut **r),
         Data::Exposure(e) => Some(&mut **e),
         Data::Fel(f) => Some(f),
+        Data::Silex(s) => Some(&mut **s),
         Data::Annihilator(a) => Some(&mut **a),
         Data::Cyclotron(c) => Some(&mut **c),
         Data::Furnace(f) => Some(f.slotted()),
@@ -190,6 +191,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_radiolysis", Layout::Native),
     ("ntm:machine_exposure_chamber", Layout::Native),
     ("ntm:machine_fel", Layout::Native),
+    ("ntm:machine_silex", Layout::Native),
     ("ntm:machine_annihilator", Layout::Native),
     ("ntm:machine_cyclotron", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
@@ -447,6 +449,9 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // MachineCyclotron.getAllPorts: three on each side of the 5x5 footprint, at (-x, -z) of the NTM's.
     // MachineAnnihilator.getPorts: front port and the two side ports near it.
     ("ntm:machine_annihilator", &[[-1, 0, -3], [1, 0, -3], [0, 0, -4]]),
+    // MachineSILEX.getAllPorts (`{±1, 1, 0}`, the makeExtra combo proxies: inventory and fluid) and TileEntitySILEX.getPorts:
+    // the two cells beside the middle of its second layer (symmetric, so the mirroring does not move them).
+    ("ntm:machine_silex", &[[1, 1, 0], [-1, 1, 0]]),
     ("ntm:machine_cyclotron", &[[-2, 0, -1], [-2, 0, 0], [-2, 0, 1], [2, 0, -1], [2, 0, 0], [2, 0, 1], [-1, 0, -2], [0, 0, -2], [1, 0, -2], [-1, 0, 2], [0, 0, 2], [1, 0, 2]]),
     // MachineRadiolysis.getAllPorts (`makeExtra` cells, the `flare` ports): the four beside the core on its layer (symmetric,
     // so the mirroring below does not move them).

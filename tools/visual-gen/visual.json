@@ -37069,8 +37069,181 @@
       }
     },
     "ntm:machine_silex": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+     "auto": false,
+     "source": "MachineSILEX dimensions {2,0,1,1,1,1}, offset 1, with the two makeExtra combo ports (inventory and fluid) at (±1,1,0); ContainerSILEX and GUISILEX 176x222 (processing/gui_silex.png): input (80,12), identifier (8,24), containers (26,24) and (44,24), output (116,90) and the queue (134|152, 72|90|108); the fill bar (26,72) 16x52, the progress (45,82) 69x43, the tank (8,42) 52x7; the laser's name and its wave are not drawn (the mode is in the fill's tip). The block's model stays the casing's (the renderer model is not ported)",
+     "machine": {
+      "slots": [
+       {
+        "x": 80,
+        "y": 12
+       },
+       {
+        "x": 8,
+        "y": 24
+       },
+       {
+        "x": 26,
+        "y": 24
+       },
+       {
+        "x": 44,
+        "y": 24,
+        "output": true
+       },
+       {
+        "x": 116,
+        "y": 90,
+        "output": true
+       },
+       {
+        "x": 134,
+        "y": 72,
+        "output": true
+       },
+       {
+        "x": 152,
+        "y": 72,
+        "output": true
+       },
+       {
+        "x": 134,
+        "y": 90,
+        "output": true
+       },
+       {
+        "x": 152,
+        "y": 90,
+        "output": true
+       },
+       {
+        "x": 134,
+        "y": 108,
+        "output": true
+       },
+       {
+        "x": 152,
+        "y": 108,
+        "output": true
+       }
+      ],
+      "inventory": [
+       8,
+       140
+      ],
+      "data": 8,
+      "multiblock": {
+       "min": [
+        -1,
+        0,
+        -1
+       ],
+       "max": [
+        1,
+        2,
+        1
+       ],
+       "offset": 1,
+       "dummy": "ntm:dummy_machine",
+       "inventory_ports": [
+        [
+         1,
+         1,
+         0
+        ],
+        [
+         -1,
+         1,
+         0
+        ]
+       ]
+      }
+     },
+     "screen": {
+      "texture": "ntm:textures/gui/processing/gui_silex.png",
+      "texture_from": "textures/gui/processing/gui_silex.png",
+      "size": [
+       176,
+       222
+      ],
+      "title": [
+       34,
+       8,
+       "center"
+      ],
+      "inventory_label": [
+       8,
+       128
+      ],
+      "bars": [
+       {
+        "value": 0,
+        "max": 1,
+        "rect": [
+         26,
+         72,
+         16,
+         52
+        ],
+        "uv": [
+         176,
+         57
+        ],
+        "dir": "up"
+       },
+       {
+        "value": 2,
+        "max": 3,
+        "rect": [
+         45,
+         82,
+         69,
+         43
+        ],
+        "uv": [
+         176,
+         0
+        ],
+        "dir": "right"
+       },
+       {
+        "value": 5,
+        "max": 6,
+        "rect": [
+         8,
+         42,
+         52,
+         7
+        ],
+        "color": 7,
+        "dir": "right"
+       }
+      ],
+      "tooltips": [
+       {
+        "rect": [
+         26,
+         72,
+         16,
+         52
+        ],
+        "lines": [
+         "{0} / {1} mB",
+         "Laser: {4}"
+        ]
+       },
+       {
+        "rect": [
+         8,
+         42,
+         52,
+         7
+        ],
+        "lines": [
+         "{5} / {6} mB"
+        ]
+       }
+      ]
+     }
     },
     "ntm:machine_rotary_furnace": {
       "auto": false,
