@@ -121,7 +121,7 @@ def render():
 EXTRA = [
     ('ntm:geiger_counter', 'ativo', '`ItemGeigerCounter`', 'relatório de 5 linhas e cliques a cada 5 ticks pelo `radBuf` do servidor de radiação; "radiação do chunk" é a taxa das zonas de fallout do port (`ChunkRadiationManager` não existe); texto em inglês'),
     ('ntm:dosimeter', 'ativo', '`ItemDosimeter`', 'idem, teto de 3,6 RAD/s'),
-    ('ntm:digamma_diagnostic', 'parcial', '`ItemDigammaDiagnostic`', '`HbmLivingProps.digamma` não existe: imprime 0'),
+    ('ntm:digamma_diagnostic', 'ativo', '`ItemDigammaDiagnostic`', 'imprime o `HbmLivingProps.digamma` guardado no jogador (Onda 2, sublote 2, `machine_fel`); texto em inglês'),
     ('ntm:survey_scanner', 'parcial', '`ItemSurveyScanner`', 'marcadores de partícula do minério de bedrock, `TileEntityBedrockOre` e a viagem ao End com `entanglement_kit`'),
     ('ntm:pipette, ntm:pipette_boron, ntm:pipette_laboratory', 'parcial', '`ItemPipette`', 'capacidade por clique direito portada; encher e esvaziar exige o slot de fluido de máquinas (`IFillableItem`)'),
     ('ntm:inf_water, ntm:inf_water_mk2, ntm:fluid_barrel_infinite, ntm:chlorine_pinwheel', 'dependente', '`ItemInfiniteFluid`', '`FluidLoaderInfinite` (o slot de tanque das máquinas que os usa)'),
