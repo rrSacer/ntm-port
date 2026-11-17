@@ -71,6 +71,20 @@ MUTANTS = {
          '            DELAYED.with(|pending| pending.borrow_mut().push(batch));',
          'a_save_right_after_the_stirling_failure_keeps_the_blast_with_the_lost_gear'),
     ],
+    'd3': [
+        ('SawmillPlacementIgnored', 'crates/ntm-core/src/server.rs',
+         '                    if let crate::machine::Data::Sawmill(s) = &mut m.data\n                        && r.sawmills_without_blade.remove(&key)',
+         '                    if let crate::machine::Data::Sawmill(s) = &mut m.data\n                        && false && r.sawmills_without_blade.remove(&key)',
+         'a_sawmill_placed_from_its_item_without_blade_has_none_and_drops_that_variant'),
+        ('SawmillWordNeverSpent', 'crates/ntm-core/src/server.rs',
+         '                        && r.sawmills_without_blade.remove(&key)',
+         '                        && r.sawmills_without_blade.contains(&key)',
+         'the_item_without_blade_belongs_to_its_own_placement_only'),
+        ('SawmillPendingNotCounted', 'crates/ntm-core/src/server/sawmill_server.rs',
+         '        self.ready.sawmills_without_blade.contains(&key)\n            || matches!',
+         '        false\n            || matches!',
+         'a_sawmill_placed_from_its_item_without_blade_has_none_and_drops_that_variant'),
+    ],
 }
 
 

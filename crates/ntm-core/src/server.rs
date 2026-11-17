@@ -417,6 +417,9 @@ struct Ready {
     /// Test hooks only (`Server::native_test_drop`): fuel channels asked to put their rod out as an `Items` effect at a
     /// cell, taken by their reactor's next accepted step.
     rbmk_drops: BTreeMap<Key, Pos>,
+    /// D3: cells a sawmill item without its blade was placed at (`native_sawmill_placed`), each taken by the machine
+    /// its own `Placed` event creates there. Not saved: a save takes the block changes before it captures the chunks.
+    sawmills_without_blade: BTreeSet<Key>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
@@ -531,7 +534,12 @@ impl Server {
             BlockEvent::Placed(dim, pos, state) => {
                 let id = blockstate::id_of(&state);
                 let key = (dim, pos);
-                if let Some(m) = machine_from_state(&state) {
+                if let Some(mut m) = machine_from_state(&state) {
+                    if let crate::machine::Data::Sawmill(s) = &mut m.data
+                        && r.sawmills_without_blade.remove(&key)
+                    {
+                        s.has_blade = false;
+                    }
                     r.world.machines.insert(key.clone(), m);
                     r.loaded.insert(key.clone(), true);
                     r.seen.insert(key.clone());
@@ -738,6 +746,7 @@ fn same_look(actual: &str, want: &str) -> bool {
 mod bomb_server;
 mod excavator_server;
 mod oil_server;
+mod sawmill_server;
 mod solar_server;
 pub mod container_bridge;
 mod fluid_server;

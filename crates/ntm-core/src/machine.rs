@@ -84,6 +84,8 @@ pub enum Kind {
     Combustion,
     /// Solar boilers, mirrors and Stirling engines (energy batch 4).
     SolarStirling,
+    /// The sawmill (`crate::sawmill`, D3 of Onda 2).
+    Sawmill,
     Pile,
     Zirnox,
     Radioisotope,
@@ -214,6 +216,7 @@ pub enum Data {
     Steam(Box<crate::steam::Steam>),
     Combustion(Box<crate::combustion::Combustion>),
     SolarStirling(Box<crate::solar_stirling::SolarStirling>),
+    Sawmill(crate::sawmill::Sawmill),
     Pile(Box<crate::pile::Pile>),
     Zirnox(Box<crate::zirnox::Zirnox>),
     Radioisotope(Box<crate::radioisotopes::Radioisotope>),
@@ -301,6 +304,7 @@ impl Machine {
             Kind::Rbmk => Data::Rbmk(Box::new(crate::rbmk::persist::RbmkColumn::of(block_id))),
             Kind::Pile => Data::Pile(Box::new(crate::pile::Pile::of(block_id).expect("pile block"))),
             Kind::SolarStirling => Data::SolarStirling(Box::new(crate::solar_stirling::SolarStirling::of(block_id).expect("solar/stirling block"))),
+            Kind::Sawmill => Data::Sawmill(crate::sawmill::Sawmill::default()),
             Kind::Combustion => match crate::combustion::Combustion::of(block_id) {
                 Some(c) => Data::Combustion(Box::new(c)),
                 None => Data::Inert { name: block_id.into() },
@@ -402,6 +406,7 @@ impl Machine {
             Data::Radioisotope(_) => Kind::Radioisotope,
             Data::Pile(_) => Kind::Pile,
             Data::SolarStirling(_) => Kind::SolarStirling,
+            Data::Sawmill(_) => Kind::Sawmill,
             Data::BrickFurnace(_) => Kind::BrickFurnace,
             Data::Furnace(_) => Kind::Furnace,
             Data::Welder(_) => Kind::Welder,
@@ -450,6 +455,7 @@ impl Machine {
             Data::Radioisotope(m) => &**m,
             Data::Pile(m) => &**m,
             Data::SolarStirling(m) => &**m,
+            Data::Sawmill(m) => m,
             Data::BrickFurnace(m) => m,
             Data::Furnace(m) => &**m,
             Data::Welder(m) => &**m,
@@ -498,6 +504,7 @@ impl Machine {
             Data::Radioisotope(m) => &mut **m,
             Data::Pile(m) => &mut **m,
             Data::SolarStirling(m) => &mut **m,
+            Data::Sawmill(m) => m,
             Data::BrickFurnace(m) => m,
             Data::Furnace(m) => &mut **m,
             Data::Welder(m) => &mut **m,

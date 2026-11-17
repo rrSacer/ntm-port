@@ -69,6 +69,8 @@ pub(super) fn world(open: bool) {
     lock(&CHANGES).clear();
     lock(&BUTTONS).clear();
     lock(&POST_SYNC).clear();
+    lock(&SAWMILLS_PLACED).clear();
+    lock(&SAWMILLS_WITHOUT_BLADE).clear();
     if !open {
         // The close/failure hook follows the final save. These are session caches, not facts of the next world.
         lock(&LEDGERS).clear();
@@ -89,6 +91,7 @@ pub(super) fn world(open: bool) {
 /// The block changes recorded since the server last took them, and the records loaded since, given to the server (it
 /// then takes them as the end of a tick does, `Server::native_settle`).
 fn feed_changes(server:&mut Server,host:&mut Host<'_,'_>){
+    sawmills_placed(server);
     let changes=std::mem::take(&mut *lock(&CHANGES));
     arrived(server);
     for (dim,pos,old,new) in changes {
@@ -899,43 +902,77 @@ fn sawmill_item_without_blade(count: u32) -> Option<ItemStack> {
     horizon_world::nbt::parse_snbt(&text).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t))
 }
 
-/// Step 1 of D3, test hooks only (`NTM_TEST_HOOKS=1`): what a placed sawmill item said, by the cell it was placed at,
-/// until the sawmill's own model keeps `has_blade` (step 3).
-static SAWMILL_PROBE: Mutex<std::collections::BTreeMap<(String, [i32; 3]), bool>> = Mutex::new(std::collections::BTreeMap::new());
+/// The server's sawmills without their blade (`Server::native_sawmills_without_blade`), as of the last server tick
+/// and the placements since: the drops a blast of the server's own hears while the server is busy read it.
+static SAWMILLS_WITHOUT_BLADE: Mutex<std::collections::BTreeSet<(String, [i32; 3])>> = Mutex::new(std::collections::BTreeSet::new());
 
-fn test_hooks() -> bool {
-    std::env::var_os("NTM_TEST_HOOKS").is_some()
+/// Sawmill items placed since the server last took the block changes: given to it before those changes, so the
+/// `Placed` event of each finds what its item said (`Server::native_sawmill_placed`).
+static SAWMILLS_PLACED: Mutex<Vec<(String, [i32; 3], bool)>> = Mutex::new(Vec::new());
+
+fn sawmills_placed(server: &mut Server) {
+    for (dim, pos, without) in std::mem::take(&mut *lock(&SAWMILLS_PLACED)) {
+        server.native_sawmill_placed(&dim, pos, without);
+    }
+}
+
+fn d3_trace() -> bool {
+    trace_effects() || std::env::var_os("NTM_TEST_HOOKS").is_some()
 }
 
 /// `place_block`: a player placed `stack` at `pos` (`BlockItem.place`, before the stack shrinks).
 pub(super) fn place_block(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) {
-    if &*stack.item != SAWMILL || !test_hooks() {
+    if &*stack.item != SAWMILL {
         return;
     }
-    let no_blade = sawmill_without_blade(stack);
-    eprintln!("ntm d3 placed {SAWMILL} at {pos:?} no_blade={no_blade} item={}", item_snbt(stack));
-    lock(&SAWMILL_PROBE).insert((game.dim.id().to_string(), pos), no_blade);
+    let without = sawmill_without_blade(stack);
+    let dim = game.dim.id().to_string();
+    if d3_trace() {
+        eprintln!("ntm d3 placed {SAWMILL} at {pos:?} no_blade={without} item={}", item_snbt(stack));
+    }
+    lock(&SAWMILLS_PLACED).push((dim.clone(), pos, without));
+    let mut copy = lock(&SAWMILLS_WITHOUT_BLADE);
+    if without {
+        copy.insert((dim, pos));
+    } else {
+        copy.remove(&(dim, pos));
+    }
+}
+
+/// The host's copy of the sawmills without their blade, after a server tick.
+fn sawmills_copied(server: &Server) {
+    *lock(&SAWMILLS_WITHOUT_BLADE) = server.native_sawmills_without_blade().into_iter().collect();
 }
 
 /// `loot_drops`: a broken sawmill without its blade drops its item as the variant without it; the loot table rolled
-/// the plain item (survival, explosion decay and the rest stay the engine's).
+/// the plain item (survival, creative, explosion decay and the rest stay the engine's).
 pub(super) fn loot_drops(game: &mut crate::game::Game<'_>, block: Option<([i32; 3], horizon_world::registry::BlockStateId)>, drops: &mut [ItemStack]) {
     let Some((pos, state)) = block else { return };
-    if !test_hooks() || !drops.iter().any(|d| &*d.item == SAWMILL) {
+    if !drops.iter().any(|d| &*d.item == SAWMILL) {
         return;
     }
     let dim = game.dim.id().to_string();
-    let no_blade = lock(&SAWMILL_PROBE).iter().find(|((d, p), _)| *d == dim && (0..3).all(|i| (p[i] - pos[i]).abs() <= 2)).map(|(_, n)| *n);
-    let before: Vec<String> = drops.iter().map(item_snbt).collect();
-    if no_blade == Some(true) {
+    // A placement the server has not taken yet speaks last for its cell. The server's own blast breaking it holds the
+    // server: the host's copy answers then.
+    let placed = lock(&SAWMILLS_PLACED).iter().rev().find(|(d, p, _)| *d == dim && *p == pos).map(|(_, _, w)| *w);
+    let without = placed
+        .or_else(|| match SERVER.try_lock() {
+            Ok(guard) => guard.as_ref().map(|(server, _)| server.native_sawmill_without_blade(&dim, pos)),
+            Err(_) => None,
+        })
+        .unwrap_or_else(|| lock(&SAWMILLS_WITHOUT_BLADE).contains(&(dim.clone(), pos)));
+    let before: Vec<String> = if d3_trace() { drops.iter().map(item_snbt).collect() } else { Vec::new() };
+    if without {
         for d in drops.iter_mut().filter(|d| &*d.item == SAWMILL) {
             if let Some(variant) = sawmill_item_without_blade(d.count) {
                 *d = variant;
             }
         }
     }
-    let after: Vec<String> = drops.iter().map(item_snbt).collect();
-    eprintln!("ntm d3 drops at {pos:?} state={} probe={no_blade:?} before={before:?} after={after:?}", game.state_string(state));
+    if d3_trace() {
+        let after: Vec<String> = drops.iter().map(item_snbt).collect();
+        eprintln!("ntm d3 drops at {pos:?} state={} without_blade={without} before={before:?} after={after:?}", game.state_string(state));
+    }
 }
 
 /// Forgets the applied ids the storage no longer names, in every chunk kept that holds some.
@@ -1160,6 +1197,7 @@ pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
         server.native_writes_finished();
     }
     arrived(server);
+    sawmills_placed(server);
     for (dim, pos, old, new) in changes {
         // Preserve each break; enrich placement properties only while the
         // recorded new block is still there. Owned role writes were tagged at
@@ -1168,6 +1206,7 @@ pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
         server.native_block_changed(&dim, pos, &old, &now);
     }
     horizon_client::spans::time("ntm_native_tick", || server.native_tick(&mut host, *tick));
+    sawmills_copied(server);
     }
 }
 

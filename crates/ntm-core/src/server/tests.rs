@@ -660,6 +660,7 @@ mod ash_tests;
 mod chunk_radiation_tests;
 mod combustion_tests;
 mod solar_stirling_tests;
+mod sawmill_tests;
 mod fluid_tests;
 mod crafter_tests;
 mod review_m2_tests;

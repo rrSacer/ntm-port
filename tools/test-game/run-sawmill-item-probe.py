@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""D3 of Onda 2, step 1 (the coordinator's condition before the sawmill leaves `Inert`): in game, the sawmill item's
-`minecraft:custom_data {"ntm:no_blade":1b}` reaches `native_place_block`, and a broken sawmill drops that variant back
-(MachineSawmill.onBlockPlacedBy / getDrops, the Java's damage 1). Until the sawmill keeps `has_blade` in its model
-(step 3) the glue keeps what the placed item said by its cell, with NTM_TEST_HOOKS=1 only.
+"""D3 of Onda 2: in game, the sawmill item's `minecraft:custom_data {"ntm:no_blade":1b}` reaches `native_place_block`,
+the sawmill's model keeps `has_blade = false` (its record, across a reopen), and a broken sawmill drops that variant
+back (MachineSawmill.onBlockPlacedBy / getDrops, the Java's damage 1). Step 1 (commit 190a26b0) ran it on a probe of the
+glue by cell under NTM_TEST_HOOKS=1; since step 2 it runs on the model, NTM_TRACE_EFFECTS=1 only for the glue's log
+lines.
 
   python3 tools/test-game/run-sawmill-item-probe.py --binary B --resources R --bundle H --scratch-root S
 
-Phases, one session: a plain sawmill placed and broken by a player in survival drops the plain item; the variant placed
-and broken drops the variant; that drop picked up and placed again is read as the variant and drops it again; a sawmill
-broken in creative drops nothing (the engine's loot rules stay). The glue's log lines (`ntm d3 placed`, `ntm d3 drops`)
-are read from the session's log.
+Session 1: a plain sawmill placed and broken by a player in survival drops the plain item; the variant placed and
+broken drops the variant; that drop picked up and placed again is read as the variant and drops it again; a sawmill
+broken in creative drops nothing (the engine's loot rules stay); a variant placed and kept, then the world saved.
+Session 2 (the world opened again): the kept sawmill broken drops the variant. The glue's log lines (`ntm d3 placed`,
+`ntm d3 drops`) are read from each session's log.
 """
 import argparse
 import importlib.util
@@ -33,7 +35,7 @@ from native_recipes import core_of
 
 SAWMILL = 'ntm:machine_sawmill'
 VARIANT = SAWMILL + '[minecraft:custom_data={"ntm:no_blade":1b}]'
-SPOTS = {'plain': (47, 101, 8), 'variant': (55, 101, 8), 'again': (63, 101, 8), 'creative': (71, 101, 8)}
+SPOTS = {'plain': (47, 101, 8), 'variant': (55, 101, 8), 'again': (63, 101, 8), 'creative': (71, 101, 8), 'kept': (79, 101, 8)}
 
 
 def place(g, item, spot):
@@ -82,7 +84,7 @@ def dropped(g, core):
 
 def probe(g):
     g.ctl('wait-ready 120')
-    start_area(g, 44, 101, 8, 32)
+    start_area(g, 44, 101, 8, 42)
     results = {}
     for phase in ('plain', 'variant'):
         core = place(g, SAWMILL if phase == 'plain' else VARIANT, SPOTS[phase])
@@ -119,14 +121,29 @@ def probe(g):
     drops = dropped(g, core)
     results['creative'] = {'core': core, 'broken': cell, 'drops': drops}
     g.check('creative_drops_nothing', cell is not None and not drops, drops)
+    # Kept for the reopen: its record has to say it has no blade.
+    results['kept'] = {'core': place(g, VARIANT, SPOTS['kept'])}
+    g.command('clear @s')
+    g.ctl('save')
     g.evidence['results'] = results
     g.save()
 
 
+def reopen(g):
+    g.ctl('wait-ready 120')
+    core = tuple(json.loads((g.folder / 'native-sawmill-item-probe.json').read_text())['results']['kept']['core'])
+    cell = break_by_player(g, core)
+    drops = dropped(g, core)
+    g.evidence['results'] = {'kept': {'core': core, 'broken': cell, 'drops': drops}}
+    g.check('reopened_sawmill_drops_the_variant', cell is not None and sum(d['count'] for d in drops) == 1
+            and all(d['no_blade'] for d in drops), drops)
+    g.save()
+
+
 def main():
-    if len(sys.argv) > 2 and sys.argv[2] == 'probe':
-        g = Game(sys.argv[1], 'sawmill-item-probe')
-        probe(g)
+    if len(sys.argv) > 2 and sys.argv[2] in ('probe', 'reopen'):
+        g = Game(sys.argv[1], 'sawmill-item-' + sys.argv[2])
+        {'probe': probe, 'reopen': reopen}[sys.argv[2]](g)
         return 0
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary', type=Path, required=True)
@@ -138,7 +155,8 @@ def main():
     print(folder, flush=True)
     env = os.environ.copy()
     env.update(HORIZON_NO_AUDIO='1', HORIZON_LAUNCHER_NO_SELF_UPDATE='1', HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='',
-               NTM_TEST_HOOKS='1')
+               NTM_TRACE_EFFECTS='1')
+    env.pop('NTM_TEST_HOOKS', None)
     for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'), ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
         env[key] = str(folder / sub)
     (folder / 'options.txt').write_text('soundCategory_master:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
@@ -153,18 +171,20 @@ def main():
     world = rcp.World(args, folder, env)
     report = {'binary_sha256': rcp.digest(args.binary), 'bundle_sha256': rcp.digest(args.bundle)}
     try:
-        world.launch()
-        code = subprocess.run([sys.executable, str(Path(__file__).resolve()), str(folder), 'probe'], cwd=folder, env=env, timeout=900).returncode
-        world.quit()
-        log = world.log.read_text(errors='replace')
-        report['placed'] = re.findall(r'ntm d3 placed .*', log)
-        report['drops'] = re.findall(r'ntm d3 drops .*', log)
-        evidence = json.loads((folder / 'native-sawmill-item-probe.json').read_text())
-        report['checks'] = evidence.get('checks')
-        report['results'] = evidence.get('results')
-        placed = [bool(re.search(r'no_blade=true', l)) for l in report['placed']]
-        report['place_hook_reads_the_data'] = placed == [False, True, True, True]
-        report['ok'] = code == 0 and report['place_hook_reads_the_data']
+        codes = []
+        for mode in ('probe', 'reopen'):
+            world.launch()
+            codes.append(subprocess.run([sys.executable, str(Path(__file__).resolve()), str(folder), mode], cwd=folder, env=env, timeout=900).returncode)
+            world.quit()
+            log = world.log.read_text(errors='replace')
+            evidence = json.loads((folder / f'native-sawmill-item-{mode}.json').read_text())
+            report[mode] = {'placed': re.findall(r'ntm d3 placed .*', log), 'drops': re.findall(r'ntm d3 drops .*', log),
+                            'checks': evidence.get('checks'), 'results': evidence.get('results'), 'exit': codes[-1]}
+            if codes[-1]:
+                break
+        placed = [bool(re.search(r'no_blade=true', l)) for l in report['probe']['placed']]
+        report['place_hook_reads_the_data'] = placed == [False, True, True, True, True]
+        report['ok'] = codes == [0, 0] and report['place_hook_reads_the_data']
     finally:
         if getattr(world, 'client', None) is not None and world.client.poll() is None:
             world.client.kill()
@@ -172,7 +192,7 @@ def main():
         xvfb.terminate()
         xvfb.wait(timeout=10)
         (folder / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
-    print(json.dumps({k: report.get(k) for k in ('ok', 'place_hook_reads_the_data', 'placed', 'drops')}, indent=1), flush=True)
+    print(json.dumps({k: report.get(k) for k in ('ok', 'place_hook_reads_the_data')} | {m: {k: (report.get(m) or {}).get(k) for k in ('placed', 'drops', 'exit')} for m in ('probe', 'reopen')}, indent=1), flush=True)
     return 0 if report.get('ok') else 1
 
 
