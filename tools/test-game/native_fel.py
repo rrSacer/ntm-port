@@ -109,8 +109,9 @@ def place_across(g, item, at):
     g.command('clear @s')
 
 
-def dropped(g, item):
-    return 'passed' in ' '.join(g.command(f'execute if entity @e[type=minecraft:item,nbt={{Item:{{id:"{item}"}}}}]').get('chat', [])).lower()
+def gametime(g):
+    """The server's game time in ticks (`time query gametime`)."""
+    return int(re.search(r'(\d+)', ' '.join(g.command('time query gametime').get('chat', [])))[1])
 
 
 def clear_box(g, core):
@@ -222,12 +223,18 @@ def setup(g):
     g.command('gamemode survival @s')
     g.ticks(220)
     spot = (core[0] + d[0] * 4, core[1], core[2] + d[2] * 4)
+    # The ticks the player stood in the beam, by the server's clock: the dose is 0.1 for each (one tick either way for
+    # the commands that put it there and take it away).
     g.command(f'tp @s {spot[0] + .5} {Y} {spot[2] + .5}')
+    entered = gametime(g)
     g.ticks(10)
     away(g, core)
+    left = gametime(g)
     g.ticks(2)
     dose, _, raw = D.diagnostic(g)
-    g.check('the_drx_beam_doses_a_survival_player', dose is not None and 0.5 <= dose <= 2.0 and D.consistent(dose, D.modifier(g)), [dose, raw])
+    g.evidence['dose'] = {'dose': dose, 'entered': entered, 'left': left}
+    g.check('the_drx_beam_doses_a_survival_player', dose is not None and dose > 0 and abs(dose - 0.1 * (left - entered)) <= 0.2
+            and D.consistent(dose, D.modifier(g)), [dose, left - entered, raw])
     g.command('gamemode creative @s')
     g.command('effect clear @s')
     # Back to the visible laser for the save, and an ingot more for it to run on (the DRX ran the fill out).
@@ -307,8 +314,10 @@ def check(g):
     g.ticks(20)
     gone = not any(is_(g, (across[0] + dx, across[1] + dy, across[2] + dz), b) for dx in (-1, 0, 1) for dy in (0, 1, 2) for dz in (-1, 0, 1)
                    for b in ('ntm:machine_silex', 'ntm:dummy_machine'))
+    # Exactly one SILEX and the one ingot it held: no copy, no loss.
+    silex_drops, ingot_drops = g.dropped('ntm:machine_silex'), g.dropped('ntm:ingot_uranium')
     g.check('a_silex_across_the_beam_breaks_and_drops', tuple(across) == tuple(target) and FACING[across_facing][2] == 0 and gone
-            and dropped(g, 'ntm:machine_silex') and dropped(g, 'ntm:ingot_uranium'), [across, target, across_facing, gone])
+            and silex_drops == 1 and ingot_drops == 1, [across, target, across_facing, gone, silex_drops, ingot_drops])
     g.check('the_silex_along_it_is_untouched', bool(silex(g, s_core)) and is_(g, s_core, 'ntm:machine_silex'), s_core)
 
 

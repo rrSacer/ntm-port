@@ -37070,7 +37070,7 @@
     },
     "ntm:machine_silex": {
      "auto": false,
-     "source": "MachineSILEX dimensions {2,0,1,1,1,1}, offset 1, with the two makeExtra combo ports (inventory and fluid) at (±1,1,0); ContainerSILEX and GUISILEX 176x222 (processing/gui_silex.png): input (80,12), identifier (8,24), containers (26,24) and (44,24), output (116,90) and the queue (134|152, 72|90|108); the fill bar (26,72) 16x52, the progress (45,82) 69x43, the tank (8,42) 52x7; the laser's name and its wave are not drawn (the mode is in the fill's tip). The block's model stays the casing's (the renderer model is not ported)",
+     "source": "MachineSILEX dimensions {2,0,1,1,1,1}, offset 1, with the two makeExtra combo ports (inventory and fluid) at (±1,1,0); ContainerSILEX and GUISILEX 176x222 (processing/gui_silex.png): input (80,12), identifier (8,24), containers (26,24) and (44,24), output (116,90) and the queue (134|152, 72|90|108); the fill bar (26,72) 16x52, the progress (45,82) 69x43, the tank (8,42) 52x7; the laser's name and its wave are not drawn (the mode is in the fill's tip); button 0 at (10,92) is the void button (GUISILEX.mouseClicked, handleButtonPacket). The block's model stays the casing's (the renderer model is not ported)",
      "machine": {
       "slots": [
        {
@@ -37242,6 +37242,20 @@
          "{5} / {6} mB"
         ]
        }
+      ],
+      "buttons": [
+        {
+          "id": 0,
+          "rect": [
+            10,
+            92,
+            12,
+            12
+          ],
+          "lines": [
+            "Void contents"
+          ]
+        }
       ]
      }
     },

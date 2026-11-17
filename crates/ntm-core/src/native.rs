@@ -163,13 +163,19 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
     }
     if block == crate::silex::BLOCK {
         // `ContainerSILEX`: the empty containers' slot is a `SlotTakeOnly`, the output and the queue `SlotCraftingOutput`s; a
-        // shift-click puts an identifier into its slot and anything else into the input (here: what has a recipe).
+        // shift-click (`transferStackInSlot`) puts an identifier into its slot, a full container into the full containers'
+        // slot and anything else into the input. The three are visited from the last, so the input comes after them.
+        // The Java takes a container only when it holds the tank's fluid; a slot's rule cannot see the tank, so any full
+        // container goes there (docs/onda-2-sublote-2.md).
         let mut rules = vec![SlotFilter::default(); crate::silex::SLOTS];
         for i in std::iter::once(crate::silex::CONTAINER_OUT).chain(crate::silex::OUTPUT..crate::silex::SLOTS) {
             rules[i].output = true;
         }
         rules[crate::silex::IDENTIFIER].quick_move = Some(vec!["ntm:fluid_identifier_multi".to_string()]);
-        rules[crate::silex::CONTAINER_IN].quick_move = Some(Vec::new());
+        rules[crate::silex::CONTAINER_IN].quick_move = Some(crate::fluid::all_full_containers());
+        for i in [crate::silex::INPUT, crate::silex::IDENTIFIER, crate::silex::CONTAINER_IN] {
+            rules[i].quick_reverse = true;
+        }
         return rules;
     }
     if block == crate::cyclotron::BLOCK {

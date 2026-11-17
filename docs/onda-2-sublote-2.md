@@ -535,8 +535,16 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - 68 receitas.
   - A busca do `getOutput` em três camadas: tradução de item (4, como UF6 → lingote de urânio e o pó de lápis → `minecraft:lapis_lazuli`), tradução de dicionário (2: pó → lingote) e resíduo miúdo (26, um nono do fluido: `(fluidProduced / 900) * 100`, com o metadado preservado).
   - Os itens vanilla do 1.7.10 (`gold_nugget`, `flint`, `gravel`, `dye:4`) mapeados para os de hoje.
-- **Automação** (`getAccessibleSlotsFromSide`, `isItemValidForSlot`, `canExtractItem`): um funil põe na entrada um item que tenha receita e tira da fila. **Menu** (`ContainerSILEX`): a mão põe na entrada, no identificador e no recipiente cheio, e tira de todos. As duas portas combo (inventário e fluido) ficam em (±1, 1, 0).
-- **Estado fora dos slots** em `save_state`: carga, item (índice numa lista fixa ordenada), progresso, índice da receita, atraso da carga, tipo do tanque (id do fluido) e mB.
+- **Automação** (`getAccessibleSlotsFromSide`, `isItemValidForSlot`, `canExtractItem`): um funil põe na entrada um item que tenha receita e tira da fila.
+- **Menu** (`ContainerSILEX`): a mão põe na entrada, no identificador e no recipiente cheio, e tira de todos.
+  - O shift-click (`transferStackInSlot`) leva um identificador ao slot dele, um recipiente cheio ao slot 2 e o resto à entrada.
+  - As duas portas combo (inventário e fluido) ficam em (±1, 1, 0).
+- **Botão de esvaziar** (`GUISILEX:54-61`, `handleButtonPacket:133-137`): o botão 0 em (10, 92) zera a carga e esquece o item.
+- **Tela:** o laser mostrado é o do tick. O Java envia a tela (`networkPackNT`) antes de o `mode` voltar a NULL.
+- **Estado fora dos slots** em `save_state`, como o `writeToNBT` (linhas 332-343): carga, índice da receita, tipo do tanque (id do fluido) e mB, e o item da carga **pelo id**.
+  - O id é guardado como bytes UTF-8. Antes era a posição numa lista ordenada, que muda quando o OreDict ou o catálogo crescem (revisão, P1-1).
+  - Um save da primeira forma ainda abre pela posição.
+  - O progresso e o atraso da carga não são salvos, como no Java: recomeçam em 0. Assim um SILEX parado tem o mesmo estado a cada tick e nada a gravar.
 
 **Ligação com o FEL** (`TileEntityFEL:139-195`)
 
@@ -555,25 +563,41 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - O nome e a onda do laser na tela não são desenhados: o modo aparece na dica da carga.
 - A parte de multibloco de outra máquina atingida pelo feixe usa a resistência da parte genérica (`ntm:dummy_machine`), não a do bloco da máquina.
 - O `mode` salvo no NBT do Java não é guardado (ele volta a NULL a cada tick do SILEX).
+- O shift-click leva **qualquer** recipiente cheio ao slot 2. O Java só leva o que contém o fluido do tanque (`getFluidContent(stack, tank.getTankType()) > 0`), e a regra de um slot não vê o tanque.
+  - Pela mesma razão, com os slots 1 e 2 cheios, um identificador ou um recipiente cai na entrada. No Java, `mergeItemStack` falharia e o item ficaria no inventário.
 
 
-**Provas** (cliente `67817408dd75cbc96bb7a7efbd318415b48fdcf356b281c4b5fcb2ff2a8a72cf`, pacote `eb9f78039702e982af956ff534ab3c8bd2a63a8f7e95373455ee2f9f69ec72ad`, HEAD `e40f33a9`; evidência em `content-gen-evidence/onda2-s2/{fel,silex-state}`)
+**Provas** (cliente `45ec5cab80666c846a7bd73fe987b33dbd47aca2cfca90a33d9dcf22b3d9c3ec`, pacote `30ab245ae73c4f40f4e517bc2d827ab6296747a29c9c3765e7ad31a045aa9599`, árvore do commit da correção da revisão; evidência em `content-gen-evidence/onda2-s2/{fel,silex-state}`, que é desta rodada)
 
-- Testes de unidade: `ntm-core` com 858 passando, 0 falhas; clippy `--workspace --all-targets -D warnings` limpo; gerador de conteúdo com 346 testes, entre eles `test_silex_data` (4) contra o oráculo Java.
-- Em jogo (`run-native-reactors.py fel`, com `NTM_POLAROID=1`): 14/14, sem avisos do backend.
-  - **Montagem e feixe:** o SILEX fica sobre a linha do feixe, ao longo dele; o FEL, com bateria criativa e cristal de bismuto, liga no visível, acha o SILEX válido e o feixe segue até 24.
-  - **SILEX no visível:** os 16 tanques de peróxido o enchem; os dois lingotes carregam 900 cada (tanque com 14 200); o laser roda 3 rodadas em pepitas (1 U-235, 2 U-238), com o índice 147 igual ao simulado.
-  - **DRX:** o SILEX roda 8 vezes mais rápido (4 rodadas em 40 ticks); a pedra adiante vira fogo de digama sobre cinza de digama; um jogador em sobrevivência no feixe recebe 2,0 DRX em cerca de 20 ticks.
+- Testes de unidade: `ntm-core` com 873 passando, 0 falhas. Clippy `-p ntm-core --all-targets -D warnings` limpo. Gerador de conteúdo com 347 testes OK, entre eles `test_silex_data` (4) contra o oráculo Java.
+- Novos testes da revisão:
+  - `the_saved_fill_is_its_id_whatever_the_catalog_holds`: um id que nenhuma lista desta versão tem volta como ele mesmo, e o save antigo abre pela posição;
+  - `the_void_button_empties_the_fill`;
+  - a tela com o laser do tick;
+  - o estado parado igual de tick a tick;
+  - `a_shift_click_sorts_identifiers_and_containers_from_the_input`.
+- Em jogo (`run-native-reactors.py fel`, com `NTM_POLAROID=1`): **21/21** verificações nas três fases (14 na montagem, 1 antes do save, 6 na reabertura), sem avisos do backend.
+  - **Montagem e feixe:** o SILEX fica sobre a linha do feixe, ao longo dele. O FEL, com bateria criativa e cristal de bismuto, liga no visível, acha o SILEX válido e o feixe segue até 24.
+  - **SILEX no visível:** os 16 tanques de peróxido o enchem; os dois lingotes carregam 900 cada (tanque com 14 200). O laser roda 3 rodadas em pepitas (1 U-235, 2 U-238), com o índice 147 igual ao simulado.
+  - **DRX:** com o cristal de digama, a carga vai de 600 a 200, 4 rodadas.
+    - O progresso, de 88 a 64, dá 47 ticks do servidor a 8 por tick (88 + 8 × 47 − 400). O `ticks(40)` do cliente não é uma contagem de ticks do servidor; a frase antiga "4 rodadas em 40 ticks" estava errada.
+    - A pedra adiante vira fogo de digama sobre cinza de digama.
+  - **Dose:** um jogador em sobrevivência no feixe recebeu 2,89 DRX em 29 ticks do servidor, medidos pelo `time query gametime` na entrada e na saída.
+    - A verificação agora exige 0,1 por tick, com até 0,2 de folga para os dois comandos, em vez da faixa de 0,5 a 2,0 que um atraso dos comandos estourava (a rodada anterior mediu 2,2).
   - **Persistência:** sem o cristal, o SILEX parado e o FEL ligado reabrem exatamente como salvos; com o cristal de volta, o SILEX continua.
-  - **SILEX mal alinhado:** um segundo SILEX perpendicular, 14 células adiante, é derrubado inteiro, solta o lingote que tinha e um `machine_silex`; o alinhado fica intacto.
-- Cortes estritos (`HORIZON_NO_EAGER_SAVE=1`, `run-crash-more.py silex-state`): 7/7.
-  - Sem o cristal antes de cada save, o SILEX fica parado, então a reabertura tem que ser exatamente o save-base ou o save do passo.
-  - O peróxido fecha (tanque + tanques cheios + 900 por lingote carregado = 16 000), e a carga mais 100 por pepita é igual a 900 por lingote carregado.
-  - `kill` deixa exatamente o save-base.
-- Mutantes: 43 escolhidos à mão (`mutate-silex.py`: o SILEX e o acoplamento no FEL), 41 mortos e 2 equivalentes nos dados.
-  - Na primeira rodada, `+= 1` no lugar de `+= 137` sobreviveu; foi morto com o teste do índice guardado e dos três pesos do plutônio.
-  - `produced / 9` no lugar de `(produced / 900) * 100` só difere para um resíduo inteiro que não produza múltiplo de 900, e os 26 produzem 900.
-  - Sem o ramo `CONVERSION`, UF6, PUF6 e DEATH carregam do mesmo jeito: todos têm receita direta ou por tradução.
+  - **SILEX mal alinhado:** um segundo SILEX perpendicular, 14 células adiante, é derrubado inteiro. No chão ficam **exatamente** 1 `machine_silex` e 1 lingote, somando as pilhas e não as entidades; o alinhado fica intacto.
+- Cortes (`run-crash-more.py silex-state`): **5/7**. `none`, `save_begin`, `chunks_written`, `entities_written` e `players_saved` reabrem um estado inteiro, com o peróxido e as pepitas fechando.
+  - **`kill` e `kv_committed` falham, e a falha não é da correção:** o HEAD `10c2a59c`, compilado sem nenhuma mudança deste lote, falha do mesmo jeito no `kill`.
+    - O SILEX reabre no estado do fim do ato, mas o FEL reabre ainda com o cristal, e o SILEX volta a rodar.
+    - Uma versão de diagnóstico que voltou a salvar o progresso e o atraso a cada tick também falhou.
+    - Os cortes passaram 7/7 antes do merge da main `fa3c1df3` (motor 2187c3192b) e não tinham sido refeitos depois dele. Está registrado como regressão do merge a investigar, à parte deste lote.
+- Mutantes: o script está no repositório, `tools/mutants/silex.py` (antes ficava fora dele).
+  - Na primeira rodada: 43 escolhidos à mão (o SILEX e o acoplamento no FEL), 41 mortos e 2 equivalentes nos dados.
+    - Na primeira rodada, `+= 1` no lugar de `+= 137` sobreviveu; foi morto com o teste do índice guardado e dos três pesos do plutônio.
+    - `produced / 9` no lugar de `(produced / 900) * 100` só difere para um resíduo inteiro que não produza múltiplo de 900, e os 26 produzem 900.
+    - Sem o ramo `CONVERSION`, UF6, PUF6 e DEATH carregam do mesmo jeito: todos têm receita direta ou por tradução.
+  - Com a correção da revisão: 55 mutantes (14 novos, para o save pelo id, o botão, a tela e o shift-click; os 2 do save antigo saíram), 53 mortos e os mesmos 2 equivalentes.
+    - Um dos novos sobreviveu de início: o `load_state` sem zerar o progresso e o atraso. O teste carregava sobre um SILEX que já tinha os dois em 0; agora carrega sobre um que estava rodando, e o mutante morre.
 - O polaroid 11 (matéria em vez de fogo) não tem prova em jogo: a matéria de metadado 0 se espalharia por cerca de 14 células e alcançaria o SILEX da montagem. A escolha está coberta em teste de unidade, e o espalhamento da matéria tem prova própria na prova `digamma`.
 
 ### `machine_industrial_generator` (grupo 2b)

@@ -74,7 +74,7 @@ struct Table {
     items: BTreeMap<String, String>,
     dicts: BTreeMap<String, String>,
     tiny: BTreeMap<String, String>,
-    /// Every key a fill can be of, sorted: what `save_state` keeps by index.
+    /// Every key a fill can be of, sorted: the first saves kept the fill by its place here (`load_state`).
     keys: Vec<String>,
     limits: BTreeMap<String, u32>,
 }
@@ -176,6 +176,9 @@ pub struct Silex {
     pub progress: i32,
     /// The FEL's wavelength for this tick (`mode`), NULL after it.
     pub mode: Wavelength,
+    /// The wavelength the screen shows: the tick's, sent before it goes back to NULL (`networkPackNT`, line 94).
+    #[serde(default)]
+    pub shown: Wavelength,
     pub recipe_index: i32,
     pub load_delay: i32,
 }
@@ -189,6 +192,7 @@ impl Default for Silex {
             fill: 0,
             progress: 0,
             mode: Wavelength::Null,
+            shown: Wavelength::Null,
             recipe_index: 0,
             load_delay: 0,
         }
@@ -294,9 +298,16 @@ impl Silex {
         if self.fill <= 0 {
             self.current = None;
         }
+        self.shown = self.mode;
         self.mode = Wavelength::Null;
         // The load delay turns every tick: only what it gates counts as work.
         *self != Self { load_delay: self.load_delay, ..before }
+    }
+
+    /// `handleButtonPacket`: the void button (`GUISILEX`, lines 54-61) empties the fill.
+    pub fn void(&mut self) {
+        self.fill = 0;
+        self.current = None;
     }
 }
 
@@ -360,30 +371,68 @@ impl Slotted for Silex {
             MAX_FILL,
             self.progress,
             PROCESS_TIME,
-            self.mode as i32,
+            self.shown as i32,
             self.tank.mb as i32,
             self.tank.cap as i32,
             crate::fluid::get(&self.tank.fluid).map_or(0, |f| f.color as i32),
         ]
     }
-    /// The fill (its item as an index of the possible ones, -1 for none), the progress, the recipe index, the load
-    /// delay, the tank's type (its fluid id) and mB.
+    /// `writeToNBT` (lines 332-343): the fill, the recipe index, the tank's type (its fluid id) and mB, and what the fill
+    /// is of, by its id (`item` and `meta` there), never by its place in a list that grows with the catalog. The
+    /// progress and the load delay are not saved, as in the Java: they start again at 0.
     fn save_state(&self) -> Vec<i32> {
-        let current = self.current.as_ref().and_then(|c| table().keys.iter().position(|k| k == c)).map_or(-1, |i| i as i32);
-        vec![self.fill, current, self.progress, self.recipe_index, self.load_delay, fluid_id(&self.tank.fluid), self.tank.mb as i32]
+        let mut v = vec![self.fill, STATE_V2, self.recipe_index, fluid_id(&self.tank.fluid), self.tank.mb as i32];
+        v.extend(pack(self.current.as_deref().unwrap_or("")));
+        v
     }
     fn load_state(&mut self, v: &[i32]) {
-        if let [fill, current, progress, index, delay, fluid, mb, ..] = v {
-            self.fill = (*fill).clamp(0, MAX_FILL);
-            self.current = usize::try_from(*current).ok().and_then(|i| table().keys.get(i)).cloned();
-            self.progress = (*progress).clamp(0, PROCESS_TIME);
-            self.recipe_index = (*index).max(0);
-            self.load_delay = (*delay).clamp(0, 20);
-            let name = crate::fluid::types().iter().find(|f| i32::from(f.id) == *fluid).map_or(String::new(), |f| f.string_id.clone());
-            self.tank = Tank { fluid: if *fluid == 0 { String::new() } else { name }, mb: 0, cap: TANK };
-            self.tank.mb = (*mb).clamp(0, TANK as i32) as u32;
-        }
+        self.progress = 0;
+        self.load_delay = 0;
+        let (fill, current, index, fluid, mb) = match v {
+            [fill, STATE_V2, index, fluid, mb, rest @ ..] => (*fill, unpack(rest), *index, *fluid, *mb),
+            // The first saves kept the fill's item as its place among `keys` (and the progress and the delay).
+            [fill, current, _progress, index, _delay, fluid, mb, ..] => {
+                (*fill, usize::try_from(*current).ok().and_then(|i| table().keys.get(i)).cloned(), *index, *fluid, *mb)
+            }
+            _ => return,
+        };
+        self.fill = fill.clamp(0, MAX_FILL);
+        self.current = current.filter(|c| !c.is_empty() && self.fill > 0);
+        self.recipe_index = index.max(0);
+        let name = crate::fluid::types().iter().find(|f| i32::from(f.id) == fluid).map_or(String::new(), |f| f.string_id.clone());
+        self.tank = Tank { fluid: if fluid == 0 { String::new() } else { name }, mb: 0, cap: TANK };
+        self.tank.mb = mb.clamp(0, TANK as i32) as u32;
     }
+    /// Button 0: void the fill.
+    fn button(&mut self, id: u32) -> bool {
+        if id == 0 {
+            self.void();
+        }
+        false
+    }
+}
+
+/// The second form of `save_state` (the first kept a list index there).
+const STATE_V2: i32 = -2;
+
+/// A string as ints: its length in bytes, then its UTF-8 bytes four to an int.
+fn pack(s: &str) -> Vec<i32> {
+    let bytes = s.as_bytes();
+    std::iter::once(bytes.len() as i32)
+        .chain(bytes.chunks(4).map(|c| {
+            let mut b = [0u8; 4];
+            b[..c.len()].copy_from_slice(c);
+            i32::from_le_bytes(b)
+        }))
+        .collect()
+}
+
+/// `pack` back; None when it is cut short or not UTF-8.
+fn unpack(v: &[i32]) -> Option<String> {
+    let (&len, words) = v.split_first()?;
+    let len = usize::try_from(len).ok()?;
+    let bytes: Vec<u8> = words.iter().flat_map(|w| w.to_le_bytes()).collect();
+    String::from_utf8(bytes.get(..len)?.to_vec()).ok()
 }
 
 /// `isItemValidForSlot` and `canExtractItem` (lines 298-315), and the menu (`ContainerSILEX`): a hand puts anything into
@@ -528,10 +577,13 @@ mod tests {
             s.step();
             assert_eq!(s.progress, speed, "{mode:?}");
             assert_eq!(s.mode, Wavelength::Null, "the mode is the FEL's for one tick");
+            // The screen shows the tick's laser: it is sent before the mode goes back to NULL.
+            assert_eq!(s.screen_data()[4], mode as i32, "{mode:?}");
         }
         s.progress = 50;
         s.step();
         assert_eq!(s.progress, 0, "no laser, the progress goes");
+        assert_eq!(s.screen_data()[4], Wavelength::Null as i32);
     }
 
     #[test]
@@ -631,14 +683,69 @@ mod tests {
     #[test]
     fn the_state_outside_the_slots_round_trips() {
         let s = Silex { fill: 1_234, current: Some("fluid:uf6".into()), progress: 42, recipe_index: 274, load_delay: 7, tank: Tank { fluid: "uf6".into(), mb: 555, cap: TANK }, ..Default::default() };
-        let mut back = Silex::default();
+        // Loaded over a chamber that was running: `writeToNBT` keeps neither the progress nor the load delay, they
+        // start again at 0.
+        let mut back = Silex { progress: 55, load_delay: 13, ..Default::default() };
         back.load_state(&s.save_state());
-        assert_eq!(back, s);
+        assert_eq!(back, Silex { progress: 0, load_delay: 0, ..s.clone() });
+        // So a stopped chamber whose delay turns has the same state each tick: nothing to commit.
+        let mut later = s.clone();
+        later.load_delay = 8;
+        later.progress = 0;
+        assert_eq!(later.save_state(), Silex { progress: 0, ..s.clone() }.save_state());
         let mut none = Silex::default();
         none.tank.mb = 10;
         let mut back = Silex::default();
         back.load_state(&none.save_state());
         assert_eq!(back, none);
+    }
+
+    /// P1-1 of the review: the fill is saved by its id. A list of the possible fills grows when the OreDict or the
+    /// catalog does, and a place in it would load another fill after the update; the id does not move.
+    #[test]
+    fn the_saved_fill_is_its_id_whatever_the_catalog_holds() {
+        let state = Silex { fill: 900, current: Some("ntm:ingot_uranium".into()), ..Default::default() }.save_state();
+        assert_eq!(state[1], STATE_V2);
+        assert_eq!(unpack(&state[5..]).as_deref(), Some("ntm:ingot_uranium"));
+        // An id no list of this build has (an item a later OreDict adds) comes back as itself: loading reads no list.
+        let future = "ntm:ingot_from_a_later_oredict";
+        assert!(!table().keys.iter().any(|k| k == future));
+        let s = Silex { fill: 300, current: Some(future.into()), ..Default::default() };
+        let mut back = Silex::default();
+        back.load_state(&s.save_state());
+        assert_eq!(back.current.as_deref(), Some(future));
+        // The bytes of the id, not a place: the same id saves the same ints whatever came before it in a list.
+        assert_eq!(pack("ntm:ingot_uranium"), state[5..].to_vec());
+        assert_eq!(unpack(&pack("é~ü")).as_deref(), Some("é~ü"));
+        assert_eq!(unpack(&[9, 0]), None, "cut short");
+        // A save of the first form still loads by its place.
+        let at = table().keys.iter().position(|k| k == "ntm:ingot_uranium").unwrap() as i32;
+        let mut old = Silex::default();
+        old.load_state(&[900, at, 42, 137, 7, fluid_id(PEROXIDE), 1_000]);
+        assert_eq!((old.fill, old.current.as_deref(), old.progress, old.recipe_index, old.load_delay), (900, Some("ntm:ingot_uranium"), 0, 137, 0));
+    }
+
+    /// `handleButtonPacket` from the void button: the fill and what it is of go.
+    #[test]
+    fn the_void_button_empties_the_fill() {
+        let mut s = Silex { fill: 900, current: Some("ntm:ingot_uranium".into()), progress: 30, tank: Tank { fluid: PEROXIDE.into(), mb: 500, cap: TANK }, ..Default::default() };
+        s.button(1);
+        assert_eq!(s.fill, 900, "another button");
+        s.button(0);
+        assert_eq!((s.fill, s.current.clone(), s.tank.mb), (0, None, 500));
+    }
+
+    /// `ContainerSILEX.transferStackInSlot`: an identifier to its slot, a full container to slot 2, anything else to the
+    /// input; the three are visited from the last (`quick_reverse`), so the input is the last resort.
+    #[test]
+    fn a_shift_click_sorts_identifiers_and_containers_from_the_input() {
+        let rules = crate::native::slot_filters(BLOCK);
+        assert!([INPUT, IDENTIFIER, CONTAINER_IN].iter().all(|&i| rules[i].quick_reverse));
+        assert_eq!(rules[IDENTIFIER].quick_move.as_deref(), Some(&["ntm:fluid_identifier_multi".to_string()][..]));
+        let containers = rules[CONTAINER_IN].quick_move.clone().unwrap();
+        assert!(containers.iter().any(|c| c == "ntm:fluid_tank_full__peroxide"));
+        assert!(!containers.iter().any(|c| c == "ntm:ingot_uranium" || c == "ntm:fluid_identifier_multi"));
+        assert!(rules[INPUT].quick_move.is_none() && rules[CONTAINER_OUT].output);
     }
 
     #[test]
