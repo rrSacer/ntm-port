@@ -201,7 +201,7 @@ mod tests {
         half[1] = None;
         host.worn = Some(half);
         assert!(s.digamma_dose(&mut host, &new, 1.0));
-        assert!(host.digamma.get("c").is_none());
+        assert!(!host.digamma.contains_key("c"));
         assert_eq!(host.digamma["n"], 1.0);
     }
 
@@ -230,7 +230,7 @@ mod tests {
         assert_eq!(host.digamma["p"], 0.05f32 + 0.05f32);
         s.digamma_tick(&mut host);
         assert_eq!(host.digamma["p"], 0.05f32 + 0.05f32 + 0.05f32 + 0.05f32);
-        assert!(host.digamma.get("a").is_none());
+        assert!(!host.digamma.contains_key("a"));
         assert!(host.synced.is_empty());
     }
 

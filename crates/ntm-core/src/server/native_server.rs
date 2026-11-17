@@ -521,6 +521,15 @@ impl Server {
     }
 }
 
+/// `MainRegistry.polaroidID` of this launch: `NTM_POLAROID` stands for the config's `generalOverride`, the draw is a
+/// `new Random()`'s.
+fn launch_polaroid() -> i32 {
+    let general_override = std::env::var("NTM_POLAROID").ok().and_then(|v| v.parse().ok());
+    let seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_nanos() as i64);
+    let mut rand = crate::rbmk::jrandom::JavaRandom::new(seed);
+    crate::digamma::polaroid(general_override, |n| rand.next_int(n))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1071,13 +1080,3 @@ mod tests {
         assert!(!again.native_has(OW, AT));
     }
 }
-
-/// `MainRegistry.polaroidID` of this launch: `NTM_POLAROID` stands for the config's `generalOverride`, the draw is a
-/// `new Random()`'s.
-fn launch_polaroid() -> i32 {
-    let general_override = std::env::var("NTM_POLAROID").ok().and_then(|v| v.parse().ok());
-    let seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_nanos() as i64);
-    let mut rand = crate::rbmk::jrandom::JavaRandom::new(seed);
-    crate::digamma::polaroid(general_override, |n| rand.next_int(n))
-}
-
