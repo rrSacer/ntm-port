@@ -1,0 +1,190 @@
+{
+  "binary_sha256": "0ab20b4586614bcffe0a80bc21cf1b6425b50ac11acd74bc0a509e6fa46b29d5",
+  "bundle_sha256": "eebe930a4a39dacf367092946374fbeb2f536d9df732bda37bdc6216051bc23f",
+  "checks": {
+    "setup:core_where_planned": {
+      "ok": true,
+      "actual": [
+        40,
+        101,
+        8
+      ]
+    },
+    "setup:one_log_in": {
+      "ok": true,
+      "actual": [
+        [
+          [
+            "minecraft:oak_log",
+            1
+          ],
+          null,
+          null
+        ],
+        [
+          [
+            0,
+            "minecraft:oak_log",
+            2,
+            "{count: 2, Slot: 0b, id: \"minecraft:oak_log\"}"
+          ]
+        ]
+      ]
+    },
+    "setup:two_left_above": {
+      "ok": true,
+      "actual": [
+        [
+          0,
+          "minecraft:oak_log",
+          2,
+          "{count: 2, Slot: 0b, id: \"minecraft:oak_log\"}"
+        ]
+      ]
+    },
+    "setup:sawn": {
+      "ok": true,
+      "actual": [
+        null,
+        [
+          "minecraft:oak_planks",
+          6
+        ],
+        [
+          "ntm:powder_sawdust",
+          1
+        ]
+      ]
+    },
+    "setup:none_in_while_outputs": {
+      "ok": true,
+      "actual": {
+        "slots": [
+          null,
+          [
+            "minecraft:oak_planks",
+            6
+          ],
+          [
+            "ntm:powder_sawdust",
+            1
+          ]
+        ],
+        "above": 2
+      }
+    },
+    "setup:outputs_taken": {
+      "ok": true,
+      "actual": [
+        [
+          [
+            0,
+            "minecraft:oak_planks",
+            6,
+            "{count: 6, Slot: 0b, id: \"minecraft:oak_planks\"}"
+          ],
+          [
+            1,
+            "ntm:powder_sawdust",
+            1,
+            "{count: 1, Slot: 1b, id: \"ntm:powder_sawdust\"}"
+          ]
+        ],
+        [],
+        [
+          [
+            "minecraft:oak_log",
+            1
+          ],
+          null,
+          null
+        ]
+      ]
+    },
+    "setup:next_log_in": {
+      "ok": true,
+      "actual": [
+        [
+          "minecraft:oak_log",
+          1
+        ],
+        null,
+        null
+      ]
+    },
+    "setup:the_input_stays": {
+      "ok": true,
+      "actual": {
+        "slots": [
+          [
+            "minecraft:oak_log",
+            1
+          ],
+          null,
+          null
+        ],
+        "above": 1,
+        "chest_logs": 0
+      }
+    },
+    "setup:named_log_in_whole": {
+      "ok": true,
+      "actual": [
+        [
+          0,
+          "minecraft:oak_log",
+          1,
+          "{components: {\"minecraft:custom_name\": '\"Tora\"'}, count: 1, Slot: 0b, id: \"minecraft:oak_log\"}"
+        ]
+      ]
+    }
+  },
+  "evidence": {
+    "core": [
+      40,
+      101,
+      8
+    ],
+    "sawn": [
+      null,
+      [
+        "minecraft:oak_planks",
+        6
+      ],
+      [
+        "ntm:powder_sawdust",
+        1
+      ]
+    ],
+    "while_outputs": {
+      "slots": [
+        null,
+        [
+          "minecraft:oak_planks",
+          6
+        ],
+        [
+          "ntm:powder_sawdust",
+          1
+        ]
+      ],
+      "above": 2
+    },
+    "after_outputs": {
+      "slots": [
+        [
+          "minecraft:oak_log",
+          1
+        ],
+        null,
+        null
+      ],
+      "above": 1,
+      "chest_logs": 0
+    },
+    "named": [
+      "{components: {\"minecraft:custom_name\": '\"Tora\"'}, count: 1, Slot: 0b, id: \"minecraft:oak_log\"}"
+    ]
+  },
+  "ok": true
+}

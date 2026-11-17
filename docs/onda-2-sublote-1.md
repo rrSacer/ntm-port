@@ -368,6 +368,17 @@ ao Java, e o que fica como lacuna nominal:
 
 **A serra só sai de `Inert` com o D3 pronto; o D2 é mudança de motor, em branch separada (pin definido pelo Opus e pelo agente do Horizon), então a serra espera o D2.** Esta branch não a contém: `machine_sawmill` continua Inert aqui.
 
+**Atualização de 17/11 (branch `onda2-efeitos`):** a serra saiu de `Inert` pelos passos 1 a 4 da D3. O item sem lâmina
+é `minecraft:custom_data {"ntm:no_blade":1b}` e não tem variante por metadado. Depois veio a correção da revisão
+independente (P1-1, P2-1 e as P3) e, por fim, o passo 3c: os 3 slots são do bloco, abertos aos funis pelas 6 faces,
+com `isItemValidForSlot` e `canExtractItem` do Java. Ficam como lacuna nominal:
+
+- o dano das entidades (a API de entidades);
+- as portas extras de `getAllPorts`/`makeExtra`, que dependem do multibloco 3×3×2 fiel (a serra do port é um bloco
+  único).
+
+Resultados e provas: artifact `onda2-efeitos-mundo`, seção 8, e `docs/evidence/onda2-efeitos-fatia5/`.
+
 Confirmado no `roadmap-100`: a poluição/fuligem está registrada como sistema
 inexistente (linha "Poluição", 4 tipos Java: SOOT, POISON, HEAVYMETAL, FALLOUT) e
 a Onda 1 traz "ashpit/fuligem básica", a Onda 3 "resíduos/gases/poluição"; as
@@ -384,5 +395,5 @@ lacunas de fuligem e de cinzeiro deste sublote ficam nominais para elas.
 | 6 | `furnace_combination` | pronto para re-revisão |
 | 12, 11 | `machine_arc_welder`, `machine_soldering_station` | pronto para re-revisão (P1 e P2 do 1b corrigidos) |
 | `ntm:broken_item` | item e NBT do produto | pronto para revisão (a máquina que o produz segue Inert) |
-| 7 | serra | proposta; espera D1, D2 e D3 (branch `onda2-sawmill-wip`) |
+| 7 | serra | ativa na branch `onda2-efeitos` (D3 passos 1 a 4, revisão corrigida, funil 3c); lacunas: dano das entidades, portas do multibloco |
 | 8, 9, 10, 13 | rotativo, lingotamento contínuo, montadora de precisão, fábrica química | Inert; esperam a infraestrutura do `onda2-efeitos-mundo` |

@@ -55,6 +55,74 @@ limpo, 8 mutantes mortos (4 novos e 4 da fatia 3), e o corte estrito de 7 pontos
 nas reaberturas ([stirling-overspeed-matrix.json](stirling-overspeed-matrix.json)). O dano ao jogador não foi
 demonstrado: o centro da explosão fica dentro das células da própria máquina.
 
+## Serraria: D3 e passos 1 a 4
+
+Cada passo está descrito no artifact da onda 2 (seção 8). Estes arquivos são as suas provas; o binário de cada uma
+está no próprio JSON (`binary_sha256`).
+
+- [d3-step1-attempt1.json](d3-step1-attempt1.json): primeira sonda do passo 1, reprovada em `variant_drops_one`. A
+  verificação achou dois itens no chão em vez de um: a variante sem lâmina e um item comum. O roteiro foi corrigido.
+  Fica como histórico.
+- [d3-step1-probe.json](d3-step1-probe.json): passo 1. O item com `{"ntm:no_blade":1b}` é lido na colocação e volta
+  na quebra.
+- [d3-step2-probe.json](d3-step2-probe.json): passo 2. A serraria sem lâmina guarda `has_blade=false` no modelo e
+  continua sem lâmina depois de reabrir o mundo.
+- [sawmill-game.json](sawmill-game.json): passo 3, uma sessão de jogador:
+  - serrar um tronco em 6 tábuas;
+  - a sobrevelocidade: 1 explosão e depois 1 lâmina, cada uma uma vez no rastreio;
+  - o reparo à mão.
+- `sawcut-trial-*.json`: os ensaios de corte `none` de cada cenário do passo 4.
+  - `sawcut-trial-hand-attempt1.json`: o controle sem a lâmina instalada, corrigido depois.
+- `sawcut-*-matrix.json`: as matrizes do passo 4 (`overspeed` 7/7, `border` 9/9, `break` 7/7, `hand` 8/8), contra
+  barris vanilla.
+- [sawcut-hopper-attempt/](sawcut-hopper-attempt/): o funil que alimentava a fornalha sugava a lâmina solta. Desde
+  então ele sai antes da falha.
+- [sawcut-x47-attempt/](sawcut-x47-attempt/): com o núcleo em x=47, a lâmina caía às vezes no chunk vizinho
+  (`same_cut=false` com as mesmas contagens).
+
+### Revisão independente: provas refeitas ([review/](review/))
+
+Correção nos commits `0726064a` (núcleo e cola) e `17949c87` (ferramentas de prova). Cliente SHA-256 `0748e4ab…`,
+pacote `eebe930a…`. Validação: 762 testes da biblioteca e Clippy limpo; 16 mutantes mortos (6 do grupo `review`, 3
+`d3`, 3 `hand` e 4 `saw`).
+
+- `d3-probe.json` passa; `sawmill-game.json` passa nas 9 verificações.
+- `sawcut-break-matrix.json`: 7/7. O `disk_count.py` não conta mais a lâmina instalada de uma serraria em remoção
+  pendente, porque o item da quebra já a carrega.
+- `sawcut-overspeed-matrix.json`: 7/7.
+- `sawcut-hand-matrix.json`: 8/8. Os resíduos vanilla são os mesmos de antes (−5 em `kv_committed`; 5 em
+  `chunks_written` e `entities_written`), iguais aos do controle.
+- `sawcut-border-matrix.json`: 8/9.
+  - O `entities_written` deu `same_cut=false` com as mesmas contagens (1 e 1, sem perda nem cópia).
+  - A lâmina do port saiu com o movimento aleatório de item solto e caiu no chunk (3,1), a leste da borda x=48. A do
+    controle caiu no (2,0).
+  - O núcleo do `border` passou para x=40, como o `overspeed`, e a matriz foi refeita com o passo 3c.
+
+### Passo 3c: funis ([3c/](3c/))
+
+Commits `783711b1` (núcleo e cola), `fdac1acc` (roteiros) e `47758d28` (contagem item a item). Cliente SHA-256
+`0ab20b45…`, pacote `eebe930a…`. Validação: 765 testes da biblioteca e Clippy limpo; 25 mutantes mortos (9 novos do
+grupo `hopper`, mais os grupos `review`, `hand`, `saw` e `d3` refeitos).
+
+- `hopper-game.json`: 9/9 verificações.
+  - Do funil de cima entra um tronco por vez, e o funil fica com 2.
+  - O tronco é serrado em 6 tábuas e 1 de serragem.
+  - Nada entra enquanto as saídas estão lá.
+  - Um funil embaixo leva as saídas a um baú. Então o tronco seguinte entra e fica: a entrada não sai pelo funil.
+  - Um tronco com nome, posto à mão, entra inteiro (`custom_name "Tora"` no slot, o `SlotCopy`).
+- `sawmill-game.json`: 9/9, com os slots no BE (serrar, sobrevelocidade, reparo).
+- `sawcut-hopper-matrix.json`: 7/7, com 8 átomos de madeira no disco, na 1ª e na 2ª reabertura, nos dois mundos.
+  - A primeira tentativa, `sawcut-hopper-attempt1.json`, foi reprovada por um erro de roteiro. O total em jogo
+    somava a lâmina instalada, que não é átomo deste cenário. A madeira já estava exata nos 7 cortes.
+- `sawcut-hand-matrix.json`: 8/8, com os resíduos vanilla iguais aos do controle.
+  - A primeira tentativa, `sawcut-hand-attempt1.json`, contou 10 de 11 no disco. O `disk_count.py` tomava o máximo
+    entre o total dos slots e o total do modelo. Desde o 3c, o tronco fica no slot e a lâmina no modelo, então esse
+    máximo perdia um dos dois. Agora conta item a item.
+- `sawcut-border-matrix.json`: 9/9, com o núcleo em x=40 e `same_cut=true` em todos os pontos.
+
+Desde esta revisão, o `same_cut` de `none` e dos kills (`kill`, `kv_committed`) traz `same_cut_by_definition=true`:
+esses pontos não cortam um save, então ali o `same_cut` não prova que os dois mundos pararam no mesmo limite.
+
 ## Escopo mantido
 
 - `entities_written` de `coupled-break` segue **não aprovado** para `same_cut`. A diferença física de canal é real: a
