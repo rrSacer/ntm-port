@@ -635,21 +635,25 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 
 **Portado**
 - **O multibloco do mesmo volume, 20 × 7 × 7.** O motor só aceita 16 de largura numa caixa (`mod_multiblocks::parse`). O volume foi dividido numa caixa principal x −9..6 e numa caixa `extra` x 7..10. Com a caixa única, o motor só avisava no log e colocava uma célula. O teste `tools/content-gen/test_multiblock_limits.py` confere agora todos os multiblocos contra esses limites.
-- **Resistência 100,** pelo `k3_overrides.json` (a varredura K3 não lê `setResistance`).
+- **Resistência 100 no núcleo,** pelo `k3_overrides.json` (a varredura K3 não lê `setResistance`).
 - **O modelo `lpw2.obj` parado,** girado 90 como o extrator lê.
 
 **Lacunas**
 - As animações do renderer não foram portadas.
 - A parte `Screen` fica escondida: ela usa uma segunda textura, que rola, e o modelo do port tem uma textura só.
 - O alinhamento do modelo com a estrutura não foi conferido por captura.
+- **A resistência 100 vale só para o núcleo** (revisão, P2-3).
+  - As outras células do multibloco são `ntm:dummy_machine`, a parte genérica que o motor põe em todos os multiblocos do port, com resistência 10.
+  - No Java, as partes são o próprio `machine_lpw2` (`BlockDummyable`, por metadado) e resistem 100. Uma explosão abre o LPW2 do port com mais facilidade.
+  - Tratar pede uma parte por máquina (ou uma resistência por multibloco) no `horizon_machine`, o que vale para todas as máquinas e fica como lacuna transversal.
 
-**Provas** (cliente `09c2b0d72ddb6e7ca68430626efb2314759d30423bed1aaf610e4df436605210`, pacote `4d045c118e951e17a7ea534be31b7051f9ab872ad58ce9582aa5ab4529389be4`)
-- `ntm-core`: 862 testes passando; gerador de conteúdo com `test_multiblock_limits`.
-- Em jogo (`run-native-reactors.py lpw2`): 6/6.
-  - Os 8 cantos e 3 células internas são partes, e o núcleo fica a 3 do ponto clicado.
-  - O clique numa parte não abre nada.
-  - Reabre inteiro.
-  - Quebrar um canto com a picareta leva o multibloco todo e solta um `ntm:machine_lpw2`.
+**Provas** (cliente `45ec5cab80666c846a7bd73fe987b33dbd47aca2cfca90a33d9dcf22b3d9c3ec`, pacote `30ab245ae73c4f40f4e517bc2d827ab6296747a29c9c3765e7ad31a045aa9599`, a árvore da correção do lote 1; evidência em `content-gen-evidence/onda2-s2/lpw2`)
+- `ntm-core`: 873 testes passando; gerador de conteúdo com `test_multiblock_limits`.
+- Em jogo (`run-native-reactors.py lpw2`): 6/6, refeita depois da revisão (a rodada anterior não chegava a clicar).
+  - **O multibloco inteiro:** o núcleo, a 3 do ponto clicado, e 29 células são partes: os 8 cantos, 3 internas e os dois lados da emenda entre as caixas do motor (x = 6 e 7, nas alturas 0, 3 e 6, nas duas faces e no meio).
+  - **O clique numa parte não abre nada:** o jogador fica a 2,5 blocos da face externa (dentro do alcance de 5 do criativo) e clica a parte (65, 100, 14). O `interact` responde sem erro, e a verificação falharia se ele errasse; a tela continua `playing`.
+  - **Reabre inteiro.**
+  - **Quebrar um canto com a picareta leva o multibloco todo.** No chão fica **exatamente** 1 `ntm:machine_lpw2`, somando as pilhas e não contando entidades (`Game.dropped`).
 
 ### `machine_rockmill` (grupo 2b)
 

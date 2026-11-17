@@ -4,7 +4,8 @@
 setup          placed, it fills its frame (MachineLPW2 {6,0,3,3,9,10}, offset 3: x -9..10, y 0..6, z -3..3 in the placer's
                frame): its corners and middle are its parts; a click on a part opens nothing (no onBlockActivated);
 capture-state  the world is saved;
-check-state    after reopening, the frame is whole; a player breaking a far corner takes the whole of it and drops one LPW2.
+check-state    after reopening, the frame is whole; a player breaking a far corner takes the whole of it and drops exactly
+               one LPW2 (the stacks on the ground summed).
 """
 import re
 import sys
@@ -32,7 +33,9 @@ def find_core(g):
 
 def corners(core, facing):
     cells = [(x, y, z) for x in (MIN[0], MAX[0]) for y in (MIN[1], MAX[1]) for z in (MIN[2], MAX[2])]
+    # Inside, and both sides of the seam between the engine's two boxes (x -9..6 and 7..10) at every height.
     cells += [(0, 3, 0), (5, 0, 0), (-5, 6, 2)]
+    cells += [(x, y, z) for x in (6, 7) for y in (MIN[1], 3, MAX[1]) for z in (MIN[2], 0, MAX[2])]
     return [world_cell(core, facing, c) for c in cells]
 
 
@@ -61,16 +64,17 @@ def setup(g):
     facing = found[1] if found else facing_of(g, core)
     g.evidence.update(core=list(core), facing=facing)
     g.check('it_fills_its_frame', whole(g, core, facing), [core, facing])
-    part = world_cell(core, facing, (5, 0, 0))
-    g.command(f'tp @s {part[0] + .5} {Y} {part[2] + 6.5}')
+    # A part on the frame's outer face, clicked from 2.5 blocks (within the 5 of a creative reach): the click must
+    # reach it, and the screen must stay the game's.
+    part = world_cell(core, facing, (5, 0, MAX[2]))
+    out = world_cell(core, facing, (5, 0, MAX[2] + 2))
+    g.command(f'tp @s {out[0] + .5} {Y} {out[2] + .5} facing {part[0] + .5} {Y + .5} {part[2] + .5}')
     time.sleep(1)
-    try:
-        g.ctl(f'interact {part[0]} {part[1]} {part[2]} south')
-    except RuntimeError as e:
-        g.evidence['interact'] = str(e)
+    face = {(1, 0): 'east', (-1, 0): 'west', (0, 1): 'south', (0, -1): 'north'}[((out[0] > part[0]) - (out[0] < part[0]), (out[2] > part[2]) - (out[2] < part[2]))]
+    g.evidence['interact'] = g.ctl(f'interact {part[0]} {part[1]} {part[2]} {face}')
     time.sleep(1.5)
     screen = g.ctl('screen').get('screen')
-    g.check('a_click_opens_nothing', screen != 'container', screen)
+    g.check('a_click_opens_nothing', screen == 'playing', [screen, part, out])
     g.close()
 
 
@@ -97,10 +101,9 @@ def check(g):
     g.evidence['break'] = g.ctl(f'break {corner[0]} {corner[1]} {corner[2]} --timeout 90')
     time.sleep(3)
     left = [c for c in corners(core, facing) + [core] if not is_(g, c, 'minecraft:air')]
-    text = ' '.join(g.command('execute if entity @e[type=minecraft:item,nbt={Item:{id:"ntm:machine_lpw2"}}]').get('chat', []))
-    count = re.search(r'count: (\d+)', text)
+    drops = g.dropped('ntm:machine_lpw2')
     g.check('breaking_a_corner_takes_the_whole_of_it', not left, left)
-    g.check('and_drops_one_lpw2', 'passed' in text.lower() and (count is None or count[1] == '1'), text)
+    g.check('and_drops_exactly_one_lpw2', drops == 1, drops)
     g.command('gamemode creative @s')
 
 
