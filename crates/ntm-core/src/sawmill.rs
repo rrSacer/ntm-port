@@ -9,8 +9,11 @@
 //!
 //! Its three slots are its block entity's (`Layout::Native`), open to hoppers through every face as the Java's
 //! `getAccessibleSlotsFromSide` (`{0, 1, 2}` on all sides): [`allows`] is `isItemValidForSlot` and `canExtractItem`.
-//! The Java's extra ports (`MachineSawmill.getAllPorts` / `makeExtra`, the four cells beside the core of its 3x3x2)
-//! need the multiblock, which the port's one-block sawmill does not have yet: a nominal gap.
+//! The Java's extra ports (`MachineSawmill.getAllPorts` / `makeExtra`, the four cells beside the core of its 3x3x2,
+//! at its height) need the multiblock, which the port's one-block sawmill does not have yet: a nominal gap. In the Java
+//! a hopper reaches the slots through those four ports and from below the core; the top layer's cells have no
+//! inventory. The one block is open on its top face too, where a hopper above feeds it (the in-game proof's): a
+//! divergence of the gap, gone with the multiblock.
 use crate::machine::Logic;
 use crate::native::SlotAction;
 use crate::server::container_bridge::{Slots, Slotted, Stack};

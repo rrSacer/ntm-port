@@ -375,7 +375,9 @@ com `isItemValidForSlot` e `canExtractItem` do Java. Ficam como lacuna nominal:
 
 - o dano das entidades (a API de entidades);
 - as portas extras de `getAllPorts`/`makeExtra`, que dependem do multibloco 3×3×2 fiel (a serra do port é um bloco
-  único).
+  único). No Java, um funil alcança os slots pelas 4 portas laterais, na altura do núcleo, e por baixo do núcleo. As
+  células da camada de cima não têm inventário. O bloco único do port abre também pela face de cima, e é por ela que a
+  prova em jogo alimenta a serra. Essa divergência acaba com o multibloco.
 
 Resultados e provas: artifact `onda2-efeitos-mundo`, seção 8, e `docs/evidence/onda2-efeitos-fatia5/`.
 
