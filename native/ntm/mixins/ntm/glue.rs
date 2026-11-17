@@ -168,6 +168,7 @@ pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: 
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
     if old != new {
         field_block_added(dim, pos, &new);
+        matter_added(dim, pos, &new, level.world.game_time as i64);
     }
     // A Geiger counter block taken away: a new one starts from 0 (a new TileEntityGeiger).
     if old == GEIGER && new != GEIGER {
@@ -497,7 +498,8 @@ fn field_block_added(dim: &str, pos: [i32; 3], new: &str) {
 /// The first ticks queued since: scheduled in the level in place (another level's are its own game's).
 fn schedule_field_ticks(game: &mut crate::game::Game<'_>) {
     let queued = std::mem::take(&mut *lock(&FIELD_SCHEDULE));
-    if queued.is_empty() {
+    let matter = std::mem::take(&mut *lock(&MATTER_SCHEDULE));
+    if queued.is_empty() && matter.is_empty() {
         return;
     }
     let dim = game.dim.id().to_string();
@@ -505,7 +507,54 @@ fn schedule_field_ticks(game: &mut crate::game::Game<'_>) {
         for (_, pos, block) in queued.iter().filter(|q| q.0 == dim) {
             level.native_schedule_block_tick(ticks, *pos, block, ntm_core::field_sources::TICK_RATE);
         }
+        for (_, pos, block, delay) in matter.iter().filter(|q| q.0 == dim) {
+            level.native_schedule_block_tick(ticks, *pos, block, *delay as i32);
+        }
     });
+}
+
+/// `DigammaMatter.onBlockAdded`'s first ticks, (dimension, position, block, delay), as FIELD_SCHEDULE's.
+static MATTER_SCHEDULE: Mutex<Vec<(String, [i32; 3], String, u32)>> = Mutex::new(Vec::new());
+
+/// A digamma matter block added: its tick 10 to 49 ticks on (`10 + rand.nextInt(40)`, a static `Random`; the mods
+/// have none: a hash of the cell and the game time).
+fn matter_added(dim: &str, pos: [i32; 3], new: &str, time: i64) {
+    let id = ntm_core::blockstate::id_of(new);
+    if ntm_core::digamma::matter_meta(id).is_none() {
+        return;
+    }
+    let seed = ntm_core::hash::fnv64(&[pos[0].to_le_bytes(), pos[1].to_le_bytes(), pos[2].to_le_bytes(), (time as i32).to_le_bytes()].concat());
+    let delay = ntm_core::digamma::matter_delay(|n| (ntm_core::hash::mix(seed) % n as u64) as i32);
+    lock(&MATTER_SCHEDULE).push((dim.to_string(), pos, id.to_string(), delay));
+}
+
+/// `DigammaMatter.updateTick`: the block goes, and below metadata 7 each cell within two steps that holds no matter
+/// takes the next (`digamma::matter_spread`), with `setBlock`'s flag 3. A cell whose chunk is not loaded is left.
+fn matter_tick(level: &mut crate::game::GameLevel<'_>, ticks: &mut horizon_world::level::Ticks, pos: horizon_core::position::BlockPos, meta: u8) {
+    let Some(air) = level.registry.default_state("minecraft:air") else { return };
+    let behaviours = level.behaviours;
+    behaviours.set_block(level, ticks, pos, air, 3);
+    let cells = ntm_core::digamma::matter_spread(meta, |o| {
+        let state = level.world.block(pos.x + o[0], pos.y + o[1], pos.z + o[2]);
+        ntm_core::digamma::matter_meta(&level.facts.get(state).name).is_some()
+    });
+    for (o, next) in cells {
+        let at = horizon_core::position::BlockPos::new(pos.x + o[0], pos.y + o[1], pos.z + o[2]);
+        if !level.world.loaded(at.x, at.z) {
+            continue;
+        }
+        if let Some(state) = level.registry.default_state(&ntm_core::digamma::matter_id(next)) {
+            behaviours.set_block(level, ticks, at, state, 3);
+        }
+    }
+}
+
+/// `DigammaFlame.canPlaceBlockAt` (`World.doesBlockHaveSolidTopSurface(x, y - 1, z)`): a ground whose top is solid,
+/// read as an opaque full cube (`isSideSolid`'s rule for a plain block).
+pub(super) fn flame_ground(level: &crate::game::GameLevel<'_>, state: horizon_world::registry::BlockStateId, ground: horizon_world::registry::BlockStateId, may: &mut Option<bool>) {
+    if &*level.facts.get(state).name == ntm_core::digamma::FLAME_BLOCK {
+        *may = Some(level.facts.get(ground).solid_render);
+    }
 }
 
 /// `incrementRad` at a block, into the server's field (its chunk loaded).
@@ -543,6 +592,10 @@ pub(super) fn field_scheduled_tick(level: &mut crate::game::GameLevel<'_>, ticks
         return;
     }
     let name = level.facts.get(state).name.to_string();
+    if let Some(meta) = ntm_core::digamma::matter_meta(&name) {
+        matter_tick(level, ticks, pos, meta);
+        return;
+    }
     field_tick(level, ticks, level_dim_id(dimension), [pos.x, pos.y, pos.z], &name, false);
 }
 
@@ -1632,6 +1685,17 @@ impl ServerHost for Host<'_, '_> {
     fn commit_player_dose(&mut self,id:&str,expected:&ntm_core::radiation::Dose,desired:&ntm_core::radiation::Dose)->bool{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::write_dose(g,expected,desired)).unwrap_or(false)
     }
+    fn player_digamma(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<f32>{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::read_digamma(g,legacy)).flatten()
+    }
+    fn commit_player_digamma(&mut self,id:&str,legacy:&ntm_core::radiation::Dose,expected:f32,desired:f32)->bool{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::write_digamma(g,legacy,expected,desired)).unwrap_or(false)
+    }
+    fn sync_digamma(&mut self,id:&str,legacy:&ntm_core::radiation::Dose){
+        let _=self.game.native_visit_player(id,|g|crate::game::ntm_items::sync_digamma(g,legacy));
+    }
+    fn max_health(&mut self,id:&str)->Option<f64>{self.game.native_visit_player(id,|g|crate::game::ntm_items::max_health(g)).flatten()}
+    fn worn_armor(&mut self,id:&str)->Option<[Option<String>;4]>{self.game.native_visit_player(id,|g|crate::game::ntm_items::worn_armor(g))}
     fn radiation_factor(&mut self,id:&str)->f64{self.game.native_visit_player(id,|g|crate::game::ntm_items::radiation_factor(g)).unwrap_or(1.0)}
     fn player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<ntm_core::zirnox::StoredPotion>{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::read_irradiation(g,legacy)).flatten()
