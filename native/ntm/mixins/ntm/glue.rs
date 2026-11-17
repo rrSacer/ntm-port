@@ -210,6 +210,8 @@ pub(super) fn menu_button(game:&crate::game::Game<'_>,pos:[i32;3],id:i32,entity:
 /// Input callbacks may precede ServerTickEnd. Consume their external facts
 /// before capturing a machine generation or retrying any old world effect.
 fn reconcile(server:&mut Server,host:&mut Host<'_, '_>){
+    // The sawmills' words before the changes they came with, as `feed_changes` and the tick give them.
+    sawmills_placed(server);
     for (dim,pos,old,new) in std::mem::take(&mut *lock(&CHANGES)){
         let now=ntm_core::server::native_server::native_change_state(&new,host.game.native_loaded_block(&dim,pos));
         server.native_block_changed(&dim,pos,&old,&now);
@@ -1651,12 +1653,22 @@ impl ServerHost for Host<'_, '_> {
         use ntm_core::server::{HeldStack,PlayerSlot,PlayerSlots};
         if self.game.native_actor_uuid().as_deref()!=Some(player){return None;}
         let s=crate::game::ntm_items::transfer_snapshot(self.game)?;
-        let held=|i:&Option<ItemStack>|stack(i).zip(i.as_ref()).map(|(stack,i)|HeldStack{stack,encoded:item_snbt(i)});
+        let held=|i:&Option<ItemStack>|stack(i).zip(i.as_ref()).map(|(stack,i)|{
+            // Its components are those of the port's stack alone: a stack given to the player may pile onto it.
+            let plain=item(Some(&stack),None).is_some_and(|p|item_snbt(&p)==item_snbt(i));
+            HeldStack{stack,encoded:item_snbt(i),plain}
+        });
         let hand=match self.game.hand{crate::game::Hand::Main=>PlayerSlot::Inventory(self.game.selected),crate::game::Hand::Off=>PlayerSlot::Offhand};
         Some(PlayerSlots{hand:Some(hand),inventory:s.inventory.iter().map(held).collect(),offhand:held(&s.offhand),carried:held(&s.carried),creative:self.game.creative})
     }
     /// A transfer between the acting player and machines: the player's edited stacks compared by their whole SNBT and
     /// the machines' slots and generations, then both published in one exclusive step (`publish_atomic_with`).
+    /// The copy `loot_drops` reads while the server is busy, kept with the model at once (a blade lost or put back in
+    /// a tick whose own blast then breaks the sawmill).
+    fn sawmill_blade(&mut self,dim:&str,pos:[i32;3],without:bool){
+        let mut copy=lock(&SAWMILLS_WITHOUT_BLADE);
+        if without{copy.insert((dim.to_string(),pos));}else{copy.remove(&(dim.to_string(),pos));}
+    }
     fn commit_player_transfer(&mut self,t:&ntm_core::server::PlayerTransfer,commits:&[ntm_core::server::MachineCommit])->bool{
         use crate::game::native_player_transactions::{NativeDrop,NativeDropMode};
         use ntm_core::server::{PlayerSlot,TransferDrop};

@@ -222,7 +222,12 @@ impl Server {
     /// Record confirmed changes without simulating a machine. The native save
     /// callback also uses this when a player quits between two server ticks.
     pub fn native_record_events(&mut self,host:&mut impl ServerHost){
+        self.ready.sawmills_placed_now.clear();
         for (e,generation) in std::mem::take(&mut self.queued){self.native_event(host,e,generation);}
+        // A sawmill's word is given with the block changes it comes before: its `Placed` event took it, or waits in
+        // the queue (behind a removal at its cell). Any other is spent (the placement was undone in the same tick).
+        let waiting:BTreeSet<(Key,u64)>=self.queued.iter().filter_map(|(e,g)|match e{BlockEvent::Placed(d,p,_)=>Some(((d.clone(),*p),*g)),_=>None}).collect();
+        self.ready.sawmills_without_blade.retain(|k,g|g.is_some_and(|g|waiting.contains(&(k.clone(),g))));
         self.observe_removals(host);
         self.cancel_obsolete_inputs(host);
         self.checkpoint_facts(host);
@@ -260,8 +265,10 @@ impl Server {
         if !tracked(old)&&!tracked(new)&&!self.ready.world.generations.contains_key(&key){return;}
         let old_generation=self.ready.world.generations.get(&key).copied().unwrap_or(0);
         let generation=old_generation.saturating_add(1);
-        self.ready.world.generations.insert(key,generation);
+        self.ready.world.generations.insert(key.clone(),generation);
         self.ready.facts_dirty=true;
+        // A sawmill's word is for the change that follows it at its cell.
+        if blockstate::id_of(new)==crate::sawmill::BLOCK&&let Some(word)=self.ready.sawmills_without_blade.get_mut(&key)&&word.is_none(){*word=Some(generation);}
         if tracked(old) {
             self.queued.push((BlockEvent::Broken(dim.into(), pos, old.into()),old_generation));
         }

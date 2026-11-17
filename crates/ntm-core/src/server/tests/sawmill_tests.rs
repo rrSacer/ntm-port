@@ -46,13 +46,13 @@ fn a_plain_sawmill_keeps_its_blade_and_drops_its_plain_item() {
 fn the_item_without_blade_belongs_to_its_own_placement_only() {
     let mut g = game();
     let (here, there) = ([0, 70, 0], [8, 70, 0]);
+    // A word comes just before its own block change (the host gives both together): another sawmill placed elsewhere
+    // in the same delivery keeps its blade.
     g.server.native_sawmill_placed(OW, here, true);
-    // Another sawmill placed elsewhere keeps its blade.
     g.place(there, SAWMILL);
-    g.run(2);
-    assert!(sawmill(&mut g, there).has_blade);
     g.place(here, SAWMILL);
     g.run(2);
+    assert!(sawmill(&mut g, there).has_blade);
     assert!(!sawmill(&mut g, here).has_blade);
     // Taken by that placement: broken and placed again from a plain item, it has its blade.
     g.break_block(here);
@@ -68,6 +68,63 @@ fn the_item_without_blade_belongs_to_its_own_placement_only() {
     g.place(here, SAWMILL);
     g.run(2);
     assert!(sawmill(&mut g, here).has_blade);
+}
+
+/// A host that took the block changes before the word of the item that made one (the review's P1-1): the word still
+/// reaches the machine its event created, and is kept.
+#[test]
+fn a_word_given_after_its_placed_event_still_takes_the_blade() {
+    let mut g = game();
+    let p = [0, 70, 0];
+    g.place(p, SAWMILL);
+    g.server.native_record_events(&mut g.sh);
+    assert!(sawmill(&mut g, p).has_blade, "its event taken first, with the blade");
+    g.server.native_sawmill_placed(OW, p, true);
+    assert!(!sawmill(&mut g, p).has_blade);
+    assert_eq!(g.server.native_sawmills_without_blade(), [(OW.to_string(), p)], "the model, no word left over");
+    g.run(2);
+    assert!(!sawmill(&mut g, p).has_blade);
+    let mut reopened = Game::new(Rc::new(RefCell::new(g.world.borrow().clone())));
+    reopened.run(2);
+    assert!(!sawmill(&mut reopened, p).has_blade, "kept in its record");
+    // A word after its events of an earlier delivery is for no machine of now: a plain sawmill keeps its blade.
+    let q = [8, 70, 0];
+    g.place(q, SAWMILL);
+    g.run(1);
+    g.server.native_sawmill_placed(OW, q, true);
+    g.run(2);
+    assert!(sawmill(&mut g, q).has_blade);
+}
+
+/// One word, one placement: in one delivery, a sawmill placed from its item without blade, broken, and another put at
+/// the same cell without a word (a command); the second has its blade.
+#[test]
+fn a_word_is_taken_by_one_placement_only() {
+    let mut g = game();
+    let p = [0, 70, 0];
+    g.server.native_sawmill_placed(OW, p, true);
+    g.place(p, SAWMILL);
+    g.place(p, "minecraft:air");
+    g.place(p, SAWMILL);
+    // The second `Placed` may wait behind the first one's removal: a few ticks.
+    g.run(6);
+    assert!(sawmill(&mut g, p).has_blade);
+    assert!(!g.server.native_sawmill_without_blade(OW, p));
+}
+
+/// A word whose placement never makes its `Placed` event (undone before the server took the changes) is spent with
+/// the events it came with: a sawmill put there later by other means has its blade.
+#[test]
+fn a_word_whose_placement_was_undone_is_spent() {
+    let mut g = game();
+    let p = [0, 70, 0];
+    g.server.native_sawmill_placed(OW, p, true);
+    g.run(1);
+    assert!(!g.server.native_sawmill_without_blade(OW, p));
+    assert!(g.server.native_sawmills_without_blade().is_empty());
+    g.place(p, SAWMILL);
+    g.run(2);
+    assert!(sawmill(&mut g, p).has_blade);
 }
 
 #[test]
@@ -97,7 +154,7 @@ fn a_sawmill_on_a_hot_firebox_saws_a_log_into_planks() {
 }
 
 fn hands(g: &mut Game, inventory: Vec<Option<crate::server::container_bridge::Stack>>) {
-    let inventory = inventory.into_iter().map(|s| s.map(|stack| HeldStack { encoded: format!("{stack:?}"), stack })).collect();
+    let inventory = inventory.into_iter().map(|s| s.map(|stack| HeldStack { encoded: format!("{stack:?}"), stack, plain: true })).collect();
     g.world.borrow_mut().hands = Some(PlayerSlots { hand: Some(PlayerSlot::Inventory(0)), inventory, ..Default::default() });
 }
 fn inventory(g: &Game) -> Vec<Option<crate::server::container_bridge::Stack>> {
@@ -124,9 +181,13 @@ fn a_blade_in_hand_goes_back_into_a_sawmill_without_one_in_one_transfer() {
     assert!(g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"));
     assert!(!sawmill(&mut g, p).has_blade);
     assert_eq!(inventory(&g)[0], stack(crate::sawmill::BLADE, 2));
+    assert!(g.world.borrow().without_blade.contains(&(OW.to_string(), p)), "refused: the copy says none still");
     g.world.borrow_mut().refuse_commits = false;
     assert!(g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"));
     assert!(sawmill(&mut g, p).has_blade);
+    // The host's copy knows at once (the review's P2-1: a blast before the next tick would else drop the item without
+    // its blade, the blade lost).
+    assert!(g.world.borrow().without_blade.is_empty());
     assert_eq!(inventory(&g)[0], stack(crate::sawmill::BLADE, 1));
     // With its blade, a blade in hand is no input: nothing applies.
     assert!(!g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"));
@@ -148,6 +209,24 @@ fn the_outputs_go_to_the_player_and_what_does_not_fit_is_thrown_once() {
     assert_eq!(g.world.borrow().dropped.len(), 1, "only what did not fit, once");
     let s = sawmill(&mut g, p);
     assert!(s.slot(1).is_none() && s.slot(2).is_none());
+}
+
+/// `storeItemStack` piles only onto a stack whose whole NBT is the given one's: planks with a name of their own (a
+/// component the port's stack does not keep) are another stack (the review's P3).
+#[test]
+fn the_outputs_never_pile_onto_a_stack_with_other_components() {
+    let mut g = game();
+    let p = [0, 70, 0];
+    g.place(p, SAWMILL);
+    g.run(2);
+    set_slots(&mut g, p, vec![None, stack("minecraft:oak_planks", 6), None]);
+    g.run(1);
+    let named = HeldStack { encoded: "{id:\"minecraft:oak_planks\",count:10,components:{\"minecraft:custom_name\":\"Tábuas\"}}".into(), stack: crate::server::container_bridge::Stack::new("minecraft:oak_planks", 10), plain: false };
+    g.world.borrow_mut().hands = Some(PlayerSlots { hand: Some(PlayerSlot::Inventory(0)), inventory: vec![Some(named.clone()), None], ..Default::default() });
+    assert!(g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"));
+    let hands = g.world.borrow().hands.clone().unwrap();
+    assert_eq!(hands.inventory[0], Some(named), "the named stack untouched");
+    assert_eq!(hands.inventory[1].as_ref().map(|h| h.stack.clone()), stack("minecraft:oak_planks", 6));
 }
 
 #[test]

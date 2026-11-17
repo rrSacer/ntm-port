@@ -44,18 +44,44 @@ impl Server {
             {
                 s.heat = 0;
                 host.log(&format!("ntm: the failing sawmill at {:?} was not committed; it breaks on its next hot tick", key.1));
+            } else if published {
+                host.sawmill_blade(&key.0, key.1, true);
             }
         }
     }
 
-    /// A player placed a sawmill item at `pos` (`native_place_block`, before its `Placed` event is taken): without its
-    /// blade, the machine that event creates there has none.
+    /// A player placed a sawmill item at `pos` (`native_place_block`, given before the block change it makes): without
+    /// its blade, the machine the `Placed` event of that change creates has none. Given after that event was taken (a
+    /// host that took the block changes without its words first), it reaches the machine the event created; a word
+    /// whose event never comes is spent with the events it came with (`native_record_events`).
     pub fn native_sawmill_placed(&mut self, dim: &str, pos: Pos, without_blade: bool) {
         let key = (dim.to_string(), pos);
+        if self.ready.sawmills_placed_now.contains(&key) {
+            if without_blade
+                && let Some(Data::Sawmill(s)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data)
+            {
+                s.has_blade = false;
+            }
+            return;
+        }
         if without_blade {
-            self.ready.sawmills_without_blade.insert(key);
-        } else {
+            self.ready.sawmills_without_blade.insert(key, None);
+        } else if self.ready.sawmills_without_blade.get(&key) == Some(&None) {
+            // A word not bound to a change yet: this placement's, which speaks last.
             self.ready.sawmills_without_blade.remove(&key);
+        }
+    }
+
+    /// The `Placed` event of generation `generation` at `key` created its machine: the word bound to that change, if
+    /// any, takes the blade away.
+    pub(super) fn sawmill_word(&mut self, host: &mut impl ServerHost, key: &Key, generation: u64) {
+        if self.ready.sawmills_without_blade.get(key) != Some(&Some(generation)) {
+            return;
+        }
+        self.ready.sawmills_without_blade.remove(key);
+        if let Some(Data::Sawmill(s)) = self.ready.world.machines.get_mut(key).map(|m| &mut m.data) {
+            s.has_blade = false;
+            host.sawmill_blade(&key.0, key.1, true);
         }
     }
 
@@ -64,7 +90,7 @@ impl Server {
     /// A placement not taken yet counts: placed and broken before its `Placed` event, it still has no blade.
     pub fn native_sawmill_without_blade(&self, dim: &str, pos: Pos) -> bool {
         let key = (dim.to_string(), pos);
-        self.ready.sawmills_without_blade.contains(&key)
+        self.ready.sawmills_without_blade.contains_key(&key)
             || matches!(self.ready.world.machines.get(&key).map(|m| &m.data), Some(Data::Sawmill(s)) if !s.has_blade)
     }
 
@@ -72,7 +98,7 @@ impl Server {
     /// is busy (a blast of the server's own breaking a sawmill).
     pub fn native_sawmills_without_blade(&self) -> Vec<Key> {
         let models = self.ready.world.machines.iter().filter(|(_, m)| matches!(&m.data, Data::Sawmill(s) if !s.has_blade));
-        self.ready.sawmills_without_blade.iter().cloned().chain(models.map(|(k, _)| k.clone())).collect()
+        self.ready.sawmills_without_blade.keys().cloned().chain(models.map(|(k, _)| k.clone())).collect()
     }
 
     /// `MachineSawmill.onBlockActivated` without sneaking (83-129), at its core: in the Java's order, a blade in hand
@@ -129,6 +155,7 @@ impl Server {
         self.ready.bridge.data.insert(key.clone(), commit.data);
         self.ready.native_saved.insert(key, commit.json);
         if repair {
+            host.sawmill_blade(dim, core, false);
             host.show(dim, &crate::blast::visuals::Show::Sound { id: "ntm:item.upgradeplug", source: "block", at: at.map(|v| f64::from(v) + 0.5), volume: 1.5, pitch: 0.75 });
         }
         true

@@ -21,6 +21,8 @@ struct Host {
     blocks: BTreeMap<Pos, String>,
     saved: BTreeMap<Pos, String>,
     refuse_commit: bool,
+    /// The host's copy of the sawmills without their blade (`sawmill_blade`).
+    without_blade: BTreeSet<Pos>,
 }
 impl Kv for Host {
     fn get(&mut self, key: &str) -> Option<Vec<u8>> {
@@ -34,6 +36,13 @@ impl Kv for Host {
     }
 }
 impl ServerHost for Host {
+    fn sawmill_blade(&mut self, _: &str, pos: Pos, without: bool) {
+        if without {
+            self.without_blade.insert(pos);
+        } else {
+            self.without_blade.remove(&pos);
+        }
+    }
     fn get_block(&mut self, _: &str, pos: Pos) -> Option<String> {
         Some(
             self.blocks
@@ -728,6 +737,9 @@ fn a_failing_sawmill_commits_its_lost_blade_with_the_blast_then_the_blade() {
     let before = server.ready.world.machines[&key].clone();
     server.sawmill_finish(&mut host);
     assert!(!sawmill_of(&mut server, &key).has_blade);
+    // The host's copy knows at once, before the blast that may break the sawmill (the review's P2-1: else a plain item
+    // with its blade, and the blade on the ground).
+    assert!(host.without_blade.contains(&CORE));
     assert_eq!(server.ready.world.machine_effects.len(), 1);
     let batch = &server.ready.world.machine_effects[0];
     assert_eq!(batch.owners, std::slice::from_ref(&key));
@@ -767,6 +779,7 @@ fn a_refused_sawmill_failure_publishes_nothing_and_breaks_on_the_next_hot_tick()
     server.flush_machine_effects(&mut host);
     let s = sawmill_of(&mut server, &key).clone();
     assert!(s.has_blade && s.overspeed == 300 && s.heat == 0);
+    assert!(host.without_blade.is_empty(), "refused: it still has its blade");
     assert!(
         server.ready.world.machine_effects.is_empty()
             && host.homes.is_empty()

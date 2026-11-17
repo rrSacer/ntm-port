@@ -191,6 +191,9 @@ pub trait ServerHost: Kv {
     fn commit_player_transfer(&mut self, _transfer: &PlayerTransfer, _commits: &[MachineCommit]) -> bool {
         false
     }
+    /// D3: the sawmill at `pos` lost its blade (`without`) or has it back, in the model now: a host that answers the
+    /// drops it hears while the server is busy from a copy updates it at once, not after the tick (the review's P2-1).
+    fn sawmill_blade(&mut self, _dim: &str, _pos: Pos, _without: bool) {}
 }
 
 /// A stack a player holds: what the logic reads of it, and the whole stack (SNBT, every component) the host compares
@@ -199,6 +202,9 @@ pub trait ServerHost: Kv {
 pub struct HeldStack {
     pub stack: container_bridge::Stack,
     pub encoded: String,
+    /// Whether it has no component but those `stack` keeps (its damage and custom data): only then does a stack given
+    /// to the player pile onto it (`ItemStack.areItemStackTagsEqual`, the whole NBT).
+    pub plain: bool,
 }
 
 /// Where a player's stack is: an inventory slot (the engine's index, the hotbar first), the off hand or the cursor.
@@ -241,7 +247,7 @@ impl PlayerSlots {
         Some(SlotEdit { slot, expected: Some(held.encoded.clone()), desired })
     }
     /// `InventoryPlayer.addItemStackToInventory` (1.7.10) of each stack in turn: into a stack of the same item, damage
-    /// and data that is not full (`storeItemStack`), else the first empty slot (`getFirstEmptyStack`), the hotbar
+    /// and data, no other component, that is not full (`storeItemStack`), else the first empty slot (`getFirstEmptyStack`), the hotbar
     /// first, `max` to a stack. The edits, one per slot touched, and what did not fit.
     pub fn give(&self, stacks: &[container_bridge::Stack], max: u32) -> (Vec<SlotEdit>, Vec<container_bridge::Stack>) {
         let mut now: Vec<Option<container_bridge::Stack>> = self.inventory.iter().map(|s| s.as_ref().map(|h| h.stack.clone())).collect();
@@ -253,6 +259,8 @@ impl PlayerSlots {
                 let same = now.iter().position(|s| {
                     s.as_ref().is_some_and(|s| s.id == stack.id && s.damage == stack.damage && s.custom == stack.custom && s.count < max)
                 });
+                // A stack with other components (a name, enchantments) is not the same stack: never piled onto.
+                let same = same.filter(|&i| self.inventory[i].as_ref().is_none_or(|h| h.plain));
                 let Some(i) = same.or_else(|| now.iter().position(Option::is_none)) else { break };
                 let into = now[i].get_or_insert_with(|| container_bridge::Stack { count: 0, ..stack.clone() });
                 let put = n.min(max - into.count);
@@ -447,9 +455,14 @@ struct Ready {
     /// Test hooks only (`Server::native_test_drop`): fuel channels asked to put their rod out as an `Items` effect at a
     /// cell, taken by their reactor's next accepted step.
     rbmk_drops: BTreeMap<Key, Pos>,
-    /// D3: cells a sawmill item without its blade was placed at (`native_sawmill_placed`), each taken by the machine
-    /// its own `Placed` event creates there. Not saved: a save takes the block changes before it captures the chunks.
-    sawmills_without_blade: BTreeSet<Key>,
+    /// D3: cells a sawmill item without its blade was placed at (`native_sawmill_placed`), each bound to the generation
+    /// of the block change that follows it there (None until that change comes) and taken by the machine the `Placed`
+    /// event of that generation creates: a placement the engine undid in the same tick never lends its word to the
+    /// next. Not saved: a save takes the block changes before it captures the chunks.
+    sawmills_without_blade: BTreeMap<Key, Option<u64>>,
+    /// D3: the sawmills the `Placed` events created since the server last took its events: a word of their item that
+    /// comes after its own event (`native_sawmill_placed`) still reaches the machine it was for.
+    sawmills_placed_now: BTreeSet<Key>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
@@ -564,11 +577,9 @@ impl Server {
             BlockEvent::Placed(dim, pos, state) => {
                 let id = blockstate::id_of(&state);
                 let key = (dim, pos);
-                if let Some(mut m) = machine_from_state(&state) {
-                    if let crate::machine::Data::Sawmill(s) = &mut m.data
-                        && r.sawmills_without_blade.remove(&key)
-                    {
-                        s.has_blade = false;
+                if let Some(m) = machine_from_state(&state) {
+                    if let crate::machine::Data::Sawmill(_) = &m.data {
+                        r.sawmills_placed_now.insert(key.clone());
                     }
                     r.world.machines.insert(key.clone(), m);
                     r.loaded.insert(key.clone(), true);

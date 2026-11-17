@@ -604,7 +604,7 @@ mod tests {
     }
     /// Puts `stack` in the acting player's hand (slot 0): the stack a use hands the server.
     fn hold(h:&mut Host,stack:&Stack){
-        let held=HeldStack{stack:stack.clone(),encoded:format!("{stack:?}")};
+        let held=HeldStack{stack:stack.clone(),encoded:format!("{stack:?}"),plain:true};
         h.hands=Some(PlayerSlots{hand:Some(PlayerSlot::Inventory(0)),inventory:vec![Some(held),None],..Default::default()});
     }
     /// The world opened again from the host's records: the storage, then what each chunk's record owes, as the
@@ -673,7 +673,7 @@ mod tests {
             if self.refuse_player||!t.drops.is_empty()||t.edits.iter().any(|e|hands.get(e.slot).map(|s|s.encoded.clone())!=e.expected){return false;}
             if self.refuse_commit || cs.iter().any(|c|self.inactive.contains(&c.dim)||self.unloaded.contains(&c.pos)||self.slots.get(&c.pos).cloned().unwrap_or_default()!=c.expected){return false;}
             for e in &t.edits{
-                let new=e.desired.clone().map(|stack|HeldStack{encoded:format!("{stack:?}"),stack});
+                let new=e.desired.clone().map(|stack|HeldStack{encoded:format!("{stack:?}"),stack,plain:true});
                 match e.slot{PlayerSlot::Inventory(i)=>hands.inventory[i]=new,PlayerSlot::Offhand=>hands.offhand=new,PlayerSlot::Carried=>hands.carried=new}
             }
             self.hands=Some(hands);

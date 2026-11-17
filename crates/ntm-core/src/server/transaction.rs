@@ -615,6 +615,7 @@ impl Server {
                 }else{
                     self.block_event(host,BlockEvent::Placed(d,p,s));
                     if let Some(m)=self.ready.world.machines.get_mut(&k){m.generation=generation;}
+                    self.sawmill_word(host,&k,generation);
                 }
             }
         }

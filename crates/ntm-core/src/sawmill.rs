@@ -11,6 +11,7 @@ use crate::server::container_bridge::Stack;
 use crate::view::ViewModel;
 use serde::{Deserialize, Serialize};
 
+pub const BLOCK: &str = "ntm:machine_sawmill";
 pub const BLADE: &str = "ntm:sawblade";
 pub const SAWDUST: &str = "ntm:powder_sawdust";
 const STICK: &str = "minecraft:stick";
@@ -41,6 +42,9 @@ pub struct Sawmill {
     /// Its jump to 100 plays `hbm:block.warnOverspeed` (crate::sounds, as the Stirling's).
     #[serde(skip)]
     pub warn_cooldown: u32,
+    /// Whether its last tick sawed (blade and 100 heat): what its state shows after `finish` spent the heat.
+    #[serde(skip)]
+    pub spinning: bool,
 }
 
 fn with_blade() -> bool {
@@ -61,6 +65,7 @@ impl Default for Sawmill {
             heat: 0,
             overspeed: 0,
             warn_cooldown: 0,
+            spinning: false,
         }
     }
 }
@@ -162,14 +167,15 @@ impl Sawmill {
             self.overspeed = 0;
             self.warn_cooldown = 0;
         }
+        self.spinning = self.has_blade && self.heat >= 100;
         self.heat = 0;
     }
 }
 
 impl Logic for Sawmill {
-    /// 1 while it saws (blade and heat), as the Java's spin.
+    /// 1 while it saws (blade and heat), as the Java's spin: its last tick's, the heat being spent by then.
     fn level(&self, max: u8) -> u8 {
-        u8::from(self.has_blade && self.heat >= 100).min(max)
+        u8::from(self.spinning).min(max)
     }
     fn view(&self) -> ViewModel {
         ViewModel::new("Sawmill")
@@ -231,11 +237,12 @@ mod tests {
         assert_eq!(s.slot(0), None);
         assert_eq!(s.slot(1), Some(&Stack::new("minecraft:oak_planks", 6)));
         assert_eq!(s.done, 1);
+        assert_eq!((s.heat, s.level(1)), (0, 1), "the heat spent, its state still spins (the review's P3)");
         // Under 100 heat nothing saws and the progress drops.
         let mut cold = Sawmill::default();
         cold.slots[0] = Some(Stack::new("minecraft:oak_log", 1));
         hot(&mut cold, 990, 5);
-        assert_eq!(cold.progress, 0);
+        assert_eq!((cold.progress, cold.level(1)), (0, 0));
         assert!(cold.slot(1).is_none());
     }
 

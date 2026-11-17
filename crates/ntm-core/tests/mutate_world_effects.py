@@ -73,18 +73,38 @@ MUTANTS = {
          'a_save_right_after_the_stirling_failure_keeps_the_blast_with_the_lost_gear'),
     ],
     'd3': [
-        ('SawmillPlacementIgnored', 'crates/ntm-core/src/server.rs',
-         '                    if let crate::machine::Data::Sawmill(s) = &mut m.data\n                        && r.sawmills_without_blade.remove(&key)',
-         '                    if let crate::machine::Data::Sawmill(s) = &mut m.data\n                        && false && r.sawmills_without_blade.remove(&key)',
+        ('SawmillPlacementIgnored', 'crates/ntm-core/src/server/transaction.rs',
+         '                    self.sawmill_word(host,&k,generation);\n', '',
          'a_sawmill_placed_from_its_item_without_blade_has_none_and_drops_that_variant'),
-        ('SawmillWordNeverSpent', 'crates/ntm-core/src/server.rs',
-         '                        && r.sawmills_without_blade.remove(&key)',
-         '                        && r.sawmills_without_blade.contains(&key)',
-         'the_item_without_blade_belongs_to_its_own_placement_only'),
+        ('SawmillWordForAnyPlacement', 'crates/ntm-core/src/server/sawmill_server.rs',
+         '        if self.ready.sawmills_without_blade.get(key) != Some(&Some(generation)) {',
+         '        if !self.ready.sawmills_without_blade.contains_key(key) {',
+         'a_word_is_taken_by_one_placement_only'),
         ('SawmillPendingNotCounted', 'crates/ntm-core/src/server/sawmill_server.rs',
-         '        self.ready.sawmills_without_blade.contains(&key)\n            || matches!',
+         '        self.ready.sawmills_without_blade.contains_key(&key)\n            || matches!',
          '        false\n            || matches!',
          'a_sawmill_placed_from_its_item_without_blade_has_none_and_drops_that_variant'),
+    ],
+    # The independent review of the sawmill (P1-1, P2-1 and its P3s).
+    'review': [
+        ('LateWordLost', SAWMILL,
+         '        if self.ready.sawmills_placed_now.contains(&key) {', '        if false && self.ready.sawmills_placed_now.contains(&key) {',
+         'a_word_given_after_its_placed_event_still_takes_the_blade'),
+        ('SpentWordKept', 'crates/ntm-core/src/server/native_server.rs',
+         '        self.ready.sawmills_without_blade.retain(|k,g|g.is_some_and(|g|waiting.contains(&(k.clone(),g))));', '',
+         'a_word_whose_placement_was_undone_is_spent'),
+        ('CopyLateOnFailure', SAWMILL,
+         '            } else if published {\n                host.sawmill_blade(&key.0, key.1, true);\n', '            } else if published {\n',
+         'a_failing_sawmill_commits_its_lost_blade_with_the_blast_then_the_blade'),
+        ('CopyLateOnRepair', SAWMILL,
+         '            host.sawmill_blade(dim, core, false);\n', '',
+         'a_blade_in_hand_goes_back_into_a_sawmill_without_one_in_one_transfer'),
+        ('GivePilesOntoNamed', 'crates/ntm-core/src/server.rs',
+         '                let same = same.filter(|&i| self.inventory[i].as_ref().is_none_or(|h| h.plain));\n', '',
+         'the_outputs_never_pile_onto_a_stack_with_other_components'),
+        ('SpinReadsSpentHeat', 'crates/ntm-core/src/sawmill.rs',
+         '        u8::from(self.spinning).min(max)', '        u8::from(self.has_blade && self.heat >= 100).min(max)',
+         'heat_saws_an_input_in_600_progress_and_spends_it'),
     ],
     'saw': [
         ('SawmillFailsInPlace', SAWMILL,
@@ -134,6 +154,9 @@ def main():
         raise RuntimeError(f'Interrupted by signal {signum}; discard this run')
     signal.signal(signal.SIGTERM, interrupted)
     results = []
+    # Every anchor first: a stale one stops the slice before any source is touched.
+    for name, relative, before, _after, _oracle in MUTANTS[sys.argv[1]]:
+        assert (ROOT / relative).read_text().count(before) == 1, (name, 'stale anchor')
     for name, relative, before, after, oracle in MUTANTS[sys.argv[1]]:
         path = ROOT / relative
         original = path.read_text()
