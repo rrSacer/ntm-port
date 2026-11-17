@@ -136,6 +136,13 @@ MUTANTS = {
          '            copies.push',
          'one_of_the_stack_in_hand_goes_into_an_empty_input_only_when_it_has_an_output'),
     ],
+    # The second review of the sawmill (P1 of step 3c, the residual P2 of the words).
+    'review2': [
+        ('RestoredSlotsOverwritten', 'crates/ntm-core/src/server/container_bridge.rs',
+         '                if let Some(n) = slotted(&mut m.data)\n                    && !n.slots_recorded()\n',
+         '                if let Some(n) = slotted(&mut m.data)\n                    && false && !n.slots_recorded()\n',
+         'a_sawmill_restored_from_the_journal_keeps_the_log_in_its_block_entity'),
+    ],
     # Step 3c: the sawmill's slots are its block entity's, open to hoppers by the Java's rules.
     'hopper': [
         ('InsertIntoABusySawmill', 'crates/ntm-core/src/sawmill.rs',

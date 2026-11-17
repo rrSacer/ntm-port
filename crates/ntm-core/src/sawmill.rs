@@ -231,6 +231,9 @@ impl Slotted for Sawmill {
     fn migrates(&self) -> bool {
         self.slots.iter().any(Option::is_some)
     }
+    fn slots_recorded(&self) -> bool {
+        false
+    }
 }
 
 #[cfg(test)]

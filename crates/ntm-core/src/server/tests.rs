@@ -61,6 +61,9 @@ struct World {
     copied: Vec<String>,
     /// The host's copy of the sawmills without their blade, as `sawmill_blade` keeps it (the glue's).
     without_blade: BTreeSet<(String, Pos)>,
+    /// The host's explosions go off (`explode`, recorded in `blasts`); off, they are refused, as before.
+    explosions: bool,
+    blasts: Vec<(String, [f64; 3])>,
     /// The storage's writes fail (I/O).
     kv_fails: bool,
 }
@@ -92,6 +95,8 @@ impl World {
             homes: BTreeMap::new(),
             copied: Vec::new(),
             without_blade: BTreeSet::new(),
+            explosions: false,
+            blasts: Vec::new(),
             no_entities: false,
             kv_fails: false,
         };
@@ -189,6 +194,11 @@ impl ServerHost for SHost {
     fn home_loaded(&mut self,dim:&str,chunk:[i32;2])->bool{self.world.borrow().loaded(dim,[chunk[0]*16,0,chunk[1]*16])}
     /// Both sides checked before either changes: the player's expected stacks, then the machines' (`commit_machines`
     /// checks every one before it writes).
+    fn explode(&mut self,dim:&str,at:[f64;3],_power:f32,_fire:bool,_breaks:bool)->bool{
+        let mut w=self.world.borrow_mut();
+        if w.explosions{w.blasts.push((dim.into(),at));}
+        w.explosions
+    }
     fn sawmill_blade(&mut self,dim:&str,pos:Pos,without:bool){
         let mut w=self.world.borrow_mut();
         if without{w.without_blade.insert((dim.into(),pos));}else{w.without_blade.remove(&(dim.into(),pos));}

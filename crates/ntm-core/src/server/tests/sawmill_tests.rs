@@ -279,6 +279,49 @@ fn a_use_reads_the_block_entity_a_hopper_changed() {
     assert!(g.world.borrow().dropped.is_empty());
 }
 
+/// The second review's P1 (3c): a sawmill that loses its blade with a log inside, its chunk cut older than the journal
+/// that step wrote. The journal's model has no slots (they are the block entity's alone): restored from it, the sawmill
+/// takes the block entity's log, never writes empty slots over it.
+#[test]
+fn a_sawmill_restored_from_the_journal_keeps_the_log_in_its_block_entity() {
+    let mut g = game();
+    g.world.borrow_mut().explosions = true;
+    let (core, source) = ([0, 71, 0], [0, 70, 0]);
+    g.place(source, "ntm:heater_firebox[facing=north,honey_level=0]");
+    g.place(core, SAWMILL);
+    g.run(2);
+    set_slots(&mut g, core, vec![stack("minecraft:oak_log", 1), None, None]);
+    g.run(1);
+    let key = (OW.to_string(), core);
+    // The chunk as last saved, before the failure: the model with its blade, the log in the block entity.
+    let (old_json, old_slots) = (g.world.borrow().saved[&key].clone(), engine_slots(&g, core));
+    assert_eq!(old_slots, vec![stack("minecraft:oak_log", 1), None, None]);
+    // 400 heat a tick past 300 overspeed ticks: the blade breaks (with its blast and its item, journaled).
+    let Data::Sawmill(s) = &mut g.ready().world.machines.get_mut(&key).unwrap().data else { panic!() };
+    s.overspeed = 300;
+    let Data::Firebox(f) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), source)).unwrap().data else { panic!() };
+    f.heat = 4000;
+    g.run(1);
+    assert!(!sawmill(&mut g, core).has_blade);
+    assert_eq!(engine_slots(&g, core), old_slots, "the failure leaves the slots");
+    // The journal (the session's, or a storage an earlier version wrote with it) newer than the chunk's record, still
+    // from before the failure: the model comes back from the journal.
+    assert!(g.server.ready.world.survivors.contains_key(&key), "the failure is journaled");
+    let earlier = g.server.ready.world.kept_as_an_earlier_version(0);
+    let world = Rc::new(RefCell::new(g.world.borrow().clone()));
+    world.borrow_mut().kv.set(crate::persist::KEY, &earlier).unwrap();
+    world.borrow_mut().saved.insert(key.clone(), old_json);
+    world.borrow_mut().engine.get_mut(&key).unwrap().0 = old_slots.clone();
+    let mut reopened = Game::new(world);
+    assert!(reopened.server.ready.restored.contains(&key), "restored from the journal");
+    // Its batch (the blast, then the blade) settles first; then the sawmill steps again.
+    reopened.run(6);
+    assert!(reopened.server.ready.world.machine_effects.is_empty() && reopened.server.ready.bridge.last.contains_key(&key));
+    assert!(!sawmill(&mut reopened, core).has_blade, "the journal's model, without its blade");
+    assert_eq!(engine_slots(&reopened, core), old_slots, "the log is kept");
+    assert_eq!(sawmill(&mut reopened, core).slot(0), stack("minecraft:oak_log", 1).as_ref());
+}
+
 /// A hopper's log saws as a hand's: the block entity's slots are the truth, the outputs written back to them.
 #[test]
 fn a_log_in_the_block_entity_saws_into_its_slots() {

@@ -69,6 +69,11 @@ pub trait Slotted {
     fn migrates(&self) -> bool {
         false
     }
+    /// Whether its record (the model's JSON, and the journal's copy of it) keeps its slots. False: they are the block
+    /// entity's alone, and a model the journal restored, which has none, takes them from the block entity.
+    fn slots_recorded(&self) -> bool {
+        true
+    }
     /// What it holds outside its slots (molten metal as scraps), dropped
     /// when it is broken: the engine spills the slots, not this.
     fn held_contents(&self) -> Vec<(String, u32)> {
@@ -958,7 +963,14 @@ impl Server {
             let observed = now.clone();
             if r.restored.remove(&key) {
                 // The model came from the journal and the block entity is older: the model's slots are the truth, and
-                // the next step writes them over the block entity's.
+                // the next step writes them over the block entity's. A machine whose record has no slots (the
+                // sawmill) has none to write: the block entity's are its only ones, and it takes them.
+                if let Some(n) = slotted(&mut m.data)
+                    && !n.slots_recorded()
+                {
+                    *n.slots_mut() = now.clone();
+                    n.sync_in();
+                }
                 r.bridge.last.insert(key, observed);
                 continue;
             }
