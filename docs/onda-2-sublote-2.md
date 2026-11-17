@@ -685,3 +685,23 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - Com a bateria criativa e 4 pedregulhos, ele moeu um em quartzo (o sorteio de 5 em 100 que saiu), mais 250 mB de coloide, e parou com 3 pedregulhos à espera do slot de saída.
   - Salvo e reaberto, ele manteve os mesmos slots, a receita e o coloide.
   - Tirada a saída, ele moeu o próximo em cascalho e chegou a 500 mB de coloide.
+
+### `machine_autocrafter` (grupo 2b): bloqueada por infraestrutura
+
+**O que o Java faz** (`TileEntityMachineAutocrafter`, `ContainerAutocrafter`, `ModulePatternMatcher`):
+- 21 slots:
+  - 0–8: o molde (`SlotPattern`: clicar copia o item como fantasma, sem consumi-lo);
+  - 9: o resultado mostrado, também fantasma; o botão troca entre as receitas que casam;
+  - 10–18: os ingredientes, no máximo 4 por slot, só os que casam com o filtro do molde;
+  - 19: a saída;
+  - 20: a bateria.
+- `getMatchingRecipes` percorre **todas** as receitas de bancada do `CraftingManager` que casam com o molde.
+- A cada tick, se a receita escolhida casa com os ingredientes, ele fabrica por 100 HE, devolve os recipientes e empilha na saída.
+- Cada slot do molde tem um modo (`exact`, `wildcard`, ou um nome do OreDict), trocado por clique (`nextMode`).
+
+**O que falta no motor** (pin 2187c3192b) para portar sem inventar:
+1. Uma consulta das receitas de bancada para o mod do servidor: todas as que casam com uma grade 3 × 3, com o resultado (componentes incluídos) e o que sobra na grade. O motor tem `Crafting::find` no cliente, que devolve só a primeira e não é exposto ao mod.
+2. Slots fantasmas na tela das máquinas (`horizon_machine`): o clique copia uma unidade do item da mão sem tirá-la, e o slot nunca entrega nada.
+3. Um modo por slot, trocado por clique, visível na tela. Os botões de tela existem; falta uma forma de ligá-los a cada slot e de mostrar o modo sobre ele. Os nomes do OreDict precisam das tags de item equivalentes.
+
+Sem (1) a máquina não tem o que fabricar; sem (2) não há como montar o molde. Ela espera essas três APIs.
