@@ -105,6 +105,9 @@ impl ServerHost for Host {
     fn effect_seen(&mut self, id: u64, dim: &str, pos: Pos) -> bool {
         self.seen.contains(&(id, dim.into(), pos))
     }
+    fn machine_slots(&mut self, _: &str, _: Pos) -> Option<container_bridge::Slots> {
+        Some(Vec::new())
+    }
 }
 fn blast() -> WorldEffect {
     WorldEffect::Explosion {
@@ -534,4 +537,146 @@ fn the_post_phase_publisher_rejects_stale_or_replaced_owners_before_running_the_
         );
         assert!(server.ready.world.machine_effects.is_empty());
     }
+}
+
+/// An iron Stirling one hot tick from its failure (TileEntityStirling.java:83-92): 300 hot ticks counted.
+fn failing_stirling(host: &mut Host, server: &mut Server) -> Key {
+    use crate::machine::{Data, Kind};
+    use crate::solar_stirling::{Shape, SolarStirling, Stirling};
+    let key = (DIM.to_string(), CORE);
+    let mut machine = Machine::new(
+        Kind::SolarStirling,
+        "ntm:machine_stirling",
+        Some("north".into()),
+    );
+    let mut s = Stirling::new(Shape::Iron);
+    s.overspeed = 300;
+    machine.data = Data::SolarStirling(Box::new(SolarStirling::Stirling(s)));
+    let json = serde_json::to_string(&machine).unwrap();
+    host.blocks.insert(CORE, machine.block.clone());
+    host.saved.insert(CORE, json.clone());
+    server.ready.native_saved.insert(key.clone(), json);
+    server.ready.loaded.insert(key.clone(), true);
+    server.ready.world.machines.insert(key.clone(), machine);
+    heat_stirling(server, &key);
+    key
+}
+fn heat_stirling(server: &mut Server, key: &Key) {
+    stirling_of(server, key).heat = 3010;
+}
+fn stirling_of<'a>(server: &'a mut Server, key: &Key) -> &'a mut crate::solar_stirling::Stirling {
+    let Some(crate::machine::Data::SolarStirling(s)) = server
+        .ready
+        .world
+        .machines
+        .get_mut(key)
+        .map(|m| &mut m.data)
+    else {
+        panic!("no Stirling")
+    };
+    let crate::solar_stirling::SolarStirling::Stirling(s) = &mut **s else {
+        panic!("no Stirling")
+    };
+    s
+}
+#[test]
+fn a_failing_stirling_commits_its_lost_gear_with_exactly_one_blast() {
+    let mut host = Host::default();
+    let mut server = Server::native(&mut host, 0);
+    let key = failing_stirling(&mut host, &mut server);
+    let before = server.ready.world.machines[&key].clone();
+    server.stirling_finish(&mut host);
+    let s = stirling_of(&mut server, &key).clone();
+    assert!(!s.has_cog && s.heat == 0 && s.overspeed == 301);
+    assert_eq!(server.ready.world.machine_effects.len(), 1);
+    let batch = &server.ready.world.machine_effects[0];
+    assert_eq!(batch.owners, std::slice::from_ref(&key));
+    assert_eq!(batch.origins, [CellGuard::machine(&key, &before)]);
+    // At the Java's [x + 0.5, y + 1, z + 0.5], power 5, no fire, no broken block.
+    assert_eq!(batch.effects, VecDeque::from([blast()]));
+    assert!(
+        host.blasts.is_empty(),
+        "nothing goes out before the batch is flushed"
+    );
+    // The committed record is the live model as saved (its warning cooldown is never saved).
+    assert_eq!(
+        host.saved[&CORE],
+        serde_json::to_string(&server.ready.world.machines[&key]).unwrap()
+    );
+    server.flush_machine_effects(&mut host);
+    assert_eq!(host.blasts, [blast()]);
+    for _ in 0..3 {
+        heat_stirling(&mut server, &key);
+        server.stirling_finish(&mut host);
+        server.flush_machine_effects(&mut host);
+    }
+    assert_eq!(host.blasts.len(), 1, "a lost gear does not explode again");
+    assert!(server.ready.world.machine_effects.is_empty());
+}
+#[test]
+fn a_refused_stirling_failure_publishes_nothing_and_fails_on_the_next_hot_tick() {
+    let mut host = Host {
+        refuse_commit: true,
+        ..Default::default()
+    };
+    let mut server = Server::native(&mut host, 0);
+    let key = failing_stirling(&mut host, &mut server);
+    let saved = host.saved[&CORE].clone();
+    server.stirling_finish(&mut host);
+    server.sync_obligations(&mut host);
+    server.flush_machine_effects(&mut host);
+    let s = stirling_of(&mut server, &key).clone();
+    assert!(s.has_cog && s.overspeed == 300 && s.heat == 0);
+    assert!(
+        server.ready.world.machine_effects.is_empty()
+            && host.homes.is_empty()
+            && host.blasts.is_empty()
+    );
+    assert_eq!(host.saved[&CORE], saved);
+    host.refuse_commit = false;
+    heat_stirling(&mut server, &key);
+    server.stirling_finish(&mut host);
+    assert!(!stirling_of(&mut server, &key).has_cog);
+    server.flush_machine_effects(&mut host);
+    assert_eq!(host.blasts, [blast()]);
+}
+#[test]
+fn a_save_right_after_the_stirling_failure_keeps_the_blast_with_the_lost_gear() {
+    let mut host = Host {
+        refuse_blast: true,
+        ..Default::default()
+    };
+    let mut server = Server::native(&mut host, 0);
+    let key = failing_stirling(&mut host, &mut server);
+    server.stirling_finish(&mut host);
+    server.native_save(&mut host, true);
+    server.sync_obligations(&mut host);
+    server.native_world_saving(&mut host);
+    let saved_model = host.saved[&CORE].clone();
+    let saved_batches = host.homes.get(&[0, 0]).cloned().unwrap_or_default();
+    assert_eq!(
+        saved_batches.len(),
+        1,
+        "PublishNextTick loses the blast in this cut"
+    );
+    assert_eq!(
+        saved_model,
+        serde_json::to_string(&server.ready.world.machines[&key]).unwrap()
+    );
+    let saved: Machine = serde_json::from_str(&saved_model).unwrap();
+    assert!(
+        matches!(&saved.data, crate::machine::Data::SolarStirling(s) if matches!(&**s, crate::solar_stirling::SolarStirling::Stirling(s) if !s.has_cog))
+    );
+    // The reopened home owes its blast once; the lost gear never fails again.
+    let mut reopened = Server::native(&mut host, 1);
+    reopened.native_obligations_loaded(DIM, [0, 0], vec![], saved_batches, BTreeSet::new());
+    assert!(reopened.native_adopt(DIM, CORE, &saved_model));
+    host.refuse_blast = false;
+    reopened.native_settle(&mut host);
+    assert_eq!(host.blasts, [blast()]);
+    reopened.ready.loaded.insert(key.clone(), true);
+    heat_stirling(&mut reopened, &key);
+    reopened.stirling_finish(&mut host);
+    reopened.flush_machine_effects(&mut host);
+    assert_eq!(host.blasts.len(), 1);
 }

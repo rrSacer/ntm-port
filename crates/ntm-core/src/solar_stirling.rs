@@ -153,6 +153,14 @@ impl Stirling {
             0
         }
     }
+    /// Whether this tick's `finish` breaks the gear (TileEntityStirling.java:90-92): the step that
+    /// also explodes, so it goes out through the server's post-phase publisher with its blast.
+    pub fn fails_on_finish(&self) -> bool {
+        self.has_cog
+            && self.shape != Shape::Creative
+            && self.heat > self.shape.max_heat()
+            && self.overspeed.saturating_add(1) > 300
+    }
     /// After the network took the previous buffer. Failure is strictly
     /// after 300 hot ticks; even on the failure tick the buffer loses one.
     pub fn finish(&mut self) {
@@ -303,11 +311,14 @@ mod tests {
             assert_eq!(s.power, u64::from(shape == Shape::Creative));
             for _ in 0..300 {
                 s.pull_heat(Some(16000));
+                assert!(!s.fails_on_finish());
                 s.finish();
             }
             assert!(s.has_cog);
             s.pull_heat(Some(16000));
+            assert_eq!(s.fails_on_finish(), shape != Shape::Creative);
             s.finish();
+            assert!(!s.fails_on_finish(), "a lost gear does not fail again");
             assert_eq!(s.has_cog, shape == Shape::Creative);
             assert_eq!(s.power, if shape == Shape::Creative { 1600 } else { 799 });
             assert_eq!(s.offer(), if shape == Shape::Creative { 1600 } else { 0 });

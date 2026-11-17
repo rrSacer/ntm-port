@@ -10,6 +10,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 TRANSACTION = 'crates/ntm-core/src/server/transaction.rs'
+STIRLING = 'crates/ntm-core/src/server/solar_server.rs'
 MUTANTS = {
     '1': [
         ('ExplosionAcknowledgedOnRefusal', TRANSACTION,
@@ -54,6 +55,22 @@ MUTANTS = {
          '            DELAYED.with(|pending| pending.borrow_mut().push(batch));',
          'a_save_between_this_tick_and_the_next_keeps_the_post_phase_batch_with_its_model'),
     ],
+    '5': [
+        ('StirlingFailsInPlace', STIRLING,
+         '                if s.fails_on_finish() {', '                if false && s.fails_on_finish() {',
+         'a_failing_stirling_commits_its_lost_gear_with_exactly_one_blast'),
+        ('StirlingPublishBeforeCommit', STIRLING,
+         '        for key in failing {\n',
+         '        for key in failing {\n            host.explode(&key.0, [f64::from(key.1[0]) + 0.5, f64::from(key.1[1]) + 1., f64::from(key.1[2]) + 0.5], 5., false, false);\n',
+         'a_refused_stirling_failure_publishes_nothing_and_fails_on_the_next_hot_tick'),
+        ('StirlingRefusalLosesGear', STIRLING,
+         '                s.heat = 0;\n', '                s.finish();\n',
+         'a_refused_stirling_failure_publishes_nothing_and_fails_on_the_next_hot_tick'),
+        ('StirlingPublishNextTick', 'crates/ntm-core/src/server/machine_effects.rs',
+         '            self.ready.world.machine_effects.push_back(batch);',
+         '            DELAYED.with(|pending| pending.borrow_mut().push(batch));',
+         'a_save_right_after_the_stirling_failure_keeps_the_blast_with_the_lost_gear'),
+    ],
 }
 
 
@@ -85,7 +102,7 @@ def main():
         extra_originals = {}
         try:
             changed = original.replace(before, after)
-            if name == 'PublishNextTick':
+            if name.endswith('PublishNextTick'):
                 # A real delayed queue, drained only at the beginning of the next native tick.
                 changed += '\nstd::thread_local! { pub(super) static DELAYED: std::cell::RefCell<Vec<CommittedEffects>> = const { std::cell::RefCell::new(Vec::new()) }; }\n'
                 native = ROOT / 'crates/ntm-core/src/server/native_server.rs'
