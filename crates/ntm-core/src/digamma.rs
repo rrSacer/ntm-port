@@ -146,6 +146,17 @@ pub fn drx_block(polaroid: i32) -> &'static str {
     if polaroid == 11 { MATTER_BLOCK } else { FLAME_BLOCK }
 }
 
+/// `ItemPill.onFoodEaten:81-104`: the pills that set a player's digamma (`setDigamma`, no gate): `xanax` takes 0.5
+/// off (not below 0), `fmn` brings it down to 2, `five_htp` to 0. None for any other item.
+pub fn pill(item: &str, current: f32) -> Option<f32> {
+    match item {
+        "ntm:xanax" => Some((current - 0.5).max(0.0)),
+        "ntm:fmn" => Some(current.min(2.0)),
+        "ntm:five_htp" => Some(0.0),
+        _ => None,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -270,5 +281,15 @@ mod tests {
         assert_eq!(drx_block(11), MATTER_BLOCK);
         assert_eq!(drx_block(10), FLAME_BLOCK);
         assert_eq!(drx_block(12), FLAME_BLOCK);
+    }
+
+    #[test]
+    fn the_three_pills_set_the_digamma() {
+        assert_eq!(pill("ntm:xanax", 1.2), Some(1.2f32 - 0.5));
+        assert_eq!(pill("ntm:xanax", 0.3), Some(0.0));
+        assert_eq!(pill("ntm:fmn", 7.5), Some(2.0));
+        assert_eq!(pill("ntm:fmn", 1.5), Some(1.5));
+        assert_eq!(pill("ntm:five_htp", 9.0), Some(0.0));
+        assert_eq!(pill("ntm:siox", 3.0), None);
     }
 }

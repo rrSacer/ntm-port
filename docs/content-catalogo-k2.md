@@ -88,7 +88,7 @@ as provas históricas acima dizem respeito à importação do catálogo.
 
 <!-- k2-status:start -->
 
-Resumo dos 116 itens: 61 ativo, 19 dependente, 36 parcial.
+Resumo dos 116 itens: 64 ativo, 19 dependente, 33 parcial.
 
 | Item | Classe Java | Estado | Origem Java | Dependências nominais |
 |---|---|---|---|---|
@@ -139,9 +139,9 @@ Resumo dos 116 itens: 61 ativo, 19 dependente, 36 parcial.
 | `ntm:definitelyfood` | ItemLemon | ativo | ItemLemon(3, 0.5F), ModItems.java:3621 | - |
 | `ntm:demon_core_open` | ItemDemonCore | dependente | `ItemDemonCore`, ModItems.java:2695 | `onEntityItemUpdate` (efeito ao cair no chão): sem gancho de tick de item solto (`ItemEntity.tick`, `onGround`, remover/trocar) no motor fixado; troca por `demon_core_closed` e solta `screwdriver` (o item não existe) |
 | `ntm:euphemium_kit` | ItemStarterKit | parcial | ItemStarterKit.onItemRightClick euphemium_kit, ModItems.java:3795 | itens Java ausentes do port: `ModItems.euphemium_helmet x1`, `ModItems.euphemium_plate x1`, `ModItems.euphemium_legs x1`, `ModItems.euphemium_boots x1`, `ModBlocks.statue_elb_f x1` |
-| `ntm:five_htp` | ItemPill | parcial | ItemPill, ModItems.java:2833: digamma to 0 (not in the port) and Stability 10 minutes | `HbmLivingProps.digamma` (o efeito Stability está portado) |
+| `ntm:five_htp` | ItemPill | ativo | ItemPill, ModItems.java:2833: digamma to 0 and Stability 10 minutes | - |
 | `ntm:fleija_kit` | ItemStarterKit | parcial | ItemStarterKit.onItemRightClick fleija_kit, ModItems.java:3792 | itens Java ausentes do port: `ModBlocks.nuke_fleija x1` |
-| `ntm:fmn` | ItemPill | parcial | ItemPill, ModItems.java:2832: digamma capped at 2 (not in the port) and blindness 60 ticks | `HbmLivingProps.digamma` (a cegueira de 60 ticks está portada) |
+| `ntm:fmn` | ItemPill | ativo | ItemPill, ModItems.java:2832: digamma capped at 2 and blindness 60 ticks | - |
 | `ntm:fooditem` | ItemLemon | ativo | ItemLemon(2, 5.0F), ModItems.java:3628 | - |
 | `ntm:gadget_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick gadget_kit, ModItems.java:3785 | - |
 | `ntm:gas_mask_filter` | ItemFilter | parcial | ItemFilter + ArmorUtil.register | instalar, retirar (agachado) e o desgaste estão portados nas máscaras `gas_mask_m65`, `attachment_mask` e nos três capuzes `hazmat_helmet*` (`ArmorHazmatMask`, sem lista negra), mas só o comando `/ntmitem expose` chama `filter_exposure`: as fontes ambientes que o Java liga ao filtro (monóxido, gás pulmonar e de bolhas, bactérias, partículas finas e grossas) não existem no port, então nada gasta o filtro durante o jogo |
@@ -207,7 +207,7 @@ Resumo dos 116 itens: 61 ativo, 19 dependente, 36 parcial.
 | `ntm:syringe_taint` | ItemSyringe | parcial | ItemSyringe.onItemRightClick syringe_taint, ModItems.java:2824: no sickness check; both containers are added, none replaces the slot | sem gancho de ataque de item sobre mobs: só o uso em si mesmo está portado; `HbmPotion.taint.performEffect` (a cada 2 ticks, com chance 1/40 por tentativa: `(amplificador + 1)` de dano `taint`, exceto em `EntityCreeperTainted` e `EntityTaintCrab`; mais a trilha de blocos taint sob `ENTITY_TAINT_TRAILS`) não tem tick de efeito de conteúdo: o efeito `ntm:taint` existe, passivo |
 | `ntm:tsar_kit` | ItemStarterKit | ativo | ItemStarterKit.onItemRightClick tsar_kit, ModItems.java:3789 | - |
 | `ntm:twinkie` | ItemLemon | ativo | ItemLemon(3, 0.25F), ModItems.java:3629 | - |
-| `ntm:xanax` | ItemPill | parcial | ItemPill, ModItems.java:2831: digamma -0.5 only (HbmLivingProps), not in the port | `HbmLivingProps.digamma` (sistema digamma do jogador) |
+| `ntm:xanax` | ItemPill | ativo | ItemPill, ModItems.java:2831: digamma -0.5 only (HbmLivingProps) | - |
 
 ### Itens fora dos 116, adicionados nesta onda
 

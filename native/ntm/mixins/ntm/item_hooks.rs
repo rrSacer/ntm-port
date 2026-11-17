@@ -681,6 +681,11 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     if spec.cooldown > 0 {
         set(&mut desired.state, "sickness", spec.cooldown as u64);
     }
+    // `ItemPill.onFoodEaten`: xanax, fmn and 5-HTP set the digamma (`setDigamma`), its modifier after the commit.
+    let digamma = ntm_core::digamma::pill(&stack.item, digamma_of(&desired.state));
+    if let Some(d) = digamma {
+        desired.state.insert("digamma".into(), Tag::Float(d.to_bits()));
+    }
     let benefits = NativePlayerBenefits {
         food: spec.food_stats(),
         heal: spec.heal,
@@ -706,6 +711,9 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         }
         if let Some(sound) = spec.sound.as_deref() {
             play(game, sound);
+        }
+        if let Some(d) = digamma {
+            digamma_modifier(game, d);
         }
         after_commit(game, spec);
     }
