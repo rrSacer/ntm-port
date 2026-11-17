@@ -434,6 +434,7 @@ mod tests {
                 fluid: "coalcreosote".into(),
                 mb: 300,
                 cap: TANK,
+                pressure: 0,
             },
             ..Default::default()
         };

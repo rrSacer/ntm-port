@@ -49,6 +49,10 @@ pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port>
     if spec.id == crate::intake::BLOCK {
         return crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().map(|(_, dirs)| dirs).collect();
     }
+    // The compressors' ports are on cells round the core, each one face out.
+    if spec.kind == Kind::Compressor {
+        return crate::compressor::Compressor::port_cells(spec.id, [0, 0, 0], facing).into_iter().map(|(_, face)| vec![face]).collect();
+    }
     match spec.ports {
         Ports::None => Vec::new(),
         Ports::AllRound => vec![DIRS.to_vec()],
@@ -541,14 +545,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_compressor",
-        kind: Kind::Inert,
+        kind: Kind::Compressor,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_compressor_compact",
-        kind: Kind::Inert,
+        kind: Kind::Compressor,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1747,6 +1751,8 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Combustion
         | Kind::Deuterium => vec![crate::energy::DIRS.to_vec()],
         Kind::Intake => crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().next().map(|(_, d)| vec![d]).unwrap_or_default(),
+        // The core takes nothing: the compressors' fluid ports are cells of their volume.
+        Kind::Compressor => vec![Vec::new()],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
         Kind::Heater => vec![

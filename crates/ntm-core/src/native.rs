@@ -150,6 +150,11 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
         };
     }
+    if crate::compressor::Shape::of(block).is_some() {
+        // A hand: plain `Slot`s. A hopper: `isItemValidForSlot` is false and
+        // `getAccessibleSlotsFromSide` empty (`TileEntityMachineBase` defaults).
+        return origin == SlotOrigin::Manual;
+    }
     if let Some(allowed) = crate::welders::allows(block, slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;
     }
@@ -217,6 +222,18 @@ fn machine_files() -> &'static std::collections::HashMap<String, serde_json::Val
 
 /// Block `block`'s slot rules, from its machine file (none without one).
 pub fn block_slots(block: &str) -> Vec<SlotFilter> {
+    if crate::compressor::Shape::of(block).is_some() {
+        // `ContainerCompressor` builds plain `Slot`s (a hand may place anything) and its
+        // `transferStackInSlot` sends a battery to slot 1 and a fluid identifier to slot 0;
+        // anything else goes to the upgrade slots 2 and 3 (not expressible: an identifier
+        // meets the free upgrade slots when slot 0 is full, a nominal gap).
+        let mut slots = machine_files().get(block).map(|v| file_slots(v.to_string().as_bytes())).unwrap_or_default();
+        if slots.len() >= 2 {
+            slots[0].quick_move = Some(vec![crate::server::native_server::IDENTIFIER.into()]);
+            slots[1].quick_move = Some(vec![CREATIVE_BATTERY.into()]);
+        }
+        return slots;
+    }
     if block == crate::zirnox::BLOCK {
         // Java's `ContainerReactorZirnox` builds slots 0..23 as plain `Slot`s: a hand
         // may place anything, one item at a time. Only `transferStackInSlot` (shift-click)

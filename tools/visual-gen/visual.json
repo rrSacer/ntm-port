@@ -37976,12 +37976,723 @@
       }
     },
     "ntm:machine_compressor": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerCompressor, GUICompressor (176x204), MachineCompressor {2,0,1,2,1,1} + {3,-3,1,1,1,1} + {8,-4,0,0,1,1} offset 2, RenderCompressor (case 2: 90; Pump -3..0 blocks, Fan 15 deg/tick on X at y 1.5)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 72
+          },
+          {
+            "x": 152,
+            "y": 72
+          },
+          {
+            "x": 52,
+            "y": 72
+          },
+          {
+            "x": 70,
+            "y": 72
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -2
+          ],
+          "max": [
+            1,
+            2,
+            1
+          ],
+          "offset": 2,
+          "extra": [
+            {
+              "min": [
+                -1,
+                3,
+                -1
+              ],
+              "max": [
+                1,
+                3,
+                1
+              ]
+            },
+            {
+              "min": [
+                -1,
+                4,
+                0
+              ],
+              "max": [
+                1,
+                8,
+                0
+              ]
+            }
+          ],
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_compressor.png",
+        "texture_from": "textures/gui/processing/gui_compressor.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "title_color": "#C7C1A3",
+        "inventory_label": [
+          8,
+          110
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "color": 7,
+            "dir": "up"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              42,
+              26,
+              55,
+              17
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 11,
+            "min": 1,
+            "rect": [
+              156,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 10,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              43,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              54,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              65,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              76,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 4,
+            "max": 4,
+            "rect": [
+              87,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              43,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "0 PU -> 1 PU"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              54,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "1 PU -> 2 PU"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              65,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "2 PU -> 3 PU"
+            ]
+          },
+          {
+            "id": 3,
+            "rect": [
+              76,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "3 PU -> 4 PU"
+            ]
+          },
+          {
+            "id": 4,
+            "rect": [
+              87,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "4 PU -> 5 PU"
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          },
+          {
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/compressor.obj",
+        "obj_from": "models/machines/compressor.obj",
+        "texture": "ntm:textures/models/machines/compressor.png",
+        "texture_from": "textures/models/machines/compressor.png",
+        "rotation": 90,
+        "radius": 9.5,
+        "bones": {
+          "Fan": {
+            "pivot": [
+              0,
+              1.5,
+              0
+            ]
+          }
+        },
+        "loop_animation": [
+          {
+            "name": "animation.compressor.fan",
+            "length": 1.2,
+            "bones": {
+              "Fan": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.compressor.pump",
+            "length": 1.5,
+            "bones": {
+              "Pump": {
+                "position": {
+                  "0.0": [
+                    0,
+                    -48,
+                    0
+                  ],
+                  "1.0": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "1.5": [
+                    0,
+                    -48,
+                    0
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "play": [
+          {
+            "animation": "animation.compressor.fan",
+            "values": [
+              {
+                "value": 0,
+                "min": 1
+              }
+            ]
+          },
+          {
+            "animation": "animation.compressor.pump",
+            "values": [
+              {
+                "value": 0,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_compressor_compact": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerCompressor, GUICompressor (176x204), MachineCompressorCompact {2,0,1,1,3,3} offset 1, RenderCompressorCompact (case 2: 90)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 72
+          },
+          {
+            "x": 152,
+            "y": 72
+          },
+          {
+            "x": 52,
+            "y": 72
+          },
+          {
+            "x": 70,
+            "y": 72
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            -3,
+            0,
+            -1
+          ],
+          "max": [
+            3,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_compressor.png",
+        "texture_from": "textures/gui/processing/gui_compressor.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "title_color": "#C7C1A3",
+        "inventory_label": [
+          8,
+          110
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "color": 7,
+            "dir": "up"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              42,
+              26,
+              55,
+              17
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 11,
+            "min": 1,
+            "rect": [
+              156,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 10,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              43,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              54,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              65,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              76,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 4,
+            "max": 4,
+            "rect": [
+              87,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              43,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "0 PU -> 1 PU"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              54,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "1 PU -> 2 PU"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              65,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "2 PU -> 3 PU"
+            ]
+          },
+          {
+            "id": 3,
+            "rect": [
+              76,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "3 PU -> 4 PU"
+            ]
+          },
+          {
+            "id": 4,
+            "rect": [
+              87,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "4 PU -> 5 PU"
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          },
+          {
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/compressor_compact.obj",
+        "obj_from": "models/machines/compressor_compact.obj",
+        "texture": "ntm:textures/models/machines/compressor_compact.png",
+        "texture_from": "textures/models/machines/compressor_compact.png",
+        "rotation": 90,
+        "radius": 4.5
+      }
     },
     "ntm:machine_autocrafter": {
       "auto": false,

@@ -167,6 +167,12 @@ impl Server {
                         faces.insert(p, vec![dirs]);
                     }
                 }
+                if let Some(m) = self.ready.world.machines.get(&(dim.clone(), core)) && crate::compressor::Shape::of(&m.block).is_some() {
+                    faces.insert(core, vec![vec![]]);
+                    for (p, d) in crate::compressor::Compressor::port_cells(&m.block, core, m.facing.as_deref()) {
+                        faces.insert(p, vec![vec![d]]);
+                    }
+                }
                 if let Some(m) = self.ready.world.machines.get(&(dim.clone(), core)) {
                     let tower = crate::steam::tower_ports(&m.block, core);
                     if !tower.is_empty() {

@@ -818,6 +818,7 @@ mod tests {
             fluid: "oxygen".into(),
             mb: 700,
             cap: 24_000,
+            pressure: 0,
         };
         let mut g = arc();
         Slotted::load_state(&mut g, &Slotted::save_state(&w));

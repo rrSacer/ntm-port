@@ -16,6 +16,7 @@ pub mod boiler;
 pub mod bomb;
 pub mod client_rad;
 pub mod coker;
+pub mod compressor;
 pub mod deuterium;
 pub mod combustion;
 pub mod solar_stirling;

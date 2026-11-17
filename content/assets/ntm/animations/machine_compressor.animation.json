@@ -1,0 +1,50 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.compressor.fan": {
+      "loop": true,
+      "animation_length": 1.2,
+      "bones": {
+        "Fan": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.20": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.compressor.pump": {
+      "loop": true,
+      "animation_length": 1.5,
+      "bones": {
+        "Pump": {
+          "position": {
+            "0.0": [
+              0,
+              -48,
+              0
+            ],
+            "1.0": [
+              0,
+              0,
+              0
+            ],
+            "1.5": [
+              0,
+              -48,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

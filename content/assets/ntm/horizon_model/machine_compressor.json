@@ -1,0 +1,36 @@
+{
+  "obj": "ntm:models/obj/compressor.obj",
+  "texture": "ntm:textures/models/machines/compressor.png",
+  "rotation": 90,
+  "radius": 9.5,
+  "bones": {
+    "Fan": {
+      "pivot": [
+        0,
+        1.5,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.compressor.fan",
+      "values": [
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    },
+    {
+      "animation": "animation.compressor.pump",
+      "values": [
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/machine_compressor.animation.json"
+}

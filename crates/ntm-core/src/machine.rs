@@ -99,6 +99,8 @@ pub enum Kind {
     Intake,
     /// The deuterium extractor (`crate::deuterium`).
     Deuterium,
+    /// The compressors, both bodies (`crate::compressor`).
+    Compressor,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -205,6 +207,7 @@ pub enum Data {
     Welder(Box<crate::welders::Welder>),
     Intake(crate::intake::Intake),
     Deuterium(crate::deuterium::DeuteriumExtractor),
+    Compressor(Box<crate::compressor::Compressor>),
     Inert { name: String },
 }
 
@@ -314,6 +317,9 @@ impl Machine {
             },
             Kind::Intake => Data::Intake(crate::intake::Intake::new()),
             Kind::Deuterium => Data::Deuterium(crate::deuterium::DeuteriumExtractor::new()),
+            Kind::Compressor => Data::Compressor(Box::new(crate::compressor::Compressor::new(
+                crate::compressor::Shape::of(block_id).unwrap_or_default(),
+            ))),
             Kind::Inert => Data::Inert {
                 name: block_id.into(),
             },
@@ -393,6 +399,7 @@ impl Machine {
             Data::Welder(_) => Kind::Welder,
             Data::Intake(_) => Kind::Intake,
             Data::Deuterium(_) => Kind::Deuterium,
+            Data::Compressor(_) => Kind::Compressor,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -443,6 +450,7 @@ impl Machine {
             Data::Welder(m) => &**m,
             Data::Intake(m) => m,
             Data::Deuterium(m) => m,
+            Data::Compressor(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -493,6 +501,7 @@ impl Machine {
             Data::Welder(m) => &mut **m,
             Data::Intake(m) => m,
             Data::Deuterium(m) => m,
+            Data::Compressor(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }

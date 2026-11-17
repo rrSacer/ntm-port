@@ -133,6 +133,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         Data::Intake(i) => Some(i),
+        Data::Compressor(c) => Some(&mut **c),
         _ => None,
     }
 }
@@ -192,6 +193,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_chungus", Layout::Native),
     ("ntm:machine_condenser_powered", Layout::Native),
     ("ntm:machine_intake", Layout::Native),
+    ("ntm:machine_compressor", Layout::Native),
+    ("ntm:machine_compressor_compact", Layout::Native),
     ("ntm:machine_crucible", Layout::Native),
     ("ntm:foundry_mold", Layout::Native),
     ("ntm:foundry_basin", Layout::Native),
@@ -377,6 +380,9 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
 pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
     if block == crate::intake::BLOCK {
         return crate::intake::Intake::port_cells(core, facing).into_iter().map(|(p, _)| p).collect();
+    }
+    if crate::compressor::Shape::of(block).is_some() {
+        return crate::compressor::Compressor::port_cells(block, core, facing).into_iter().map(|(p, _)| p).collect();
     }
     if block == crate::radioisotopes::RADGEN {
         return facing.and_then(crate::registry::facing_dir).map(|d|vec![[core[0]-d[0]*3,core[1],core[2]-d[2]*3]]).unwrap_or_default();
@@ -799,6 +805,9 @@ pub fn fluid_proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Po
     let tower = crate::steam::tower_ports(block, core);
     if !tower.is_empty() {
         return tower.into_iter().map(|(p, _)| p).collect();
+    }
+    if crate::compressor::Shape::of(block).is_some() {
+        return crate::compressor::Compressor::port_cells(block, core, facing).into_iter().map(|(p, _)| p).collect();
     }
     let Some((_, cells)) = FLUID_PROXIES.iter().find(|(b, _)| *b == block) else {
         return Vec::new();
