@@ -81,6 +81,68 @@ impl Fel {
     }
 }
 
+/// What Java observes in each beam cell. A SILEX refers to the core one
+/// block beyond the struck part; an absent core falls through without stopping.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum BeamCell {
+    Transparent,
+    Obstacle { liquid: bool, resistance: f32 },
+    Silex { core: Option<(bool, Wavelength)> },
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum BeamEffect {
+    SetSilex { at: i32, mode: Wavelength },
+    BreakSilex { at: i32 },
+    RemoveLiquid { at: i32 },
+    Ignite { at: i32, digamma: bool },
+}
+
+impl Fel {
+    /// Trace the active beam. The caller supplies world observations and Java's
+    /// one-in-five random decision; only an opaque obstacle draws that roll.
+    /// Transparent cells reset the spacing flag as in the original loop.
+    pub fn trace_beam(
+        &mut self,
+        mode: Wavelength,
+        mut cell: impl FnMut(i32) -> BeamCell,
+        mut one_in_five: impl FnMut() -> bool,
+    ) -> Vec<BeamEffect> {
+        let mut effects = Vec::new();
+        let mut spacing = false;
+        for i in 3..RANGE {
+            match cell(i) {
+                BeamCell::Transparent => {
+                    self.distance = RANGE;
+                    spacing = false;
+                }
+                BeamCell::Silex { core: Some((valid_rotation, existing)) } => {
+                    if valid_rotation && i >= 5 && !spacing {
+                        if existing != mode {
+                            self.missing_valid_silex = false;
+                            spacing = true;
+                            effects.push(BeamEffect::SetSilex { at: i, mode });
+                        }
+                    } else {
+                        effects.push(BeamEffect::BreakSilex { at: i });
+                    }
+                }
+                BeamCell::Silex { core: None } => {}
+                BeamCell::Obstacle { liquid, resistance } => {
+                    self.distance = i;
+                    if liquid {
+                        effects.push(BeamEffect::RemoveLiquid { at: i });
+                    } else if resistance < 75.0 && one_in_five() {
+                        effects.push(BeamEffect::Ignite { at: i, digamma: mode == Wavelength::Drx });
+                    }
+                    break;
+                }
+            }
+        }
+        effects
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -127,4 +189,37 @@ mod tests {
         let json = serde_json::to_string(&fel).unwrap();
         assert_eq!(serde_json::from_str::<Fel>(&json).unwrap(), fel);
     }
+
+    #[test]
+    fn beam_range_obstacles_and_random_rolls() {
+        let mut f = Fel::default();
+        let mut visited = Vec::new();
+        let mut rolls = 0;
+        let effects = f.trace_beam(Wavelength::Drx, |i| {
+            visited.push(i);
+            if i == 8 { BeamCell::Obstacle { liquid: false, resistance: 74.9 } } else { BeamCell::Transparent }
+        }, || { rolls += 1; true });
+        assert_eq!(visited, (3..=8).collect::<Vec<_>>());
+        assert_eq!(f.distance, 8);
+        assert_eq!(rolls, 1);
+        assert_eq!(effects, vec![BeamEffect::Ignite { at: 8, digamma: true }]);
+        assert!(f.trace_beam(Wavelength::Ir, |_| BeamCell::Transparent, || panic!("no obstacle")).is_empty());
+        assert_eq!(f.distance, 24);
+        assert!(f.trace_beam(Wavelength::Ir, |_| BeamCell::Obstacle { liquid: false, resistance: 75.0 }, || panic!("too hard")).is_empty());
+    }
+
+    #[test]
+    fn silex_alignment_spacing_and_existing_mode_follow_java() {
+        let mut f = Fel::default();
+        let effects = f.trace_beam(Wavelength::Uv, |i| match i {
+            3 => BeamCell::Silex { core: Some((true, Wavelength::Null)) },
+            5 | 6 => BeamCell::Silex { core: Some((true, Wavelength::Null)) },
+            8 => BeamCell::Silex { core: Some((true, Wavelength::Uv)) },
+            9 => BeamCell::Silex { core: Some((false, Wavelength::Null)) },
+            _ => BeamCell::Transparent,
+        }, || false);
+        assert_eq!(effects, vec![BeamEffect::BreakSilex { at: 3 }, BeamEffect::SetSilex { at: 5, mode: Wavelength::Uv }, BeamEffect::BreakSilex { at: 6 }, BeamEffect::BreakSilex { at: 9 }]);
+        assert!(!f.missing_valid_silex);
+    }
+
 }
