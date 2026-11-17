@@ -244,28 +244,28 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_ashpit",
-        kind: Kind::Inert,
+        kind: Kind::Ashpit,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:furnace_iron",
-        kind: Kind::Inert,
+        kind: Kind::Furnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:furnace_steel",
-        kind: Kind::Inert,
+        kind: Kind::Furnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:furnace_combination",
-        kind: Kind::Inert,
+        kind: Kind::Furnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -307,14 +307,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_furnace_brick_off",
-        kind: Kind::Inert,
+        kind: Kind::BrickFurnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_furnace_brick_on",
-        kind: Kind::Inert,
+        kind: Kind::BrickFurnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -342,7 +342,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_electric_furnace_on",
-        kind: Kind::Inert,
+        kind: Kind::ElectricFurnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -461,17 +461,17 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_arc_welder",
-        kind: Kind::Inert,
+        kind: Kind::Welder,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_soldering_station",
-        kind: Kind::Inert,
+        kind: Kind::Welder,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_chemical_factory",
@@ -582,6 +582,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     // server's `decon_tick` (radiation_server.rs) runs it every tick.
     BlockSpec {
         id: "ntm:decon",
+        kind: Kind::Inert,
+        facing: Some("facing"),
+        level: HONEY,
+        ports: Ports::None,
+    },
+    // TileEntityGeiger keeps no state: the native glue ticks it (its counters, clicks and comparator, slice 4b).
+    BlockSpec {
+        id: "ntm:geiger",
         kind: Kind::Inert,
         facing: Some("facing"),
         level: HONEY,
@@ -1701,9 +1709,22 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
-    if spec.kind == Kind::Zirnox { return vec![vec![]]; }
-    if spec.id == "ntm:pile_device__vent" { return facing.and_then(facing_dir).map(|d| vec![vec![d]]).unwrap_or_default(); }
-    if spec.id == "ntm:machine_solar_boiler" { return vec![vec![[0,-1,0]]]; }
+    if spec.kind == Kind::Zirnox {
+        return vec![vec![]];
+    }
+    if spec.id == "ntm:pile_device__vent" {
+        return facing
+            .and_then(facing_dir)
+            .map(|d| vec![vec![d]])
+            .unwrap_or_default();
+    }
+    if spec.id == "ntm:machine_solar_boiler" {
+        return vec![vec![[0, -1, 0]]];
+    }
+    // The combination oven's `comboven` ports: its ring of cells (`container_bridge::FLUID_PROXIES`) and the core.
+    if spec.id == "ntm:furnace_combination" {
+        return vec![crate::energy::DIRS.to_vec()];
+    }
     match spec.kind {
         Kind::FluidStore
         | Kind::Crafter
@@ -1719,6 +1740,7 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Processor
         | Kind::Drill
         | Kind::Steam
+        | Kind::Welder
         | Kind::Combustion => vec![crate::energy::DIRS.to_vec()],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.

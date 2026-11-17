@@ -744,3 +744,631 @@ Lacunas da 5d:
   sem pausa de invulnerabilidade (`EntityChemical:153`); o item glitch, 1000 (`ItemGlitch:49`); os 100 de dano na
   transformação do creeper (`EntityEffectHandler:196`, com a dose em mobs); e a imunidade do creeper nuclear a esse
   dano (`EntityCreeperNuclear:53`).
+
+## Fatia 4: a radiação do mundo por chunk (`ChunkRadiationHandlerSimple`)
+
+O Java guarda, por mundo, um `HashMap<ChunkCoordIntPair, Float>`. Fonte: `ChunkRadiationHandlerSimple`, com o
+`ChunkRadiationManager` como proxy padrão. Entregue em sub-fatias: 4a (o campo), 4b (o jogador e as leituras), 4c
+(neblina e destruição do mundo), 4d (as fontes do port) e 4e (as zonas de bomba trocadas pelo campo).
+
+### 4a: o campo, a cadência e o save
+
+Comportamento, com as linhas do Java:
+
+- `getRadiation` (`:33-43`) lê o valor do chunk preso a 0..100 000. `setRadiation` (`:46-58`) grava preso a
+  0..100 000, mas só num chunk carregado (`world.blockExists`). `incrementRad` e `decrementRad` (`:61-68`) passam
+  pelos dois.
+- `updateSystem` (`:71-122`) roda a cada 20 ticks do servidor. O `eggTimer` do `ChunkRadiationManager:42-55` conta
+  desde a criação do servidor, no `Phase.END`. O mapa é copiado e limpo. Cada chunk da cópia diferente de 0 dá 0,6 a si
+  mesmo, 0,075 a cada lado e 0,025 a cada canto.
+  - Um vizinho que está na cópia soma a parte e decai por `clamp_float(0F, x × 0,99 − 0,05, 100 000)`. Os argumentos
+    estão trocados, então a conta vira `max(0, x)` e não tem teto.
+  - Um vizinho fora da cópia recebe só a parte, e a última escrita vence.
+  - As duas regras dependem da ordem em que a cópia é percorrida, que é a do `java.util.HashMap`. O port a reproduz
+    (`chunk_radiation::ChunkMap`): o hash do `ChunkCoordIntPair` (o `agu` do bytecode 1.7.10), o espalhamento
+    `h ^ h>>>16`, a divisão dos baldes no resize, o tamanho da cópia `new HashMap<>(m)`, o `clear` que mantém a
+    tabela, e as árvores rubro-negras em que vira um balde de 9 numa tabela de 64 ou mais. Na árvore, a raiz vai para
+    a frente, cada nó novo entra logo depois do pai, um resize divide a árvore, e uma metade de 6 ou menos volta a ser
+    lista.
+- `receiveChunkLoad` (`:148-157`) põe no mapa o valor gravado do chunk, por cima do que o mapa tinha. Um chunk sem
+  valor gravado entra com 0, porque `getFloat` de chave ausente dá 0.
+- `receiveChunkUnload` (`:174-183`, a remoção na `:180`) tem um bug: chama `radiation.remove(event.getChunk())`, passando o `Chunk` num
+  mapa cuja chave é `ChunkCoordIntPair`, e não remove nada. O port mantém o bug (decisão D1 (A) do coordenador):
+  - o chunk descarregado continua no mapa, espalhando e decaindo;
+  - o spread também cria entradas em chunks nunca carregados;
+  - o valor gravado do chunk é o da descarga, e ao recarregar ele volta por cima do que o mapa tinha.
+
+  A memória não cresce sem limite. O mapa é limpo a cada atualização e só recebe de volta o que um chunk diferente de
+  0 espalha, então um chunk em 0 sai sozinho. A frente de valores minúsculos para quando o float chega a 0, depois de
+  cerca de 40 atualizações.
+- `CommandRadiation` (`/ntmrad set <0..100000>` e `/ntmrad clear`, o `clearSystem` da `:125-131`), com os textos do Java e o nível 4 do
+  `CommandBase`. Entrou na 4a como a forma fiel de pôr campo para as provas. É a única fonte nesta sub-fatia; as
+  outras ficam para a 4d.
+
+O save (decisão D1 (A)): o valor de cada chunk vai para o armazenamento do NTM no mundo, numa chave própria
+(`chunk_radiation`) com carimbo próprio, como a `sickness`. No Java ele vai no NBT do chunk
+(`hfr_simple_radiation`), e o motor não dá a um mod dados próprios por chunk. Daí vêm duas diferenças:
+
+- Grava-se mais do que o Java. O Java grava o valor quando grava o chunk: o `receiveChunkSave` (`:160-171`) roda no
+  save de cada chunk que o save grava. No autosave, isso são os chunks marcados com `isModified`, e quem marca é o
+  `setRadiation` (`:55`), não o spread. Na descarga, é sempre. O port grava todos os chunks carregados em todo save e o chunk
+  que descarrega na descarga. Consequência: nenhum valor se perde. Só se regrava um valor que o Java talvez não
+  regravasse, e nesse caso o Java voltaria, depois de uma queda, a um valor mais velho do chunk.
+- A atomicidade. O NBT do Java vai junto com os blocos do chunk. Aqui, o armazenamento é gravado depois das regiões:
+  um corte entre as duas gravações deixa os chunks deste save com os valores do último commit do armazenamento. A
+  prova de corte está abaixo.
+
+Lacuna: dois chunks com o mesmo hash inteiro na mesma árvore. O Java os ordena por `System.identityHashCode`, que
+muda de uma execução para outra, então nenhum oráculo repete essa ordem. O port põe o novo à esquerda, que é o que o
+Java faz quando o hash de identidade do novo é o menor. O caso exige um balde de 9 numa tabela de 64 ou mais e,
+dentro dele, dois `ChunkCoordIntPair` de hash inteiro igual.
+
+Prova da 4a, no núcleo:
+
+- Oráculo Java executável (`tools/chunk-radiation-oracle`). Os cinco métodos são recortados literais do
+  `ChunkRadiationHandlerSimple` e rodam no `java.util.HashMap` real. São 20 execuções:
+  - sementes aleatórias;
+  - baldes forçados a colidir, perto da origem e longe dela, onde o hash passa de 2^31 e a comparação com sinal da
+    árvore conta;
+  - árvores fundas de 47 nós;
+  - uma área grande.
+
+  Ao todo são 630 retratos do mapa, e o port bate bit a bit, ordem e valor (`chunk_radiation::tests`). O
+  `tools/content-gen/test_chunk_radiation_oracle.py` confere que o fixture continua sendo o que o Java dá.
+- Mutantes no núcleo do campo: 35 rodados, 29 mortos. Sobreviveram cinco equivalentes e o desempate por
+  `identityHashCode`, que é a lacuna acima:
+  - as duas rotações "espelhadas": se `pp.left == p`, então `pp.right != p`;
+  - as duas rotações internas puladas: o laço refaz o mesmo zigue-zague pelo outro lado e chega à mesma árvore, com a
+    mesma ordem e o mesmo número de rotações;
+  - o piso do `decrementRad`: o `setRadiation` já prende em 0.
+
+  Na integração com o servidor, foram 11 mutantes, todos mortos (`server::tests::chunk_radiation_tests`).
+- Custo (condição 1 do coordenador; teste `chunk_radiation_cost`, ignorado por padrão, em release). A carga: 15 × 15
+  chunks carregados, mantidos a 100 000 por uma fonte antes de cada atualização (o mapa mais largo possível, estável
+  em cerca de 5 800 chunks), 50 mil gerações de bloco no estado do mundo, 50 mil atualizações (um milhão de ticks) e
+  um save do campo a cada 45 atualizações. A máquina estava dividida com as compilações de outras frentes.
+
+  | Trecho | Chunks no mapa | Tick que atualiza: mediana / p99 / máx | Save do campo: mediana / máx |
+  |---|---|---|---|
+  | até 100 | 5 059 | 1,17 / 1,35 / 1,36 ms | 0,065 / 0,096 ms |
+  | até 1 000 | 4 260 | 1,40 / 1,91 / 2,31 ms | 0,076 / 0,082 ms |
+  | até 10 000 | 5 966 | 1,40 / 1,96 / 4,51 ms | 0,063 / 0,119 ms |
+  | até 50 000 | 5 802 | 1,41 / 1,96 / 3,00 ms | 0,064 / 0,133 ms |
+
+  O custo não cresce com as atualizações nem com as gerações. O tick que atualiza é 1 em cada 20; nos outros, o campo
+  custa só o contador, e a média dá cerca de 0,07 ms por tick. A chave gravada tem 3,6 KB. É o perfil do Java: um pico
+  por segundo, com a cópia do mapa e 9 `put` por chunk. O coordenador aceitou este perfil como linha de base (decisão
+  (B)). A otimização da emulação só volta se uma medição representativa, ou um orçamento explícito, mostrar problema.
+
+Corte de save (condição 3 do coordenador; `run-player-cut-proof.py field`; resumo em
+`docs/evidence/onda1-f4/field-cut-4a.json`). Binário `e32de08a…`, pacote `dca24969…`.
+
+O roteiro:
+1. O preparo põe `/ntmrad set 100000` no chunk 1,0, espera 6 s e salva. O último commit fica com 90 chunks; o 1,0 tem
+   6 011,8.
+2. A ação reabre, espera 4 s e põe o chunk a 100 000 de novo. Lê o mapa com `ntmtest rad`: o valor cru de cada chunk,
+   o da próxima atualização e se ele está carregado. Depois salva no ponto de corte.
+3. Depois de cada corte, o mundo é reaberto duas vezes. Lê-se a chave no disco antes de a sessão salvar.
+
+O critério (revisão do coordenador): a chave na primeira reabertura é um dos dois commits, chunk por chunk, comparada
+em f32.
+- **Último commit:** igual ao commit anterior, exatamente, com cada chunk e nenhum a mais.
+- **Novo commit:** o save da ação, que é um instante só do mapa. Cada chunk carregado está ou todo no valor de logo
+  antes do save, ou todo no da próxima atualização (uma atualização pode cair entre a leitura e o save). Um chunk não
+  carregado mantém exatamente o seu save.
+- **Reprovado:** um chunk ausente vale 0, e é perda a menos que o instante o tivesse em 0. Também reprova um chunk
+  acima do seu valor, dois instantes misturados ou um descarregado regravado.
+- **A fonte:** o chunk 1,0 está nas duas reaberturas.
+- **O controle:** é o vanilla, com as duas peças indo para o baú do Ender.
+
+O verificador tem testes próprios em `tools/test-game/test_field_cut_verdict.py`, incluindo o mutante pedido na
+revisão: um chunk que não é a fonte, truncado tanto do último commit quanto do novo.
+
+| Ponto | Chave na 1ª reabertura | Chunk 1,0 (commit anterior → antes do save → 1ª reabertura) | Controle (peças no baú do Ender) |
+|---|---|---|---|
+| `none` | novo commit | 6 011,8 → 100 000 → 57 904,5 | sim |
+| `kill` | último commit | 6 011,8 → 100 000 → 6 011,8 | não |
+| `save_begin` | último commit | 6 011,8 → 100 000 → 6 011,8 | não |
+| `level_saved` | último commit | 6 011,8 → 58 008,0 → 6 011,8 | não |
+| `players_saved` | último commit | 6 011,8 → 100 000 → 6 011,8 | sim |
+| `world_saved` | novo commit | 6 011,8 → 100 000 → 57 904,5 | sim |
+| `kv_committed` | novo commit | 6 011,8 → 100 000 → 57 904,5 | sim |
+
+O resultado:
+- Os sete pontos passaram, e o controle está coerente em todos. Os 90 chunks da chave estão carregados antes do corte.
+- O mutante da revisão foi aplicado a esta evidência: em cada ponto, cada um dos 89 chunks que não são a fonte foi
+  tirado, um de cada vez, da primeira reabertura. Os 89 foram rejeitados nos sete pontos, 623 de 623.
+- Nos pontos de novo commit, o 1,0 lido na reabertura (57 904,5) é o valor de uma atualização depois da leitura, e
+  todos os outros chunks estão no mesmo instante.
+- A diferença de atomicidade aparece em `level_saved` e `players_saved`. Ali as regiões, e em `players_saved` também
+  o arquivo do jogador, como mostra o controle, já estão gravadas, e o campo volta ao último commit, que é o
+  armazenamento do NTM, gravado depois. No Java, o valor iria junto com o NBT do chunk. Aqui volta o valor exato de um
+  save anterior: pode ser mais alto ou mais baixo que o do instante do corte, mas nenhum chunk se perde.
+
+Rodadas anteriores:
+- Duas falharam por defeitos da própria prova, não do campo:
+  - a sonda tinha raio 2, e o spread dos segundos da ação vai mais longe. Agora o raio é 16, e a sonda lista os
+    chunks do mapa e os carregados;
+  - o corredor comparava como double o f32 gravado pelo decimal mais curto. Agora compara em f32.
+- Uma terceira passou com um critério só de limite superior, que a revisão mostrou não pegar um chunk perdido. Foi
+  substituído pelo de dois commits acima, e a rodada registrada é a desse critério.
+
+### 4b: o campo no jogador, o Geiger e o bloco contador Geiger
+
+O campo contamina o jogador (`EntityEffectHandler.handleRadiationFX:262-279`, `Server::chunk_radiation_contaminate`).
+A cada tick, cada jogador pega o valor do campo no seu bloco, que é `floor` da posição, lido por `getRadiation`, com
+o teto de 100 000. No Nether esse valor vale no mínimo `hellRad`, 0,1 RAD/s (`RadiationConfig.hellRad`). O resultado
+passa por `ContaminationUtil.contaminate(.., RADIATION, CREATIVE, rad / 20F)` (`:265-300`):
+- o `radEnv`, o buffer que o Geiger ouve, recebe a quantidade antes de qualquer porta (`note_contamination`);
+- o criativo não leva dose (`:284`), nem quem está nos primeiros 200 ticks (`:287`);
+- a dose é a quantidade vezes `calculateRadiationMod` (a armadura), até o teto de 2 500 RAD do `incrementRadiation`.
+
+A ordem segue `onUpdate:119-122`: depois de `handleRadiationEffect`, que é a doença, e antes das poções.
+`isRadImmune` só vale para um jogador com `HbmPotion.mutation`, que o port não tem. As frações de miliRAD que cada
+tick deixa passam para o tick seguinte, na dose e no `radEnv`. Assim um campo fraco, de 0,01 RAD/s por exemplo, dá a
+dose do Java ao longo do tempo, em vez de nada.
+
+O Geiger de mão (`printGeigerData:161`): a linha "chunk" é `((int)(getRadiation × 10)) / 10`. As zonas de bomba
+continuam somando nela até a 4e (decisão D2). O dosímetro não tem essa linha: ele lê o `radBuf`, que agora inclui o
+campo.
+
+O bloco contador Geiger (`GeigerCounter`, `TileEntityGeiger`) é conteúdo novo:
+- **O bloco** (ModBlocks:1635): ferro, dureza 15, resistência 0,25 e a aba de máquinas. As receitas são sem forma nos
+  dois sentidos com o contador de mão (`ToolRecipes:115`, `CraftingManager:609`) e saíram do gerador.
+- **O modelo e a orientação:** o modelo é o OBJ do `RenderGeiger`.
+  - O Java põe no bloco o `meta` do lado para onde o jogador olha (`onBlockPlacedBy`: yaw 0, sul, dá meta 3), e o
+    `RenderGeiger` gira o modelo por esse `meta`.
+  - O `beehive` do port vira para o jogador, o lado oposto. Então o modelo leva 180° a mais (`visual.json`), e cada
+    `facing` usa as caixas do `meta` oposto (`setBlockBoundsBasedOnState`; a de colisão é igual).
+  - Os testes conferem as duas contas no fonte (`test_radiation_blocks.GeigerCounterBlock`).
+- **O comportamento** (`geiger_block` no núcleo, glue nativa): o bloco não guarda nada, porque o `TileEntityGeiger`
+  não tem NBT. Seus contadores ficam na glue enquanto o chunk está carregado e recomeçam do 0 quando o bloco é feito,
+  posto ou carregado.
+  - A cada 10 ticks, lê o campo no bloco e avisa os vizinhos (`native_update_output_neighbors`, API 64).
+  - A cada 5 ticks, toca um clique da lista da leitura no canto do bloco (`playSoundEffect(xCoord, ..)`): a mesma
+    lista do contador de mão. Com a leitura em 0, toca `geiger1` com chance de 1 em 50.
+  - O comparador lê `min(ceil(rad / 5), 15)` na hora em que pergunta.
+  - O clique direito sem agachar dá o `techBoop` e o relatório do contador de mão.
+
+Diferença: o Java chama `notifyBlocksOfNeighborChange`, que avisa os seis vizinhos. Aqui é
+`updateNeighbourForOutputSignal`, que avisa os comparadores ao lado e os que estão atrás de um bloco condutor. Um
+comparador lê o sinal igual nos dois casos. A diferença é só para outros blocos vizinhos, que no Java recebem a
+notícia e aqui não.
+
+Lacunas:
+- **Leituras sem mod:** a do OpenComputers (`getRads`) e a do Energy Control / RoR (`provideExtraInfo`,
+  `provideRORValue`) não têm mod que as leia.
+- **O resto do `handleRadiationFX`:** os efeitos acima de 200, 600 e 900 RAD, ou seja, o vômito normal e o de sangue
+  com fome 60/19, o suor e as partículas do cliente (`:283-339`). Não estavam na 4b aprovada, e o port já tem a dose
+  para eles.
+- **Mobs:** a contaminação deles pelo campo depende da dose em mobs, como na fatia 5.
+
+Prova da 4b:
+- **Núcleo:**
+  - A contaminação tem testes de unidade: dose por tick, carência, criativo, armadura, o teto, o mínimo do Nether, a
+    fração levada adiante, o `radEnv` e o chunk do bloco `floor`. Os mutantes deram 12 de 12 mortos.
+  - O bloco contador Geiger tem 4 testes de unidade, e os mutantes deram 10 de 10 mortos.
+  - O conteúdo tem 4 testes que conferem no fonte as caixas por `meta`, o giro do `RenderGeiger`, a força e as
+    receitas.
+- **Em jogo** (famílias `chunk_field` e `geiger_block` de `native_items.py`, com `NTM_TEST_HOOKS=1`; binário
+  `58a64a8a…`, pacote `202b11c9…`; resumo em `docs/evidence/onda1-f4/items-4b.json`). As 11 verificações passaram:
+  - **A dose:** com o mundo congelado e avançado tick a tick numa janela sem atualização do campo, deu exatamente 500
+    miliRAD por tick a 10 RAD/s (10 000 em 20 ticks). O criativo não leva dose.
+  - **A linha "chunk" do Geiger:** é o campo truncado ao décimo, ou o da atualização que cai antes do clique.
+  - **A descarga** (pedida pelo coordenador na revisão da 4a), longe dos chunks do spawn, que nunca descarregam:
+    - o campo vai a 100 000 em x 3000, e o jogador se afasta 6000 blocos;
+    - o save no disco tem exatamente o valor com que o chunk saiu (36 632,08);
+    - o chunk descarregado continua no mapa e decai, e 20 atualizações depois está em 925,2, porque os vizinhos
+      espalham de volta para ele;
+    - na recarga ele volta do save: 23 761,8, que é o save depois de uma atualização.
+  - **O bloco:**
+    - posto por quem olha para o norte, fica com `facing=south`, o meta 2 do Java;
+    - com o mundo congelado, o comparador lê 6 a 30 RAD/s e 0 com o campo vazio;
+    - com o campo mantido em 30, os cliques são todos `geiger6`;
+    - o clique direito dá o relatório.
+
+  As rodadas anteriores falharam por defeitos da própria família, não do port:
+  - a expressão regular esperava as cores, que o log do chat tira;
+  - a descarga foi testada primeiro num chunk do spawn;
+  - os valores gravados eram comparados como double;
+  - os limiares de decaimento eram estreitos demais;
+  - faltava o chão do bloco;
+  - os cliques eram contados fora da janela em que o campo estava em 30.
+
+### 4c: a neblina e a destruição do mundo
+
+**A neblina** (`ChunkRadiationHandlerSimple.updateSystem:104-117`). A cada escrita de uma parte num vizinho, se o
+vizinho ficou acima de `fogRad` (100 RAD/s), em 1 de `fogCh` (20), e se o chunk que deu a parte existe, nasce uma
+neblina. A posição é uma coluna aleatória desse chunk de origem, não do vizinho que recebeu a parte, que é como o
+Java faz (`coord`, não `newCoord`). A altura é `getHeightValue` mais 0 a 4.
+
+O `ParticleRadiationFog` é desenhado como os 25 quads do seu `renderParticle`, e cada um vira uma partícula de mod do
+motor (`ntm:rad_fog_<n>`), decisão D1 (A):
+- **Os lugares e os tamanhos** saem do `new Random(50)`. Os `glTranslatef` do laço se somam, porque não há push/pop
+  dentro dele, e cada passo vai em média 2,5 para oeste, 2,5 para o norte e 0,15 para baixo. A neblina fica numa
+  diagonal de uns 60 blocos. O oráculo Java confere os lugares e os tamanhos
+  (`chunk_radiation::tests::the_fog_layout_matches_the_java_oracle`). Os tamanhos batem bit a bit. Um dos 75
+  lugares difere no último bit, porque o `nextGaussian` da JVM usa `StrictMath.log` (fdlibm) e o port usa o `ln` da
+  plataforma.
+- **Vida e cor:** 400 ticks, porque o `onUpdate` sobe o `maxAge` para 400. A partícula fica parada, sem
+  `moveEntity`. A textura é `fog.png` vezes a cor `glColor4f(0,85; 0,9; 0,5)`, porque o motor desenha partícula de mod
+  em branco (`tools/content-gen/fog_particles.py`).
+- **Diferenças:**
+  - O alfa vai em linha reta de 0,125 a 0. No Java ele é `sin(idade·π/400)·0,125`: entra suave, chega a 0,125 aos
+    200 ticks e some. As partículas de mod do motor só interpolam o alfa em linha reta.
+  - A luz é a do mundo, e o Java desenha com brilho cheio (`setBrightness(240)`).
+  - No Java dedicado, o `ServerProxy.effectNT` é vazio e a neblina só aparece no single-player. O port mostra a
+    neblina sempre.
+  - Alcance: cada quad sai do servidor como partícula e chega a quem está a até 32 blocos dele (`sendParticles`). O
+    Java cria a partícula no próprio cliente e desenha os 25 quads juntos. Como a neblina se estende por uns 60
+    blocos, o jogador vê só os quads perto de si. Por isso a contagem em jogo não é múltipla de 25.
+
+**A destruição do mundo** (`handleWorldDestruction:190-255`). Roda a cada tick (`worldRadEffects`) e, em cada mundo,
+sorteia cinco entradas do mapa, na ordem do mapa. Para cada uma com 10 RAD/s ou mais e chunk carregado, faz dez
+passadas pelas 16 × 16 colunas, `a` e depois `b`, isto é, x e depois z. Em cada passada:
+- uma coluna em três é visitada, na sua altura ou no bloco de baixo;
+- grama vira terra morta;
+- capim alto, em qualquer meta (arbusto, capim, samambaia), vira ar;
+- folhas (`Material.leaves`, menos as folhas mortas) viram folhas mortas 6 vezes em 7 e ar na 7ª.
+
+A altura é lida a cada passada, e os blocos são lidos e escritos direto no mundo. Assim, uma passada vê o que a
+anterior mudou, como no Java.
+- **A altura** (`getHeightValue`), decisão D2 (A): o heightmap `MOTION_BLOCKING` do motor
+  (`native_surface_heights`, API 127). No 1.7.10 ela é o primeiro bloco acima do último com `lightOpacity > 0`. Os
+  dois coincidem em folhas, água, capim, flores, tochas e neve fina. Diferem em vidro, cercas e grades, que bloqueiam
+  movimento mas tinham opacidade 0.
+- **Defeito do motor e ponte** (decisão do coordenador na 4c). O heightmap `MOTION_BLOCKING` do motor deixa de fora
+  os blocos do mod: o `heightmap_state` não os conta. Isso foi medido em jogo: numa coluna com pedra em 99,
+  `ntm:waste_earth` em 100 e ar acima, a altura saiu 100, e não 101. Sem a ponte, quando a grama virava terra morta a
+  altura caía, e o capim de cima nunca mais era visitado: só metade dele sumia.
+  - A correção da raiz está registrada como ticket do motor.
+  - A ponte, na glue: lê também o `WORLD_SURFACE`, que conta os blocos do mod. Onde ele passa do `MOTION_BLOCKING`, o
+    topo é o bloco do NTM mais alto entre os dois que bloqueia movimento pelo seu template
+    (`chunk_radiation::height_with_ntm`). Todos os templates do conteúdo bloqueiam, menos `poppy` (as plantas) e
+    `snow` (o fallout, uma camada): `blocksMotion` é a caixa de colisão com tamanho médio ≥ 0,729 ou de altura
+    inteira, e as grades, as escadas e as portas a têm. Um teste mantém essa lista igual à do conteúdo.
+- **As folhas mortas** vão com `persistent=true`, como as das bombas do port.
+- **`leaves_layer`** (`Material.leaves`, opacidade 0) não existe no port.
+
+**O sorteio** é por hash do mundo, do tick e do propósito (neblina ou destruição), com um `java.util.Random` por
+propósito e tick, porque o mod não tem o `world.rand`.
+
+Prova da 4c:
+- **Núcleo:**
+  - testes de unidade da regra de cada bloco, da passada (a taxa de colunas visitadas, a metade no bloco de baixo, a
+    altura de cada coluna, os sorteios de uma coluna fora do mundo), da destruição e da neblina no servidor, do limiar
+    da neblina, do chunk não carregado e da ponte da altura;
+  - o oráculo Java do layout da neblina;
+  - mutantes: 17 de 17 mortos na neblina e na destruição, 3 de 3 na ponte da altura;
+  - a lib inteira, 613 de 613 (com a ponte), e clippy limpo.
+- **Conteúdo:** o teste das partículas confere a textura (`fog.png` vezes a cor do Java), os 400 ticks, a partícula
+  parada e o alfa; o núcleo confere os 25 tamanhos contra o layout.
+- **Custo** (teste `chunk_radiation_effects_cost`, release, o mundo da 4a sob uma camada de grama, 2 000
+  atualizações):
+  - tick sem atualização: mediana 0,02 ms. A maior parte dos sorteios cai em chunks não carregados ou abaixo de 10.
+    Quando cai num chunk carregado, o p99 vai a 3–8 ms e o máximo a 10 ms;
+  - tick com atualização: mediana 2,1 ms (1,4 na 4a; a neblina soma ~0,7 ms) e p99 5,3 ms;
+  - cerca de 100 neblinas por atualização, o que o Java também dá: 225 chunks × 9 partes acima de 100, 1 em 20.
+
+  As alturas desse teste são as do host de teste, e não o heightmap do motor.
+- **Em jogo** (famílias `chunk_field`, `geiger_block` e `world_effects`; binário `4be27ab0…`, pacote `a34a78c4…`;
+  resumo em `docs/evidence/onda1-f4/items-4c.json`). As 15 verificações passaram:
+  - com a ponte da altura, numa área de 16 × 16 radiada: grama 256/256 em terra morta, capim alto 256/256 em ar,
+    folhas 231 em folhas mortas e 25 em ar (6/7 esperado);
+  - a neblina: 530 partículas contra 0 de fundo numa janela igual sem campo;
+  - as 11 verificações da 4b seguem passando.
+
+  As rodadas anteriores mostraram o defeito de altura do motor: a grama 256/256, o capim só pela metade, e a sonda de
+  altura com 100 sobre a terra morta. A ponte entrou depois disso. A primeira contagem da neblina exigia múltiplo
+  de 25, e o alcance de 32 blocos explica por que isso não vale.
+
+### 4d: as fontes do campo no port
+
+#### O inventário (condição da 4d: antes do código, com a linha do Java de cada fonte)
+
+Toda escrita do Java no campo (`ChunkRadiationManager.proxy.incrementRad/decrementRad/setRadiation`), fora do próprio
+handler, e o estado do que a chama no port:
+
+| Fonte | Java | O que faz | No port |
+|---|---|---|---|
+| `BlockHazard` (24 blocos: urânio, tório, netúnio, plutônio, MOX, schrabídio, solínio, rádio, actínio, trinitita, cório…) | `BlockHazard.java:120-146` | tick agendado a cada 20, `rad` = nível do `HazardRegistry` do item × 0,1 | os blocos existem (cubo estático): **4d** |
+| `BlockNuclearWaste` (`block_waste`, `_painted`, `_vitrified`) | `BlockNuclearWaste.java:14-23` → `BlockHazard` | o mesmo, mais radônio denso ao lado (1 em 2) | os blocos existem: **4d** (o radônio denso não existe no port: lacuna) |
+| `BlockHotHazard` (`block_polonium`, `block_pu238`) | herda `BlockHazard` | o mesmo | os blocos existem: **4d** |
+| `BlockHazardFalling` (`block_yellowcake`, `block_fallout`; `block_red_phosphorus` tem nível 0) | `BlockHazardFalling.java:39-66` | o mesmo, e cai como areia (`super.updateTick`) | os blocos existem (template cascalho): **4d** |
+| `BlockOre` com `rad` (`ore_schrabidium`, 0,1) | `BlockOre.java:199-226`, ModBlocks:1248 | tick aleatório e agendado a cada 20 | o bloco existe: **4d** |
+| `YellowBarrel` (`yellow_barrel` 5,0; `vitrified_barrel` 0,5) | `YellowBarrel.java:73-92` | tick agendado a cada 20, desde o `onBlockAdded` | os blocos existem: **4d** |
+| `YellowBarrel.explodeEntity` (35 ao explodir) | `YellowBarrel.java:114` | na explosão do barril (`BlockDetonatable`) | o barril não explode no port: lacuna |
+| `BlockSellafield` (`rad` 0,5 × (meta + 1)) | `BlockSellafield.java:56` | no tick aleatório, antes do decaimento | o tick aleatório existe (5d): **4d** |
+| `FT_VentRadiation.onFluidRelease` (trítio 0,001, UF6 0,2, PUF6 0,1, gás de resíduo 0,5 por mB) | `FT_VentRadiation.java:31`, chamado pelo flare `TileEntityMachineGasFlare.java:144` | o gás ventilado pelo flare | o flare é Inert no port: o modelo em `petroleo_e.rs` emite `FlareEvent::Release`, mas o servidor não o roda. Lacuna até o flare ser ligado |
+| o mesmo, pelo tanque que vaza depois de explodir, pelo tambor e pelo alto-forno | `TileEntityMachineFluidTank.java:134`, `TileEntityStorageDrum.java:145`, `TileEntityMachineBlastFurnace.java:125` | — | o tanque não explode no port, o tambor não existe e o alto-forno só derrama gás de combustão, sem radiação: lacuna ou nada |
+| `CommandRadiation` | `CommandRadiation.java:26,33` | `/ntmrad` | feito na 4a |
+| **RBMK**: barra sem tampa, fluxo para coluna sem tampa, fluxo sobre as colunas | `TileEntityRBMKRod.java:153`, `RBMKNeutronHandler.java:305,417,421` | `fluxQuantity × 0,05` | **o RBMK está ativo no port**: decisão (A) do coordenador, as três emissões entram (**4d**), aplicadas ao campo depois de um passo aceito do grupo de máquinas |
+| Watz | `TileEntityWatz.java:196` | 1 000 ao derreter | Inert no port: lacuna |
+| Aniquilador | `TileEntityMachineAnnihilator.java:147` | `min(radiação × 5, 1 000)` | Inert no port: lacuna |
+| Gás de fusão do reator (`gas_meltdown`) | `BlockGasMeltdown.java:82` | 5 quando vê o céu | não existe no port: lacuna |
+| Absorvedor (`rad_absorber`, `decrementRad`) | `BlockAbsorber.java:71` | a cada 10 ticks, o nível do absorvedor | não existe no port: lacuna |
+| Névoa de fluido (`EntityMist`) | `EntityMist.java:88` | `radPerMB × 2` | não existe no port: lacuna |
+| Besta radioativa (`EntityRADBeast`) | `EntityRADBeast.java:144` | 100 ao morrer | não existe no port: lacuna |
+| Projétil químico (`EntityChemical`) | `EntityChemical.java:242,398` | `radPerMB × 5` | não existe no port: lacuna |
+| Explosão nuclear pequena (`ExplosionNukeSmall`: waffle, munição HIMARS e de artilharia, creeper nuclear, OVNI, míssil tier 0, bomba de fissura) | `ExplosionNukeSmall.java:45` | 50 / (distância + 1) em 5 × 5 chunks | nenhum chamador existe no port: lacuna |
+| Granada (`ItemGrenadeFilling`) e catapulta (`XFactoryCatapult`) | `ItemGrenadeFilling.java:243`, `XFactoryCatapult.java:127` | o mesmo desenho | não existem no port: lacuna |
+| Núcleo do DFC (`TileEntityCore`) | `TileEntityCore.java:129` | 100 | não existe no port: lacuna |
+| Máquina personalizada (`TileEntityCustomMachine`) | `TileEntityCustomMachine.java:291,293` | a radiação da receita | não existe no port: lacuna |
+| Reator de pesquisa (`TileEntityReactorResearch`) | `TileEntityReactorResearch.java:153,330` | a radiação do reator, 50 ao explodir | não existe no port: lacuna |
+
+Leitores do campo além do jogador e dos contadores Geiger: `ArmorFSB.java:387`, a leitura de um conjunto de armadura,
+que fica para a frente de armaduras.
+
+Dois comportamentos do Java que entram como são:
+- **O `rad` do `BlockHazard` e do `BlockHazardFalling`** é um campo do `Block`, que é um só por tipo, e só é escrito
+  no `onBlockAdded` (`BlockHazard.java:141`: "who wrote this???"). Numa sessão do jogo em que nenhum bloco do tipo
+  foi posto, o tick agendado que voltou com o mundo encontra `rad = 0`: não incrementa nem se reagenda, e a cadeia
+  daquele bloco acaba. Assim que um bloco do tipo é posto, o tipo inteiro passa a irradiar, mas só os blocos com tick
+  agendado. O port guarda os tipos armados durante o processo, como a JVM.
+- **O `BlockOre`** (`setTickRandomly(true)` com `rad`) irradia nos ticks aleatórios e, a partir deles, a cada 20 ticks
+  agendados.
+
+#### O que entrou
+
+- `ntm_core::field_sources`: a tabela das fontes de bloco (24 `BlockHazard`, resíduos, polônio e Pu-238,
+  `BlockHazardFalling`, `ore_schrabidium`, os dois barris) com o `rad` de cada uma, tirado do `HazardRegistry`
+  do port × 0,1 (`BlockHazard.java:142`); o sellafield dá 0,5 × (nível + 1) (`BlockSellafield.java:56`).
+- O tick agendado de 20 desde a colocação, o reagendamento a cada tick e o tick aleatório do minério e do
+  sellafield. Os tipos de `BlockHazard` armados ficam guardados durante o processo, nunca no save, como o campo
+  `rad` do `Block` na JVM.
+- O RBMK (decisão A): as três emissões (`TileEntityRBMKRod.java:153`, `RBMKNeutronHandler.java:305,417,421`)
+  entram no campo depois de um passo aceito do grupo de máquinas. Um passo recusado não deixa nada no campo.
+- O campo saiu de `Ready`, que é clonado em cada transação de um grupo de máquinas, e passou para o `Server`.
+  É um custo que vinha da 4a sem ter sido medido.
+
+#### Prova da 4d (binário `8642912c…`, pacote `38baab6d…`)
+
+- Biblioteca 617/617, `clippy -D warnings` limpo (núcleo e stage nativo). Mutantes 3/3 na ligação do RBMK.
+- Família `field_sources` em jogo, 6/6 (`docs/evidence/onda1-f4/items-4d.json`), tudo congelado e contado
+  tick a tick:
+  - polônio: 75 a cada 20 ticks;
+  - barril amarelo: 5 a cada 20;
+  - fallout: cai no passo 1, pousa em y 100 e dá 1,05 a cada 20 a partir do pouso;
+  - minério de schrabídio: múltiplos de 0,1 nos ticks aleatórios;
+  - sellafield: múltiplos de 0,5;
+  - RBMK com fonte Po-210/Be: emite em todos os ticks.
+- Cenário `armed` com corte do jogo (`docs/evidence/onda1-f4/player-cut-armed-4d.json`), o bug do
+  `onBlockAdded` como no Java:
+  - no jogo que pôs o polônio A, ele dá 75 a cada 20;
+  - depois de reabrir, A fica mudo;
+  - um polônio B posto arma o tipo e dá 75 a cada 20;
+  - A continua morto, porque o tick dele encontrou `rad = 0` e não se reagendou.
+
+#### Lacunas da 4d
+
+- **Atraso da queda (motor)**: no Java, um `BlockHazardFalling` de tipo já armado fica 20 ticks parado antes
+  de cair, porque o `BlockFalling.onBlockAdded` usa o `tickRate`, que é 20 com `rad > 0`. Na primeira colocação
+  da sessão, `rad` ainda é 0 nesse momento e ele cai em 2 ticks. No port, o modelo de cascalho agenda a queda
+  sempre em 2 ticks, antes do gancho do NTM. O motor ignora um tick duplicado, como o 1.7.10, então o
+  agendamento de 20 do NTM não substitui o de 2. Para igualar, seria preciso que o atraso de queda de um bloco
+  de mod fosse configurável no motor. Não mexi no motor: fica registrado.
+- O flare, o tanque que explode, o tambor, o barril que explode e todas as fontes Inert ou que não existem no
+  port (Watz, aniquilador, gás de fusão, absorvedor, névoa, besta, projétil químico, explosões nucleares
+  pequenas, granada, catapulta, núcleo do DFC, máquina personalizada, reator de pesquisa): lacuna, como na
+  tabela acima.
+- O radônio denso do `BlockNuclearWaste`: o bloco não existe no port.
+
+### 4e: as zonas de bomba e o que uma cratera irradia no Java
+
+#### O inventário (antes do código)
+
+O plano da fatia 4 dizia "as zonas de bomba trocadas pelo campo". O Java não confirma esse plano: uma cratera
+**não escreve nada no campo por chunk**.
+
+| O que acontece depois de uma bomba | Java | Escreve no campo? | No port |
+|---|---|---|---|
+| Pulso de radiação nos primeiros 10 ticks | `EntityNukeExplosionMK5.java:66-67,102` (`radiate`: 2 500 000 / (5t + 1), alcance 2 × comprimento, só com `strength ≥ 75`) | não: contamina as entidades direto | feito (`bomb_server::radiation_pulse`) |
+| A chuva de fallout em 2,5 R | `EntityNukeExplosionMK5.java:89-95` → `EntityFalloutRain.java:57-220` | não | feita (`explosion/fallout.rs`), com diferenças na tabela (abaixo) |
+| Pedra, terra, areia, grama, ferro → `sellafield_slaked`, meta 9..0 em faixas de 5% até 50% | `FalloutConfigJSON.java:87-108` | não: `BlockSellafieldSlaked` não tem tick nem radiação, a meta só escurece a cor (`BlockSellafieldSlaked.colorMultiplier`) | uma faixa só, sem nível |
+| Minérios → minérios de sellafield (`BlockSellafieldOre`, que herda o `slaked`) | `FalloutConfigJSON.java:89-99` | não | não converte |
+| Areia → `waste_trinitite` (5%) | `FalloutConfigJSON.java:113-120`; `BlockTrinitite` é um `BlockOre` sem `rad` | não | feito |
+| Micélio → `waste_mycelium` | `FalloutConfigJSON.java:110-112`; a poção ao pisar está em `WasteEarth.java:81-96` | não | a conversão não existe na chuva (só no ZIRNOX); a poção ao pisar existe (`walking.rs`) |
+| Camada `fallout` no topo | `EntityFalloutRain.java:172-180` | não: só a poção ao pisar (fatia 5d) | feito (5d) |
+| Madeira, folhas, argila, fogo | `FalloutConfigJSON.java:56-77,121-123`; `EntityFalloutRain.java:182-185` | não | feito |
+| Fogo de balefire | `Balefire.java:156-159`: poção de radiação nível 9 por 5 s ao tocar | não | a verificar |
+
+O único `BlockOre` com `rad` no Java é o `ore_schrabidium` (`ModBlocks.java:1248`). Nenhum bloco que a chuva cria
+é fonte do campo (fatia 4d).
+
+**As zonas do port** (`blast::Zone`) são uma criação do port, sem par no Java. Cada zona é um círculo de 2,5 R com
+pico de 10 RAD/s × R / 100 no centro, caindo com o quadrado da distância e com meia-vida de 12 000 ticks. Elas
+somam na dose de quem está dentro (`area_dose`) e na linha "chunk" do Geiger (decisão D2 da 4b, até a 4e). O
+balefire também cria uma zona. Usos: `blast/mod.rs`, `blast/config.rs` (`zona`, `meiavida`), `bomb_server.rs`,
+`radiation_server.rs`, `instruments.rs`, `persist.rs` (as zonas vão para o save), `transaction.rs`, a cola nativa
+(`glue.rs`, `item_hooks.rs`) e os testes.
+
+Decisão pedida ao coordenador antes do código.
+
+Decisões do coordenador: (A) remover as zonas; D2, a tabela cosmética da chuva, fica como lacuna para a frente de
+explosões e conteúdo; o fogo de balefire fica como lacuna (A); as correções do pulso foram aprovadas.
+
+#### O que entrou
+
+- **As zonas saíram.** Isso inclui:
+  - `blast::Zone`, `area_dose` e `area_rate`;
+  - a soma na linha "chunk" do Geiger, que agora lê só o campo;
+  - as chaves `zona` e `meiavida` do `/ntmbomba config`;
+  - a gravação das zonas no save.
+  Um mundo salvo antes, com zonas ou com essas chaves, abre normalmente: o serde ignora as chaves, o resto do que o
+  mundo guardou continua, e o próximo save sai sem elas. Testes: `a_world_kept_with_zones_loads_without_them` e
+  `the_zones_settings_of_an_old_world_are_read_past`.
+- **O pulso do MK5 ficou fiel** (`EntityNukeExplosionMK5.java:66-67,102-136`, com
+  `ContaminationUtil.contaminate:265-300`). O inventário achou nele estas divergências, além das zonas:
+  - Os updates que irradiam são t = 2..9. O `ticksExisted` cresce antes do `onUpdate` (`World.java:2290-2298` do
+    1.7.10), e o primeiro update ainda não tem explosão. O total é `Σ 2 500 000 / (5t + 1)` ≈ 864 138 RAD. O port
+    somava t = 0..9 (3 780 000) de uma vez: 4,4 vezes mais.
+  - Um update por tick, a partir do tick da detonação (que é o update 1), e cada um com a geometria do seu tick: a
+    posição do jogador e os blocos no caminho naquele momento. Os oito updates acontecem sempre. A entidade do Java
+    vive mais do que isso: a explosão em lotes de força 75 ou mais leva mais updates, até no ar, porque os raios são
+    calculados mesmo sem blocos. A cratera do port, que no ar termina quase de imediato, não corta o pulso. Só o
+    `/ntmbomba cancelar` o encerra, porque ele mata a entidade.
+  - A área é a caixa `getEntitiesWithinAABB` de ±2 × length, comparada com a caixa do jogador (0,6 × 1,8), e não
+    uma esfera.
+  - A resistência é somada bloco a bloco: um passo por bloco ao longo do vetor unitário, de `i = 1` enquanto
+    `i < len`, com `getExplosionResistance`, em float. Antes eram até 48 amostras escaladas. A dose do update é
+    `rads / max(res, 1) / len²`, em float.
+  - `RAD_BYPASS`: a armadura não reduz o pulso (antes reduzia).
+  - O `radEnv` recebe o valor antes das barreiras, então o Geiger de quem está em criativo ouve o pulso. A dose
+    respeita o criativo e a carência de 200 ticks (antes o pulso ignorava a carência).
+  - O pulso só acontece com fallout e `strength = 2r ≥ 75`, ou seja, raio ≥ 38. O balefire não tem pulso
+    (`EntityBalefire` não chama `radiate`).
+  - O raio é o que o servidor usa, depois do `raiomax`. Com o `raiomax` padrão (500), é o raio da bomba; com um
+    `raiomax` abaixo de 38, não há pulso.
+- **Micélio na chuva** (`FalloutConfigJSON.java:87-112`): o micélio é `Material.grass`, então até 45% a entrada da
+  grama o escoria; depois disso ele vira `waste_mycelium`. Essa entrada não é `sol`, então não conta na
+  profundidade da coluna. O perfil da chuva ganhou um 12º campo; um perfil guardado com 11 campos continua lendo.
+- **`ntmtest dose`**: um gancho de prova que lê a dose do servidor a cada tick.
+
+#### Prova da 4e (binário `e8022e5d…`, pacote `79dba264…`)
+
+- Biblioteca 717/717; `watz_pwr_parity` passa; `clippy -D warnings` limpo no núcleo e no stage nativo.
+  - Testes novos: o pulso no jogo de teste (8 updates com os valores da fórmula, armadura ignorada, criativo com Geiger
+    e sem dose, nada depois); a bomba no ar, que ainda dá os 8 updates; o save e a config antigos com zonas; o micélio
+    na chuva; o perfil de 11 campos.
+  - O `save_model` (o modelo do save, que não importa o `ntm_core`) foi interrompido depois de 1,5 h em debug e não foi
+    rodado nesta fatia; nada da 4e passa por ele.
+- Mutantes manuais, 4/4 pegos:
+  - o update 1 irradiando;
+  - o limiar 74;
+  - `RAD_BYPASS` ignorado;
+  - sem o piso `max(res, 1)`.
+- Família `crater` em jogo, 7/7 (`docs/evidence/onda1-f4/items-4e.json`). Uma bomba de teste de raio 40 no ar; o
+  jogador a 50 blocos, atrás de uma parede de lã que barra o dano da explosão e não o pulso; tudo congelado e lido do
+  servidor tick a tick (`ntmtest dose`):
+  - 8 updates seguidos: 90 863, 62 469, 47 595, 38 442, 32 242, 27 764, 24 378 e 21 728 milliRAD, os valores do Java
+    (345,481 RAD no total);
+  - o campo por chunk vazio depois do pulso e depois da chuva;
+  - nenhuma dose a mais com o jogador parado até o fim da cratera e da chuva;
+  - micélio a 42 blocos (d 0,42) virou `sellafield_slaked`; a 60 (d 0,6) virou `waste_mycelium`.
+- Duas coisas que a prova encontrou:
+  - Sem a parede, o jogador morre no primeiro tick pelo dano da explosão, antes de qualquer `radiate`. É fiel: no
+    Java o `dealDamage` roda em todo update, o primeiro também.
+  - A primeira versão ligava o pulso à cratera ainda sendo cavada. No ar, a cratera do port termina quase de imediato
+    e cortava o pulso, então o pulso foi separado dela.
+
+#### Lacunas da 4e
+
+- **Fogo de balefire** (decisão A do coordenador): o bloco `ntm:balefire` não existe no port. A explosão de balefire
+  põe fogo vanilla. A poção ao tocar (`Balefire.java:156-159`) entra junto com o bloco e sua propagação de 15
+  gerações, na frente de conteúdo e explosões.
+- **Dose em mobs**: o `radiate` do Java irradia toda `EntityLivingBase`. O port não tem dose em mobs.
+- **A tabela cosmética da chuva** (D2): o `slaked` com nível de cor 0..9; os minérios que viram minérios de
+  sellafield; o *falloff* gaussiano perto do `maxDist` de cada entrada; folhas e cogumelos.
+- **A busca de topo da chuva**: cada coluna começa perto do topo das vizinhas mais 8 e sobe enquanto não acha ar. Um
+  bloco flutuando acima disso escapa da chuva, enquanto o Java varre a coluna de 255 para baixo. Fica para a frente de
+  explosões.
+- **O `raiomax`**: o pulso usa o raio cortado pelo `raiomax` do servidor. Abaixo de 38, não há pulso. Com o padrão
+  (500), o raio é o da bomba.
+
+## Fatia 6: as cinzas (`powder_ash`) e o cinzeiro (`machine_ashpit`)
+
+### O inventário (antes do código)
+
+| Peça | Java | O que faz | No port |
+|---|---|---|---|
+| Cinzeiro | `TileEntityAshpit.java` | 5 slots, níveis `wood/coal/misc/fly/soot`; a cada tick, uma cinza por tipo quando o nível passa do limiar (2000; fuligem 8000); todos os slots saem por qualquer lado; os níveis vão no NBT | `Kind::Inert` |
+| Bug do cinzeiro | `TileEntityAshpit.processAsh` | ao abrir uma pilha nova num slot vazio, subtrai o limiar de `ashLevelWood` qualquer que seja o tipo, além do que o chamador subtrai do tipo (o nível de madeira pode ficar negativo); um slot vazio vence uma pilha parcial mais adiante | entra como é |
+| Fornalha e forno de aquecimento | `TileEntityFireboxBase.java:73-98` | ao consumir um combustível, o cinzeiro **logo abaixo do núcleo** (`getTileEntity(x, y-1, z)`) ganha o `baseTime` do combustível (o tempo do módulo de queima, **antes** do `getTimeMult` do forno, 0,125) no tipo de `getAshFromFuel:171-187` | ativos (`Kind::Firebox`), sem cinza; a tabela do forno guarda o tempo já multiplicado |
+| Chaminés de tijolo e industrial | `TileEntityChimneyBase.java:40-60` | a fumaça recebida por cano (`SMOKE*`) vira `ashLevelFly`/`ashLevelSoot` do cinzeiro abaixo | `Kind::Inert`; nenhuma máquina do port emite fumaça (`TileEntityMachinePolluting` ficou de fora) |
+| Queimador a lenha | `TileEntityMachineWoodBurner.java:95-110,204-219` | a cinza vai ao próprio slot 1 (`while processAsh`, limiar 2000); consome o combustível sempre que `burnTime <= 0`, ligado ou não (só a geração depende de `isOn`, `:118`) | versão simplificada (um campo de combustível com botão, sem slot de cinza, consome só ligado, sem queima líquida) |
+| Forno de tijolo | `TileEntityFurnaceBrick.java:85-92,163-176` | cinza no slot 3 | feito na Onda 2 (`furnace_brick.rs`), sem o bug do cinzeiro (o Java desse forno não o tem) |
+
+Decisão de escopo pedida ao coordenador antes do código.
+
+Decisões do coordenador: D1 (A), as chaminés ficam como lacuna até o sistema de fumaça; D2 (A), no queimador a lenha
+entra o mínimo fiel na parte que toca as cinzas.
+
+#### O que entrou
+
+- **Cinzeiro** (`crate::ashpit`, `Kind::Ashpit`), seguindo `TileEntityAshpit` linha a linha:
+  - 5 slots e os níveis `wood/coal/misc/fly/soot`, como ints do Java;
+  - limiares 2000, e 8000 para a fuligem; uma cinza por tipo por tick;
+  - o bug do `processAsh` (pilha nova tira o limiar da madeira, e um slot vazio vence a pilha parcial);
+  - os níveis no `save_state`, junto com os slots.
+  Os slots são só de saída (`SlotTakeOnly`, `output` no arquivo da máquina): nada entra, nem por funil.
+  Visual: o multibloco 3×3 (`{0,0,1,1,1,1}` offset 1); a tela `gui_ashpit`; o modelo do forno de aquecimento com a
+  textura do cinzeiro, com a porta deslizando enquanto a tela está aberta e o interior cheio enquanto há cinza.
+- **Fornalha e forno de aquecimento**: ao acender um combustível, guardam o tipo (`getAshFromFuel`) e o `baseTime`
+  dele. Depois das máquinas, o servidor o passa ao cinzeiro logo abaixo do núcleo (`ash_tick`). O `baseTime` é o
+  tempo da tabela da fornalha, também para o forno: os dois usam o mesmo módulo de queima e a fornalha tem
+  `timeMult` 1. Verificado nas 85 entradas: o tempo do forno é sempre `floor(fornalha × 0,125)`.
+- **Queimador a lenha**, mínimo fiel:
+  - o tempo do módulo de queima (troncos ×4, madeira ×2) vai ao nível de cinza do tipo, com uma cinza no slot 1 a
+    cada 2000, em `while`;
+  - acende o próximo combustível sempre que a queima acaba, ligado ou não;
+  - no tick em que acende, não gera nada (no Java a queima é `else if`).
+  O tempo de queima passou a ser o do módulo (antes era o vanilla), porque no Java é o mesmo valor que vai para a
+  cinza.
+- `fuel::family`: as escadas de madeira passam a ser da família madeira (`stairWood` do Forge).
+
+O que a primeira prova em jogo encontrou: o servidor nativo lê os slots de cada máquina de `data/machine_files.json`
+(gerado pelo `tools/machine-gen/build.py` a partir do conteúdo), e não do pacote em tempo de execução. Sem a entrada
+do cinzeiro, o motor deu zero slots e o primeiro `processAsh` derrubou o servidor por índice fora dos limites. A
+entrada foi gerada (só ela; o resto do arquivo saiu igual). O cinzeiro e o queimador agora toleram um vetor de slots
+mais curto: o nível espera e nada cai.
+
+#### Prova da fatia 6 (binário `751927b5…`, pacote `eebe930a…`)
+
+- Biblioteca 728/728; `clippy -D warnings` limpo no núcleo e no stage nativo.
+  - Testes novos: o cinzeiro (o bug da madeira, a vez do slot vazio, a fuligem a 8000, cheio, sem slots, os níveis no
+    `save_state`); a fornalha e o forno no servidor alimentando o cinzeiro de baixo, e nada se o cinzeiro estiver ao
+    lado; o queimador (cinza no slot 1, ligado ou não, o bloco de carvão em oito cinzas de uma vez, nenhuma geração
+    no tick em que acende); o módulo de queima do queimador.
+- Mutantes manuais, 5/5 pegos:
+  - sem o bug da madeira;
+  - o cinzeiro procurado acima;
+  - o forno com a queima no lugar do tempo-base;
+  - `if` no lugar do `while`;
+  - o queimador acendendo só ligado.
+- Cenário `ash` em jogo, com reabertura do mundo (`docs/evidence/onda1-f6/ash-6.json`), todos os checks passaram:
+  - o carvão de uma fornalha e o de um forno sobre seus cinzeiros dão uma cinza de carvão no tick seguinte, com
+    `coal` 0 e `wood` −2000. O forno queima 250 ticks, um oitavo, e mesmo assim o cinzeiro recebe os 2000 do
+    tempo-base;
+  - o segundo carvão do forno faz a pilha crescer para 2 sem tocar na madeira;
+  - um queimador desligado acende um bloco de carvão: 16 000 de queima parada, oito cinzas de carvão no slot 1 e o
+    segundo bloco esperando;
+  - depois de reabrir, os dois cinzeiros e o queimador voltam iguais (níveis, cinzas e queima).
+
+#### Lacunas da fatia 6
+
+- **Chaminés** (D1 A): as cinzas volantes e a fuligem vêm da fumaça que as máquinas emitem
+  (`TileEntityMachinePolluting`), que o port não tem. Os níveis `fly` e `soot` do cinzeiro existem e ficam em zero.
+- **Queimador a lenha** (D2 A): faltam a queima líquida, o tanque e a recarga de bateria pelo slot, além das
+  portas do queimador. A fuligem de poluição (`PollutionHandler`) também falta.
+- **A ordem de atualização no mesmo tick**: no Java, o cinzeiro pode processar antes ou depois da fornalha, conforme
+  a ordem da lista de *tile entities*. No port, a fornalha passa a cinza depois das máquinas, e o cinzeiro a
+  transforma no tick seguinte. A diferença é de no máximo um tick.
+- **A animação da porta e o `isFull`** estão no visual; não foram conferidos por captura de tela nesta fatia.
+
+## Encerramento da Onda 1
+
+Todas as fatias do escopo (`onda-1-escopo.md`) foram revisadas e integradas na `main`:
+1. proteção;
+2. máscaras e trajes;
+3. descontaminação;
+5. doença, morte e poção de radiação;
+4a a 4e. radiação do mundo por chunk, leituras, neblina e destruição, fontes, crateras;
+6. cinzas.
+
+Cada fatia segue o Java com as linhas citadas, bugs incluídos, e tem provas em jogo e evidências em `docs/evidence/`.
+
+Não há pendência dentro do escopo da Onda 1. As lacunas abaixo são do que o Java faz e o port ainda não tem, ou do
+que depende de outro sistema. Cada uma já aparece na sua fatia; aqui ficam agrupadas pela frente que deve levá-las.
+
+| Frente sugerida | Lacunas (fatia de origem) |
+|---|---|
+| **Dose em mobs** | O port só guarda dose de jogadores. Ficam de fora: a descontaminação de mobs (3); a contaminação pelo campo (4b); o `radiate` do MK5 em mobs (4e); as transformações do `handleRadiationEffect` (creeper, vaca, aldeão, pato) e os mobs imunes (5) |
+| **Poluição, fumaça e gases** | O `filter_exposure` sem fonte ambiental (2); as chaminés, com `fly` e `soot` (6); a fuligem do queimador e da fornalha (6); o gás de fusão e o radônio denso do resíduo (4d) |
+| **Explosões e conteúdo de bombas** | O bloco `ntm:balefire`, sua propagação e a poção ao tocar (4e); a tabela cosmética da chuva e a busca de topo que perde blocos flutuantes (4e); o barril amarelo que explode (4d); a explosão nuclear pequena, a granada e a catapulta (4d) |
+| **Máquinas ainda Inert ou ausentes** | Flare (`FT_VentRadiation`), Watz, aniquilador, absorvedor, núcleo do DFC, reator de pesquisa, máquina personalizada (4d); a queima líquida, o tanque, a bateria e as portas do queimador a lenha (6) |
+| **Entidades e itens ausentes** | Besta radioativa, projétil químico, névoa de fluido, item glitch e caranguejo de taint (4d, 5); as outras fontes de `HbmPotion.radiation` e de dano `ntm:radiation` (5); a lista de contaminação do jogador (3, 5d) |
+| **Motor** | O atraso de queda de um bloco de mod (4d). A ponte de altura do heightmap continua no lugar, com o ticket do motor registrado (4c). O gancho de comandos do jogador local, para o `/effect clear` (5d) |
+| **Visual e som** | As camadas de tela e os modelos vestidos das máscaras, os passos do liquidator e os tooltips (2); a partícula `townaura` da descontaminação (3); as texturas por posição do sellafield (5d); a porta e o interior do cinzeiro sem captura de tela (6) |
+| **Blocos** | A camada de fallout que solta item e empilha (5d) |
+| **Efeitos que o port ainda não tem** | O resto do `handleRadiationFX` acima de 200 RAD (vômito, suor, partículas) (4b); a poção `mutation` e o `isRadImmune` (5); as conquistas (5) |
+| **Regras globais do projeto** | A durabilidade com um uso a mais do 1.7.10, a aba criativa dos revestimentos e o `ShadyUtil` (1); as leituras do OpenComputers e do Energy Control (4b) |

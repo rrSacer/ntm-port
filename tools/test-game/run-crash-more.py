@@ -31,7 +31,7 @@ spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-p
 crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
 INCOMING = 'ntm:pile_rod__zr'
-BROKEN = ('break', 'replace', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The scenarios whose action writes files itself (a chunk it unloads): after a death outside a save they hold what those
 # files hold, not the last save.
@@ -51,11 +51,25 @@ EMITTING = {'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pil
             'coupled-break': (('ntm:pile_rod',), 6, 6)}
 
 
+# The multiblock furnaces' break scenarios: the items counted before the cut (6 + 1, 6 + 3, 8 + 2).
+MB_TOTALS = {'iron-break': 7, 'steel-break': 9, 'combination-break': 10}
+
+
 # Breaks of a machine holding rods (its hidden contents), with what both worlds hold before: counted equal to the control.
 HIDDEN = {'frozen-break': 12, 'frozen-unload': 12}
 
 
 def items_of(scenario):
+    if scenario == 'furnace-smelt':
+        return ('minecraft:raw_iron', 'minecraft:iron_ingot')
+    if scenario == 'welder-run':
+        return ('ntm:plate_steel', 'ntm:motor')
+    if scenario in ('iron-state', 'steel-state', 'combination-state'):
+        return {'iron-state': ('minecraft:raw_iron', 'minecraft:iron_ingot'), 'steel-state': ('minecraft:iron_ore', 'minecraft:iron_ingot'),
+                'combination-state': ('minecraft:coal', 'ntm:coke__coal')}[scenario]
+    if scenario in ('iron-break', 'steel-break', 'combination-break'):
+        return {'iron-break': ('minecraft:raw_iron', 'ntm:upgrade_speed_1'), 'steel-break': ('minecraft:raw_iron', 'minecraft:raw_copper'),
+                'combination-break': ('minecraft:coal', 'minecraft:bucket')}[scenario]
     if scenario in EMITTING:
         return EMITTING[scenario][0]
     return ('ntm:niter',) if scenario in BROKEN and scenario not in HIDDEN else ('ntm:pile_rod',)
@@ -82,6 +96,15 @@ DEFAULT_POINTS = {
     'mining': [*crash_proof.POINTS, 'kv_committed', 'live_chunk:1,0'],
     # The mixer's chunk first (`live_chunk`): a cut after the first record of a batch hits another chunk in the control.
     'break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'furnace-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'welder-run': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'furnace-smelt': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'iron-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'steel-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'combination-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'iron-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'steel-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'combination-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'replace': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'frozen-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:2,0', 'chunks_written', 'entities_written'],
     'frozen-unload': ['none', 'kill', 'kv_committed'],
@@ -385,7 +408,7 @@ def main():
                 outcome = against_control(outcomes[False], outcomes[True]) if controlled else outcomes[False]
                 if exact and controlled:
                     # A death outside any save: both worlds are the last save, exactly (the break, the transfer never happened).
-                    base = TRANSFERS.get(args.scenario) or HIDDEN.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
+                    base = TRANSFERS.get(args.scenario) or HIDDEN.get(args.scenario) or MB_TOTALS.get(args.scenario) or int(os.environ.get('NTM_CRASH_NITER', '16'))
                     last = {r: (total(outcomes[False], r), total(outcomes[True], r)) for r in ('first_reopen', 'second_reopen')}
                     outcome['as_the_last_save'] = all(v == (base, base) for v in last.values()) and all(
                         o.get(r) == o.get('base_items') for o in outcomes.values() for r in crash_proof.REOPENS)

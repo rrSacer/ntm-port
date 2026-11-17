@@ -2,11 +2,18 @@
 fn ntm_soil_tick(
     level: &mut crate::game::GameLevel<'_>,
     ticks: &mut horizon_world::level::Ticks,
+    dimension: horizon_world::level::Dimension,
     pos: horizon_core::position::BlockPos,
     state: horizon_world::registry::BlockStateId,
     handled: &mut bool,
 ) {
     if !level.native_authoritative { return; }
+    let name = &*level.facts.get(state).name;
+    // The field's sources (slice 4d): sellafield's rad before it decays, a radioactive ore's random tick.
+    {
+        let name = name.to_string();
+        crate::game::ntm_glue::field_random_tick(level, ticks, crate::game::ntm_glue::level_dim_id(dimension), [pos.x, pos.y, pos.z], &name);
+    }
     let name = &*level.facts.get(state).name;
     if name == "ntm:sellafield" || name.starts_with("ntm:sellafield__") {
         // BlockSellafield.updateTick (Onda 1, slice 5d): down a level, or slaked from level 0, at the Java's chance.

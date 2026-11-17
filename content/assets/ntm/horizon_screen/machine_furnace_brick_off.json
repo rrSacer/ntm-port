@@ -1,0 +1,73 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_furnace_brick.png",
+  "size": [
+    176,
+    166
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    72
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        62,
+        54,
+        14,
+        13
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max_value": 200,
+      "rect": [
+        85,
+        34,
+        24,
+        16
+      ],
+      "uv": [
+        176,
+        14
+      ],
+      "dir": "right"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        62,
+        54,
+        14,
+        13
+      ],
+      "lines": [
+        "{0} / {1} ticks"
+      ]
+    },
+    {
+      "rect": [
+        85,
+        34,
+        24,
+        16
+      ],
+      "lines": [
+        "{2} / 200"
+      ]
+    }
+  ],
+  "title_color": "#ffffff"
+}

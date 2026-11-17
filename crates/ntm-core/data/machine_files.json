@@ -1222,6 +1222,99 @@
 2
 ]
 },
+"ntm:furnace_combination": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 26,
+"y": 36
+},
+{
+"output": true,
+"x": 89,
+"y": 36
+},
+{
+"x": 136,
+"y": 18
+},
+{
+"output": true,
+"x": 136,
+"y": 54
+}
+],
+"synced": []
+},
+"ntm:furnace_iron": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 53,
+"y": 17
+},
+{
+"x": 53,
+"y": 53
+},
+{
+"x": 71,
+"y": 53
+},
+{
+"output": true,
+"x": 125,
+"y": 35
+},
+{
+"x": 17,
+"y": 35
+}
+],
+"synced": []
+},
+"ntm:furnace_steel": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 35,
+"y": 17
+},
+{
+"x": 35,
+"y": 35
+},
+{
+"x": 35,
+"y": 53
+},
+{
+"output": true,
+"x": 125,
+"y": 17
+},
+{
+"output": true,
+"x": 125,
+"y": 35
+},
+{
+"output": true,
+"x": 125,
+"y": 53
+}
+],
+"synced": []
+},
 "ntm:heater_electric": {
 "inventory": [
 8,
@@ -2334,6 +2427,82 @@
 28
 ]
 },
+"ntm:machine_arc_welder": {
+"inventory": [
+8,
+122
+],
+"slots": [
+{
+"x": 17,
+"y": 36
+},
+{
+"x": 35,
+"y": 36
+},
+{
+"x": 53,
+"y": 36
+},
+{
+"output": true,
+"x": 107,
+"y": 36
+},
+{
+"x": 152,
+"y": 72
+},
+{
+"x": 17,
+"y": 63
+},
+{
+"x": 89,
+"y": 63
+},
+{
+"x": 107,
+"y": 63
+}
+],
+"synced": []
+},
+"ntm:machine_ashpit": {
+"inventory": [
+8,
+86
+],
+"slots": [
+{
+"output": true,
+"x": 44,
+"y": 27
+},
+{
+"output": true,
+"x": 62,
+"y": 27
+},
+{
+"output": true,
+"x": 80,
+"y": 27
+},
+{
+"output": true,
+"x": 98,
+"y": 27
+},
+{
+"output": true,
+"x": 116,
+"y": 27
+}
+],
+"synced": []
+},
 "ntm:machine_assembly_machine": {
 "inventory": [
 8,
@@ -3170,6 +3339,28 @@
 ],
 "synced": []
 },
+"ntm:machine_electric_furnace_on": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 20,
+"y": 35
+},
+{
+"x": 152,
+"y": 54
+},
+{
+"output": true,
+"x": 80,
+"y": 35
+}
+],
+"synced": []
+},
 "ntm:machine_electrolyser": {
 "inventory": [
 8,
@@ -3734,6 +3925,60 @@
 84
 ],
 "slots": [],
+"synced": []
+},
+"ntm:machine_furnace_brick_off": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 62,
+"y": 35
+},
+{
+"x": 35,
+"y": 17
+},
+{
+"output": true,
+"x": 116,
+"y": 35
+},
+{
+"output": true,
+"x": 35,
+"y": 53
+}
+],
+"synced": []
+},
+"ntm:machine_furnace_brick_on": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 62,
+"y": 35
+},
+{
+"x": 35,
+"y": 17
+},
+{
+"output": true,
+"x": 116,
+"y": 35
+},
+{
+"output": true,
+"x": 35,
+"y": 53
+}
+],
 "synced": []
 },
 "ntm:machine_gascent": {
@@ -4731,6 +4976,44 @@
 84
 ],
 "slots": [],
+"synced": []
+},
+"ntm:machine_soldering_station": {
+"inventory": [
+8,
+122
+],
+"slots": [
+{
+"grid": [
+17,
+18,
+3,
+2
+]
+},
+{
+"output": true,
+"x": 107,
+"y": 27
+},
+{
+"x": 152,
+"y": 72
+},
+{
+"x": 17,
+"y": 63
+},
+{
+"x": 89,
+"y": 63
+},
+{
+"x": 107,
+"y": 63
+}
+],
 "synced": []
 },
 "ntm:machine_solidifier": {

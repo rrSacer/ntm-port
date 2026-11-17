@@ -82,5 +82,8 @@ def build(source):
                 # (This text is frozen by the T00 snapshot test, test_rbmk_oracle: the sound it still lists as different is
                 # declared above as door_sounds, and tools/content-gen/test_catalog_k3.py checks that.)
                 row['behavior_gap']='Source manual/redstone door mapped to vanilla oak_door placement, halves, hinge and open states. NTM resistance, sounds and source metadata/NBT transform differ; no tile entity or invented lock.'
+            # MachineElectricFurnace.getItemDropped gives the unlit block; MachineBrickFurnace has no
+            # getItemDropped (only the client's pick-block getItem), so the lit brick furnace drops itself.
+            if name=='machine_electric_furnace_on':row['drop']='ntm:machine_electric_furnace_off'
             rows.append(row)
     return rows

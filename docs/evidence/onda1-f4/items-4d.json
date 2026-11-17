@@ -1,0 +1,164 @@
+{
+ "binary_sha256": "8642912cdcb2193ffbd0acc4be617da27e44d5ea4a8af3cecd3942d5d6705b12",
+ "bundle_sha256": "38baab6d25ee1f12083352bce3f05b1e6260dafb001948f8c62c4fd1c9d6b6ac",
+ "families": [
+  "field_sources"
+ ],
+ "ok": true,
+ "checks": {
+  "setup:a_hazard_block_gives_its_rad_every_20_ticks": {
+   "ok": true,
+   "actual": [
+    [
+     20,
+     75.0
+    ],
+    [
+     40,
+     75.0
+    ]
+   ]
+  },
+  "setup:the_yellow_barrel_gives_5_every_20_ticks": {
+   "ok": true,
+   "actual": [
+    [
+     20,
+     5.0
+    ],
+    [
+     40,
+     5.0
+    ]
+   ]
+  },
+  "setup:fallout_lands_and_gives_its_rad": {
+   "ok": true,
+   "actual": {
+    "left_120_at_step": 1,
+    "landed_at_step": 35,
+    "gains": [
+     [
+      1,
+      1.05
+     ],
+     [
+      21,
+      1.05
+     ],
+     [
+      41,
+      1.05
+     ]
+    ],
+    "column": {
+     "99": "minecraft:stone",
+     "100": "ntm:block_fallout"
+    }
+   }
+  },
+  "setup:the_schrabidium_ore_gives_0_1_on_its_ticks": {
+   "ok": true,
+   "actual": [
+    [
+     2,
+     0.1
+    ],
+    [
+     4,
+     0.4
+    ],
+    [
+     5,
+     0.2
+    ],
+    [
+     6,
+     0.1
+    ],
+    [
+     9,
+     0.2
+    ],
+    [
+     10,
+     0.1
+    ],
+    [
+     11,
+     0.2
+    ],
+    [
+     12,
+     0.2
+    ],
+    [
+     16,
+     0.3
+    ],
+    [
+     17,
+     0.1
+    ],
+    [
+     18,
+     0.1
+    ],
+    [
+     19,
+     0.3
+    ]
+   ]
+  },
+  "setup:sellafield_gives_half_its_level_plus_one": {
+   "ok": true,
+   "actual": [
+    [
+     0,
+     1.0
+    ],
+    [
+     2,
+     0.5
+    ]
+   ]
+  },
+  "setup:a_running_rbmk_irradiates_its_chunk": {
+   "ok": true,
+   "actual": [
+    [
+     0,
+     74.9709
+    ],
+    [
+     1,
+     74.9709
+    ],
+    [
+     2,
+     82.4678
+    ],
+    [
+     3,
+     82.4678
+    ],
+    [
+     4,
+     74.9707
+    ],
+    [
+     5,
+     74.9707
+    ],
+    [
+     6,
+     74.9707
+    ],
+    [
+     7,
+     74.9707
+    ]
+   ]
+  }
+ }
+}

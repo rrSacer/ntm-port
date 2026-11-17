@@ -13,6 +13,8 @@ type Owed = (Vec<crate::persist::Removal>, Vec<CommittedEffects>);
 
 #[derive(Clone)]
 struct World {
+    /// `calculateRadiationMod` of the players (`ServerHost::radiation_factor`): 1 without armor.
+    radiation_factor: f64,
     blocks: HashMap<(String, Pos), String>,
     /// Chunks (dimension, cx, cz) not loaded.
     unloaded: BTreeSet<(String, i32, i32)>,
@@ -64,6 +66,7 @@ struct World {
 impl World {
     fn new() -> Self {
         let mut w = World {
+            radiation_factor: 1.0,
             blocks: HashMap::new(),
             unloaded: BTreeSet::new(),
             writes: Vec::new(),
@@ -141,6 +144,9 @@ impl Kv for SHost {
 }
 
 impl ServerHost for SHost {
+        fn radiation_factor(&mut self, _id: &str) -> f64 {
+            self.world.borrow().radiation_factor
+        }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
             if !drops.is_empty(){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
@@ -256,6 +262,24 @@ impl ServerHost for SHost {
     }
     fn show(&mut self, dim: &str, show: &crate::blast::visuals::Show) {
         self.world.borrow_mut().shown.push((dim.into(), show.clone()));
+    }
+    /// The y above each column's highest block, tall grass and ferns aside (a motion-blocking heightmap), looked for
+    /// from y 80 down: the tests' surfaces are below it.
+    fn surface_heights(&mut self, dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
+        let w = self.world.borrow();
+        let key = &mut (dim.to_string(), [0, 0, 0]);
+        columns
+            .iter()
+            .map(|&(x, z)| {
+                (-64..=80).rev().find_map(|y| {
+                    key.1 = [x, y, z];
+                    w.blocks
+                        .get(key)
+                        .filter(|b| !matches!(crate::blockstate::id_of(b), "minecraft:air" | "minecraft:short_grass" | "minecraft:fern"))
+                        .map(|_| y + 1)
+                })
+            })
+            .collect()
     }
     fn set_player_value(&mut self, id: &str, key: &str, value: i64) {
         self.world.borrow_mut().values.insert((id.into(), key.into()), value);
@@ -632,12 +656,16 @@ fn just_under_a_thousand_rad_rolls_and_a_thousand_kills_without_drawing() {
 }
 
 mod bomb_tests;
+mod ash_tests;
+mod chunk_radiation_tests;
 mod combustion_tests;
 mod solar_stirling_tests;
 mod fluid_tests;
 mod crafter_tests;
 mod review_m2_tests;
 mod shredder_tests;
+mod brick_furnace_tests;
+mod furnaces_tests;
 mod blastfurnace_tests;
 mod foundry_tests;
 mod slot_items_tests;

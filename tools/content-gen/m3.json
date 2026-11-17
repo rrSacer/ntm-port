@@ -18452,6 +18452,19 @@
       "behavior_gap": "Creative-only infinite battery; server logic owns charging, no crafting recipe in NTM"
     },
     {
+      "id": "broken_item",
+      "source_variable": "broken_item",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/broken_item.png",
+      "creative_hidden": true,
+      "names": {
+        "en_us": "Broken Item",
+        "pt_br": "Item Quebrado"
+      },
+      "behavior_gap": "The product (id) lives in custom_data {ntm_broken:{id}}; the name and the layered icon of the product (BrokenItem.getItemStackDisplayName/getIcon) are not reproduced"
+    },
+    {
       "id": "machine_excavator",
       "source_variable": "machine_excavator",
       "type": "block",
@@ -25603,7 +25616,7 @@
       },
       "category": "machine",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
-      "behavior_gap": "Inert source identity only. No processing, inventory, item use, locking/key pairing, opening, redstone, linked multiblock, moving collision, model animation, hazards or technical state is implemented. Source casing/icon projected on one static block/item. No resolvable block icon in source declaration/class; source block_steel fallback, faithful atlas/model deferred.",
+      "behavior_gap": "Slice 6 (onda-1-protecao.md): TileEntityAshpit's slots and ash levels run on the server; the firebox and heating oven over it fill it. Chimney fly ash and soot need the absent smoke (gap).",
       "source_has_tile": true,
       "source_ancestry": [
         "MachineAshpit",
@@ -26076,7 +26089,8 @@
       "opaque_machine_textures": true,
       "source_tiles": [
         "TileEntityMachineElectricFurnace"
-      ]
+      ],
+      "drop": "ntm:machine_electric_furnace_off"
     },
     {
       "id": "machine_microwave",

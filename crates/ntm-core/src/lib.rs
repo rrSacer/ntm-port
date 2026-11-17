@@ -9,6 +9,7 @@ pub mod anvil;
 pub mod arc_furnace;
 pub mod bedrock;
 pub mod blast;
+pub mod broken;
 pub mod blastfurnace;
 pub mod blockstate;
 pub mod boiler;
@@ -26,6 +27,15 @@ pub mod explosion;
 pub mod excavator;
 pub mod fluid;
 pub mod fluidbox;
+pub mod fuel;
+pub mod oredict;
+pub mod upgrades;
+pub mod welders;
+pub mod ashpit;
+pub mod furnace_brick;
+pub mod furnace_combination;
+pub mod furnace_steel;
+pub mod furnaces;
 pub mod foundry;
 pub mod fraction;
 pub mod gascent;
@@ -54,6 +64,9 @@ pub mod snbt;
 pub mod steam;
 pub mod view;
 pub mod walking;
+pub mod chunk_radiation;
+pub mod field_sources;
+pub mod geiger_block;
 
 /// The pool allocator of the explosion engine, for the server mod's
 /// `#[global_allocator]` (single-threaded WebAssembly only).

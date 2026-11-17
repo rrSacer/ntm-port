@@ -36063,20 +36063,902 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_ashpit": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineAshpit {0,0,1,1,1,1} offset 1, ContainerAshpit (five SlotTakeOnly at 44 + 18i, 27; nothing goes in, TileEntityMachineBase.isItemValidForSlot), GUIAshpit 176x168 (gui_ashpit.png), RenderAshpit (heater_oven's model with ashpit.png; case 2: 180, then -90; the Door slides 0.75 along z by doorAngle / 135 while a player has it open; InnerBurning while isFull, at its own light)",
+      "machine": {
+        "slots": [
+          {
+            "x": 44,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 62,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 80,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 98,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 116,
+            "y": 27,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          86
+        ],
+        "data": 5,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            0,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_ashpit.png",
+        "texture_from": "textures/gui/machine/gui_ashpit.png",
+        "size": [
+          176,
+          168
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          74
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/heating_oven.obj",
+        "obj_from": "models/machines/heating_oven.obj",
+        "texture": "ntm:textures/models/machines/ashpit.png",
+        "texture_from": "textures/models/machines/ashpit.png",
+        "rotation": 90,
+        "radius": 2.0,
+        "show": {
+          "InnerBurning": {
+            "property": "honey_level",
+            "not": "0"
+          },
+          "Inner": {
+            "property": "honey_level",
+            "is": "0"
+          }
+        },
+        "loop_animation": {
+          "name": "animation.machine_ashpit.open",
+          "length": 1.0,
+          "loop": false,
+          "bones": {
+            "Door": {
+              "position": {
+                "0.0": [
+                  0,
+                  0,
+                  0
+                ],
+                "1.0": [
+                  0,
+                  0,
+                  12
+                ]
+              }
+            }
+          }
+        },
+        "open": "animation.machine_ashpit.open"
+      }
     },
     "ntm:furnace_iron": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFurnaceIron, GUIFurnaceIron 176x166 (processing/gui_furnace_iron.png): input (53,17), fuels (53,53) and (71,53), output (125,35), speed upgrade (17,35); FurnaceIron.getDimensions {1,0,1,0,1,0} offset 0, TileEntityProxyCombo(true,false,false): every dummy cell reaches the inventory",
+      "machine": {
+        "slots": [
+          {
+            "x": 53,
+            "y": 17
+          },
+          {
+            "x": 53,
+            "y": 53
+          },
+          {
+            "x": 71,
+            "y": 53
+          },
+          {
+            "x": 125,
+            "y": 35,
+            "output": true
+          },
+          {
+            "x": 17,
+            "y": 35
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 5,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            1,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              1
+            ],
+            [
+              -1,
+              1,
+              0
+            ],
+            [
+              -1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_furnace_iron.png",
+        "texture_from": "textures/gui/processing/gui_furnace_iron.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              53,
+              36,
+              70,
+              5
+            ],
+            "uv": [
+              176,
+              18
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              53,
+              45,
+              70,
+              5
+            ],
+            "uv": [
+              176,
+              23
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 4,
+            "min": 1,
+            "rect": [
+              70,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              52,
+              35,
+              71,
+              7
+            ],
+            "lines": [
+              "{0} / {1} ticks"
+            ]
+          },
+          {
+            "rect": [
+              52,
+              44,
+              71,
+              7
+            ],
+            "lines": [
+              "{2} / {3} ticks"
+            ]
+          }
+        ]
+      }
     },
     "ntm:furnace_steel": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFurnaceSteel, GUIFurnaceSteel 176x166 (processing/gui_furnace_steel.png): inputs (35,17/35/53), outputs (125,17/35/53); the heat gauge, per line progress and bonus bars, the lit frames while it works (value 8); FurnaceSteel.getDimensions {1,0,1,1,1,1} offset 1, TileEntityProxyCombo(true,false,false): every dummy cell reaches the inventory",
+      "machine": {
+        "slots": [
+          {
+            "x": 35,
+            "y": 17
+          },
+          {
+            "x": 35,
+            "y": 35
+          },
+          {
+            "x": 35,
+            "y": 53
+          },
+          {
+            "x": 125,
+            "y": 17,
+            "output": true
+          },
+          {
+            "x": 125,
+            "y": 35,
+            "output": true
+          },
+          {
+            "x": 125,
+            "y": 53,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 9,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -1,
+              0,
+              -1
+            ],
+            [
+              -1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              1
+            ],
+            [
+              -1,
+              1,
+              -1
+            ],
+            [
+              -1,
+              1,
+              0
+            ],
+            [
+              -1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              -1
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              -1
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              0,
+              -1
+            ],
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1
+            ],
+            [
+              1,
+              1,
+              -1
+            ],
+            [
+              1,
+              1,
+              0
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_furnace_steel.png",
+        "texture_from": "textures/gui/processing/gui_furnace_steel.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max_value": 100000,
+            "rect": [
+              152,
+              19,
+              7,
+              48
+            ],
+            "uv": [
+              176,
+              28
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max_value": 40000,
+            "rect": [
+              54,
+              18,
+              69,
+              5
+            ],
+            "uv": [
+              176,
+              18
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 5,
+            "max_value": 100,
+            "rect": [
+              54,
+              27,
+              69,
+              5
+            ],
+            "uv": [
+              176,
+              23
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 3,
+            "max_value": 40000,
+            "rect": [
+              54,
+              36,
+              69,
+              5
+            ],
+            "uv": [
+              176,
+              18
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 6,
+            "max_value": 100,
+            "rect": [
+              54,
+              45,
+              69,
+              5
+            ],
+            "uv": [
+              176,
+              23
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max_value": 40000,
+            "rect": [
+              54,
+              54,
+              69,
+              5
+            ],
+            "uv": [
+              176,
+              18
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 7,
+            "max_value": 100,
+            "rect": [
+              54,
+              63,
+              69,
+              5
+            ],
+            "uv": [
+              176,
+              23
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 8,
+            "min": 1,
+            "rect": [
+              16,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 8,
+            "min": 1,
+            "rect": [
+              16,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 8,
+            "min": 1,
+            "rect": [
+              16,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              151,
+              18,
+              9,
+              50
+            ],
+            "lines": [
+              "{0} / {1} TU"
+            ]
+          },
+          {
+            "rect": [
+              53,
+              17,
+              70,
+              7
+            ],
+            "lines": [
+              "{2} / 40000 TU"
+            ]
+          },
+          {
+            "rect": [
+              53,
+              26,
+              70,
+              7
+            ],
+            "lines": [
+              "Bônus: {5}%"
+            ]
+          },
+          {
+            "rect": [
+              53,
+              35,
+              70,
+              7
+            ],
+            "lines": [
+              "{3} / 40000 TU"
+            ]
+          },
+          {
+            "rect": [
+              53,
+              44,
+              70,
+              7
+            ],
+            "lines": [
+              "Bônus: {6}%"
+            ]
+          },
+          {
+            "rect": [
+              53,
+              53,
+              70,
+              7
+            ],
+            "lines": [
+              "{4} / 40000 TU"
+            ]
+          },
+          {
+            "rect": [
+              53,
+              62,
+              70,
+              7
+            ],
+            "lines": [
+              "Bônus: {7}%"
+            ]
+          }
+        ]
+      }
     },
     "ntm:furnace_combination": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFurnaceCombo, GUIFurnaceCombo 176x186 (processing/gui_furnace_combination.png): input (26,36), output (89,36), empty container (136,18), full container (136,54); the progress and heat bars and the 16x52 tank at (118,18); FurnaceCombination.getDimensions {1,0,1,1,1,1} offset 1, TileEntityProxyCombo().inventory().fluid(): every dummy cell reaches the inventory and the fluids",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 36
+          },
+          {
+            "x": 89,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 136,
+            "y": 18
+          },
+          {
+            "x": 136,
+            "y": 54,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 5,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -1,
+              0,
+              -1
+            ],
+            [
+              -1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              1
+            ],
+            [
+              -1,
+              1,
+              -1
+            ],
+            [
+              -1,
+              1,
+              0
+            ],
+            [
+              -1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              -1
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              -1
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              0,
+              -1
+            ],
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1
+            ],
+            [
+              1,
+              1,
+              -1
+            ],
+            [
+              1,
+              1,
+              0
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_furnace_combination.png",
+        "texture_from": "textures/gui/processing/gui_furnace_combination.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          92
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max_value": 20000,
+            "rect": [
+              45,
+              37,
+              38,
+              5
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 1,
+            "max_value": 100000,
+            "rect": [
+              45,
+              46,
+              37,
+              5
+            ],
+            "uv": [
+              176,
+              5
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              118,
+              18,
+              16,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              44,
+              36,
+              39,
+              7
+            ],
+            "lines": [
+              "{0} / 20000 TU"
+            ]
+          },
+          {
+            "rect": [
+              44,
+              45,
+              39,
+              7
+            ],
+            "lines": [
+              "{1} / 100000 TU"
+            ]
+          },
+          {
+            "rect": [
+              118,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_sawmill": {
       "auto": false,
@@ -36100,11 +36982,211 @@
     },
     "ntm:machine_furnace_brick_off": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFurnaceBrick, GUIFurnaceBrick 176x166 (processing/gui_furnace_brick.png): input (62,35), fuel (35,17), output (116,35), ash (35,53); the flame while it burns (value 0 of 1) and the arrow, in ticks of 200 (value 2); the block swap between off and on is the block's level in the port",
+      "machine": {
+        "slots": [
+          {
+            "x": 62,
+            "y": 35
+          },
+          {
+            "x": 35,
+            "y": 17
+          },
+          {
+            "x": 116,
+            "y": 35,
+            "output": true
+          },
+          {
+            "x": 35,
+            "y": 53,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 3
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_furnace_brick.png",
+        "texture_from": "textures/gui/processing/gui_furnace_brick.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              62,
+              54,
+              14,
+              13
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max_value": 200,
+            "rect": [
+              85,
+              34,
+              24,
+              16
+            ],
+            "uv": [
+              176,
+              14
+            ],
+            "dir": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              62,
+              54,
+              14,
+              13
+            ],
+            "lines": [
+              "{0} / {1} ticks"
+            ]
+          },
+          {
+            "rect": [
+              85,
+              34,
+              24,
+              16
+            ],
+            "lines": [
+              "{2} / 200"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_furnace_brick_on": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFurnaceBrick, GUIFurnaceBrick 176x166 (processing/gui_furnace_brick.png): input (62,35), fuel (35,17), output (116,35), ash (35,53); the flame while it burns (value 0 of 1) and the arrow, in ticks of 200 (value 2); the block swap between off and on is the block's level in the port",
+      "machine": {
+        "slots": [
+          {
+            "x": 62,
+            "y": 35
+          },
+          {
+            "x": 35,
+            "y": 17
+          },
+          {
+            "x": 116,
+            "y": 35,
+            "output": true
+          },
+          {
+            "x": 35,
+            "y": 53,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 3
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_furnace_brick.png",
+        "texture_from": "textures/gui/processing/gui_furnace_brick.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              62,
+              54,
+              14,
+              13
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max_value": 200,
+            "rect": [
+              85,
+              34,
+              24,
+              16
+            ],
+            "uv": [
+              176,
+              14
+            ],
+            "dir": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              62,
+              54,
+              14,
+              13
+            ],
+            "lines": [
+              "{0} / {1} ticks"
+            ]
+          },
+          {
+            "rect": [
+              85,
+              34,
+              24,
+              16
+            ],
+            "lines": [
+              "{2} / 200"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_industrial_generator": {
       "auto": false,
@@ -36119,8 +37201,133 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_electric_furnace_on": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerElectricFurnace, GUIMachineElectricFurnace 176x186 (processing/gui_electric_furnace.png); the logic's slot order (input, battery, output: the vanilla furnace menu's) at HBM's places, no upgrade slot (the logic has none); the flames while it smelts (value 2), HBM's lit block",
+      "machine": {
+        "slots": [
+          {
+            "x": 20,
+            "y": 35
+          },
+          {
+            "x": 152,
+            "y": 54
+          },
+          {
+            "x": 80,
+            "y": 35,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 4
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_electric_furnace.png",
+        "texture_from": "textures/gui/processing/gui_electric_furnace.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          92
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "uv": [
+              176,
+              30
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              43,
+              36,
+              28,
+              12
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              45,
+              20,
+              18,
+              16
+            ],
+            "uv": [
+              192,
+              12
+            ]
+          },
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              46,
+              47,
+              18,
+              16
+            ],
+            "uv": [
+              192,
+              28
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              43,
+              36,
+              28,
+              12
+            ],
+            "lines": [
+              "{2} / {3} ticks"
+            ]
+          }
+        ]
+      },
+      "auto": false
     },
     "ntm:machine_microwave": {
       "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
@@ -36186,11 +37393,415 @@
     },
     "ntm:machine_arc_welder": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineArcWelder, GUIMachineArcWelder 176x204 (processing/gui_arc_welder.png): inputs (17/35/53,36), output (107,36), battery (152,72), identifier (17,63), upgrades (89,63) and (107,63); the power bar, the progress arrow, the lamp and the 34x16 tank; MachineArcWelder.getDimensions {1,0,1,0,1,1} offset 0, TileEntityProxyCombo().inventory().power().fluid(); the per-cell slot lists of getAccessibleSlotsFromSide(x,y,z,side) are one container here (engine gap); the five cells of the lower layer are ports as the Java lists them, the six of the upper layer give {} there and are not ports",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 36
+          },
+          {
+            "x": 35,
+            "y": 36
+          },
+          {
+            "x": 53,
+            "y": 36
+          },
+          {
+            "x": 107,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 72
+          },
+          {
+            "x": 17,
+            "y": 63
+          },
+          {
+            "x": 89,
+            "y": 63
+          },
+          {
+            "x": 107,
+            "y": 63
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 10,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            1,
+            1,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_arc_welder.png",
+        "texture_from": "textures/gui/processing/gui_arc_welder.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          110
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              72,
+              37,
+              33,
+              14
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              35,
+              63,
+              34,
+              16
+            ],
+            "color": 8,
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 4,
+            "min": 1,
+            "rect": [
+              156,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              63,
+              34,
+              16
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          },
+          {
+            "rect": [
+              72,
+              37,
+              33,
+              14
+            ],
+            "lines": [
+              "{2} / {3} ticks"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_soldering_station": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineSolderingStation, GUIMachineSolderingStation 176x204 (processing/gui_soldering_station.png): a 3x2 grid (toppings 0..2, pcb 3..4, solder 5) at (17,18), output (107,27), battery (152,72), identifier (17,63), upgrades (89,63) and (107,63); the power bar, the arrow, the lamp, the tank and the collision-prevention button (5,66); MachineSolderingStation.getDimensions {0,0,1,0,1,0} offset 0, TileEntityProxyCombo().inventory().power().fluid()",
+      "machine": {
+        "slots": [
+          {
+            "grid": [
+              17,
+              18,
+              3,
+              2
+            ]
+          },
+          {
+            "x": 107,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 72
+          },
+          {
+            "x": 17,
+            "y": 63
+          },
+          {
+            "x": 89,
+            "y": 63
+          },
+          {
+            "x": 107,
+            "y": 63
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 10,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            0,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_soldering_station.png",
+        "texture_from": "textures/gui/processing/gui_soldering_station.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          110
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              72,
+              28,
+              33,
+              14
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              35,
+              63,
+              34,
+              16
+            ],
+            "color": 8,
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 4,
+            "min": 1,
+            "rect": [
+              156,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 9,
+            "min": 1,
+            "rect": [
+              5,
+              66,
+              10,
+              10
+            ],
+            "uv": [
+              192,
+              14
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              35,
+              63,
+              34,
+              16
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          },
+          {
+            "rect": [
+              72,
+              28,
+              33,
+              14
+            ],
+            "lines": [
+              "{2} / {3} ticks"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              5,
+              66,
+              10,
+              10
+            ],
+            "lines": [
+              "Evitar colisão de fluido"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_chemical_factory": {
       "auto": false,
@@ -36255,6 +37866,17 @@
     "ntm:decon": {
       "auto": false,
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+    },
+    "ntm:geiger": {
+      "source": "GeigerCounter, RenderGeiger: the geiger_counter OBJ turned by the meta (2: 0, 4: 90, 3: 180, 5: 270), which is the way the placer looks; the beehive's facing is the other way, so 180 more",
+      "model": {
+        "obj": "ntm:models/obj/geiger_counter.obj",
+        "obj_from": "models/blocks/geiger_counter.obj",
+        "texture": "ntm:textures/models/geiger.png",
+        "texture_from": "textures/models/ModelGeiger.png",
+        "rotation": 180,
+        "radius": 1.0
+      }
     }
   },
   "textures": {

@@ -1,0 +1,11 @@
+{
+  "category": "misc",
+  "result": {
+    "id": "ntm:geiger_counter",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "ntm:geiger"
+  ]
+}

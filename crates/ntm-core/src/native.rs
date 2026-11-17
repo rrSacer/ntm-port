@@ -26,6 +26,16 @@ const FURNACE: &str = "ntm:machine_electric_furnace_off";
 
 /// A machine block (any the registry runs): its block entity carries the
 /// machine's state, slots and data, and the server's phases run it.
+/// The electric furnace, lit or not (`machine_electric_furnace_off`, `_on`).
+pub fn is_electric_furnace(block: &str) -> bool {
+    matches!(block, FURNACE | "ntm:machine_electric_furnace_on")
+}
+
+/// The brick furnace, lit or not (`machine_furnace_brick_off`, `_on`).
+pub fn is_brick_furnace(block: &str) -> bool {
+    matches!(block, "ntm:machine_furnace_brick_off" | "ntm:machine_furnace_brick_on")
+}
+
 pub fn machine_block(block: &str) -> bool {
     registry::spec(block).is_some_and(|s| s.kind != crate::machine::Kind::Inert)
 }
@@ -42,13 +52,29 @@ pub fn container(block: &str) -> Option<Container> {
         let rods:Vec<_>=(0..24).collect();
         return Some(Container {slots:28,faces:std::array::from_fn(|_|rods.clone()),inputs:rods.clone(),outputs:rods,menu:Some("minecraft:generic_9x3")});
     }
-    if block == FURNACE {
+    if is_electric_furnace(block) {
         return Some(Container {
             slots: SLOTS,
             faces: [vec![OUTPUT], vec![INPUT], vec![BATTERY], vec![BATTERY], vec![BATTERY], vec![BATTERY]],
             inputs: vec![INPUT, BATTERY],
             outputs: vec![OUTPUT],
             menu: Some("minecraft:furnace"),
+        });
+    }
+    if let Some(c) = crate::furnaces::container(block).or_else(|| crate::welders::container(block)) {
+        return Some(c);
+    }
+    if is_brick_furnace(block) {
+        // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
+        // above, the fuel from the sides, the output, fuel and ash below;
+        // `canExtractItem` only lets slots 2 and 3 out.
+        use crate::furnace_brick::*;
+        return Some(Container {
+            slots: SLOTS,
+            faces: [vec![OUTPUT, FUEL, ASH], vec![INPUT], vec![FUEL], vec![FUEL], vec![FUEL], vec![FUEL]],
+            inputs: vec![INPUT, FUEL],
+            outputs: vec![OUTPUT, ASH],
+            menu: Some("minecraft:generic_9x3"),
         });
     }
     let slots = block_slots(block);
@@ -74,7 +100,24 @@ pub struct SlotFilter {
 /// alike): the furnace takes what it smelts, one creative battery, and
 /// gives its result; the others' are their machine files'.
 pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
-    if block != FURNACE {
+    if crate::furnaces::is_furnace(block) {
+        return crate::furnaces::filters(block);
+    }
+    if crate::welders::Model::of(block).is_some() {
+        return crate::welders::filters(block);
+    }
+    if is_brick_furnace(block) {
+        // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
+        // slot 1 first and then slot 0, anything else into slot 0 only: the
+        // two slots are visited last to first, slot 1 taking fuels alone.
+        return vec![
+            SlotFilter { quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_move: Some(crate::fuel::fuels()), quick_reverse: true, ..Default::default() },
+            SlotFilter { output: true, ..Default::default() },
+            SlotFilter { output: true, ..Default::default() },
+        ];
+    }
+    if !is_electric_furnace(block) {
         return if machine_block(block) { block_slots(block) } else { Vec::new() };
     }
     let mut smeltable: Vec<String> = crate::recipes::furnace().inputs().map(str::to_string).collect();
@@ -105,6 +148,26 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Insert,SlotOrigin::Automation) => crate::radioisotopes::can_insert(block,slots,slot,item),
             (SlotAction::Extract,SlotOrigin::Manual) => true,
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
+        };
+    }
+    if let Some(allowed) = crate::welders::allows(block, slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
+        return allowed;
+    }
+    if let Some(allowed) = crate::furnaces::allows(block, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
+        return allowed;
+    }
+    if is_brick_furnace(block) {
+        // The plain slots 0 and 1 take anything from a hand (1.7.10's
+        // `Slot.isItemValid`); a hopper asks `isItemValidForSlot`: any input,
+        // only a fuel in slot 1, nothing in the outputs; `canExtractItem`:
+        // the automation takes slots 2 and 3.
+        return match action {
+            SlotAction::Insert => match slot {
+                crate::furnace_brick::INPUT => true,
+                crate::furnace_brick::FUEL => origin == SlotOrigin::Manual || crate::fuel::burn_time(&item.id) > 0,
+                _ => false,
+            },
+            SlotAction::Extract => origin == SlotOrigin::Manual || slot >= crate::furnace_brick::OUTPUT,
         };
     }
     block != crate::zirnox::BLOCK || origin == SlotOrigin::Manual
@@ -479,6 +542,40 @@ mod tests {
         assert!(block_slots("ntm:machine_boiler").is_empty() || block_slots("ntm:machine_boiler").len() < 64);
     }
 
+
+    /// The lit furnaces are the unlit ones: the same slots, faces and rules.
+    #[test]
+    fn the_lit_furnaces_are_the_unlit_ones() {
+        assert_eq!(container("ntm:machine_electric_furnace_on"), container("ntm:machine_electric_furnace_off"));
+        assert_eq!(slot_filters("ntm:machine_electric_furnace_on"), slot_filters("ntm:machine_electric_furnace_off"));
+        assert_eq!(container("ntm:machine_furnace_brick_on"), container("ntm:machine_furnace_brick_off"));
+        assert_eq!(slot_filters("ntm:machine_furnace_brick_on"), slot_filters("ntm:machine_furnace_brick_off"));
+    }
+
+    /// `TileEntityFurnaceBrick`: the input from above, the fuel from the sides,
+    /// the output, the fuel and the ash from below; only slots 2 and 3 leave.
+    #[test]
+    fn the_brick_furnace_follows_its_sided_inventory() {
+        use crate::server::container_bridge::Stack;
+        let c = container("ntm:machine_furnace_brick_off").unwrap();
+        assert_eq!(c.faces[0], vec![2, 1, 3]);
+        assert_eq!(c.faces[1], vec![0]);
+        assert!(c.faces[2..].iter().all(|f| f == &vec![1]));
+        assert_eq!((c.inputs, c.outputs), (vec![0, 1], vec![2, 3]));
+        let b = "ntm:machine_furnace_brick_off";
+        let s: Vec<Option<Stack>> = vec![None; 4];
+        let (coal, stone, ingot) = (Stack::new("minecraft:coal", 1), Stack::new("minecraft:stone", 1), Stack::new("minecraft:iron_ingot", 1));
+        let allows = |slot, item: &Stack, action, origin| slot_allows(b, &s, slot, item, action, origin);
+        use crate::native::{SlotAction::*, SlotOrigin::*};
+        assert!(allows(0, &stone, Insert, Manual) && allows(0, &stone, Insert, Automation));
+        assert!(allows(1, &coal, Insert, Manual) && allows(1, &stone, Insert, Manual) && !allows(1, &stone, Insert, Automation));
+        assert!(!allows(2, &ingot, Insert, Manual) && !allows(3, &coal, Insert, Automation));
+        assert!(allows(0, &stone, Extract, Manual) && !allows(0, &stone, Extract, Automation));
+        assert!(!allows(1, &coal, Extract, Automation) && allows(1, &coal, Extract, Manual));
+        assert!(allows(2, &ingot, Extract, Automation) && allows(3, &ingot, Extract, Automation));
+        let f = slot_filters(b);
+        assert_eq!(f.iter().map(|x| x.output).collect::<Vec<_>>(), vec![false, false, true, true]);
+    }
 }
 
 /// The machines of the old screen only, through their native screens.
@@ -522,7 +619,8 @@ mod screens {
         assert_eq!(f.screen_data(), vec![100_000 - 50, 100_000, 0, 100], "cheia antes do tick, que gasta 50");
     }
 
-    /// The wood burner burns what its fuel slot holds; button 0 stops it.
+    /// The wood burner burns what its fuel slot holds; button 0 stops it. The tick it lights a fuel it makes
+    /// nothing (`TileEntityMachineWoodBurner.updateEntity:97-123`: the burn is an `else if`).
     #[test]
     fn the_wood_burner_burns_its_slot() {
         let mut w = WoodBurner::default();
@@ -531,9 +629,55 @@ mod screens {
         w.tick();
         w.sync_out();
         assert_eq!(w.slots[0], Some(Stack::new("minecraft:coal", 1)));
+        assert_eq!(w.screen_data()[..5], [0, 100_000, 1600, 1600, 1]);
+        w.sync_in();
+        w.tick();
         assert_eq!(w.screen_data()[..5], [100, 100_000, 1599, 1600, 1]);
         w.button(0);
         assert!(!w.on);
+    }
+
+    /// Slice 6: the module's time (a log x4: 1200) goes into the fuel's kind of ash, one ash in slot 1 each 2000;
+    /// off, it still lights the next fuel once its burn is out, and its burn then stays.
+    #[test]
+    fn the_wood_burner_leaves_its_ash_in_slot_1_on_or_off() {
+        let mut w = WoodBurner { on: false, ..WoodBurner::default() };
+        w.slots[0] = Some(Stack::new("minecraft:oak_log", 3));
+        let run = |w: &mut WoodBurner| {
+            w.sync_in();
+            w.tick();
+            w.sync_out();
+        };
+        run(&mut w);
+        assert_eq!((w.burn, w.ash_wood, w.slots[0].as_ref().map(|s| s.count)), (1200, 1200, Some(2)), "off, it lit the log");
+        run(&mut w);
+        assert_eq!((w.burn, w.slots[0].as_ref().map(|s| s.count)), (1200, Some(2)), "off: the burn stays, nothing more lit");
+        w.on = true;
+        // Drained as it goes: a full buffer stops the burn (`power < maxPower`).
+        for _ in 0..1200 {
+            w.power = 0;
+            run(&mut w);
+        }
+        assert_eq!(w.burn, 0);
+        run(&mut w);
+        assert_eq!((w.ash_wood, w.slots[1].clone()), (400, Some(Stack::new("ntm:powder_ash__wood", 1))), "2400: one ash, 400 left");
+        // Coal ash does not stack on the wood's: its level waits.
+        w.slots[0] = Some(Stack::new("minecraft:coal", 2));
+        w.burn = 0;
+        run(&mut w);
+        w.burn = 0;
+        run(&mut w);
+        assert_eq!((w.ash_coal, w.slots[1].clone()), (3200, Some(Stack::new("ntm:powder_ash__wood", 1))));
+    }
+
+    /// `while processAsh`: a coal block's 16 000 make its eight coal ashes the tick it is lit.
+    #[test]
+    fn the_wood_burner_makes_all_its_ash_at_once() {
+        let mut w = WoodBurner::default();
+        w.slots[0] = Some(Stack::new("minecraft:coal_block", 1));
+        w.sync_in();
+        w.tick();
+        assert_eq!((w.ash_coal, w.slots[1].clone()), (0, Some(Stack::new("ntm:powder_ash__coal", 8))));
     }
 
     /// The barrel: a full tank in slot 2 pours, its empty one out at 3; an
@@ -594,4 +738,5 @@ mod screens {
         a.press(t, RECIPE_CLEAR);
         assert_eq!(a.screen_data(t)[crate::anvil::RECIPE_DATA], 0);
     }
+
 }

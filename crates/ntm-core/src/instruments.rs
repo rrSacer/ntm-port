@@ -52,8 +52,8 @@ fn dose_prefix(rad: f64) -> &'static str {
 pub struct Readings {
     /// The player's dose, milliRAD.
     pub dose_millirad: u64,
-    /// The fallout zones' rate where the player stands, milliRAD/s.
-    pub zone_millirad_s: u32,
+    /// `ChunkRadiationManager.getRadiation` at the player's block: the world's radiation by chunk, RAD/s.
+    pub chunk_rad: f32,
     /// `radBuf`: the exposure of the last second, milliRAD/s.
     pub buffer_millirad_s: i64,
     /// `HazmatRegistry.getResistance(player)`, the float exponent of `10^(-r)`.
@@ -63,7 +63,8 @@ pub struct Readings {
 /// The five lines `printGeigerData` sends.
 pub fn geiger_lines(r: &Readings) -> Vec<String> {
     let e_rad = tenth(r.dose_millirad as f64 / 1000.0);
-    let rads = tenth(f64::from(r.zone_millirad_s) / 1000.0);
+    // `((int)(getRadiation(..) * 10)) / 10D`, the float widened.
+    let rads = tenth(f64::from(r.chunk_rad));
     let env = tenth(r.buffer_millirad_s as f64 / 1000.0);
     // `calculateRadiationMod` is a float, widened here as in the Java.
     let factor = f64::from(crate::item_hooks::radiation_mod(r.resistance));
@@ -241,19 +242,33 @@ mod tests {
 
     #[test]
     fn the_geiger_report_has_the_five_java_lines() {
-        let lines = geiger_lines(&Readings { dose_millirad: 250_000, zone_millirad_s: 1_500, buffer_millirad_s: 12_345, resistance: 0.095 });
+        let lines = geiger_lines(&Readings { dose_millirad: 250_000, chunk_rad: 1.5, buffer_millirad_s: 12_345, resistance: 0.095 });
         assert_eq!(lines.len(), 5);
         assert_eq!(lines[1], "§eCurrent chunk radiation: §61.5 RAD/s");
         assert_eq!(lines[2], "§eTotal environmental radiation: §c12.3 RAD/s");
         assert_eq!(lines[3], "§ePlayer contamination: §e250.0 RAD");
         // 10^(-0.095) = 0.8035: 19.64% of the dose is stopped, resistance 0.09 (truncated).
         assert_eq!(lines[4], "§ePlayer resistance: §f§a19.64% (0.09)");
-        let line = |resistance| geiger_lines(&Readings { dose_millirad: 0, zone_millirad_s: 0, buffer_millirad_s: 0, resistance })[4].clone();
+        let line = |resistance| geiger_lines(&Readings { dose_millirad: 0, chunk_rad: 0.0, buffer_millirad_s: 0, resistance })[4].clone();
         // Full grey hazmat: 10^-2 as a float is 0.00999999977, 99% stopped.
         assert_eq!(line(2.0), "§ePlayer resistance: §f§a99.0% (2.0)");
         // Full steel: the float sum 0.045000002 gives 9.84% and (int)(4.5000002) = 4.
         assert_eq!(line(0.045), "§ePlayer resistance: §f§a9.84% (0.04)");
         assert_eq!(line(0.0), "§ePlayer resistance: §f0.0% (0.0)");
+    }
+
+    /// The chunk line reads the field as `getRadiation` gives it, truncated to a tenth (the port's bomb zones, which
+    /// added to it until slice 4e, are gone).
+    #[test]
+    fn the_chunk_line_is_the_field() {
+        let line = |chunk_rad| {
+            geiger_lines(&Readings { dose_millirad: 0, chunk_rad, buffer_millirad_s: 0, resistance: 0.0 })[1].clone()
+        };
+        assert_eq!(line(12.99), "§eCurrent chunk radiation: §c12.9 RAD/s");
+        assert_eq!(line(0.3), "§eCurrent chunk radiation: §e0.3 RAD/s");
+        assert_eq!(line(100_000.0), "§eCurrent chunk radiation: §8100000.0 RAD/s");
+        assert_eq!(line(0.0), "§eCurrent chunk radiation: §a0.0 RAD/s");
+        assert_eq!(line(2.5), "§eCurrent chunk radiation: §62.5 RAD/s");
     }
 
     #[test]

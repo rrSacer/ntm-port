@@ -1,7 +1,8 @@
 //! Explosions of the NTM's bombs on the server (docs/bombas.md): the crater
 //! engine (`crate::explosion`) per world, vanilla's explosion for charges, the
-//! effects as vanilla commands, blast damage, and the radiation a nuke
-//! leaves (a pulse at the blast, then an area that decays).
+//! effects as vanilla commands, blast damage, and a nuke's radiation pulse.
+//! A crater leaves nothing in the chunk field: the fallout rain's blocks are
+//! inert (docs/onda-1-protecao.md, slice 4e).
 
 pub mod config;
 pub mod vanilla;
@@ -13,51 +14,14 @@ use std::collections::BTreeMap;
 
 pub use config::{Config, Mode};
 
-/// Radiation a nuke's fallout leaves around ground zero: falls off with
-/// distance (squared, to zero at `radius`) and halves every `half_life`
-/// ticks of the world.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Zone {
-    pub dim: String,
-    pub center: Pos,
-    pub radius: i32,
-    /// milliRAD/s at ground zero when it was made.
-    pub peak: u32,
-    /// The world's tick count then (`WorldState.ticks`).
-    pub t0: u64,
-    pub half_life: u64,
-}
-
-impl Zone {
-    /// milliRAD/s at `pos` at world tick `now`.
-    pub fn rate(&self, dim: &str, pos: [f64; 3], now: u64) -> u32 {
-        if dim != self.dim {
-            return 0;
-        }
-        let d2 = (pos[0] - f64::from(self.center[0])).powi(2) + (pos[2] - f64::from(self.center[2])).powi(2);
-        let r = f64::from(self.radius);
-        if d2 >= r * r {
-            return 0;
-        }
-        let fall = 1.0 - d2.sqrt() / r;
-        let decay = 0.5f64.powf(now.saturating_sub(self.t0) as f64 / self.half_life.max(1) as f64);
-        (f64::from(self.peak) * fall * fall * decay) as u32
-    }
-
-    /// Below 1 milliRAD/s anywhere: forgotten.
-    pub fn spent(&self, now: u64) -> bool {
-        self.rate(&self.dim, [f64::from(self.center[0]), 0.0, f64::from(self.center[2])], now) == 0
-    }
-}
-
 /// What a world keeps of its bombs (in its save, `WorldState.bombs`).
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct BombWorld {
     /// The next explosion's number (its id is `w<world>n<number>`).
     #[serde(default)]
     pub next: u64,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub zones: Vec<Zone>,
+    // A world saved before slice 4e may still hold `zones` (the port's lingering areas, which the Java does not
+    // have): serde reads past the key and the next save drops it.
     /// Each player's detonator: the bomb it is linked to.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub links: BTreeMap<String, (String, Pos)>,
@@ -154,9 +118,40 @@ pub struct Runtime {
     pub charged_at: Option<u64>,
     /// Last detonations, for `/ntmbomba status`.
     pub log: Vec<String>,
-    /// When each player online was first seen in this world: the area
-    /// radiation's entry grace is per player.
+    /// When each player online was first seen in this world: `contaminate`'s grace (`ticksExisted < 200`) is per
+    /// player.
     pub entered: BTreeMap<String, u64>,
+    /// The nukes whose `EntityNukeExplosionMK5.radiate` still runs (its first ticks): not kept, as the entity keeps
+    /// none of it.
+    pub radiating: Vec<Radiating>,
+}
+
+/// A nuke's radiation pulse (`EntityNukeExplosionMK5.onUpdate:66-67`): the entity's update `t` (its `ticksExisted`,
+/// counted before `onUpdate`, so 1 on the first) radiates `2 500 000 / (5t + 1)` over `2 × length` while `t < 10`
+/// and its explosion exists, which it does from the second update on. Only a nuke with fallout and
+/// `strength = 2r ≥ 75`.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Radiating {
+    /// The explosion whose entity it is.
+    pub id: String,
+    pub dim: String,
+    pub center: [f64; 3],
+    /// `length * 2`.
+    pub range: f64,
+    /// The entity's `ticksExisted` at its last update.
+    pub t: u32,
+}
+
+impl Radiating {
+    /// `radiate`'s rads at update `t`: none on the first (no explosion yet) nor from the tenth.
+    pub fn rads(t: u32) -> Option<f32> {
+        (2..10).contains(&t).then(|| 2_500_000f32 / (t * 5 + 1) as f32)
+    }
+
+    /// `statFac`'s strength is twice the radius; `onUpdate` radiates only from 75.
+    pub fn radiates(radius: i32) -> bool {
+        2 * radius >= 75
+    }
 }
 
 /// What an explosion's engine tells (`crate::explosion::Hooks`).
@@ -202,8 +197,27 @@ pub fn profile(blast: crate::bomb::Blast, fallout: bool) -> crate::explosion::Ef
                 dead_leaves: Some("ntm:waste_leaves[persistent=true]".into()),
                 trinitite: Some((0.05, "ntm:waste_trinitite".into())),
                 layer: Some(FALLOUT_LAYER.into()),
+                mycelium: Some("ntm:waste_mycelium".into()),
                 ..FalloutProfile::ntm_placeholder()
             }),
         },
+    }
+}
+
+#[cfg(test)]
+mod radiating_tests {
+    use super::Radiating;
+
+    /// `onUpdate:66`: `ticksExisted < 10` and the explosion made on the first update; `statFac`'s strength `2r ≥ 75`.
+    #[test]
+    fn the_pulse_is_updates_two_to_nine_of_a_nuke_from_radius_38() {
+        assert_eq!(Radiating::rads(1), None);
+        assert_eq!(Radiating::rads(2), Some(2_500_000f32 / 11.0));
+        assert_eq!(Radiating::rads(9), Some(2_500_000f32 / 46.0));
+        assert_eq!(Radiating::rads(10), None);
+        let total: f64 = (2..10).filter_map(Radiating::rads).map(f64::from).sum();
+        assert!((total - 864_137.6).abs() < 1.0, "{total}");
+        assert!(!Radiating::radiates(37));
+        assert!(Radiating::radiates(38));
     }
 }

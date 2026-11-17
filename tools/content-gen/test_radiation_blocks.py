@@ -109,3 +109,53 @@ class SellafieldLevels(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+GEIGER = (JAVA / 'blocks/machine/GeigerCounter.java').read_text()
+
+
+class GeigerCounterBlock(unittest.TestCase):
+    """`GeigerCounter` (slice 4b): the block of ModBlocks:1635, its bounds by meta and RenderGeiger's turn."""
+
+    def test_the_block_has_the_java_strength_tab_and_name(self):
+        line = next(l for l in (JAVA / 'blocks/ModBlocks.java').read_text().splitlines() if 'geiger = new GeigerCounter' in l)
+        hardness = float(re.search(r'setHardness\(([\d.]+)F\)', line)[1])
+        resistance = float(re.search(r'setResistance\(([\d.]+)F\)', line)[1])
+        self.assertIn('MainRegistry.machineTab', line)
+        block = json.loads((CONTENT / 'data/ntm/horizon/block/geiger.json').read_text())
+        self.assertEqual((block['properties']['hardness'], block['properties']['explosion_resistance']), (hardness, resistance))
+        self.assertIn('ntm:geiger', json.loads((CONTENT / 'data/ntm/creative_tab/machines.json').read_text())['items'])
+        self.assertEqual(json.loads((CONTENT / 'assets/ntm/lang/pt_br.json').read_text())['block.ntm.geiger'], java_lang('pt_BR')['tile.geiger.name'])
+
+    def test_each_facing_has_the_bounds_of_the_meta_the_java_gives_the_same_placement(self):
+        # onBlockPlacedBy: i = floor(yaw * 4 / 360 + 0.5) & 3, the way the placer looks; i -> meta.
+        place = dict((int(i), int(m)) for i, m in re.findall(r'if\(i == (\d)\)\s*\{\s*world\.setBlockMetadataWithNotify\(x, y, z, (\d), 2\)', GEIGER))
+        self.assertEqual(place, {0: 3, 1: 4, 2: 2, 3: 5})
+        looks = {0: 'south', 1: 'west', 2: 'north', 3: 'east'}
+        opposite = {'south': 'north', 'north': 'south', 'west': 'east', 'east': 'west'}
+        bounds = {}
+        body = GEIGER[GEIGER.index('getCollisionBoundingBoxFromPool'):]
+        for meta, args in re.findall(r'case (\d):\s*(?://[^\n]*\n\s*)?this\.setBlockBounds\(([^;]*)\);', body):
+            bounds[int(meta)] = [eval(a.replace('F', '').replace('f', '(1/16)'), {}) for a in args.split(',')]
+        shapes = json.loads((CONTENT / 'data/ntm/horizon/block/geiger.json').read_text())['shapes']
+        self.assertEqual(shapes['property'], 'facing')
+        for i, meta in place.items():
+            # The beehive faces the placer: its facing is the opposite of the way they look.
+            facing = opposite[looks[i]]
+            self.assertEqual([round(v, 6) for v in shapes['values'][facing][0]], [round(v, 6) for v in bounds[meta]], (facing, meta))
+
+    def test_the_model_turns_as_render_geiger_does_from_the_meta(self):
+        render = (JAVA / 'render/tileentity/RenderGeiger.java').read_text()
+        turns = {int(m): int(a) for m, a in re.findall(r'case (\d): GL11\.glRotatef\((\d+), 0F, 1F, 0F\)', render)}
+        self.assertEqual(turns, {2: 0, 4: 90, 3: 180, 5: 270})
+        model = json.loads((CONTENT / 'assets/ntm/horizon_model/geiger.json').read_text())
+        # The engine turns a facing as HBM's metadata (north 0, west 90, south 180, east 270), plus `rotation`.
+        engine = {'north': 0, 'west': 90, 'south': 180, 'east': 270}
+        meta_of_facing = {'north': 3, 'south': 2, 'west': 5, 'east': 4}
+        for facing, meta in meta_of_facing.items():
+            self.assertEqual((engine[facing] + model['rotation']) % 360, turns[meta], facing)
+
+    def test_the_two_shapeless_recipes_of_the_java(self):
+        recipes = [json.loads(p.read_text()) for p in (CONTENT / 'data/ntm/recipe').glob('*.json')]
+        pairs = {(r['result']['id'], tuple(r['ingredients'])) for r in recipes if r.get('type') == 'minecraft:crafting_shapeless' and 'ntm:geiger' in [r['result']['id'], *r['ingredients']]}
+        self.assertEqual(pairs, {('ntm:geiger', ('ntm:geiger_counter',)), ('ntm:geiger_counter', ('ntm:geiger',))})

@@ -1146,7 +1146,8 @@ mod tests {
             PlayerInfo {
                 id: "other".into(),
                 name: "other".into(),
-                dim: "minecraft:the_nether".into(),
+                // Another dimension with no radiation of its own: the End (the Nether has hellRad since slice 4b).
+                dim: "minecraft:the_end".into(),
                 pos: [2., 64., 0.],
                 creative: false,
             },
@@ -1256,7 +1257,8 @@ mod tests {
     #[test]
     fn the_radiation_potion_doses_after_the_death_check() {
         let (mut h, mut s) = prepare();
-        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: "minecraft:the_nether".into(), pos: [0., 64., 0.], creative: false }]);
+        // The End: no radiation but the potion's (the Nether's hellRad would add its own since slice 4b).
+        s.set_players(vec![PlayerInfo { id: "p".into(), name: "p".into(), dim: "minecraft:the_end".into(), pos: [0., 64., 0.], creative: false }]);
         s.blasts.entered.insert("p".into(), 0);
         h.attached.insert("p".into(), 999_900);
         s.ready.world.zirnox.irradiate("p", 600, 3);

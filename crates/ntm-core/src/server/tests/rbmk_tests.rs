@@ -697,3 +697,41 @@ fn a_cursor_edit_is_never_publishable_before_t05() {
     assert!(t(vec![edit(PlayerSlot::Inventory(0)), edit(PlayerSlot::Offhand)]).publishable());
     assert!(t(Vec::new()).publishable());
 }
+
+/// Slice 4d: an RBMK reactor's `incrementRad` (open rods, `TileEntityRBMKRod:153`; streams into and over open columns,
+/// `RBMKNeutronHandler:305,417,421`) reaches the world's radiation by chunk, its chunk loaded, after its step is
+/// accepted; a step refused writes nothing.
+#[test]
+fn a_running_reactor_irradiates_its_chunk() {
+    let mut g = reactor();
+    g.run(5);
+    assert_eq!(g.server.native_chunk_radiation_raw(OW, [0, 0]), None, "not loaded: setRadiation writes nothing");
+    g.server.native_chunk_radiation_loaded(OW, [0, 0]);
+    let mut last = 0.0f32;
+    let mut grew = 0;
+    for _ in 0..10 {
+        // Each tick off the update (the field read as it is set): a tick that steps the reactor adds to the chunk.
+        while g.server.field.timer >= 18 {
+            g.run(1);
+        }
+        let before = g.server.native_chunk_radiation_raw(OW, [0, 0]).unwrap_or(0.0);
+        g.run(1);
+        let after = g.server.native_chunk_radiation_raw(OW, [0, 0]).unwrap_or(0.0);
+        if after > before {
+            grew += 1;
+        }
+        last = after;
+    }
+    assert!(grew >= 8 && last > 0.0, "{grew} ticks of 10 added, the chunk at {last}");
+    // A step refused (a column of its own in a chunk not loaded): nothing written, the chunk's own value aside.
+    let far = [-5, Y, 0];
+    g.place(far, &column("rbmk_blank"));
+    g.run(5);
+    g.world.borrow_mut().unloaded.insert((OW.into(), -1, 0));
+    while g.server.field.timer >= 15 {
+        g.run(1);
+    }
+    let before = g.server.native_chunk_radiation_raw(OW, [0, 0]);
+    g.run(3);
+    assert_eq!(g.server.native_chunk_radiation_raw(OW, [0, 0]), before, "the reactor waits whole, and writes nothing");
+}

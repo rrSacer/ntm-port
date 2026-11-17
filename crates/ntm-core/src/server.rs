@@ -171,6 +171,12 @@ pub trait ServerHost: Kv {
     /// Particles or a sound in `dim` (`crate::blast::visuals::Show`, not
     /// its effects).
     fn show(&mut self, _dim: &str, _show: &crate::blast::visuals::Show) {}
+    /// Each column's height in `dim` by the motion-blocking heightmap (the y above its highest block that blocks
+    /// motion or holds a fluid; the nearest to 1.7.10's `getHeightValue`, whose light opacity differs on glass,
+    /// fences and panes), None where it is not loaded.
+    fn surface_heights(&mut self, _dim: &str, columns: &[(i32, i32)]) -> Vec<Option<i32>> {
+        vec![None; columns.len()]
+    }
     /// A named number player `id`'s client reads (the Geiger's).
     fn set_player_value(&mut self, _id: &str, _key: &str, _value: i64) {}
     /// The stacks of the player acting in this callback (`player` their UUID), as a transfer reads and compares them.
@@ -414,12 +420,20 @@ struct Ready {
     kept_rbmk: Option<u64>,
     /// The stamp of the sickness random as last kept (`persist::SICKNESS_KEY`); None: write it next time.
     kept_sickness: Option<u64>,
+    /// The stamp of the chunks' saved radiation as last kept (`persist::CHUNK_RADIATION_KEY`); None: write it next time.
+    kept_chunk_radiation: Option<u64>,
+    /// What the RBMK's steps gave the world's radiation by chunk (`incrementRad`, `RadEvent`), in order, until the
+    /// field takes them after the machines: a step refused takes its events back with the rest of `Ready`.
+    chunk_rad_pending: Vec<(String, [i32; 3], f32)>,
     /// What was last kept, without the clock: debug builds check every skipped write against it.
     #[cfg(debug_assertions)]
     kept: Vec<u8>,
 }
 
 pub struct Server {
+    /// The world's radiation by chunk (`server::chunk_radiation_server::Field`): out of `Ready`, which every group of
+    /// machines copies for its transaction.
+    field: chunk_radiation_server::Field,
     /// Bombs and explosions (`server/bomb_server.rs`, docs/bombas.md).
     blasts: crate::blast::Runtime,
     /// Fluid networks (`server/fluid_server.rs`, docs/fluidos.md).
@@ -727,6 +741,7 @@ mod fluid_server;
 mod foundry_server;
 pub mod native_server;
 mod radiation_server;
+mod chunk_radiation_server;
 
 #[cfg(test)]
 mod tests;

@@ -309,6 +309,8 @@ impl Server {
                 }
             }
             r.step();
+            // incrementRad of the open rods and of the streams over and into open columns (4d), as they came.
+            self.ready.chunk_rad_pending.extend(r.rad.drain(..).map(|e| (dim.clone(), [e.x, e.y, e.z], e.amount)));
             let melting: BTreeSet<usize> = r.meltdowns.iter().copied().collect();
             for (j, p) in order.iter().enumerate() {
                 let key = (dim.clone(), [p[0], y, p[1]]);

@@ -1,8 +1,8 @@
 //! The world the server runs (docs/nativo.md). Each machine's state is its
 //! block entity's and the cables are found again from the blocks, so the
-//! world keeps only the rest: bombs set off and not yet exploded, their
-//! zones, the detonators' links, the players' doses, the ticks played (the
-//! zones' clock). That goes to the host's [`Kv`] under [`KEY`] whenever it
+//! world keeps only the rest: bombs set off and not yet exploded, the
+//! detonators' links, the players' doses, the ticks played (the balefires'
+//! clock). That goes to the host's [`Kv`] under [`KEY`] whenever it
 //! changes, and every [`TICKS_EVERY`] ticks for the clock alone.
 //!
 //! What a machine's removal or step still owes the world (a removal waiting for its group, a batch of effects in
@@ -22,6 +22,9 @@ pub const KEY: &str = "world";
 pub const RBMK_KEY: &str = "rbmk";
 /// The sickness rolls' random (`radiation::SicknessRng`), under its own key: a tick with someone sick rewrites only it.
 pub const SICKNESS_KEY: &str = "sickness";
+/// The storage key of the world's radiation by chunk as the chunks' saves hold it (`chunk_radiation::Saved`): under its
+/// own key, so a save rewrites it alone when only it changed.
+pub const CHUNK_RADIATION_KEY: &str = "chunk_radiation";
 /// Ticks between keeps of the clock alone: a crash sets it back at most this.
 pub const TICKS_EVERY: u64 = 600;
 
@@ -210,6 +213,8 @@ pub struct WorldState {
     /// The sickness rolls' `java.util.Random` (radiation::SicknessRng): seeded from the world's seed the first time
     /// someone is sick, so a world nobody was sick in never writes it.
     pub sickness: Tracked<Option<crate::radiation::SicknessRng>>,
+    /// What each chunk's save holds of the world's radiation (`hfr_simple_radiation`, `CHUNK_RADIATION_KEY`).
+    pub chunk_radiation: Tracked<crate::chunk_radiation::Saved>,
     /// Each RBMK layer's simulation state, by dimension and base Y. It holds no item: a crash between the regions and
     /// this storage sets it back to the save before while the columns are as the regions left them (docs).
     pub rbmk: Tracked<BTreeMap<(String, i32), crate::rbmk::persist::Layer>>,
@@ -238,6 +243,11 @@ impl WorldState {
             sickness: kv
                 .get(SICKNESS_KEY)
                 .and_then(|b| serde_json::from_slice::<crate::radiation::SicknessRng>(&b).ok())
+                .into(),
+            chunk_radiation: kv
+                .get(CHUNK_RADIATION_KEY)
+                .and_then(|b| serde_json::from_slice::<crate::chunk_radiation::Saved>(&b).ok())
+                .unwrap_or_default()
                 .into(),
             rbmk: Tracked::new(
                 kv.get(RBMK_KEY)
@@ -284,6 +294,16 @@ impl WorldState {
     /// What [`WorldState::load`] reads back of the sickness random (`SICKNESS_KEY`): a few bytes, whatever the world.
     pub fn kept_sickness(&self) -> Vec<u8> {
         serde_json::to_vec(&*self.sickness).unwrap_or_default()
+    }
+
+    /// The stamp of the chunks' saved radiation's last change (`CHUNK_RADIATION_KEY`).
+    pub fn chunk_radiation_stamp(&self) -> u64 {
+        Tracked::stamp(&self.chunk_radiation)
+    }
+
+    /// What [`WorldState::load`] reads back of the chunks' saved radiation (`CHUNK_RADIATION_KEY`).
+    pub fn kept_chunk_radiation(&self) -> Vec<u8> {
+        serde_json::to_vec(&*self.chunk_radiation).unwrap_or_default()
     }
 
     /// The stamp of the RBMK layers' last change (`RBMK_KEY`).
@@ -373,5 +393,24 @@ mod tests {
         assert_eq!((back.radiation, back.bombs.next, back.ticks, back.machines.len()), (w.radiation, 3, 9, 0));
         kv.set(KEY, b"not json").unwrap();
         assert_eq!(WorldState::load(&mut kv), WorldState::default());
+    }
+
+    /// A world saved before slice 4e kept its bombs' zones (the port's lingering areas, gone: the Java has none): it
+    /// loads with everything else it kept, and its next save has no zones.
+    #[test]
+    fn a_world_kept_with_zones_loads_without_them() {
+        let mut kv = MemKv::default();
+        let mut w = WorldState::default();
+        w.radiation.insert("p".into(), crate::radiation::Dose { millirad: 7 });
+        w.bombs.next = 3;
+        w.bombs.links.insert("p".into(), ("ntm:nuke_boy".into(), [1, 70, 1]));
+        w.ticks = 9;
+        let mut old: serde_json::Value = serde_json::from_slice(&w.kept(w.ticks)).unwrap();
+        old["bombs"]["zones"] = serde_json::json!([{"dim": "minecraft:overworld", "center": [0, 70, 0], "radius": 25, "peak": 2500, "t0": 0, "half_life": 12000}]);
+        kv.set(KEY, &serde_json::to_vec(&old).unwrap()).unwrap();
+        let back = WorldState::load(&mut kv);
+        assert_eq!((&back.radiation, back.bombs.next, &back.bombs.links, back.ticks), (&w.radiation, 3, &w.bombs.links, 9));
+        let again: serde_json::Value = serde_json::from_slice(&back.kept(back.ticks)).unwrap();
+        assert!(again["bombs"].get("zones").is_none(), "{again}");
     }
 }

@@ -1,0 +1,811 @@
+{
+"source": "content/machine-recipes/combination.json",
+"config": {
+"process_time": 20000,
+"max_heat": 100000,
+"diffusion": 0.25,
+"tank_capacity_mb": 24000,
+"source": "src/main/java/com/hbm/tileentity/machine/TileEntityFurnaceCombination.java:38-44"
+},
+"recipes": [
+{
+"ids": [
+"minecraft:coal"
+],
+"dict": "COAL.gem()",
+"item": [
+"ntm:coke__coal",
+1
+],
+"fluid": [
+"coalcreosote",
+100
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:41",
+"label": "Coque de Carvão"
+},
+{
+"ids": [
+"ntm:powder_coal"
+],
+"dict": "COAL.dust()",
+"item": [
+"ntm:coke__coal",
+1
+],
+"fluid": [
+"coalcreosote",
+100
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:42",
+"label": "Coque de Carvão"
+},
+{
+"ids": [
+"ntm:briquette__coal"
+],
+"item": [
+"ntm:coke__coal",
+1
+],
+"fluid": [
+"coalcreosote",
+150
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:43",
+"label": "Coque de Carvão"
+},
+{
+"ids": [
+"ntm:lignite"
+],
+"dict": "LIGNITE.gem()",
+"item": [
+"ntm:coke__lignite",
+1
+],
+"fluid": [
+"coalcreosote",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:45",
+"label": "Coque de Linhito"
+},
+{
+"ids": [
+"ntm:powder_lignite"
+],
+"dict": "LIGNITE.dust()",
+"item": [
+"ntm:coke__lignite",
+1
+],
+"fluid": [
+"coalcreosote",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:46",
+"label": "Coque de Linhito"
+},
+{
+"ids": [
+"ntm:briquette__lignite"
+],
+"item": [
+"ntm:coke__lignite",
+1
+],
+"fluid": [
+"coalcreosote",
+100
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:47",
+"label": "Coque de Linhito"
+},
+{
+"ids": [
+"ntm:powder_chlorocalcite"
+],
+"dict": "CHLOROCALCITE.dust()",
+"item": [
+"ntm:powder_calcium",
+1
+],
+"fluid": [
+"chlorine",
+250
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:49",
+"label": "Pó de Cálcio"
+},
+{
+"ids": [
+"ntm:powder_molysite"
+],
+"dict": "MOLYSITE.dust()",
+"item": [
+"minecraft:iron_ingot",
+1
+],
+"fluid": [
+"chlorine",
+250
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:50",
+"label": "Lingote de Ferro"
+},
+{
+"ids": [
+"ntm:cinnebar"
+],
+"dict": "CINNABAR.crystal()",
+"item": [
+"ntm:sulfur",
+1
+],
+"fluid": [
+"mercury",
+100
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:51",
+"label": "Enxofre"
+},
+{
+"ids": [
+"minecraft:glowstone_dust"
+],
+"item": [
+"ntm:sulfur",
+1
+],
+"fluid": [
+"chlorine",
+100
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:52",
+"label": "Enxofre"
+},
+{
+"ids": [
+"ntm:gem_sodalite"
+],
+"dict": "SODALITE.gem()",
+"item": [
+"ntm:powder_sodium",
+1
+],
+"fluid": [
+"chlorine",
+100
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:53",
+"label": "Sódio"
+},
+{
+"ids": [
+"ntm:chunk_ore__cryolite"
+],
+"item": [
+"ntm:powder_aluminium",
+1
+],
+"fluid": [
+"lye",
+150
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:54",
+"label": "Pó de Alumínio"
+},
+{
+"ids": [
+"ntm:powder_sodium"
+],
+"dict": "NA.dust()",
+"item": null,
+"fluid": [
+"sodium",
+100
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:55",
+"label": "Sódio Líquido"
+},
+{
+"ids": [
+"ntm:powder_limestone"
+],
+"dict": "LIMESTONE.dust()",
+"item": [
+"ntm:powder_calcium",
+1
+],
+"fluid": [
+"carbondioxide",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:56",
+"label": "Pó de Cálcio"
+},
+{
+"ids": [
+"minecraft:acacia_log",
+"minecraft:birch_log",
+"minecraft:dark_oak_log",
+"minecraft:jungle_log",
+"minecraft:oak_log",
+"minecraft:spruce_log"
+],
+"dict": "logWood",
+"item": [
+"minecraft:charcoal",
+1
+],
+"fluid": [
+"woodoil",
+250
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:58",
+"label": "Carvão Vegetal"
+},
+{
+"ids": [
+"minecraft:acacia_sapling",
+"minecraft:birch_sapling",
+"minecraft:dark_oak_sapling",
+"minecraft:jungle_sapling",
+"minecraft:oak_sapling",
+"minecraft:spruce_sapling"
+],
+"dict": "treeSapling",
+"item": [
+"ntm:powder_ash__wood",
+1
+],
+"fluid": [
+"woodoil",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:59",
+"label": "Cinzas de Madeira"
+},
+{
+"ids": [
+"ntm:briquette__wood"
+],
+"item": [
+"minecraft:charcoal",
+1
+],
+"fluid": [
+"woodoil",
+500
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:60",
+"label": "Carvão Vegetal"
+},
+{
+"ids": [
+"ntm:oil_tar__crude"
+],
+"item": [
+"ntm:coke__petroleum",
+1
+],
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:62",
+"label": "Coque de Petróleo"
+},
+{
+"ids": [
+"ntm:oil_tar__crack"
+],
+"item": [
+"ntm:coke__petroleum",
+1
+],
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:63",
+"label": "Coque de Petróleo"
+},
+{
+"ids": [
+"ntm:oil_tar__coal"
+],
+"item": [
+"ntm:coke__coal",
+1
+],
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:64",
+"label": "Coque de Carvão"
+},
+{
+"ids": [
+"ntm:oil_tar__wood"
+],
+"item": [
+"ntm:coke__coal",
+1
+],
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:65",
+"label": "Coque de Carvão"
+},
+{
+"ids": [
+"minecraft:sugar_cane"
+],
+"item": [
+"minecraft:sugar",
+2
+],
+"fluid": [
+"ethanol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:67",
+"label": "Açúcar ×2"
+},
+{
+"ids": [
+"minecraft:clay"
+],
+"item": [
+"minecraft:bricks",
+1
+],
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:68",
+"label": "Tijolos"
+},
+{
+"ids": [
+"ntm:bedrock_ore__base_light"
+],
+"item": [
+"ntm:bedrock_ore__base_roasted_light",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:71",
+"label": "Minério de Rocha-Mãe de Metal Leve Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__primary_light"
+],
+"item": [
+"ntm:bedrock_ore__primary_roasted_light",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:72",
+"label": "Minério de Rocha-Mãe de Metal Leve, Fração Primária Torrada"
+},
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_light"
+],
+"item": [
+"ntm:bedrock_ore__sulfuric_roasted_light",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:73",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Sulfúrico Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_light"
+],
+"item": [
+"ntm:bedrock_ore__solvent_roasted_light",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:74",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Dissolvido Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_light"
+],
+"item": [
+"ntm:bedrock_ore__rad_roasted_light",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:75",
+"label": "Minério de Rocha-Mãe de Metal Leve, Subproduto Limpo Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__base_heavy"
+],
+"item": [
+"ntm:bedrock_ore__base_roasted_heavy",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:71",
+"label": "Minério de Rocha-Mãe de Metal Pesado Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__primary_heavy"
+],
+"item": [
+"ntm:bedrock_ore__primary_roasted_heavy",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:72",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Fração Primária Torrada"
+},
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_heavy"
+],
+"item": [
+"ntm:bedrock_ore__sulfuric_roasted_heavy",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:73",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Sulfúrico Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_heavy"
+],
+"item": [
+"ntm:bedrock_ore__solvent_roasted_heavy",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:74",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Dissolvido Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_heavy"
+],
+"item": [
+"ntm:bedrock_ore__rad_roasted_heavy",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:75",
+"label": "Minério de Rocha-Mãe de Metal Pesado, Subproduto Limpo Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__base_rare"
+],
+"item": [
+"ntm:bedrock_ore__base_roasted_rare",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:71",
+"label": "Minério de Rocha-Mãe de Terra Rara Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__primary_rare"
+],
+"item": [
+"ntm:bedrock_ore__primary_roasted_rare",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:72",
+"label": "Minério de Rocha-Mãe de Terra Rara, Fração Primária Torrada"
+},
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_rare"
+],
+"item": [
+"ntm:bedrock_ore__sulfuric_roasted_rare",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:73",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Sulfúrico Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_rare"
+],
+"item": [
+"ntm:bedrock_ore__solvent_roasted_rare",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:74",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Dissolvido Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_rare"
+],
+"item": [
+"ntm:bedrock_ore__rad_roasted_rare",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:75",
+"label": "Minério de Rocha-Mãe de Terra Rara, Subproduto Limpo Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__base_actinide"
+],
+"item": [
+"ntm:bedrock_ore__base_roasted_actinide",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:71",
+"label": "Minério de Rocha-Mãe de Actinídeo Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__primary_actinide"
+],
+"item": [
+"ntm:bedrock_ore__primary_roasted_actinide",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:72",
+"label": "Minério de Rocha-Mãe de Actinídeo, Fração Primária Torrada"
+},
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_actinide"
+],
+"item": [
+"ntm:bedrock_ore__sulfuric_roasted_actinide",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:73",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Sulfúrico Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_actinide"
+],
+"item": [
+"ntm:bedrock_ore__solvent_roasted_actinide",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:74",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Dissolvido Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_actinide"
+],
+"item": [
+"ntm:bedrock_ore__rad_roasted_actinide",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:75",
+"label": "Minério de Rocha-Mãe de Actinídeo, Subproduto Limpo Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__base_nonmetal"
+],
+"item": [
+"ntm:bedrock_ore__base_roasted_nonmetal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:71",
+"label": "Minério de Rocha-Mãe de Não Metal Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__primary_nonmetal"
+],
+"item": [
+"ntm:bedrock_ore__primary_roasted_nonmetal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:72",
+"label": "Minério de Rocha-Mãe de Não Metal, Fração Primária Torrada"
+},
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_nonmetal"
+],
+"item": [
+"ntm:bedrock_ore__sulfuric_roasted_nonmetal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:73",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Sulfúrico Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_nonmetal"
+],
+"item": [
+"ntm:bedrock_ore__solvent_roasted_nonmetal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:74",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Dissolvido Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_nonmetal"
+],
+"item": [
+"ntm:bedrock_ore__rad_roasted_nonmetal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:75",
+"label": "Minério de Rocha-Mãe de Não Metal, Subproduto Limpo Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__base_crystal"
+],
+"item": [
+"ntm:bedrock_ore__base_roasted_crystal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:71",
+"label": "Minério de Rocha-Mãe de Cristalino Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__primary_crystal"
+],
+"item": [
+"ntm:bedrock_ore__primary_roasted_crystal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:72",
+"label": "Minério de Rocha-Mãe de Cristalino, Fração Primária Torrada"
+},
+{
+"ids": [
+"ntm:bedrock_ore__sulfuric_byproduct_crystal"
+],
+"item": [
+"ntm:bedrock_ore__sulfuric_roasted_crystal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:73",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Sulfúrico Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__solvent_byproduct_crystal"
+],
+"item": [
+"ntm:bedrock_ore__solvent_roasted_crystal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:74",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Dissolvido Torrado"
+},
+{
+"ids": [
+"ntm:bedrock_ore__rad_byproduct_crystal"
+],
+"item": [
+"ntm:bedrock_ore__rad_roasted_crystal",
+1
+],
+"fluid": [
+"vitriol",
+50
+],
+"source": "src/main/java/com/hbm/inventory/recipes/CombinationRecipes.java:75",
+"label": "Minério de Rocha-Mãe de Cristalino, Subproduto Limpo Torrado"
+}
+]
+}

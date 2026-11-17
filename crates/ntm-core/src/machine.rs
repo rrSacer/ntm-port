@@ -44,6 +44,8 @@ pub enum Kind {
     BlastFurnace,
     /// The foundry's heat source and crucible (`crate::foundry`).
     Firebox,
+    /// The ashpit under a firebox (`crate::ashpit`).
+    Ashpit,
     Crucible,
     /// Where the molten metal goes (`crate::foundry::flow`).
     Channel,
@@ -87,6 +89,12 @@ pub enum Kind {
     Radioisotope,
     /// An RBMK column the provisional step of T01 runs (`crate::rbmk::persist`).
     Rbmk,
+    /// The brick furnace (`crate::furnace_brick`), lit or not.
+    BrickFurnace,
+    /// The K3 furnaces of several slots (`crate::furnaces`).
+    Furnace,
+    /// The arc welder and the soldering station (`crate::welders`).
+    Welder,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -183,6 +191,7 @@ pub enum Data {
     Shredder(crate::shredder::Shredder),
     BlastFurnace(crate::blastfurnace::BlastFurnace),
     Firebox(crate::foundry::firebox::Firebox),
+    Ashpit(crate::ashpit::Ashpit),
     Crucible(crate::foundry::crucible::Crucible),
     Channel(crate::foundry::flow::Channel),
     FoundryTank(crate::foundry::flow::Tank),
@@ -209,6 +218,9 @@ pub enum Data {
     Zirnox(Box<crate::zirnox::Zirnox>),
     Radioisotope(Box<crate::radioisotopes::Radioisotope>),
     Rbmk(Box<crate::rbmk::persist::RbmkColumn>),
+    BrickFurnace(crate::furnace_brick::BrickFurnace),
+    Furnace(Box<crate::furnaces::Furnace>),
+    Welder(Box<crate::welders::Welder>),
     Inert { name: String },
 }
 
@@ -256,6 +268,7 @@ impl Machine {
             Kind::BlastFurnace => Data::BlastFurnace(crate::blastfurnace::BlastFurnace::default()),
             Kind::Firebox if block_id == "ntm:heater_oven" => Data::Firebox(crate::foundry::firebox::Firebox::oven()),
             Kind::Firebox => Data::Firebox(crate::foundry::firebox::Firebox::default()),
+            Kind::Ashpit => Data::Ashpit(crate::ashpit::Ashpit::default()),
             Kind::Crucible => Data::Crucible(crate::foundry::crucible::Crucible::default()),
             Kind::Channel => Data::Channel(Default::default()),
             Kind::FoundryTank => Data::FoundryTank(Default::default()),
@@ -306,6 +319,15 @@ impl Machine {
                 "ntm:machine_fluidtank" => crate::fluidbox::FluidStore::new(256_000, 500),
                 _ => crate::fluidbox::FluidStore::new(16_000, 0),
             }),
+            Kind::BrickFurnace => Data::BrickFurnace(Default::default()),
+            Kind::Welder => match crate::welders::Welder::of(block_id) {
+                Some(w) => Data::Welder(Box::new(w)),
+                None => Data::Inert { name: block_id.into() },
+            },
+            Kind::Furnace => match crate::furnaces::of(block_id) {
+                Some(f) => Data::Furnace(Box::new(f)),
+                None => Data::Inert { name: block_id.into() },
+            },
             Kind::Inert => Data::Inert {
                 name: block_id.into(),
             },
@@ -354,6 +376,7 @@ impl Machine {
             Data::Shredder(_) => Kind::Shredder,
             Data::BlastFurnace(_) => Kind::BlastFurnace,
             Data::Firebox(_) => Kind::Firebox,
+            Data::Ashpit(_) => Kind::Ashpit,
             Data::Crucible(_) => Kind::Crucible,
             Data::Channel(_) => Kind::Channel,
             Data::FoundryTank(_) => Kind::FoundryTank,
@@ -379,6 +402,9 @@ impl Machine {
             Data::Radioisotope(_) => Kind::Radioisotope,
             Data::Pile(_) => Kind::Pile,
             Data::SolarStirling(_) => Kind::SolarStirling,
+            Data::BrickFurnace(_) => Kind::BrickFurnace,
+            Data::Furnace(_) => Kind::Furnace,
+            Data::Welder(_) => Kind::Welder,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -398,6 +424,7 @@ impl Machine {
             Data::Shredder(m) => m,
             Data::BlastFurnace(m) => m,
             Data::Firebox(m) => m,
+            Data::Ashpit(m) => m,
             Data::Crucible(m) => m,
             Data::Channel(m) => m,
             Data::FoundryTank(m) => m,
@@ -423,6 +450,9 @@ impl Machine {
             Data::Radioisotope(m) => &**m,
             Data::Pile(m) => &**m,
             Data::SolarStirling(m) => &**m,
+            Data::BrickFurnace(m) => m,
+            Data::Furnace(m) => &**m,
+            Data::Welder(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -442,6 +472,7 @@ impl Machine {
             Data::Shredder(m) => m,
             Data::BlastFurnace(m) => m,
             Data::Firebox(m) => m,
+            Data::Ashpit(m) => m,
             Data::Crucible(m) => m,
             Data::Channel(m) => m,
             Data::FoundryTank(m) => m,
@@ -467,6 +498,9 @@ impl Machine {
             Data::Radioisotope(m) => &mut **m,
             Data::Pile(m) => &mut **m,
             Data::SolarStirling(m) => &mut **m,
+            Data::BrickFurnace(m) => m,
+            Data::Furnace(m) => &mut **m,
+            Data::Welder(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }
@@ -710,7 +744,10 @@ impl EnergyNode for Battery {
 // ------------------------------------------------------------ wood burner
 
 /// `TileEntityMachineWoodBurner`, solid fuel only: 100 HE a tick while it
-/// burns, is on, and its buffer has room.
+/// burns, is on, and its buffer has room. Slice 6 (decision D2 A), as the Java's `updateEntity:95-123`: with no burn
+/// left it lights the next fuel, on or off, for its burn module's time (logs x4, wood x2), and that time goes into
+/// the fuel's kind of ash, one ash in slot 1 each 2000 (`processAsh` in a `while`); the tick it lights a fuel it
+/// makes nothing. Left out: the liquid burning, its tank and the battery slot's charge.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WoodBurner {
     pub power: u64,
@@ -719,6 +756,13 @@ pub struct WoodBurner {
     pub on: bool,
     /// Fuel items waiting (the NTM's fuel slot).
     pub fuel: Option<(String, u32)>,
+    /// `ashLevelWood/Coal/Misc`.
+    #[serde(default)]
+    pub ash_wood: i32,
+    #[serde(default)]
+    pub ash_coal: i32,
+    #[serde(default)]
+    pub ash_misc: i32,
     /// `ContainerMachineWoodBurner`: fuel, ash, the fluid containers (2, 3
     /// and 4), the battery it charges.
     #[serde(skip, default = "burner_slots")]
@@ -737,6 +781,9 @@ impl Default for WoodBurner {
             max_burn: 0,
             on: true,
             fuel: None,
+            ash_wood: 0,
+            ash_coal: 0,
+            ash_misc: 0,
             slots: burner_slots(),
         }
     }
@@ -751,10 +798,10 @@ impl crate::server::container_bridge::Slotted for WoodBurner {
         &mut self.slots
     }
     fn sync_in(&mut self) {
-        self.fuel = self.slots[0].as_ref().filter(|s| s.count > 0 && burn_ticks(&s.id) > 0).map(|s| (s.id.clone(), s.count));
+        self.fuel = self.slots[0].as_ref().filter(|s| s.count > 0 && WoodBurner::burn_time(&s.id) > 0).map(|s| (s.id.clone(), s.count));
     }
     fn sync_out(&mut self) {
-        if self.slots[0].as_ref().is_none_or(|s| burn_ticks(&s.id) > 0) {
+        if self.slots[0].as_ref().is_none_or(|s| WoodBurner::burn_time(&s.id) > 0) {
             self.slots[0] = self.fuel.as_ref().map(|(i, n)| crate::server::container_bridge::Stack::new(i, *n));
         }
     }
@@ -773,6 +820,33 @@ impl WoodBurner {
     pub const MAX: u64 = 100_000;
     pub const GEN: u64 = 100;
     pub const FUEL_STACK: u32 = 64;
+    /// `processAsh`'s threshold.
+    pub const ASH_THRESHOLD: i32 = 2000;
+
+    /// `burnModule.getBurnTime`.
+    pub fn burn_time(item: &str) -> u32 {
+        crate::fuel::Module::WOOD_BURNER.burn_time(item)
+    }
+
+    /// `processAsh` (`:204-219`): one ash of `kind` into slot 1, if it is empty or holds a stack of it with room.
+    fn process_ash(&mut self, level: i32, kind: crate::fuel::Ash) -> bool {
+        if level < Self::ASH_THRESHOLD {
+            return false;
+        }
+        // Slot 1 of the engine's six; without it, nothing made.
+        let Some(cell) = self.slots.get_mut(1) else { return false };
+        match cell {
+            None => {
+                *cell = Some(crate::server::container_bridge::Stack::new(kind.item(), 1));
+                true
+            }
+            Some(s) if s.count < Self::FUEL_STACK && s.id == kind.item() => {
+                s.count += 1;
+                true
+            }
+            Some(_) => false,
+        }
+    }
 }
 
 /// Burn ticks of a solid fuel (vanilla's furnace values; NTM's wood burner
@@ -811,24 +885,40 @@ pub fn burn_ticks(item: &str) -> u32 {
 
 impl Logic for WoodBurner {
     fn tick(&mut self) -> bool {
-        let before = (self.burn, self.power);
-        if self.burn == 0
-            && self.on
-            && self.power < Self::MAX
-            && let Some((item, n)) = &mut self.fuel
-        {
-            self.max_burn = burn_ticks(item);
-            self.burn = self.max_burn;
-            *n -= 1;
-            if *n == 0 {
-                self.fuel = None;
+        use crate::fuel::Ash;
+        let before = (self.burn, self.power, self.ash_wood, self.ash_coal, self.ash_misc, self.slots.get(1).cloned());
+        let lit = self.fuel.as_ref().map(|(item, _)| (item.clone(), Self::burn_time(item))).filter(|(_, burn)| *burn > 0);
+        if self.burn == 0 {
+            if let Some((item, burn)) = lit {
+                match crate::fuel::ash(&item) {
+                    Ash::Wood => self.ash_wood = self.ash_wood.wrapping_add(burn as i32),
+                    Ash::Coal => self.ash_coal = self.ash_coal.wrapping_add(burn as i32),
+                    Ash::Misc => self.ash_misc = self.ash_misc.wrapping_add(burn as i32),
+                    Ash::Fly | Ash::Soot => {}
+                }
+                while self.process_ash(self.ash_wood, Ash::Wood) {
+                    self.ash_wood -= Self::ASH_THRESHOLD;
+                }
+                while self.process_ash(self.ash_coal, Ash::Coal) {
+                    self.ash_coal -= Self::ASH_THRESHOLD;
+                }
+                while self.process_ash(self.ash_misc, Ash::Misc) {
+                    self.ash_misc -= Self::ASH_THRESHOLD;
+                }
+                self.max_burn = burn;
+                self.burn = burn;
+                if let Some((_, n)) = &mut self.fuel {
+                    *n -= 1;
+                    if *n == 0 {
+                        self.fuel = crate::fuel::container_item(&item).map(|c| (c.to_string(), 1));
+                    }
+                }
             }
-        }
-        if self.burn > 0 && self.on && self.power < Self::MAX {
+        } else if self.power < Self::MAX && self.on {
             self.burn -= 1;
             self.power = (self.power + Self::GEN).min(Self::MAX);
         }
-        (self.burn, self.power) != before
+        (self.burn, self.power, self.ash_wood, self.ash_coal, self.ash_misc, self.slots.get(1).cloned()) != before
     }
     fn energy(&mut self) -> Option<&mut dyn EnergyNode> {
         Some(self)
@@ -859,7 +949,7 @@ impl Logic for WoodBurner {
         match action {
             actions::BURNER_TOGGLE => self.on = !self.on,
             actions::BURNER_FUEL => {
-                let Some(held) = held.filter(|h| burn_ticks(&h.item) > 0) else {
+                let Some(held) = held.filter(|h| Self::burn_time(&h.item) > 0) else {
                     fx.push(Effect::Toast("Segure um combustível sólido na mão.".into()));
                     return;
                 };
@@ -1117,8 +1207,11 @@ mod tests {
         );
         assert_eq!(fx, vec![Effect::TakeHeld { item: "minecraft:oak_log".into() }]);
         b.consumed("minecraft:oak_log", &mut fx);
+        // The burn module's log (x4): 1200; the tick it lights the log it makes nothing.
         b.tick();
-        assert_eq!((b.burn, b.power, b.fuel.clone()), (299, 100, None));
+        assert_eq!((b.burn, b.power, b.fuel.clone()), (1200, 0, None));
+        b.tick();
+        assert_eq!((b.burn, b.power), (1199, 100));
         assert!(b.level(5) >= 4);
     }
 

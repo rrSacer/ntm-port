@@ -1,0 +1,627 @@
+{
+"source": "content/machine-recipes/arc_welder.json",
+"config": {
+"power_buffer_min": 2000,
+"tank_capacity_mb": 24000,
+"slots": 8,
+"inputs": [
+0,
+3
+],
+"output": 3,
+"battery": 4,
+"fluid_identifier": 5,
+"upgrades": [
+6,
+8
+],
+"source": "src/main/java/com/hbm/tileentity/machine/TileEntityMachineArcWelder.java"
+},
+"recipes": [
+{
+"out": [
+"ntm:motor",
+2
+],
+"stack": 64,
+"duration": 100,
+"power": 400,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:36",
+"label": "Motor ×2",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 2
+},
+{
+"ids": [
+"ntm:wire_dense__red_copper"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:part_generic__lde",
+1
+],
+"stack": 64,
+"duration": 200,
+"power": 5000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:38",
+"label": "Elemento de Baixa Densidade",
+"in": [
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:ingot_fiberglass"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 1
+}
+]
+},
+{
+"out": [
+"ntm:part_generic__lde",
+1
+],
+"stack": 64,
+"duration": 200,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:40",
+"label": "Elemento de Baixa Densidade",
+"in": [
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 2
+},
+{
+"ids": [
+"ntm:ingot_fiberglass"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:ingot_pc",
+"ntm:ingot_pvc"
+],
+"n": 1
+}
+]
+},
+{
+"out": [
+"ntm:neutron_reflector",
+2
+],
+"stack": 64,
+"duration": 400,
+"power": 50000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:42",
+"label": "Refletor de Nêutrons ×2",
+"in": [
+{
+"ids": [
+"ntm:ingot_tungsten_carbide"
+],
+"n": 2
+},
+{
+"ids": [
+"ntm:plate_dura_steel"
+],
+"n": 1
+}
+]
+},
+{
+"out": [
+"ntm:wire_dense__copper",
+1
+],
+"stack": 64,
+"duration": 100,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:46",
+"label": "Fio de Cobre Denso",
+"in": [
+{
+"ids": [
+"ntm:wire_fine__copper"
+],
+"n": 8
+}
+]
+},
+{
+"out": [
+"ntm:wire_dense__red_copper",
+1
+],
+"stack": 64,
+"duration": 100,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:48",
+"label": "Fio de Cobre Vermelho Denso",
+"in": [
+{
+"ids": [
+"ntm:wire_fine__red_copper"
+],
+"n": 8
+}
+]
+},
+{
+"out": [
+"ntm:wire_dense__gold",
+1
+],
+"stack": 64,
+"duration": 100,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:50",
+"label": "Fio de Ouro Denso",
+"in": [
+{
+"ids": [
+"ntm:wire_fine__gold"
+],
+"n": 8
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__iron",
+1
+],
+"stack": 64,
+"duration": 100,
+"power": 100,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:54",
+"label": "Placa Soldada de Ferro",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__iron"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__steel",
+1
+],
+"stack": 64,
+"duration": 100,
+"power": 500,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:57",
+"label": "Placa Soldada de Aço",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__steel"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__copper",
+1
+],
+"stack": 64,
+"duration": 200,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:60",
+"label": "Placa Soldada de Cobre",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__copper"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__titanium",
+1
+],
+"stack": 64,
+"duration": 600,
+"power": 50000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:63",
+"label": "Placa Soldada de Titânio",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__titanium"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__zirconium",
+1
+],
+"stack": 64,
+"duration": 600,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:66",
+"label": "Placa Soldada de Zircônio",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__zirconium"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__aluminium",
+1
+],
+"stack": 64,
+"duration": 300,
+"power": 10000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:68",
+"label": "Placa Soldada de Alumínio",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__aluminium"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__tcalloy",
+1
+],
+"stack": 64,
+"duration": 1200,
+"power": 1000000,
+"fluid": [
+"oxygen",
+1000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:71",
+"label": "Placa Soldada de Aço de Tecnécio",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__tcalloy"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__cdalloy",
+1
+],
+"stack": 64,
+"duration": 1200,
+"power": 1000000,
+"fluid": [
+"oxygen",
+1000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:73",
+"label": "Placa Soldada de Aço de Cádmio",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__cdalloy"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__tungsten",
+1
+],
+"stack": 64,
+"duration": 1200,
+"power": 250000,
+"fluid": [
+"oxygen",
+1000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:75",
+"label": "Placa Soldada de Tungstênio",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__tungsten"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__combine_steel",
+1
+],
+"stack": 64,
+"duration": 1200,
+"power": 10000000,
+"fluid": [
+"reformgas",
+1000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:77",
+"label": "Placa Soldada de Aço Combine",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__combine_steel"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:plate_welded__osmiridium",
+1
+],
+"stack": 64,
+"duration": 6000,
+"power": 50000000,
+"fluid": [
+"reformgas",
+16000
+],
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:80",
+"label": "Placa Soldada de Osmirídio",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__osmiridium"
+],
+"n": 2
+}
+]
+},
+{
+"out": [
+"ntm:thruster_small",
+1
+],
+"stack": 64,
+"duration": 60,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:84",
+"label": "Propulsor Pequeno",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:wire_fine__aluminium"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4
+}
+]
+},
+{
+"out": [
+"ntm:thruster_medium",
+1
+],
+"stack": 64,
+"duration": 100,
+"power": 2000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:85",
+"label": "Propulsor Médio",
+"in": [
+{
+"ids": [
+"ntm:plate_steel"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_graphite"
+],
+"n": 8
+}
+]
+},
+{
+"out": [
+"ntm:thruster_large",
+1
+],
+"stack": 64,
+"duration": 200,
+"power": 5000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:86",
+"label": "Propulsor Grande",
+"in": [
+{
+"ids": [
+"ntm:ingot_dura_steel"
+],
+"n": 10
+},
+{
+"ids": [
+"ntm:motor"
+],
+"n": 1
+},
+{
+"ids": [
+"ntm:ingot_tungsten_carbide"
+],
+"n": 12
+}
+]
+},
+{
+"out": [
+"ntm:fuel_tank_small",
+1
+],
+"stack": 64,
+"duration": 60,
+"power": 1000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:88",
+"label": "Tanque de Combustível Pequeno",
+"in": [
+{
+"ids": [
+"ntm:plate_aluminium"
+],
+"n": 6
+},
+{
+"ids": [
+"ntm:plate_copper"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:steel_scaffold"
+],
+"n": 4
+}
+]
+},
+{
+"out": [
+"ntm:fuel_tank_medium",
+1
+],
+"stack": 64,
+"duration": 100,
+"power": 2000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:89",
+"label": "Tanque de Combustível Médio",
+"in": [
+{
+"ids": [
+"ntm:plate_cast__aluminium"
+],
+"n": 4
+},
+{
+"ids": [
+"ntm:plate_titanium"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:steel_scaffold"
+],
+"n": 12
+}
+]
+},
+{
+"out": [
+"ntm:fuel_tank_large",
+1
+],
+"stack": 64,
+"duration": 200,
+"power": 5000,
+"fluid": null,
+"source": "src/main/java/com/hbm/inventory/recipes/ArcWelderRecipes.java:90",
+"label": "Tanque de Combustível Grande",
+"in": [
+{
+"ids": [
+"ntm:plate_welded__aluminium"
+],
+"n": 8
+},
+{
+"ids": [
+"ntm:plate_saturnite"
+],
+"n": 12
+},
+{
+"ids": [
+"ntm:steel_scaffold"
+],
+"n": 16
+}
+]
+}
+]
+}

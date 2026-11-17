@@ -1991,6 +1991,15 @@
       }
     },
     {
+      "id": "ntm:bulk__bfa93b6db58638c5ae",
+      "source": "src/main/java/com/hbm/main/CraftingManager.java:609",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:geiger_counter",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__36bc85e91262b337e9",
       "source": "src/main/java/com/hbm/main/CraftingManager.java:611",
       "type": "minecraft:crafting_shaped",
@@ -8624,6 +8633,15 @@
       }
     },
     {
+      "id": "ntm:bulk__4676b5d28d7a28aace",
+      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:115",
+      "type": "minecraft:crafting_shapeless",
+      "result": {
+        "id": "ntm:geiger",
+        "count": 1
+      }
+    },
+    {
       "id": "ntm:bulk__643a3d4239d7fd970c",
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:116",
       "type": "minecraft:crafting_shapeless",
@@ -8948,7 +8966,7 @@
       }
     }
   ],
-  "generated_count": 994,
+  "generated_count": 996,
   "gaps": [
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:74",
@@ -10125,12 +10143,6 @@
       "callee": "addRecipeAuto",
       "reason": "unregistered/ambiguous source item machine_tape_drive",
       "expression": "new ItemStack(ModBlocks.machine_tape_drive), new Object[] { \"PPP\", \"CCC\", \"PPP\", 'P', ANY_PLASTIC.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.PCB) }"
-    },
-    {
-      "source": "src/main/java/com/hbm/main/CraftingManager.java:609",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item geiger",
-      "expression": "new ItemStack(ModItems.geiger_counter), new Object[] { ModBlocks.geiger }"
     },
     {
       "source": "src/main/java/com/hbm/main/CraftingManager.java:610",
@@ -13287,12 +13299,6 @@
       "callee": "addRecipeAuto",
       "reason": "unresolved ore dictionary ANY_RUBBER.ingot()",
       "expression": "new ItemStack(ModItems.geiger_counter, 1), new Object[] { \"GPP\", \"WCS\", \"WBB\", 'W', GOLD.wireFine(), 'P', ANY_RUBBER.ingot(), 'C', DictFrame.fromOne(ModItems.circuit, EnumCircuitType.BASIC), 'G', GOLD.ingot(), 'S', STEEL.plate(), 'B', BE.ingot() }"
-    },
-    {
-      "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:115",
-      "callee": "addShapelessAuto",
-      "reason": "unregistered/ambiguous source item geiger",
-      "expression": "new ItemStack(ModBlocks.geiger), new Object[] { ModItems.geiger_counter }"
     },
     {
       "source": "src/main/java/com/hbm/crafting/ToolRecipes.java:117",

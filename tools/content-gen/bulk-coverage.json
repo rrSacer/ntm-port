@@ -4010,15 +4010,6 @@
       "reason": "hidden/technical source item"
     },
     {
-      "id": "broken_item",
-      "type": "item",
-      "source_variable": "broken_item",
-      "source_class": "BrokenItem",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:4384",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "mysteryshovel",
       "type": "item",
       "source_variable": "mysteryshovel",
@@ -6305,7 +6296,7 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     }
   ],
-  "claimed_elsewhere": 255,
+  "claimed_elsewhere": 256,
   "unresolved_registrations": [
     {
       "type": "item",

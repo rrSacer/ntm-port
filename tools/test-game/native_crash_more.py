@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -624,6 +624,9 @@ MIXER = (140, 100, 8)
 MIXER2 = (134, 100, 8)
 MIXER3 = (128, 100, 8)
 NITER = int(os.environ.get('NTM_CRASH_NITER', '16'))
+# `furnace-break`: the broken machine is the brick furnace (its items are the engine's slots), against the chest control.
+FURNACE = SCENARIO == 'furnace-break'
+MACHINE = 'ntm:machine_furnace_brick_off' if FURNACE else 'ntm:machine_mixer'
 # The mixers of a scenario (all in chunk (8,0): one ledger) and the niter each holds.
 MIXERS = {'origin-merge': [(MIXER2, NITER // 2), (MIXER, NITER // 2)],
           # The smaller folds into the larger: the stack whose older copy stays in B is the one that goes.
@@ -657,14 +660,15 @@ def break_prepare(g):
             g.command(f'item replace block {x} {y} {z} container.0 with ntm:niter {each}')
             core = (x, y, z)
         else:
-            g.command('give @s ntm:machine_mixer 1')
+            g.command(f'give @s {MACHINE} 1')
             if SCENARIO.startswith('origin') or SCENARIO in MIXERS:
                 g.command(f'tp @s {x + .5} {y} {z + 3.5}')
-            g.ctl(f'place {x} {y} {z} --item ntm:machine_mixer')
+            g.ctl(f'place {x} {y} {z} --item {MACHINE}')
             g.command('clear @s')
             open_machine(g, x, y, z)
-            core = core_of(g, 'ntm:machine_mixer', x, y, z)
-            g.put('ntm:niter', each, 1)
+            # The brick furnace is one block: its core is where it was put; the input is its slot 0.
+            core = (x, y, z) if FURNACE else core_of(g, 'ntm:machine_mixer', x, y, z)
+            g.put('ntm:niter', each, 0 if FURNACE else 1)
             g.close()
         g.check('niter_inside', mixer_items(g, core) == each, mixer_items(g, core))
         cores.append(core)
@@ -700,7 +704,20 @@ def break_act(g):
     g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
     g.command('give @s minecraft:diamond_pickaxe 1')
     g.ctl('select minecraft:diamond_pickaxe')
-    g.ctl('break %d %d %d --timeout 30' % core)
+    if SCENARIO in MB_BREAK and not VANILLA:
+        # A multiblock's core hides behind its cells: the player breaks the first cell he can see (any cell breaks it).
+        seen = None
+        for dx, dy, dz in [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]:
+            cell = (core[0] + dx, core[1] + dy, core[2] + dz)
+            try:
+                g.ctl('break %d %d %d --timeout 30' % cell)
+                seen = cell
+                break
+            except RuntimeError:
+                continue
+        g.check('a_cell_was_broken', seen is not None, seen)
+    else:
+        g.ctl('break %d %d %d --timeout 30' % core)
     time.sleep(1.5)
     if SCENARIO == 'replace':
         g.command('clear @s')
@@ -727,12 +744,12 @@ def break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    inside = mixer_items(g, core) if state.startswith(('ntm:machine_mixer','minecraft:chest')) else 0
+    inside = mixer_items(g, core) if state.startswith(('ntm:machine_mixer', 'ntm:machine_furnace_brick', 'minecraft:chest')) else 0
     total = inside + entities(g, 'ntm:niter') + inventory(g, 'ntm:niter')
     detail = {'block': state, 'inside': inside, 'entities': entities(g, 'ntm:niter'), 'inventory': inventory(g, 'ntm:niter'), 'total': total, 'expected': NITER, 'ledger': led,
               'machine': machine_present(g, core)}
     counted(g, 'niter_exactly_once', detail, again)
-    if state.startswith('ntm:machine_mixer'):
+    if state.startswith(('ntm:machine_mixer', 'ntm:machine_furnace_brick')):
         g.check('a_standing_mixer_is_a_live_machine', machine_present(g, core), detail)
 
 
@@ -1052,6 +1069,356 @@ def save_expecting_death(g):
     g.save()
 
 
+# `furnace-smelt`: a brick furnace smelting 16 raw iron on 3 coal, killed at a boundary of a save while it works: the
+# slots and the burn/progress/ash state are one block-entity compound, so what the reopen holds is a whole state.
+SMELT = (140, 100, 8)
+
+
+def smelt_counts(g, p):
+    text = ' '.join(g.command('data get block %d %d %d Items' % p).get('chat', []))
+    out = {}
+    for entry in re.findall(r'\{[^{}]*\}', text):
+        item = re.search(r'id: ?"?([\w:]+)"?', entry)
+        n = re.search(r'[cC]ount: ?(\d+)', entry)
+        if item and n:
+            out[item[1]] = out.get(item[1], 0) + int(n[1])
+    return out
+
+
+def sprint(g, ticks):
+    g.command(f'tick sprint {ticks}')
+    deadline = time.monotonic() + 600
+    while time.monotonic() < deadline:
+        if 'sprint' not in ' '.join(g.command('tick query').get('chat', [])).lower():
+            return
+        time.sleep(.5)
+
+
+def smelt_prepare(g):
+    from native_stations import open_machine
+    g.ctl('wait-ready 120')
+    g.close()
+    x, y, z = SMELT
+    g.ground(x - 3, y, z, width=8)
+    g.command('clear @s')
+    g.command('give @s ntm:machine_furnace_brick_off 1')
+    g.ctl(f'place {x} {y} {z} --item ntm:machine_furnace_brick_off')
+    g.command('clear @s')
+    open_machine(g, x, y, z)
+    g.put('minecraft:raw_iron', 16, 0)
+    g.put('minecraft:coal', 3, 1)
+    g.close()
+    sprint(g, 1100)
+    got = smelt_counts(g, SMELT)
+    g.check('smelting_before_the_base_save', got.get('minecraft:iron_ingot', 0) > 0 and got.get('minecraft:raw_iron', 0) > 0, got)
+    g.ctl('save')
+
+
+def smelt_act(g):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 1000)
+    g.evidence['after_act'] = smelt_counts(g, SMELT)
+    save_expecting_death(g)
+
+
+def smelt_verify(g, again=False):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (SMELT[0], SMELT[1], SMELT[2] + 4))
+    quiet(g, 6)
+    got = smelt_counts(g, SMELT)
+    raw, ingots = got.get('minecraft:raw_iron', 0), got.get('minecraft:iron_ingot', 0)
+    counted(g, 'raw_and_ingots_are_16', {'total': raw + ingots, 'expected': 16, 'items': got}, again)
+    g.check('the_furnace_is_alive', machine_present(g, SMELT), got)
+    # The burn, the progress and the ash ride with the slots (one compound): whatever cut the world reopens from, they
+    # agree with the coal gone, the ingots made and the ash items. While it smelts, the progress adds one per tick and
+    # the burn falls one per tick but the first (the coal is lit in that tick): progress = burned + 1.
+    st = frozen_state(g, SMELT)
+    got = st['_items']
+    ingots = got.get('minecraft:iron_ingot', 0)
+    used = 3 - got.get('minecraft:coal', 0)
+    burned = 1600 * used - st['burn_time']
+    work = 200 * ingots + st['progress']
+    ash_items = got.get('ntm:powder_ash__coal', 0)
+    if got.get('minecraft:raw_iron', 0):
+        g.check('burn_and_progress_agree', work == burned + 1, {'burned': burned, 'work': work, 'state': st, 'items': got})
+    else:
+        # Nothing left to smelt: the burn goes on falling alone, so it is at least what the work took.
+        g.check('burn_and_progress_agree', burned >= work - 1, {'burned': burned, 'work': work, 'state': st, 'items': got})
+    g.check('ash_level_and_items_agree', st['ash_coal'] + 2000 * ash_items == 1600 * used, {'state': st, 'items': got})
+
+
+# `welder-run`: an arc welder making motors on a creative battery, killed at a boundary of a save while it works:
+# steel plates + motors stay the 40 that went in (each weld turns 2 plates and 2 wires into 2 motors).
+WELD = (140, 100, 8)
+
+
+def weld_prepare(g):
+    from native_welders import place, open_any
+    g.ctl('wait-ready 120')
+    g.close()
+    core = place(g, 'ntm:machine_arc_welder', '"Arc"', *WELD)
+    cells = [(core[0] + dx, core[1] + dy, core[2] + dz) for dy in (1, 0) for dz in (1, 0) for dx in (0, -1, 1)]
+    open_any(g, cells)
+    g.put('ntm:plate_steel', 40, 0)
+    g.put('ntm:wire_dense__red_copper', 40, 1)
+    g.put('ntm:battery_creative', 1, 4)
+    g.close()
+    sprint(g, 250)
+    got = smelt_counts(g, core)
+    g.check('welding_before_the_base_save', got.get('ntm:motor', 0) > 0 and got.get('ntm:plate_steel', 0) > 0, got)
+    g.evidence['core'] = list(core)
+    g.ctl('save')
+
+
+def weld_core(g):
+    import json as _json
+    return tuple(_json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['core'])
+
+
+def weld_act(g):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 300)
+    g.evidence['after_act'] = smelt_counts(g, weld_core(g))
+    save_expecting_death(g)
+
+
+def weld_verify(g, again=False):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    core = weld_core(g)
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
+    quiet(g, 6)
+    got = smelt_counts(g, core)
+    plates, motors = got.get('ntm:plate_steel', 0), got.get('ntm:motor', 0)
+    counted(g, 'plates_and_motors_are_40', {'total': plates + motors, 'expected': 40, 'items': got}, again)
+    g.check('the_welder_is_alive', machine_present(g, core), got)
+
+
+def frozen_state(g, core, keys=('burn_time', 'max_burn_time', 'progress', 'processing_time', 'ash_coal', 'heat', 'mb')):
+    """The machine's saved fields and its slots' items, read in the same tick (the world is frozen for the reads)."""
+    from native_combustion import machine_state, first_int
+    g.command('tick freeze')
+    try:
+        text = machine_state(g, core)
+        out = {k: first_int(text, r'"%s":(\d+)' % k) for k in keys}
+        for key in ('bonus',):
+            found = re.search(r'"%s":\[(\d+),(\d+),(\d+)\]' % key, text)
+            out[key] = [int(v) for v in found.groups()] if found else None
+        out['_items'] = smelt_counts(g, core)
+    finally:
+        g.command('tick unfreeze')
+    return out
+
+
+MB_BLOCK = {'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
+            'combination': ('ntm:furnace_combination', '"Combination"')}
+MB_AT = (140, 100, 8)
+
+
+def mb_place(g, kind, fire=True):
+    """The multiblock furnace of `kind` and, for the two on a heat source, the firebox under it: its core and firebox."""
+    from native_furnaces import core_of as find_core
+    x, y, z = MB_AT
+    g.close()
+    g.ground(x - 3, y, z, width=10, depth=10)
+    g.command('clear @s')
+    item, marker = MB_BLOCK[kind]
+    g.command(f'give @s {item} 1')
+    if kind == 'iron':
+        g.ctl(f'place {x} {y} {z} --item {item}')
+        time.sleep(1.5)
+        return find_core(g, (x, y, z), marker), None
+    g.command(f'setblock {x} {y} {z} minecraft:stone')
+    g.ctl(f'place {x} {y + 1} {z} --item {item}')
+    time.sleep(1.5)
+    core = find_core(g, (x, y + 1, z), marker)
+    g.command(f'setblock {x} {y} {z} minecraft:air')
+    fire_at = (core[0], core[1] - 1, core[2])
+    if fire:
+        g.command(f'setblock {fire_at[0]} {fire_at[1]} {fire_at[2]} ntm:heater_firebox[facing=north]')
+        time.sleep(1)
+    return core, fire_at
+
+
+def mb_open(g, kind, core):
+    """The screen, through a cell of the multiblock a player can click from the south; patient, the host may be loaded."""
+    first = [(0, 1, 0)] if kind == 'iron' else [(0, 0, 1)]
+    rest = [(dx, dy, dz) for dy in (1, 0, 2) for dz in (0, 1, -1) for dx in (0, -1, 1) if (dx, dy, dz) not in first]
+    g.close()
+    tried = []
+    for dx, dy, dz in first + rest:
+        cell = (core[0] + dx, core[1] + dy, core[2] + dz)
+        g.command('tp @s %s 100 %s' % (cell[0] + .5, cell[2] + 3.5))
+        time.sleep(1.5)
+        for _ in range(3):
+            try:
+                g.ctl('interact %d %d %d south' % cell)
+            except RuntimeError:
+                break  # no visible face from here: another cell
+            deadline = time.monotonic() + 10
+            while time.monotonic() < deadline:
+                if g.ctl('screen').get('screen') == 'container':
+                    return cell
+                time.sleep(.4)
+            g.close()
+        tried.append(cell)
+    raise AssertionError('no cell opened the screen: ' + str(tried))
+
+
+def mb_fill_fire(g, fire_at):
+    from native_furnaces import open_fire
+    open_fire(g, fire_at)
+    g.put('minecraft:coal', 16, 0)
+    g.close()
+
+
+STATE_KIND = {'iron-state': 'iron', 'steel-state': 'steel', 'combination-state': 'combination'}
+
+
+def state_core(g):
+    return tuple(json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['core'])
+
+
+def state_prepare(g):
+    kind = STATE_KIND[SCENARIO]
+    g.ctl('wait-ready 120')
+    core, fire_at = mb_place(g, kind)
+    if fire_at:
+        mb_fill_fire(g, fire_at)
+    mb_open(g, kind, core)
+    if kind == 'iron':
+        g.put('minecraft:coal', 3, 1)
+        g.put('minecraft:raw_iron', 16, 0)
+        g.close()
+        sprint(g, 500)
+    elif kind == 'steel':
+        g.put('minecraft:iron_ore', 8, 0)
+        g.close()
+        # Until the line holds some bonus (one to three ores done): the state a reopen must keep.
+        for _ in range(60):
+            sprint(g, 100)
+            st = frozen_state(g, core)
+            done = 8 - st['_items'].get('minecraft:iron_ore', 0)
+            if done % 4:
+                break
+    else:
+        g.put('minecraft:coal', 8, 0)
+        g.close()
+        sprint(g, 600)
+    st = frozen_state(g, core)
+    g.evidence['core'] = list(core)
+    g.evidence['before_the_base_save'] = st
+    g.check('working_before_the_base_save', bool(st['_items']) and (st['progress'] or any(st['bonus'] or [])), st)
+    g.ctl('save')
+
+
+def state_act(g):
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    core = state_core(g)
+    sprint(g, 700)
+    g.evidence['after_act'] = frozen_state(g, core)
+    save_expecting_death(g)
+
+
+def state_verify(g, again=False):
+    kind = STATE_KIND[SCENARIO]
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    core = state_core(g)
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
+    quiet(g, 6)
+    st = frozen_state(g, core)
+    got = st['_items']
+    g.evidence['state_after_reopen' + ('_again' if again else '')] = st
+    g.check('the_furnace_is_alive', machine_present(g, core), st)
+    if kind == 'iron':
+        raw, ingots = got.get('minecraft:raw_iron', 0), got.get('minecraft:iron_ingot', 0)
+        counted(g, 'raw_and_ingots_are_16', {'total': raw + ingots, 'expected': 16, 'items': got}, again)
+        used = 3 - got.get('minecraft:coal', 0)
+        burned = st['max_burn_time'] * used - st['burn_time']
+        work = st['processing_time'] * ingots + st['progress']
+        g.check('burn_and_progress_agree', work == burned, {'burned': burned, 'work': work, 'state': st})
+    elif kind == 'steel':
+        ores, ingots = got.get('minecraft:iron_ore', 0), got.get('minecraft:iron_ingot', 0)
+        done = 8 - ores
+        # Four ores pay one more ingot (25 % each); the bonus left is the part of the next one: the line's progress
+        # and its bonus ride with the items, or one of them is lost at a reopen.
+        counted(g, 'ores_and_ingots_agree', {'total': done + done // 4, 'expected': ingots, 'items': got}, again)
+        g.check('bonus_agrees_with_the_ores_done', st['bonus'] is not None and st['bonus'][0] == 25 * (done % 4), {'done': done, 'state': st})
+    else:
+        coal, coke = got.get('minecraft:coal', 0), got.get('ntm:coke__coal', 0)
+        counted(g, 'coal_and_coke_are_8', {'total': coal + coke, 'expected': 8, 'items': got}, again)
+        g.check('creosote_100_mb_a_coke', st['mb'] == 100 * coke, {'mb': st['mb'], 'coke': coke})
+
+
+# `iron-break`, `steel-break`, `combination-break`: the multiblock furnace holding items, broken, against the chest control
+# holding the same ones; counted item by item, once in the world.
+MB_BREAK = {'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
+            'steel-break': ('steel', [('minecraft:raw_iron', 6, 0), ('minecraft:raw_copper', 3, 1)]),
+            'combination-break': ('combination', [('minecraft:coal', 8, 0), ('minecraft:bucket', 2, 2)])}
+
+
+def mb_items(g, p, ids):
+    text = ' '.join(g.command('data get block %d %d %d Items' % p).get('chat', []))
+    total = 0
+    for entry in re.findall(r'\{[^{}]*\}', text):
+        item = re.search(r'id: ?"?([\w:]+)"?', entry)
+        n = re.search(r'[cC]ount: ?(\d+)', entry)
+        if item and n and item[1] in ids:
+            total += int(n[1])
+    return total
+
+
+def mb_break_prepare(g):
+    kind, loads = MB_BREAK[SCENARIO]
+    ids = [i for i, _, _ in loads]
+    g.ctl('wait-ready 120')
+    if VANILLA:
+        x, y, z = MB_AT
+        g.close()
+        g.ground(x - 3, y, z, width=10, depth=10)
+        g.command('clear @s')
+        g.command(f'setblock {x} {y} {z} minecraft:chest')
+        for n, (item, count, _) in enumerate(loads):
+            g.command(f'item replace block {x} {y} {z} container.{n} with {item} {count}')
+        core = MB_AT
+    else:
+        # No firebox: no heat, nothing smelts, the items stay as they were put.
+        core, _ = mb_place(g, kind, fire=False)
+        mb_open(g, kind, core)
+        for item, count, slot in loads:
+            g.put(item, count, slot)
+        g.close()
+    expected = {i: c for i, c, _ in loads}
+    g.check('items_inside', mb_items(g, core, ids) == sum(expected.values()), mb_items(g, core, ids))
+    g.evidence['core'] = list(core)
+    g.ctl('save')
+
+
+def mb_break_verify(g, again=False):
+    kind, loads = MB_BREAK[SCENARIO]
+    ids = [i for i, _, _ in loads]
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    core = state_core(g)
+    g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
+    led = quiet(g, 12)
+    state = g.ctl('block %d %d %d' % core).get('state', '')
+    standing = state.startswith(('ntm:furnace_', 'minecraft:chest'))
+    inside = mb_items(g, core, ids) if standing else 0
+    ents = sum(entities(g, i) for i in ids)
+    inv = sum(inventory(g, i) for i in ids)
+    detail = {'block': state, 'inside': inside, 'entities': ents, 'inventory': inv, 'total': inside + ents + inv,
+              'expected': sum(c for _, c, _ in loads), 'ledger': led, 'machine': machine_present(g, core)}
+    counted(g, 'mb_items_exactly_once', detail, again)
+    if state.startswith('ntm:furnace_'):
+        g.check('a_standing_furnace_is_a_live_machine', machine_present(g, core), detail)
+
+
 def drain(g):
     g.ctl('wait-ready 120')
     g.ctl('save')
@@ -1074,6 +1441,15 @@ STEPS = {
     'mining': (mining_prepare, mining_act, mining_verify),
     'vanilla-break': (vanilla_break_prepare, break_act, break_verify),
     'break': (break_prepare, break_act, break_verify),
+    'furnace-break': (break_prepare, break_act, break_verify),
+    'furnace-smelt': (smelt_prepare, smelt_act, smelt_verify),
+    'welder-run': (weld_prepare, weld_act, weld_verify),
+    'iron-state': (state_prepare, state_act, state_verify),
+    'steel-state': (state_prepare, state_act, state_verify),
+    'combination-state': (state_prepare, state_act, state_verify),
+    'iron-break': (mb_break_prepare, break_act, mb_break_verify),
+    'steel-break': (mb_break_prepare, break_act, mb_break_verify),
+    'combination-break': (mb_break_prepare, break_act, mb_break_verify),
     'frozen-break': (frozen_break_prepare, frozen_break_act, frozen_break_verify),
     'frozen-unload': (frozen_break_prepare, frozen_unload_act, frozen_break_verify),
     'replace': (break_prepare, break_act, break_verify),

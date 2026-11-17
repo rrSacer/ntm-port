@@ -32,7 +32,7 @@ impl Server {
         }
     }
 
-    /// Boilers, cokers, the heating oven and the electric heater take heat
+    /// Boilers, cokers, the steel furnace, the heating oven and the electric heater take heat
     /// from the source under them (`tryPullHeat`), before they run; from the
     /// bottom up, so a stack of heaters passes it on within the tick.
     pub(super) fn heat_tick(&mut self) {
@@ -45,6 +45,7 @@ impl Server {
                 r.loaded.get(*k) == Some(&true)
                     && match &m.data {
                         Data::Boiler(_) | Data::Coker(_) => true,
+                        Data::Furnace(f) => matches!(**f, crate::furnaces::Furnace::Steel(_) | crate::furnaces::Furnace::Combination(_)),
                         Data::SolarStirling(s) => matches!(**s, crate::solar_stirling::SolarStirling::Stirling(_)),
                         Data::Firebox(f) => f.oven,
                         Data::Heater(h) => matches!(**h, Heater::Electric(_)),
@@ -61,6 +62,11 @@ impl Server {
                 Some(Data::SolarStirling(s)) => match &mut **s { crate::solar_stirling::SolarStirling::Stirling(s) => s.pull_heat(source), _ => 0 },
                 Some(Data::Boiler(b)) => b.pull_heat(source),
                 Some(Data::Coker(c)) => c.pull_heat(source),
+                Some(Data::Furnace(f)) => match &mut **f {
+                    crate::furnaces::Furnace::Steel(s) => s.pull_heat(source),
+                    crate::furnaces::Furnace::Combination(s) => s.pull_heat(source),
+                    _ => 0,
+                },
                 Some(Data::Firebox(f)) => f.pull_heat(source),
                 Some(Data::Heater(h)) => match &mut **h {
                     Heater::Electric(e) => e.pull_heat(source),
@@ -72,6 +78,28 @@ impl Server {
                 && let Some(s) = under.as_ref().and_then(|u| r.world.machines.get_mut(u)).and_then(|m| heat_source(&mut m.data))
             {
                 s.use_heat(taken);
+            }
+        }
+    }
+
+    /// The ash of the fuel each firebox and heating oven lit this tick, into the ashpit right under its core
+    /// (`TileEntityFireboxBase.java:83-91`: `getTileEntity(x, y - 1, z) instanceof TileEntityAshpit`); without one,
+    /// nowhere.
+    pub(super) fn ash_tick(&mut self) {
+        let lit: Vec<(Key, (crate::fuel::Ash, u32))> = self
+            .ready
+            .world
+            .machines
+            .iter_mut()
+            .filter_map(|(k, m)| match &mut m.data {
+                Data::Firebox(f) => f.ash_out.take().map(|a| (k.clone(), a)),
+                _ => None,
+            })
+            .collect();
+        for ((dim, at), (ash, time)) in lit {
+            let under = (dim, [at[0], at[1] - 1, at[2]]);
+            if let Some(Data::Ashpit(pit)) = self.ready.world.machines.get_mut(&under).map(|m| &mut m.data) {
+                pit.add(ash, time as i32);
             }
         }
     }

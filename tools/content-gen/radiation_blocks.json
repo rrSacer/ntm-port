@@ -150,6 +150,75 @@
         "pt_br": "Sellafita-Cório"
       },
       "behavior_gap": "Walking potion and random-tick decay in ntm-core and the native random tick (slice 5d); the chunk radiation of updateTick (incrementRad) waits for slice 4; the four position texture variants are reduced to the first"
+    },
+    {
+      "id": "geiger",
+      "source_variable": "geiger",
+      "type": "block",
+      "category": "machine",
+      "source_class": "GeigerCounter",
+      "template": "minecraft:beehive",
+      "textures": {
+        "side": "blocks/geiger",
+        "top": "blocks/geiger",
+        "front": "blocks/geiger"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/geiger.png",
+      "block_properties": {
+        "hardness": 15.0,
+        "explosion_resistance": 0.25,
+        "sounds": "minecraft:stone"
+      },
+      "shapes": {
+        "property": "facing",
+        "values": {
+          "north": [
+            [
+              0,
+              0,
+              0.125,
+              0.90625,
+              0.5625,
+              1
+            ]
+          ],
+          "south": [
+            [
+              0.09375,
+              0,
+              0,
+              1,
+              0.5625,
+              0.875
+            ]
+          ],
+          "west": [
+            [
+              0.125,
+              0,
+              0.09375,
+              1,
+              0.5625,
+              1
+            ]
+          ],
+          "east": [
+            [
+              0,
+              0,
+              0,
+              0.875,
+              0.5625,
+              0.90625
+            ]
+          ]
+        }
+      },
+      "names": {
+        "en_us": "Geiger Counter",
+        "pt_br": "Contador Geiger"
+      },
+      "behavior_gap": "TileEntityGeiger (clicks, comparator, report) in the native glue and ntm-core geiger_block (slice 4b); the OpenComputers and Energy Control readings have no mods to read them"
     }
   ]
 }
