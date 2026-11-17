@@ -410,11 +410,27 @@ impl Server {
         }
     }
 
-    /// Stage FEL beam block effects with the machine step. Unsupported world
-    /// observations and SILEX targets freeze the step until their adapter is ready.
-    fn fel_tick(&mut self, host: &mut impl ServerHost, keys: &[Key], removed: &BTreeSet<Key>) -> bool {
+    /// The SILEXes of the step's group take the wavelength their FEL gave them (NULL for none) before they tick.
+    fn silex_lasers_in(&mut self, keys: &[Key]) {
+        for k in keys {
+            let laser = self.ready.silex_lasers.remove(k).unwrap_or_default();
+            if let Some(crate::machine::Data::Silex(s)) = self.ready.world.machines.get_mut(k).map(|m| &mut m.data) {
+                s.mode = laser;
+            }
+        }
+    }
+
+    /// Stage FEL beam block effects with the machine step. A world cell the host cannot read freezes the step.
+    /// `outside` holds the other machines: the SILEXes the beam may reach.
+    fn fel_tick(&mut self, host: &mut impl ServerHost, keys: &[Key], removed: &BTreeSet<Key>, outside: &BTreeMap<Key, crate::machine::Machine>) -> bool {
         use crate::fel::{BeamCell, BeamEffect, Wavelength};
+        let silexes: Vec<(Key, Option<[i32; 3]>)> = outside
+            .iter()
+            .filter(|(_, m)| matches!(m.data, crate::machine::Data::Silex(_)))
+            .map(|(k, m)| (k.clone(), m.facing.as_deref().and_then(registry::facing_dir)))
+            .collect();
         let mut victims = Vec::new();
+        let mut lasers_set = Vec::new();
         for key in keys {
             if removed.contains(key) { continue; }
             let Some(machine) = self.ready.world.machines.get_mut(key) else { continue };
@@ -425,13 +441,25 @@ impl Server {
             let at = |i: i32| [key.1[0] + dir[0]*i, key.1[1]+1, key.1[2] + dir[2]*i];
             let mut missing = false;
             let mut random = crate::rbmk::jrandom::JavaRandom::new((self.tick as i64) ^ i64::from(key.1[0]).wrapping_mul(341873128712) ^ i64::from(key.1[2]).wrapping_mul(132897987541));
+            let lasers = &self.ready.silex_lasers;
+            let mut cores = BTreeMap::new();
             let effects = fel.trace_beam(mode, |i| {
                 let p = at(i);
                 let Some(block) = host.get_block(&key.0, p) else { missing = true; return BeamCell::Transparent };
                 let id = blockstate::id_of(&block);
-                if id == "ntm:machine_silex" || id == "ntm:dummy_machine" {
-                    missing = true;
-                    return BeamCell::Transparent;
+                // `b == ModBlocks.machine_silex`: a part of a SILEX (its 3x3x3 round the core's bottom centre). Its
+                // `TileEntitySILEX` is looked for one cell on, at the FEL's height (`TileEntityFEL:156`): there or not
+                // at all, and with it the rotation check (`rotationIsValid`: along the beam either way) and its mode.
+                if matches!(id, "ntm:machine_silex" | "ntm:dummy_machine")
+                    && silexes.iter().any(|(c, _)| c.0 == key.0 && (p[0] - c.1[0]).abs() <= 1 && (p[2] - c.1[2]).abs() <= 1 && (0..=2).contains(&(p[1] - c.1[1])))
+                {
+                    let probe = [p[0] + dir[0], key.1[1], p[2] + dir[2]];
+                    let core = silexes.iter().find(|(c, _)| c.0 == key.0 && c.1 == probe).map(|(c, facing)| {
+                        cores.insert(i, c.clone());
+                        let valid = facing.is_some_and(|f| f == dir || f == [-dir[0], -dir[1], -dir[2]]);
+                        (valid, lasers.get(c).copied().unwrap_or_default())
+                    });
+                    return BeamCell::Silex { core };
                 }
                 let Some(opaque) = host.fel_opaque(&key.0, p) else { missing = true; return BeamCell::Transparent };
                 if !opaque && id != "minecraft:tnt" { return BeamCell::Transparent; }
@@ -440,6 +468,7 @@ impl Server {
             }, || random.next_int(5) == 0);
             if missing { return false; }
             let mut blocks = Vec::new();
+            let mut drops: Vec<(Pos, &str)> = Vec::new();
             for effect in effects {
                 match effect {
                     BeamEffect::RemoveLiquid { at: i } => blocks.push((at(i), "minecraft:air".into())),
@@ -451,12 +480,30 @@ impl Server {
                         let [x, y, z] = at(i);
                         blocks.push(([x, y - 1, z], crate::digamma::ASH_BLOCK.into()));
                     }
-                    BeamEffect::SetSilex { .. } | BeamEffect::BreakSilex { .. } => return false,
+                    BeamEffect::SetSilex { at: i, mode } => {
+                        if let Some(c) = cores.get(&i) { lasers_set.push((c.clone(), mode)); }
+                    }
+                    // `silexBlock.breakBlock(...)` (the whole SILEX goes, its items spilled) and a SILEX item at the
+                    // struck cell.
+                    BeamEffect::BreakSilex { at: i } => {
+                        let Some(c) = cores.get(&i) else { continue };
+                        for dx in -1..=1 { for dy in 0..=2 { for dz in -1..=1 {
+                            let cell = [c.1[0] + dx, c.1[1] + dy, c.1[2] + dz];
+                            if host.get_block(&key.0, cell).is_some_and(|b| matches!(blockstate::id_of(&b), "ntm:machine_silex" | "ntm:dummy_machine")) {
+                                blocks.push((cell, "minecraft:air".into()));
+                            }
+                        }}}
+                        drops.push((at(i), crate::silex::BLOCK));
+                    }
                 }
             }
             if !blocks.is_empty() && host.set_blocks(&key.0, &blocks).is_err() { return false; }
+            for (p, item) in drops {
+                if !host.drop_items(&key.0, p, &[(item.to_string(), 1)]) { return false; }
+            }
             victims.extend(self.players.iter().filter(|p| p.dim == key.0 && crate::fel::beam_intersects_player(key.1, dir, previous_distance, p.pos)).map(|p| (p.clone(), mode)));
         }
+        self.ready.silex_lasers.extend(lasers_set);
         for (p, mode) in victims {
             let (id, creative) = (p.id.clone(), p.creative);
             match mode {
@@ -1052,6 +1099,7 @@ impl Server {
                     staged.valid = false;
                 }
                 self.requested_detonations(&mut staged);
+                self.silex_lasers_in(&keys);
                 for m in self.ready.world.machines.values_mut() {
                     m.logic_mut().tick();
                     match &mut m.data {
@@ -1080,7 +1128,7 @@ impl Server {
                         _ => {}
                     }
                 }
-                if !self.fel_tick(&mut staged, &keys, &removed_keys) {
+                if !self.fel_tick(&mut staged, &keys, &removed_keys, &outside) {
                     staged.valid = false;
                 }
                 self.annihilator_tick(&keys, &removed_keys);
@@ -1227,7 +1275,7 @@ mod dose_tests {
     use crate::radiation::Dose;
 
     #[derive(Default)]
-    struct FelWorld { unavailable: bool, stone: bool, writes: Vec<(Pos, String)>, fire: Vec<(String, u32)>, effects: Vec<(String, String, u32)>, digamma: BTreeMap<String, f32> }
+    struct FelWorld { unavailable: bool, stone: bool, writes: Vec<(Pos, String)>, fire: Vec<(String, u32)>, effects: Vec<(String, String, u32)>, digamma: BTreeMap<String, f32>, parts: BTreeMap<Pos, String>, dropped: Vec<(Pos, String, u32)> }
     impl Kv for FelWorld {
         fn get(&mut self, _: &str) -> Option<Vec<u8>> { None }
         fn set(&mut self, _: &str, _: &[u8]) -> Result<(), String> { Ok(()) }
@@ -1235,6 +1283,7 @@ mod dose_tests {
     }
     impl ServerHost for FelWorld {
         fn get_block(&mut self, _: &str, p: Pos) -> Option<String> {
+            if let Some(b) = self.parts.get(&p) { return Some(b.clone()); }
             if self.unavailable { None } else if p == [0, 65, -5] { Some(if self.stone { "minecraft:stone" } else { "minecraft:water" }.into()) } else { Some("minecraft:air".into()) }
         }
         fn player_digamma(&mut self, id: &str, _: &Dose) -> Option<f32> { Some(self.digamma.get(id).copied().unwrap_or(0.0)) }
@@ -1243,7 +1292,11 @@ mod dose_tests {
             self.digamma.insert(id.into(), desired);
             true
         }
-        fn fel_opaque(&mut self, _: &str, p: Pos) -> Option<bool> { Some(p == [0, 65, -5]) }
+        fn fel_opaque(&mut self, _: &str, p: Pos) -> Option<bool> { Some(self.parts.get(&p).map_or(p == [0, 65, -5], |b| b != "minecraft:air")) }
+        fn drop_items(&mut self, _: &str, p: Pos, items: &[(String, u32)]) -> bool {
+            self.dropped.extend(items.iter().map(|(i, n)| (p, i.clone(), *n)));
+            true
+        }
         fn block_resistance(&mut self, _: &str, _: Pos) -> Option<f32> { Some(1.0) }
         fn set_blocks(&mut self, _: &str, blocks: &[(Pos, String)]) -> Result<(), String> { self.writes.extend_from_slice(blocks); Ok(()) }
         fn tell(&mut self, _: &str, _: &str) {}
@@ -1251,6 +1304,83 @@ mod dose_tests {
         fn fel_fire(&mut self, id: &str, ticks: u32) { self.fire.push((id.into(), ticks)); }
         fn effect(&mut self, id: &str, effect: &str, ticks: u32, _: u8) { self.effects.push((id.into(), effect.into(), ticks)); }
     }
+    /// A FEL facing north at (0, 64, 0) with a DRX crystal and the power of one tick, and a SILEX facing `silex_facing` whose
+    /// core is at (0, 64, z): its 27 cells are SILEX parts.
+    fn fel_and_silex(silex_facing: &str, z: i32) -> (FelWorld, Server, Key, Key, BTreeMap<Key, Machine>) {
+        let mut host = FelWorld::default();
+        let core = ("minecraft:overworld".to_string(), [0, 64, z]);
+        for dx in -1..=1 { for dy in 0..=2 { for dz in -1..=1 {
+            let cell = [dx, 64 + dy, z + dz];
+            host.parts.insert(cell, if cell == core.1 { crate::silex::BLOCK } else { "ntm:dummy_machine" }.into());
+        }}}
+        // No water in the way (FelWorld's at z -5) unless the SILEX is there.
+        host.parts.entry([0, 65, -5]).or_insert_with(|| "minecraft:air".into());
+        let server = Server::native(&mut host, 0);
+        let key = ("minecraft:overworld".to_string(), [0, 64, 0]);
+        let mut fel = Machine::new(Kind::Fel, crate::fel::BLOCK, Some("north".into()));
+        let crate::machine::Data::Fel(f) = &mut fel.data else { panic!() };
+        f.on = true; f.power = 11_250;
+        f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_bismuth", 1));
+        let mut server = server;
+        server.ready.world.machines.insert(key.clone(), fel);
+        let mut outside = BTreeMap::new();
+        outside.insert(core.clone(), Machine::new(Kind::Silex, crate::silex::BLOCK, Some(silex_facing.into())));
+        (host, server, key, core, outside)
+    }
+
+    #[test]
+    fn a_silex_along_the_beam_takes_its_wavelength_and_lets_it_through() {
+        for facing in ["north", "south"] {
+            let (mut host, mut server, key, core, outside) = fel_and_silex(facing, -9);
+            assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new(), &outside));
+            assert_eq!(server.ready.silex_lasers.get(&core), Some(&crate::fel::Wavelength::Visible), "{facing}");
+            assert!(host.writes.is_empty() && host.dropped.is_empty());
+            let crate::machine::Data::Fel(f) = &server.ready.world.machines[&key].data else { panic!() };
+            assert!(!f.missing_valid_silex);
+            assert_eq!(f.distance, crate::fel::RANGE, "the beam goes through and on");
+            // The SILEX's step takes it, once.
+            server.ready.world.machines.insert(core.clone(), outside[&core].clone());
+            server.silex_lasers_in(std::slice::from_ref(&core));
+            let crate::machine::Data::Silex(s) = &server.ready.world.machines[&core].data else { panic!() };
+            assert_eq!(s.mode, crate::fel::Wavelength::Visible);
+            assert!(server.ready.silex_lasers.is_empty());
+        }
+    }
+
+    #[test]
+    fn a_silex_across_the_beam_or_too_near_is_broken_and_dropped() {
+        for (facing, z) in [("east", -9), ("north", -4)] {
+            let (mut host, mut server, key, core, outside) = fel_and_silex(facing, z);
+            assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new(), &outside));
+            assert!(server.ready.silex_lasers.is_empty(), "{facing} {z}");
+            let mut cleared: Vec<Pos> = host.writes.iter().filter(|(_, b)| b == "minecraft:air").map(|(p, _)| *p).collect();
+            cleared.sort();
+            let mut all: Vec<Pos> = host.parts.iter().filter(|(_, b)| *b != "minecraft:air").map(|(p, _)| *p).collect();
+            all.sort();
+            assert_eq!(cleared, all, "every part of it goes");
+            let struck = [0, 65, z + 1];
+            assert_eq!(host.dropped, vec![(struck, crate::silex::BLOCK.to_string(), 1)]);
+            let _ = core;
+        }
+    }
+
+    #[test]
+    fn another_machines_part_is_an_obstacle_not_a_freeze() {
+        let mut host = FelWorld::default();
+        host.parts.insert([0, 65, -5], "minecraft:air".into());
+        host.parts.insert([0, 65, -7], "ntm:dummy_machine".into());
+        let mut server = Server::native(&mut host, 0);
+        let key = ("minecraft:overworld".to_string(), [0, 64, 0]);
+        let mut fel = Machine::new(Kind::Fel, crate::fel::BLOCK, Some("north".into()));
+        let crate::machine::Data::Fel(f) = &mut fel.data else { panic!() };
+        f.on = true; f.power = 11_250;
+        f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_bismuth", 1));
+        server.ready.world.machines.insert(key.clone(), fel);
+        assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new(), &BTreeMap::new()));
+        let crate::machine::Data::Fel(f) = &server.ready.world.machines[&key].data else { panic!() };
+        assert_eq!(f.distance, 7, "it stops the beam");
+    }
+
     #[test]
     fn fel_server_tick_spends_energy_and_stages_the_struck_block() {
         let mut host = FelWorld::default();
@@ -1261,7 +1391,7 @@ mod dose_tests {
         f.on = true; f.power = 4_000;
         f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_co2", 1));
         server.ready.world.machines.insert(key.clone(), machine);
-        assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new()));
+        assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new(), &BTreeMap::new()));
         let crate::machine::Data::Fel(f) = &server.ready.world.machines[&key].data else { panic!() };
         assert_eq!((f.power, f.distance), (250, 5));
         assert_eq!(host.writes, vec![([0, 65, -5], "minecraft:air".into())]);
@@ -1287,7 +1417,7 @@ mod dose_tests {
                 server.tick = 200 + ticks;
                 let crate::machine::Data::Fel(f) = &mut server.ready.world.machines.get_mut(&key).unwrap().data else { panic!() };
                 f.power = 303_750;
-                assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new()));
+                assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new(), &BTreeMap::new()));
                 ticks += 1;
                 assert!(ticks < 100);
             }
@@ -1311,7 +1441,7 @@ mod dose_tests {
         f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_bismuth", 1));
         server.ready.world.machines.insert(key.clone(), machine);
         server.set_players(vec![PlayerInfo { id:"inside".into(), name:"inside".into(), dim:key.0.clone(), pos:[0.5,64.0,-2.0], creative:false }, PlayerInfo { id:"outside".into(), name:"outside".into(), dim:key.0.clone(), pos:[5.0,64.0,-2.0], creative:false }]);
-        assert!(server.fel_tick(&mut host, &[key], &BTreeSet::new()));
+        assert!(server.fel_tick(&mut host, &[key], &BTreeSet::new(), &BTreeMap::new()));
         assert_eq!(host.fire, vec![("inside".into(), 200)]);
         assert_eq!(host.effects, vec![("inside".into(), "minecraft:blindness".into(), 60*60*65536)]);
     }
@@ -1331,7 +1461,7 @@ mod dose_tests {
         f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_dnt", 1));
         server.ready.world.machines.insert(key.clone(), machine);
         server.set_players([("normal", false), ("creative", true), ("new", false)].into_iter().map(|(id, creative)| PlayerInfo { id:id.into(), name:id.into(), dim:key.0.clone(), pos:[0.5,64.0,-2.0], creative }).collect());
-        assert!(server.fel_tick(&mut host, &[key], &BTreeSet::new()));
+        assert!(server.fel_tick(&mut host, &[key], &BTreeSet::new(), &BTreeMap::new()));
         assert_eq!(server.player_dose("normal").millirad, 25_000);
         assert_eq!(server.player_dose("creative").millirad, 0);
         assert_eq!(server.player_dose("new").millirad, 0);

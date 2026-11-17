@@ -431,6 +431,9 @@ struct Ready {
     radiation_effect_read: BTreeMap<String, (u32, u8)>,
     /// Each player's step counters (`distanceWalkedOnStepModified`, `nextStepDistance`): an entity's, not saved.
     walks: BTreeMap<String, crate::walking::Walk>,
+    /// The wavelength a FEL gave each SILEX (`silex.mode = this.mode`, `TileEntityFEL:162`), taken by the SILEX's next
+    /// step: in `Ready`, so a refused FEL step gives none. Not saved (the SILEX's own mode goes back to NULL each tick).
+    silex_lasers: BTreeMap<Key, crate::fel::Wavelength>,
     /// RBMK columns whose meltdown is due and already logged (once per column and state; T16 runs it).
     rbmk_melting: BTreeSet<Key>,
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
