@@ -39,17 +39,18 @@ Têm slots, tanques, energia e uma tabela de receitas do Java para extrair (o me
 
 | ID | Classe (linhas) | Receitas / o que faz | Observações |
 | --- | --- | --- | --- |
+| `machine_fel` | `TileEntityFEL` (335) | laser (20 M HE); feixe 24 blocos em linha, alimenta o SILEX, acerta jogadores e blocos | **antecipada do 2e para o 2a** (decisão do Maestro, Opção A) para provar o SILEX com laser real em jogo |
 | `machine_silex` | `TileEntitySILEX` (385) | `SILEXRecipes`, laser, peróxido (tanque 16 000) | multibloco; fluido; depende dos itens de cristal/laser do catálogo |
 | `machine_cyclotron` | `TileEntityMachineCyclotron` (421) | `CyclotronRecipes`; água 32 000, vapor gasto 32 000, antimatéria 8 000; 100 M de energia | multibloco; fluido; consome/produz antimatéria |
 | `machine_radiolysis` | `TileEntityMachineRadiolysis` (294) | `RadiolysisRecipes`; 3 tanques de 2 000; calor | multibloco |
 | `machine_exposure_chamber` | `TileEntityMachineExposureChamber` (356) | `ExposureChamberRecipes`; 1 M de energia | multibloco; fonte de partículas |
-| `machine_ammo_press` | `TileEntityMachineAmmoPress` (234) | `AmmoPressRecipes` | só vale se os itens de munição existirem no catálogo (armas são a Onda 4): verificar antes |
+| `machine_ammo_press` | `TileEntityMachineAmmoPress` (234) | `AmmoPressRecipes` | **bloqueada por catálogo / Onda 4**: `ntm:casing__*` existe, mas os itens de munição (`ntm:ammo_standard` / Sedna) ainda não existem em `content/ids.json` |
 | `machine_microwave` | `TileEntityMicrowave` (293) | cozinha como o forno vanilla (`FurnaceRecipes`); 50 000 de energia; **explode** com o superaquecimento | tem efeito de mundo (explosão): espera D1+D2 para a falha |
 | `machine_rockmill` | `TileEntityMachineRockMill` (282) | 2 tanques de 4 000, energia; mexe no mundo | confirmar o que faz no mundo |
 | `machine_autocrafter` | `TileEntityMachineAutocrafter` (372) | grade de fabricação com modelo e filtro | lógica própria, sem tabela de receita do NTM |
 | `machine_keyforge` | `TileEntityMachineKeyForge` (211) | 3 slots, grava chaves/trancas | liga com as portas e trancas já entregues (`K3 doors locks`) |
 | `machine_ashpit` | `TileEntityAshpit` (224) | cinzeiro: recebe a cinza dos fornos e queimadores | depende da poluição/fuligem (Onda 1) para a parte do ar; a parte de itens é separável |
-| `machine_supercomputer` | `TileEntityMachineSuperComputer` (199) | 2 tanques de 4 000; energia | multibloco; confirmar o efeito |
+| `machine_supercomputer` | `TileEntityMachineSuperComputer` (199) | `SuperComputerRecipes` (simula/processa/copia drives, gera `blueprint_folder`) | **bloqueada por catálogo / Onda 4**: faltam os drives (`ItemDrive`) e `ntm:blueprint_folder` em `content/ids.json` |
 | `machine_annihilator` | `TileEntityMachineAnnihilator` (280) | tanque de 2,5 M; apaga fluidos/itens | simples |
 | `machine_funnel` | `TileEntityMachineFunnel` (179) | recolhe itens | simples |
 | `machine_orbus` | `TileEntityMachineOrbus` (75) | armazenamento de fluido (tanque grande) | simples |
@@ -75,7 +76,6 @@ Têm slots, tanques, energia e uma tabela de receitas do Java para extrair (o me
 | `machine_forcefield` | `TileEntityForceField` (540) | entidades e campo |
 | `machine_siren` | `TileEntityMachineSiren` (245) | som e alcance |
 | `tesla` | `TileEntityTesla` (187) | dano a entidades e raio no mundo |
-| `machine_fel` | `TileEntityFEL` (335) | laser (20 M); acerta entidades e blocos |
 | `machine_autosaw` | `TileEntityMachineAutosaw` (605) | entidades e blocos |
 | `machine_thresher` | `TileEntityMachineThresher` (460) | entidades, mundo, calor |
 | `machine_mining_laser` | `TileEntityMachineMiningLaser` (670) | laser que minera; usa as receitas de centrífuga, cristalizador, forno e triturador |
@@ -83,13 +83,13 @@ Têm slots, tanques, energia e uma tabela de receitas do Java para extrair (o me
 
 ## Ordem proposta
 
-1. **2a (livre de infraestrutura):** `machine_annihilator`, `machine_funnel`, `machine_orbus`, `machine_keyforge`, `machine_supercomputer`, depois as de receita simples: `machine_radiolysis`, `machine_exposure_chamber`, `machine_silex`, `machine_cyclotron`. São as que se provam como as soldadoras.
+1. **2a (livre de infraestrutura):** `machine_annihilator`, `machine_funnel`, `machine_orbus`, `machine_keyforge`, depois as de receita simples e acopladas ao laser: `machine_radiolysis`, `machine_exposure_chamber`, `machine_fel` (antecipada do 2e, Opção A) → `machine_silex`, `machine_cyclotron`. São as que se provam como as soldadoras.
 2. **2b (fluido e ar):** `machine_intake`, `machine_compressor` (e a compacta), `machine_tower_small/large`, `machine_deuterium_extractor`, `machine_industrial_generator`, `machine_lpw2`, `machine_rockmill`, `machine_autocrafter`.
 3. **2c (depende dos efeitos de mundo, quando D1+D2 e D3 existirem):** `machine_sawmill`, `machine_microwave` (a falha), `machine_drain`, `machine_ashpit` e as chaminés (com a poluição).
 4. **2d (depende de F1/D4 e do painel de múltiplas receitas):** `machine_rotary_furnace`, `machine_strand_caster`, `machine_chemical_factory`, `machine_assembly_factory`; a `machine_precass` espera `orbital_assembly`.
-5. **2e (entidades):** `machine_teleporter`, `machine_forcefield`, `machine_siren`, `tesla`, `machine_fel`, `machine_autosaw`, `machine_thresher`, `machine_mining_laser`.
+5. **2e (entidades):** `machine_teleporter`, `machine_forcefield`, `machine_siren`, `tesla`, `machine_autosaw`, `machine_thresher`, `machine_mining_laser`.
 
-`machine_ammo_press` entra no 2a se os itens de munição já existirem; senão espera a Onda 4.
+`machine_ammo_press` e `machine_supercomputer` ficam formalmente bloqueadas por catálogo aguardando a Onda 4 (`ntm:ammo_standard` / Sedna, `ItemDrive` e `ntm:blueprint_folder` ausentes de `content/ids.json`); decisão 4 homologada pelo Maestro (Opção A), junto com a antecipação de `machine_fel` para o 2a antes de `machine_silex`.
 
 ## Como cada máquina é entregue (igual ao sublote 1)
 
