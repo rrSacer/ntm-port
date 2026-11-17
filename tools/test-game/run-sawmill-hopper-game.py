@@ -8,6 +8,8 @@
                  the next log then goes in, and stays: the hopper below never takes the input
   named_by_hand  a log with a name of its own put in by hand into another sawmill keeps its name in the slot (the
                  Java's `copy()`, the `SlotCopy`)
+  reopened       the world saved, closed and opened again: the named log is still in that slot with its name; the
+                 sawmill broken, the log it drops still has it
 
 The sawmill's slots are its block entity's (`data get block .. Items`).
 
@@ -161,9 +163,38 @@ def play(g):
     g.save()
 
 
+def reopened(g):
+    """The second session: the named log kept in its slot, then dropped with its name when the sawmill breaks."""
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command(f'tp @s {OTHER[0] + .5} {OTHER[1]} {OTHER[2] + 3.5}')
+    time.sleep(3)
+    kept = [e for s, i, n, e in items(g, OTHER) if s == 0 and i == LOG and n == 1]
+    g.evidence['kept'] = kept
+    g.check('named_log_kept_after_reopening', bool(kept) and 'Tora' in kept[0], items(g, OTHER))
+    g.command('kill @e[type=minecraft:item]')
+    g.command('gamemode survival @s')
+    g.command('clear @s')
+    g.command('give @s minecraft:diamond_pickaxe 1')
+    g.ctl('select minecraft:diamond_pickaxe')
+    for dx, dy, dz in [(0, 0, 1), (0, 1, 1), (0, 0, 0)]:
+        try:
+            g.ctl('break %d %d %d --timeout 30' % (OTHER[0] + dx, OTHER[1] + dy, OTHER[2] + dz))
+            break
+        except RuntimeError:
+            continue
+    time.sleep(1.5)
+    g.command('gamemode creative @s')
+    text = ' '.join(g.command('data get entity @e[type=minecraft:item,nbt={Item:{id:"%s"}},limit=1,sort=nearest] Item' % LOG).get('chat', []))
+    g.evidence['dropped'] = text
+    g.check('named_log_dropped_whole', 'Tora' in text and LOG in text, text)
+    g.save()
+
+
 def main():
-    if len(sys.argv) > 2 and sys.argv[2] == 'play':
-        play(Game(sys.argv[1], 'sawmill-hopper'))
+    if len(sys.argv) > 2 and sys.argv[2] in ('play', 'reopened'):
+        game = Game(sys.argv[1], 'sawmill-hopper' if sys.argv[2] == 'play' else 'sawmill-hopper-reopened')
+        (play if sys.argv[2] == 'play' else reopened)(game)
         return 0
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary', type=Path, required=True)
@@ -196,6 +227,13 @@ def main():
         evidence = json.loads((folder / 'native-sawmill-hopper.json').read_text())
         report['checks'] = evidence.get('checks')
         report['evidence'] = {k: evidence.get(k) for k in ('core', 'sawn', 'while_outputs', 'after_outputs', 'named')}
+        if code == 0:
+            world.launch()
+            code = subprocess.run([sys.executable, str(Path(__file__).resolve()), str(folder), 'reopened'], cwd=folder, env=env, timeout=900).returncode
+            world.quit()
+            second = json.loads((folder / 'native-sawmill-hopper-reopened.json').read_text())
+            report['checks_reopened'] = second.get('checks')
+            report['evidence'].update({k: second.get(k) for k in ('kept', 'dropped')})
         report['ok'] = code == 0
     finally:
         if getattr(world, 'client', None) is not None and world.client.poll() is None:
@@ -204,7 +242,7 @@ def main():
         xvfb.terminate()
         xvfb.wait(timeout=10)
         (folder / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
-    print(json.dumps({k: report.get(k) for k in ('ok', 'checks')}, indent=1), flush=True)
+    print(json.dumps({k: report.get(k) for k in ('ok', 'checks', 'checks_reopened')}, indent=1), flush=True)
     return 0 if report.get('ok') else 1
 
 
