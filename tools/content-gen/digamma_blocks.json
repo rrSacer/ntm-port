@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "id": "fire_digamma",
+      "source_variable": "fire_digamma",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaFlame",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2028",
+      "template": "minecraft:dead_bush",
+      "cross_model": true,
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": 0.0,
+        "explosion_resistance": 150.0,
+        "requires_tool": false,
+        "light": 15,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "shapes": {
+        "default": [
+          [
+            0,
+            0,
+            0,
+            1,
+            1,
+            1
+          ]
+        ]
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/fire_digamma.png",
+      "names": {
+        "en_us": "Lingering Digamma",
+        "pt_br": "Digamma Persistente"
+      },
+      "behavior_gap": "Only players take its digamma (the other living things wait for the port's entities); a solid top is an opaque full cube (isSideSolid's rule), not its slab, stairs, hopper and snow cases"
+    },
+    {
+      "id": "digamma_matter",
+      "source_variable": "digamma_matter",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaMatter",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
+      "template": "minecraft:glass",
+      "metadata": 0,
+      "subtype_kind": "level",
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": -1.0,
+        "explosion_resistance": 18000000.0,
+        "requires_tool": false,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/digamma_matter.png",
+      "names": {
+        "en_us": "tile.digamma_matter.name",
+        "pt_br": "Matéria Digamma (DEBUG)"
+      },
+      "behavior_gap": "setBlockBoundsBasedOnState's random bounds (a look) are the whole cell"
+    },
+    {
+      "id": "digamma_matter__1",
+      "source_variable": "digamma_matter",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaMatter",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
+      "template": "minecraft:glass",
+      "metadata": 1,
+      "subtype_kind": "level",
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": -1.0,
+        "explosion_resistance": 18000000.0,
+        "requires_tool": false,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/digamma_matter.png",
+      "names": {
+        "en_us": "tile.digamma_matter.name",
+        "pt_br": "Matéria Digamma (DEBUG)"
+      },
+      "behavior_gap": "setBlockBoundsBasedOnState's random bounds (a look) are the whole cell"
+    },
+    {
+      "id": "digamma_matter__2",
+      "source_variable": "digamma_matter",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaMatter",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
+      "template": "minecraft:glass",
+      "metadata": 2,
+      "subtype_kind": "level",
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": -1.0,
+        "explosion_resistance": 18000000.0,
+        "requires_tool": false,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/digamma_matter.png",
+      "names": {
+        "en_us": "tile.digamma_matter.name",
+        "pt_br": "Matéria Digamma (DEBUG)"
+      },
+      "behavior_gap": "setBlockBoundsBasedOnState's random bounds (a look) are the whole cell"
+    },
+    {
+      "id": "digamma_matter__3",
+      "source_variable": "digamma_matter",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaMatter",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
+      "template": "minecraft:glass",
+      "metadata": 3,
+      "subtype_kind": "level",
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": -1.0,
+        "explosion_resistance": 18000000.0,
+        "requires_tool": false,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/digamma_matter.png",
+      "names": {
+        "en_us": "tile.digamma_matter.name",
+        "pt_br": "Matéria Digamma (DEBUG)"
+      },
+      "behavior_gap": "setBlockBoundsBasedOnState's random bounds (a look) are the whole cell"
+    },
+    {
+      "id": "digamma_matter__4",
+      "source_variable": "digamma_matter",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaMatter",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
+      "template": "minecraft:glass",
+      "metadata": 4,
+      "subtype_kind": "level",
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": -1.0,
+        "explosion_resistance": 18000000.0,
+        "requires_tool": false,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/digamma_matter.png",
+      "names": {
+        "en_us": "tile.digamma_matter.name",
+        "pt_br": "Matéria Digamma (DEBUG)"
+      },
+      "behavior_gap": "setBlockBoundsBasedOnState's random bounds (a look) are the whole cell"
+    },
+    {
+      "id": "digamma_matter__5",
+      "source_variable": "digamma_matter",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaMatter",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
+      "template": "minecraft:glass",
+      "metadata": 5,
+      "subtype_kind": "level",
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": -1.0,
+        "explosion_resistance": 18000000.0,
+        "requires_tool": false,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/digamma_matter.png",
+      "names": {
+        "en_us": "tile.digamma_matter.name",
+        "pt_br": "Matéria Digamma (DEBUG)"
+      },
+      "behavior_gap": "setBlockBoundsBasedOnState's random bounds (a look) are the whole cell"
+    },
+    {
+      "id": "digamma_matter__6",
+      "source_variable": "digamma_matter",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaMatter",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
+      "template": "minecraft:glass",
+      "metadata": 6,
+      "subtype_kind": "level",
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": -1.0,
+        "explosion_resistance": 18000000.0,
+        "requires_tool": false,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/digamma_matter.png",
+      "names": {
+        "en_us": "tile.digamma_matter.name",
+        "pt_br": "Matéria Digamma (DEBUG)"
+      },
+      "behavior_gap": "setBlockBoundsBasedOnState's random bounds (a look) are the whole cell"
+    },
+    {
+      "id": "digamma_matter__7",
+      "source_variable": "digamma_matter",
+      "type": "block",
+      "category": "decorative",
+      "source_class": "DigammaMatter",
+      "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2029",
+      "template": "minecraft:glass",
+      "metadata": 7,
+      "subtype_kind": "level",
+      "loot_none": true,
+      "creative_hidden": true,
+      "block_properties": {
+        "hardness": -1.0,
+        "explosion_resistance": 18000000.0,
+        "requires_tool": false,
+        "sounds": "minecraft:stone",
+        "occludes": false
+      },
+      "collision_shapes": {
+        "default": []
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/digamma_matter.png",
+      "names": {
+        "en_us": "tile.digamma_matter.name",
+        "pt_br": "Matéria Digamma (DEBUG)"
+      },
+      "behavior_gap": "setBlockBoundsBasedOnState's random bounds (a look) are the whole cell"
+    }
+  ]
+}
