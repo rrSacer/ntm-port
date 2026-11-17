@@ -684,6 +684,13 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
         dims.entry(d).or_default().0.insert(*p);
     }
     for ((d, p), m) in &w.machines {
+        // A power switch that is on is a cable (`TileEntityCableSwitch.shouldCreateNode`); off, it is nothing.
+        if let crate::machine::Data::CableSwitch(s) = &m.data {
+            if s.joins_net() {
+                dims.entry(d).or_default().0.insert(*p);
+            }
+            continue;
+        }
         let Some(spec) = registry::spec(&m.block) else { continue };
         let ports = registry::ports(spec, m.facing.as_deref());
         if m.kind() != Kind::Inert && !ports.is_empty() {

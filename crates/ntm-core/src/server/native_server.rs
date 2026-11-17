@@ -387,6 +387,20 @@ impl Server {
         true
     }
 
+    /// A player right-clicked the power switch at `pos` without sneaking
+    /// (`CableSwitch.onBlockActivated`): it flips and the nets are built again.
+    /// The redstone switch takes no click. True when the switch took it.
+    pub fn native_switch_use(&mut self, dim: &str, pos: Pos) -> bool {
+        let Some(r) = self.ready() else { return false };
+        let key = (dim.to_string(), pos);
+        let Some(crate::machine::Data::CableSwitch(s)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) else { return false };
+        if !s.click() {
+            return false;
+        }
+        r.topo_dirty = true;
+        true
+    }
+
     /// A player used `item` on the block at `pos` (its `custom_data`'s
     /// `ntm_fluid`: the fluid identifier's type). The multi fluid
     /// identifier on a duct sets the duct's fluid
@@ -417,7 +431,7 @@ impl Server {
             if r.loaded.get(k) != Some(&true) {
                 continue;
             }
-            if matches!(m.data, crate::machine::Data::Battery(_) | crate::machine::Data::Bomb(_)) {
+            if matches!(m.data, crate::machine::Data::Battery(_) | crate::machine::Data::Bomb(_)) || matches!(&m.data, crate::machine::Data::CableSwitch(s) if s.detector) {
                 by_dim.entry(k.0.clone()).or_default().push(k.1);
             } else if let crate::machine::Data::Combustion(_) = m.data {
                 let local = crate::combustion::Combustion::redstone_cells(&m.block);
@@ -443,6 +457,11 @@ impl Server {
                 }
                 if let Some(crate::machine::Data::Battery(b)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) {
                     b.powered = s > 0;
+                }
+                if let Some(crate::machine::Data::CableSwitch(w)) = r.world.machines.get_mut(&key).map(|m| &mut m.data)
+                    && w.redstone(s > 0)
+                {
+                    r.topo_dirty = true;
                 }
             }
         }

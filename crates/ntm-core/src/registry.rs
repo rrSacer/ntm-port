@@ -1127,14 +1127,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:cable_switch",
-        kind: Kind::Inert,
+        kind: Kind::CableSwitch,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:cable_detector",
-        kind: Kind::Inert,
+        kind: Kind::CableSwitch,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

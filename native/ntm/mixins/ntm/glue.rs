@@ -275,6 +275,10 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
             return true;
         }
     }
+    // CableSwitch.onBlockActivated: a plain click flips the power switch; sneaking, the click is not taken.
+    if !sneaking && server.native_switch_use(&dim, core) {
+        return true;
+    }
     let mut host = Host { game, buttons: Vec::new() };
     server.native_use(&mut host, &dim, core, pos, &player)
 }
