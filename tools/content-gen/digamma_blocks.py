@@ -3,10 +3,10 @@
 
 - `fire_digamma` (`ModBlocks:2028`, `blocks/bomb/DigammaFlame.java`): Material.fire, hardness 0, resistance 150, light
   1.0 (15), no creative tab, render type 1 (the crossed squares), no collision box (`getCollisionBoundingBoxFromPool`
-  null) but the whole cell to aim at, no drop. It stands only on a block with a solid top (`canPlaceBlockAt`,
-  `onNeighborBlockChange`): the dead bush's template asks `mayPlaceOn` of its ground, which the native glue answers
-  for it, and it is replaceable as Material.fire is. A body touching it takes 0.05 digamma a tick (ntm-core
-  `digamma_server`).
+  null) but the whole cell to aim at, no drop. The glass's template, with no collision and the crossed squares: a
+  template of its own survival (a plant's, fire's) would hold it to that rule. It goes when a block beside it changes
+  and the one under it has no solid top (`onNeighborBlockChange`), in the native glue. A body touching it takes 0.05
+  digamma a tick (ntm-core `digamma_server`).
 - `digamma_matter` (`ModBlocks:2029`, `blocks/bomb/DigammaMatter.java`): Material.portal, unbreakable, resistance
   18000000, no creative tab, no collision box. Its metadata 0..7 are one block each (`digamma_matter`,
   `digamma_matter__<n>`), as the port does for every metadata subtype; each schedules its tick 10 to 49 ticks on
@@ -37,14 +37,16 @@ def rows():
     flame = {
         'id': 'fire_digamma', 'source_variable': 'fire_digamma', 'type': 'block', 'category': 'decorative',
         'source_class': 'DigammaFlame', 'source_location': 'src/main/java/com/hbm/blocks/ModBlocks.java:2028',
-        'template': 'minecraft:dead_bush', 'cross_model': True, 'loot_none': True, 'creative_hidden': True,
+        'template': 'minecraft:glass', 'cross_model': True, 'loot_none': True, 'creative_hidden': True,
         'block_properties': {'hardness': 0.0, 'explosion_resistance': 150.0, 'requires_tool': False, 'light': 15,
                              'sounds': 'minecraft:stone', 'occludes': False},
         'shapes': FULL_CELL, 'collision_shapes': NO_COLLISION,
         'source_texture': TEXTURES + 'fire_digamma.png',
         'names': names(translations, 'tile.fire_digamma.name'),
         'behavior_gap': 'Only players take its digamma (the other living things wait for the port\'s entities); a solid top '
-                        'is an opaque full cube (isSideSolid\'s rule), not its slab, stairs, hopper and snow cases',
+                        'is an opaque full cube (isSideSolid\'s rule), not its slab, stairs, hopper and snow cases; an item of it '
+                        'is placed anywhere (canPlaceBlockAt is not asked; it has no creative tab) and it is not replaceable '
+                        '(Material.fire)',
     }
     out = [flame]
     for meta in range(MATTER_LAST + 1):

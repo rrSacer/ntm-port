@@ -8,7 +8,7 @@
       "category": "decorative",
       "source_class": "DigammaFlame",
       "source_location": "src/main/java/com/hbm/blocks/ModBlocks.java:2028",
-      "template": "minecraft:dead_bush",
+      "template": "minecraft:glass",
       "cross_model": true,
       "loot_none": true,
       "creative_hidden": true,
@@ -40,7 +40,7 @@
         "en_us": "Lingering Digamma",
         "pt_br": "Digamma Persistente"
       },
-      "behavior_gap": "Only players take its digamma (the other living things wait for the port's entities); a solid top is an opaque full cube (isSideSolid's rule), not its slab, stairs, hopper and snow cases"
+      "behavior_gap": "Only players take its digamma (the other living things wait for the port's entities); a solid top is an opaque full cube (isSideSolid's rule), not its slab, stairs, hopper and snow cases; an item of it is placed anywhere (canPlaceBlockAt is not asked; it has no creative tab) and it is not replaceable (Material.fire)"
     },
     {
       "id": "digamma_matter",

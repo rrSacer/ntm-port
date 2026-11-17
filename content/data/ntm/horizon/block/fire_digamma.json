@@ -1,5 +1,5 @@
 {
-  "template": "minecraft:dead_bush",
+  "template": "minecraft:glass",
   "properties": {
     "hardness": 0.0,
     "explosion_resistance": 150.0,

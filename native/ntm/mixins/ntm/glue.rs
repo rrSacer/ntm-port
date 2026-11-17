@@ -169,6 +169,7 @@ pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: 
     if old != new {
         field_block_added(dim, pos, &new);
         matter_added(dim, pos, &new, level.world.game_time as i64);
+        flame_neighbours(level, dim, pos);
     }
     // A Geiger counter block taken away: a new one starts from 0 (a new TileEntityGeiger).
     if old == GEIGER && new != GEIGER {
@@ -549,12 +550,41 @@ fn matter_tick(level: &mut crate::game::GameLevel<'_>, ticks: &mut horizon_world
     }
 }
 
-/// `DigammaFlame.canPlaceBlockAt` (`World.doesBlockHaveSolidTopSurface(x, y - 1, z)`): a ground whose top is solid,
-/// read as an opaque full cube (`isSideSolid`'s rule for a plain block).
-pub(super) fn flame_ground(level: &crate::game::GameLevel<'_>, state: horizon_world::registry::BlockStateId, ground: horizon_world::registry::BlockStateId, may: &mut Option<bool>) {
-    if &*level.facts.get(state).name == ntm_core::digamma::FLAME_BLOCK {
-        *may = Some(level.facts.get(ground).solid_render);
+/// Digamma flames whose ground went, (dimension, position): taken away at the end of the tick.
+static FLAME_CHECKS: Mutex<Vec<(String, [i32; 3])>> = Mutex::new(Vec::new());
+
+/// `DigammaFlame.onNeighborBlockChange`: a block changed beside a digamma flame, which goes when the block under it has no
+/// solid top any more (`World.doesBlockHaveSolidTopSurface(x, y - 1, z)`, read as an opaque full cube: `isSideSolid`'s
+/// rule for a plain block).
+fn flame_neighbours(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3]) {
+    for d in ntm_core::energy::DIRS {
+        let at = [pos[0] + d[0], pos[1] + d[1], pos[2] + d[2]];
+        if &*level.facts.get(level.world.block(at[0], at[1], at[2])).name != ntm_core::digamma::FLAME_BLOCK {
+            continue;
+        }
+        if !level.facts.get(level.world.block(at[0], at[1] - 1, at[2])).solid_render {
+            lock(&FLAME_CHECKS).push((dim.to_string(), at));
+        }
     }
+}
+
+/// The flames queued since: each still a flame on no solid top goes (`setBlockToAir`).
+fn remove_unsupported_flames(game: &mut crate::game::Game<'_>) {
+    let queued = std::mem::take(&mut *lock(&FLAME_CHECKS));
+    if queued.is_empty() {
+        return;
+    }
+    let dim = game.dim.id().to_string();
+    game.with_level(|_, level, ticks| {
+        let Some(air) = level.registry.default_state("minecraft:air") else { return };
+        for (_, at) in queued.iter().filter(|q| q.0 == dim) {
+            let flame = &*level.facts.get(level.world.block(at[0], at[1], at[2])).name == ntm_core::digamma::FLAME_BLOCK;
+            if flame && !level.facts.get(level.world.block(at[0], at[1] - 1, at[2])).solid_render {
+                let behaviours = level.behaviours;
+                behaviours.set_block(level, ticks, horizon_core::position::BlockPos::new(at[0], at[1], at[2]), air, 3);
+            }
+        }
+    });
 }
 
 /// `incrementRad` at a block, into the server's field (its chunk loaded).
@@ -1131,6 +1161,7 @@ pub(super) fn chunk_unloaded(game: &mut crate::game::Game<'_>, dim: &str, chunk:
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     schedule_field_ticks(game);
+    remove_unsupported_flames(game);
     horizon_client::spans::time("ntm_ledger_tick", || ledger_tick(game));
     let mut retry=Vec::new();
     for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){

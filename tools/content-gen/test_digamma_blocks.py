@@ -24,7 +24,7 @@ def statement(variable):
 
 
 class DigammaBlocks(unittest.TestCase):
-    def test_the_flame_is_dead_bush_shaped_light_15_with_no_collision_or_drop(self):
+    def test_the_flame_is_crossed_light_15_with_no_collision_or_drop(self):
         line = statement('fire_digamma')
         self.assertEqual(line[1], 'DigammaFlame')
         self.assertIn('.setHardness(0.0F).setResistance(150F).setLightLevel(1.0F).setCreativeTab(null)', line[2])
@@ -33,7 +33,7 @@ class DigammaBlocks(unittest.TestCase):
         self.assertIn('return null;', java[java.index('getCollisionBoundingBoxFromPool'):])
         self.assertIn('World.doesBlockHaveSolidTopSurface(world, x, y - 1, z)', java)
         d = declaration('fire_digamma')
-        self.assertEqual(d['template'], 'minecraft:dead_bush')
+        self.assertEqual(d['template'], 'minecraft:glass')
         self.assertEqual(d['properties'], {'hardness': 0.0, 'explosion_resistance': 150.0, 'requires_tool': False,
                                            'sounds': 'minecraft:stone', 'light': 15, 'occludes': False})
         self.assertEqual(d['collision_shapes'], {'default': []})

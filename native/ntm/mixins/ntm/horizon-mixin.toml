@@ -52,21 +52,6 @@ bindings = [
 
 # The field's source blocks (Onda 1, slice 4d): their scheduled ticks give the world's
 # radiation by chunk (BlockHazard, BlockOre, YellowBarrel.updateTick).
-# The digamma flame stands on a solid top (machine_fel, docs/onda-2-sublote-2.md): `mayPlaceOn` of its dead bush
-# template.
-[[injection]]
-id = "digamma-flame-ground"
-hook = "may_place_on"
-hook_version = 1
-kind = "HEAD"
-helper = "flame_ground.rs"
-bindings = [
-  { name = "level", ty = "&crate::game::GameLevel<'_>", value = "self" },
-  { name = "state", ty = "horizon_world::registry::BlockStateId", value = "state" },
-  { name = "ground", ty = "horizon_world::registry::BlockStateId", value = "ground" },
-  { name = "may", ty = "&mut Option<bool>", value = "&mut *may" },
-]
-
 [[injection]]
 id = "field-source-tick"
 hook = "tick_block"
