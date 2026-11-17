@@ -9,7 +9,7 @@ Máquinas do grupo C na tabela de registro (`crates/ntm-core/src/registry.rs`, `
 | 3 | `ntm:machine_compressor_compact` | `MachineCompressorCompact`, `TileEntityMachineCompressorCompact`, `RenderCompressorCompact` | Aguardando a mesma decisão |
 | 4 | `ntm:machine_tower_small` | `MachineTowerSmall`, `TileEntityTowerSmall`, `RenderSmallTower` | Concluída |
 | 5 | `ntm:machine_tower_large` | `MachineTowerLarge`, `TileEntityTowerLarge`, `RenderLargeTower` | Concluída |
-| 6 | `ntm:machine_deuterium_extractor` | `MachineDeuteriumExtractor`, `TileEntityDeuteriumExtractor` | Pendente |
+| 6 | `ntm:machine_deuterium_extractor` | `MachineDeuteriumExtractor`, `TileEntityDeuteriumExtractor` | Concluída |
 
 ---
 
@@ -116,3 +116,34 @@ Máquinas do grupo C na tabela de registro (`crates/ntm-core/src/registry.rs`, `
 
 - **`ILookOverlay`:** `MachineTowerLarge.printHook` exibe enchimento dos tanques ao olhar no 1.7.10; no nativo a máquina segue sem GUI e sem overlay de bloco ao olhar (`Condenser::view()` interno).
 - **`COOLING_TOWER_PARTICLES`:** partículas puramente cosméticas em `TileEntityTowerLarge.updateEntity` quando `worldObj.isRemote && waterTimer > 0` não são emitidas no cliente nativo.
+
+---
+
+## 6. `ntm:machine_deuterium_extractor`
+
+### Contrato fonte
+
+- `MachineDeuteriumExtractor.java` (`BlockContainer`, `createNewTileEntity` força `meta = 0`: bloco único sem orientação, sem GUI; só `ILookOverlay`; ícones `deuterium_extractor_side` e `deuterium_extractor_top_water` em cima/baixo).
+- `TileEntityDeuteriumExtractor.java:20-54`: `10 000 HE` (`getMaxPower`), consumo `getMaxPower() / 20 = 500 HE` por tick ativo, tanque `water` de `1 000 mB`, tanque `heavywater` de `100 mB`. Condição `hasPower() (power >= 500) && hasEnoughWater() (water >= 100) && heavywater.max > heavywater.fill`; `convert = min(min(100, water) / 50, 100 - heavywater)`; `water -= convert * 50` (divide antes de multiplicar), `heavywater += convert`, `power -= 500` (com água `>= 100` e folga `>= 1`, `convert` nunca é `0`).
+- Portas `TilePortShapes.around` (as 6 faces: energia, entrada de `water`, saída de `heavywater`).
+
+### Implementação
+
+- Lógica em [`crates/ntm-core/src/deuterium.rs`](../crates/ntm-core/src/deuterium.rs) (`Kind::Deuterium`, `Data::Deuterium`, `MAX_POWER = 10_000`, `STEP_POWER = 500`, `WATER_CAP = 1_000`, `WATER_MIN = 100`, `HEAVYWATER_CAP = 100`, `WATER_PER_HEAVYWATER = 50`); `registry.rs` (`Ports::AllRound`, `fluid_ports` em todas as faces); textura superior `deuterium_extractor_top_water` em `content/`; artefatos em `crates/ntm-core/data/machine_files.json`.
+- Testes: unitários em `deuterium::tests` (4) e de servidor em [`crates/ntm-core/src/server/tests/deuterium_tests.rs`](../crates/ntm-core/src/server/tests/deuterium_tests.rs).
+
+### Provas
+
+- **Testes (`ntm-core`):** `cargo test -p ntm-core --lib` **747 passaram**; integração `energy_network_tests` + `ledger_persistence` **30 passaram**; `cargo clippy --workspace --all-targets -- -D warnings` limpo.
+- **Mutantes (`/mnt/ssd120/sacer/so/c/mutate_deuterium.py`):** **12/12 mortos** (`M1_max_power`..`M12_missing_fluid_ports`).
+- **Cliente nativo e pacote:** `horizon-client` release SHA-256 `080124857ab16937e663dc2880fbf733b83d8010a8c23612e263de7366ca350e`; `dist/ntm.hmod` SHA-256 `374bb1c10bc34f929952f65e28f26164ce4197ebb5de60b811b3803a3a14142e`.
+- **Prova em jogo + corte de gravação estrito (`HORIZON_NO_EAGER_SAVE=1`, `/mnt/ssd120/sacer/so/c/run_deuterium_proof.py`):**
+  - Gameplay: **10/10 checks `ok: true`** (extrator colocado com tanques `water 1 000` / `heavywater 100`; sem GUI ao interagir; sem energia (bateria em modo entrada) não produz água pesada nem gasta a bateria; com sinal de redstone liga (`honey_level=5`); `16 000 mB` de água viram exatamente `320 mB` de `heavywater` (`160` ticks × `500 HE` = **80 000 HE** exatos, medidos pela bateria + buffer do extrator); desliga (`honey_level=0`) quando acaba a água e parado não consome; quebra em survival remove o bloco). A bateria criativa que carrega a bateria de teste é retirada do slot antes da medida (senão ela recarregaria a cada tick e esconderia o consumo).
+  - Corte de gravação (`HORIZON_NO_EAGER_SAVE=1`): **7/7 pontos `ok: true`** (`none`, `kill`, `kv_committed`, `save_begin`, `chunks_written`, `entities_written`, `world_saved`), `kv_items=0` em todos, `.mca` inalterados em `kill`/`kv_committed`/`save_begin`. Nos cortes antes da escrita as 2 reaberturas voltam ao último save (`heavywater 0`, água `16 000 mB` = barril `15 000` + `1 000` no extrator, conservada); nos cortes após a escrita (e em `none`) as 2 reaberturas preservam `heavywater 320`, água `0`.
+  - Histórico honesto da prova: a primeira execução falhou no check de energia (a bateria criativa no slot recarregava a bateria de teste) e a segunda no ponto `kill` (a asserção esperava os `16 000 mB` todos no barril, mas `1 000 mB` já estão no tanque do extrator); os dois erros eram do roteiro, não da máquina, e foram corrigidos (conservação `barril + extrator = 16 000`) antes da execução v3 que passou. Evidência: `/mnt/ssd120/sacer/so/c/deuterium-gameplay.json`.
+  - Os testes unitários/integração e os 12 mutantes acima foram rodados no início desta frente (sessão anterior), sobre o mesmo código commitado aqui.
+
+### Lacunas nominais
+
+- **`ILookOverlay`:** `MachineDeuteriumExtractor.printHook` exibe energia e tanques ao olhar no 1.7.10; o port nativo não implementa o overlay de bloco ao olhar (mantém `view()` interno).
+- **Orientação:** o Java força `meta = 0`; o bloco nativo guarda `facing` do `place`, mas todas as faces laterais usam a mesma textura, então não há diferença visível.

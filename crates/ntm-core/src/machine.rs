@@ -97,6 +97,8 @@ pub enum Kind {
     Welder,
     /// The air intake (`crate::intake`).
     Intake,
+    /// The deuterium extractor (`crate::deuterium`).
+    Deuterium,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -202,6 +204,7 @@ pub enum Data {
     Furnace(Box<crate::furnaces::Furnace>),
     Welder(Box<crate::welders::Welder>),
     Intake(crate::intake::Intake),
+    Deuterium(crate::deuterium::DeuteriumExtractor),
     Inert { name: String },
 }
 
@@ -310,6 +313,7 @@ impl Machine {
                 None => Data::Inert { name: block_id.into() },
             },
             Kind::Intake => Data::Intake(crate::intake::Intake::new()),
+            Kind::Deuterium => Data::Deuterium(crate::deuterium::DeuteriumExtractor::new()),
             Kind::Inert => Data::Inert {
                 name: block_id.into(),
             },
@@ -388,6 +392,7 @@ impl Machine {
             Data::Furnace(_) => Kind::Furnace,
             Data::Welder(_) => Kind::Welder,
             Data::Intake(_) => Kind::Intake,
+            Data::Deuterium(_) => Kind::Deuterium,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -437,6 +442,7 @@ impl Machine {
             Data::Furnace(m) => &**m,
             Data::Welder(m) => &**m,
             Data::Intake(m) => m,
+            Data::Deuterium(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -486,6 +492,7 @@ impl Machine {
             Data::Furnace(m) => &mut **m,
             Data::Welder(m) => &mut **m,
             Data::Intake(m) => m,
+            Data::Deuterium(m) => m,
             Data::Inert { name } => name,
         }
     }

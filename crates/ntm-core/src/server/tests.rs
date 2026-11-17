@@ -685,3 +685,4 @@ mod oil_d_tests;
 mod heater_tests;
 mod steam_tests;
 mod intake_tests;
+mod deuterium_tests;

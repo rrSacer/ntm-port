@@ -3290,6 +3290,14 @@
 ],
 "synced": []
 },
+"ntm:machine_deuterium_extractor": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:machine_diesel": {
 "inventory": [
 8,

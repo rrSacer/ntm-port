@@ -37890,8 +37890,16 @@
       }
     },
     "ntm:machine_deuterium_extractor": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineDeuteriumExtractor (single block 1x1x1, no GUI in HBM, ILookOverlay only)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0
+      },
+      "auto": false
     },
     "ntm:machine_intake": {
       "source": "MachineIntake {0,0,1,0,1,0} offset 0, RenderIntake (case 2: 90, translate -0.5 0 0.5; Fan -45 deg/tick while active: value 0); no GUI in HBM",

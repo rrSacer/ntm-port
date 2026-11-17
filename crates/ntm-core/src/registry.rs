@@ -527,10 +527,10 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_deuterium_extractor",
-        kind: Kind::Inert,
+        kind: Kind::Deuterium,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_intake",
@@ -1744,7 +1744,8 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Drill
         | Kind::Steam
         | Kind::Welder
-        | Kind::Combustion => vec![crate::energy::DIRS.to_vec()],
+        | Kind::Combustion
+        | Kind::Deuterium => vec![crate::energy::DIRS.to_vec()],
         Kind::Intake => crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().next().map(|(_, d)| vec![d]).unwrap_or_default(),
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
