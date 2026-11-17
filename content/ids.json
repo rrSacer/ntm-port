@@ -100538,7 +100538,7 @@
       },
       "category": "machine",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
-      "behavior_gap": "A memorial in the 1.7.10 itself (MachineIGenerator): one cell, no screen (its openGui is commented out), an empty updateEntity and 21 slots no side reaches; ported: its ILookOverlay text (ntm-core look_overlay, drawn by the client HUD) and igen.obj at a sixth of its size. The 21 slots are not ported: nothing can put an item in them.",
+      "behavior_gap": "Inert: a memorial in the 1.7.10 itself (MachineIGenerator): one cell, no screen (its openGui is commented out), an empty updateEntity and 21 slots no side reaches; ported: its ILookOverlay text (ntm-core look_overlay, drawn by the client HUD) and igen.obj at a sixth of its size. The 21 slots are not ported: nothing can put an item in them.",
       "source_has_tile": true,
       "source_ancestry": [
         "MachineIGenerator",
