@@ -884,6 +884,60 @@ fn item_snbt(stack: &ItemStack) -> String {
     horizon_world::snbt_text::to_snbt(&horizon_client::save::item_to_nbt(stack))
 }
 
+/// D3 (Onda 2): the sawmill's item without its blade. The Java gives it damage 1 (`MachineSawmill.getDrops`) and reads it
+/// back on placement (`onBlockPlacedBy`); here it carries `minecraft:custom_data {"ntm:no_blade":1b}`.
+const SAWMILL: &str = "ntm:machine_sawmill";
+const NO_BLADE: &str = "ntm:no_blade";
+
+fn sawmill_without_blade(stack: &ItemStack) -> bool {
+    &*stack.item == SAWMILL
+        && stack.custom_data().and_then(|c| c.get(&JavaString::from(NO_BLADE))).is_some_and(|t| matches!(t, Tag::Byte(1)))
+}
+
+fn sawmill_item_without_blade(count: u32) -> Option<ItemStack> {
+    let text = format!("{{id:\"{SAWMILL}\",count:{count},components:{{\"minecraft:custom_data\":{{\"{NO_BLADE}\":1b}}}}}}");
+    horizon_world::nbt::parse_snbt(&text).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t))
+}
+
+/// Step 1 of D3, test hooks only (`NTM_TEST_HOOKS=1`): what a placed sawmill item said, by the cell it was placed at,
+/// until the sawmill's own model keeps `has_blade` (step 3).
+static SAWMILL_PROBE: Mutex<std::collections::BTreeMap<(String, [i32; 3]), bool>> = Mutex::new(std::collections::BTreeMap::new());
+
+fn test_hooks() -> bool {
+    std::env::var_os("NTM_TEST_HOOKS").is_some()
+}
+
+/// `place_block`: a player placed `stack` at `pos` (`BlockItem.place`, before the stack shrinks).
+pub(super) fn place_block(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) {
+    if &*stack.item != SAWMILL || !test_hooks() {
+        return;
+    }
+    let no_blade = sawmill_without_blade(stack);
+    eprintln!("ntm d3 placed {SAWMILL} at {pos:?} no_blade={no_blade} item={}", item_snbt(stack));
+    lock(&SAWMILL_PROBE).insert((game.dim.id().to_string(), pos), no_blade);
+}
+
+/// `loot_drops`: a broken sawmill without its blade drops its item as the variant without it; the loot table rolled
+/// the plain item (survival, explosion decay and the rest stay the engine's).
+pub(super) fn loot_drops(game: &mut crate::game::Game<'_>, block: Option<([i32; 3], horizon_world::registry::BlockStateId)>, drops: &mut [ItemStack]) {
+    let Some((pos, state)) = block else { return };
+    if !test_hooks() || !drops.iter().any(|d| &*d.item == SAWMILL) {
+        return;
+    }
+    let dim = game.dim.id().to_string();
+    let no_blade = lock(&SAWMILL_PROBE).iter().find(|((d, p), _)| *d == dim && (0..3).all(|i| (p[i] - pos[i]).abs() <= 2)).map(|(_, n)| *n);
+    let before: Vec<String> = drops.iter().map(item_snbt).collect();
+    if no_blade == Some(true) {
+        for d in drops.iter_mut().filter(|d| &*d.item == SAWMILL) {
+            if let Some(variant) = sawmill_item_without_blade(d.count) {
+                *d = variant;
+            }
+        }
+    }
+    let after: Vec<String> = drops.iter().map(item_snbt).collect();
+    eprintln!("ntm d3 drops at {pos:?} state={} probe={no_blade:?} before={before:?} after={after:?}", game.state_string(state));
+}
+
 /// Forgets the applied ids the storage no longer names, in every chunk kept that holds some.
 fn ledger_prune(game: &mut crate::game::Game<'_>, live: &std::collections::BTreeSet<u64>) {
     let mut changed: Vec<(ChunkKey, ntm_core::ledger::ChunkLedger)> = Vec::new();
