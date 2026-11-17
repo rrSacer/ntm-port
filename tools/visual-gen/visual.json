@@ -38618,8 +38618,335 @@
       }
     },
     "ntm:machine_rockmill": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineRockMill, GUIMachineRockMill (processing/gui_rockmill.png 176x220): 0 the battery (152,91), 1 the blueprint (35,90; no pools in the port), 2-4 the inputs (8/26/44,27), 5-7 the outputs (80/98/116,27); the power bar (152,18,16,71), the progress arrow (62,90,70,16), the LEDs (51/56,85), the two 52x16 tanks (8,63) and (80,63); button 0 at (7,89) opens the crafter's recipe list in place of HBM's GUIScreenRecipeSelector; MachineRockMill.getDimensions {2,0,2,2,2,2} offset 2, the eight getAllPorts cells are makeExtra combo proxies (inventory, power, fluid); RenderRockMill rotates the model 90 degrees, Base always, Frame only with a block on top (hidden here: no neighbour query in the model), the Wheel turning about -y up to 15 degrees a tick (MAX_SPEED) while it works",
+      "machine": {
+        "slots": [
+          {
+            "x": 152,
+            "y": 91,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 35,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 8,
+            "y": 27,
+            "accept_recipes": "rockmill"
+          },
+          {
+            "x": 26,
+            "y": 27,
+            "accept_recipes": "rockmill"
+          },
+          {
+            "x": 44,
+            "y": 27,
+            "accept_recipes": "rockmill"
+          },
+          {
+            "x": 80,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 98,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 116,
+            "y": 27,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          138
+        ],
+        "data": 31,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            2,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              2,
+              0,
+              1
+            ],
+            [
+              -2,
+              0,
+              1
+            ],
+            [
+              2,
+              0,
+              -1
+            ],
+            [
+              -2,
+              0,
+              -1
+            ],
+            [
+              1,
+              0,
+              2
+            ],
+            [
+              1,
+              0,
+              -2
+            ],
+            [
+              -1,
+              0,
+              2
+            ],
+            [
+              -1,
+              0,
+              -2
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_rockmill.png",
+        "texture_from": "textures/gui/processing/gui_rockmill.png",
+        "size": [
+          176,
+          220
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          126
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              71
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max_value": 1000,
+            "rect": [
+              62,
+              90,
+              70,
+              16
+            ],
+            "uv": [
+              176,
+              71
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              8,
+              63,
+              52,
+              16
+            ],
+            "color": 6,
+            "dir": "right"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              80,
+              63,
+              52,
+              16
+            ],
+            "color": 9,
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 10,
+            "min": 1,
+            "rect": [
+              51,
+              85,
+              3,
+              6
+            ],
+            "uv": [
+              192,
+              0
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "rect": [
+              51,
+              85,
+              3,
+              6
+            ],
+            "uv": [
+              195,
+              0
+            ]
+          },
+          {
+            "value": 11,
+            "min": 1,
+            "rect": [
+              56,
+              85,
+              3,
+              6
+            ],
+            "uv": [
+              192,
+              0
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "rect": [
+              56,
+              85,
+              3,
+              6
+            ],
+            "uv": [
+              195,
+              0
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              71
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              63,
+              52,
+              16
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              80,
+              63,
+              52,
+              16
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              7,
+              89,
+              18,
+              18
+            ],
+            "lines": [
+              "Escolher receita"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/rockmill.obj",
+        "obj_from": "models/machines/rockmill.obj",
+        "texture": "ntm:textures/models/machines/rockmill.png",
+        "texture_from": "textures/models/machines/rockmill.png",
+        "rotation": 90,
+        "radius": 3.2,
+        "hide": [
+          "Frame"
+        ],
+        "bones": {
+          "Wheel": {
+            "pivot": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.rockmill.work",
+          "length": 1.2,
+          "bones": {
+            "Wheel": {
+              "turn": [
+                0,
+                -360,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.rockmill.work",
+            "property": "honey_level",
+            "not": "0"
+          }
+        ]
+      }
     },
     "ntm:machine_mining_laser": {
       "auto": false,

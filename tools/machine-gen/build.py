@@ -49,12 +49,15 @@ def generic(st, section=None):
     for r in src['recipes']:
         alts = r.get('inputItemAlternatives') or [None] * len(r['inputItems'])
         ins = [ingredient(x, a) for x, a in zip(r['inputItems'], alts)]
-        outs = [[o[0], o[1], o[2] if len(o) > 2 else 1.0] for o in r['outputItems']]
+        # `ChanceOutputMulti`: one of them by weight (the rock mill's).
+        multi = [o['multi'] for o in r['outputItems'] if isinstance(o, dict)]
+        outs = [[o[0], o[1], o[2] if len(o) > 2 else 1.0] for o in r['outputItems'] if not isinstance(o, dict)]
         out.append({
-            'name': r['name'], 'label': r.get('label') or label(r, outs, r['outputFluids']), 'source': r['source'],
+            'name': r['name'], 'label': f"Moer {ins[0]['label']}" if multi and ins else r.get('label') or label(r, outs, r['outputFluids']), 'source': r['source'],
             'duration': r.get('duration', 0), 'power': r['power'],
             'in': ins, 'fin': r['inputFluids'], 'out': outs, 'fout': r['outputFluids'],
             'pools': r.get('pools', []),
+            **({'pick': multi[0]} if multi else {}),
             **({'group': r['autoSwitchGroup']} if r.get('autoSwitchGroup') else {}),
             **({'productivity': r['productivity']} if r.get('productivity') else {}),
             **({'mout': r['outputMaterials']} if r.get('outputMaterials') else {}),
@@ -202,7 +205,7 @@ for st, section in (('pyrooven', None), ('electrolyser', 'fluid'), ('electrolyse
                     ('liquefaction', None), ('solidification', None),
                     ('refinery', None), ('fraction', None), ('mixer', None),
                     ('cracking', None), ('reforming', None), ('hydrotreating', None),
-                    ('vacuum_refinery', None), ('coker', None), ('boiler', None)):
+                    ('vacuum_refinery', None), ('coker', None), ('boiler', None), ('rockmill', None)):
     src = st.split('_metal')[0].replace('_solid', '').replace('_fluid', '')
     if (root / f'content/machine-recipes/{src}.json').exists():
         data = generic(src, section)

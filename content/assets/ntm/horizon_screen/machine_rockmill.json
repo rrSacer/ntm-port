@@ -1,0 +1,179 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_rockmill.png",
+  "size": [
+    176,
+    220
+  ],
+  "title": [
+    70,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    126
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        152,
+        18,
+        16,
+        71
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max_value": 1000,
+      "rect": [
+        62,
+        90,
+        70,
+        16
+      ],
+      "uv": [
+        176,
+        71
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 4,
+      "max": 5,
+      "rect": [
+        8,
+        63,
+        52,
+        16
+      ],
+      "color": 6,
+      "dir": "right"
+    },
+    {
+      "value": 7,
+      "max": 8,
+      "rect": [
+        80,
+        63,
+        52,
+        16
+      ],
+      "color": 9,
+      "dir": "right"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 10,
+      "min": 1,
+      "rect": [
+        51,
+        85,
+        3,
+        6
+      ],
+      "uv": [
+        192,
+        0
+      ]
+    },
+    {
+      "value": 10,
+      "min": 2,
+      "rect": [
+        51,
+        85,
+        3,
+        6
+      ],
+      "uv": [
+        195,
+        0
+      ]
+    },
+    {
+      "value": 11,
+      "min": 1,
+      "rect": [
+        56,
+        85,
+        3,
+        6
+      ],
+      "uv": [
+        192,
+        0
+      ]
+    },
+    {
+      "value": 10,
+      "min": 2,
+      "rect": [
+        56,
+        85,
+        3,
+        6
+      ],
+      "uv": [
+        195,
+        0
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        152,
+        18,
+        16,
+        71
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE"
+      ]
+    },
+    {
+      "rect": [
+        8,
+        63,
+        52,
+        16
+      ],
+      "lines": [
+        "{4} / {5} mB"
+      ]
+    },
+    {
+      "rect": [
+        80,
+        63,
+        52,
+        16
+      ],
+      "lines": [
+        "{7} / {8} mB"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        7,
+        89,
+        18,
+        18
+      ],
+      "lines": [
+        "Escolher receita"
+      ]
+    }
+  ]
+}

@@ -56,6 +56,12 @@ pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port>
             .map(|f| crate::cyclotron::PORTS.iter().map(|(_, face)| vec![crate::server::container_bridge::world_cell([0, 0, 0], f, *face)]).collect())
             .unwrap_or_default();
     }
+    if spec.id == crate::crafter::ROCKMILL {
+        return facing
+            .and_then(facing_dir)
+            .map(|f| crate::crafter::ROCKMILL_PORTS.iter().map(|(_, face)| vec![crate::server::container_bridge::world_cell([0, 0, 0], f, *face)]).collect())
+            .unwrap_or_default();
+    }
     if spec.kind == Kind::ExposureChamber {
         return facing
             .and_then(facing_dir)
@@ -449,10 +455,11 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_rockmill",
-        kind: Kind::Inert,
+        kind: Kind::Crafter,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        // Its eight ports (`crate::crafter::ROCKMILL_PORTS`).
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_mining_laser",

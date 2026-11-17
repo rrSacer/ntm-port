@@ -49,6 +49,9 @@ pub enum Station {
     /// recipe picked from the list (the NTM: the identifier's output fluid
     /// and its button through the alternatives).
     Mixer,
+    /// `TileEntityMachineRockMill` (`ModuleMachineRockMill`): three inputs,
+    /// one output picked by weight, a tank in and out sized to the recipe.
+    RockMill,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -78,6 +81,10 @@ pub struct Recipe {
     /// electrolyser's metal line.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub mout: Vec<(String, u32)>,
+    /// `ChanceOutputMulti` (item, count, weight): one of them, by weight
+    /// (`WeightedRandom.getRandomItem`), in the first output slot.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub pick: Vec<(String, u32, u32)>,
     /// `autoSwitchGroup`: within it, the first input of another recipe in
     /// the machine switches to that recipe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -94,7 +101,7 @@ fn table(json: &str) -> Vec<Recipe> {
 }
 
 impl Station {
-    pub const ALL: [Station; 10] = [
+    pub const ALL: [Station; 11] = [
         Station::Assembly,
         Station::ChemicalPlant,
         Station::Centrifuge,
@@ -105,6 +112,7 @@ impl Station {
         Station::Liquefactor,
         Station::Solidifier,
         Station::Mixer,
+        Station::RockMill,
     ];
 
     pub fn of(block: &str) -> Option<Self> {
@@ -119,6 +127,7 @@ impl Station {
             "ntm:machine_liquefactor" => Some(Station::Liquefactor),
             "ntm:machine_solidifier" => Some(Station::Solidifier),
             "ntm:machine_mixer" => Some(Station::Mixer),
+            "ntm:machine_rockmill" => Some(Station::RockMill),
             _ => None,
         }
     }
@@ -134,6 +143,7 @@ impl Station {
         static L: OnceLock<Vec<Recipe>> = OnceLock::new();
         static S: OnceLock<Vec<Recipe>> = OnceLock::new();
         static M: OnceLock<Vec<Recipe>> = OnceLock::new();
+        static R: OnceLock<Vec<Recipe>> = OnceLock::new();
         match self {
             Station::Assembly => A.get_or_init(|| table(include_str!("../data/machines/assembly.json"))),
             Station::ChemicalPlant => C.get_or_init(|| table(include_str!("../data/machines/chemical_plant.json"))),
@@ -145,6 +155,7 @@ impl Station {
             Station::Liquefactor => L.get_or_init(|| table(include_str!("../data/machines/liquefaction.json"))),
             Station::Solidifier => S.get_or_init(|| table(include_str!("../data/machines/solidification.json"))),
             Station::Mixer => M.get_or_init(|| table(include_str!("../data/machines/mixer.json"))),
+            Station::RockMill => R.get_or_init(|| table(include_str!("../data/machines/rockmill.json"))),
         }
     }
 
@@ -160,6 +171,7 @@ impl Station {
             Station::Liquefactor => "Liquefator",
             Station::Solidifier => "Solidificador",
             Station::Mixer => "Misturador",
+            Station::RockMill => "Moinho de rocha",
         }
     }
 
@@ -183,6 +195,8 @@ impl Station {
             Station::Solidifier => (1, 0, 24_000),
             // Two inputs of 16 000 mB; the output's 24 000 (set in `new`).
             Station::Mixer => (2, 1, 16_000),
+            // One tank in, one out, of 4 000 mB until a recipe sizes them.
+            Station::RockMill => (1, 1, 4_000),
         }
     }
 
@@ -191,7 +205,7 @@ impl Station {
     pub fn battery_slot(self) -> Option<usize> {
         match self {
             Station::Crystallizer | Station::Liquefactor | Station::Solidifier => Some(1),
-            Station::Purex | Station::PyroOven | Station::Electrolyser | Station::Mixer => Some(0),
+            Station::Purex | Station::PyroOven | Station::Electrolyser | Station::Mixer | Station::RockMill => Some(0),
             _ => None,
         }
     }
@@ -210,9 +224,26 @@ impl Station {
     /// `canProcess` checks the power too: short of it, the progress
     /// restarts.
     fn resets_without_power(self) -> bool {
-        matches!(self, Station::Liquefactor | Station::Solidifier | Station::Mixer)
+        matches!(self, Station::Liquefactor | Station::Solidifier | Station::Mixer | Station::RockMill)
     }
 }
+
+/// The rock mill's block.
+pub const ROCKMILL: &str = "ntm:machine_rockmill";
+
+/// The rock mill's eight ports (`MachineRockMill.getAllPorts`, its `makeExtra` combo proxies: inventory, power,
+/// fluid; `TileEntityMachineRockMill.getPorts`) in the placer's frame, each with the face it opens on: two on each side
+/// of the 5x5 footprint, beside the middle. They are symmetric, so the NTM's `rotatePorts` does not move them.
+pub const ROCKMILL_PORTS: [([i32; 3], [i32; 3]); 8] = [
+    ([2, 0, 1], [1, 0, 0]),
+    ([-2, 0, 1], [-1, 0, 0]),
+    ([2, 0, -1], [1, 0, 0]),
+    ([-2, 0, -1], [-1, 0, 0]),
+    ([1, 0, 2], [0, 0, 1]),
+    ([1, 0, -2], [0, 0, -1]),
+    ([-1, 0, 2], [0, 0, 1]),
+    ([-1, 0, -2], [0, 0, -1]),
+];
 
 pub mod actions {
     pub const PICK_SCREEN: u32 = 1;
@@ -292,6 +323,21 @@ fn remove(list: &mut Vec<(String, u32)>, ids: &[String], mut n: u32) {
     list.retain(|e| e.1 > 0);
 }
 
+/// The output of `pool` (item, count, weight) whose share of the total
+/// weight holds `roll` (0..1): `WeightedRandom.getRandomItem`, with a fixed
+/// hash for the world's random.
+fn pick(pool: &[(String, u32, u32)], roll: f32) -> Option<(&str, u32)> {
+    let total: u32 = pool.iter().map(|p| p.2).sum();
+    let mut at = (roll * total as f32) as u32;
+    for (i, n, w) in pool {
+        if at < *w {
+            return Some((i, *n));
+        }
+        at -= w;
+    }
+    pool.last().map(|(i, n, _)| (i.as_str(), *n))
+}
+
 impl Crafter {
     pub fn new(station: Station) -> Self {
         let (i, o, cap) = station.tanks();
@@ -332,6 +378,8 @@ impl Crafter {
             Station::Electrolyser => 20_000_000,
             Station::Liquefactor | Station::Solidifier => 100_000,
             Station::Mixer => 10_000,
+            // `max(power, recipe.power * 100, 2 500)`.
+            Station::RockMill => self.current().map_or(0, |r| r.power * 100).max(2_500).max(self.power),
             _ => self.current().map_or(100_000, |r| (r.power * 100).max(100_000)),
         }
     }
@@ -356,9 +404,13 @@ impl Crafter {
         }
         for (t, f) in self.tin.iter_mut().zip(r.fluids_in.iter().map(|f| f.0.as_str()).chain(std::iter::repeat(""))) {
             t.set_type(f);
-            // The assembly machine sizes its tanks to the recipe.
+            // The assembly machine sizes its tanks to the recipe; the rock
+            // mill keeps room for what it holds (`changeTankSize(max(fill,
+            // fill * 2, 4 000))`).
             if self.station == Station::Assembly {
                 t.cap = 4_000.max(r.fluids_in.first().map_or(0, |f| f.1 * 2));
+            } else if self.station == Station::RockMill {
+                t.cap = 4_000.max(r.fluids_in.first().map_or(0, |f| f.1 * 2)).max(t.mb);
             }
         }
         // The liquefactor's tank takes the fluid as it makes it, and only
@@ -370,6 +422,8 @@ impl Crafter {
             t.set_type(f);
             if self.station == Station::Assembly {
                 t.cap = 4_000.max(r.fluids_out.first().map_or(0, |f| f.1 * 2));
+            } else if self.station == Station::RockMill {
+                t.cap = 4_000.max(r.fluids_out.first().map_or(0, |f| f.1 * 2)).max(t.mb);
             }
         }
     }
@@ -406,8 +460,10 @@ impl Crafter {
             })
             && (self.out.len() < 6 || r.items_out.iter().all(|(i, ..)| self.out.iter().any(|o| o.0 == *i)))
             // One output slot: another item in it stops the crystallizer and
-            // the oven.
-            && (!matches!(self.station, Station::Crystallizer | Station::PyroOven | Station::Solidifier) || self.out.iter().all(|o| r.items_out.iter().any(|x| x.0 == o.0)))
+            // the oven. The rock mill's pick by weight has no fixed output,
+            // so its slot must be empty (`canFitOutput`: "output slot needs
+            // to be empty to decide on multi outputs").
+            && (!matches!(self.station, Station::Crystallizer | Station::PyroOven | Station::Solidifier | Station::RockMill) || self.out.iter().all(|o| r.items_out.iter().any(|x| x.0 == o.0)))
     }
 
     fn finish(&mut self, r: &Recipe) {
@@ -427,6 +483,9 @@ impl Crafter {
             if *chance >= 1.0 || roll < *chance {
                 add(&mut self.out, i, *n);
             }
+        }
+        if let Some((i, n)) = pick(&r.pick, crate::explosion::crater::rand01(self.done as i32, r.items_out.len() as i32, (self.done >> 31) as i32, 78)) {
+            add(&mut self.out, i, n);
         }
         for (f, mb) in &r.fluids_out {
             if let Some(t) = self.tout.iter_mut().find(|t| t.fluid == *f) {
@@ -648,8 +707,8 @@ impl Logic for Crafter {
                 let mut vm = ViewModel::new(st.title()).bar("Energia", self.power, self.max_power(), "HE");
                 match r {
                     Some(r) => {
-                        vm = match r.items_out.first() {
-                            Some((i, ..)) => vm.item(i, r.label.clone()),
+                        vm = match r.items_out.first().map(|o| &o.0).or(r.pick.first().map(|p| &p.0)) {
+                            Some(i) => vm.item(i, r.label.clone()),
                             None => vm.text(r.label.clone(), view::GREEN),
                         };
                         let miss = self.missing(r);
@@ -818,6 +877,7 @@ mod purex_tests {
             items_out: vec![("ntm:nuclear_waste_tiny".into(), 1, 1.0)],
             fluids_out: Vec::new(),
             mout: Vec::new(),
+            pick: Vec::new(),
             group: group.map(Into::into),
         }
     }
@@ -851,5 +911,149 @@ mod purex_tests {
         c.recipe = Some("purex.vitrify".into());
         c.items = vec![("ntm:pwr_b".into(), 1)];
         assert!(c.switch_to(t).is_none());
+    }
+}
+
+#[cfg(test)]
+mod rockmill_tests {
+    use super::*;
+
+    fn mill(recipe: &str) -> (Crafter, &'static Recipe) {
+        let mut c = Crafter::new(Station::RockMill);
+        let r = Station::RockMill.recipes().iter().find(|r| r.name == recipe).unwrap();
+        c.set_recipe(r);
+        (c, r)
+    }
+
+    /// `RockMillRecipes.registerDefaults`: eleven (the two of the SIFT mod
+    /// left out), the crushing ones one output by weight and colloid.
+    #[test]
+    fn its_table_is_the_rock_mill_recipes() {
+        assert_eq!(Station::of(ROCKMILL), Some(Station::RockMill));
+        assert!(Station::ALL.contains(&Station::RockMill));
+        let t = Station::RockMill.recipes();
+        assert_eq!(t.len(), 11);
+        let cobble = &t[0];
+        assert_eq!((cobble.name.as_str(), cobble.duration, cobble.power), ("rock.cobble", 100, 25));
+        assert_eq!(cobble.pick, [("minecraft:gravel".to_string(), 1, 95), ("ntm:powder_quartz".to_string(), 1, 5)]);
+        assert!(cobble.items_out.is_empty());
+        assert_eq!((cobble.fluids_in.clone(), cobble.fluids_out.clone()), (vec![("water".into(), 250)], vec![("colloid".into(), 250)]));
+        assert_eq!(cobble.group.as_deref(), Some("autoswitch.crushing"));
+        let clay = t.iter().find(|r| r.name == "rock.clay").unwrap();
+        assert_eq!((clay.items_out.clone(), clay.pick.len(), clay.group.clone()), (vec![("minecraft:clay_ball".into(), 4, 1.0)], 0, None));
+        assert_eq!(t.iter().filter(|r| r.group.as_deref() == Some("autoswitch.crushing")).count(), 9);
+    }
+
+    #[test]
+    fn the_weight_picks_one_output() {
+        let pool = Station::RockMill.recipes()[0].pick.clone();
+        assert_eq!(pick(&pool, 0.0), Some(("minecraft:gravel", 1)));
+        assert_eq!(pick(&pool, 0.949), Some(("minecraft:gravel", 1)));
+        assert_eq!(pick(&pool, 0.951), Some(("ntm:powder_quartz", 1)));
+        assert_eq!(pick(&pool, 0.9999), Some(("ntm:powder_quartz", 1)));
+        // A roll at the very top still falls in the last share.
+        assert_eq!(pick(&pool, 1.0), Some(("ntm:powder_quartz", 1)));
+        assert_eq!(pick(&[], 0.5), None);
+        // Over many runs, about 95 in 100 are gravel.
+        let gravel = (0..1000).filter(|d| pick(&pool, crate::explosion::crater::rand01(*d, 0, 0, 78)) == Some(("minecraft:gravel", 1))).count();
+        assert!((900..=990).contains(&gravel), "{gravel}");
+    }
+
+    /// `ModuleMachineRockMill.setupTanks`: 4 000 mB, or twice the recipe's,
+    /// or what the tank holds; `maxPower` `max(power, recipe·100, 2 500)`.
+    #[test]
+    fn its_tanks_and_buffer_follow_the_recipe() {
+        let c = Crafter::new(Station::RockMill);
+        assert_eq!((c.tin.len(), c.tout.len(), c.tin[0].cap, c.tout[0].cap), (1, 1, 4_000, 4_000));
+        assert_eq!(c.max_power(), 2_500);
+        assert_eq!(Station::RockMill.battery_slot(), Some(0));
+        let (mut c, _) = mill("rock.clay");
+        assert_eq!((c.tin[0].fluid.as_str(), c.tin[0].cap), ("colloid", 5_000));
+        assert_eq!(c.tout[0].fluid, "");
+        c.tin[0].fill("colloid", 4_500);
+        c.set_recipe(Station::RockMill.recipes().iter().find(|r| r.name == "rock.colloid").unwrap());
+        assert_eq!((c.tin[0].mb, c.tin[0].cap), (4_500, 4_500));
+        c.power = 9_000;
+        assert_eq!(c.max_power(), 9_000);
+        let (c, _) = mill("rock.cobble");
+        assert_eq!((c.tin[0].fluid.as_str(), c.tin[0].cap, c.tout[0].fluid.as_str(), c.tout[0].cap), ("water", 4_000, "colloid", 4_000));
+    }
+
+    #[test]
+    fn crushing_cobble_gives_gravel_or_quartz_and_colloid() {
+        let (mut c, r) = mill("rock.cobble");
+        c.items = vec![("minecraft:cobblestone".into(), 3)];
+        c.tin[0].fill("water", 1_000);
+        c.power = 2_500;
+        for _ in 0..100 {
+            assert!(c.tick());
+        }
+        assert_eq!((c.progress, c.done, c.power), (0, 1, 0));
+        assert_eq!(c.items, [("minecraft:cobblestone".to_string(), 2)]);
+        assert_eq!((c.tin[0].mb, c.tout[0].fluid.as_str(), c.tout[0].mb), (750, "colloid", 250));
+        assert_eq!(c.out.len(), 1);
+        assert!(r.pick.iter().any(|p| p.0 == c.out[0].0) && c.out[0].1 == 1, "{:?}", c.out);
+        // The output slot must be empty to pick again.
+        c.power = 2_500;
+        assert!(!c.can_run(r));
+        assert!(!c.tick() && c.progress == 0);
+        c.out.clear();
+        assert!(c.can_run(r));
+    }
+
+    #[test]
+    fn a_single_output_piles_but_not_on_another_item() {
+        let (mut c, r) = mill("rock.clay");
+        c.items = vec![("minecraft:sand".into(), 4)];
+        c.tin[0].fill("colloid", 5_000);
+        c.power = 2_500;
+        c.out = vec![("minecraft:clay_ball".into(), 4)];
+        assert!(c.can_run(r));
+        c.out = vec![("minecraft:clay_ball".into(), 61)];
+        assert!(!c.can_run(r), "4 more would pass 64");
+        c.out = vec![("minecraft:gravel".into(), 1)];
+        assert!(!c.can_run(r), "another item in its slot");
+    }
+
+    #[test]
+    fn short_of_power_it_starts_over() {
+        let (mut c, _) = mill("rock.cobble");
+        c.items = vec![("minecraft:cobblestone".into(), 1)];
+        c.tin[0].fill("water", 250);
+        c.power = 50;
+        assert!(c.tick() && c.tick());
+        assert_eq!((c.progress, c.power), (2, 0));
+        assert!(c.tick(), "the progress resets");
+        assert_eq!(c.progress, 0);
+        assert!(!c.tick());
+    }
+
+    #[test]
+    fn another_rock_switches_the_crushing_recipe() {
+        let (mut c, _) = mill("rock.cobble");
+        c.items = vec![("minecraft:gravel".into(), 1)];
+        assert!(c.tick());
+        assert_eq!(c.recipe.as_deref(), Some("rock.gravel"));
+        let (mut c, _) = mill("rock.clay");
+        c.items = vec![("minecraft:gravel".into(), 1)];
+        c.tick();
+        assert_eq!(c.recipe.as_deref(), Some("rock.clay"), "no group, no switch");
+    }
+
+    #[test]
+    fn its_ports_are_two_beside_the_middle_of_each_side() {
+        for (cell, face) in ROCKMILL_PORTS {
+            assert_eq!(cell[1], 0);
+            assert!((cell[0].abs(), cell[2].abs()) == (2, 1) || (cell[0].abs(), cell[2].abs()) == (1, 2), "{cell:?}");
+            let out = [cell[0] + face[0], cell[2] + face[2]];
+            assert!(out[0].abs() == 3 || out[1].abs() == 3, "{cell:?} opens outwards");
+        }
+        let spec = crate::registry::spec(ROCKMILL).unwrap();
+        assert_eq!(spec.kind, crate::machine::Kind::Crafter);
+        assert_eq!(crate::registry::ports(spec, Some("north")).len(), 8);
+        let cells = crate::server::container_bridge::energy_port_cells(ROCKMILL, [0, 64, 0], Some("east"));
+        assert_eq!(cells.len(), 8);
+        assert!(cells.contains(&[2, 64, 1]) && cells.contains(&[-1, 64, -2]));
+        assert_eq!(crate::server::container_bridge::fluid_proxy_cells(ROCKMILL, [0, 64, 0], Some("south")).len(), 8);
     }
 }

@@ -1,0 +1,528 @@
+{
+"station": "rockmill",
+"source": "content/machine-recipes/rockmill.json",
+"recipes": [
+{
+"name": "rock.cobble",
+"label": "Moer cobblestone",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:41",
+"duration": 100,
+"power": 25,
+"in": [
+{
+"ids": [
+"minecraft:cobblestone"
+],
+"n": 1,
+"label": "cobblestone"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"colloid",
+250
+]
+],
+"pools": [],
+"pick": [
+[
+"minecraft:gravel",
+1,
+95
+],
+[
+"ntm:powder_quartz",
+1,
+5
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.gravel",
+"label": "Moer gravel",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:50",
+"duration": 100,
+"power": 25,
+"in": [
+{
+"ids": [
+"minecraft:gravel"
+],
+"n": 1,
+"label": "gravel"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"colloid",
+250
+]
+],
+"pools": [],
+"pick": [
+[
+"minecraft:sand",
+1,
+75
+],
+[
+"minecraft:flint",
+1,
+20
+],
+[
+"ntm:powder_boron",
+1,
+5
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.sand",
+"label": "Moer sand",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:60",
+"duration": 100,
+"power": 25,
+"in": [
+{
+"ids": [
+"minecraft:sand"
+],
+"n": 1,
+"label": "sand"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"colloid",
+250
+]
+],
+"pools": [],
+"pick": [
+[
+"ntm:dust",
+1,
+90
+],
+[
+"ntm:powder_calcium",
+1,
+5
+],
+[
+"ntm:fluorite",
+1,
+5
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.netherrack",
+"label": "Moer netherrack",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:70",
+"duration": 100,
+"power": 25,
+"in": [
+{
+"ids": [
+"minecraft:netherrack"
+],
+"n": 1,
+"label": "netherrack"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"lava",
+100
+]
+],
+"pools": [],
+"pick": [
+[
+"minecraft:gravel",
+1,
+50
+],
+[
+"minecraft:soul_sand",
+1,
+25
+],
+[
+"minecraft:glowstone_dust",
+1,
+15
+],
+[
+"ntm:powder_quartz",
+1,
+10
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.soulsand",
+"label": "Moer soul sand",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:81",
+"duration": 100,
+"power": 25,
+"in": [
+{
+"ids": [
+"minecraft:soul_sand"
+],
+"n": 1,
+"label": "soul sand"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"lava",
+100
+]
+],
+"pools": [],
+"pick": [
+[
+"minecraft:sand",
+1,
+50
+],
+[
+"ntm:powder_fire",
+1,
+25
+],
+[
+"ntm:powder_uranium",
+1,
+15
+],
+[
+"minecraft:blaze_powder",
+1,
+5
+],
+[
+"minecraft:nether_wart",
+1,
+5
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.schist",
+"label": "Moer Xisto Grafítico",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:93",
+"duration": 200,
+"power": 25,
+"in": [
+{
+"ids": [
+"ntm:stone_gneiss"
+],
+"n": 1,
+"label": "Xisto Grafítico"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"colloid",
+250
+]
+],
+"pools": [],
+"pick": [
+[
+"minecraft:gravel",
+1,
+50
+],
+[
+"minecraft:sand",
+1,
+10
+],
+[
+"ntm:powder_lithium",
+1,
+25
+],
+[
+"ntm:powder_niobium",
+1,
+5
+],
+[
+"ntm:powder_uranium",
+1,
+5
+],
+[
+"ntm:powder_gold",
+1,
+5
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.basalt",
+"label": "Moer Basalto",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:106",
+"duration": 200,
+"power": 25,
+"in": [
+{
+"ids": [
+"ntm:basalt"
+],
+"n": 1,
+"label": "Basalto"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"colloid",
+250
+]
+],
+"pools": [],
+"pick": [
+[
+"minecraft:gravel",
+1,
+50
+],
+[
+"ntm:powder_ash__misc",
+1,
+25
+],
+[
+"ntm:powder_quartz",
+1,
+15
+],
+[
+"ntm:gravel_obsidian",
+1,
+10
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.hematite",
+"label": "Moer Hematita",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:117",
+"duration": 200,
+"power": 25,
+"in": [
+{
+"ids": [
+"ntm:stone_resource__hematite"
+],
+"n": 1,
+"label": "Hematita"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"colloid",
+250
+]
+],
+"pools": [],
+"pick": [
+[
+"minecraft:gravel",
+1,
+65
+],
+[
+"ntm:powder_iron",
+1,
+25
+],
+[
+"ntm:powder_titanium",
+1,
+10
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.bauxite",
+"label": "Moer Bauxita",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:127",
+"duration": 200,
+"power": 25,
+"in": [
+{
+"ids": [
+"ntm:stone_resource__bauxite"
+],
+"n": 1,
+"label": "Bauxita"
+}
+],
+"fin": [
+[
+"water",
+250
+]
+],
+"out": [],
+"fout": [
+[
+"colloid",
+250
+]
+],
+"pools": [],
+"pick": [
+[
+"minecraft:gravel",
+1,
+25
+],
+[
+"minecraft:clay_ball",
+1,
+25
+],
+[
+"ntm:stone_resource__hematite",
+1,
+25
+],
+[
+"ntm:ore_titanium",
+1,
+25
+]
+],
+"group": "autoswitch.crushing"
+},
+{
+"name": "rock.clay",
+"label": "Bola de Argila ×4",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:165",
+"duration": 200,
+"power": 25,
+"in": [
+{
+"ids": [
+"minecraft:sand"
+],
+"n": 2,
+"label": "sand"
+}
+],
+"fin": [
+[
+"colloid",
+2500
+]
+],
+"out": [
+[
+"minecraft:clay_ball",
+4,
+1.0
+]
+],
+"fout": [],
+"pools": []
+},
+{
+"name": "rock.colloid",
+"label": "Areia",
+"source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:170",
+"duration": 100,
+"power": 25,
+"in": [],
+"fin": [
+[
+"colloid",
+1000
+]
+],
+"out": [
+[
+"minecraft:sand",
+1,
+1.0
+]
+],
+"fout": [],
+"pools": []
+}
+],
+"skipped": 2
+}

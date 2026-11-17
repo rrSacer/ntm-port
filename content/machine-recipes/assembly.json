@@ -18726,7 +18726,7 @@
     {
       "name": "ass.nitra",
       "source": "src/main/java/com/hbm/inventory/recipes/AssemblyMachineRecipes.java:1094",
-      "reason": "unsupported expression new ChanceOutputMulti(\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.casing, 1, EnumCasingType.SHOTSHELL.ordinal()), 20),\n\t\t\t\t\t\tnew ChanceOutput(new I",
+      "reason": "dynamic/unsupported metadata EnumGrenadeShell.FRAG.ordinal()",
       "expression": "new GenericRecipe(\"ass.nitra\").setupNamed(200, 500)\n\t\t\t\t.inputItems(new ComparableStack(ModItems.nitra))\n\t\t\t\t.setIconToFirstIngredient()\n\t\t\t\t.outputItems(new ChanceOutputMulti(\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.casing, 1, EnumCasingType.SHOTSHELL.ordinal()), 20),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.casing, 1, EnumCasingType.BUCKSHOT.ordinal()), 10),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.casing, 2, EnumCasingType.SMALL.ordinal()), 20),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.casing, 1, EnumCasingType.LARGE.ordinal()), 10),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(Items.gunpowder), 30),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.cordite), 20),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.ballistite), 20),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.grenade_shell, 1, EnumGrenadeShell.FRAG.ordinal()), 5),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.grenade_shell, 1, EnumGrenadeShell.STICK.ordinal()), 5),\n\t\t\t\t\t\tnew ChanceOutput(new ItemStack(ModItems.grenade_fuze, 1, EnumGrenadeFuze.S3.ordinal()), 10)\n\t\t\t\t))"
     },
     {

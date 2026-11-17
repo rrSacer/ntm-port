@@ -310,6 +310,15 @@ pub const SLOTTED: &[(&str, Layout)] = &[
             outputs: 2..2,
         },
     ),
+    // ContainerMachineRockMill: 0 the battery, 1 the blueprint (no pools in
+    // the port), 2–4 the inputs, 5–7 the outputs.
+    (
+        "ntm:machine_rockmill",
+        Layout::Crafter {
+            inputs: 2..5,
+            outputs: 5..8,
+        },
+    ),
     // ContainerElectrolyser: both lines on its 21 slots (`crate::electrolyser`).
     ("ntm:machine_electrolyser", Layout::Native),
     // ContainerMachineArcFurnaceLarge: 30 slots (`crate::arc_furnace`).
@@ -394,6 +403,10 @@ pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Po
     if block == crate::fel::BLOCK {
         return facing.and_then(crate::registry::facing_dir).map(|d| vec![[core[0] - 4*d[0], core[1] + 1, core[2] - 4*d[2]]]).unwrap_or_default();
     }
+    // The rock mill's eight (`crate::crafter::ROCKMILL_PORTS`).
+    if block == crate::crafter::ROCKMILL {
+        return facing.and_then(crate::registry::facing_dir).map(|f| crate::crafter::ROCKMILL_PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();
+    }
     // The cyclotron's twelve ports (`crate::cyclotron::PORTS`).
     if block == crate::cyclotron::BLOCK {
         return facing.and_then(crate::registry::facing_dir).map(|f| crate::cyclotron::PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();
@@ -452,6 +465,8 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // MachineSILEX.getAllPorts (`{±1, 1, 0}`, the makeExtra combo proxies: inventory and fluid) and TileEntitySILEX.getPorts:
     // the two cells beside the middle of its second layer (symmetric, so the mirroring does not move them).
     ("ntm:machine_silex", &[[1, 1, 0], [-1, 1, 0]]),
+    // MachineRockMill.getAllPorts: two beside the middle of each side of its 5x5 footprint (`crate::crafter::ROCKMILL_PORTS`).
+    ("ntm:machine_rockmill", &[[2, 0, 1], [-2, 0, 1], [2, 0, -1], [-2, 0, -1], [1, 0, 2], [1, 0, -2], [-1, 0, 2], [-1, 0, -2]]),
     ("ntm:machine_cyclotron", &[[-2, 0, -1], [-2, 0, 0], [-2, 0, 1], [2, 0, -1], [2, 0, 0], [2, 0, 1], [-1, 0, -2], [0, 0, -2], [1, 0, -2], [-1, 0, 2], [0, 0, 2], [1, 0, 2]]),
     // MachineRadiolysis.getAllPorts (`makeExtra` cells, the `flare` ports): the four beside the core on its layer (symmetric,
     // so the mirroring below does not move them).

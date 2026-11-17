@@ -470,7 +470,8 @@ pub fn recipes(block: &str) -> Option<Vec<RecipeRow>> {
             return None;
         }
         let rows = st.recipes().iter().enumerate().map(|(i, r)| {
-            let outputs: Vec<(String, u32)> = r.items_out.iter().map(|o| (o.0.clone(), o.1)).collect();
+            // A pick by weight lists each of its outputs.
+            let outputs: Vec<(String, u32)> = r.items_out.iter().map(|o| (o.0.clone(), o.1)).chain(r.pick.iter().map(|p| (p.0.clone(), p.1))).collect();
             RecipeRow {
                 index: i as u32,
                 label: r.label.clone(),
