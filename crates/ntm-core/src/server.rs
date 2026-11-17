@@ -26,6 +26,8 @@ pub trait ServerHost: Kv {
     /// Native explosion (power 12, fire and block destruction) in its own level.
     fn zirnox_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { false }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String>;
+    /// Beam obstruction at a loaded cell. None freezes a FEL tick.
+    fn fel_opaque(&mut self, _dim: &str, _p: Pos) -> Option<bool> { None }
     fn set_blocks(&mut self, dim: &str, blocks: &[(Pos, String)]) -> Result<(), String>;
     /// Role changes already represented by the confirmed model. Hosts may
     /// suppress their synchronous notifications for these owner cells only.
@@ -159,6 +161,8 @@ pub trait ServerHost: Kv {
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
+    /// Set an online player's remaining fire duration, in ticks.
+    fn fel_fire(&mut self, _id: &str, _ticks: u32) {}
     /// A status effect on player `id` (`poison`) for `ticks`.
     fn effect(&mut self, _id: &str, _effect: &str, _ticks: u32, _amplifier: u8) {}
     /// The world's seed (`World.getSeed`): it seeds the sickness rolls' random (radiation::SicknessRng).

@@ -132,6 +132,9 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         }
         self.host.get_block(d, p)
     }
+    fn fel_opaque(&mut self, d: &str, p: Pos) -> Option<bool> {
+        self.host.fel_opaque(d, p)
+    }
     fn block_resistance(&mut self, d: &str, p: Pos) -> Option<f32> {
         self.host.block_resistance(d, p)
     }
@@ -206,6 +209,10 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
             pos: p,
         });
         true
+    }
+    fn fel_fire(&mut self, p: &str, ticks: u32) {
+        let p = p.to_string();
+        self.effects.push((self.origins.clone(), Box::new(move |h| h.fel_fire(&p, ticks))));
     }
     fn hurt(&mut self, p: &str, a: f32, k: &str) {
         let (p, k) = (p.to_string(), k.to_string());
@@ -377,6 +384,57 @@ impl Server {
                 a.pending.retain(|p| p.seq > confirmed);
             }
         }
+    }
+
+    /// Stage FEL beam block effects with the machine step. Unsupported world
+    /// observations and SILEX targets freeze the step until their adapter is ready.
+    fn fel_tick(&mut self, host: &mut impl ServerHost, keys: &[Key], removed: &BTreeSet<Key>) -> bool {
+        use crate::fel::{BeamCell, BeamEffect, Wavelength};
+        let mut victims = Vec::new();
+        for key in keys {
+            if removed.contains(key) { continue; }
+            let Some(machine) = self.ready.world.machines.get_mut(key) else { continue };
+            let Some(dir) = machine.facing.as_deref().and_then(registry::facing_dir) else { continue };
+            let crate::machine::Data::Fel(fel) = &mut machine.data else { continue };
+            let previous_distance = fel.distance;
+            let Some(mode) = fel.begin_tick() else { continue };
+            let at = |i: i32| [key.1[0] + dir[0]*i, key.1[1]+1, key.1[2] + dir[2]*i];
+            let mut missing = false;
+            let mut random = crate::rbmk::jrandom::JavaRandom::new((self.tick as i64) ^ i64::from(key.1[0]).wrapping_mul(341873128712) ^ i64::from(key.1[2]).wrapping_mul(132897987541));
+            let effects = fel.trace_beam(mode, |i| {
+                let p = at(i);
+                let Some(block) = host.get_block(&key.0, p) else { missing = true; return BeamCell::Transparent };
+                let id = blockstate::id_of(&block);
+                if id == "ntm:machine_silex" || id == "ntm:dummy_machine" {
+                    missing = true;
+                    return BeamCell::Transparent;
+                }
+                let Some(opaque) = host.fel_opaque(&key.0, p) else { missing = true; return BeamCell::Transparent };
+                if !opaque && id != "minecraft:tnt" { return BeamCell::Transparent; }
+                let Some(resistance) = host.block_resistance(&key.0, p) else { missing = true; return BeamCell::Transparent };
+                BeamCell::Obstacle { liquid: matches!(id, "minecraft:water" | "minecraft:lava"), resistance }
+            }, || random.next_int(5) == 0);
+            if missing || matches!(mode, Wavelength::Drx | Wavelength::Gamma) { return false; }
+            let mut blocks = Vec::new();
+            for effect in effects {
+                match effect {
+                    BeamEffect::RemoveLiquid { at: i } => blocks.push((at(i), "minecraft:air".into())),
+                    BeamEffect::Ignite { at: i, digamma: false } => blocks.push((at(i), "minecraft:fire".into())),
+                    BeamEffect::Ignite { digamma: true, .. } | BeamEffect::SetSilex { .. } | BeamEffect::BreakSilex { .. } => return false,
+                }
+            }
+            if !blocks.is_empty() && host.set_blocks(&key.0, &blocks).is_err() { return false; }
+            victims.extend(self.players.iter().filter(|p| p.dim == key.0 && crate::fel::beam_intersects_player(key.1, dir, previous_distance, p.pos)).map(|p| (p.id.clone(), mode)));
+        }
+        for (id, mode) in victims {
+            match mode {
+                Wavelength::Visible => { host.effect(&id, "minecraft:blindness", 60*60*65536, 0); host.fel_fire(&id, 200); }
+                Wavelength::Ir | Wavelength::Uv => host.fel_fire(&id, 200),
+                // The gamma and digamma paths require their contamination adapters.
+                Wavelength::Gamma | Wavelength::Drx | Wavelength::Null => {}
+            }
+        }
+        true
     }
 
     fn annihilator_tick(&mut self, keys: &[Key], removed_keys: &BTreeSet<Key>) {
@@ -985,6 +1043,9 @@ impl Server {
                         _ => {}
                     }
                 }
+                if !self.fel_tick(&mut staged, &keys, &removed_keys) {
+                    staged.valid = false;
+                }
                 self.annihilator_tick(&keys, &removed_keys);
                 self.excavator_tick(&mut staged);
                 self.drill_tick(&mut staged);
@@ -1126,6 +1187,57 @@ impl Server {
 mod dose_tests {
     use super::*;
     use crate::radiation::Dose;
+
+    #[derive(Default)]
+    struct FelWorld { unavailable: bool, writes: Vec<(Pos, String)>, fire: Vec<(String, u32)>, effects: Vec<(String, String, u32)> }
+    impl Kv for FelWorld {
+        fn get(&mut self, _: &str) -> Option<Vec<u8>> { None }
+        fn set(&mut self, _: &str, _: &[u8]) -> Result<(), String> { Ok(()) }
+        fn delete(&mut self, _: &str) {}
+    }
+    impl ServerHost for FelWorld {
+        fn get_block(&mut self, _: &str, p: Pos) -> Option<String> {
+            if self.unavailable { None } else if p == [0, 65, -5] { Some("minecraft:water".into()) } else { Some("minecraft:air".into()) }
+        }
+        fn fel_opaque(&mut self, _: &str, p: Pos) -> Option<bool> { Some(p == [0, 65, -5]) }
+        fn block_resistance(&mut self, _: &str, _: Pos) -> Option<f32> { Some(1.0) }
+        fn set_blocks(&mut self, _: &str, blocks: &[(Pos, String)]) -> Result<(), String> { self.writes.extend_from_slice(blocks); Ok(()) }
+        fn tell(&mut self, _: &str, _: &str) {}
+        fn log(&mut self, _: &str) {}
+        fn fel_fire(&mut self, id: &str, ticks: u32) { self.fire.push((id.into(), ticks)); }
+        fn effect(&mut self, id: &str, effect: &str, ticks: u32, _: u8) { self.effects.push((id.into(), effect.into(), ticks)); }
+    }
+    #[test]
+    fn fel_server_tick_spends_energy_and_stages_the_struck_block() {
+        let mut host = FelWorld::default();
+        let mut server = Server::native(&mut host, 0);
+        let key = ("minecraft:overworld".to_string(), [0, 64, 0]);
+        let mut machine = Machine::new(Kind::Fel, crate::fel::BLOCK, Some("north".into()));
+        let crate::machine::Data::Fel(f) = &mut machine.data else { panic!() };
+        f.on = true; f.power = 4_000;
+        f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_co2", 1));
+        server.ready.world.machines.insert(key.clone(), machine);
+        assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new()));
+        let crate::machine::Data::Fel(f) = &server.ready.world.machines[&key].data else { panic!() };
+        assert_eq!((f.power, f.distance), (250, 5));
+        assert_eq!(host.writes, vec![([0, 65, -5], "minecraft:air".into())]);
+    }
+
+    #[test]
+    fn visible_beam_blinds_and_ignites_players_in_its_previous_bounds() {
+        let mut host = FelWorld::default();
+        let mut server = Server::native(&mut host, 0);
+        let key = ("minecraft:overworld".to_string(), [0, 64, 0]);
+        let mut machine = Machine::new(Kind::Fel, crate::fel::BLOCK, Some("north".into()));
+        let crate::machine::Data::Fel(f) = &mut machine.data else { panic!() };
+        f.on = true; f.power = 20_000; f.distance = 7;
+        f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_bismuth", 1));
+        server.ready.world.machines.insert(key.clone(), machine);
+        server.set_players(vec![PlayerInfo { id:"inside".into(), name:"inside".into(), dim:key.0.clone(), pos:[0.5,64.0,-2.0], creative:false }, PlayerInfo { id:"outside".into(), name:"outside".into(), dim:key.0.clone(), pos:[5.0,64.0,-2.0], creative:false }]);
+        assert!(server.fel_tick(&mut host, &[key], &BTreeSet::new()));
+        assert_eq!(host.fire, vec![("inside".into(), 200)]);
+        assert_eq!(host.effects, vec![("inside".into(), "minecraft:blindness".into(), 60*60*65536)]);
+    }
 
     /// A player's dose storage that refuses a write expecting another dose, and the armor's factor.
     #[derive(Default)]

@@ -1459,6 +1459,12 @@ impl ServerHost for Host<'_, '_> {
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
     }
+    fn fel_opaque(&mut self,dim:&str,p:[i32;3])->Option<bool> {
+        self.game.native_loaded_block(dim,p)?;
+        let target=dim_of(dim)?;
+        let world=if target==self.game.dim {&self.game.world} else {self.game.levels.parked_world(target)?};
+        Some(self.game.res.facts().get(world.block(p[0],p[1],p[2])).can_occlude)
+    }
     fn block_resistance(&mut self,dim:&str,p:[i32;3])->Option<f32> {
         self.game.native_loaded_block(dim,p)?;
         let target=dim_of(dim)?;
@@ -1699,6 +1705,11 @@ impl ServerHost for Host<'_, '_> {
     }
     fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c| (c.item, c.count)).collect())
+    }
+    fn fel_fire(&mut self, id: &str, ticks: u32) {
+        let _ = self.game.native_visit_player(id, |g| {
+            if let Some(p) = g.player.as_mut() { p.set_remaining_fire_ticks(p.fire_ticks.max(ticks as i32)); }
+        });
     }
     fn hurt(&mut self, id: &str, amount: f32, kind: &str) {
         if let Err(e) = self.game.native_hurt(id, amount, kind) {

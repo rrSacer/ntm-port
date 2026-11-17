@@ -124,6 +124,19 @@ pub fn container() -> crate::native::Container {
     crate::native::Container { slots: 2, faces: std::array::from_fn(|_| Vec::new()), inputs: Vec::new(), outputs: Vec::new(), menu: Some("minecraft:generic_9x3") }
 }
 
+/// Intersect a vanilla player box with the previous tick's beam AABB.
+/// `TileEntityFEL.updateEntity` uses `distance - 1` before tracing anew.
+pub fn beam_intersects_player(core: [i32; 3], dir: [i32; 3], distance: i32, player: [f64; 3]) -> bool {
+    let end = distance - 1;
+    let x0 = f64::from(core[0].min(core[0] + dir[0]*end)) + 0.2;
+    let x1 = f64::from(core[0].max(core[0] + dir[0]*end)) + 0.8;
+    let z0 = f64::from(core[2].min(core[2] + dir[2]*end)) + 0.2;
+    let z1 = f64::from(core[2].max(core[2] + dir[2]*end)) + 0.8;
+    player[0] + 0.3 > x0 && player[0] - 0.3 < x1 &&
+        player[1] + 1.8 > f64::from(core[1]) + 0.2 && player[1] < f64::from(core[1]) + 1.8 &&
+        player[2] + 0.3 > z0 && player[2] - 0.3 < z1
+}
+
 /// What Java observes in each beam cell. A SILEX refers to the core one
 /// block beyond the struck part; an absent core falls through without stopping.
 #[derive(Clone, Copy, Debug, PartialEq)]
