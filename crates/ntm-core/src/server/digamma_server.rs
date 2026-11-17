@@ -158,6 +158,11 @@ mod tests {
         // 0.001 in: a box 0.3 from a face reaches past it only from 0.701.
         assert_eq!(touched_cells([0.7, 64.0, 0.5]), vec![[0, 64, 0], [0, 65, 0]]);
         assert_eq!(touched_cells([0.7015, 64.0, 0.5]).len(), 4);
+        // And the same in from the low side, and at the head.
+        assert_eq!(touched_cells([1.2995, 64.0, 0.5]), vec![[1, 64, 0], [1, 65, 0]]);
+        assert_eq!(touched_cells([0.5, 63.9995, 0.5]), vec![[0, 64, 0], [0, 65, 0]]);
+        assert_eq!(touched_cells([0.5, 64.2, 0.5]), vec![[0, 64, 0], [0, 65, 0]]);
+        assert_eq!(touched_cells([0.5, 64.2015, 0.5]).len(), 3);
     }
 
     #[test]
