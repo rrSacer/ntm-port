@@ -122,9 +122,30 @@ def written(before, after, prefixes, dims=('overworld',)):
     return out
 
 
+BLADE, SAWMILL = 'ntm:sawblade', 'ntm:machine_sawmill'
+
+
+def _blade_atom(s, prefixes):
+    """The sawmill's blade counted where it is (Onda 2, the plan's oracle): a sawmill item with it (no
+    `ntm:no_blade` in its `minecraft:custom_data`) holds one; only when the blade is counted."""
+    if not BLADE.startswith(prefixes) or not isinstance(s, dict) or (s.get('id') or s.get('Id')) != SAWMILL:
+        return 0
+    data = (s.get('components') or {}).get('minecraft:custom_data') or {}
+    without = isinstance(data, dict) and str(data.get('ntm:no_blade', '0')).rstrip('bB') in ('1', 'true')
+    return 0 if without else int(s.get('count', s.get('Count', 1)) or 0)
+
+
+def _installed_blade(v, prefixes):
+    """A sawmill's model with its blade (`"k":"Sawmill"`, `has_blade`): one blade."""
+    return int(BLADE.startswith(prefixes) and isinstance(v, dict) and v.get('k') == 'Sawmill' and v.get('has_blade', True) is True)
+
+
 def _stack(s, prefixes):
     if not isinstance(s, dict):
         return 0
+    blade = _blade_atom(s, prefixes)
+    if blade:
+        return blade
     item = s.get('id') or s.get('Id') or ''
     if not isinstance(item, str) or not item.startswith(prefixes):
         return 0
@@ -152,7 +173,7 @@ def _model(text, prefixes):
                     if k != 'Core':
                         walk(x)
                 return
-            total += _stack(v, prefixes)
+            total += _stack(v, prefixes) + _installed_blade(v, prefixes)
             for x in v.values():
                 walk(x)
         elif isinstance(v, list):
@@ -305,6 +326,10 @@ def _add(out, item, n, prefixes):
 
 def _stack_items(s, prefixes, out):
     if isinstance(s, dict):
+        blade = _blade_atom(s, prefixes)
+        if blade:
+            _add(out, BLADE, blade, prefixes)
+            return
         item = s.get('id') or s.get('Id') or ''
         _add(out, item, int(s.get('count', s.get('Count', 1)) or 0), prefixes)
 
@@ -315,6 +340,10 @@ def _snbt_items(text, prefixes, out):
     except (AssertionError, IndexError):
         return
     if isinstance(s, dict):
+        blade = _blade_atom(s, prefixes)
+        if blade:
+            _add(out, BLADE, blade, prefixes)
+            return
         item = s.get('id', '')
         _add(out, item, int(float(str(s.get('count', '1')).rstrip('bsilBSIL') or 0)), prefixes)
 
@@ -336,6 +365,8 @@ def _machine_items(m, prefixes, out):
                         walk(x)
                 return
             _stack_items(v, prefixes, out)
+            if _installed_blade(v, prefixes):
+                _add(out, BLADE, 1, prefixes)
             for x in v.values():
                 walk(x)
         elif isinstance(v, list):
