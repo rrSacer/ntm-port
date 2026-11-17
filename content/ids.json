@@ -101978,7 +101978,7 @@
       },
       "category": "machine",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/block_steel.png",
-      "behavior_gap": "Inert source identity only. No processing, inventory, item use, locking/key pairing, opening, redstone, linked multiblock, moving collision, model animation, hazards or technical state is implemented. Source casing/icon projected on one static block/item.",
+      "behavior_gap": "Decorative in the 1.7.10 itself (MachineLPW2, TileEntityMachineLPW2: no logic, a render box only): its 20 x 7 x 7 multiblock (offset 3) and lpw2.obj are ported, still; the renderer's motions (sway, bell, piston, rotor, turbines, cover, suspension, servers) are not, nor its Screen part (a second texture, lpw2_term_error.png, scrolling).",
       "source_has_tile": true,
       "source_ancestry": [
         "MachineLPW2",
@@ -101995,6 +101995,9 @@
       "source_tiles": [
         "TileEntityMachineLPW2"
       ],
+      "block_properties": {
+        "explosion_resistance": 100.0
+      },
       "source_registry": "hbm:tile.machine_lpw2",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",

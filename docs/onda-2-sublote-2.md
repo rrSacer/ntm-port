@@ -601,3 +601,28 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - Em jogo (`run-native-reactors.py igenerator`): 5/5.
   - Uma célula, sem parte de multibloco em volta; o clique não abre tela; reabre igual.
   - A captura `content-gen-evidence/onda2-s2/igenerator/native-igenerator-overlay.png` mostra o título e a linha à direita da mira, e o modelo em miniatura dentro da célula.
+
+### `machine_lpw2` (grupo 2b)
+
+**O que o Java faz** (`MachineLPW2`, `TileEntityMachineLPW2`): é decorativo no próprio 1.7.10.
+- Um multibloco `{6,0,3,3,9,10}` com offset 3 (x −9..10, y 0..6, z −3..3 no referencial de quem coloca), sem proxies: o `createNewTileEntity` não dá nada abaixo do meta 12.
+- Sem tela (não há `onBlockActivated`); dureza 5, resistência 100.
+- A tile entity só define a caixa de render. O `RenderLPW2` anima o `lpw2.obj` (balanço, sino, pistão, rotor, turbinas, cobertura, suspensão, servidores) e rola a textura da parte `Screen` (`lpw2_term_error.png`).
+
+**Portado**
+- **O multibloco do mesmo volume, 20 × 7 × 7.** O motor só aceita 16 de largura numa caixa (`mod_multiblocks::parse`). O volume foi dividido numa caixa principal x −9..6 e numa caixa `extra` x 7..10. Com a caixa única, o motor só avisava no log e colocava uma célula. O teste `tools/content-gen/test_multiblock_limits.py` confere agora todos os multiblocos contra esses limites.
+- **Resistência 100,** pelo `k3_overrides.json` (a varredura K3 não lê `setResistance`).
+- **O modelo `lpw2.obj` parado,** girado 90 como o extrator lê.
+
+**Lacunas**
+- As animações do renderer não foram portadas.
+- A parte `Screen` fica escondida: ela usa uma segunda textura, que rola, e o modelo do port tem uma textura só.
+- O alinhamento do modelo com a estrutura não foi conferido por captura.
+
+**Provas** (cliente `09c2b0d72ddb6e7ca68430626efb2314759d30423bed1aaf610e4df436605210`, pacote `4d045c118e951e17a7ea534be31b7051f9ab872ad58ce9582aa5ab4529389be4`)
+- `ntm-core`: 862 testes passando; gerador de conteúdo com `test_multiblock_limits`.
+- Em jogo (`run-native-reactors.py lpw2`): 6/6.
+  - Os 8 cantos e 3 células internas são partes, e o núcleo fica a 3 do ponto clicado.
+  - O clique numa parte não abre nada.
+  - Reabre inteiro.
+  - Quebrar um canto com a picareta leva o multibloco todo e solta um `ntm:machine_lpw2`.

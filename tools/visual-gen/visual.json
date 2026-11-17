@@ -39227,8 +39227,25 @@
       }
     },
     "ntm:machine_lpw2": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+     "source": "MachineLPW2 dimensions {6,0,3,3,9,10}, offset 3: x -9..10, y 0..6, z -3..3, as a main box of 16 across (the engine's most) and an extra box for x 7..10 (no proxies: createNewTileEntity gives nothing below meta 12), no screen (no onBlockActivated); RenderLPW2 draws lpw2.obj turned as the extractor reads it (90 for meta 2), still: its sway, bell, piston, rotor, turbine, cover, suspension and server motions are not drawn, nor its Screen (drawn with lpw2_term_error.png, a second texture, scrolling)",
+     "machine": {
+      "slots": [],
+      "inventory": [
+       8,
+       84
+      ],
+      "data": 0,
+      "multiblock": {"min": [-9, 0, -3], "max": [6, 6, 3], "offset": 3, "dummy": "ntm:dummy_machine", "extra": [{"min": [7, 0, -3], "max": [10, 6, 3]}]}
+     },
+     "model": {
+      "obj": "ntm:models/obj/lpw2.obj",
+      "obj_from": "models/machines/lpw2.obj",
+      "texture": "ntm:textures/models/machines/lpw2.png",
+      "texture_from": "textures/models/machines/lpw2.png",
+      "rotation": 90,
+      "hide": ["Screen"],
+       "radius": 11.5
+     }
     },
     "ntm:machine_ammo_press": {
       "auto": false,

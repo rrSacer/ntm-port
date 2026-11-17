@@ -6,6 +6,14 @@
       "id": "machine_industrial_generator",
       "type": "block",
       "behavior_gap": "A memorial in the 1.7.10 itself (MachineIGenerator): one cell, no screen (its openGui is commented out), an empty updateEntity and 21 slots no side reaches; ported: its ILookOverlay text (ntm-core look_overlay, drawn by the client HUD) and igen.obj at a sixth of its size. The 21 slots are not ported: nothing can put an item in them."
+    },
+    {
+      "id": "machine_lpw2",
+      "type": "block",
+      "block_properties": {
+        "explosion_resistance": 100.0
+      },
+      "behavior_gap": "Decorative in the 1.7.10 itself (MachineLPW2, TileEntityMachineLPW2: no logic, a render box only): its 20 x 7 x 7 multiblock (offset 3) and lpw2.obj are ported, still; the renderer's motions (sway, bell, piston, rotor, turbines, cover, suspension, servers) are not, nor its Screen part (a second texture, lpw2_term_error.png, scrolling)."
     }
   ]
 }

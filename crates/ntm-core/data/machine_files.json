@@ -4468,6 +4468,14 @@
 9
 ]
 },
+"ntm:machine_lpw2": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:machine_mixer": {
 "inventory": [
 8,

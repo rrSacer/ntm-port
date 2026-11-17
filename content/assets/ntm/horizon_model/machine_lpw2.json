@@ -1,0 +1,9 @@
+{
+  "obj": "ntm:models/obj/lpw2.obj",
+  "texture": "ntm:textures/models/machines/lpw2.png",
+  "rotation": 90,
+  "hide": [
+    "Screen"
+  ],
+  "radius": 11.5
+}
