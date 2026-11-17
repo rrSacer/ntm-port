@@ -403,3 +403,66 @@ funil: `SKIP_UPSTREAM_CHECK=1` e o empacotador do próprio motor):
   conservação de água/antimatéria) e `cyclotron-break` 7/7 (quebrar o cíclotron com itens dentro, contra o baú de controle);
 - mutantes: 42 escolhidos à mão, 42 mortos (dois só depois de reforçar os testes unitários: a ordem inteira `500 / (efeito + 1) * velocidade`
   combinando `speed_1` + `effect_2`, e a oferta de fluido `tanks[1..]` com água no tanque de entrada).
+
+### `machine_annihilator` (grupo 2a)
+
+`TileEntityMachineAnnihilator` (o aniquilador): destrói itens e fluidos em *pools* nomeados persistentes no mundo
+(`AnnihilatorSavedData`, chave `ANNIHILATOR_KEY`), ventila radiação de itens pela chaminé e de fluidos pelo núcleo, monitora uma
+chave no slot 8 e entrega marcos de receita. Multibloco 3x3x9 (`MachineAnnihilator.getDimensions` `{2,0,4,4,1,1}`, *offset* 4) mais a
+chaminé `{8,-2,1,1,1,1}` em `(0, 9, 3)` — 134 dummies + núcleo — com três portas na frente (`getPorts` / `getAllPorts`, linhas
+55-67 e 42-48): `[0, 0, -4]`, `[-1, 0, -3]` e `[1, 0, -3]` no quadro de quem coloca, abertas para fora, levando fluido e
+inventário. 11 slots (linha 48): `0` entrada (lixo), `1` identificador de fluido (`type_from_identifier`), `2..7` saídas (2x3,
+`SlotCraftingOutput`), `8` monitor, `9` pedido de marco (*request*), `10` entrega do marco (`SlotCraftingOutput`); um tanque de
+2 500 000 mB com prioridade `LOW` (`getFluidPriority`, linha 235), sem energia.
+
+Um tick (`updateEntity`, linhas 75-141): atualiza o tipo do tanque pelo slot 1; com `pool` não vazio: (a) consome o stack inteiro
+do slot 0, emite radiação na chaminé `(rad * 5.0).min(1_000.0)` e soma no *pool* (`Item`, `Comp` e cada nome de OreDict),
+colocando o maior marco em `2..7` (`dict > comp > item`, `tryAddPayout`); (b) drena todo o tanque (`tank.mb > 0`), emite radiação
+no núcleo `mb * 2 * vent_radiation` e soma no *pool* (`Fluid`), colocando o marco em `2..7`; (c) atualiza `monitor` pelo slot 8
+(`Fluid` se for identificador de fluido, senão `Comp`); (d) se o slot 9 tem itens, consome **1** por tick, emite radiação na
+chaminé, soma no *pool* com `always_payout = true` e deposita ou empilha o marco no slot 10.
+
+| Regra | Java | Port |
+| --- | --- | --- |
+| Persistência em cortes | `AnnihilatorSavedData` (`WorldSavedData`, chave `"annihilator"`) em `perWorldStorage` | `WorldState::annihilator` sob `ANNIHILATOR_KEY` + WAL por máquina (`seq` e `pending: Vec<PendingPush>`); na adoção de chunk (`native_server.rs`), `replay_push` reexecuta apenas `seq > applied_seq`, e `pending` é podado após `applied_seq` confirmado (`prune_annihilator_pending`) |
+| Portas | `getPorts` / `getAllPorts`: três células frontais abertas para fora (`[0,0,-4]`, `[-1,0,-3]`, `[1,0,-3]`) | `annihilator::port_cells` + `fluid_server` / `container_bridge`; outras células e lados recusam fluido e funis |
+| Mão e funil | `isItemValidForSlot`: `0`, `8`, `9` aceitam qualquer item, `1` só `IItemFluidIdentifier`; `canExtractItem`: `2..7`; `getAccessibleSlotsFromSide`: `[0, 2..7]` | `annihilator::allows`, `annihilator::container()` (`inputs: [0]`, `outputs: 2..8`, `faces` `[0, 2..7]`) e `slot_filters` (`quick_reverse` no `0` e `1`) |
+| Shift-click | `transferStackInSlot` (`ContainerMachineAnnihilator`, linhas 36-68): identificador de fluido tenta o slot 1, demais itens vão para o slot 0; slots da máquina vão para o inventário | `slot_filters`: `accept` `ntm:fluid_identifier_multi` no slot 1 antes do slot 0; `monitor`, `request` e `payout` bloqueiam entrada por shift (`quick_move: []`) |
+| Receitas de marco | `AnnihilatorRecipes` (linhas 65-82): 16 entradas presas em `GeneralConfig.enable528` pagando `ntm:blueprints` | `highest_payout_from_recipe` / `highest_payout_from_key` e precedência `dict > comp > item` portados e testados; `recipes()` devolve `&[]` por padrão enquanto `enable528` e `ntm:blueprints` não existem no port |
+| Radiação | `onDestroy`: `(rad * 5).min(1000)` em `(x - dir.x * 3, y + 9, z - dir.z * 3)`; fluidos via `FluidTrait.onRelease(BURN, fill * 2)` | `chimney_cell` (`[0, 9, 3]` no quadro do colocador) para slots `0` e `9`, núcleo para fluidos (`mb * 2 * vent_radiation`), via `chunk_rad_pending` (atômico com `commit_machines`) |
+| Tela | `GUIMachineAnnihilator` 176x208 (`gui_annihilator.png`), campo `GuiTextField` para `pool` e dica de `monitorBigInt` | visual-gen (`machine_annihilator.json`): layout, texto estático `"Recycling"`, dica `"Monitored: {0}"` com 1 inteiro |
+
+Lacunas: (a) as 16 receitas padrão de `AnnihilatorRecipes` dependem de `enable528` (desligado) e de `ntm:blueprints` (ausente em
+`content/ids.json`), ficando vazia a tabela padrão; (b) sem `GuiTextField` editável na tela para trocar `pool` de `"Recycling"`
+em jogo (o campo e `Annihilator::pool` estão prontos no núcleo); (c) da liberação `FluidReleaseType.BURN`, só a emissão radiativa
+(`vent_radiation`) está ligada (`FT_Polluting` de fuligem/veneno ainda não portado), e não há partículas de chama na chaminé,
+som nem renderizador OBJ animado da correia; (d) o shift-click foi provado em teste unitário (`native::slot_filters`), não
+interativamente em jogo.
+
+**Entrega do aniquilador** (cliente release `28fbb9f1…`, `ntm.hmod` `8ff9b5ba…`, em `content-gen-evidence/onda2-s2/`; build com
+`SKIP_UPSTREAM_CHECK=1` e empacotador do próprio motor):
+
+- unidade: 6 testes em `annihilator.rs` (incremento em `Item`/`Comp`/`Dict` e monitoramento de `Comp`/`Fluid`, troca e recusa de
+  identificador de fluido, precedência de marcos `dict > comp > item` e slot `REQUEST` 1/tick com `always_payout`, emissão de
+  radiação na chaminé vs núcleo, idempotência do replay WAL vs `confirmed_seq`, regras de slot e `container()`), 4 em
+  `server/tests/annihilator_tests.rs` (cortes de save A–E incluindo `refuse_commits`, portas frontais vs células não-porta,
+  radiação de urânio na chaminé e `sas3` no núcleo, filtros `native_slot_filters`), 1 pela ponte em `furnaces_tests.rs`
+  (`the_annihilator_runs_items_monitor_and_request_through_the_bridge`); suíte `ntm-core --lib` 815 passando e 0 falhas (5 ignorados
+  pré-existentes) + 118 passando e 0 falhas nos 12 binários de integração sem `save_model` (`save_model` atingiu timeout de 600s em
+  `--release` após passar os 10 primeiros de 11 testes); clippy `--workspace --all-targets -- -D warnings` limpo;
+- jogo, `run-native-reactors.py annihilator` (27 verificações em 3 fases — `setup` 18/18, `capture-state` 5/5, `check-state` 4/4 —,
+  0 falhas, `backend_warnings: []`): multibloco de 134 dummies + núcleo com `pool = "Recycling"`, baú + funil alimentando pela
+  porta lateral `(-1, 0, -3)` (12 pedregulhos + 8 minérios de ferro) enquanto o slot 9 consome 3 minérios de ferro e o monitor
+  (slot 8) troca de `12` para `11`; lado sem porta `(2, 0, 0)` recusa água do barril (`1000` mB ficam no barril, monitor `"0"`) e
+  porta frontal `(0, 0, -4)` drena `1000` mB para o monitor (`"1000"`); 6 lingotes de urânio no slot 9 irradiam `2.0 RAD/s` na
+  chaminé `(0, 9, 3)` com `0.0 RAD/s` no núcleo, e `sas3` pela porta `(1, 0, -3)` irradia `5020.6 RAD/s` no núcleo; após salvar no
+  meio de 4 minérios de ouro em `REQUEST` com `lava` no tanque e 20 granitos destruídos (`capture-state`) e reabrir (`check-state`),
+  tanque, monitor e fila continuam sem perda nem duplicação (`gold_ore` termina em `"4"`);
+- cortes de save no modo estrito (`HORIZON_NO_EAGER_SAVE=1`): `annihilator-state` 7/7 (`none`, `kill`, `kv_committed`, `save_begin`,
+  `chunks_written`, `entities_written`, `players_saved`: 10 pedregulhos destruídos + 16 soltos de um baú trancado, somando sempre
+  26 entre `monitor + chest + hopper + input` nos dois reabres, com consulta fresca a `Pools` ao alternar o slot 8) e
+  `annihilator-break` 7/7 (`none`, `kill`, `kv_committed`, `save_begin`, `live_chunk:8,0`, `chunks_written`, `entities_written`:
+  quebrar o aniquilador com 6 terras + 1 identificador contra o controle de baú vanilla, igual item a item nos dois reabres e
+  armazenamento limpo);
+- mutantes: 43 escolhidos à mão (`mutate-annihilator.py`), 43 mortos (os 3 últimos mortos em `898235b3` reforçando `prev_cmp` e
+  `fluid_server` para células não-porta).
