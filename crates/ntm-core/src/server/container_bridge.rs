@@ -132,6 +132,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::BrickFurnace(f) => Some(f),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
+        Data::Sawmill(s) => Some(s),
         _ => None,
     }
 }
@@ -176,6 +177,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_arc_welder", Layout::Native),
     ("ntm:machine_soldering_station", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
+    // Onda 2: the sawmill's three slots, open to hoppers (`crate::sawmill`).
+    ("ntm:machine_sawmill", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),

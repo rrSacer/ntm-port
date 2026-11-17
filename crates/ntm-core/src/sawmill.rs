@@ -6,8 +6,14 @@
 //! 100 heat or more the input saws, `heat / 10` progress a tick up to 600; over 300 heat for more than 300 ticks the
 //! blade breaks with a blast and flies out (the server publishes both, `Server::sawmill_finish`). The blade's hurt to
 //! living entities in its box (`turbofan` 100) needs the entity API: a nominal gap.
+//!
+//! Its three slots are its block entity's (`Layout::Native`), open to hoppers through every face as the Java's
+//! `getAccessibleSlotsFromSide` (`{0, 1, 2}` on all sides): [`allows`] is `isItemValidForSlot` and `canExtractItem`.
+//! The Java's extra ports (`MachineSawmill.getAllPorts` / `makeExtra`, the four cells beside the core of its 3x3x2)
+//! need the multiblock, which the port's one-block sawmill does not have yet: a nominal gap.
 use crate::machine::Logic;
-use crate::server::container_bridge::Stack;
+use crate::native::SlotAction;
+use crate::server::container_bridge::{Slots, Slotted, Stack};
 use crate::view::ViewModel;
 use serde::{Deserialize, Serialize};
 
@@ -29,9 +35,11 @@ pub struct Sawmill {
     pub has_blade: bool,
     #[serde(default)]
     pub progress: i32,
-    /// `slots`: 0 the input, 1 its output, 2 the sawdust.
-    #[serde(default = "empty_slots")]
-    pub slots: Vec<Option<Stack>>,
+    /// `slots`: 0 the input, 1 its output, 2 the sawdust. The block entity's are the truth, copied in before the
+    /// machines run (`Slotted`): the record no longer writes them, and an older record that did hands them to empty
+    /// block entity slots once (`migrates`).
+    #[serde(default = "empty_slots", skip_serializing)]
+    pub slots: Slots,
     /// Inputs sawn: the sawdust's dice, as the crafter's chance outputs (a fixed hash instead of the world's random).
     #[serde(default)]
     pub done: u64,
@@ -89,6 +97,18 @@ pub fn output(input: &str) -> Option<(String, u32)> {
     None
 }
 
+/// The Java's rules for hoppers (`TileEntitySawmill`, 222-229), for every face: `isItemValidForSlot`, the input slot
+/// only, with the three slots empty, a stack of one and an output for it; `canExtractItem`, the outputs only. The same
+/// for a hand (the Java has no menu, and its uses by hand are `Server::native_sawmill_use`'s).
+pub fn allows(slots: &[Option<Stack>], slot: usize, item: &Stack, action: SlotAction) -> bool {
+    match action {
+        SlotAction::Insert => {
+            slot == 0 && slots.iter().all(Option::is_none) && item.count == 1 && output(&item.id).is_some()
+        }
+        SlotAction::Extract => slot > 0,
+    }
+}
+
 /// The planks the 1x1 recipe of a log gives (`minecraft:stripped_oak_wood` -> `minecraft:oak_planks`).
 fn planks_of(log: &str) -> Option<String> {
     let (ns, id) = log.split_once(':')?;
@@ -122,6 +142,15 @@ impl Sawmill {
     /// the blade, so it goes out through the server's post-phase publisher with both.
     pub fn fails_on_finish(&self) -> bool {
         self.has_blade && self.heat > OVERSPEED && self.overspeed.saturating_add(1) > BREAK_AFTER
+    }
+
+    /// Whether this tick's `finish` saws its input (`progress >= processingTime`, 73-88): the step that changes its
+    /// slots, which are the block entity's, so it goes out through the same publisher, committed with them.
+    pub fn saws_on_finish(&self) -> bool {
+        self.has_blade
+            && self.heat >= 100
+            && self.slot(0).is_some_and(|s| output(&s.id).is_some())
+            && self.progress + self.heat / 10 >= PROCESSING_TIME
     }
 
     /// The rest of `updateEntity` after `tryPullHeat`: sawing, the overspeed count and its warning, the blade lost
@@ -180,9 +209,27 @@ impl Logic for Sawmill {
     fn view(&self) -> ViewModel {
         ViewModel::new("Sawmill")
     }
-    /// The three slots, dropped when it is broken (`TileEntityMachineBase`).
+    /// The three slots, dropped when it is broken (`TileEntityMachineBase`): the engine spills them once the bridge
+    /// has seen them; these only before.
     fn contents(&self) -> Vec<(String, u32)> {
         self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect()
+    }
+}
+
+impl Slotted for Sawmill {
+    fn slots_mut(&mut self) -> &mut Slots {
+        &mut self.slots
+    }
+    /// No menu (the Java has none).
+    fn screen_data(&self) -> Vec<i32> {
+        Vec::new()
+    }
+    /// Always its three slots, whatever the block entity had (one from before its container has none).
+    fn sync_in(&mut self) {
+        self.slots.resize(3, None);
+    }
+    fn migrates(&self) -> bool {
+        self.slots.iter().any(Option::is_some)
     }
 }
 
@@ -208,7 +255,45 @@ mod tests {
         s.slots[0] = Some(Stack::new("minecraft:oak_log", 1));
         let back: Sawmill = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
         assert_eq!((back.heat, back.overspeed, back.warn_cooldown), (0, 0, 0), "heat, overspeed and the warning are not saved");
-        assert_eq!(back.slots, s.slots);
+        assert_eq!(back.slots, empty_slots(), "the slots are the block entity's");
+        assert!(!back.migrates());
+        // A record from before the container wrote them: they go to the empty block entity once.
+        let old: Sawmill = serde_json::from_str(r#"{"slots":[{"id":"minecraft:oak_log","count":1},null,null]}"#).unwrap();
+        assert!(old.migrates() && old.slot(0) == Some(&Stack::new("minecraft:oak_log", 1)));
+        let mut none = Sawmill { slots: Vec::new(), ..Default::default() };
+        none.sync_in();
+        assert_eq!(none.slots, empty_slots(), "a block entity without slots gives it its three");
+    }
+
+    /// `isItemValidForSlot` and `canExtractItem` (222-229): one input of one item with an output into an empty
+    /// sawmill; the outputs out; through any face (`getAccessibleSlotsFromSide`).
+    #[test]
+    fn hoppers_follow_the_javas_slot_rules() {
+        let log = Stack::new("minecraft:oak_log", 1);
+        let empty = empty_slots();
+        assert!(allows(&empty, 0, &log, SlotAction::Insert));
+        assert!(!allows(&empty, 0, &Stack::new("minecraft:oak_log", 2), SlotAction::Insert), "a stack of one only");
+        assert!(!allows(&empty, 0, &Stack::new("minecraft:stone", 1), SlotAction::Insert), "no output");
+        assert!(!allows(&empty, 1, &log, SlotAction::Insert) && !allows(&empty, 2, &log, SlotAction::Insert));
+        for busy in 0..3 {
+            let mut slots = empty_slots();
+            slots[busy] = Some(Stack::new(SAWDUST, 1));
+            assert!(!allows(&slots, 0, &log, SlotAction::Insert), "slot {busy} taken");
+        }
+        assert!(!allows(&empty, 0, &log, SlotAction::Extract));
+        assert!(allows(&empty, 1, &log, SlotAction::Extract) && allows(&empty, 2, &log, SlotAction::Extract));
+        let c = crate::native::container(BLOCK).unwrap();
+        assert_eq!((c.slots, c.inputs, c.outputs, c.menu), (3, vec![0], vec![1, 2], None));
+        assert!(c.faces.iter().all(|f| f == &vec![0, 1, 2]));
+        let rules = crate::native::slot_filters(BLOCK);
+        assert_eq!(rules.iter().map(|r| r.output).collect::<Vec<_>>(), vec![false, true, true]);
+        assert!(rules.iter().all(|r| r.accept.is_none() && r.max.is_none()), "the rule is `allows`, not a list");
+        use crate::native::{SlotOrigin::*, slot_allows};
+        for origin in [Manual, Automation] {
+            assert!(slot_allows(BLOCK, &empty, 0, &log, SlotAction::Insert, origin));
+            assert!(!slot_allows(BLOCK, &empty, 0, &Stack::new("minecraft:oak_log", 2), SlotAction::Insert, origin));
+            assert!(!slot_allows(BLOCK, &empty, 0, &log, SlotAction::Extract, origin));
+        }
     }
 
     #[test]

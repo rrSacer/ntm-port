@@ -2,6 +2,7 @@
 //! getDrops, the Java's damage 1).
 use super::*;
 use crate::sawmill::Sawmill;
+use crate::server::container_bridge::Stack;
 
 const SAWMILL: &str = "ntm:machine_sawmill[facing=north,honey_level=0]";
 
@@ -163,9 +164,12 @@ fn inventory(g: &Game) -> Vec<Option<crate::server::container_bridge::Stack>> {
 fn stack(id: &str, n: u32) -> Option<crate::server::container_bridge::Stack> {
     Some(crate::server::container_bridge::Stack::new(id, n))
 }
+/// The block entity's slots, as a hopper or a player left them: the truth the sawmill reads.
 fn set_slots(g: &mut Game, p: Pos, slots: Vec<Option<crate::server::container_bridge::Stack>>) {
-    let Data::Sawmill(s) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), p)).unwrap().data else { panic!() };
-    s.slots = slots;
+    g.world.borrow_mut().engine.get_mut(&(OW.to_string(), p)).expect("its block entity").0 = slots;
+}
+fn engine_slots(g: &Game, p: Pos) -> Vec<Option<crate::server::container_bridge::Stack>> {
+    g.world.borrow().engine[&(OW.to_string(), p)].0.clone()
 }
 
 #[test]
@@ -209,6 +213,7 @@ fn the_outputs_go_to_the_player_and_what_does_not_fit_is_thrown_once() {
     assert_eq!(g.world.borrow().dropped.len(), 1, "only what did not fit, once");
     let s = sawmill(&mut g, p);
     assert!(s.slot(1).is_none() && s.slot(2).is_none());
+    assert_eq!(engine_slots(&g, p), vec![None; 3], "its block entity too");
 }
 
 /// `storeItemStack` piles only onto a stack whose whole NBT is the given one's: planks with a name of their own (a
@@ -237,10 +242,61 @@ fn one_of_the_stack_in_hand_goes_into_an_empty_input_only_when_it_has_an_output(
     g.run(2);
     hands(&mut g, vec![stack("minecraft:stone", 3), None]);
     assert!(!g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"), "stone has no output");
-    hands(&mut g, vec![stack("minecraft:oak_log", 3), None]);
+    // A log with data of its own: one of it goes in whole, as the Java's `copy()` (the host copies the held stack).
+    let named = Some(crate::server::container_bridge::Stack { custom: Some("{name:1b}".into()), ..Stack::new("minecraft:oak_log", 3) });
+    hands(&mut g, vec![named.clone(), None]);
     assert!(g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"));
-    assert_eq!(sawmill(&mut g, p).slot(0), stack("minecraft:oak_log", 1).as_ref());
-    assert_eq!(inventory(&g)[0], stack("minecraft:oak_log", 2));
+    let one = named.clone().map(|s| Stack { count: 1, ..s });
+    assert_eq!(sawmill(&mut g, p).slot(0), one.as_ref());
+    assert_eq!(engine_slots(&g, p), vec![one, None, None]);
+    assert_eq!(g.world.borrow().copied, vec![format!("{:?}", named.clone().unwrap())], "one copy of the stack in hand");
+    assert_eq!(inventory(&g)[0], named.map(|s| Stack { count: 2, ..s }));
     assert!(!g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"), "the input is taken");
-    assert_eq!(inventory(&g)[0], stack("minecraft:oak_log", 2));
+    assert_eq!(inventory(&g)[0].as_ref().map(|s| s.count), Some(2));
+}
+
+/// The uses read the block entity's slots, which a hopper may have changed since the machines ran: a log a hopper
+/// put in is not doubled by a hand, and outputs a hopper took are not given again.
+#[test]
+fn a_use_reads_the_block_entity_a_hopper_changed() {
+    let mut g = game();
+    let p = [0, 70, 0];
+    g.place(p, SAWMILL);
+    g.run(2);
+    set_slots(&mut g, p, vec![stack("minecraft:oak_log", 1), None, None]);
+    assert!(sawmill(&mut g, p).slot(0).is_none(), "the model has not seen it yet");
+    hands(&mut g, vec![stack("minecraft:oak_log", 3), None]);
+    assert!(!g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"), "its input is taken");
+    assert_eq!(inventory(&g)[0], stack("minecraft:oak_log", 3));
+    // Outputs the model still has, taken by a hopper: nothing to give, the log in hand goes into the free input.
+    set_slots(&mut g, p, vec![None, stack("minecraft:oak_planks", 6), None]);
+    g.run(1);
+    set_slots(&mut g, p, vec![None; 3]);
+    assert!(sawmill(&mut g, p).slot(1).is_some());
+    assert!(g.server.native_sawmill_use(&mut g.sh, OW, p, p, "p1"));
+    assert_eq!(inventory(&g), vec![stack("minecraft:oak_log", 2), None]);
+    assert_eq!(engine_slots(&g, p), vec![stack("minecraft:oak_log", 1), None, None]);
+    assert!(g.world.borrow().dropped.is_empty());
+}
+
+/// A hopper's log saws as a hand's: the block entity's slots are the truth, the outputs written back to them.
+#[test]
+fn a_log_in_the_block_entity_saws_into_its_slots() {
+    let mut g = game();
+    let (core, source) = ([0, 71, 0], [0, 70, 0]);
+    g.place(source, "ntm:heater_firebox[facing=north,honey_level=0]");
+    g.place(core, SAWMILL);
+    g.run(2);
+    assert_eq!(engine_slots(&g, core), vec![None; 3]);
+    set_slots(&mut g, core, vec![stack("minecraft:oak_log", 1), None, None]);
+    for _ in 0..40 {
+        let Data::Firebox(f) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), source)).unwrap().data else { panic!() };
+        f.heat = 2000;
+        g.run(1);
+    }
+    let out = engine_slots(&g, core);
+    assert_eq!((out[0].clone(), out[1].clone()), (None, stack("minecraft:oak_planks", 6)));
+    // The record keeps no slots: they are the block entity's alone.
+    let json = g.world.borrow().saved[&(OW.to_string(), core)].clone();
+    assert!(!json.contains("slots") && !json.contains("oak"), "{json}");
 }
