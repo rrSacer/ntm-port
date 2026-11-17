@@ -1,8 +1,11 @@
-//! D3 of Onda 2: the sawmill's item without its blade (`MachineSawmill.onBlockPlacedBy` / `getDrops`, the Java's
-//! damage 1), across placing and breaking it. The host reads and writes the item (`minecraft:custom_data`); the model
-//! keeps `has_blade`.
+//! The sawmill's server side (Onda 2): its tick after the heat (`sawmill_finish`, the blade's failure through the
+//! ledger), its uses by hand (`native_sawmill_use`), and its item without the blade across placing and breaking it
+//! (D3: `MachineSawmill.onBlockPlacedBy` / `getDrops`, the Java's damage 1; the host reads and writes the item's
+//! `minecraft:custom_data`, the model keeps `has_blade`).
 use super::*;
 use crate::machine::{Data, MachineEffect};
+use crate::sawmill::BLADE;
+use container_bridge::Stack;
 
 impl Server {
     /// `finish` of every loaded sawmill (`TileEntitySawmill.updateEntity` after `tryPullHeat`, which `heat_tick` did).
@@ -70,5 +73,64 @@ impl Server {
     pub fn native_sawmills_without_blade(&self) -> Vec<Key> {
         let models = self.ready.world.machines.iter().filter(|(_, m)| matches!(&m.data, Data::Sawmill(s) if !s.has_blade));
         self.ready.sawmills_without_blade.iter().cloned().chain(models.map(|(k, _)| k.clone())).collect()
+    }
+
+    /// `MachineSawmill.onBlockActivated` without sneaking (83-129), at its core: in the Java's order, a blade in hand
+    /// back into a sawmill without one; else its outputs (slots 1 and 2) to the player, what does not fit thrown from
+    /// the eyes; else one of the stack in hand into an empty input, when it has an output. The model and the player's
+    /// stacks change in one transfer: a refusal moves nothing. False when none applies (the click goes on, as the
+    /// Java's `return false`).
+    ///
+    /// Two deviations, both to keep every item once: what is thrown is only what did not fit (the Java throws a copy
+    /// of the whole stack when part of it fit, a duplication); and the input keeps the stack's `custom_data` only (the
+    /// Java copies its whole NBT).
+    pub fn native_sawmill_use(&mut self, host: &mut impl ServerHost, dim: &str, at: Pos, core: Pos, player: &str) -> bool {
+        let key = (dim.to_string(), core);
+        let Some(m) = self.ready.world.machines.get(&key).cloned() else { return false };
+        let Data::Sawmill(s) = &m.data else { return false };
+        if self.ready.broken.contains_key(&key) || !self.model_current(&key, &m) {
+            return true;
+        }
+        if !host.get_block(dim, core).is_some_and(|b| blockstate::id_of(&b) == m.block) {
+            return false;
+        }
+        let Some(hand) = host.player_slots(player) else { return false };
+        let held = hand.held().cloned();
+        let from = hand.hand;
+        let mut machine = m.clone();
+        let Data::Sawmill(next) = &mut machine.data else { unreachable!() };
+        let mut edits = Vec::new();
+        let mut drops = Vec::new();
+        let repair = !s.has_blade && held.as_ref().is_some_and(|h| h.stack.id == BLADE);
+        if repair {
+            next.has_blade = true;
+            edits.extend(from.and_then(|f| hand.take(f, 1)));
+        } else if s.slot(1).is_some() || s.slot(2).is_some() {
+            let out: Vec<Stack> = [1, 2].iter().filter_map(|&i| next.slots[i].take()).collect();
+            let (given, left) = hand.give(&out, 64);
+            edits = given;
+            drops = left.into_iter().map(|s| (s, TransferDrop::Thrown)).collect();
+        } else if let Some(h) = held.as_ref().filter(|h| s.slot(0).is_none() && crate::sawmill::output(&h.stack.id).is_some()) {
+            next.slots[0] = Some(Stack { count: 1, ..h.stack.clone() });
+            edits.extend(from.and_then(|f| hand.take(f, 1)));
+        } else {
+            return false;
+        }
+        let expected = host.machine_slots(dim, core).unwrap_or_default();
+        let (desired, data) = Self::machine_output(&mut machine, &expected);
+        let json = serde_json::to_string(&machine).expect("machine serialization");
+        let commit = MachineCommit { cells: Vec::new(), guard: CellGuard::machine(&key, &m), expected_saved: self.ready.native_saved.contains_key(&key), dim: dim.into(), pos: core, expected, desired, data, json };
+        let transfer = PlayerTransfer { player: player.into(), edits, drops, copies: Vec::new() };
+        if !host.commit_player_transfer(&transfer, std::slice::from_ref(&commit)) {
+            return true;
+        }
+        self.ready.world.machines.insert(key.clone(), machine);
+        self.ready.bridge.last.insert(key.clone(), commit.desired);
+        self.ready.bridge.data.insert(key.clone(), commit.data);
+        self.ready.native_saved.insert(key, commit.json);
+        if repair {
+            host.show(dim, &crate::blast::visuals::Show::Sound { id: "ntm:item.upgradeplug", source: "block", at: at.map(|v| f64::from(v) + 0.5), volume: 1.5, pitch: 0.75 });
+        }
+        true
     }
 }

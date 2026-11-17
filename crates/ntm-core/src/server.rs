@@ -240,6 +240,36 @@ impl PlayerSlots {
         let desired = (left > 0).then(|| container_bridge::Stack { count: left, ..held.stack.clone() });
         Some(SlotEdit { slot, expected: Some(held.encoded.clone()), desired })
     }
+    /// `InventoryPlayer.addItemStackToInventory` (1.7.10) of each stack in turn: into a stack of the same item, damage
+    /// and data that is not full (`storeItemStack`), else the first empty slot (`getFirstEmptyStack`), the hotbar
+    /// first, `max` to a stack. The edits, one per slot touched, and what did not fit.
+    pub fn give(&self, stacks: &[container_bridge::Stack], max: u32) -> (Vec<SlotEdit>, Vec<container_bridge::Stack>) {
+        let mut now: Vec<Option<container_bridge::Stack>> = self.inventory.iter().map(|s| s.as_ref().map(|h| h.stack.clone())).collect();
+        let mut touched = BTreeSet::new();
+        let mut left = Vec::new();
+        for stack in stacks {
+            let mut n = stack.count;
+            while n > 0 {
+                let same = now.iter().position(|s| {
+                    s.as_ref().is_some_and(|s| s.id == stack.id && s.damage == stack.damage && s.custom == stack.custom && s.count < max)
+                });
+                let Some(i) = same.or_else(|| now.iter().position(Option::is_none)) else { break };
+                let into = now[i].get_or_insert_with(|| container_bridge::Stack { count: 0, ..stack.clone() });
+                let put = n.min(max - into.count);
+                into.count += put;
+                n -= put;
+                touched.insert(i);
+            }
+            if n > 0 {
+                left.push(container_bridge::Stack { count: n, ..stack.clone() });
+            }
+        }
+        let edits = touched
+            .into_iter()
+            .map(|i| SlotEdit { slot: PlayerSlot::Inventory(i), expected: self.inventory[i].as_ref().map(|h| h.encoded.clone()), desired: now[i].clone() })
+            .collect();
+        (edits, left)
+    }
 }
 
 /// One stack of a transfer's player side: as it was read (`expected`, the host's lossless SNBT; None for an empty

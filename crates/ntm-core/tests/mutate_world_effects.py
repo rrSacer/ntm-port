@@ -102,6 +102,20 @@ MUTANTS = {
          '            DELAYED.with(|pending| pending.borrow_mut().push(batch));',
          'a_save_right_after_the_sawmill_failure_keeps_the_blast_and_the_blade_with_the_lost_blade'),
     ],
+    'hand': [
+        ('RepairWithoutDebit', SAWMILL,
+         '            next.has_blade = true;\n            edits.extend(from.and_then(|f| hand.take(f, 1)));',
+         '            next.has_blade = true;',
+         'a_blade_in_hand_goes_back_into_a_sawmill_without_one_in_one_transfer'),
+        ('CollectThrowsTheWholeStack', SAWMILL,
+         '            drops = left.into_iter().map(|s| (s, TransferDrop::Thrown)).collect();',
+         '            drops = out.iter().cloned().chain(left).map(|s| (s, TransferDrop::Thrown)).collect();',
+         'the_outputs_go_to_the_player_and_what_does_not_fit_is_thrown_once'),
+        ('InsertKeepsTheHand', SAWMILL,
+         '            next.slots[0] = Some(Stack { count: 1, ..h.stack.clone() });\n            edits.extend(from.and_then(|f| hand.take(f, 1)));',
+         '            next.slots[0] = Some(Stack { count: 1, ..h.stack.clone() });',
+         'one_of_the_stack_in_hand_goes_into_an_empty_input_only_when_it_has_an_output'),
+    ],
 }
 
 

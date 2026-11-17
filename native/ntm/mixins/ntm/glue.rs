@@ -250,6 +250,10 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     if server.native_rbmk_use(&mut host, &dim, pos, core, &player) {
         return true;
     }
+    // The sawmill by hand, not sneaking (MachineSawmill.onBlockActivated): its blade back, its outputs taken, an input.
+    if !sneaking && server.native_sawmill_use(&mut host, &dim, pos, core, &player) {
+        return true;
+    }
     let game = host.game;
     if let Some(held) = game.held().cloned() {
         if &*held.item == "ntm:mirror_tool" {
