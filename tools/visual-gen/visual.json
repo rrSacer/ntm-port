@@ -37857,8 +37857,37 @@
       }
     },
     "ntm:machine_tower_large": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineTowerLarge {12,0,4,4,4,4} offset 4, RenderLargeTower (no rotation); no GUI in HBM (ILookOverlay only)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -4,
+            0,
+            -4
+          ],
+          "max": [
+            4,
+            12,
+            4
+          ],
+          "offset": 4,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/tower_large.obj",
+        "obj_from": "models/machines/tower_large.obj",
+        "texture": "ntm:textures/models/machines/tower_large.png",
+        "texture_from": "textures/models/machines/tower_large.png",
+        "rotation": 0,
+        "radius": 13.5
+      }
     },
     "ntm:machine_deuterium_extractor": {
       "auto": false,

@@ -8,7 +8,7 @@ Máquinas do grupo C na tabela de registro (`crates/ntm-core/src/registry.rs`, `
 | 2 | `ntm:machine_compressor` | `MachineCompressor`, `TileEntityMachineCompressor`, `RenderCompressor` | Aguardando decisão do coordenador sobre política de pressão (`thread 9ff9ea27`) |
 | 3 | `ntm:machine_compressor_compact` | `MachineCompressorCompact`, `TileEntityMachineCompressorCompact`, `RenderCompressorCompact` | Aguardando a mesma decisão |
 | 4 | `ntm:machine_tower_small` | `MachineTowerSmall`, `TileEntityTowerSmall`, `RenderSmallTower` | Concluída |
-| 5 | `ntm:machine_tower_large` | `MachineTowerLarge`, `TileEntityTowerLarge`, `RenderLargeTower` | Pendente |
+| 5 | `ntm:machine_tower_large` | `MachineTowerLarge`, `TileEntityTowerLarge`, `RenderLargeTower` | Concluída |
 | 6 | `ntm:machine_deuterium_extractor` | `MachineDeuteriumExtractor`, `TileEntityDeuteriumExtractor` | Pendente |
 
 ---
@@ -81,3 +81,38 @@ Máquinas do grupo C na tabela de registro (`crates/ntm-core/src/registry.rs`, `
 
 - **`ILookOverlay`:** `MachineTowerSmall.printHook` exibe enchimento dos tanques ao olhar no 1.7.10; no nativo a máquina segue sem GUI e sem overlay de bloco ao olhar (`Condenser::view()` interno).
 - **`COOLING_TOWER_PARTICLES`:** partículas puramente cosméticas em `TileEntityTowerSmall.updateEntity` quando `worldObj.isRemote && waterTimer > 0` não são emitidas no cliente nativo.
+---
+
+## 5. `ntm:machine_tower_large`
+
+### Contrato fonte
+
+- `MachineTowerLarge.java` (`{12, 0, 4, 4, 4, 4}`, `offset = 4`, 1 053 células `9×13×9`, sem GUI; só `ILookOverlay`).
+- `TileEntityTowerLarge.java` (estende `TileEntityCondenser`): condensação passiva sem energia elétrica, tanque de entrada `spentsteam` (`10 000 mB`) e saída `water` (`10 000 mB`), conversão 1:1 (`input.mb.min(output.free())`), e exatamente 12 portas horizontais externas em `TilePortShapes.bigTower` (`(-3,0,-4)`, `(0,0,-4)`, `(3,0,-4)` em `-Z`; `(4,0,-3)`, `(4,0,0)`, `(4,0,3)` em `+X`; `(-3,0,4)`, `(0,0,4)`, `(3,0,4)` em `+Z`; `(-4,0,-3)`, `(-4,0,0)`, `(-4,0,3)` em `-X`, `y = core.y`, sem conexão vertical nem nos demais proxies ou quinas).
+- `RenderLargeTower.java`: rotação fixa `0`, modelo `tower_large.obj` / `tower_large.png`, `getRenderBoundingBox` de `9×13×9` (`radius = 13.5`).
+
+### Implementação
+
+- Lógica em [`crates/ntm-core/src/steam.rs`](../crates/ntm-core/src/steam.rs): `TOWER_LARGE`, `TOWER_LARGE_CAP = 10_000`, `is_tower`, `tower_ports` (`bigTower`, 12 portas), `Steam::of(TOWER_LARGE)` (`Kind::Steam`, `Ports::None` em [`crates/ntm-core/src/registry.rs`](../crates/ntm-core/src/registry.rs)).
+- Portas direcionadas exclusivas de fluido reutilizando `registry::fluid_ports`, `container_bridge::fluid_proxy_cells` e `fluid_rebuild_step` (`fluid_server.rs`).
+- Modelo, multibloco (`9×13×9`, `offset = 4`) e artefatos em `tools/visual-gen/visual.json`, `content/` e `crates/ntm-core/data/machine_files.json`.
+- Testes em `steam::tests::tower_large_matches_java_caps_no_power_and_big_tower_ports` e [`crates/ntm-core/src/server/tests/steam_tests.rs`](../crates/ntm-core/src/server/tests/steam_tests.rs).
+
+### Provas
+
+- **Testes unitários e de integração (`ntm-core`):**
+  - `cargo test -p ntm-core --lib`: **741 passaram**, 0 falhas, 5 ignorados.
+  - `cargo test -p ntm-core --test energy_network_tests --test ledger_persistence`: **24 + 6 = 30 passaram**, 0 falhas.
+  - `cargo clippy --workspace --all-targets -- -D warnings`: limpo (0 avisos).
+- **Mutantes (`/mnt/ssd120/sacer/so/c/mutate_tower_large.py`):** **9/9 mutantes mortos** (`M1_tower_large_cap`..`M9_tower_large_powered_in_of`).
+- **Cliente nativo e pacote:**
+  - `horizon-client` release SHA-256: `6c3337f6a9de1b99977338463e06bda8b2f73b4fa515c92a3e32e2e91394d111`
+  - `dist/ntm.hmod` SHA-256: `8e2bbb5771b3f03866f6a60ebd58fc96e09ab9cb31e3852d7867f0a3def77159`
+- **Prova em jogo + corte de gravação estrito (`HORIZON_NO_EAGER_SAVE=1`, `/mnt/ssd120/sacer/so/c/run_tower_large_proof.py`):**
+  - Gameplay: **12/12 checks `ok: true`** (`1 053` células `9×13×9` colocadas, sem GUI no dummy de porta e no dummy superior, `steam_engine` alimentando `spentsteam` na porta central `-Z`, saída exata de `160 mB` de `water` nas portas fora de eixo e central `+X` `(4,0,-3)`, `+Z` `(-3,0,4)` e `-X` `(-4,0,0)`, dummy lateral não-porta permanece `('', 0)`, quina não-porta permanece `('', 0)`, face vertical sob porta `-Z` permanece `('', 0)`, bateria conectada por `red_cable` em dummy lateral e sob porta `-X` mantém `1 000 000 / 1 000 000 HE`, quebra em survival de um dummy limpa todas as `1 053` células).
+  - Corte de gravação (`HORIZON_NO_EAGER_SAVE=1`): **7/7 pontos `ok: true`** (`none`, `kill`, `kv_committed`, `save_begin`, `chunks_written`, `entities_written`, `world_saved`), `kv_items=0` em todos, `.mca` inalterados em `kill`/`kv_committed`/`save_begin` com 2 reaberturas revertendo para `('', 0)` água / `('steam', 16000)` e 2 reaberturas pós-escrita preservando `('water', 160)` / `('steam', 0)`.
+
+### Lacunas nominais
+
+- **`ILookOverlay`:** `MachineTowerLarge.printHook` exibe enchimento dos tanques ao olhar no 1.7.10; no nativo a máquina segue sem GUI e sem overlay de bloco ao olhar (`Condenser::view()` interno).
+- **`COOLING_TOWER_PARTICLES`:** partículas puramente cosméticas em `TileEntityTowerLarge.updateEntity` quando `worldObj.isRemote && waterTimer > 0` não são emitidas no cliente nativo.

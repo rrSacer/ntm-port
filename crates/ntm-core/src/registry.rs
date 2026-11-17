@@ -520,7 +520,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_tower_large",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

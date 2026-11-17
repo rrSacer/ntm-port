@@ -86,7 +86,7 @@ fn steam_machines_give_power_at_their_ports() {
 /// Saved inert, they load as what they are now.
 #[test]
 fn inert_steam_machines_load_as_their_kinds() {
-    for block in ["ntm:machine_steam_engine", "ntm:machine_industrial_turbine", "ntm:machine_chungus", "ntm:machine_condenser", "ntm:machine_condenser_powered", "ntm:machine_tower_small"] {
+    for block in ["ntm:machine_steam_engine", "ntm:machine_industrial_turbine", "ntm:machine_chungus", "ntm:machine_condenser", "ntm:machine_condenser_powered", "ntm:machine_tower_small", "ntm:machine_tower_large"] {
         let m = Machine { generation: 0, rev: 0, audio: Vec::new(), block: block.into(), facing: Some("north".into()), data: Data::Inert { name: block.into() } };
         assert_eq!(m.upgraded().kind(), Kind::Steam, "{block}");
     }
@@ -186,6 +186,126 @@ fn tower_small_condenses_via_aux_tower_ports_and_excludes_non_ports_and_power() 
     assert_eq!(b.power, 10_000, "cooling tower must not draw power");
 
     let spec = crate::registry::spec(crate::steam::TOWER_SMALL).unwrap();
+    assert_eq!(crate::registry::fluid_ports(spec, Some("north")), vec![Vec::<Pos>::new()]);
+    assert!(crate::registry::ports(spec, Some("north")).is_empty());
+
+    g.break_block(core);
+    g.run(2);
+    assert!(g.world.borrow().dropped.is_empty());
+}
+
+#[test]
+fn tower_large_condenses_via_all_12_big_tower_ports_and_excludes_non_ports_and_power() {
+    use crate::fluidbox::Mode;
+    use crate::machine::BatteryMode;
+
+    let mut g = game();
+    let core = [0, 70, 0];
+    g.place(core, "ntm:machine_tower_large[facing=north,honey_level=0]");
+
+    // Port 1 (0, 0, -4) facing -Z: spentsteam barrel -> duct -> tower.
+    let src_barrel = [0, 70, -6];
+    duct(&mut g, [0, 70, -5], "spentsteam");
+    g.place(src_barrel, "ntm:barrel_steel[facing=north,honey_level=0]");
+
+    // Remaining 11 ports: each gets a water barrel capped with 15_000/16_000 (1_000 mB free each).
+    let dst_ports: [([i32; 3], [i32; 3]); 11] = [
+        ([-3, 70, -5], [-3, 70, -6]),
+        ([3, 70, -5], [3, 70, -6]),
+        ([5, 70, -3], [6, 70, -3]),
+        ([5, 70, 0], [6, 70, 0]),
+        ([5, 70, 3], [6, 70, 3]),
+        ([-3, 70, 5], [-3, 70, 6]),
+        ([0, 70, 5], [0, 70, 6]),
+        ([3, 70, 5], [3, 70, 6]),
+        ([-5, 70, -3], [-6, 70, -3]),
+        ([-5, 70, 0], [-6, 70, 0]),
+        ([-5, 70, 3], [-6, 70, 3]),
+    ];
+    for (d, b) in dst_ports {
+        duct(&mut g, d, "water");
+        g.place(b, "ntm:barrel_steel[facing=north,honey_level=0]");
+    }
+
+    // Non-port side proxy [1, 70, -4] and corner proxy [4, 70, -4] -> must stay 0.
+    let bad_side_barrel = [1, 70, -6];
+    duct(&mut g, [1, 70, -5], "water");
+    g.place(bad_side_barrel, "ntm:barrel_steel[facing=north,honey_level=0]");
+
+    let bad_corner_barrel = [4, 70, -6];
+    duct(&mut g, [4, 70, -5], "spentsteam");
+    g.place(bad_corner_barrel, "ntm:barrel_steel[facing=north,honey_level=0]");
+
+    // Below -Z port ([0, 69, -4]): must NOT connect vertically.
+    let bad_below_barrel = [0, 68, -4];
+    duct(&mut g, [0, 69, -4], "water");
+    g.place(bad_below_barrel, "ntm:barrel_steel[facing=north,honey_level=0]");
+
+    // Energy cable touching non-port proxy [-4, 70, 1] must NOT drain battery.
+    let bat = [-7, 70, 1];
+    g.place([-5, 70, 1], "ntm:red_cable");
+    g.place([-6, 70, 1], "ntm:red_cable");
+    g.place(bat, "ntm:machine_battery[facing=north]");
+
+    g.run(2);
+    edit(&mut g, src_barrel, |d| {
+        let Data::FluidStore(f) = d else { panic!() };
+        f.tank.fill("spentsteam", 15_000);
+        f.mode = Mode::Output;
+    });
+    for (_, b) in dst_ports {
+        edit(&mut g, b, |d| {
+            let Data::FluidStore(f) = d else { panic!() };
+            f.tank.fill("water", 15_000);
+            f.mode = Mode::Input;
+        });
+    }
+    for b in [bad_side_barrel, bad_below_barrel] {
+        edit(&mut g, b, |d| {
+            let Data::FluidStore(f) = d else { panic!() };
+            f.tank.set_type("water");
+            f.mode = Mode::Input;
+        });
+    }
+    edit(&mut g, bad_corner_barrel, |d| {
+        let Data::FluidStore(f) = d else { panic!() };
+        f.tank.fill("spentsteam", 1_000);
+        f.mode = Mode::Output;
+    });
+    edit(&mut g, bat, |d| {
+        let Data::Battery(b) = d else { panic!() };
+        b.mode = BatteryMode::Output;
+        b.power = 10_000;
+    });
+
+    g.run(40);
+
+    let Data::FluidStore(src) = g.machine(src_barrel).data else { panic!() };
+    let Steam::Condenser(c) = steam(&mut g, core) else { panic!() };
+    assert_eq!(c.input.cap, 10_000);
+    assert_eq!(c.output.cap, 10_000);
+    assert_eq!(src.tank.mb, 0);
+    for (_, b) in dst_ports {
+        let Data::FluidStore(fs) = g.machine(b).data else { panic!() };
+        assert_eq!(fs.tank.mb, 16_000, "bigTower outward port barrel at {b:?} filled");
+    }
+    assert_eq!(c.input.mb, 0);
+    assert_eq!(c.output.mb, 4_000, "exact spentsteam -> water conservation (11*1000 + 4000 = 15000)");
+
+    for (label, b) in [
+        ("non-port side proxy", bad_side_barrel),
+        ("vertical face under port", bad_below_barrel),
+    ] {
+        let Data::FluidStore(fs) = g.machine(b).data else { panic!() };
+        assert_eq!(fs.tank.mb, 0, "{label} must not connect");
+    }
+    let Data::FluidStore(corner) = g.machine(bad_corner_barrel).data else { panic!() };
+    assert_eq!(corner.tank.mb, 1_000, "non-port corner proxy must not connect");
+
+    let Data::Battery(b) = g.machine(bat).data else { panic!() };
+    assert_eq!(b.power, 10_000, "large cooling tower must not draw power");
+
+    let spec = crate::registry::spec(crate::steam::TOWER_LARGE).unwrap();
     assert_eq!(crate::registry::fluid_ports(spec, Some("north")), vec![Vec::<Pos>::new()]);
     assert!(crate::registry::ports(spec, Some("north")).is_empty());
 
