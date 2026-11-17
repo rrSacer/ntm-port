@@ -134,6 +134,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Funnel(f) => Some(f),
         Data::Radiolysis(r) => Some(&mut **r),
         Data::Exposure(e) => Some(&mut **e),
+        Data::Fel(f) => Some(f),
         Data::Annihilator(a) => Some(&mut **a),
         Data::Cyclotron(c) => Some(&mut **c),
         Data::Furnace(f) => Some(f.slotted()),

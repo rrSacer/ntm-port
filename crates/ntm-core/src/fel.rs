@@ -81,6 +81,49 @@ impl Fel {
     }
 }
 
+impl crate::energy::EnergyNode for Fel {
+    fn role(&self) -> crate::energy::Role { crate::energy::Role::Consumer }
+    fn offer(&self) -> u64 { 0 }
+    fn demand(&self) -> u64 { MAX_POWER.saturating_sub(self.power) }
+    fn give(&mut self, amount: u64) { self.power = self.power.saturating_add(amount).min(MAX_POWER); }
+    fn take(&mut self, _: u64) {}
+}
+
+impl crate::machine::Logic for Fel {
+    // Beam simulation must be coupled with world effects by the server.
+    fn energy(&mut self) -> Option<&mut dyn crate::energy::EnergyNode> { Some(self) }
+    fn level(&self, max: u8) -> u8 { if self.on && self.mode != Wavelength::Null { max } else { 0 } }
+    fn view(&self) -> crate::view::ViewModel {
+        crate::view::ViewModel::new("Laser de elétrons livres")
+            .text(format!("{} / {} HE", self.power, MAX_POWER), crate::view::GREY)
+    }
+}
+
+impl crate::server::container_bridge::Slotted for Fel {
+    fn slots_mut(&mut self) -> &mut Slots { &mut self.slots }
+    fn screen_data(&self) -> Vec<i32> { vec![self.power as i32, MAX_POWER as i32, i32::from(self.on), self.mode as i32, self.distance, i32::from(self.missing_valid_silex)] }
+    fn button(&mut self, id: u32) -> bool {
+        if id == 0 { self.on = !self.on; }
+        false
+    }
+    fn save_state(&self) -> Vec<i32> { vec![self.power as i32, i32::from(self.on), self.mode as i32, self.distance, i32::from(self.missing_valid_silex)] }
+    fn load_state(&mut self, v: &[i32]) {
+        if let [power, on, mode, distance, missing, ..] = v {
+            self.power = (*power).clamp(0, MAX_POWER as i32) as u64;
+            self.on = *on != 0;
+            self.mode = match mode { 1 => Wavelength::Ir, 2 => Wavelength::Visible, 3 => Wavelength::Uv, 4 => Wavelength::Gamma, 5 => Wavelength::Drx, _ => Wavelength::Null };
+            self.distance = *distance;
+            self.missing_valid_silex = *missing != 0;
+        }
+    }
+}
+
+/// `TileEntityMachineBase` exposes no slots to automation; the menu has two plain slots.
+pub fn allows(slot: usize, manual: bool) -> bool { slot < 2 && manual }
+pub fn container() -> crate::native::Container {
+    crate::native::Container { slots: 2, faces: std::array::from_fn(|_| Vec::new()), inputs: Vec::new(), outputs: Vec::new(), menu: Some("minecraft:generic_9x3") }
+}
+
 /// What Java observes in each beam cell. A SILEX refers to the core one
 /// block beyond the struck part; an absent core falls through without stopping.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -220,6 +263,28 @@ mod tests {
         }, || false);
         assert_eq!(effects, vec![BeamEffect::BreakSilex { at: 3 }, BeamEffect::SetSilex { at: 5, mode: Wavelength::Uv }, BeamEffect::BreakSilex { at: 6 }, BeamEffect::BreakSilex { at: 9 }]);
         assert!(!f.missing_valid_silex);
+    }
+
+
+    #[test]
+    fn menu_button_energy_and_saved_state_are_roundtripped() {
+        use crate::energy::EnergyNode;
+        use crate::server::container_bridge::Slotted;
+        let mut f = Fel::default();
+        f.give(MAX_POWER + 1);
+        assert_eq!(f.power, MAX_POWER);
+        assert_eq!(f.demand(), 0);
+        f.button(0);
+        f.mode = Wavelength::Gamma;
+        f.distance = 8;
+        f.missing_valid_silex = false;
+        let state = f.save_state();
+        let mut loaded = Fel::default();
+        loaded.load_state(&state);
+        assert_eq!(loaded, f);
+        assert!(allows(0, true) && allows(1, true));
+        assert!(!allows(0, false) && !allows(2, true));
+        assert!(container().faces.iter().all(Vec::is_empty));
     }
 
 }
