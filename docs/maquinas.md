@@ -946,7 +946,7 @@ do núcleo (`server/oil_server.rs`, `heat_tick`).
 
 **Desvios:**
 - a explosão da caldeira pequena com a saída cheia (ela só para);
-- a pressão que o hidrogênio do hidrotratador (1) e o óleo do destilador (2) pedem (nada no port comprime fluido ainda);
+- a pressão que o hidrogênio do hidrotratador (1) e o óleo do destilador (2) pedem: **resolvido** pelos compressores (`docs/onda-2-grupo-c.md`); as duas máquinas aceitam a pressão do Java e também 0 PU (desvio documentado);
 - o calor ambiente do inverno nuclear;
 - os slots de recipientes dos processadores.
 

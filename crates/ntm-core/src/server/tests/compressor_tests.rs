@@ -250,3 +250,38 @@ fn broken_it_drops_nothing_by_itself_and_the_screen_buttons_set_the_compression(
     g.run(2);
     assert!(g.world.borrow().dropped.is_empty());
 }
+
+/// The other direction of the mismatch: a plain 0 PU barrel of air does not fill a compressor whose
+/// input is at 1 PU (`getDemand` and `transferFluid` compare `tank.getPressure()`).
+#[test]
+fn a_zero_pressure_barrel_does_not_fill_a_pressurised_input() {
+    let mut g = game();
+    let a = [0, 70, 0];
+    g.place(a, "ntm:machine_compressor[facing=north,honey_level=0]");
+    let s = [0, 70, 3];
+    g.place([0, 70, 2], "ntm:fluid_duct_neo");
+    g.place(s, "ntm:barrel_steel[facing=north,honey_level=0]");
+    g.run(2);
+    g.type_duct([0, 70, 2], "air");
+    edit(&mut g, s, |d| {
+        let Data::FluidStore(f) = d else { panic!() };
+        f.tank.fill("air", 16_000);
+        f.mode = Mode::Output;
+    });
+    edit(&mut g, a, |d| {
+        let Data::Compressor(c) = d else { panic!() };
+        c.input.set_type("air");
+    });
+    g.run(60);
+    assert_eq!(comp(&mut g, a).input.mb, 16_000, "at 0 PU the barrel fills the input");
+    // Now the same machine at 1 PU (the button): emptied, and the barrel's 0 PU air stays out.
+    press(&mut g, a, 1);
+    edit(&mut g, s, |d| {
+        let Data::FluidStore(f) = d else { panic!() };
+        f.tank.mb = 16_000;
+    });
+    g.run(60);
+    let c = comp(&mut g, a);
+    assert_eq!((c.input.pressure, c.input.mb), (1, 0), "a 1 PU input takes nothing from a 0 PU barrel");
+    assert_eq!(barrel(&mut g, s).mb, 16_000);
+}

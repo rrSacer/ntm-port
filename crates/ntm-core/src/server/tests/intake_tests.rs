@@ -118,3 +118,63 @@ fn inert_intake_upgrades_and_drops_nothing_when_broken() {
     g.run(22);
     assert!(g.world.borrow().dropped.is_empty());
 }
+
+/// Every one of the 8 port faces (4 cells, 2 horizontal faces each; `TilePortShapes.solderer`)
+/// feeds energy: a battery put outside that face powers the intake, and no other cell does.
+#[test]
+fn intake_takes_energy_through_each_of_its_eight_port_faces() {
+    let core = [0, 70, 0];
+    let ports = crate::intake::Intake::port_cells(core, Some("north"));
+    let faces: Vec<(Pos, Pos)> = ports.iter().flat_map(|(c, ds)| ds.iter().map(move |d| (*c, *d))).collect();
+    assert_eq!(faces.len(), 8);
+    for (cell, d) in &faces {
+        let outside = [cell[0] + d[0], cell[1] + d[1], cell[2] + d[2]];
+        let mut g = game();
+        g.place(core, "ntm:machine_intake[facing=north,honey_level=0]");
+        g.place(outside, "ntm:machine_battery[facing=north]");
+        g.run(2);
+        {
+            let r = g.ready();
+            let Data::Battery(b) = &mut r.world.machines.get_mut(&(OW.into(), outside)).unwrap().data else { panic!() };
+            b.mode = BatteryMode::Output;
+            b.power = 10_000;
+        }
+        g.run(6);
+        let i = intake(&mut g, core);
+        assert!(i.power > 0, "face {d:?} of {cell:?} powers the intake: {i:?}");
+    }
+}
+
+/// The cells next to the intake that are not outside a port face (above, below, and the inner sides of
+/// the 2x2) give it nothing.
+#[test]
+fn intake_takes_no_energy_where_it_has_no_port() {
+    let core = [0, 70, 0];
+    let ports = crate::intake::Intake::port_cells(core, Some("north"));
+    let open: Vec<Pos> = ports.iter().flat_map(|(c, ds)| ds.iter().map(move |d| [c[0] + d[0], c[1] + d[1], c[2] + d[2]])).collect();
+    let cells: Vec<Pos> = ports.iter().map(|(c, _)| *c).collect();
+    let mut shut = Vec::new();
+    for c in &cells {
+        for d in crate::energy::DIRS {
+            let n = [c[0] + d[0], c[1] + d[1], c[2] + d[2]];
+            if !cells.contains(&n) && !open.contains(&n) {
+                shut.push(n);
+            }
+        }
+    }
+    assert!(!shut.is_empty());
+    for outside in shut {
+        let mut g = game();
+        g.place(core, "ntm:machine_intake[facing=north,honey_level=0]");
+        g.place(outside, "ntm:machine_battery[facing=north]");
+        g.run(2);
+        {
+            let r = g.ready();
+            let Data::Battery(b) = &mut r.world.machines.get_mut(&(OW.into(), outside)).unwrap().data else { panic!() };
+            b.mode = BatteryMode::Output;
+            b.power = 10_000;
+        }
+        g.run(6);
+        assert_eq!(intake(&mut g, core).power, 0, "nothing at {outside:?}");
+    }
+}

@@ -596,7 +596,7 @@ impl Pile {
         Some(match block {
             CORE => Self::Core(None),
             "ntm:pile_device__loader" => Self::Loader(Loader::default()),
-            "ntm:pile_device__vent" => Self::Vent(Tank::typed("air", 4000)),
+            "ntm:pile_device__vent" => Self::Vent(Tank::typed("air", 4000).with_pressure(VENT_PRESSURE)),
             "ntm:pile_device__control" => Self::Control(Control::default()),
             b if b.starts_with("ntm:pile_block__") => Self::Member(None),
             _ => return None,
@@ -618,7 +618,26 @@ impl Logic for Pile {
         ViewModel::new("Chicago Pile MK2")
     }
 }
+/// `TileEntityPileVent`'s `compair = new FluidTank(Fluids.AIR, 4_000).withPressure(1)` (`:28`): the
+/// ventilation takes compressed air, 1 PU.
+pub const VENT_PRESSURE: u8 = 1;
+
+/// The ventilation takes air at 1 PU (the NTM) and also at 0 PU: a divergence kept so that worlds and
+/// proofs that feed it from a plain barrel keep working (the same as the hydrotreater's and the
+/// vacuum distiller's, `docs/onda-2-grupo-c.md`). Any other pressure is refused.
+fn vent_takes(pressure: u8) -> bool {
+    pressure == 0 || pressure == VENT_PRESSURE
+}
+
 impl FluidNode for Pile {
+    fn fluid_demand_at(&self, f: &str, pressure: u8) -> u64 {
+        if vent_takes(pressure) { self.fluid_demand(f) } else { 0 }
+    }
+    fn fluid_give_at(&mut self, f: &str, pressure: u8, n: u64) {
+        if vent_takes(pressure) {
+            self.fluid_give(f, n);
+        }
+    }
     fn fluid_types(&self) -> Vec<String> {
         if matches!(self, Self::Vent(_)) {
             vec!["air".into()]
@@ -945,5 +964,32 @@ mod tests {
         v.air = 4_000_000_000;
         let loaded: Channel = serde_json::from_str(&serde_json::to_string(&v).unwrap()).unwrap();
         assert_eq!(loaded.air, 1000);
+    }
+    /// `TileEntityPileVent.java:28`: the ventilation's tank is at 1 PU; it takes air at 1 PU and at 0 PU, nothing else.
+    #[test]
+    fn the_vent_takes_air_at_one_pu_and_at_zero_but_no_other_pressure() {
+        let mut v = Pile::of("ntm:pile_device__vent").unwrap();
+        let Pile::Vent(t) = &v else { panic!() };
+        assert_eq!((t.fluid.as_str(), t.cap, t.pressure), ("air", 4_000, VENT_PRESSURE));
+        for (p, takes) in [(0u8, true), (1, true), (2, false), (3, false), (5, false)] {
+            assert_eq!(v.fluid_demand_at("air", p) > 0, takes, "demand @{p}");
+        }
+        assert_eq!(v.fluid_demand_at("water", 1), 0);
+        v.fluid_give_at("air", 2, 500);
+        v.fluid_give_at("water", 1, 500);
+        assert!(matches!(&v, Pile::Vent(t) if t.mb == 0));
+        v.fluid_give_at("air", 1, 700);
+        v.fluid_give_at("air", 0, 300);
+        v.fluid_give_at("air", 5, 900);
+        assert!(matches!(&v, Pile::Vent(t) if t.mb == 1_000));
+        assert_eq!(v.fluid_offer_at("air", 1), 0, "the vent never sends");
+    }
+
+    /// A vent saved before pressure has its tank at 0: it opens and takes the same air.
+    #[test]
+    fn an_old_vent_without_a_pressure_still_takes_air() {
+        let old: Pile = serde_json::from_str(r#"{"Vent":{"fluid":"air","mb":10,"cap":4000}}"#).unwrap();
+        assert!(matches!(&old, Pile::Vent(t) if t.pressure == 0 && t.mb == 10));
+        assert!(old.fluid_demand_at("air", 1) > 0 && old.fluid_demand_at("air", 0) > 0);
     }
 }
