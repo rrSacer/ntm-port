@@ -2,9 +2,43 @@
 
 ## Integração nativa retomada em 02/11/2026
 
-As cinco máquinas agora têm simulação nativa de calor, vapor e HE, com vínculo pela ferramenta `ntm:mirror_tool`. A variante creative continua exigindo calor. O estado de engrenagem, excesso de velocidade e alvos é persistido nos block entities. O K3 e esta frente foram rebaseados no Horizon oficial `d928d1cd6`, pin integrado `3eb781ab5`, e passaram na aceitação nativa. A falha da engrenagem é simulada; o aviso sonoro, a explosão de overspeed (inclusive seu dano a entidades) e o projétil de engrenagem ainda não são emitidos.
+As cinco máquinas agora têm simulação nativa de calor, vapor e HE, com vínculo pela ferramenta `ntm:mirror_tool`. A variante creative continua exigindo calor. O estado de engrenagem, excesso de velocidade e alvos é persistido nos block entities. O K3 e esta frente foram rebaseados no Horizon oficial `d928d1cd6`, pin integrado `3eb781ab5`, e passaram na aceitação nativa. A falha da engrenagem é simulada; desde a fatia 5 de D1+D2 (17/11/2026, abaixo) a explosão de overspeed é emitida. O projétil de engrenagem ainda não é.
 
-**Defeito nominal (perda em relação ao Java):** na falha, o port faz `has_cog = false` e a engrenagem some. No Java ela vira o `EntityCog`, e `EntityCog.interactFirst` devolve um `gear_large` com o metadado da variante ao jogador que a pega. A explosão de força 5, sem fogo e sem quebra, entra pelas decisões D1+D2 do artifact `onda2-efeitos-mundo` (o Stirling é o piloto). A devolução da engrenagem depende da API de entidades e fica para a Onda 4 do `roadmap-100`. Não é corrigida agora.
+**Defeito nominal (perda em relação ao Java):** na falha, o port faz `has_cog = false` e a engrenagem some. No Java ela vira o `EntityCog`, e `EntityCog.interactFirst` devolve um `gear_large` com o metadado da variante ao jogador que a pega. A explosão de força 5, sem fogo e sem quebra, já entra pelas decisões D1+D2 do artifact `onda2-efeitos-mundo` (o Stirling é o piloto; seção seguinte). A devolução da engrenagem depende da API de entidades e fica para a Onda 4 do `roadmap-100`. Não é corrigida agora.
+
+### Piloto D1+D2, fatia 5: a explosão da falha (17/11/2026)
+
+O tick da falha (`TileEntityStirling.java:90-92`) passa pela segunda porta, `Server::publish_machine_effects`. O modelo
+com a engrenagem perdida e um `Explode { offset: [0, 1, 0], power: 5, fire: false, breaks: false }` são confirmados
+juntos por um `MachineCommit`, como uma batelada, antes do `native_save` do mesmo tick. A explosão sai em
+`[x+0,5; y+1; z+0,5]`, como o `newExplosion(null, x+0.5, y+1, z+0.5, 5F, false, false)` do Java, no tick seguinte
+(fila crítica). Um commit recusado mantém a engrenagem e a contagem, e a falha se repete no próximo tick quente. A
+engrenagem continua perdida (defeito nominal acima). Código: `solar_server.rs` (`stirling_finish`),
+`Stirling::fails_on_finish`; commits `0b3bfa7a` (núcleo) e `fd5053b0` (roteiro).
+
+| Prova | Resultado |
+| --- | --- |
+| Unidades (`machine_effects_tests`) | A falha publica exatamente 1 batelada com 1 explosão; recusa não publica estado nem obrigação e falha de novo; save logo após a falha guarda modelo e explosão juntos. 743 testes da biblioteca, Clippy `-D warnings` limpo. |
+| Mutantes | `StirlingFailsInPlace`, `StirlingPublishBeforeCommit`, `StirlingRefusalLosesGear` e `StirlingPublishNextTick` mortos por asserção; os 4 da fatia 3 continuam mortos. |
+| Em jogo (`stirling-overspeed`, corte `none`) | Stirling de ferro sobre fornalha com `ntm:rocket_fuel` (calor ×5, 500 TU/tick): 1 aplicação `effect …0 explosion [47.5, 102.0, 9.5] power=5 fire=false breaks=false`; 211 células em volta inalteradas. |
+| Corte estrito de 7 pontos (`HORIZON_NO_EAGER_SAVE=1`) | `none`, `kill`, `kv_committed`, `save_begin`, `chunks_written`, `entities_written`, `world_saved`: 1 explosão no ato, 0 + 0 nas reaberturas (sem lote devido na abertura, sem nova falha), área inalterada, cada id de efeito uma vez. 7/7. |
+
+Cliente SHA-256 `35df97c139dc4603cf56e0b71bcf5f87b1724147d08f838f1fff187dac48932c`; pacote SHA-256
+`eebe930a4a39dacf367092946374fbeb2f536d9df732bda37bdc6216051bc23f`; motor `onda2-writer-barrier` `7f61a9c171`.
+Relatório: `docs/evidence/onda2-efeitos-fatia5/stirling-overspeed-matrix.json`.
+
+Limites e divergências observadas:
+
+- **Dano ao jogador não demonstrado.** O plano pedia "um jogador perto leva dano". O centro `y+1,0` é a face entre o
+  núcleo e a célula de cima, dentro das células da própria máquina (`MachineStirling.getDimensions {1,0,1,1,1,1}`).
+  Um jogador a 6 blocos ao sul e outro em cima do motor ficaram com 20/20 de vida. A exposição de uma entidade (no
+  Java, `getBlockDensity`: raios da entidade ao centro) termina dentro de bloco sólido. A expectativa no Java é a
+  mesma ausência de dano, mas isso não foi verificado executando o Java. O motor confirma que `NativeBlast::Keep` fere
+  e empurra entidades expostas.
+- **A exceção do plano não ocorreu.** O plano previa que a reabertura de um registro da casa anterior à aplicação
+  refizesse a explosão uma vez. Em todos os cortes a explosão já tinha sido aplicada no tick seguinte à falha, antes
+  do save; nenhuma reabertura abriu com lote devido. O caminho de replay está coberto pelo teste de unidade
+  `a_save_right_after_the_stirling_failure_keeps_the_blast_with_the_lost_gear`.
 
 ### Verificação da integração atual
 
