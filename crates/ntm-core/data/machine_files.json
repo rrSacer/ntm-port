@@ -3885,6 +3885,23 @@
 ],
 "synced": []
 },
+"ntm:machine_fel": {
+"inventory": [
+8,
+83
+],
+"slots": [
+{
+"x": 182,
+"y": 144
+},
+{
+"x": 141,
+"y": 23
+}
+],
+"synced": []
+},
 "ntm:machine_flare": {
 "inventory": [
 8,

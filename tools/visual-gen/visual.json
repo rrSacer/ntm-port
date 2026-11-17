@@ -36970,7 +36970,103 @@
     },
     "ntm:machine_fel": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineFEL dimensions {2,0,4,2,1,1}, offset 2; ContainerFEL and GUIFEL 203x169: battery (182,144), crystal (141,23), power bar and on/off button. Renderer and beam are separate.",
+      "machine": {
+        "slots": [
+          {
+            "x": 182,
+            "y": 144
+          },
+          {
+            "x": 141,
+            "y": 23
+          }
+        ],
+        "inventory": [
+          8,
+          83
+        ],
+        "data": 6,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -2
+          ],
+          "max": [
+            1,
+            2,
+            4
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_fel.png",
+        "texture_from": "textures/gui/machine/gui_fel.png",
+        "size": [
+          203,
+          169
+        ],
+        "title": [
+          190,
+          7,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          71
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              182,
+              27,
+              16,
+              113
+            ],
+            "uv": [
+              203,
+              17
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              142,
+              41,
+              29,
+              17
+            ],
+            "uv": [
+              203,
+              0
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              142,
+              41,
+              29,
+              17
+            ],
+            "lines": [
+              "Ligar / desligar"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_silex": {
       "auto": false,

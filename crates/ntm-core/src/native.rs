@@ -76,6 +76,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::exposure::BLOCK {
         return Some(crate::exposure::container());
     }
+    if block == crate::fel::BLOCK {
+        return Some(crate::fel::container());
+    }
     if block == crate::annihilator::BLOCK {
         return Some(crate::annihilator::container());
     }
@@ -252,6 +255,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::exposure::BLOCK {
         return crate::exposure::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::fel::BLOCK {
+        return crate::fel::allows(slot, origin == SlotOrigin::Manual);
     }
     if block == crate::radiolysis::BLOCK {
         return crate::radiolysis::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);

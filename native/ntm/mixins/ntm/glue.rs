@@ -1841,6 +1841,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::funnel::BLOCK => Some(SlotPolicy(funnel_slot_policy)),
         ntm_core::radiolysis::BLOCK => Some(SlotPolicy(radiolysis_slot_policy)),
         ntm_core::exposure::BLOCK => Some(SlotPolicy(exposure_slot_policy)),
+        ntm_core::fel::BLOCK => Some(SlotPolicy(fel_slot_policy)),
         ntm_core::annihilator::BLOCK => Some(SlotPolicy(annihilator_slot_policy)),
         ntm_core::cyclotron::BLOCK => Some(SlotPolicy(cyclotron_slot_policy)),
         ntm_core::furnaces::IRON => Some(SlotPolicy(iron_furnace_slot_policy)),
@@ -1883,6 +1884,10 @@ fn annihilator_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &Item
 fn cyclotron_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::cyclotron::BLOCK, slots, slot, item, action, origin)
+}
+fn fel_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::fel::BLOCK, slots, slot, item, action, origin)
 }
 fn exposure_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
