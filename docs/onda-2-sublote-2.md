@@ -586,11 +586,14 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
     - A verificação agora exige 0,1 por tick, com até 0,2 de folga para os dois comandos, em vez da faixa de 0,5 a 2,0 que um atraso dos comandos estourava (a rodada anterior mediu 2,2).
   - **Persistência:** sem o cristal, o SILEX parado e o FEL ligado reabrem exatamente como salvos; com o cristal de volta, o SILEX continua.
   - **SILEX mal alinhado:** um segundo SILEX perpendicular, 14 células adiante, é derrubado inteiro. No chão ficam **exatamente** 1 `machine_silex` e 1 lingote, somando as pilhas e não as entidades; o alinhado fica intacto.
-- Cortes (`run-crash-more.py silex-state`): **5/7**. `none`, `save_begin`, `chunks_written`, `entities_written` e `players_saved` reabrem um estado inteiro, com o peróxido e as pepitas fechando.
-  - **`kill` e `kv_committed` falham, e a falha não é da correção:** o HEAD `10c2a59c`, compilado sem nenhuma mudança deste lote, falha do mesmo jeito no `kill`.
-    - O SILEX reabre no estado do fim do ato, mas o FEL reabre ainda com o cristal, e o SILEX volta a rodar.
-    - Uma versão de diagnóstico que voltou a salvar o progresso e o atraso a cada tick também falhou.
-    - Os cortes passaram 7/7 antes do merge da main `fa3c1df3` (motor 2187c3192b) e não tinham sido refeitos depois dele. Está registrado como regressão do merge a investigar, à parte deste lote.
+- Cortes estritos (`HORIZON_NO_EAGER_SAVE=1`, `run-crash-more.py silex-state`): **7/7**, com o mesmo cliente.
+  - Sem o cristal antes de cada save, o SILEX fica parado, então a reabertura tem que ser exatamente o save-base ou o save do passo.
+  - `kill` e `kv_committed` reabrem o save-base (carga 1 100). Os outros cinco pontos reabrem o do passo (carga 400).
+  - O peróxido fecha (tanque + tanques cheios + 900 por lingote carregado = 16 000), e a carga mais 100 por pepita é igual a 900 por lingote carregado.
+  - **Sem o modo estrito**, os mesmos cortes dão 5/7.
+    - O motor grava chunks antes do save completo, e no `kill` o SILEX reabre no fim do ato enquanto o FEL reabre ainda com o cristal.
+    - O HEAD de antes desta correção dá o mesmo resultado, e os dois commits do motor entre os pins `eb5d3eed58` e `2187c3192b` não tocam no salvamento de block entity.
+    - Essas rodadas sem o modo estrito tinham sido tomadas por uma regressão do merge; não é. O contrato desses cortes é o modo estrito, como na primeira entrega.
 - Mutantes: o script está no repositório, `tools/mutants/silex.py` (antes ficava fora dele).
   - Na primeira rodada: 43 escolhidos à mão (o SILEX e o acoplamento no FEL), 41 mortos e 2 equivalentes nos dados.
     - Na primeira rodada, `+= 1` no lugar de `+= 137` sobreviveu; foi morto com o teste do índice guardado e dos três pesos do plutônio.
