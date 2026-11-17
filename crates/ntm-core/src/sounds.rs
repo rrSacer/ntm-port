@@ -441,6 +441,9 @@ pub fn mark(machine: &Machine) -> Mark {
     {
         mark.warning = s.warn_cooldown;
     }
+    if let Data::Sawmill(s) = &machine.data {
+        mark.warning = s.warn_cooldown;
+    }
     if let Data::Pile(p) = &machine.data
         && let crate::pile::Pile::Loader(l) = &**p
     {

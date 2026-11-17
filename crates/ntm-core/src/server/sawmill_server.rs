@@ -2,9 +2,49 @@
 //! damage 1), across placing and breaking it. The host reads and writes the item (`minecraft:custom_data`); the model
 //! keeps `has_blade`.
 use super::*;
-use crate::machine::Data;
+use crate::machine::{Data, MachineEffect};
 
 impl Server {
+    /// `finish` of every loaded sawmill (`TileEntitySawmill.updateEntity` after `tryPullHeat`, which `heat_tick` did).
+    /// The tick that breaks the blade (128-147) is committed with its two effects as one batch, before this tick's
+    /// native_save, in this order (R4: the blast must not kill the blade it throws): the blast at
+    /// [x+0.5, y+1, z+0.5], power 5, no fire, no broken block; the blade, one `ntm:sawblade` at the cell in front of
+    /// the core one up (the Java's `EntitySawblade` at core + dir, y+1, which gives the blade back when used; the entity
+    /// and its flight need the entity API, so the item lies there).
+    pub(super) fn sawmill_finish(&mut self, host: &mut impl ServerHost) {
+        let r = &mut self.ready;
+        let mut failing = Vec::new();
+        for (k, m) in &mut r.world.machines {
+            if r.loaded.get(k) == Some(&true)
+                && let Data::Sawmill(s) = &mut m.data
+            {
+                if s.fails_on_finish() {
+                    failing.push(k.clone());
+                } else {
+                    s.finish();
+                }
+            }
+        }
+        for key in failing {
+            let published = self.publish_machine_effects(host, &key, |m| {
+                let Data::Sawmill(s) = &mut m.data else { return Vec::new() };
+                s.finish();
+                vec![
+                    MachineEffect::Explode { offset: [0., 1., 0.], power: 5., fire: false, breaks: false },
+                    MachineEffect::Drop { offset: [0, 1, 1], item: crate::sawmill::BLADE.into(), count: 1 },
+                ]
+            });
+            // Refused: the live model keeps its blade and count and breaks on the next hot tick. Only the heat of this
+            // tick is spent, as `finish` spends it every tick (it is never saved).
+            if !published
+                && let Some(Data::Sawmill(s)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data)
+            {
+                s.heat = 0;
+                host.log(&format!("ntm: the failing sawmill at {:?} was not committed; it breaks on its next hot tick", key.1));
+            }
+        }
+    }
+
     /// A player placed a sawmill item at `pos` (`native_place_block`, before its `Placed` event is taken): without its
     /// blade, the machine that event creates there has none.
     pub fn native_sawmill_placed(&mut self, dim: &str, pos: Pos, without_blade: bool) {

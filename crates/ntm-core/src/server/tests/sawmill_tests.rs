@@ -69,3 +69,29 @@ fn the_item_without_blade_belongs_to_its_own_placement_only() {
     g.run(2);
     assert!(sawmill(&mut g, here).has_blade);
 }
+
+#[test]
+fn a_sawmill_on_a_hot_firebox_saws_a_log_into_planks() {
+    let mut g = game();
+    let (core, source) = ([0, 71, 0], [0, 70, 0]);
+    g.place(source, "ntm:heater_firebox[facing=north,honey_level=0]");
+    g.place(core, SAWMILL);
+    g.run(2);
+    let Data::Sawmill(s) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), core)).unwrap().data else { panic!() };
+    s.slots[0] = Some(crate::server::container_bridge::Stack::new("minecraft:spruce_log", 1));
+    // 2000 below, less the firebox's own cooling in its step (1998): 199 heat a tick, 19 progress, 32 ticks.
+    let hot_tick = |g: &mut Game| {
+        let Data::Firebox(f) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), source)).unwrap().data else { panic!() };
+        f.heat = 2000;
+        g.run(1);
+    };
+    for _ in 0..31 {
+        hot_tick(&mut g);
+    }
+    assert_eq!(sawmill(&mut g, core).progress, 589);
+    hot_tick(&mut g);
+    let s = sawmill(&mut g, core);
+    assert_eq!(s.slot(0), None);
+    assert_eq!(s.slot(1), Some(&crate::server::container_bridge::Stack::new("minecraft:spruce_planks", 6)));
+    assert!(s.has_blade);
+}

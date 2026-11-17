@@ -160,6 +160,7 @@ impl Server {
         self.ash_tick();
         phases.mark("simulate");
         self.stirling_finish(host);
+        self.sawmill_finish(host);
         for m in self.ready.world.machines.values_mut() {
             if let crate::machine::Data::Radioisotope(r) = &mut m.data { r.finish(); }
         }

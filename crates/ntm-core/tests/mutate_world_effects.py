@@ -11,6 +11,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 TRANSACTION = 'crates/ntm-core/src/server/transaction.rs'
 STIRLING = 'crates/ntm-core/src/server/solar_server.rs'
+SAWMILL = 'crates/ntm-core/src/server/sawmill_server.rs'
 MUTANTS = {
     '1': [
         ('ExplosionAcknowledgedOnRefusal', TRANSACTION,
@@ -84,6 +85,22 @@ MUTANTS = {
          '        self.ready.sawmills_without_blade.contains(&key)\n            || matches!',
          '        false\n            || matches!',
          'a_sawmill_placed_from_its_item_without_blade_has_none_and_drops_that_variant'),
+    ],
+    'saw': [
+        ('SawmillFailsInPlace', SAWMILL,
+         '                if s.fails_on_finish() {', '                if false && s.fails_on_finish() {',
+         'a_failing_sawmill_commits_its_lost_blade_with_the_blast_then_the_blade'),
+        ('BladeBeforeBlast', SAWMILL,
+         '                vec![\n                    MachineEffect::Explode { offset: [0., 1., 0.], power: 5., fire: false, breaks: false },\n                    MachineEffect::Drop { offset: [0, 1, 1], item: crate::sawmill::BLADE.into(), count: 1 },\n                ]',
+         '                vec![\n                    MachineEffect::Drop { offset: [0, 1, 1], item: crate::sawmill::BLADE.into(), count: 1 },\n                    MachineEffect::Explode { offset: [0., 1., 0.], power: 5., fire: false, breaks: false },\n                ]',
+         'a_failing_sawmill_commits_its_lost_blade_with_the_blast_then_the_blade'),
+        ('SawmillRefusalLosesBlade', SAWMILL,
+         '                s.heat = 0;\n', '                s.finish();\n',
+         'a_refused_sawmill_failure_publishes_nothing_and_breaks_on_the_next_hot_tick'),
+        ('SawmillPublishNextTick', 'crates/ntm-core/src/server/machine_effects.rs',
+         '            self.ready.world.machine_effects.push_back(batch);',
+         '            DELAYED.with(|pending| pending.borrow_mut().push(batch));',
+         'a_save_right_after_the_sawmill_failure_keeps_the_blast_and_the_blade_with_the_lost_blade'),
     ],
 }
 

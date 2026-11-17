@@ -680,3 +680,147 @@ fn a_save_right_after_the_stirling_failure_keeps_the_blast_with_the_lost_gear() 
     reopened.flush_machine_effects(&mut host);
     assert_eq!(host.blasts.len(), 1);
 }
+
+/// A sawmill one hot tick from losing its blade (TileEntitySawmill.java:128-147): 300 hot ticks counted.
+fn failing_sawmill(host: &mut Host, server: &mut Server) -> Key {
+    use crate::machine::{Data, Kind};
+    use crate::sawmill::Sawmill;
+    let key = (DIM.to_string(), CORE);
+    let mut machine = Machine::new(Kind::Sawmill, "ntm:machine_sawmill", Some("north".into()));
+    machine.data = Data::Sawmill(Sawmill {
+        overspeed: 300,
+        ..Default::default()
+    });
+    let json = serde_json::to_string(&machine).unwrap();
+    host.blocks.insert(CORE, machine.block.clone());
+    host.saved.insert(CORE, json.clone());
+    server.ready.native_saved.insert(key.clone(), json);
+    server.ready.loaded.insert(key.clone(), true);
+    server.ready.world.machines.insert(key.clone(), machine);
+    sawmill_of(server, &key).heat = 301;
+    key
+}
+fn sawmill_of<'a>(server: &'a mut Server, key: &Key) -> &'a mut crate::sawmill::Sawmill {
+    let Some(crate::machine::Data::Sawmill(s)) = server
+        .ready
+        .world
+        .machines
+        .get_mut(key)
+        .map(|m| &mut m.data)
+    else {
+        panic!("no sawmill")
+    };
+    s
+}
+/// The blade one up in front of a north-facing core.
+fn blade() -> WorldEffect {
+    WorldEffect::Items {
+        dim: DIM.into(),
+        pos: [CORE[0], CORE[1] + 1, CORE[2] - 1],
+        items: vec![(crate::sawmill::BLADE.into(), 1)],
+    }
+}
+#[test]
+fn a_failing_sawmill_commits_its_lost_blade_with_the_blast_then_the_blade() {
+    let mut host = Host::default();
+    let mut server = Server::native(&mut host, 0);
+    let key = failing_sawmill(&mut host, &mut server);
+    let before = server.ready.world.machines[&key].clone();
+    server.sawmill_finish(&mut host);
+    assert!(!sawmill_of(&mut server, &key).has_blade);
+    assert_eq!(server.ready.world.machine_effects.len(), 1);
+    let batch = &server.ready.world.machine_effects[0];
+    assert_eq!(batch.owners, std::slice::from_ref(&key));
+    assert_eq!(batch.origins, [CellGuard::machine(&key, &before)]);
+    // R4: the blast first, then the blade it must not kill.
+    assert_eq!(batch.effects, VecDeque::from([blast(), blade()]));
+    assert_eq!(
+        host.saved[&CORE],
+        serde_json::to_string(&server.ready.world.machines[&key]).unwrap()
+    );
+    server.flush_machine_effects(&mut host);
+    assert_eq!(host.order, ["commit", "explosion attempt", "items"]);
+    assert_eq!(host.blasts, [blast()]);
+    assert_eq!(host.items, [(crate::sawmill::BLADE.to_string(), 1)]);
+    for _ in 0..3 {
+        sawmill_of(&mut server, &key).heat = 301;
+        server.sawmill_finish(&mut host);
+        server.flush_machine_effects(&mut host);
+    }
+    assert_eq!(
+        (host.blasts.len(), host.items.len()),
+        (1, 1),
+        "a lost blade breaks once"
+    );
+}
+#[test]
+fn a_refused_sawmill_failure_publishes_nothing_and_breaks_on_the_next_hot_tick() {
+    let mut host = Host {
+        refuse_commit: true,
+        ..Default::default()
+    };
+    let mut server = Server::native(&mut host, 0);
+    let key = failing_sawmill(&mut host, &mut server);
+    let saved = host.saved[&CORE].clone();
+    server.sawmill_finish(&mut host);
+    server.sync_obligations(&mut host);
+    server.flush_machine_effects(&mut host);
+    let s = sawmill_of(&mut server, &key).clone();
+    assert!(s.has_blade && s.overspeed == 300 && s.heat == 0);
+    assert!(
+        server.ready.world.machine_effects.is_empty()
+            && host.homes.is_empty()
+            && host.blasts.is_empty()
+            && host.items.is_empty()
+    );
+    assert_eq!(host.saved[&CORE], saved);
+    host.refuse_commit = false;
+    sawmill_of(&mut server, &key).heat = 301;
+    server.sawmill_finish(&mut host);
+    assert!(!sawmill_of(&mut server, &key).has_blade);
+    server.flush_machine_effects(&mut host);
+    assert_eq!(
+        (host.blasts.clone(), host.items.clone()),
+        (vec![blast()], vec![(crate::sawmill::BLADE.to_string(), 1)])
+    );
+}
+#[test]
+fn a_save_right_after_the_sawmill_failure_keeps_the_blast_and_the_blade_with_the_lost_blade() {
+    let mut host = Host {
+        refuse_blast: true,
+        ..Default::default()
+    };
+    let mut server = Server::native(&mut host, 0);
+    let key = failing_sawmill(&mut host, &mut server);
+    server.sawmill_finish(&mut host);
+    server.native_save(&mut host, true);
+    server.sync_obligations(&mut host);
+    server.native_world_saving(&mut host);
+    let saved_model = host.saved[&CORE].clone();
+    let saved_batches = host.homes.get(&[0, 0]).cloned().unwrap_or_default();
+    assert_eq!(
+        saved_batches.len(),
+        1,
+        "PublishNextTick loses the blast and the blade in this cut"
+    );
+    assert_eq!(saved_batches[0].effects, VecDeque::from([blast(), blade()]));
+    assert_eq!(
+        saved_model,
+        serde_json::to_string(&server.ready.world.machines[&key]).unwrap()
+    );
+    // The reopened home owes both once; the blade is not given before the blast went.
+    let mut reopened = Server::native(&mut host, 1);
+    reopened.native_obligations_loaded(DIM, [0, 0], vec![], saved_batches, BTreeSet::new());
+    assert!(reopened.native_adopt(DIM, CORE, &saved_model));
+    reopened.native_settle(&mut host);
+    assert!(
+        host.blasts.is_empty() && host.items.is_empty(),
+        "a refused blast holds the blade back"
+    );
+    host.refuse_blast = false;
+    reopened.native_settle(&mut host);
+    assert_eq!(
+        (host.blasts.clone(), host.items.clone()),
+        (vec![blast()], vec![(crate::sawmill::BLADE.to_string(), 1)])
+    );
+}
