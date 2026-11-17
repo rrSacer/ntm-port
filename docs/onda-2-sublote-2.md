@@ -467,7 +467,7 @@ interativamente em jogo.
 - mutantes: 43 escolhidos à mão (`mutate-annihilator.py`), 43 mortos (os 3 últimos mortos em `898235b3` reforçando `prev_cmp` e
   `fluid_server` para células não-porta).
 
-### Digama: a infraestrutura do modo DRX de `machine_fel` (grupo 2a, em andamento)
+### Digama: a infraestrutura do modo DRX de `machine_fel` (grupo 2a)
 
 O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEntityFEL:134,187-190`) ele faz duas coisas: dá 0,1 de digama a cada tick a quem estiver no feixe e transforma o bloco queimado em fogo de digama, ou em matéria de digama quando o `polaroidID` é 11, com cinza de digama logo abaixo. Até aqui o port não tinha nenhuma dessas peças. O passo do FEL ficava congelado no DRX.
 
@@ -478,7 +478,7 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - **Morte em 10** (`setDigamma:158`): 500 de dano `ntm:digamma`, que é absoluto, atravessa armadura e vale no criativo (`ModDamageSource.digamma`; tags `bypasses_armor`, `bypasses_effects` e `bypasses_invulnerability`). A mensagem de morte é a do Java (`death.attack.digamma`).
 - **Bloqueios** (`applyDigammaData:108-129`, `contaminate:265-300`): nada no criativo, nada nos primeiros 200 ticks, nada sob Stability (`ntm:stability`), nada com o conjunto completo FAU ou DNS (`checkForDigamma`). O `checkForDigamma2` (robes) exige Stability e por isso nunca libera sozinho.
 - **Gravação transacional**: dentro do passo de uma máquina, a dose fica guardada como a de radiação (`Deferred::digammas`) e só chega ao jogador depois do commit, em ordem, conferindo o valor anterior. Um passo recusado não grava nada.
-- **`ntm:fire_digamma`** (`DigammaFlame`): modelo em cruz com textura animada, luz 15, dureza 0, resistência 150, sem colisão mas com a célula inteira para mirar, sem drop e fora da aba criativa. Só fica sobre um bloco de topo sólido: o modelo de arbusto morto pergunta `mayPlaceOn`, e o glue responde lendo o chão como cubo opaco (gancho `may_place_on`). Cada célula dele que a caixa do jogador toca (`doBlockCollisions`, a caixa 0,6 × 1,8 recolhida em 0,001) dá 0,05 por tick.
+- **`ntm:fire_digamma`** (`DigammaFlame`): modelo em cruz com textura animada, luz 15, dureza 0, resistência 150, sem colisão mas com a célula inteira para mirar, sem drop e fora da aba criativa. Usa o modelo de vidro, sem colisão e em cruz: um modelo com regra de sobrevivência própria (planta, fogo) imporia a regra dele. Quando um bloco ao lado muda, o fogo some se o bloco de baixo não tiver topo sólido (`onNeighborBlockChange`), lido como cubo opaco. Isso roda no glue: a troca é anotada em `block_changed` e o fogo é removido no fim do tick. Na primeira versão usei o `mayPlaceOn` do modelo de arbusto morto, mas a prova em jogo mostrou que as trocas publicadas pelo mod não passam por ele, e o fogo morria sobre a cinza. Cada célula dele que a caixa do jogador toca (`doBlockCollisions`, a caixa 0,6 × 1,8 recolhida em 0,001) dá 0,05 por tick.
 - **`ntm:digamma_matter`** (`DigammaMatter`): os metadados 0..7 viram um bloco cada (`digamma_matter`, `digamma_matter__<n>`). Cada um é inquebrável, tem resistência 18 000 000 e não tem colisão. Ao ser colocado agenda o próprio tick para daqui a 10 a 49 ticks. No tick ele some e, abaixo do metadado 7, coloca o metadado seguinte nas 18 células a até dois passos que ainda não têm matéria (`setBlock` com flag 3, seja qual for o bloco que estava ali).
 - **`polaroidID`** (`MainRegistry:250-256`): sorteado quando o servidor inicia, de 1 a 18 sem o 4 e o 9; `NTM_POLAROID` faz o papel do `generalOverride` do config. Com 11, o DRX deixa matéria em vez de fogo.
 - **DRX no FEL**: o feixe deixa o bloco de fogo, ou de matéria, com cinza embaixo, e dá 0,1 aos jogadores no feixe. O passo do FEL não congela mais no DRX.
@@ -494,10 +494,10 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - Os limites aleatórios de seleção da matéria (`setBlockBoundsBasedOnState`, só aparência) são a célula inteira. Um vizinho em chunk não carregado não recebe matéria; no Java, o `setBlock` carregaria o chunk.
 - As pílulas que mexem no digama (`xanax`, `fmn`, `five_htp`; K2) ainda fazem só a parte visível, embora o armazenamento agora exista.
 
-**Provas** (cliente `2e2a07bd5f2afebf30a18cd5a157e876fc293090d6e93fd1c95ddb1127d185d6`, pacote `10fce201165b456fbeacbd0e3c672d12635c8b13039c36f003319becd5428eda`, evidência em `content-gen-evidence/onda2-s2/`)
+**Provas** (refeitas no binário final: cliente `67817408dd75cbc96bb7a7efbd318415b48fdcf356b281c4b5fcb2ff2a8a72cf`, pacote `eb9f78039702e982af956ff534ab3c8bd2a63a8f7e95373455ee2f9f69ec72ad`, HEAD `e40f33a9`; evidência em `content-gen-evidence/onda2-s2/`)
 
-- Testes de unidade: suíte do `ntm-core` com 844 passando, 0 falhas; clippy `--workspace --all-targets -D warnings` limpo; gerador de conteúdo com 340 testes, mais `test_digamma_blocks` (2) e `test_damage_types` (3).
-- Em jogo (`run-native-reactors.py digamma`): 19/19, sem avisos do backend:
+- Testes de unidade: suíte do `ntm-core` com 858 passando, 0 falhas; clippy `--workspace --all-targets -D warnings` limpo; gerador de conteúdo com 346 testes (entre eles `test_digamma_blocks` e `test_damage_types`).
+- Em jogo (`run-native-reactors.py digamma`): 20/20, sem avisos do backend (inclui a troca de um vizinho que mantém o fogo sobre pedra):
   - o fogo fica sobre pedra, some sem chão e não fica sobre vidro;
   - no criativo não há dose; em sobrevivência o fogo dá dose (1,94 DRX). O modificador é 0,5^d − 1 e a vida máxima é 20 × (1 + m); a influência impressa é a do Java;
   - fora do fogo a dose não muda; sob Stability também não;
@@ -510,4 +510,68 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - `kv_committed`, `players_saved` e `none` reabriram na segunda (2,84 a 2,89).
 - Mutantes: 44 escolhidos à mão (`mutate-digamma.py`: modelo, servidor, DRX do FEL, gravação transacional, comprimidos e diagnóstico), 44 mortos. Um mutante equivalente ficou de fora: somar em f64 e arredondar para `float` dá o mesmo que somar em `float`.
 
-**O que falta para o FEL** (ainda não está pronto): a ligação com o SILEX (o modo de laser passado ao SILEX, a quebra do SILEX mal alinhado com seus drops e a própria máquina), o FEL ativo no registro e o comportamento do feixe nas partes dos multiblocos de outras máquinas (hoje o passo congela nelas). Depois, a prova em jogo do FEL com o SILEX, os cortes e os mutantes do FEL.
+### `machine_silex` e a ligação com `machine_fel` (grupo 2a)
+
+**Contrato portado** (`crates/ntm-core/src/silex.rs`, `TileEntitySILEX`)
+
+- **Slots:** 11 (entrada; identificador; recipientes cheio e vazio; saída; fila de 6). **Tanque:** 16 000 mB, peróxido no início.
+- **Tick** (`updateEntity:69-89`), nesta ordem:
+  1. o identificador dá o tipo ao tanque (`setType(1, 1)`, o identificador fica);
+  2. um recipiente enche o tanque (`loadTank(2, 3)`);
+  3. `loadFluid` carrega a carga;
+  4. `process` roda a receita, ou o progresso volta a 0;
+  5. `dequeue` passa a saída para a fila;
+  6. uma carga vazia esquece o item;
+  7. o modo volta a NULL.
+- **`loadFluid`:**
+  - UF6, PUF6 e DEATH (`fluidConversion`), e qualquer fluido que tenha receita, carregam o próprio ícone, 50 por tick, desde que a carga seja desse ícone.
+  - A cada 21 ticks (`loadDelay`), e só com o tanque de peróxido, o item da entrada carrega a sua `fluidProduced` se couber e houver peróxido. Isso só acontece com a carga vazia ou do mesmo item.
+- **`process`:**
+  - Precisa de laser de força ≥ à da receita, de carga ≥ `fluidConsumed` e da saída vazia.
+  - Avança `2^(laser − exigido)` por tick; com 100 sai uma rodada.
+  - A saída é sorteada pelo `recipeIndex`, que primeiro faz `%=` da soma dos pesos e depois soma 137 (`PRIME`).
+- **`dequeue`:** põe uma unidade numa pilha igual da fila abaixo do limite; se não houver, a saída inteira vai para o primeiro slot vazio.
+- **Receitas** (`data/machines/silex.json`, `tools/content-gen/silex_data.py`, conferidas contra o oráculo Java do RBMK):
+  - 68 receitas.
+  - A busca do `getOutput` em três camadas: tradução de item (4, como UF6 → lingote de urânio e o pó de lápis → `minecraft:lapis_lazuli`), tradução de dicionário (2: pó → lingote) e resíduo miúdo (26, um nono do fluido: `(fluidProduced / 900) * 100`, com o metadado preservado).
+  - Os itens vanilla do 1.7.10 (`gold_nugget`, `flint`, `gravel`, `dye:4`) mapeados para os de hoje.
+- **Automação** (`getAccessibleSlotsFromSide`, `isItemValidForSlot`, `canExtractItem`): um funil põe na entrada um item que tenha receita e tira da fila. **Menu** (`ContainerSILEX`): a mão põe na entrada, no identificador e no recipiente cheio, e tira de todos. As duas portas combo (inventário e fluido) ficam em (±1, 1, 0).
+- **Estado fora dos slots** em `save_state`: carga, item (índice numa lista fixa ordenada), progresso, índice da receita, atraso da carga, tipo do tanque (id do fluido) e mB.
+
+**Ligação com o FEL** (`TileEntityFEL:139-195`)
+
+- Uma célula do feixe que é parte de um SILEX (`b == machine_silex`) procura o núcleo uma célula adiante, na altura do FEL. Sem núcleo ali, nada acontece e o feixe segue.
+- Com núcleo, alinhado ao feixe (num sentido ou no outro), a pelo menos 5 células e sem outro SILEX já atendido nesse trecho: o SILEX recebe o comprimento de onda e o feixe segue.
+  - O comprimento de onda vai por um mapa transitório em `Ready`, que o passo do SILEX consome antes do seu tick.
+  - Se o passo do FEL for recusado, o mapa volta atrás.
+  - A ordem entre os dois passos dá no máximo um tick de atraso, como a ordem das tile entities no Java.
+- Caso contrário o SILEX quebra (`breakBlock`): todas as suas partes são removidas, os itens caem pelo caminho normal de remoção de máquina, e cai um `machine_silex` na célula atingida.
+- Uma parte de multibloco de outra máquina é um obstáculo comum, com a resistência da parte. O passo do FEL não congela mais nela.
+- O FEL passa a `Kind::Fel` no registro e roda no mundo.
+
+**Lacunas documentadas**
+
+- As 227 receitas de estados 1..9 das pastilhas RBMK esperam o codec de pastilha (T03/T14; decisão do Maestro).
+- O nome e a onda do laser na tela não são desenhados: o modo aparece na dica da carga.
+- A parte de multibloco de outra máquina atingida pelo feixe usa a resistência da parte genérica (`ntm:dummy_machine`), não a do bloco da máquina.
+- O `mode` salvo no NBT do Java não é guardado (ele volta a NULL a cada tick do SILEX).
+
+
+**Provas** (cliente `67817408dd75cbc96bb7a7efbd318415b48fdcf356b281c4b5fcb2ff2a8a72cf`, pacote `eb9f78039702e982af956ff534ab3c8bd2a63a8f7e95373455ee2f9f69ec72ad`, HEAD `e40f33a9`; evidência em `content-gen-evidence/onda2-s2/{fel,silex-state}`)
+
+- Testes de unidade: `ntm-core` com 858 passando, 0 falhas; clippy `--workspace --all-targets -D warnings` limpo; gerador de conteúdo com 346 testes, entre eles `test_silex_data` (4) contra o oráculo Java.
+- Em jogo (`run-native-reactors.py fel`, com `NTM_POLAROID=1`): 14/14, sem avisos do backend.
+  - **Montagem e feixe:** o SILEX fica sobre a linha do feixe, ao longo dele; o FEL, com bateria criativa e cristal de bismuto, liga no visível, acha o SILEX válido e o feixe segue até 24.
+  - **SILEX no visível:** os 16 tanques de peróxido o enchem; os dois lingotes carregam 900 cada (tanque com 14 200); o laser roda 3 rodadas em pepitas (1 U-235, 2 U-238), com o índice 147 igual ao simulado.
+  - **DRX:** o SILEX roda 8 vezes mais rápido (4 rodadas em 40 ticks); a pedra adiante vira fogo de digama sobre cinza de digama; um jogador em sobrevivência no feixe recebe 2,0 DRX em cerca de 20 ticks.
+  - **Persistência:** sem o cristal, o SILEX parado e o FEL ligado reabrem exatamente como salvos; com o cristal de volta, o SILEX continua.
+  - **SILEX mal alinhado:** um segundo SILEX perpendicular, 14 células adiante, é derrubado inteiro, solta o lingote que tinha e um `machine_silex`; o alinhado fica intacto.
+- Cortes estritos (`HORIZON_NO_EAGER_SAVE=1`, `run-crash-more.py silex-state`): 7/7.
+  - Sem o cristal antes de cada save, o SILEX fica parado, então a reabertura tem que ser exatamente o save-base ou o save do passo.
+  - O peróxido fecha (tanque + tanques cheios + 900 por lingote carregado = 16 000), e a carga mais 100 por pepita é igual a 900 por lingote carregado.
+  - `kill` deixa exatamente o save-base.
+- Mutantes: 43 escolhidos à mão (`mutate-silex.py`: o SILEX e o acoplamento no FEL), 41 mortos e 2 equivalentes nos dados.
+  - Na primeira rodada, `+= 1` no lugar de `+= 137` sobreviveu; foi morto com o teste do índice guardado e dos três pesos do plutônio.
+  - `produced / 9` no lugar de `(produced / 900) * 100` só difere para um resíduo inteiro que não produza múltiplo de 900, e os 26 produzem 900.
+  - Sem o ramo `CONVERSION`, UF6, PUF6 e DEATH carregam do mesmo jeito: todos têm receita direta ou por tradução.
+- O polaroid 11 (matéria em vez de fogo) não tem prova em jogo: a matéria de metadado 0 se espalharia por cerca de 14 células e alcançaria o SILEX da montagem. A escolha está coberta em teste de unidade, e o espalhamento da matéria tem prova própria na prova `digamma`.
