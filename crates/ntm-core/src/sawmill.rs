@@ -337,6 +337,18 @@ mod tests {
         assert!(cold.slot(1).is_none());
     }
 
+    /// The input keeps its whole stack while it saws (a name, `custom`): only the step that ends the sawing takes it.
+    #[test]
+    fn an_input_with_data_of_its_own_keeps_it_while_it_saws() {
+        let named = Stack { custom: Some("{name:1b}".into()), ..Stack::new("minecraft:oak_log", 1) };
+        let mut s = Sawmill::default();
+        s.slots[0] = Some(named.clone());
+        hot(&mut s, 2000, 29);
+        assert_eq!((s.progress, s.slot(0)), (580, Some(&named)));
+        let back: Sawmill = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
+        assert_eq!(back.progress, 580, "its progress is saved; its slots are the block entity's");
+    }
+
     #[test]
     fn the_sawdust_dice_are_about_the_javas_chances() {
         let mut planks = 0;
