@@ -290,6 +290,26 @@ impl Server {
                     c.slots[0] = None;
                 }
             }
+            // Test hooks: a rod asked out as items leaves through a `WorldEffect::Items` of this step, with no block
+            // effect before it: owed in the reactor's record when its cell's chunk is out, paid once it is in.
+            for (j, p) in order.iter().enumerate() {
+                let key = (dim.clone(), [p[0], y, p[1]]);
+                let Some(cell) = self.ready.rbmk_drops.remove(&key) else { continue };
+                let Some(rod) = r.columns[j].rod_mut() else { continue };
+                if rod.fuel.take().is_none() {
+                    continue;
+                }
+                let m = &self.ready.world.machines[&key];
+                let Data::Rbmk(c) = &m.data else { unreachable!() };
+                let Some(Some(stack)) = c.slots.first().cloned() else { continue };
+                // `Items` carries an id and a count: the rod's custom data (its fuel state) is not kept by this hook.
+                if !host.drop_items(&dim, cell, &[(stack.id.clone(), stack.count)]) {
+                    return false;
+                }
+                if let Some(Data::Rbmk(c)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data) {
+                    c.slots[0] = None;
+                }
+            }
             // Provisional occlusion (T04): every block but air, in the cells the streams of this reactor can read.
             let mut cells = BTreeSet::new();
             for p in order {
@@ -369,6 +389,17 @@ impl Server {
         let full = self.ready.world.machines.get(&key).is_some_and(|m| matches!(&m.data, Data::Rbmk(c) if c.slots.first().is_some_and(Option::is_some)));
         if full && at.iter().all(|v| v.is_finite()) {
             self.ready.rbmk_ejects.insert(key, at);
+        }
+        full
+    }
+
+    /// Test hook (`NTM_TEST_HOOKS=1`): the rod of the fuel channel at `pos` leaves as items at the cell `cell` through a
+    /// `WorldEffect::Items` of its reactor's next accepted step (the owed/drain path of an item effect, D1+D2 fatia 4).
+    pub fn native_test_drop(&mut self, dim: &str, pos: Pos, cell: Pos) -> bool {
+        let key = (dim.to_string(), pos);
+        let full = self.ready.world.machines.get(&key).is_some_and(|m| matches!(&m.data, Data::Rbmk(c) if c.slots.first().is_some_and(Option::is_some)));
+        if full {
+            self.ready.rbmk_drops.insert(key, cell);
         }
         full
     }

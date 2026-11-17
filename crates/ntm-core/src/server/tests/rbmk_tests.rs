@@ -595,6 +595,23 @@ fn the_test_hooks_move_a_rod_once() {
     assert!(slot(&g2, [1, Y, 0]).is_some());
 }
 
+/// The owed/drain hook (`ntmtest drop`, D1+D2 fatia 4): a rod leaves its channel once, as an `Items` effect of its
+/// reactor's step at the cell asked for, in the step's own commit.
+#[test]
+fn the_drop_hook_moves_a_rod_once_as_an_item_effect() {
+    let mut g = reactor();
+    g.run(2);
+    assert!(g.server.native_test_drop(OW, [1, Y, 0], [200, 101, 8]));
+    assert!(!g.server.native_test_drop(OW, [1, Y, 1], [0, 0, 0]), "a column without a rod has none to put out");
+    g.run(2);
+    assert_eq!(slot(&g, [1, Y, 0]), None);
+    let paid = |g: &Game| g.world.borrow().dropped.iter().filter(|d| d.as_str() == format!("{OW} 200 101 8 ntm:rbmk_fuel_ueu 1")).count();
+    assert_eq!(paid(&g), 1);
+    g.run(3);
+    assert_eq!(paid(&g), 1, "once");
+    assert!(g.world.borrow().entities.is_empty(), "an item effect, not an entity");
+}
+
 /// D4 for a column only heat links (no stream reads its chunk): unknown, it holds its component; never taken as gone.
 #[test]
 fn an_unknown_column_that_only_heat_links_holds_its_component() {

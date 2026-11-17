@@ -32,6 +32,9 @@ POINTS = [*rcp.POINTS, 'kv_committed', 'live_chunk:2,0', 'live_chunk:3,0']
 # Scenario C (the review's pending C: entities, cursor and drops through the test hooks), and the cuts it asks for.
 SCRIPT = 'native_rbmk_t01.py'
 C_POINTS = ['kill', 'kv_committed', 'players_saved', 'live_chunk:2,0', 'live_chunk:3,0']
+# Scenario D (Onda 2, D1+D2 fatia 4): an `Items` effect owed in the reactor's record for a chunk that is out, paid once
+# that chunk is in; the strict cuts of the save (HORIZON_NO_EAGER_SAVE=1).
+D_POINTS = ['none', 'kill', 'kv_committed', 'save_begin', 'region_record:1', 'chunks_written', 'entities_written', 'world_saved']
 
 
 class World(rcp.World):
@@ -133,12 +136,14 @@ def main():
     parser.add_argument('--bundle', type=Path)
     parser.add_argument('--scratch-root', type=Path, required=True)
     parser.add_argument('--keep', action='store_true', help='keep the folders of the points that passed')
-    parser.add_argument('--scenario', choices=('a', 'c'), default='a', help='a: transfers and layers; c: entities, cursor, drops')
+    parser.add_argument('--scenario', choices=('a', 'c', 'd'), default='a', help='a: transfers and layers; c: entities, cursor, drops; d: items owed and paid')
     parser.add_argument('--probe', action='store_true', help='P0-1, P1-1, P1-2 probes on a prepared base, NTM only')
     args = parser.parse_args()
     global SCRIPT, TOTAL, DIMS, POINTS
     if args.scenario == 'c':
         SCRIPT, TOTAL, DIMS, POINTS = 'native_rbmk_t01_c.py', 3, ('overworld',), C_POINTS
+    if args.scenario == 'd':
+        SCRIPT, TOTAL, DIMS, POINTS = 'native_rbmk_t01_d.py', 3, ('overworld',), D_POINTS
     work = HERE.parents[1]
     args.binary = args.binary.resolve()
     args.bundle = (args.bundle or work / 'dist/ntm.hmod').resolve()

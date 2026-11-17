@@ -415,6 +415,9 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let at=match (n(1),n(2),n(3)){(Some(x),Some(y),Some(z))=>Some([x as i32,y as i32,z as i32]),_=>None};
     let result:Result<(),&str>=match (w.first().copied(),at){
         (Some("eject"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>if server.native_test_eject(&dim,p,[x,y,z]){Ok(())}else{Err("no rod to put out")},_=>Err("usage")},
+        // `ntmtest drop <x> <y> <z> <cx> <cy> <cz>`: the rod out as an `Items` effect at the cell cx cy cz (owed when its
+        // chunk is out, D1+D2 fatia 4).
+        (Some("drop"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>if server.native_test_drop(&dim,p,[x as i32,y as i32,z as i32]){Ok(())}else{Err("no rod to put out")},_=>Err("usage")},
         // The player's state swapped in, as a player's own action has it (the snapshot of a transfer needs it).
         (Some("take"),Some(p))=>host.game.native_visit_player(&me,|g|{
             let mut host=Host{game:g,buttons:Vec::new()};

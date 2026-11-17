@@ -414,6 +414,9 @@ struct Ready {
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
     /// place, taken by their reactor's next accepted step.
     rbmk_ejects: BTreeMap<Key, [f64; 3]>,
+    /// Test hooks only (`Server::native_test_drop`): fuel channels asked to put their rod out as an `Items` effect at a
+    /// cell, taken by their reactor's next accepted step.
+    rbmk_drops: BTreeMap<Key, Pos>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
