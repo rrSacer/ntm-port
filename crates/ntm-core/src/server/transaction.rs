@@ -414,19 +414,27 @@ impl Server {
                 let Some(resistance) = host.block_resistance(&key.0, p) else { missing = true; return BeamCell::Transparent };
                 BeamCell::Obstacle { liquid: matches!(id, "minecraft:water" | "minecraft:lava"), resistance }
             }, || random.next_int(5) == 0);
-            if missing || mode == Wavelength::Drx { return false; }
+            if missing { return false; }
             let mut blocks = Vec::new();
             for effect in effects {
                 match effect {
                     BeamEffect::RemoveLiquid { at: i } => blocks.push((at(i), "minecraft:air".into())),
                     BeamEffect::Ignite { at: i, digamma: false } => blocks.push((at(i), "minecraft:fire".into())),
-                    BeamEffect::Ignite { digamma: true, .. } | BeamEffect::SetSilex { .. } | BeamEffect::BreakSilex { .. } => return false,
+                    // TileEntityFEL:187-190: the burnt block becomes digamma fire (matter with polaroid 11), the one
+                    // under it digamma ash.
+                    BeamEffect::Ignite { at: i, digamma: true } => {
+                        blocks.push((at(i), crate::digamma::drx_block(self.polaroid).into()));
+                        let [x, y, z] = at(i);
+                        blocks.push(([x, y - 1, z], crate::digamma::ASH_BLOCK.into()));
+                    }
+                    BeamEffect::SetSilex { .. } | BeamEffect::BreakSilex { .. } => return false,
                 }
             }
             if !blocks.is_empty() && host.set_blocks(&key.0, &blocks).is_err() { return false; }
-            victims.extend(self.players.iter().filter(|p| p.dim == key.0 && crate::fel::beam_intersects_player(key.1, dir, previous_distance, p.pos)).map(|p| (p.id.clone(), p.creative, mode)));
+            victims.extend(self.players.iter().filter(|p| p.dim == key.0 && crate::fel::beam_intersects_player(key.1, dir, previous_distance, p.pos)).map(|p| (p.clone(), mode)));
         }
-        for (id, creative, mode) in victims {
+        for (p, mode) in victims {
+            let (id, creative) = (p.id.clone(), p.creative);
             match mode {
                 Wavelength::Visible => { host.effect(&id, "minecraft:blindness", 60*60*65536, 0); host.fel_fire(&id, 200); }
                 Wavelength::Ir | Wavelength::Uv => host.fel_fire(&id, 200),
@@ -434,7 +442,8 @@ impl Server {
                     self.note_contamination(&id, 25_000);
                     if !creative && !self.in_grace(&id) { self.expose_player(host, &id, 25_000); }
                 }
-                Wavelength::Drx | Wavelength::Null => {}
+                Wavelength::Drx => { self.digamma_dose(host, &p, crate::digamma::FEL_DRX); }
+                Wavelength::Null => {}
             }
         }
         true
@@ -1194,7 +1203,7 @@ mod dose_tests {
     use crate::radiation::Dose;
 
     #[derive(Default)]
-    struct FelWorld { unavailable: bool, writes: Vec<(Pos, String)>, fire: Vec<(String, u32)>, effects: Vec<(String, String, u32)> }
+    struct FelWorld { unavailable: bool, stone: bool, writes: Vec<(Pos, String)>, fire: Vec<(String, u32)>, effects: Vec<(String, String, u32)>, digamma: BTreeMap<String, f32> }
     impl Kv for FelWorld {
         fn get(&mut self, _: &str) -> Option<Vec<u8>> { None }
         fn set(&mut self, _: &str, _: &[u8]) -> Result<(), String> { Ok(()) }
@@ -1202,7 +1211,13 @@ mod dose_tests {
     }
     impl ServerHost for FelWorld {
         fn get_block(&mut self, _: &str, p: Pos) -> Option<String> {
-            if self.unavailable { None } else if p == [0, 65, -5] { Some("minecraft:water".into()) } else { Some("minecraft:air".into()) }
+            if self.unavailable { None } else if p == [0, 65, -5] { Some(if self.stone { "minecraft:stone" } else { "minecraft:water" }.into()) } else { Some("minecraft:air".into()) }
+        }
+        fn player_digamma(&mut self, id: &str) -> Option<f32> { Some(self.digamma.get(id).copied().unwrap_or(0.0)) }
+        fn commit_player_digamma(&mut self, id: &str, expected: f32, desired: f32) -> bool {
+            if self.digamma.get(id).copied().unwrap_or(0.0) != expected { return false; }
+            self.digamma.insert(id.into(), desired);
+            true
         }
         fn fel_opaque(&mut self, _: &str, p: Pos) -> Option<bool> { Some(p == [0, 65, -5]) }
         fn block_resistance(&mut self, _: &str, _: Pos) -> Option<f32> { Some(1.0) }
@@ -1226,6 +1241,39 @@ mod dose_tests {
         let crate::machine::Data::Fel(f) = &server.ready.world.machines[&key].data else { panic!() };
         assert_eq!((f.power, f.distance), (250, 5));
         assert_eq!(host.writes, vec![([0, 65, -5], "minecraft:air".into())]);
+    }
+
+    #[test]
+    fn drx_beam_leaves_digamma_fire_on_ash_and_doses_the_players_in_it() {
+        for (polaroid, left) in [(1, "ntm:fire_digamma"), (11, "ntm:digamma_matter")] {
+            let mut host = FelWorld { stone: true, ..Default::default() };
+            let mut server = Server::native(&mut host, 0);
+            server.polaroid = polaroid;
+            server.blasts.entered.insert("in".into(), 0);
+            server.blasts.entered.insert("out".into(), 0);
+            let key = ("minecraft:overworld".to_string(), [0, 64, 0]);
+            let mut machine = Machine::new(Kind::Fel, crate::fel::BLOCK, Some("north".into()));
+            let crate::machine::Data::Fel(f) = &mut machine.data else { panic!() };
+            f.on = true; f.distance = 5;
+            f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_digamma", 1));
+            server.ready.world.machines.insert(key.clone(), machine);
+            server.set_players([("in", [0.5, 64.0, -2.0]), ("out", [0.5, 64.0, 3.0])].into_iter().map(|(id, pos)| PlayerInfo { id: id.into(), name: id.into(), dim: key.0.clone(), pos, creative: false }).collect());
+            let mut ticks = 0;
+            while host.writes.is_empty() {
+                server.tick = 200 + ticks;
+                let crate::machine::Data::Fel(f) = &mut server.ready.world.machines.get_mut(&key).unwrap().data else { panic!() };
+                f.power = 303_750;
+                assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new()));
+                ticks += 1;
+                assert!(ticks < 100);
+            }
+            assert_eq!(host.writes, vec![([0, 65, -5], left.into()), ([0, 64, -5], "ntm:ash_digamma".into())]);
+            // 0.1F a tick, summed in float.
+            let mut expected = 0.0f32;
+            for _ in 0..ticks { expected = crate::digamma::increment(expected, 0.1); }
+            assert_eq!(host.digamma["in"], expected);
+            assert!(!host.digamma.contains_key("out"));
+        }
     }
 
     #[test]
