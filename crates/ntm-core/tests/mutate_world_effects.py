@@ -143,6 +143,10 @@ MUTANTS = {
          '        if without_blade {\n            self.ready.sawmills_without_blade.insert(key, None);',
          '        if without_blade && let Some(Data::Sawmill(s)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data) {\n            s.has_blade = false;\n        } else if without_blade {\n            self.ready.sawmills_without_blade.insert(key, None);',
          'an_old_sawmill_never_takes_the_word_of_the_one_placed_after_it'),
+        ('MigratingRemovalOnEngine', 'crates/ntm-core/src/server/generation.rs',
+         '(container_bridge::layout(&m.block).is_some() && !container_bridge::migrating(&m.data))',
+         'container_bridge::layout(&m.block).is_some()',
+         'an_old_sawmill_removed_before_its_first_slots_in_drops_its_records_log_once'),
     ],
     # Step 3c: the sawmill's slots are its block entity's, open to hoppers by the Java's rules.
     'hopper': [

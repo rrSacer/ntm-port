@@ -326,6 +326,29 @@ fn a_sawmill_restored_from_the_journal_keeps_the_log_in_its_block_entity() {
     assert_eq!(sawmill(&mut reopened, core).slot(0), stack("minecraft:oak_log", 1).as_ref());
 }
 
+/// The second review's P3: a sawmill of the old format (its slots in its record, a block entity from before its
+/// container) broken before its first `slots_in`. Its removal does not say the engine holds its slots: the log its
+/// record held drops once, from the model.
+#[test]
+fn an_old_sawmill_removed_before_its_first_slots_in_drops_its_records_log_once() {
+    let p = [0, 70, 0];
+    let key = (OW.to_string(), p);
+    let world = played().world;
+    let json = r#"{"generation":1,"block":"ntm:machine_sawmill","facing":"north","data":{"k":"Sawmill","has_blade":true,"progress":0,"slots":[{"id":"minecraft:oak_log","count":1},null,null],"done":0}}"#;
+    world.borrow_mut().set(OW, p, SAWMILL);
+    world.borrow_mut().saved.insert(key.clone(), json.into());
+    let mut g = Game::new(world);
+    g.events_once = true;
+    assert_eq!(sawmill(&mut g, p).slot(0), stack("minecraft:oak_log", 1).as_ref(), "adopted with its record's log");
+    g.place(p, "minecraft:air");
+    g.server.native_record_events(&mut g.sh);
+    let removal = g.server.ready.world.removals.iter().find(|r| r.key == key).expect("its removal");
+    assert!(!removal.engine_slots, "the engine never held its slots");
+    g.run(4);
+    let logs = g.world.borrow().dropped.iter().filter(|d| d.contains("minecraft:oak_log")).count();
+    assert_eq!(logs, 1, "{:?}", g.world.borrow().dropped);
+}
+
 /// A hopper's log saws as a hand's: the block entity's slots are the truth, the outputs written back to them.
 #[test]
 fn a_log_in_the_block_entity_saws_into_its_slots() {

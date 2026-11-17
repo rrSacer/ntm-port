@@ -53,8 +53,10 @@ impl Server {
             self.ready.world.removals.push(crate::persist::Removal {
                 key: key.clone(),
                 machine: m.clone(),
+                // A machine of the old format (its slots in its record, never in its block entity) holds them in its
+                // model until its first `slots_in`: removed before, its model's contents are what drops.
                 engine_slots: self.ready.bridge.last.contains_key(key)
-                    || container_bridge::layout(&m.block).is_some(),
+                    || (container_bridge::layout(&m.block).is_some() && !container_bridge::migrating(&m.data)),
             });
         }
         self.ready.broken.insert(key.clone(), m.block.clone());
