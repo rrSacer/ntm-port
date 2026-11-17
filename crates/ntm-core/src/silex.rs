@@ -111,7 +111,7 @@ fn table() -> &'static Table {
         for (from, _) in t.items.iter().chain(t.tiny.iter()) {
             keys.insert(from.clone());
         }
-        for (from, _) in &t.dicts {
+        for from in t.dicts.keys() {
             keys.extend(crate::oredict::items(from).iter().cloned());
         }
         keys.extend(CONVERSION.iter().map(|f| format!("fluid:{f}")));
@@ -467,9 +467,7 @@ mod tests {
 
     #[test]
     fn only_peroxide_loads_an_item_and_only_onto_its_own_fill() {
-        let mut s = Silex::default();
-        s.tank = Tank { fluid: "water".into(), mb: 16_000, cap: TANK };
-        s.load_delay = 20;
+        let mut s = Silex { tank: Tank { fluid: "water".into(), mb: 16_000, cap: TANK }, load_delay: 20, ..Default::default() };
         put(&mut s, INPUT, "ntm:ingot_uranium", 1);
         s.step();
         assert_eq!(s.fill, 0);
@@ -497,27 +495,21 @@ mod tests {
 
     #[test]
     fn a_converted_fluid_loads_50_a_tick_as_its_own_icon() {
-        let mut s = Silex::default();
-        s.tank = Tank { fluid: "uf6".into(), mb: 120, cap: TANK };
+        let mut s = Silex { tank: Tank { fluid: "uf6".into(), mb: 120, cap: TANK }, ..Default::default() };
         s.step();
         assert_eq!((s.fill, s.tank.mb, s.current.as_deref()), (50, 70, Some("fluid:uf6")));
         s.step();
         s.step();
         assert_eq!((s.fill, s.tank.mb), (120, 0));
         // A fluid with a recipe of its own does the same; one without, nothing.
-        let mut s = Silex::default();
-        s.tank = Tank { fluid: "redmud".into(), mb: 1_000, cap: TANK };
+        let mut s = Silex { tank: Tank { fluid: "redmud".into(), mb: 1_000, cap: TANK }, ..Default::default() };
         s.step();
         assert_eq!((s.fill, s.current.as_deref()), (50, Some("fluid:redmud")));
-        let mut s = Silex::default();
-        s.tank = Tank { fluid: "water".into(), mb: 1_000, cap: TANK };
+        let mut s = Silex { tank: Tank { fluid: "water".into(), mb: 1_000, cap: TANK }, ..Default::default() };
         s.step();
         assert_eq!((s.fill, s.tank.mb, s.current), (0, 1_000, None));
         // A fill of another item keeps it: the fluid waits.
-        let mut s = Silex::default();
-        s.tank = Tank { fluid: "uf6".into(), mb: 1_000, cap: TANK };
-        s.fill = 900;
-        s.current = Some("ntm:ingot_uranium".into());
+        let mut s = Silex { tank: Tank { fluid: "uf6".into(), mb: 1_000, cap: TANK }, fill: 900, current: Some("ntm:ingot_uranium".into()), ..Default::default() };
         s.step();
         assert_eq!((s.fill, s.tank.mb, s.current.as_deref()), (900, 1_000, Some("ntm:ingot_uranium")));
     }
@@ -567,6 +559,17 @@ mod tests {
         assert_eq!(got, expected);
         assert_eq!(s.fill, 0);
         assert_eq!(s.current, None, "an empty fill forgets its item");
+        // The index kept is `index % total + 137`; plutonium's weights 3, 4, 2 (total 9) pick by where it falls.
+        let mut s = Silex { fill: 300, current: Some("ntm:ingot_plutonium".into()), ..peroxide(0) };
+        let mut picks = Vec::new();
+        for _ in 0..3 {
+            s.progress = PROCESS_TIME - 1;
+            s.mode = Wavelength::Visible;
+            s.step();
+            picks.push((s.recipe_index, s.slots[QUEUE.start].take().map(|x| x.id)));
+        }
+        let some = |i: &str| Some(i.to_string());
+        assert_eq!(picks, [(137, some("ntm:nugget_pu238")), (139, some("ntm:nugget_pu238")), (141, some("ntm:nugget_pu239"))]);
     }
 
     #[test]
@@ -627,13 +630,7 @@ mod tests {
 
     #[test]
     fn the_state_outside_the_slots_round_trips() {
-        let mut s = Silex::default();
-        s.fill = 1_234;
-        s.current = Some("fluid:uf6".into());
-        s.progress = 42;
-        s.recipe_index = 274;
-        s.load_delay = 7;
-        s.tank = Tank { fluid: "uf6".into(), mb: 555, cap: TANK };
+        let s = Silex { fill: 1_234, current: Some("fluid:uf6".into()), progress: 42, recipe_index: 274, load_delay: 7, tank: Tank { fluid: "uf6".into(), mb: 555, cap: TANK }, ..Default::default() };
         let mut back = Silex::default();
         back.load_state(&s.save_state());
         assert_eq!(back, s);
