@@ -513,7 +513,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_tower_small",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1712,7 +1712,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
-    if spec.kind == Kind::Zirnox {
+    if spec.kind == Kind::Zirnox || crate::steam::is_tower(spec.id) {
         return vec![vec![]];
     }
     if spec.id == "ntm:pile_device__vent" {

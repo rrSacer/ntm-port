@@ -5110,6 +5110,14 @@
 1
 ]
 },
+"ntm:machine_tower_small": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:machine_turbinegas": {
 "inventory": [
 8,

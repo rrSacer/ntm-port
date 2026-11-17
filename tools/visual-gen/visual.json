@@ -37824,8 +37824,37 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_tower_small": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineTowerSmall {18,0,2,2,2,2} offset 2, RenderSmallTower (no rotation); no GUI in HBM (ILookOverlay only)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            18,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/tower_small.obj",
+        "obj_from": "models/machines/tower_small.obj",
+        "texture": "ntm:textures/models/machines/tower_small.png",
+        "texture_from": "textures/models/machines/tower_small.png",
+        "rotation": 0,
+        "radius": 20.0
+      }
     },
     "ntm:machine_tower_large": {
       "auto": false,

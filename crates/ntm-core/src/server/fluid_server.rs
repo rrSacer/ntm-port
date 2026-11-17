@@ -167,6 +167,15 @@ impl Server {
                         faces.insert(p, vec![dirs]);
                     }
                 }
+                if let Some(m) = self.ready.world.machines.get(&(dim.clone(), core)) {
+                    let tower = crate::steam::tower_ports(&m.block, core);
+                    if !tower.is_empty() {
+                        faces.insert(core, vec![vec![]]);
+                        for (p, d) in tower {
+                            faces.insert(p, vec![vec![d]]);
+                        }
+                    }
+                }
             }
             let nets = if faces.is_empty() { fluid_networks(&cables,&machines,&proxies) } else { fluid_networks_at(&cables, &machines, &proxies, &faces) };
             p.done.push((dim, f, nets));

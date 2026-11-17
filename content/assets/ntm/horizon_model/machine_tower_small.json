@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/tower_small.obj",
+  "texture": "ntm:textures/models/machines/tower_small.png",
+  "rotation": 0,
+  "radius": 20.0
+}

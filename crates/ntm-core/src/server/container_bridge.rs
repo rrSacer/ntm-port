@@ -796,6 +796,10 @@ pub fn world_cell(core: Pos, facing: [i32; 3], l: [i32; 3]) -> Pos {
 /// The cells that carry the fluids of the multiblock of `block` at `core`.
 pub fn fluid_proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
     if block == crate::zirnox::BLOCK { return crate::zirnox::Zirnox::port_cells(core,facing).into_iter().map(|(p,_)|p).collect(); }
+    let tower = crate::steam::tower_ports(block, core);
+    if !tower.is_empty() {
+        return tower.into_iter().map(|(p, _)| p).collect();
+    }
     let Some((_, cells)) = FLUID_PROXIES.iter().find(|(b, _)| *b == block) else {
         return Vec::new();
     };
