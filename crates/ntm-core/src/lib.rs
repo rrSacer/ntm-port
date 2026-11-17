@@ -21,6 +21,7 @@ pub mod solar_stirling;
 pub mod crafter;
 pub mod annihilator;
 pub mod cyclotron;
+pub mod digamma;
 pub mod doors_security;
 pub mod electrolyser;
 pub mod energy;
