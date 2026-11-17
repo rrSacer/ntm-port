@@ -32,9 +32,9 @@ PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
 SAWMILL, BLADE = 'ntm:machine_sawmill', 'ntm:sawblade'
 VARIANT = SAWMILL + '[minecraft:custom_data={"ntm:no_blade":1b}]'
 WOOD = ('minecraft:oak_planks', 'minecraft:oak_log', 'ntm:powder_sawdust')
-# Where the sawmill's core stands, by scenario: x=47 in chunk 2 (x=40 well inside it: the blade, thrown out of the
-# machine's own top cell in front, is pushed out of it at random and must stay in the core's chunk for `overspeed`);
-# z=8 in chunk 0, z=16 in chunk 1.
+# Where the sawmill's core stands, by scenario: x=47 in chunk 2 (x=40 well inside it: the blade appears in the air one
+# up in front, with a dropped item's random motion, and must stay in the core's chunk for `overspeed`); z=8 in chunk 0,
+# z=16 in chunk 1.
 CORE = {'overspeed': (40, 101, 8), 'border': (47, 101, 16), 'break': (47, 101, 8), 'hand': (47, 101, 8)}[SCENARIO]
 OTHER = (55, 101, 8)
 CHEST = (34, 101, 8)
