@@ -439,6 +439,8 @@ mod tests {
         let whole = output("ntm:nuclear_waste_long__uranium235").unwrap();
         assert_eq!(tiny.produced, (whole.produced / 900) * 100);
         assert_eq!((tiny.consumed, tiny.laser), (whole.consumed, whole.laser));
+        // dustUranium is translated to ingotUranium (dictTranslation).
+        assert_eq!(output("ntm:powder_uranium").map(|r| (r.produced, r.laser)), Some((900, Wavelength::Visible as u8)));
         assert!(output("minecraft:stone").is_none());
         assert!(output("fluid:water").is_none());
         assert!(output("fluid:redmud").is_some());
@@ -511,6 +513,13 @@ mod tests {
         s.tank = Tank { fluid: "water".into(), mb: 1_000, cap: TANK };
         s.step();
         assert_eq!((s.fill, s.tank.mb, s.current), (0, 1_000, None));
+        // A fill of another item keeps it: the fluid waits.
+        let mut s = Silex::default();
+        s.tank = Tank { fluid: "uf6".into(), mb: 1_000, cap: TANK };
+        s.fill = 900;
+        s.current = Some("ntm:ingot_uranium".into());
+        s.step();
+        assert_eq!((s.fill, s.tank.mb, s.current.as_deref()), (900, 1_000, Some("ntm:ingot_uranium")));
     }
 
     #[test]
@@ -591,6 +600,13 @@ mod tests {
         assert_eq!(s.slots[OUTPUT], None);
         assert_eq!(s.slots[QUEUE.start + 1], Some(Stack::new("ntm:powder_boron_tiny", 1)));
         assert_eq!(stack_limit("ntm:powder_boron_tiny"), 64);
+        // Another item's stack is passed by.
+        let mut s = peroxide(0);
+        put(&mut s, OUTPUT, "ntm:nugget_u238", 1);
+        put(&mut s, QUEUE.start, "ntm:nugget_u235", 3);
+        s.step();
+        assert_eq!(s.slots[QUEUE.start + 1], Some(Stack::new("ntm:nugget_u238", 1)));
+        assert_eq!(s.slots[QUEUE.start], Some(Stack::new("ntm:nugget_u235", 3)));
     }
 
     #[test]
@@ -602,6 +618,11 @@ mod tests {
         s.step();
         assert_eq!(s.tank.fluid, "uf6");
         assert!(s.slots[IDENTIFIER].is_some(), "the identifier stays");
+        // A full tank of peroxide empties into it, one a tick, the empty one out.
+        let mut s = peroxide(0);
+        put(&mut s, CONTAINER_IN, "ntm:fluid_tank_full__peroxide", 2);
+        s.step();
+        assert_eq!((s.tank.mb, s.slots[CONTAINER_OUT].clone()), (1_000, Some(Stack::new("ntm:fluid_tank_empty", 1))));
     }
 
     #[test]

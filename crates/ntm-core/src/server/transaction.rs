@@ -1349,7 +1349,7 @@ mod dose_tests {
 
     #[test]
     fn a_silex_across_the_beam_or_too_near_is_broken_and_dropped() {
-        for (facing, z) in [("east", -9), ("north", -4)] {
+        for (facing, z) in [("east", -9), ("north", -4), ("north", -5)] {
             let (mut host, mut server, key, core, outside) = fel_and_silex(facing, z);
             assert!(server.fel_tick(&mut host, std::slice::from_ref(&key), &BTreeSet::new(), &outside));
             assert!(server.ready.silex_lasers.is_empty(), "{facing} {z}");
