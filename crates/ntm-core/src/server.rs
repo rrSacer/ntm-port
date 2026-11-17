@@ -460,9 +460,6 @@ struct Ready {
     /// event of that generation creates: a placement the engine undid in the same tick never lends its word to the
     /// next. Not saved: a save takes the block changes before it captures the chunks.
     sawmills_without_blade: BTreeMap<Key, Option<u64>>,
-    /// D3: the sawmills the `Placed` events created since the server last took its events: a word of their item that
-    /// comes after its own event (`native_sawmill_placed`) still reaches the machine it was for.
-    sawmills_placed_now: BTreeSet<Key>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
@@ -578,9 +575,6 @@ impl Server {
                 let id = blockstate::id_of(&state);
                 let key = (dim, pos);
                 if let Some(m) = machine_from_state(&state) {
-                    if let crate::machine::Data::Sawmill(_) = &m.data {
-                        r.sawmills_placed_now.insert(key.clone());
-                    }
                     r.world.machines.insert(key.clone(), m);
                     r.loaded.insert(key.clone(), true);
                     r.seen.insert(key.clone());

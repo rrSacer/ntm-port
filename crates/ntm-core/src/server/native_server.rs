@@ -222,7 +222,6 @@ impl Server {
     /// Record confirmed changes without simulating a machine. The native save
     /// callback also uses this when a player quits between two server ticks.
     pub fn native_record_events(&mut self,host:&mut impl ServerHost){
-        self.ready.sawmills_placed_now.clear();
         for (e,generation) in std::mem::take(&mut self.queued){self.native_event(host,e,generation);}
         // A sawmill's word is given with the block changes it comes before: its `Placed` event took it, or waits in
         // the queue (behind a removal at its cell). Any other is spent (the placement was undone in the same tick).

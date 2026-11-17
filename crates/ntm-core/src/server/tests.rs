@@ -315,6 +315,8 @@ impl ServerHost for SHost {
 /// One game: a world and the server.
 struct Game {
     tick: u64,
+    /// The tick alone takes the events (see `step`).
+    events_once: bool,
     world: Rc<RefCell<World>>,
     server: Server,
     sh: SHost,
@@ -351,11 +353,15 @@ impl Game {
         for ((dim, p), json) in saved {
             assert!(server.native_adopt(&dim, p, &json), "{json}");
         }
-        Self { tick: 0, world, server, sh }
+        Self { tick: 0, events_once: false, world, server, sh }
     }
-    /// One tick: the server's, then its block writes.
+    /// One tick: the server's, then its block writes. By default the events are taken before the tick too, as a host
+    /// call between two ticks does (`reconcile`, on a player's use), so a machine placed now has its block entity in
+    /// this tick; with `events_once` only the tick takes them, as a tick without such a call.
     fn step(&mut self) {
-        self.server.native_record_events(&mut self.sh);
+        if !self.events_once {
+            self.server.native_record_events(&mut self.sh);
+        }
         let confirmed=self.server.ready.bridge.last.clone();
         for (k,m) in &mut self.server.ready.world.machines {
             let mut w=self.world.borrow_mut();

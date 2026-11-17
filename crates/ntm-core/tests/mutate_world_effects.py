@@ -87,9 +87,6 @@ MUTANTS = {
     ],
     # The independent review of the sawmill (P1-1, P2-1 and its P3s).
     'review': [
-        ('LateWordLost', SAWMILL,
-         '        if self.ready.sawmills_placed_now.contains(&key) {', '        if false && self.ready.sawmills_placed_now.contains(&key) {',
-         'a_word_given_after_its_placed_event_still_takes_the_blade'),
         ('SpentWordKept', 'crates/ntm-core/src/server/native_server.rs',
          '        self.ready.sawmills_without_blade.retain(|k,g|g.is_some_and(|g|waiting.contains(&(k.clone(),g))));', '',
          'a_word_whose_placement_was_undone_is_spent'),
@@ -142,6 +139,10 @@ MUTANTS = {
          '                if let Some(n) = slotted(&mut m.data)\n                    && !n.slots_recorded()\n',
          '                if let Some(n) = slotted(&mut m.data)\n                    && false && !n.slots_recorded()\n',
          'a_sawmill_restored_from_the_journal_keeps_the_log_in_its_block_entity'),
+        ('WordToTheMachineThere', SAWMILL,
+         '        if without_blade {\n            self.ready.sawmills_without_blade.insert(key, None);',
+         '        if without_blade && let Some(Data::Sawmill(s)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data) {\n            s.has_blade = false;\n        } else if without_blade {\n            self.ready.sawmills_without_blade.insert(key, None);',
+         'an_old_sawmill_never_takes_the_word_of_the_one_placed_after_it'),
     ],
     # Step 3c: the sawmill's slots are its block entity's, open to hoppers by the Java's rules.
     'hopper': [

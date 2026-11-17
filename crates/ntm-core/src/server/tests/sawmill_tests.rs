@@ -6,6 +6,14 @@ use crate::server::container_bridge::Stack;
 
 const SAWMILL: &str = "ntm:machine_sawmill[facing=north,honey_level=0]";
 
+/// A game whose ticks take their events once, as the game's own (the second review's residual P2: a test of the words
+/// must not pass on an extra pass of the events).
+fn played() -> Game {
+    let mut g = game();
+    g.events_once = true;
+    g
+}
+
 fn sawmill(g: &mut Game, p: Pos) -> Sawmill {
     let Data::Sawmill(s) = g.machine(p).data else { panic!("no sawmill at {p:?}") };
     s
@@ -13,7 +21,7 @@ fn sawmill(g: &mut Game, p: Pos) -> Sawmill {
 
 #[test]
 fn a_sawmill_placed_from_its_item_without_blade_has_none_and_drops_that_variant() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.server.native_sawmill_placed(OW, p, true);
     g.place(p, SAWMILL);
@@ -26,6 +34,7 @@ fn a_sawmill_placed_from_its_item_without_blade_has_none_and_drops_that_variant(
     assert_eq!(g.server.native_sawmills_without_blade(), [(OW.to_string(), p)], "the model alone, the word taken");
     // Its record keeps it: the world opened again.
     let mut reopened = Game::new(Rc::new(RefCell::new(g.world.borrow().clone())));
+    reopened.events_once = true;
     reopened.run(2);
     assert!(!sawmill(&mut reopened, p).has_blade);
     assert!(reopened.server.native_sawmill_without_blade(OW, p));
@@ -33,7 +42,7 @@ fn a_sawmill_placed_from_its_item_without_blade_has_none_and_drops_that_variant(
 
 #[test]
 fn a_plain_sawmill_keeps_its_blade_and_drops_its_plain_item() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.server.native_sawmill_placed(OW, p, false);
     g.place(p, SAWMILL);
@@ -45,7 +54,7 @@ fn a_plain_sawmill_keeps_its_blade_and_drops_its_plain_item() {
 
 #[test]
 fn the_item_without_blade_belongs_to_its_own_placement_only() {
-    let mut g = game();
+    let mut g = played();
     let (here, there) = ([0, 70, 0], [8, 70, 0]);
     // A word comes just before its own block change (the host gives both together): another sawmill placed elsewhere
     // in the same delivery keeps its blade.
@@ -71,37 +80,31 @@ fn the_item_without_blade_belongs_to_its_own_placement_only() {
     assert!(sawmill(&mut g, here).has_blade);
 }
 
-/// A host that took the block changes before the word of the item that made one (the review's P1-1): the word still
-/// reaches the machine its event created, and is kept.
+/// The second review's residual P2: a plain sawmill A placed in one tick, broken in the next, and a sawmill without its
+/// blade B placed at the same cell before the server took any of it. The word is B's: it never reaches A's old model,
+/// and B has no blade (else A's item kept its blade and B had one too).
 #[test]
-fn a_word_given_after_its_placed_event_still_takes_the_blade() {
-    let mut g = game();
+fn an_old_sawmill_never_takes_the_word_of_the_one_placed_after_it() {
+    let mut g = played();
     let p = [0, 70, 0];
     g.place(p, SAWMILL);
-    g.server.native_record_events(&mut g.sh);
-    assert!(sawmill(&mut g, p).has_blade, "its event taken first, with the blade");
-    g.server.native_sawmill_placed(OW, p, true);
-    assert!(!sawmill(&mut g, p).has_blade);
-    assert_eq!(g.server.native_sawmills_without_blade(), [(OW.to_string(), p)], "the model, no word left over");
-    g.run(2);
-    assert!(!sawmill(&mut g, p).has_blade);
-    let mut reopened = Game::new(Rc::new(RefCell::new(g.world.borrow().clone())));
-    reopened.run(2);
-    assert!(!sawmill(&mut reopened, p).has_blade, "kept in its record");
-    // A word after its events of an earlier delivery is for no machine of now: a plain sawmill keeps its blade.
-    let q = [8, 70, 0];
-    g.place(q, SAWMILL);
     g.run(1);
-    g.server.native_sawmill_placed(OW, q, true);
-    g.run(2);
-    assert!(sawmill(&mut g, q).has_blade);
+    assert!(sawmill(&mut g, p).has_blade);
+    // The next tick's delivery, in the host's order: the break, then B's word before B's own change.
+    g.place(p, "minecraft:air");
+    g.server.native_sawmill_placed(OW, p, true);
+    assert!(sawmill(&mut g, p).has_blade, "A's model is not B's");
+    g.place(p, SAWMILL);
+    g.run(6);
+    assert!(!sawmill(&mut g, p).has_blade, "B has no blade");
+    assert_eq!(g.server.native_sawmills_without_blade(), [(OW.to_string(), p)], "B's model, no word left over");
 }
 
 /// One word, one placement: in one delivery, a sawmill placed from its item without blade, broken, and another put at
 /// the same cell without a word (a command); the second has its blade.
 #[test]
 fn a_word_is_taken_by_one_placement_only() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.server.native_sawmill_placed(OW, p, true);
     g.place(p, SAWMILL);
@@ -117,7 +120,7 @@ fn a_word_is_taken_by_one_placement_only() {
 /// the events it came with: a sawmill put there later by other means has its blade.
 #[test]
 fn a_word_whose_placement_was_undone_is_spent() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.server.native_sawmill_placed(OW, p, true);
     g.run(1);
@@ -130,7 +133,7 @@ fn a_word_whose_placement_was_undone_is_spent() {
 
 #[test]
 fn a_sawmill_on_a_hot_firebox_saws_a_log_into_planks() {
-    let mut g = game();
+    let mut g = played();
     let (core, source) = ([0, 71, 0], [0, 70, 0]);
     g.place(source, "ntm:heater_firebox[facing=north,honey_level=0]");
     g.place(core, SAWMILL);
@@ -174,7 +177,7 @@ fn engine_slots(g: &Game, p: Pos) -> Vec<Option<crate::server::container_bridge:
 
 #[test]
 fn a_blade_in_hand_goes_back_into_a_sawmill_without_one_in_one_transfer() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.server.native_sawmill_placed(OW, p, true);
     g.place(p, SAWMILL);
@@ -200,7 +203,7 @@ fn a_blade_in_hand_goes_back_into_a_sawmill_without_one_in_one_transfer() {
 
 #[test]
 fn the_outputs_go_to_the_player_and_what_does_not_fit_is_thrown_once() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.place(p, SAWMILL);
     g.run(2);
@@ -220,7 +223,7 @@ fn the_outputs_go_to_the_player_and_what_does_not_fit_is_thrown_once() {
 /// component the port's stack does not keep) are another stack (the review's P3).
 #[test]
 fn the_outputs_never_pile_onto_a_stack_with_other_components() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.place(p, SAWMILL);
     g.run(2);
@@ -236,7 +239,7 @@ fn the_outputs_never_pile_onto_a_stack_with_other_components() {
 
 #[test]
 fn one_of_the_stack_in_hand_goes_into_an_empty_input_only_when_it_has_an_output() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.place(p, SAWMILL);
     g.run(2);
@@ -259,7 +262,7 @@ fn one_of_the_stack_in_hand_goes_into_an_empty_input_only_when_it_has_an_output(
 /// put in is not doubled by a hand, and outputs a hopper took are not given again.
 #[test]
 fn a_use_reads_the_block_entity_a_hopper_changed() {
-    let mut g = game();
+    let mut g = played();
     let p = [0, 70, 0];
     g.place(p, SAWMILL);
     g.run(2);
@@ -284,7 +287,7 @@ fn a_use_reads_the_block_entity_a_hopper_changed() {
 /// takes the block entity's log, never writes empty slots over it.
 #[test]
 fn a_sawmill_restored_from_the_journal_keeps_the_log_in_its_block_entity() {
-    let mut g = game();
+    let mut g = played();
     g.world.borrow_mut().explosions = true;
     let (core, source) = ([0, 71, 0], [0, 70, 0]);
     g.place(source, "ntm:heater_firebox[facing=north,honey_level=0]");
@@ -313,6 +316,7 @@ fn a_sawmill_restored_from_the_journal_keeps_the_log_in_its_block_entity() {
     world.borrow_mut().saved.insert(key.clone(), old_json);
     world.borrow_mut().engine.get_mut(&key).unwrap().0 = old_slots.clone();
     let mut reopened = Game::new(world);
+    reopened.events_once = true;
     assert!(reopened.server.ready.restored.contains(&key), "restored from the journal");
     // Its batch (the blast, then the blade) settles first; then the sawmill steps again.
     reopened.run(6);
@@ -325,7 +329,7 @@ fn a_sawmill_restored_from_the_journal_keeps_the_log_in_its_block_entity() {
 /// A hopper's log saws as a hand's: the block entity's slots are the truth, the outputs written back to them.
 #[test]
 fn a_log_in_the_block_entity_saws_into_its_slots() {
-    let mut g = game();
+    let mut g = played();
     let (core, source) = ([0, 71, 0], [0, 70, 0]);
     g.place(source, "ntm:heater_firebox[facing=north,honey_level=0]");
     g.place(core, SAWMILL);

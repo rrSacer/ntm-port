@@ -59,20 +59,13 @@ impl Server {
         }
     }
 
-    /// A player placed a sawmill item at `pos` (`native_place_block`, given before the block change it makes): without
-    /// its blade, the machine the `Placed` event of that change creates has none. Given after that event was taken (a
-    /// host that took the block changes without its words first), it reaches the machine the event created; a word
-    /// whose event never comes is spent with the events it came with (`native_record_events`).
+    /// A player placed a sawmill item at `pos` (`native_place_block`, given before the block change it makes: every host
+    /// call that hands the changes over hands the words first): without its blade, the machine the `Placed` event of
+    /// that change creates has none. A word whose event never comes is spent with the events it came with
+    /// (`native_record_events`). A word is never applied to a machine already there: that one may be an older sawmill
+    /// at the same cell, broken since (the second review's residual P2).
     pub fn native_sawmill_placed(&mut self, dim: &str, pos: Pos, without_blade: bool) {
         let key = (dim.to_string(), pos);
-        if self.ready.sawmills_placed_now.contains(&key) {
-            if without_blade
-                && let Some(Data::Sawmill(s)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data)
-            {
-                s.has_blade = false;
-            }
-            return;
-        }
         if without_blade {
             self.ready.sawmills_without_blade.insert(key, None);
         } else if self.ready.sawmills_without_blade.get(&key) == Some(&None) {
