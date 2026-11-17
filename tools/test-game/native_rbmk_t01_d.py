@@ -7,13 +7,14 @@ Scenario D (the runner, run-rbmk-t01-proof.py --scenario d, owns the process and
            cell (200, 101, 8) of chunk (12, 0), which is not loaded: no block effect goes before it in the batch, so
            the item is owed at once in the record of the reactor's chunk (`pending` > 0 on the ledger), with the
            channel emptied in the same step; then the save the runner cuts
-  verify   reopen; while (12, 0) is still out the debt stays owed; then that chunk is force-loaded and the debt is
-           paid there, once; the count is the channels, the item entities, the player and what is still owed
+  verify   reopen; while (12, 0) is still out the debt stays owed; then the player goes there and the debt is paid
+           there, once; back at the channels, the count is the channels, the item entities at both places, the
+           player and what is still owed
   again    the same on the second reopen: nothing is owed any more and nothing is paid twice
   drain    the item entities killed; nothing is owed
 With NTM_CRASH_VANILLA=1 the vanilla control: barrels at the same cells. A barrel keeps its rod while (12, 0) is out,
-as the mod's record keeps its debt; once that chunk is loaded the control takes the rod out of the barrel and puts it
-at the same cell (`summon item`), once (the stock of a container waiting for its destination).
+as the mod's record keeps its debt; once that chunk is loaded the control puts the rod at the same cell (`summon
+item`) and, back at the barrels, takes it out of its barrel, once (the stock of a container waiting for its destination).
 """
 import re
 import sys
@@ -124,45 +125,73 @@ def settled(g, timeout=90):
     return count(g)
 
 
+def at_a(g):
+    g.command('tp @s 47.5 101 4.5')
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline and not g.ctl('block %d %d %d' % SOURCE)['loaded']:
+        time.sleep(1)
+
+
+def at_b(g):
+    """The player goes to the far cell (a forced chunk that far is not brought in), as a player would; the channels'
+    chunks stay forced since prepare."""
+    # Fourteen blocks south of the cell: the paid rod is not picked up (it is counted where it lies).
+    g.command(f'tp @s {FAR[0] + .5} 140 {FAR[2] + 14.5}')
+    deadline = time.monotonic() + 90
+    while time.monotonic() < deadline and not far_loaded(g):
+        time.sleep(1)
+
+
 def verify(g, again=False):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
-    g.command('tp @s 47.5 101 4.5')
-    time.sleep(3)
-    away = count(g)
-    g.evidence['while_away' + ('_again' if again else '')] = away
-    g.check('far_chunk_out_on_reopen', not away['far_loaded'], away)
-    g.command(f'forceload add {FAR[0]} {FAR[2]}')
-    deadline = time.monotonic() + 60
-    while time.monotonic() < deadline and not far_loaded(g):
-        time.sleep(1)
-    g.check('far_chunk_loaded_for_payment', far_loaded(g), g.ctl('block %d %d %d' % FAR))
-    if VANILLA and t.slot_rods(g, SOURCE):
-        # The control's stock goes out once its destination is in.
-        g.command(f'item replace block {SOURCE[0]} {SOURCE[1]} {SOURCE[2]} container.0 with minecraft:air')
-        g.command(f'summon minecraft:item {FAR[0] + .5} {FAR[1]} {FAR[2] + .5} {{Item:{{id:"{t.FUEL}",count:1}},PickupDelay:10s}}')
+    at_a(g)
     time.sleep(2)
-    now = settled(g)
+    suffix = '_again' if again else ''
+    away = count(g)
+    g.evidence['while_away' + suffix] = away
+    g.check('far_chunk_out_on_reopen', not away['far_loaded'], away)
+    stock = t.slot_rods(g, SOURCE) if VANILLA else 0
+    at_b(g)
+    g.check('far_chunk_loaded_for_payment', far_loaded(g), g.ctl('block %d %d %d' % FAR))
+    g.evidence['channels_while_at_b' + suffix] = g.ctl('block %d %d %d' % SOURCE)
+    if VANILLA and stock:
+        # The control's stock goes out once its destination is in: the rod at the cell, then the barrel emptied.
+        g.command(f'summon minecraft:item {FAR[0] + .5} {FAR[1]} {FAR[2] + .5} {{Item:{{id:"{t.FUEL}",count:1}},PickupDelay:10s}}')
+    deadline = time.monotonic() + 60
+    while time.monotonic() < deadline and t.ledger(g)['pending']:
+        time.sleep(1)
+    time.sleep(2)
+    paid = {'entity_list': far_rods(g), 'ledger': t.ledger(g)}
+    paid['entities'] = sum(n for _, n, _ in paid['entity_list'])
+    g.evidence['at_b' + suffix] = paid
+    at_a(g)
+    if VANILLA and stock:
+        g.command(f'item replace block {SOURCE[0]} {SOURCE[1]} {SOURCE[2]} container.0 with minecraft:air')
+    time.sleep(2)
+    here = count(g)
+    now = {'columns': here['columns'], 'entities': paid['entities'] + here['entities'], 'inventory': here['inventory'],
+           'ledger': here['ledger'], 'entity_list': paid['entity_list'] + here['entity_list']}
     now['total'] = now['columns'] + now['entities'] + now['inventory']
-    g.evidence['counted' + ('_again' if again else '')] = now
+    g.evidence['counted' + suffix] = now
     g.check('no_more_than_twice', now['total'] <= 2 * TOTAL, now)
     g.check('nothing_left_to_spawn', now['ledger']['pending'] == 0, now['ledger'])
     # A paid rod lies at the far cell's chunk, never anywhere else.
-    g.check('paid_only_at_the_destination', all((int(p[0]) >> 4, int(p[2]) >> 4) == FAR_CHUNK for _, _, p in now['entity_list']),
-            now['entity_list'])
-    g.command(f'forceload remove {FAR[0]} {FAR[2]}')
+    g.check('paid_only_at_the_destination', all((int(p[0]) >> 4, int(p[2]) >> 4) == FAR_CHUNK for _, _, p in paid['entity_list'])
+            and not here['entity_list'], now['entity_list'])
     g.ctl('save')
 
 
 def drain(g):
     g.ctl('wait-ready 120')
-    g.command(f'forceload add {FAR[0]} {FAR[2]}')
-    time.sleep(3)
+    g.command('gamemode creative @s')
+    at_b(g)
     g.command('kill @e[type=minecraft:item]')
+    time.sleep(1.5)
+    at_a(g)
     time.sleep(1.5)
     led = t.ledger(g)
     g.check('nothing_owed_when_the_items_are_gone', led['pending'] == 0, led)
-    g.command(f'forceload remove {FAR[0]} {FAR[2]}')
     g.ctl('save')
 
 
