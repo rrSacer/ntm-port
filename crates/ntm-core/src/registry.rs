@@ -46,6 +46,9 @@ pub fn facing_dir(facing: &str) -> Option<crate::Pos> {
 /// The ports of a machine of `spec` facing `facing`.
 pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
     use crate::energy::DIRS;
+    if spec.id == crate::intake::BLOCK {
+        return crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().map(|(_, dirs)| dirs).collect();
+    }
     match spec.ports {
         Ports::None => Vec::new(),
         Ports::AllRound => vec![DIRS.to_vec()],
@@ -531,10 +534,10 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_intake",
-        kind: Kind::Inert,
+        kind: Kind::Intake,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Sides,
     },
     BlockSpec {
         id: "ntm:machine_compressor",
@@ -1742,6 +1745,7 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Steam
         | Kind::Welder
         | Kind::Combustion => vec![crate::energy::DIRS.to_vec()],
+        Kind::Intake => crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().next().map(|(_, d)| vec![d]).unwrap_or_default(),
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
         Kind::Heater => vec![

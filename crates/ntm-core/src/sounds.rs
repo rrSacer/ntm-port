@@ -170,6 +170,7 @@ pub fn machine(m: &Machine) -> Vec<Loop> {
             s.envelope = Envelope::Refinery;
             Some(s)
         }
+        Data::Intake(i) if i.on => Some(sound("hbm:block.motor", 0.25, 1., 10.)),
         Data::Steam(s) => match &**s {
             Steam::Turbine(t) if t.spin > 0. || t.shape == Shape::Chungus => {
                 match t.shape {
@@ -280,6 +281,17 @@ mod tests {
         }
         assert_eq!(heard, [1, 51, 61, 111]);
         assert!(machine(&m).is_empty());
+    }
+    #[test]
+    fn intake_motor_loop_matches_java_volume_pitch_and_range() {
+        let mut m = Machine::new(Kind::Intake, crate::intake::BLOCK, None);
+        assert!(machine(&m).is_empty());
+        let Data::Intake(i) = &mut m.data else { panic!() };
+        i.on = true;
+        let loops = machine(&m);
+        assert_eq!(loops.len(), 1);
+        assert_eq!(loops[0].event, "ntm:block.motor");
+        assert_eq!((loops[0].volume, loops[0].pitch, loops[0].range), (0.25, 1., 10.));
     }
     #[test]
     fn java_constant_events_and_boiler_coast_are_preserved() {

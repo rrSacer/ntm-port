@@ -132,6 +132,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::BrickFurnace(f) => Some(f),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
+        Data::Intake(i) => Some(i),
         _ => None,
     }
 }
@@ -190,6 +191,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_industrial_turbine", Layout::Native),
     ("ntm:machine_chungus", Layout::Native),
     ("ntm:machine_condenser_powered", Layout::Native),
+    ("ntm:machine_intake", Layout::Native),
     ("ntm:machine_crucible", Layout::Native),
     ("ntm:foundry_mold", Layout::Native),
     ("ntm:foundry_basin", Layout::Native),
@@ -373,6 +375,9 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
 /// Exact outward port cells, in the order of registry::ports. These do not
 /// become cables: the graph keeps each cell's faces and machine owner.
 pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
+    if block == crate::intake::BLOCK {
+        return crate::intake::Intake::port_cells(core, facing).into_iter().map(|(p, _)| p).collect();
+    }
     if block == crate::radioisotopes::RADGEN {
         return facing.and_then(crate::registry::facing_dir).map(|d|vec![[core[0]-d[0]*3,core[1],core[2]-d[2]*3]]).unwrap_or_default();
     }
@@ -413,6 +418,7 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TileEntityProxyCombo().inventory().power().fluid(): every cell of the volume.
     ("ntm:machine_arc_welder", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1], [1, 0, 0], [1, 0, 1], [-1, 1, 0], [-1, 1, 1], [0, 1, 0], [0, 1, 1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_soldering_station", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1]]),
+    ("ntm:machine_intake", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1]]),
     // TilePortShapes.comboven: the ring round the core on its two layers.
     ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),

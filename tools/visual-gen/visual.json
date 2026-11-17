@@ -37836,8 +37836,78 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_intake": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineIntake {0,0,1,0,1,0} offset 0, RenderIntake (case 2: 90, translate -0.5 0 0.5; Fan -45 deg/tick while active: value 0); no GUI in HBM",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 1,
+        "synced": [
+          0
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            0,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/intake.obj",
+        "obj_from": "models/machines/intake.obj",
+        "texture": "ntm:textures/models/machines/intake.png",
+        "texture_from": "textures/models/machines/intake.png",
+        "rotation": 90,
+        "translate": [
+          -0.5,
+          0,
+          0.5
+        ],
+        "radius": 2.5,
+        "bones": {
+          "Fan": {
+            "pivot": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.intake.fan",
+          "length": 0.4,
+          "bones": {
+            "Fan": {
+              "turn": [
+                0,
+                -360,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.intake.fan",
+            "values": [
+              {
+                "value": 0,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_compressor": {
       "auto": false,

@@ -1,0 +1,32 @@
+{
+  "obj": "ntm:models/obj/intake.obj",
+  "texture": "ntm:textures/models/machines/intake.png",
+  "rotation": 90,
+  "translate": [
+    -0.5,
+    0,
+    0.5
+  ],
+  "radius": 2.5,
+  "bones": {
+    "Fan": {
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.intake.fan",
+      "values": [
+        {
+          "value": 0,
+          "min": 1
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/machine_intake.animation.json"
+}

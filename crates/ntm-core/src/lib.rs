@@ -44,6 +44,7 @@ pub mod heater;
 pub mod kv;
 pub mod consumables;
 pub mod instruments;
+pub mod intake;
 pub mod item_hooks;
 pub mod ledger;
 pub mod machine;

@@ -95,6 +95,8 @@ pub enum Kind {
     Furnace,
     /// The arc welder and the soldering station (`crate::welders`).
     Welder,
+    /// The air intake (`crate::intake`).
+    Intake,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -199,6 +201,7 @@ pub enum Data {
     BrickFurnace(crate::furnace_brick::BrickFurnace),
     Furnace(Box<crate::furnaces::Furnace>),
     Welder(Box<crate::welders::Welder>),
+    Intake(crate::intake::Intake),
     Inert { name: String },
 }
 
@@ -306,6 +309,7 @@ impl Machine {
                 Some(f) => Data::Furnace(Box::new(f)),
                 None => Data::Inert { name: block_id.into() },
             },
+            Kind::Intake => Data::Intake(crate::intake::Intake::new()),
             Kind::Inert => Data::Inert {
                 name: block_id.into(),
             },
@@ -383,6 +387,7 @@ impl Machine {
             Data::BrickFurnace(_) => Kind::BrickFurnace,
             Data::Furnace(_) => Kind::Furnace,
             Data::Welder(_) => Kind::Welder,
+            Data::Intake(_) => Kind::Intake,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -431,6 +436,7 @@ impl Machine {
             Data::BrickFurnace(m) => m,
             Data::Furnace(m) => &**m,
             Data::Welder(m) => &**m,
+            Data::Intake(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -479,6 +485,7 @@ impl Machine {
             Data::BrickFurnace(m) => m,
             Data::Furnace(m) => &mut **m,
             Data::Welder(m) => &mut **m,
+            Data::Intake(m) => m,
             Data::Inert { name } => name,
         }
     }

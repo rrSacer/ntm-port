@@ -4129,6 +4129,16 @@
 1
 ]
 },
+"ntm:machine_intake": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0
+]
+},
 "ntm:machine_liquefactor": {
 "inventory": [
 8,
