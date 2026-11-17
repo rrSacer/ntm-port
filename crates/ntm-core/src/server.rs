@@ -159,18 +159,18 @@ pub trait ServerHost: Kv {
     /// portal): no step. Asked once a tick for each player.
     fn teleported(&mut self,_id:&str)->bool{false}
     /// Player `id`'s digamma (`HbmLivingProps.digamma`) in their own storage, 0 for a new body (None: the host has
-    /// no player storage, and nobody takes digamma).
-    fn player_digamma(&mut self, _id: &str) -> Option<f32> {
+    /// no player storage, and nobody takes digamma). `legacy` seeds a storage that has no dose yet.
+    fn player_digamma(&mut self, _id: &str, _legacy: &crate::radiation::Dose) -> Option<f32> {
         None
     }
     /// Writes their digamma if the storage still holds `expected`, with `setDigamma`'s `maxHealth` modifier
     /// (`digamma::health_modifier`) and their health capped to the new maximum.
-    fn commit_player_digamma(&mut self, _id: &str, _expected: f32, _desired: f32) -> bool {
+    fn commit_player_digamma(&mut self, _id: &str, _legacy: &crate::radiation::Dose, _expected: f32, _desired: f32) -> bool {
         false
     }
     /// Puts the `maxHealth` modifier of the digamma in player `id`'s storage back on their body (a new body, a
     /// joining player).
-    fn sync_digamma(&mut self, _id: &str) {}
+    fn sync_digamma(&mut self, _id: &str, _legacy: &crate::radiation::Dose) {}
     /// Player `id`'s `maxHealth` with every modifier.
     fn max_health(&mut self, _id: &str) -> Option<f64> {
         None

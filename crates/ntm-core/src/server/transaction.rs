@@ -109,6 +109,8 @@ struct Deferred<'a, H> {
     doses: BTreeMap<String, crate::radiation::Dose>,
     /// The same for the radiation potion in the player's storage.
     irradiations: BTreeMap<String, crate::zirnox::StoredPotion>,
+    /// The same for the digamma (`HbmLivingProps.digamma`).
+    digammas: BTreeMap<String, f32>,
 }
 impl<H: ServerHost> Kv for Deferred<'_, H> {
     fn get(&mut self, k: &str) -> Option<Vec<u8>> {
@@ -260,6 +262,28 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
             }
         })));
         true
+    }
+    fn player_digamma(&mut self, id: &str, legacy: &crate::radiation::Dose) -> Option<f32> {
+        match self.digammas.get(id) {
+            Some(staged) => Some(*staged),
+            None => self.host.player_digamma(id, legacy),
+        }
+    }
+    fn commit_player_digamma(&mut self, id: &str, legacy: &crate::radiation::Dose, expected: f32, desired: f32) -> bool {
+        self.digammas.insert(id.into(), desired);
+        let (id, legacy) = (id.to_string(), legacy.clone());
+        self.effects.push((self.origins.clone(),Box::new(move |h| {
+            if !h.commit_player_digamma(&id, &legacy, expected, desired) {
+                h.log(&format!("ntm: the digamma of {id} changed under a machine step; its write was dropped"));
+            }
+        })));
+        true
+    }
+    fn max_health(&mut self, id: &str) -> Option<f64> {
+        self.host.max_health(id)
+    }
+    fn worn_armor(&mut self, id: &str) -> Option<[Option<String>; 4]> {
+        self.host.worn_armor(id)
     }
     fn effect_state(&mut self, id: &str, effect: &str) -> Option<Option<(u32, u8)>> {
         self.host.effect_state(id, effect)
@@ -758,7 +782,7 @@ impl Server {
             generations:(*before.world.generations).clone(),
             origins:before.world.machines.iter().filter(|(k,_)|k.0==dim).map(|(k,m)|CellGuard::machine(k,m)).collect(),
             valid:true,
-            resource:false,world_writes:Vec::new(),doses:BTreeMap::new(),irradiations:BTreeMap::new(),
+            resource:false,world_writes:Vec::new(),doses:BTreeMap::new(),irradiations:BTreeMap::new(),digammas:BTreeMap::new(),
         };
         let outcome =
             self.native_pile_use_inner(&mut staged, dim, at, face, held, depletion, player);
@@ -992,7 +1016,7 @@ impl Server {
             generations:(*before.world.generations).clone(),
                     origins:before.world.machines.iter().map(|(k,m)|CellGuard::machine(k,m)).collect(),
                     valid:true,
-                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),doses:BTreeMap::new(),irradiations:BTreeMap::new(),
+                    resource:before.world.machines.values().any(|m|matches!(m.data,crate::machine::Data::Excavator(_)|crate::machine::Data::Drill(_))),world_writes:Vec::new(),doses:BTreeMap::new(),irradiations:BTreeMap::new(),digammas:BTreeMap::new(),
                 };
                 let removed: Vec<_> = keys
                     .iter()
@@ -1213,8 +1237,8 @@ mod dose_tests {
         fn get_block(&mut self, _: &str, p: Pos) -> Option<String> {
             if self.unavailable { None } else if p == [0, 65, -5] { Some(if self.stone { "minecraft:stone" } else { "minecraft:water" }.into()) } else { Some("minecraft:air".into()) }
         }
-        fn player_digamma(&mut self, id: &str) -> Option<f32> { Some(self.digamma.get(id).copied().unwrap_or(0.0)) }
-        fn commit_player_digamma(&mut self, id: &str, expected: f32, desired: f32) -> bool {
+        fn player_digamma(&mut self, id: &str, _: &Dose) -> Option<f32> { Some(self.digamma.get(id).copied().unwrap_or(0.0)) }
+        fn commit_player_digamma(&mut self, id: &str, _: &Dose, expected: f32, desired: f32) -> bool {
             if self.digamma.get(id).copied().unwrap_or(0.0) != expected { return false; }
             self.digamma.insert(id.into(), desired);
             true
@@ -1322,6 +1346,8 @@ mod dose_tests {
         logs: Vec<String>,
         irradiation: BTreeMap<String, crate::zirnox::StoredPotion>,
         removed: Vec<String>,
+        digamma: BTreeMap<String, f32>,
+        digamma_writes: Vec<(f32, f32)>,
     }
     impl Kv for Attached {
         fn get(&mut self, _: &str) -> Option<Vec<u8>> { None }
@@ -1347,6 +1373,13 @@ mod dose_tests {
         }
         fn effect_state(&mut self, _: &str, effect: &str) -> Option<Option<(u32, u8)>> { Some((effect == "seen").then_some((5, 1))) }
         fn remove_effect(&mut self, id: &str, effect: &str) { self.removed.push(format!("{id} {effect}")); }
+        fn player_digamma(&mut self, id: &str, _: &Dose) -> Option<f32> { Some(self.digamma.get(id).copied().unwrap_or(0.0)) }
+        fn commit_player_digamma(&mut self, id: &str, _: &Dose, expected: f32, desired: f32) -> bool {
+            if self.digamma.get(id).copied().unwrap_or(0.0) != expected { return false; }
+            self.digamma_writes.push((expected, desired));
+            self.digamma.insert(id.into(), desired);
+            true
+        }
         fn commit_player_dose(&mut self, id: &str, expected: &Dose, desired: &Dose) -> bool {
             if self.doses.get(id).copied().unwrap_or(0) != expected.millirad { return false; }
             self.writes.push((expected.millirad, desired.millirad));
@@ -1357,7 +1390,7 @@ mod dose_tests {
     fn staged(host: &mut Attached) -> Deferred<'_, Attached> {
         Deferred { host, slots: BTreeMap::new(), effects: Vec::new(), generations: BTreeMap::new(), cells: BTreeMap::new(),
             vacant: BTreeSet::new(), origins: Vec::new(), valid: true, resource: false, world_writes: Vec::new(),
-            critical: std::collections::VecDeque::new(), doses: BTreeMap::new(), irradiations: BTreeMap::new() }
+            critical: std::collections::VecDeque::new(), doses: BTreeMap::new(), irradiations: BTreeMap::new(), digammas: BTreeMap::new() }
     }
 
     /// A machine step's dose writes reach the player's storage after the commit, in order, each expecting the one
@@ -1400,6 +1433,28 @@ mod dose_tests {
         assert_eq!(host.irradiation["p"], at((1200, 4)));
         assert_eq!(host.removed, ["p ntm:radiation"]);
         assert!(host.logs.is_empty());
+    }
+
+    /// The digamma goes the way of the dose: staged, read back in the step, written in order after the commit, and a
+    /// write that finds another value in the storage is dropped and logged.
+    #[test]
+    fn a_machine_steps_digamma_reaches_the_players_storage_in_order() {
+        let mut host = Attached::default();
+        host.digamma.insert("p".into(), 1.0);
+        let mut step = staged(&mut host);
+        let legacy = Dose::default();
+        for _ in 0..2 {
+            let before = step.player_digamma("p", &legacy).unwrap();
+            assert!(step.commit_player_digamma("p", &legacy, before, crate::digamma::increment(before, 0.1)));
+        }
+        assert!(step.commit_player_digamma("q", &legacy, 0.5, 0.6));
+        assert_eq!(step.player_digamma("p", &legacy), Some(1.0f32 + 0.1 + 0.1));
+        let effects = std::mem::take(&mut step.effects);
+        assert_eq!(host.digamma["p"], 1.0, "nothing reaches the storage before the commit");
+        for (_, effect) in effects { effect(&mut host); }
+        assert_eq!(host.digamma_writes, [(1.0, 1.1), (1.1, 1.0f32 + 0.1 + 0.1)]);
+        assert!(!host.digamma.contains_key("q"));
+        assert_eq!(host.logs, ["ntm: the digamma of q changed under a machine step; its write was dropped"]);
     }
 
     /// Dropped with the step: a step that is not committed leaves the storage as it was.

@@ -42,9 +42,10 @@ impl Server {
         if digamma::blocked(self.digamma_gates(host, p)) {
             return false;
         }
-        let Some(before) = host.player_digamma(&p.id) else { return false };
+        let legacy = self.player_dose(&p.id);
+        let Some(before) = host.player_digamma(&p.id, &legacy) else { return false };
         let after = digamma::increment(before, amount);
-        if !host.commit_player_digamma(&p.id, before, after) {
+        if !host.commit_player_digamma(&p.id, &legacy, before, after) {
             return false;
         }
         let max_health = host.max_health(&p.id).unwrap_or(1.0);
@@ -59,7 +60,7 @@ impl Server {
     pub(super) fn digamma_tick(&mut self, host: &mut impl ServerHost) {
         for p in self.players.clone() {
             if self.blasts.entered.get(&p.id) == Some(&self.tick) {
-                host.sync_digamma(&p.id);
+                host.sync_digamma(&p.id, &self.player_dose(&p.id));
             }
             for cell in touched_cells(p.pos) {
                 if host.get_block(&p.dim, cell).is_some_and(|b| blockstate::id_of(&b) == digamma::FLAME_BLOCK) {
@@ -106,17 +107,17 @@ mod tests {
         }
         fn tell(&mut self, _: &str, _: &str) {}
         fn log(&mut self, _: &str) {}
-        fn player_digamma(&mut self, id: &str) -> Option<f32> {
+        fn player_digamma(&mut self, id: &str, _: &crate::radiation::Dose) -> Option<f32> {
             Some(self.digamma.get(id).copied().unwrap_or(0.0))
         }
-        fn commit_player_digamma(&mut self, id: &str, expected: f32, desired: f32) -> bool {
+        fn commit_player_digamma(&mut self, id: &str, _: &crate::radiation::Dose, expected: f32, desired: f32) -> bool {
             if self.reject || self.digamma.get(id).copied().unwrap_or(0.0) != expected {
                 return false;
             }
             self.digamma.insert(id.into(), desired);
             true
         }
-        fn sync_digamma(&mut self, id: &str) {
+        fn sync_digamma(&mut self, id: &str, _: &crate::radiation::Dose) {
             self.synced.push(id.into());
         }
         fn max_health(&mut self, id: &str) -> Option<f64> {
