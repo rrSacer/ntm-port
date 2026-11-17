@@ -2,14 +2,17 @@
 """The sawmill's cut scenarios (Onda 2, D3 and the sawmill, step 4), on a disposable world; the runner,
 run-sawmill-proof.py, owns the process and the cut. NTM_SAW_SCENARIO picks one:
 
-  overspeed  a sawmill with its blade on a firebox (cold in the base); the act feeds rocket fuel (x5, 500 TU a tick) and
-             the blade breaks: the blast, then one `ntm:sawblade` one up in front of the core, in the core's chunk;
-             then the save the runner cuts. Control: a barrel at the core holds the blade; the act takes it out and
-             puts it as an item where the mod's lies (`summon item`)
+  overspeed  a sawmill with its blade on a firebox (cold in the base), its outputs in its slots (6 planks, 1 sawdust: a
+             log sawn, not taken; a log in its input would be sawn at that heat long before the blade breaks); the act
+             feeds rocket fuel (x5, 500 TU a tick) and the blade breaks: the blast, then one `ntm:sawblade` one up in
+             front of the core, in the core's chunk; the outputs stay; then the save the runner cuts. Control: a
+             barrel at the core holds the blade and the same outputs; the act takes the blade out and puts it as an
+             item where the mod's lies (`summon item`)
   border     the same with the core at z=16 facing north: the blade lands in the chunk north of the core's (R2)
-  break      a sawmill without its blade (its item's `ntm:no_blade`) and a chest holding one blade; the act breaks the
-             sawmill as a player in survival, picks up the item it drops and places it again: it has no blade (R1, D3).
-             Control: a barrel without anything for the sawmill, broken, picked up and placed again
+  break      a sawmill without its blade (its item's `ntm:no_blade`) holding a log, 6 planks and 1 sawdust (put in by
+             command: no heat saws them) and a chest holding one blade; the act breaks the sawmill as a player in
+             survival, picks up what it drops (its item and its slots) and places it again: it has no blade (R1, D3).
+             Control: a barrel with the same stacks, broken, picked up and placed again
   hand       a sawmill that sawed a log in the base (6 planks and its sawdust out) and one without its blade; in hand a
              blade and 2 logs; the act takes the outputs, puts a log in and the blade back, each by hand (R5). Control:
              barrels, the same stacks moved by hand (`item replace`)
@@ -19,7 +22,7 @@ run-sawmill-proof.py, owns the process and the cut. NTM_SAW_SCENARIO picks one:
              hoppers (vanilla's hoppers move the log too: the totals are compared)
 
 The atoms counted (`disk_count.py` by the same rule): blades loose, in a player, in a chest, installed (`has_blade`)
-or in a sawmill item without `ntm:no_blade`; and, for `hand` and `hopper`, the planks, logs and sawdust. A sawmill's
+or in a sawmill item without `ntm:no_blade`; and, but for `border`, the planks, logs and sawdust. A sawmill's
 slots are its block entity's since step 3c (its model's before: read as a fallback).
 """
 import os
@@ -107,7 +110,7 @@ def count(g):
             machines.append({'core': core, 'has_blade': has_blade(g, core), 'slots': model_slots(g, core)})
             blades += int(has_blade(g, core))
     out = {'blades': blades, 'inventory': inv, 'ground': ground, 'machines': machines}
-    if SCENARIO in ('hand', 'hopper'):
+    if SCENARIO != 'border':
         wood = {w: inv.get(w, 0) + ground.get(w, 0) for w in WOOD}
         if SCENARIO == 'hopper':
             for p in (ABOVE, BELOW, OUT):
@@ -177,6 +180,13 @@ def prepare(g):
             g.check('core_where_planned', tuple(core) == CORE, core)
             g.command('setblock %d %d %d ntm:heater_firebox[facing=south,honey_level=0]' % (CORE[0], CORE[1] - 1, CORE[2]))
             g.command('setblock %d %d %d minecraft:hopper[facing=west]' % (CORE[0] + 1, CORE[1] - 1, CORE[2]))
+        if SCENARIO == 'overspeed':
+            # Its outputs, a log sawn and not taken (the barrel's slots 1 and 2 alike).
+            g.command('item replace block %d %d %d container.1 with minecraft:oak_planks 6' % CORE)
+            g.command('item replace block %d %d %d container.2 with ntm:powder_sawdust 1' % CORE)
+            time.sleep(1)
+            g.check('outputs_in', held_in(g, CORE, 'minecraft:oak_planks') == 6 and held_in(g, CORE, 'ntm:powder_sawdust') == 1,
+                    items_in(g, CORE))
     elif SCENARIO == 'break':
         g.command('item replace block %d %d %d container.0 with %s 1' % (*CHEST, BLADE))
         if VANILLA:
@@ -184,6 +194,12 @@ def prepare(g):
         else:
             core = place(g, VARIANT, CORE)
             g.check('core_where_planned', tuple(core) == CORE, core)
+        # A log, 6 planks and 1 sawdust in its slots, by command: without its blade (and cold) nothing saws them.
+        g.command('item replace block %d %d %d container.0 with minecraft:oak_log 1' % CORE)
+        g.command('item replace block %d %d %d container.1 with minecraft:oak_planks 6' % CORE)
+        g.command('item replace block %d %d %d container.2 with ntm:powder_sawdust 1' % CORE)
+        time.sleep(1)
+        g.check('slots_in', [held_in(g, CORE, w) for w in WOOD] == [6, 1, 1], items_in(g, CORE))
     elif SCENARIO == 'hand':
         if VANILLA:
             g.command('setblock %d %d %d minecraft:barrel' % CORE)

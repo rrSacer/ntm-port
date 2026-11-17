@@ -31,10 +31,12 @@ TOTAL = 1
 SCRIPT = 'native_sawmill_cut.py'
 STRICT = ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'world_saved']
 SCENARIOS = {
-    'overspeed': (('ntm:sawblade',), 1, STRICT),
+    # The blade, and the outputs in the slots when it breaks (the second review's P2-1).
+    'overspeed': (('ntm:sawblade', 'minecraft:oak_planks', 'ntm:powder_sawdust'), 8, STRICT),
     # The blade in the chunk north of the core's: both chunks' records cut alone too (R2).
     'border': (('ntm:sawblade',), 1, [*STRICT, 'live_chunk:2,1', 'live_chunk:2,0']),
-    'break': (('ntm:sawblade',), 1, STRICT),
+    # The blade, and the three slots' stacks the break spills (the second review's P2-1).
+    'break': (('ntm:sawblade', 'minecraft:oak_planks', 'minecraft:oak_log', 'ntm:powder_sawdust'), 9, STRICT),
     'hand': (('ntm:sawblade', 'minecraft:oak_planks', 'minecraft:oak_log', 'ntm:powder_sawdust'), 11,
              [*STRICT, 'players_saved']),
     # Step 3c: 6 planks, 1 sawdust and 1 log, moved by hoppers within the core's chunk.
