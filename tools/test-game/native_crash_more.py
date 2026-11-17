@@ -1588,6 +1588,66 @@ def keyforge_verify(g, again=False):
     g.check('the_table_is_alive', machine_present(g, (140, 100, 8)), state)
 
 
+# `digamma-state`: a survival player dosed by the digamma flame, the world saved; dosed again and saved (or killed) at
+# each boundary: whatever the cut, the reopened player holds one of the two doses and the max health modifier of that
+# dose (both are in the player's file), and a death outside any save (`kill`) leaves the first, exactly.
+def digamma_parts(g):
+    import native_digamma as D
+    D.X, D.Z = 140, 8
+    D.FLAME = (140, D.Y, 8)
+    return D
+
+
+def digamma_dose(g, D, ticks):
+    D.stand(g, D.FLAME)
+    g.ticks(ticks)
+    D.away(g)
+    g.ticks(2)
+    d, _, raw = D.diagnostic(g)
+    return d, D.modifier(g), raw
+
+
+def digamma_prepare(g):
+    D = digamma_parts(g)
+    g.ctl('wait-ready 120')
+    D.build(g)
+    g.command(f'setblock {D.FLAME[0]} {D.FLAME[1]} {D.FLAME[2]} ntm:fire_digamma')
+    g.command('gamemode survival @s')
+    d, m, raw = digamma_dose(g, D, 20)
+    g.check('the_first_dose_is_there_before_the_base_save', d is not None and d > 0 and D.consistent(d, m), [d, m, raw])
+    g.evidence['digamma'] = {'digamma': d, 'modifier': m}
+    g.ctl('save')
+
+
+def digamma_act(g):
+    D = digamma_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode survival @s')
+    g.ticks(220)
+    d, m, raw = digamma_dose(g, D, 20)
+    g.evidence['digamma'] = {'digamma': d, 'modifier': m}
+    g.check('the_second_dose_is_more', d is not None and D.consistent(d, m), [d, m, raw])
+    save_expecting_death(g)
+
+
+def digamma_verify(g, again=False):
+    D = digamma_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    D.away(g)
+    first = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['digamma']
+    second = json.loads((g.folder / 'native-crash-more-act.json').read_text())['digamma']
+    d, _, raw = D.diagnostic(g)
+    m = D.modifier(g)
+    held = 'first' if d == first['digamma'] else 'second' if d == second['digamma'] else None
+    g.evidence['held' + ('_again' if again else '')] = held
+    counted(g, 'one_player', {'total': 1, 'expected': 1, 'digamma': d}, again)
+    g.check('a_whole_dose', held is not None and second['digamma'] > first['digamma'], [first, second, d, raw])
+    g.check('its_own_modifier', m is not None and abs(m - (first if held == 'first' else second)['modifier']) < 1e-9, [held, m, first, second])
+    if NO_SAVE:
+        g.check('a_death_outside_a_save_leaves_the_last_save', held == 'first', [held, d])
+
+
 # `funnel-state`: ninety gold ingots in two columns of a funnel in the 3x3-only mode, compressing one block per column per tick,
 # the world saved and killed at each boundary: whatever the cut, the ingots and the blocks (nine each) are the ninety and the
 # mode is kept.
@@ -1954,6 +2014,7 @@ STEPS = {
     'combination-state': (state_prepare, state_act, state_verify),
     'orbus-state': (orbus_prepare, orbus_act, orbus_verify),
     'keyforge-state': (keyforge_prepare, keyforge_act, keyforge_verify),
+    'digamma-state': (digamma_prepare, digamma_act, digamma_verify),
     'keyforge-break': (mb_break_prepare, break_act, mb_break_verify),
     'funnel-state': (funnel_prepare, funnel_act, funnel_verify),
     'funnel-break': (mb_break_prepare, break_act, mb_break_verify),

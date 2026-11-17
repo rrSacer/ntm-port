@@ -69,6 +69,8 @@ def items_of(scenario):
                 'combination-state': ('minecraft:coal', 'ntm:coke__coal')}[scenario]
     if scenario == 'keyforge-state':
         return ('ntm:key', 'ntm:padlock')
+    if scenario == 'digamma-state':
+        return ('ntm:digamma_diagnostic',)
     if scenario == 'keyforge-break':
         return ('ntm:key', 'ntm:padlock')
     if scenario == 'funnel-state':
@@ -128,6 +130,7 @@ DEFAULT_POINTS = {
     'welder-run': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'furnace-smelt': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'keyforge-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'digamma-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'keyforge-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'funnel-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'radiolysis-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
