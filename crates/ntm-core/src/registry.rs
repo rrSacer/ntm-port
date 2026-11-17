@@ -302,7 +302,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_fel",
-        kind: Kind::Inert,
+        kind: Kind::Fel,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
