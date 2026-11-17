@@ -1,0 +1,515 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.battery_redd.wheel1": {
+      "loop": true,
+      "animation_length": 18.0,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "18.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "18.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel2": {
+      "loop": true,
+      "animation_length": 9.0,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "9.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "9.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel3": {
+      "loop": true,
+      "animation_length": 6.0,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "6.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "6.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel4": {
+      "loop": true,
+      "animation_length": 4.5,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "4.50": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "4.50": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel5": {
+      "loop": true,
+      "animation_length": 3.6,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "3.60": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "3.60": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel6": {
+      "loop": true,
+      "animation_length": 3.0,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "3.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "3.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel7": {
+      "loop": true,
+      "animation_length": 2.5714,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "2.57": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "2.57": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel8": {
+      "loop": true,
+      "animation_length": 2.25,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "2.25": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "2.25": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel9": {
+      "loop": true,
+      "animation_length": 2.0,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "2.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "2.00": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel10": {
+      "loop": true,
+      "animation_length": 1.8,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.80": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.80": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel11": {
+      "loop": true,
+      "animation_length": 1.6364,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.64": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.64": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel12": {
+      "loop": true,
+      "animation_length": 1.5,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.50": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.50": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel13": {
+      "loop": true,
+      "animation_length": 1.3846,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.38": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.38": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel14": {
+      "loop": true,
+      "animation_length": 1.2857,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.29": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.29": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.battery_redd.wheel15": {
+      "loop": true,
+      "animation_length": 1.2,
+      "bones": {
+        "Wheel": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.20": [
+              360,
+              0,
+              0
+            ]
+          }
+        },
+        "Lights": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.20": [
+              360,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

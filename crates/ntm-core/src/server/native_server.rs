@@ -480,6 +480,11 @@ impl Server {
                 };
                 by_dim.entry(k.0.clone()).or_default().extend(cells.iter().copied());
                 cells_of.insert(k.clone(), cells);
+            } else if let crate::machine::Data::Storage(_) = m.data {
+                // `getRelevantMode`: any of its port cells getting a signal puts it in `redHigh`.
+                let cells = crate::storage::Storage::redstone_cells(&m.block, k.1, m.facing.as_deref());
+                by_dim.entry(k.0.clone()).or_default().extend(cells.iter().copied());
+                cells_of.insert(k.clone(), cells);
             }
         }
         r.native_signal.clear();
@@ -504,8 +509,10 @@ impl Server {
         }
         for (key, cells) in cells_of {
             let powered = cells.iter().any(|p| seen.get(&(key.0.clone(), *p)).is_some_and(|s| *s > 0));
-            if let Some(crate::machine::Data::Combustion(c)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) {
-                c.set_powered(powered);
+            match r.world.machines.get_mut(&key).map(|m| &mut m.data) {
+                Some(crate::machine::Data::Combustion(c)) => c.set_powered(powered),
+                Some(crate::machine::Data::Storage(s)) => s.powered = powered,
+                _ => {}
             }
         }
     }

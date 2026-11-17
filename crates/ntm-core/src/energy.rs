@@ -95,6 +95,18 @@ impl Topology {
         positions: &BTreeMap<(Pos, usize), Pos>,
         links: &BTreeMap<Pos, Vec<Pos>>,
     ) -> Self {
+        Self::build_conducting(cables, machines, positions, links, &BTreeSet::new())
+    }
+
+    /// As [`Topology::build_linked`], with `conductors`: machines whose ports are one node
+    /// (`IEnergyConductorMK2`, the battery socket and the REDD), so what reaches one port reaches them all.
+    pub fn build_conducting(
+        cables: &BTreeSet<Pos>,
+        machines: &BTreeMap<Pos, Vec<Port>>,
+        positions: &BTreeMap<(Pos, usize), Pos>,
+        links: &BTreeMap<Pos, Vec<Pos>>,
+        conductors: &BTreeSet<Pos>,
+    ) -> Self {
         let mut ports_at: BTreeMap<Pos, Vec<(Pos,usize)>> = BTreeMap::new();
         for (&core,ports) in machines {
             for i in 0..ports.len() { ports_at.entry(positions.get(&(core,i)).copied().unwrap_or(core)).or_default().push((core,i)); }
@@ -107,6 +119,11 @@ impl Topology {
                 Node::Port(p, i) => (positions.get(&(p,i)).copied().unwrap_or(p), machines[&p][i].clone()),
             };
             let mut out = Vec::new();
+            if let Node::Port(p, _) = n
+                && conductors.contains(&p)
+            {
+                out.extend((0..machines[&p].len()).map(|j| Node::Port(p, j)));
+            }
             if let Node::Port(p, 0) = n {
                 for q in links.get(&p).into_iter().flatten() {
                     if machines.get(q).is_some_and(|ports| !ports.is_empty()) {

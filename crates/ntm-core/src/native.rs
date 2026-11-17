@@ -150,6 +150,13 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
         };
     }
+    if let Some(body) = crate::storage::Body::of(block) {
+        // A hand: `Slot`s that take battery items (the machine file's `accept`) and give anything back. A
+        // hopper: any side reaches slot 0 of the socket and puts battery items in; it takes a pack only when
+        // `canExtractItem` allows (mode and charge of the machine, which this rule does not see: left out);
+        // the REDD has no `getAccessibleSlotsFromSide`.
+        return origin == SlotOrigin::Manual || (body == crate::storage::Body::Socket && action == SlotAction::Insert);
+    }
     if crate::compressor::Shape::of(block).is_some() {
         // A hand: plain `Slot`s. A hopper: `isItemValidForSlot` is false and
         // `getAccessibleSlotsFromSide` empty (`TileEntityMachineBase` defaults).
@@ -185,7 +192,7 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
 /// The ported blocks whose Java block has `hasComparatorInputOverride`:
 /// `MachineBattery` (by charge), `MachineFluidTank` and `BlockFluidBarrel` (by fluid).
 pub fn has_comparator(block: &str) -> bool {
-    matches!(block, "ntm:machine_battery" | "ntm:machine_fluidtank" | "ntm:barrel_steel")
+    matches!(block, "ntm:machine_battery" | "ntm:machine_fluidtank" | "ntm:barrel_steel" | crate::storage::SOCKET | crate::storage::REDD)
 }
 
 /// `getComparatorPower` of the machine saved as `json`, 0 to 15: nothing stored is 0,
@@ -194,6 +201,10 @@ pub fn has_comparator(block: &str) -> bool {
 pub fn comparator_signal(json: &str) -> u8 {
     use crate::machine::{Data, Machine};
     let Ok(machine) = serde_json::from_str::<Machine>(json) else { return 0 };
+    // The socket and the REDD give the signal they computed (`getComparatorPower`, saved as `lastRedstone`).
+    if let Data::Storage(s) = &machine.data {
+        return s.last_redstone;
+    }
     let (stored, max) = match &machine.data {
         Data::Battery(b) => (b.power as f64, b.max as f64),
         Data::FluidStore(f) => (f64::from(f.tank.mb), f64::from(f.tank.cap)),

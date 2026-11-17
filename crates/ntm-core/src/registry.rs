@@ -52,6 +52,10 @@ pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port>
     if spec.kind == Kind::Wire {
         return crate::wire::ports(spec.id, facing);
     }
+    // The socket's and the REDD's ports are cells of their volume, each one face out.
+    if spec.kind == Kind::Storage {
+        return crate::storage::Storage::port_cells(spec.id, [0, 0, 0], facing).into_iter().map(|(_, face)| vec![face]).collect();
+    }
     // The compressors' ports are on cells round the core, each one face out.
     if spec.kind == Kind::Compressor {
         return crate::compressor::Compressor::port_cells(spec.id, [0, 0, 0], facing).into_iter().map(|(_, face)| vec![face]).collect();
@@ -1050,17 +1054,16 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     // Energy batch 6 (3c5a6573): the battery socket and REDD, the
     // connectors and pylons (long wires), the switch and the detector.
-    // Inert until their stage is approved.
     BlockSpec {
         id: "ntm:machine_battery_socket",
-        kind: Kind::Inert,
+        kind: Kind::Storage,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_battery_redd",
-        kind: Kind::Inert,
+        kind: Kind::Storage,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

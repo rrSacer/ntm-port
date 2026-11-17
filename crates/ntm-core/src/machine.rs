@@ -101,6 +101,8 @@ pub enum Kind {
     Deuterium,
     /// The compressors, both bodies (`crate::compressor`).
     Compressor,
+    /// The battery socket and the REDD (`crate::storage`).
+    Storage,
     /// The power switch and the redstone power switch (`crate::cable_switch`).
     CableSwitch,
     /// The wire endpoints: connectors and pylons (`crate::wire`).
@@ -212,6 +214,7 @@ pub enum Data {
     Intake(crate::intake::Intake),
     Deuterium(crate::deuterium::DeuteriumExtractor),
     Compressor(Box<crate::compressor::Compressor>),
+    Storage(Box<crate::storage::Storage>),
     CableSwitch(crate::cable_switch::CableSwitch),
     Wire(crate::wire::Wire),
     Inert { name: String },
@@ -328,6 +331,9 @@ impl Machine {
             Kind::Compressor => Data::Compressor(Box::new(crate::compressor::Compressor::new(
                 crate::compressor::Shape::of(block_id).unwrap_or_default(),
             ))),
+            Kind::Storage => Data::Storage(Box::new(crate::storage::Storage::new(
+                crate::storage::Body::of(block_id).unwrap_or_default(),
+            ))),
             Kind::Inert => Data::Inert {
                 name: block_id.into(),
             },
@@ -408,6 +414,7 @@ impl Machine {
             Data::Intake(_) => Kind::Intake,
             Data::Deuterium(_) => Kind::Deuterium,
             Data::Compressor(_) => Kind::Compressor,
+            Data::Storage(_) => Kind::Storage,
             Data::CableSwitch(_) => Kind::CableSwitch,
             Data::Wire(_) => Kind::Wire,
             Data::Inert { .. } => Kind::Inert,
@@ -461,6 +468,7 @@ impl Machine {
             Data::Intake(m) => m,
             Data::Deuterium(m) => m,
             Data::Compressor(m) => &**m,
+            Data::Storage(m) => &**m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
             Data::Inert { name } => name,
@@ -514,6 +522,7 @@ impl Machine {
             Data::Intake(m) => m,
             Data::Deuterium(m) => m,
             Data::Compressor(m) => &mut **m,
+            Data::Storage(m) => &mut **m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
             Data::Inert { name } => name,

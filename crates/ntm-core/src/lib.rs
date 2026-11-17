@@ -19,6 +19,7 @@ pub mod coker;
 pub mod cable_switch;
 pub mod wire;
 pub mod compressor;
+pub mod storage;
 pub mod deuterium;
 pub mod combustion;
 pub mod solar_stirling;

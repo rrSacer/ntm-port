@@ -10,7 +10,7 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 | --- | --- | --- |
 | 1 | `cable_switch`, `cable_detector` | Concluída |
 | 2 | `red_connector`, `red_connector_super`, `red_pylon`, `red_pylon_steel`, `red_pylon_medium_*` (4), `red_pylon_large` | Concluída (lacunas de orientação e de fio visível, abaixo) |
-| 3 | `machine_battery_socket`, `machine_battery_redd` | Pendente (depende do catálogo de baterias) |
+| 3 | `machine_battery_socket`, `machine_battery_redd` | Concluída (lacunas abaixo; o catálogo cobre as 12 baterias e a criativa) |
 | — | `machine_transformer` | Sem lógica a portar: `MachineTransformer extends Block`, sem `TileEntity` |
 
 ---
@@ -154,3 +154,84 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 - **Cor:** `setColor` (a tinta no pylon) e o desenho da cor não foram portados; o campo `color` é guardado e salvo.
 - **Substation:** o pylon grande avisa que exige uma subestação (`TileEntitySubstation`), que não é deste item.
 - **`IPersistentNBT`/descrição:** o texto de alcance e tipo do `addInformation` não aparece no item.
+
+---
+
+## 3. `ntm:machine_battery_socket` e `ntm:machine_battery_redd`
+
+### Contrato fonte
+
+- `TileEntityBatteryBase.java`: `redLow` (0) e `redHigh` (2), `priority` (LOW), `lastRedstone`; modos 0 entrada, 1 buffer, 2 saída, 3 nenhum; o
+  modo em vigor é `redHigh` se **qualquer** célula de `getPortPos` recebe redstone, senão `redLow`; o modo põe a máquina nos conjuntos de provedores e
+  receptores da rede; prioridade fora de `LOW..HIGH` volta a `LOW`; `receiveControl` (botões `low`, `high`, `priority`); ambas são **condutoras**
+  (`IEnergyConductorMK2`: todas as portas são um nó só); `isItemValidForSlot` = só `IBatteryItem`.
+- `TileEntityBatterySocket`: 1 slot; **não guarda energia**, a carga é a da bateria no slot (`ItemBatteryPack` guarda o `charge` no NBT do item e
+  `getCharge` cria a tag com 0); velocidades de provisão/recepção = taxas da bateria, só nos modos certos; `delta`/`log` de 20 médias; `canExtractItem`
+  (saída com bateria vazia, entrada com bateria cheia); 8 portas (`getConPos`).
+- `TileEntityBatteryREDD`: 2 slots (0 alimenta a REDD, 1 é carregado por ela); reserva `BigInteger` sem limite, salva como `toByteArray`; a rede vê
+  só uma janela (`getPower` = `min(power, getMaxPower()/2)`, `getMaxPower` = `Long.MAX_VALUE/100`); `transferPower` aceita tudo; a bateria criativa no
+  slot 0 soma `Long.MAX_VALUE/100` por tick; `getSpeed` (a roda); 6 portas.
+- `MachineBatterySocket {1,0,1,0,1,0}` offset 0 e `MachineBatteryREDD {9,0,2,2,4,4}` offset 2; GUIs 176x181 (`GUIBatterySocket`, `GUIBatteryREDD`).
+- As regras puras (`BatterySocket`, `BatteryRedd`, `BatteryBase`, `ItemSlot`, `BigInt`) já estavam em `energy_network.rs`, provadas contra o Java.
+
+### Implementação
+
+- [`crates/ntm-core/src/storage.rs`](../crates/ntm-core/src/storage.rs) (`Kind::Storage`, `Data::Storage`, um corpo `Socket`/`Redd`): monta as regras puras
+  sobre os slots do motor. A carga da bateria é o `charge` do `custom_data` do item (`{charge:123l}`); o **vidro do motor só devolvia o `custom_data` de
+  alguns itens** (`glue.rs::stack`), as baterias entraram na lista.
+- **Cópia própria dos slots:** a rede move energia depois que as máquinas rodaram, fora do passo que grava os slots; entre dois passos a verdade é a
+  cópia da máquina (`kept`), gravada no slot a cada passo (`sync_out`); o que um jogador mexe no slot ganha (`sync_in`). A cópia é salva com a
+  máquina, depois da rede, e um mundo reaberto só a aceita se o slot tiver a mesma bateria.
+- **Condutoras:** `Topology::build_conducting` (`energy.rs`) junta todas as portas da máquina; portas nas células da borda do volume (`registry::ports`,
+  `energy_port_cells`): 8 do soquete e 6 da REDD, uma face cada, derivadas das posições do Java (`celula = posição - direção`).
+- Redstone: `native_redstone` lê as células de `getPortPos` (as 4 do soquete, as 6 da REDD); qualquer uma com sinal põe `redHigh`.
+- Tela: `{a.b}` nos textos e tooltips lê um `long` em dois slots (`screens::format`: `:si`, `:sis`, `:int`), porque o motor só tem `i32`; a barra do
+  soquete usa os 52 pixels do Java (`power*52/max`, `2p-1` de 104 para cada pixel sair exato); a REDD mostra a reserva (saturada em `Long.MAX_VALUE` na tela,
+  a reserva real é maior) e a roda gira em graus inteiros por tick (`getSpeed` arredondado, dado 7).
+- Slots: a lista de itens aceitos é a das 12 baterias e da criativa, 1 por slot; mão sempre retira; funil põe bateria no soquete e não retira (ver lacunas);
+  a REDD não tem automação (`getAccessibleSlotsFromSide` vazio).
+- Comparador: o valor calculado (`lastRedstone`) é salvo e lido pelo bloco-núcleo.
+- Conteúdo: `visual.json` → multibloco `2x2x2` (soquete) e `9x10x5` (REDD), telas com botões de modo e prioridade, modelos OBJ (`battery.obj`: peça `Socket`;
+  `fensu2.obj`: `Base`, `Wheel`, `Lights`) com as texturas originais.
+
+### Provas
+
+- **Testes (`ntm-core`):** `storage::tests` (22) e `server::tests::storage_tests` (9), mais o de `screens` para `{a.b}`: geometria das 8 e das 6 portas para os quatro
+  sentidos (portas na borda do volume, faces para fora, células de redstone dentro, as oito do Java escritas à mão), os quatro modos e a redstone, velocidades
+  das baterias, tag criada em 0 e salva no item, bateria criativa que não se gasta, pixels da barra (0 a 52, exatos), botões de modo e prioridade, prioridade
+  inválida volta a `LOW`, reserva `BigInteger` além do `long`, bytes de `toByteArray`, `delta`/`log`, comparador lido antes dos itens, roda, `canExtractItem`,
+  cópia dos slots (um jogador que mexe vence, a cópia salva só vale para a mesma bateria), condutora (a energia atravessa em qualquer modo, sem perda),
+  carga da bateria exata, redstone em qualquer célula, regras de slot, save e reabertura. `cargo test -p ntm-core --lib`: **842 passaram** (eram 811);
+  `cargo clippy --workspace --all-targets -- -D warnings` limpo.
+- **Mutantes (`/mnt/ssd120/sacer/so/c/mutate_storage.py`):** **34/35 mortos**. O sobrevivente (`S25`, `>=` no limite do `long` em `saturating_long`) é equivalente: no limite
+  o resultado é o mesmo valor. Três sobreviveram na primeira rodada e ganharam teste (`S30` ordem do comparador, `S35` item que não é bateria na tela).
+- **Cliente nativo e pacote:** `horizon-client` release SHA-256 `4da54c16d7fa028d8a8c4370362131f2122f6578703ca37bb3069403f63b6f39`; o pacote do conteúdo foi
+  reconstruído (`dist/ntm.hmod` do repositório não foi alterado).
+- **Prova em jogo (`/mnt/ssd120/sacer/so/c/run_storage_proof.py`):** **soquete** (bateria de origem, soquete, bateria de destino, nas duas portas longas): sem bateria
+  conduz sem perda; um lingote de aço é recusado e uma bateria de chumbo entra pela mão e ganha a tag `charge` de 0; no modo entrada carrega e a soma
+  origem + destino + bateria **é conservada exatamente** (lida com o jogo congelado, a carga da cópia salva); um cabo em cima não é porta; os botões da tela
+  mudam os modos e a prioridade; na saída a bateria dá a carga à rede exatamente; um bloco de redstone numa célula distante põe `redHigh` e tirá-lo
+  volta ao `redLow`; a bateria criativa enche o destino e não se gasta. **REDD** (9 de largura, 10 de altura, 6 portas): conduz no modo nenhum; no buffer absorve
+  e conserva; a bateria criativa no slot 0 soma `Long.MAX_VALUE/100` por tick, **inteiro e exato**, e a reserva **passa do maior `long`**; o slot 1 carrega uma bateria
+  da reserva, e **a reserva perde exatamente o que a bateria ganha**; na saída dá ao destino e perde exatamente isso. Os dois corpos passam todos os checks.
+  Um defeito real apareceu aqui e foi corrigido: o vidro do motor só devolvia o `custom_data` de alguns itens (`glue.rs::stack`), então a carga da bateria nunca chegava à máquina.
+- **Corte de gravação estrito (`HORIZON_NO_EAGER_SAVE=1`), os dois corpos, 7/7 pontos `ok: true` cada** (`none`, `kill`, `kv_committed`, `save_begin`, `chunks_written`,
+  `entities_written`, `world_saved`; na REDD o `kv_committed` falhou uma vez por tempo esgotado do socket de controle com a máquina cheia de outras provas e passou ao ser repetido sozinho),
+  `kv_items=0`, `.mca` inalterados antes da escrita. Base salva sem bateria; no ato uma bateria de 9 000 000 HE entra no slot e alimenta a rede. Antes da escrita as duas
+  reaberturas voltam ao último save (sem bateria, soma `1 000 000`); depois da escrita (e em `none`) mantêm a bateria **e a soma de toda a energia é exatamente `10 000 000` nas duas
+  reaberturas**, mesmo com a energia fluindo. Em nenhum ponto apareceu bateria duplicada, perdida ou energia criada ou destruída.
+
+### Lacunas nominais
+
+- **Prioridade:** guardada, mostrada e salva, **não aplicada**: a rede simplificada (`energy::distribute`) não tem prioridades, como a `Battery` de antes.
+- **Bateria desenhada no soquete, suportes, descarga das baterias SC:** o modelo só tem a peça `Socket`; as peças da bateria dentro e do suporte dependem do item
+  do slot e o motor não tem esse desenho por block entity. Baterias SC, `battery_spark`/`battery_trixite` e as demais `IBatteryItem` (ferramentas, armaduras) não
+  estão no catálogo, então não entram.
+- **`IPersistentNBT` da REDD:** quebrar a REDD **perde a reserva** (o Java a guarda no item e a devolve ao pôr o bloco).
+- **REDD:** o plasma, os raios, o brilho e o som (`fensuHum`) não são desenhados; a roda gira em graus inteiros por tick; a tela mostra o texto em tamanho normal
+  (sem a escala de meia fonte) em formato curto e o número inteiro no tooltip; a cor do delta é fixa.
+- **Soquete:** o tooltip da barra aparece sempre (o Java só com bateria); as cores do delta (verde, vermelho, amarelo) não existem; o funil **não retira** a bateria
+  (`canExtractItem` depende do modo e da carga, que a regra de slot não vê).
+- **Comparador:** só lê o bloco-núcleo, não as células do volume.
+- **Carga atrasada:** o slot do motor recebe a carga no passo seguinte; um jogador que tira a bateria no mesmo tick em que a rede a carregou leva a carga do
+  passo anterior (no máximo um tick de transferência).

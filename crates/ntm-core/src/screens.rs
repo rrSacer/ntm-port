@@ -355,7 +355,9 @@ pub fn layout_of(block: &str) -> Option<Layout> {
 }
 
 /// `{0}` is value 0; `{0:si}` writes it with an SI prefix (`12.5k`), as
-/// HBM's `BobMathUtil.getShortNumber`.
+/// HBM's `BobMathUtil.getShortNumber`. `{0.1}` reads a `long` kept in two
+/// slots (the high half in 0, the low in 1): with `:si`, `:sis` (SI with an
+/// explicit `+`) or `:int` (`%,d`: digits in groups of three).
 pub fn format(line: &str, values: &[i32]) -> String {
     let mut out = String::new();
     let mut rest = line;
@@ -366,19 +368,42 @@ pub fn format(line: &str, values: &[i32]) -> String {
             return out;
         };
         let inner = &rest[start + 1..start + end];
-        let (index, si) = match inner.split_once(':') {
-            Some((i, "si")) => (i, true),
-            _ => (inner, false),
+        let (index, style) = inner.split_once(':').unwrap_or((inner, ""));
+        let value = match index.split_once('.') {
+            Some((hi, lo)) => hi.parse::<usize>().ok().zip(lo.parse::<usize>().ok()).and_then(|(h, l)| {
+                Some((i64::from(*values.get(h)?) << 32) | i64::from(*values.get(l)? as u32))
+            }),
+            None => index.parse::<usize>().ok().and_then(|i| values.get(i)).map(|&v| i64::from(v)),
         };
-        match index.parse::<usize>().ok().and_then(|i| values.get(i)) {
-            Some(&v) if si => out.push_str(&short_number(i64::from(v))),
-            Some(v) => out.push_str(&v.to_string()),
+        let text = value.and_then(|v| match style {
+            "" => Some(v.to_string()),
+            "si" => Some(short_number(v)),
+            "sis" if v >= 0 => Some(format!("+{}", short_number(v))),
+            "sis" => Some(short_number(v)),
+            "int" => Some(grouped(v)),
+            _ => None,
+        });
+        match text {
+            Some(t) => out.push_str(&t),
             None => out.push_str(&rest[start..=start + end]),
         }
         rest = &rest[start + end + 1..];
     }
     out.push_str(rest);
     out
+}
+
+/// `String.format(Locale.US, "%,d", v)`.
+fn grouped(v: i64) -> String {
+    let digits = v.unsigned_abs().to_string();
+    let mut out = String::new();
+    for (i, c) in digits.chars().enumerate() {
+        if i > 0 && (digits.len() - i).is_multiple_of(3) {
+            out.push(',');
+        }
+        out.push(c);
+    }
+    if v < 0 { format!("-{out}") } else { out }
 }
 
 fn short_number(v: i64) -> String {
@@ -482,6 +507,19 @@ mod tests {
     #[test]
     fn lines_take_values() {
         assert_eq!(format("{0:si} / {1:si} HE", &[12_500, 1_000_000]), "12.5k / 1M HE");
+        // a long in two slots: 72 000 000 000 = 16 * 2^32 + 3 305 032 704 (the low half is a negative i32)
+        let big: i64 = 72_000_000_000;
+        let pair = [(big >> 32) as i32, big as i32];
+        assert_eq!(format("{0.1:si}", &pair), "72G");
+        assert_eq!(format("{0.1:int} HE", &pair), "72,000,000,000 HE");
+        assert_eq!(format("{0.1}", &pair), "72000000000");
+        let neg = (-1_234_567i64).to_be_bytes();
+        let pair = [i32::from_be_bytes(neg[..4].try_into().unwrap()), i32::from_be_bytes(neg[4..].try_into().unwrap())];
+        assert_eq!(format("{0.1:int}|{0.1:sis}", &pair), "-1,234,567|-1.2M");
+        assert_eq!(format("{0.1:sis}", &[0, 0]), "+0");
+        assert_eq!(format("{0.1:sis}", &[0, 2_500]), "+2.5k");
+        assert_eq!(format("{0:int}", &[-5]), "-5");
+        assert_eq!(format("{0.5:int}", &[1]), "{0.5:int}");
         assert_eq!(format("{2} ticks {x}", &[1, 2, 3]), "3 ticks {x}");
     }
 

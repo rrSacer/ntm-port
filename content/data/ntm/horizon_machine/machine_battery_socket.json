@@ -1,0 +1,44 @@
+{
+  "use_range": 12.0,
+  "slots": [
+    {
+      "x": 35,
+      "y": 35,
+      "max": 1,
+      "accept": [
+        "ntm:battery_creative",
+        "ntm:battery_pack__battery_lead",
+        "ntm:battery_pack__battery_lithium",
+        "ntm:battery_pack__battery_quantum",
+        "ntm:battery_pack__battery_redstone",
+        "ntm:battery_pack__battery_schrabidium",
+        "ntm:battery_pack__battery_sodium",
+        "ntm:battery_pack__capacitor_bismuth",
+        "ntm:battery_pack__capacitor_copper",
+        "ntm:battery_pack__capacitor_gold",
+        "ntm:battery_pack__capacitor_niobium",
+        "ntm:battery_pack__capacitor_spark",
+        "ntm:battery_pack__capacitor_tantalum"
+      ]
+    }
+  ],
+  "inventory": [
+    8,
+    99
+  ],
+  "data": 12,
+  "multiblock": {
+    "min": [
+      -1,
+      0,
+      0
+    ],
+    "max": [
+      0,
+      1,
+      1
+    ],
+    "offset": 0,
+    "dummy": "ntm:dummy_machine"
+  }
+}

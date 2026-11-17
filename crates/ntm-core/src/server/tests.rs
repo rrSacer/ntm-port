@@ -689,3 +689,4 @@ mod deuterium_tests;
 mod compressor_tests;
 mod cable_switch_tests;
 mod wire_tests;
+mod storage_tests;

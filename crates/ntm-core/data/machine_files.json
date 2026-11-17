@@ -2585,6 +2585,84 @@
 ],
 "synced": []
 },
+"ntm:machine_battery_redd": {
+"inventory": [
+8,
+99
+],
+"slots": [
+{
+"accept": [
+"ntm:battery_creative",
+"ntm:battery_pack__battery_lead",
+"ntm:battery_pack__battery_lithium",
+"ntm:battery_pack__battery_quantum",
+"ntm:battery_pack__battery_redstone",
+"ntm:battery_pack__battery_schrabidium",
+"ntm:battery_pack__battery_sodium",
+"ntm:battery_pack__capacitor_bismuth",
+"ntm:battery_pack__capacitor_copper",
+"ntm:battery_pack__capacitor_gold",
+"ntm:battery_pack__capacitor_niobium",
+"ntm:battery_pack__capacitor_spark",
+"ntm:battery_pack__capacitor_tantalum"
+],
+"max": 1,
+"x": 26,
+"y": 53
+},
+{
+"accept": [
+"ntm:battery_creative",
+"ntm:battery_pack__battery_lead",
+"ntm:battery_pack__battery_lithium",
+"ntm:battery_pack__battery_quantum",
+"ntm:battery_pack__battery_redstone",
+"ntm:battery_pack__battery_schrabidium",
+"ntm:battery_pack__battery_sodium",
+"ntm:battery_pack__capacitor_bismuth",
+"ntm:battery_pack__capacitor_copper",
+"ntm:battery_pack__capacitor_gold",
+"ntm:battery_pack__capacitor_niobium",
+"ntm:battery_pack__capacitor_spark",
+"ntm:battery_pack__capacitor_tantalum"
+],
+"max": 1,
+"x": 80,
+"y": 53
+}
+],
+"synced": []
+},
+"ntm:machine_battery_socket": {
+"inventory": [
+8,
+99
+],
+"slots": [
+{
+"accept": [
+"ntm:battery_creative",
+"ntm:battery_pack__battery_lead",
+"ntm:battery_pack__battery_lithium",
+"ntm:battery_pack__battery_quantum",
+"ntm:battery_pack__battery_redstone",
+"ntm:battery_pack__battery_schrabidium",
+"ntm:battery_pack__battery_sodium",
+"ntm:battery_pack__capacitor_bismuth",
+"ntm:battery_pack__capacitor_copper",
+"ntm:battery_pack__capacitor_gold",
+"ntm:battery_pack__capacitor_niobium",
+"ntm:battery_pack__capacitor_spark",
+"ntm:battery_pack__capacitor_tantalum"
+],
+"max": 1,
+"x": 35,
+"y": 35
+}
+],
+"synced": []
+},
 "ntm:machine_blast_furnace": {
 "inventory": [
 8,

@@ -704,7 +704,7 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
     type Ports = BTreeMap<Pos, Vec<crate::energy::Port>>;
     type PortCells = BTreeMap<(Pos,usize),Pos>;
     type Links = BTreeMap<Pos, Vec<Pos>>;
-    type Shape = (BTreeSet<Pos>, Ports, PortCells, Links);
+    type Shape = (BTreeSet<Pos>, Ports, PortCells, Links, BTreeSet<Pos>);
     let mut dims: BTreeMap<&str, Shape> = BTreeMap::new();
     for (d, p) in &w.cables {
         dims.entry(d).or_default().0.insert(*p);
@@ -727,6 +727,10 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
             // A multiblock's bottom cells carry its power, as HBM's proxies.
             let cells = container_bridge::proxy_cells(&m.block, *p, m.facing.as_deref());
             dims.entry(d).or_default().0.extend(cells);
+            // The socket and the REDD are conductors: all their ports are one node.
+            if matches!(m.data, crate::machine::Data::Storage(_)) {
+                dims.entry(d).or_default().4.insert(*p);
+            }
             // A wire counts when both its ends list each other (`UniNodespace.checkConnection`).
             if let crate::machine::Data::Wire(wire) = &m.data {
                 for c in &wire.connected {
@@ -739,7 +743,7 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
         }
     }
     dims.into_iter()
-        .map(|(d, (c, m, at, links))| (d.to_string(), Topology::build_linked(&c, &m, &at, &links)))
+        .map(|(d, (c, m, at, links, cond))| (d.to_string(), Topology::build_conducting(&c, &m, &at, &links, &cond)))
         .collect()
 }
 

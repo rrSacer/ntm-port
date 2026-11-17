@@ -22157,12 +22157,1162 @@
       }
     },
     "ntm:machine_battery_socket": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "TileEntityBatterySocket, ContainerBatterySocket, GUIBatterySocket 176x181, MachineBatterySocket {1,0,1,0,1,0} offset 0 (8 ports, makeExtra), RenderBatterySocket (Socket part; case 2: 90, translate -0.5 0 0.5); the pack's own model, the supports and the discharge arcs are not drawn",
+      "machine": {
+        "slots": [
+          {
+            "x": 35,
+            "y": 35,
+            "max": 1,
+            "accept": [
+              "ntm:battery_creative",
+              "ntm:battery_pack__battery_lead",
+              "ntm:battery_pack__battery_lithium",
+              "ntm:battery_pack__battery_quantum",
+              "ntm:battery_pack__battery_redstone",
+              "ntm:battery_pack__battery_schrabidium",
+              "ntm:battery_pack__battery_sodium",
+              "ntm:battery_pack__capacitor_bismuth",
+              "ntm:battery_pack__capacitor_copper",
+              "ntm:battery_pack__capacitor_gold",
+              "ntm:battery_pack__capacitor_niobium",
+              "ntm:battery_pack__capacitor_spark",
+              "ntm:battery_pack__capacitor_tantalum"
+            ]
+          }
+        ],
+        "inventory": [
+          8,
+          99
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            1,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_battery_socket.png",
+        "texture_from": "textures/gui/storage/gui_battery_socket.png",
+        "size": [
+          176,
+          181
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          87
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              62,
+              17,
+              34,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 2,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 2,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 3,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 3,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 3,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 4,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              52
+            ]
+          },
+          {
+            "value": 4,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              68
+            ]
+          },
+          {
+            "value": 4,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              84
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              62,
+              17,
+              34,
+              52
+            ],
+            "lines": [
+              "{5.6:si} / {7.8:si} HE",
+              "{9.10:sis} HE/s"
+            ]
+          },
+          {
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Charge priority (click to change)",
+              "Low: storage that must not starve machines",
+              "Normal: small grids",
+              "High: emergency buffers",
+              "This network does not apply priorities yet"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode without redstone"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode with redstone"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Charge priority (click to change)",
+              "Low: storage that must not starve machines",
+              "Normal: small grids",
+              "High: emergency buffers",
+              "This network does not apply priorities yet"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/battery_socket.obj",
+        "obj_from": "models/machines/battery.obj",
+        "texture": "ntm:textures/models/machines/battery_socket.png",
+        "texture_from": "textures/models/machines/battery_socket.png",
+        "rotation": 90,
+        "translate": [
+          -0.5,
+          0,
+          0.5
+        ],
+        "radius": 3.0,
+        "hide": [
+          "Supports",
+          "Capacitor",
+          "Battery"
+        ]
+      }
     },
     "ntm:machine_battery_redd": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "TileEntityBatteryREDD, ContainerBatteryREDD, GUIBatteryREDD 176x181, MachineBatteryREDD {9,0,2,2,4,4} offset 2 (6 ports, makeExtra), RenderBatteryREDD (Base, Wheel and Lights; case 2: 270; the wheel turns at the integer degrees per tick of getSpeed, data 7); the plasma, the zaps, the sparkle and the hum are not drawn",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 53,
+            "max": 1,
+            "accept": [
+              "ntm:battery_creative",
+              "ntm:battery_pack__battery_lead",
+              "ntm:battery_pack__battery_lithium",
+              "ntm:battery_pack__battery_quantum",
+              "ntm:battery_pack__battery_redstone",
+              "ntm:battery_pack__battery_schrabidium",
+              "ntm:battery_pack__battery_sodium",
+              "ntm:battery_pack__capacitor_bismuth",
+              "ntm:battery_pack__capacitor_copper",
+              "ntm:battery_pack__capacitor_gold",
+              "ntm:battery_pack__capacitor_niobium",
+              "ntm:battery_pack__capacitor_spark",
+              "ntm:battery_pack__capacitor_tantalum"
+            ]
+          },
+          {
+            "x": 80,
+            "y": 53,
+            "max": 1,
+            "accept": [
+              "ntm:battery_creative",
+              "ntm:battery_pack__battery_lead",
+              "ntm:battery_pack__battery_lithium",
+              "ntm:battery_pack__battery_quantum",
+              "ntm:battery_pack__battery_redstone",
+              "ntm:battery_pack__battery_schrabidium",
+              "ntm:battery_pack__battery_sodium",
+              "ntm:battery_pack__capacitor_bismuth",
+              "ntm:battery_pack__capacitor_copper",
+              "ntm:battery_pack__capacitor_gold",
+              "ntm:battery_pack__capacitor_niobium",
+              "ntm:battery_pack__capacitor_spark",
+              "ntm:battery_pack__capacitor_tantalum"
+            ]
+          }
+        ],
+        "inventory": [
+          8,
+          99
+        ],
+        "data": 8,
+        "multiblock": {
+          "min": [
+            -4,
+            0,
+            -2
+          ],
+          "max": [
+            4,
+            9,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_battery_redd.png",
+        "texture_from": "textures/gui/storage/gui_battery_redd.png",
+        "size": [
+          176,
+          181
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          87
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 0,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 0,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 0,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 1,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 1,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 1,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 1,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              52
+            ]
+          },
+          {
+            "value": 2,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              68
+            ]
+          },
+          {
+            "value": 2,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              84
+            ]
+          }
+        ],
+        "texts": [
+          {
+            "at": [
+              121,
+              22
+            ],
+            "text": "{3.4:si} HE",
+            "color": "#00ff00",
+            "align": "right"
+          },
+          {
+            "at": [
+              121,
+              32
+            ],
+            "text": "{5.6:sis} HE/s",
+            "color": "#ffffff",
+            "align": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              20,
+              18,
+              102,
+              26
+            ],
+            "lines": [
+              "{3.4:int} HE",
+              "{5.6:int} HE/s"
+            ]
+          },
+          {
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Charge priority (click to change)",
+              "Low: storage that must not starve machines",
+              "Normal: small grids",
+              "High: emergency buffers",
+              "This network does not apply priorities yet"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode without redstone"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode with redstone"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Charge priority (click to change)",
+              "Low: storage that must not starve machines",
+              "Normal: small grids",
+              "High: emergency buffers",
+              "This network does not apply priorities yet"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/battery_redd.obj",
+        "obj_from": "models/machines/fensu2.obj",
+        "texture": "ntm:textures/models/machines/battery_redd.png",
+        "texture_from": "textures/models/machines/fensu2.png",
+        "rotation": 270,
+        "radius": 11.0,
+        "hide": [
+          "Plasma"
+        ],
+        "bones": {
+          "Wheel": {
+            "pivot": [
+              0,
+              5.5,
+              0
+            ]
+          },
+          "Lights": {
+            "pivot": [
+              0,
+              5.5,
+              0
+            ]
+          }
+        },
+        "loop_animation": [
+          {
+            "name": "animation.battery_redd.wheel1",
+            "length": 18.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel2",
+            "length": 9.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel3",
+            "length": 6.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel4",
+            "length": 4.5,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel5",
+            "length": 3.6,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel6",
+            "length": 3.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel7",
+            "length": 2.5714,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel8",
+            "length": 2.25,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel9",
+            "length": 2.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel10",
+            "length": 1.8,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel11",
+            "length": 1.6364,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel12",
+            "length": 1.5,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel13",
+            "length": 1.3846,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel14",
+            "length": 1.2857,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel15",
+            "length": 1.2,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          }
+        ],
+        "play": [
+          {
+            "animation": "animation.battery_redd.wheel1",
+            "values": [
+              {
+                "value": 7,
+                "min": 1,
+                "max": 1
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel2",
+            "values": [
+              {
+                "value": 7,
+                "min": 2,
+                "max": 2
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel3",
+            "values": [
+              {
+                "value": 7,
+                "min": 3,
+                "max": 3
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel4",
+            "values": [
+              {
+                "value": 7,
+                "min": 4,
+                "max": 4
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel5",
+            "values": [
+              {
+                "value": 7,
+                "min": 5,
+                "max": 5
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel6",
+            "values": [
+              {
+                "value": 7,
+                "min": 6,
+                "max": 6
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel7",
+            "values": [
+              {
+                "value": 7,
+                "min": 7,
+                "max": 7
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel8",
+            "values": [
+              {
+                "value": 7,
+                "min": 8,
+                "max": 8
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel9",
+            "values": [
+              {
+                "value": 7,
+                "min": 9,
+                "max": 9
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel10",
+            "values": [
+              {
+                "value": 7,
+                "min": 10,
+                "max": 10
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel11",
+            "values": [
+              {
+                "value": 7,
+                "min": 11,
+                "max": 11
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel12",
+            "values": [
+              {
+                "value": 7,
+                "min": 12,
+                "max": 12
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel13",
+            "values": [
+              {
+                "value": 7,
+                "min": 13,
+                "max": 13
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel14",
+            "values": [
+              {
+                "value": 7,
+                "min": 14,
+                "max": 14
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel15",
+            "values": [
+              {
+                "value": 7,
+                "min": 15,
+                "max": 15
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:red_connector": {
       "auto": false,

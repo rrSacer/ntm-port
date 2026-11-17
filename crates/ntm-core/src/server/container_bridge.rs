@@ -134,6 +134,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Welder(w) => Some(&mut **w),
         Data::Intake(i) => Some(i),
         Data::Compressor(c) => Some(&mut **c),
+        Data::Storage(s) => Some(&mut **s),
         _ => None,
     }
 }
@@ -195,6 +196,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_intake", Layout::Native),
     ("ntm:machine_compressor", Layout::Native),
     ("ntm:machine_compressor_compact", Layout::Native),
+    ("ntm:machine_battery_socket", Layout::Native),
+    ("ntm:machine_battery_redd", Layout::Native),
     ("ntm:machine_crucible", Layout::Native),
     ("ntm:foundry_mold", Layout::Native),
     ("ntm:foundry_basin", Layout::Native),
@@ -383,6 +386,9 @@ pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Po
     }
     if crate::compressor::Shape::of(block).is_some() {
         return crate::compressor::Compressor::port_cells(block, core, facing).into_iter().map(|(p, _)| p).collect();
+    }
+    if crate::storage::Body::of(block).is_some() {
+        return crate::storage::Storage::port_cells(block, core, facing).into_iter().map(|(p, _)| p).collect();
     }
     if block == crate::radioisotopes::RADGEN {
         return facing.and_then(crate::registry::facing_dir).map(|d|vec![[core[0]-d[0]*3,core[1],core[2]-d[2]*3]]).unwrap_or_default();

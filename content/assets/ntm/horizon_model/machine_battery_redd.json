@@ -1,0 +1,178 @@
+{
+  "obj": "ntm:models/obj/battery_redd.obj",
+  "texture": "ntm:textures/models/machines/battery_redd.png",
+  "rotation": 270,
+  "radius": 11.0,
+  "hide": [
+    "Plasma"
+  ],
+  "bones": {
+    "Wheel": {
+      "pivot": [
+        0,
+        5.5,
+        0
+      ]
+    },
+    "Lights": {
+      "pivot": [
+        0,
+        5.5,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.battery_redd.wheel1",
+      "values": [
+        {
+          "value": 7,
+          "min": 1,
+          "max": 1
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel2",
+      "values": [
+        {
+          "value": 7,
+          "min": 2,
+          "max": 2
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel3",
+      "values": [
+        {
+          "value": 7,
+          "min": 3,
+          "max": 3
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel4",
+      "values": [
+        {
+          "value": 7,
+          "min": 4,
+          "max": 4
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel5",
+      "values": [
+        {
+          "value": 7,
+          "min": 5,
+          "max": 5
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel6",
+      "values": [
+        {
+          "value": 7,
+          "min": 6,
+          "max": 6
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel7",
+      "values": [
+        {
+          "value": 7,
+          "min": 7,
+          "max": 7
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel8",
+      "values": [
+        {
+          "value": 7,
+          "min": 8,
+          "max": 8
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel9",
+      "values": [
+        {
+          "value": 7,
+          "min": 9,
+          "max": 9
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel10",
+      "values": [
+        {
+          "value": 7,
+          "min": 10,
+          "max": 10
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel11",
+      "values": [
+        {
+          "value": 7,
+          "min": 11,
+          "max": 11
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel12",
+      "values": [
+        {
+          "value": 7,
+          "min": 12,
+          "max": 12
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel13",
+      "values": [
+        {
+          "value": 7,
+          "min": 13,
+          "max": 13
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel14",
+      "values": [
+        {
+          "value": 7,
+          "min": 14,
+          "max": 14
+        }
+      ]
+    },
+    {
+      "animation": "animation.battery_redd.wheel15",
+      "values": [
+        {
+          "value": 7,
+          "min": 15,
+          "max": 15
+        }
+      ]
+    }
+  ],
+  "animations": "ntm:animations/machine_battery_redd.animation.json"
+}
