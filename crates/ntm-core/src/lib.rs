@@ -63,6 +63,7 @@ pub mod recipes;
 pub mod refinery;
 pub mod screens;
 pub mod shredder;
+pub mod silex;
 pub mod radiation;
 pub mod radioisotopes;
 pub mod radiolysis;

@@ -40,6 +40,10 @@ def catalog():
     return by
 
 
+def stack_limits():
+    return {e['id']: e.get('max_stack_size', 64) for e in json.loads((ROOT / 'content/ids.json').read_text())['entries']}
+
+
 def fluids():
     return {f['id']: f['string_id'] for f in json.loads((ROOT / 'crates/ntm-core/data/fluids.json').read_text())['fluids']}
 
@@ -71,7 +75,7 @@ def tiny_waste(source):
 def build(source=None):
     source = Path(source or os.environ.get('NTM_SRC', DEFAULT_SOURCE))
     data = json.loads((ROOT / 'content/machine-recipes/reactors_rbmk.json').read_text())
-    by, fluid_names = catalog(), fluids()
+    by, fluid_names, limits = catalog(), fluids(), stack_limits()
     recipes, skipped = [], []
     for index, row in enumerate(data['silex_recipes']):
         key = row['input']
@@ -83,7 +87,9 @@ def build(source=None):
                 inp = {'item': resolve(key['stack'], by, fluid_names)}
             outputs = []
             for o in r['outputs']:
-                outputs.append({'item': resolve(o['stack'], by, fluid_names), 'count': o['stack']['count'], 'weight': o['weight']})
+                item = resolve(o['stack'], by, fluid_names)
+                # `getMaxStackSize` of the output, what the queue piles it up to (`dequeue`).
+                outputs.append({'item': item, 'count': o['stack']['count'], 'weight': o['weight'], 'stack': limits.get(item, 64)})
         except Missing as why:
             skipped.append({'index': index, 'input': key, 'reason': str(why)})
             continue

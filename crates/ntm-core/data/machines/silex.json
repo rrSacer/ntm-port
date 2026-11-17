@@ -13,17 +13,20 @@
     {
      "item": "ntm:nugget_pu238",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu240",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     }
    ]
   },
@@ -38,12 +41,14 @@
     {
      "item": "ntm:nugget_u235",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_u238",
      "count": 1,
-     "weight": 11
+     "weight": 11,
+     "stack": 64
     }
    ]
   },
@@ -58,17 +63,20 @@
     {
      "item": "ntm:nugget_schrabidium",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_uranium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_neptunium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     }
    ]
   },
@@ -83,27 +91,32 @@
     {
      "item": "ntm:powder_plutonium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cobalt",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:powder_niobium",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:powder_nitan_mix",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:powder_spark_mix",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     }
    ]
   },
@@ -118,32 +131,38 @@
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_co60",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:powder_sr90_tiny",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:powder_i131_tiny",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cs137_tiny",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_au198",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     }
    ]
   },
@@ -158,37 +177,44 @@
     {
      "item": "ntm:powder_aluminium",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:powder_neodymium_tiny",
      "count": 3,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_boron_tiny",
      "count": 3,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_iron",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:powder_titanium",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:powder_sodium",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     }
    ]
   },
@@ -203,7 +229,8 @@
     {
      "item": "ntm:powder_ash__fullerene",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     }
    ]
   },
@@ -218,22 +245,26 @@
     {
      "item": "ntm:powder_bromine",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_iodine",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_iron",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:sulfur",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     }
    ]
   },
@@ -248,7 +279,8 @@
     {
      "item": "ntm:powder_impure_osmiridium",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     }
    ]
   },
@@ -263,12 +295,14 @@
     {
      "item": "ntm:nugget_am241",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_am242",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     }
    ]
   },
@@ -283,12 +317,14 @@
     {
      "item": "ntm:nugget_australium_lesser",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_australium_greater",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     }
    ]
   },
@@ -303,12 +339,14 @@
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu240",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     }
    ]
   },
@@ -323,17 +361,20 @@
     {
      "item": "ntm:nugget_schrabidium",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_uranium",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_neptunium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     }
    ]
   },
@@ -348,17 +389,20 @@
     {
      "item": "ntm:sulfur",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:powder_aluminium",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cobalt",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     }
    ]
   },
@@ -373,22 +417,26 @@
     {
      "item": "minecraft:flint",
      "count": 1,
-     "weight": 80
+     "weight": 80,
+     "stack": 64
     },
     {
      "item": "ntm:powder_boron",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_lithium",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:fluorite",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     }
    ]
   },
@@ -403,22 +451,26 @@
     {
      "item": "ntm:nugget_neptunium",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu240",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_technetium",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     }
    ]
   },
@@ -433,22 +485,26 @@
     {
      "item": "ntm:nugget_u235",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_neptunium",
      "count": 1,
-     "weight": 25
+     "weight": 25,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_technetium",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     }
    ]
   },
@@ -463,27 +519,32 @@
     {
      "item": "ntm:nugget_u238",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 40
+     "weight": 40,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu240",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_technetium",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     }
    ]
   },
@@ -498,17 +559,20 @@
     {
      "item": "ntm:nugget_u233",
      "count": 1,
-     "weight": 40
+     "weight": 40,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_u235",
      "count": 1,
-     "weight": 35
+     "weight": 35,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 25
+     "weight": 25,
+     "stack": 64
     }
    ]
   },
@@ -523,32 +587,38 @@
     {
      "item": "ntm:nugget_solinium",
      "count": 1,
-     "weight": 25
+     "weight": 25,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_euphemium",
      "count": 1,
-     "weight": 18
+     "weight": 18,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_gh336",
      "count": 1,
-     "weight": 16
+     "weight": 16,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_tantalium",
      "count": 1,
-     "weight": 8
+     "weight": 8,
+     "stack": 64
     },
     {
      "item": "ntm:powder_neodymium_tiny",
      "count": 1,
-     "weight": 8
+     "weight": 8,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 25
+     "weight": 25,
+     "stack": 64
     }
    ]
   },
@@ -563,17 +633,20 @@
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 65
+     "weight": 65,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     }
    ]
   },
@@ -588,17 +661,20 @@
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 60
+     "weight": 60,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 25
+     "weight": 25,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     }
    ]
   },
@@ -613,22 +689,26 @@
     {
      "item": "ntm:nugget_u238",
      "count": 1,
-     "weight": 16
+     "weight": 16,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 55
+     "weight": 55,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 9
+     "weight": 9,
+     "stack": 64
     }
    ]
   },
@@ -643,22 +723,26 @@
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 35
+     "weight": 35,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 40
+     "weight": 40,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     }
    ]
   },
@@ -673,32 +757,38 @@
     {
      "item": "ntm:nugget_solinium",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_euphemium",
      "count": 1,
-     "weight": 18
+     "weight": 18,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_gh336",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_tantalium",
      "count": 1,
-     "weight": 8
+     "weight": 8,
+     "stack": 64
     },
     {
      "item": "ntm:powder_neodymium_tiny",
      "count": 1,
-     "weight": 8
+     "weight": 8,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 31
+     "weight": 31,
+     "stack": 64
     }
    ]
   },
@@ -713,27 +803,32 @@
     {
      "item": "ntm:nugget_pu238",
      "count": 1,
-     "weight": 12
+     "weight": 12,
+     "stack": 64
     },
     {
      "item": "ntm:powder_sr90_tiny",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:powder_i131_tiny",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cs137_tiny",
      "count": 1,
-     "weight": 12
+     "weight": 12,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 56
+     "weight": 56,
+     "stack": 64
     }
    ]
   },
@@ -748,27 +843,32 @@
     {
      "item": "ntm:nugget_pu238",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:powder_sr90_tiny",
      "count": 1,
-     "weight": 12
+     "weight": 12,
+     "stack": 64
     },
     {
      "item": "ntm:powder_i131_tiny",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cs137_tiny",
      "count": 1,
-     "weight": 14
+     "weight": 14,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 60
+     "weight": 60,
+     "stack": 64
     }
    ]
   },
@@ -783,27 +883,32 @@
     {
      "item": "ntm:nugget_pu238",
      "count": 1,
-     "weight": 40
+     "weight": 40,
+     "stack": 64
     },
     {
      "item": "ntm:powder_sr90_tiny",
      "count": 1,
-     "weight": 7
+     "weight": 7,
+     "stack": 64
     },
     {
      "item": "ntm:powder_i131_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cs137_tiny",
      "count": 1,
-     "weight": 8
+     "weight": 8,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 40
+     "weight": 40,
+     "stack": 64
     }
    ]
   },
@@ -818,32 +923,38 @@
     {
      "item": "ntm:nugget_pu240",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu241",
      "count": 1,
-     "weight": 25
+     "weight": 25,
+     "stack": 64
     },
     {
      "item": "ntm:powder_sr90_tiny",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:powder_i131_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cs137_tiny",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 52
+     "weight": 52,
+     "stack": 64
     }
    ]
   },
@@ -858,32 +969,38 @@
     {
      "item": "ntm:nugget_pu241",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_neptunium",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_sr90_tiny",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:powder_i131_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cs137_tiny",
      "count": 1,
-     "weight": 7
+     "weight": 7,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 66
+     "weight": 66,
+     "stack": 64
     }
    ]
   },
@@ -898,32 +1015,38 @@
     {
      "item": "ntm:nugget_am241",
      "count": 1,
-     "weight": 25
+     "weight": 25,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_am242",
      "count": 1,
-     "weight": 35
+     "weight": 35,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_technetium",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_i131_tiny",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cs137_tiny",
      "count": 1,
-     "weight": 7
+     "weight": 7,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 25
+     "weight": 25,
+     "stack": 64
     }
    ]
   },
@@ -938,27 +1061,32 @@
     {
      "item": "ntm:nugget_pb209",
      "count": 1,
-     "weight": 7
+     "weight": 7,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_au198",
      "count": 1,
-     "weight": 7
+     "weight": 7,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cs137_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_i131_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 76
+     "weight": 76,
+     "stack": 64
     }
    ]
   },
@@ -973,32 +1101,38 @@
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 32
+     "weight": 32,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 22
+     "weight": 22,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_u238",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 16
+     "weight": 16,
+     "stack": 64
     }
    ]
   },
@@ -1013,32 +1147,38 @@
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 12
+     "weight": 12,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 34
+     "weight": 34,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 13
+     "weight": 13,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_u238",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 29
+     "weight": 29,
+     "stack": 64
     }
    ]
   },
@@ -1053,27 +1193,32 @@
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 7
+     "weight": 7,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 29
+     "weight": 29,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_u238",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 17
+     "weight": 17,
+     "stack": 64
     }
    ]
   },
@@ -1088,27 +1233,32 @@
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 16
+     "weight": 16,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 40
+     "weight": 40,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_u238",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 39
+     "weight": 39,
+     "stack": 64
     }
    ]
   },
@@ -1123,32 +1273,38 @@
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 22
+     "weight": 22,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 17
+     "weight": 17,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_u238",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 36
+     "weight": 36,
+     "stack": 64
     }
    ]
   },
@@ -1163,22 +1319,26 @@
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 60
+     "weight": 60,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     }
    ]
   },
@@ -1193,32 +1353,38 @@
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 7
+     "weight": 7,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_mercury_tiny",
      "count": 1,
-     "weight": 12
+     "weight": 12,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cerium_tiny",
      "count": 1,
-     "weight": 14
+     "weight": 14,
+     "stack": 64
     },
     {
      "item": "ntm:powder_lanthanium_tiny",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     },
     {
      "item": "ntm:dust_tiny",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 32
+     "weight": 32,
+     "stack": 64
     }
    ]
   },
@@ -1233,22 +1399,26 @@
     {
      "item": "ntm:powder_plutonium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:powder_cobalt",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:powder_niobium",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:powder_nitan_mix",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     }
    ]
   },
@@ -1263,12 +1433,14 @@
     {
      "item": "ntm:powder_balefire",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     }
    ]
   },
@@ -1283,12 +1455,14 @@
     {
      "item": "ntm:nugget_au198",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:powder_balefire",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     }
    ]
   },
@@ -1303,32 +1477,38 @@
     {
      "item": "ntm:undefined",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:undefined",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:undefined",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:undefined",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:undefined",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:undefined",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     }
    ]
   },
@@ -1343,27 +1523,32 @@
     {
      "item": "ntm:nugget_au198",
      "count": 1,
-     "weight": 44
+     "weight": 44,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pb209",
      "count": 1,
-     "weight": 44
+     "weight": 44,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_mercury_tiny",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_gh336",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     }
    ]
   },
@@ -1378,22 +1563,26 @@
     {
      "item": "ntm:nugget_australium_greater",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_au198",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "minecraft:gold_nugget",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pb209",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     }
    ]
   },
@@ -1408,17 +1597,20 @@
     {
      "item": "ntm:nugget_neptunium",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__neptunium",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__neptunium",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     }
    ]
   },
@@ -1433,12 +1625,14 @@
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 85
+     "weight": 85,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__plutonium239",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     }
    ]
   },
@@ -1453,12 +1647,14 @@
     {
      "item": "ntm:nugget_pu241",
      "count": 1,
-     "weight": 85
+     "weight": 85,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__plutonium241",
      "count": 1,
-     "weight": 15
+     "weight": 15,
+     "stack": 64
     }
    ]
   },
@@ -1473,32 +1669,38 @@
     {
      "item": "ntm:nugget_hes",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__neptunium",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__neptunium",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__schrabidium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__schrabidium",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:powder_coal_tiny",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     }
    ]
   },
@@ -1513,17 +1715,20 @@
     {
      "item": "ntm:nugget_u233",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__uranium233",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__uranium233",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     }
    ]
   },
@@ -1538,17 +1743,20 @@
     {
      "item": "ntm:nugget_u235",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__uranium235",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__uranium235",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     }
    ]
   },
@@ -1563,17 +1771,20 @@
     {
      "item": "ntm:nugget_australium_lesser",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pb209",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     }
    ]
   },
@@ -1588,22 +1799,26 @@
     {
      "item": "ntm:nugget_plutonium_fuel",
      "count": 1,
-     "weight": 84
+     "weight": 84,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__plutonium239",
      "count": 1,
-     "weight": 7
+     "weight": 7,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__plutonium240",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     }
    ]
   },
@@ -1618,32 +1833,38 @@
     {
      "item": "ntm:nugget_les",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__neptunium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__neptunium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__schrabidium",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__schrabidium",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:powder_coal_tiny",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     }
    ]
   },
@@ -1658,22 +1879,26 @@
     {
      "item": "ntm:nugget_neptunium_fuel",
      "count": 1,
-     "weight": 84
+     "weight": 84,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__neptunium",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__neptunium",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     }
    ]
   },
@@ -1688,17 +1913,20 @@
     {
      "item": "ntm:nugget_pu_mix",
      "count": 1,
-     "weight": 85
+     "weight": 85,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__plutonium239",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__plutonium240",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     }
    ]
   },
@@ -1713,32 +1941,38 @@
     {
      "item": "ntm:nugget_schrabidium_fuel",
      "count": 1,
-     "weight": 90
+     "weight": 90,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__neptunium",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__neptunium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__schrabidium",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__schrabidium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:powder_coal_tiny",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     }
    ]
   },
@@ -1753,22 +1987,26 @@
     {
      "item": "ntm:nugget_uranium_fuel",
      "count": 1,
-     "weight": 84
+     "weight": 84,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__uranium235",
      "count": 1,
-     "weight": 4
+     "weight": 4,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__uranium235",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     }
    ]
   },
@@ -1783,27 +2021,32 @@
     {
      "item": "ntm:nugget_mox_fuel",
      "count": 1,
-     "weight": 84
+     "weight": 84,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu_mix",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__uranium235",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__uranium235",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__plutonium239",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     }
    ]
   },
@@ -1818,22 +2061,26 @@
     {
      "item": "ntm:nugget_polonium",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_beryllium",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     },
     {
      "item": "ntm:powder_coal_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     }
    ]
   },
@@ -1848,27 +2095,32 @@
     {
      "item": "ntm:nugget_pu238",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_beryllium",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_tiny",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:powder_coal_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     }
    ]
   },
@@ -1883,27 +2135,32 @@
     {
      "item": "ntm:nugget_ra226",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_beryllium",
      "count": 1,
-     "weight": 45
+     "weight": 45,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_lead",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_polonium",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:powder_coal_tiny",
      "count": 1,
-     "weight": 5
+     "weight": 5,
+     "stack": 64
     }
    ]
   },
@@ -1918,17 +2175,20 @@
     {
      "item": "ntm:nugget_thorium_fuel",
      "count": 1,
-     "weight": 84
+     "weight": 84,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_u233",
      "count": 1,
-     "weight": 6
+     "weight": 6,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__thorium",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     }
    ]
   },
@@ -1943,22 +2203,26 @@
     {
      "item": "ntm:nugget_uranium",
      "count": 1,
-     "weight": 86
+     "weight": 86,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu239",
      "count": 1,
-     "weight": 10
+     "weight": 10,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__uranium235",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__uranium235",
      "count": 1,
-     "weight": 2
+     "weight": 2,
+     "stack": 64
     }
    ]
   },
@@ -1973,27 +2237,32 @@
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 75
+     "weight": 75,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_uranium_fuel",
      "count": 1,
-     "weight": 20
+     "weight": 20,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu_mix",
      "count": 1,
-     "weight": 3
+     "weight": 3,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_long_tiny__uranium235",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     },
     {
      "item": "ntm:nuclear_waste_short_tiny__uranium235",
      "count": 1,
-     "weight": 1
+     "weight": 1,
+     "stack": 64
     }
    ]
   },
@@ -2008,17 +2277,20 @@
     {
      "item": "ntm:nugget_pu241",
      "count": 1,
-     "weight": 100
+     "weight": 100,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_am_mix",
      "count": 1,
-     "weight": 50
+     "weight": 50,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 150
+     "weight": 150,
+     "stack": 64
     }
    ]
   },
@@ -2033,22 +2305,26 @@
     {
      "item": "ntm:nugget_uranium",
      "count": 1,
-     "weight": 50
+     "weight": 50,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu241",
      "count": 1,
-     "weight": 50
+     "weight": 50,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_bismuth",
      "count": 1,
-     "weight": 50
+     "weight": 50,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 150
+     "weight": 150,
+     "stack": 64
     }
    ]
   },
@@ -2063,22 +2339,26 @@
     {
      "item": "ntm:nugget_u235",
      "count": 1,
-     "weight": 50
+     "weight": 50,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu240",
      "count": 1,
-     "weight": 50
+     "weight": 50,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_pu241",
      "count": 1,
-     "weight": 50
+     "weight": 50,
+     "stack": 64
     },
     {
      "item": "ntm:nugget_zirconium",
      "count": 1,
-     "weight": 150
+     "weight": 150,
+     "stack": 64
     }
    ]
   }
