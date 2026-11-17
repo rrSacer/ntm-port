@@ -22173,32 +22173,240 @@
       "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
     },
     "ntm:red_pylon": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonRedWire {4,0,0,0,0,0} offset 0, RenderPylon (Pylon)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            4,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon.obj",
+        "obj_from": "models/network/pylon.obj",
+        "texture": "ntm:textures/models/network/pylon.png",
+        "texture_from": "textures/models/network/pylon.png",
+        "rotation": 0,
+        "radius": 6.5,
+        "hide": [
+          "Pylon_steel"
+        ]
+      }
     },
     "ntm:red_pylon_steel": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonRedWire {4,0,0,0,0,0} offset 0, RenderPylon (Pylon_steel)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            4,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon.obj",
+        "obj_from": "models/network/pylon.obj",
+        "texture": "ntm:textures/models/network/pylon_steel.png",
+        "texture_from": "textures/models/network/pylon_steel.png",
+        "rotation": 0,
+        "radius": 6.5,
+        "hide": [
+          "Pylon"
+        ]
+      }
     },
     "ntm:red_pylon_medium_wood": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonMedium {6,0,0,0,0,0} offset 0, RenderPylonMedium (turn 180 against the engine facing)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            6,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_medium.obj",
+        "obj_from": "models/network/pylon_medium.obj",
+        "texture": "ntm:textures/models/network/pylon_medium.png",
+        "texture_from": "textures/models/network/pylon_medium.png",
+        "rotation": 180,
+        "radius": 8.5,
+        "hide": [
+          "Transformer"
+        ]
+      }
     },
     "ntm:red_pylon_medium_wood_transformer": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonMedium {6,0,0,0,0,0} offset 0, RenderPylonMedium (turn 180 against the engine facing)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            6,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_medium.obj",
+        "obj_from": "models/network/pylon_medium.obj",
+        "texture": "ntm:textures/models/network/pylon_medium.png",
+        "texture_from": "textures/models/network/pylon_medium.png",
+        "rotation": 180,
+        "radius": 8.5
+      }
     },
     "ntm:red_pylon_medium_steel": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonMedium {6,0,0,0,0,0} offset 0, RenderPylonMedium (turn 180 against the engine facing)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            6,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_medium.obj",
+        "obj_from": "models/network/pylon_medium.obj",
+        "texture": "ntm:textures/models/network/pylon_medium_steel.png",
+        "texture_from": "textures/models/network/pylon_medium_steel.png",
+        "rotation": 180,
+        "radius": 8.5,
+        "hide": [
+          "Transformer"
+        ]
+      }
     },
     "ntm:red_pylon_medium_steel_transformer": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonMedium {6,0,0,0,0,0} offset 0, RenderPylonMedium (turn 180 against the engine facing)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            6,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_medium.obj",
+        "obj_from": "models/network/pylon_medium.obj",
+        "texture": "ntm:textures/models/network/pylon_medium_steel.png",
+        "texture_from": "textures/models/network/pylon_medium_steel.png",
+        "rotation": 180,
+        "radius": 8.5
+      }
     },
     "ntm:red_pylon_large": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonLarge {13,0,1,1,1,1} offset 0, RenderPylonLarge (45 degree steps are not available: one fixed turn)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            13,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_large.obj",
+        "obj_from": "models/network/pylon_large.obj",
+        "texture": "ntm:textures/models/network/pylon_large.png",
+        "texture_from": "textures/models/network/pylon_large.png",
+        "rotation": 90,
+        "radius": 15.0
+      }
     },
     "ntm:cable_switch": {
       "auto": false,

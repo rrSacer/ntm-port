@@ -9,7 +9,7 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 | # | Bloco | Estado |
 | --- | --- | --- |
 | 1 | `cable_switch`, `cable_detector` | Concluída |
-| 2 | `red_connector`, `red_connector_super`, `red_pylon`, `red_pylon_steel`, `red_pylon_medium_*`, `red_pylon_large` | Pendente |
+| 2 | `red_connector`, `red_connector_super`, `red_pylon`, `red_pylon_steel`, `red_pylon_medium_*` (4), `red_pylon_large` | Concluída (lacunas de orientação e de fio visível, abaixo) |
 | 3 | `machine_battery_socket`, `machine_battery_redd` | Pendente (depende do catálogo de baterias) |
 | — | `machine_transformer` | Sem lógica a portar: `MachineTransformer extends Block`, sem `TileEntity` |
 
@@ -85,3 +85,72 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
   as demais caixas da família `beehive`.
 - **Pintura, disfarce, calibre e caixas** dos cabos do catálogo (`red_cable_paintable`, `red_cable_gauge`, `red_cable_box`) não pertencem a
   este item.
+
+---
+
+## 2. Conectores e pylons (os 9 pontos de fio) e o carretel de cabo
+
+### Contrato fonte
+
+- `TileEntityPylonBase.java`: o nó (`createNode`) é a própria célula mais os vizinhos que cada classe lista; as ligações por fio ficam em `connected`
+  (`addConnection` **acrescenta sem checar repetição**) e no outro ponto; `canConnect(first, second)` (`:25-44`): tipos de ligação iguais
+  (`SINGLE`/`TRIPLE`/`QUAD`), pontos distintos e distância entre os pontos de montagem `<=` o menor alcance; `disconnectAll` (ao quebrar) tira o
+  ponto das listas dos outros. Alcances: conector 10, conector super 100, pylon 25, médios 45, grande 100.
+- `TileEntityConnector.java`/`Super`: um bloco só, `meta` = a face em que foi posto (`onBlockPlaced` devolve `side`), aberto só atrás
+  (`canConnect`: `getOrientation(meta).getOpposite() == dir`); `TileEntityPylon.java`: as quatro faces horizontais; `PylonMedium`: aberto só pela
+  face do transformador, se tiver; `PylonLarge`: sem faces, só fio.
+- `ItemWiring.onItemUse` (`ItemWiring.java:19-84`), **sem agachar**: o primeiro clique num ponto (o núcleo, achado a partir de qualquer célula do
+  multibloco) guarda `x, y, z` no item e diz "Wire start"; o segundo liga se `canConnect == 0` ("Wire end") ou diz o motivo ("not the same type",
+  "Cannot connect to the same pylon", "too far away"); em qualquer desfecho o item esquece o ponto, e **não é consumido**. Se o primeiro ponto
+  deixou de ser um ponto de fio: "Wire error".
+- Blocos: `PylonRedWire {4,0,0,0,0,0}`, `PylonMedium {6,0,0,0,0,0}`, `PylonLarge {13,0,1,1,1,1}` (`getOffset() == 0`); quebrar qualquer célula chama
+  `disconnectAll`.
+- Regras puras (`energy_network.rs`: `WireKind`, `can_connect_wires`, `node`) já estavam provadas contra o Java bit a bit.
+
+### Implementação
+
+- [`crates/ntm-core/src/wire.rs`](../crates/ntm-core/src/wire.rs) (`Kind::Wire`, `Data::Wire { connected, color }`): as faces de cada ponto saem de
+  `WireKind::node` e viram a porta única do núcleo (`registry::ports`). O `facing` do bloco é o `meta` do Java.
+- Topologia: `Topology::build_linked` (`energy.rs`) junta, a qualquer distância, os pontos de fio que **se listam mutuamente**
+  (`UniNodespace.checkConnection`); `server.rs::build_topology` monta as ligações e um passo por tick (`simulate`) tira da lista de um ponto o
+  outro que sumiu de uma célula carregada e não é mais ponto de fio (`disconnectAll`, qualquer que seja o jeito de o ponto sair).
+- Carretel: `native_server.rs::native_wire_use` (regras do Java, mensagens em inglês iguais) e `glue.rs::use_wire` (lê e grava `x, y, z` no
+  `custom_data` do item; não age agachado).
+- Conteúdo: `tools/visual-gen/visual.json` → arquivos de máquina com o multibloco (`1×5×1`, `1×7×1`, `3×14×3`) e os modelos OBJ dos 7 pylons
+  (`pylon.obj` com a peça `Pylon` ou `Pylon_steel`, `pylon_medium.obj` com ou sem `Transformer`, `pylon_large.obj`) com as texturas originais.
+
+### Provas
+
+- **Testes (`ntm-core`):** `server::tests::wire_tests` (10) e dois de `energy::tests`: o fio leva a energia só depois do segundo clique e **não perde nada**;
+  os três erros dizem o porquê e não deixam ligação; os alcances (conector 10, super 100) e a repetição mantida; quebrar tira o fio do outro lado;
+  um fio que só um lado lista não conduz (`checkConnection`); o conector só recebe de trás (5 posições de bateria); as faces de cada um dos 9; um
+  fio para um bloco que ainda é ponto é mantido e um ponto num chunk descarregado não é mexido; os 9 nascem de `Kind::Inert` e o save volta igual.
+  `cargo test -p ntm-core --lib`: **811 passaram** (eram 799: +12, 10 de `wire_tests` e 2 de `energy::tests`); `energy_network_tests` + `ledger_persistence` 24 + 6; `cargo clippy --workspace --all-targets -- -D warnings` limpo.
+- **Mutantes (`/mnt/ssd120/sacer/so/c/mutate_wire.py`):** **19/20 mortos** (20 mutantes: resultado do clique, ligação de um lado só, topologia suja, mensagens, `meta` do conector e do médio, topologia de um lado só, retirada do fio do outro lado, repetição, índice da porta do fio, registro de 3 dos 9 blocos, filtro e lista das faces). O sobrevivente (`W20`, tirar o `loaded` do passo que desfaz fios) é **equivalente neste harness**: a máquina de um chunk descarregado sai do mapa antes do passo.
+- **Cliente nativo e pacote:** `horizon-client` release SHA-256 `38b612b216e08d858dcf97845abd1b1d181be1ee3c4f94a5bb056dc33e3f4411`; `dist/ntm.hmod`
+  SHA-256 `9dc00df6408acfa8ccd47fb33efc775b95d49118d3f7687cb554cc9aa491fc8b`.
+- **Prova em jogo (`/mnt/ssd120/sacer/so/c/run_wire_proof.py`):** dois `red_pylon` postos pelo motor a 20 blocos um do outro, uma bateria finita na origem e outra
+  no destino. **16/16 checks `ok: true`**: os pylons nascem como máquinas sem ligações; sem fio nada atravessa; o **primeiro clique real com o carretel
+  diz "Wire start" e o segundo "Wire end"**; as duas pontas listam uma à outra; a energia atravessa e é **conservada exatamente** (`68 306` HE saem
+  da origem e entram no destino, lidos com o jogo congelado); o mesmo pylon duas vezes dá "Cannot connect to the same pylon" sem ligação nova; um pylon
+  a 40 blocos dá "too far away" sem ligação; um pylon médio dá "not the same type"; **o clique agachado não começa fio** e o simples logo depois
+  começa; quebrar uma ponta em survival tira o fio da outra e a energia para.
+- **Corte de gravação estrito (`HORIZON_NO_EAGER_SAVE=1`):** **7/7 pontos `ok: true`** (`none`, `kill`, `kv_committed`, `save_begin`, `chunks_written`,
+  `entities_written`, `world_saved`), `kv_items=0`, `.mca` inalterados antes da escrita. Base salva sem fio; no ato o fio é feito com **cliques reais** e a energia
+  flui. Antes da escrita as duas reaberturas voltam ao último save: **nenhum dos dois pylons lista o outro e nada atravessa**; depois da escrita (e em `none`) as duas
+  reaberturas mantêm **as duas pontas listando uma à outra** (`[[60,100,12]]` e `[[40,100,12]]`) e a energia segue atravessando e conservada. Em nenhum ponto
+  apareceu um fio de um lado só nem energia sem fio.
+
+### Lacunas nominais
+
+- **O fio não é desenhado:** `RenderPylonBase.renderLinesGeneric` traça os cabos entre os pontos de montagem no cliente; o motor não tem um desenho
+  de linhas por block entity, então os fios ficam **invisíveis**. A ligação se vê pela mensagem do chat, pela energia e pelo estado da máquina.
+  O texto do carretel com as coordenadas ("Wire start x: ...") e o aviso de distância durante o uso também não existem.
+- **Conectores só nas quatro paredes:** o `meta` do Java é a face clicada, também cima e baixo; o bloco do porto só tem `facing` horizontal (o
+  motor escolhe pela direção do jogador), então um conector posto no chão ou no teto fica de lado, e o modelo extraído (`connector.obj`, girado
+  em X) não pôde ser usado: os conectores ficam com o cubo de antes.
+- **Pylon grande a 90°:** o Java gira o modelo e os pontos de montagem em passos de 45° (`getMetaForCore` com `rotationYaw * 4 / 180`); o motor só
+  tem quatro direções, então o modelo gira em passos de 90° e a distância é medida com o `meta` da direção escolhida.
+- **Cor:** `setColor` (a tinta no pylon) e o desenho da cor não foram portados; o campo `color` é guardado e salvo.
+- **Substation:** o pylon grande avisa que exige uma subestação (`TileEntitySubstation`), que não é deste item.
+- **`IPersistentNBT`/descrição:** o texto de alcance e tipo do `addInformation` não aparece no item.

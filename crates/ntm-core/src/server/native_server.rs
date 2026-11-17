@@ -401,6 +401,43 @@ impl Server {
         true
     }
 
+    /// A player, not sneaking, used the wire (`ItemWiring.onItemUse`) on the block whose core is
+    /// `core`; `start` is the endpoint the item remembers (its `x`, `y`, `z`). The first click marks an
+    /// endpoint; the second links the two when they can be (same connection type, within the shorter
+    /// range), tells the player why not when they cannot, and in both cases the item forgets.
+    pub fn native_wire_use(&mut self, host: &mut impl ServerHost, dim: &str, core: Pos, start: Option<Pos>, player: &str) -> crate::wire::WireUse {
+        use crate::{energy_network::WireKind, machine::Data, wire::WireUse};
+        let Some(r) = self.ready() else { return WireUse::NotTaken };
+        let end = |r: &Ready, at: Pos| {
+            r.world.machines.get(&(dim.to_string(), at)).and_then(|m| match &m.data {
+                Data::Wire(_) => WireKind::from_id(&m.block).map(|k| (k, at, crate::wire::meta_of(k, m.facing.as_deref()))),
+                _ => None,
+            })
+        };
+        let Some(second) = end(r, core) else { return WireUse::NotTaken };
+        let Some(first_at) = start else {
+            host.tell(player, "Wire start");
+            return WireUse::Started(core);
+        };
+        let text = match end(r, first_at) {
+            Some(first) => {
+                let check = crate::wire::can_connect(first, second);
+                if check == crate::energy_network::LinkCheck::Ok {
+                    for (at, other) in [(first_at, core), (core, first_at)] {
+                        if let Some(Data::Wire(w)) = r.world.machines.get_mut(&(dim.to_string(), at)).map(|m| &mut m.data) {
+                            w.add_connection(other);
+                        }
+                    }
+                    r.topo_dirty = true;
+                }
+                crate::wire::message(check)
+            }
+            None => "Wire error",
+        };
+        host.tell(player, text);
+        WireUse::Finished(text)
+    }
+
     /// A player used `item` on the block at `pos` (its `custom_data`'s
     /// `ntm_fluid`: the fluid identifier's type). The multi fluid
     /// identifier on a duct sets the duct's fluid

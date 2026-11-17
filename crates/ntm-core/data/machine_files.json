@@ -6424,6 +6424,62 @@
 0
 ]
 },
+"ntm:red_pylon": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_large": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_medium_steel": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_medium_steel_transformer": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_medium_wood": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_medium_wood_transformer": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_steel": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:solar_mirror": {
 "inventory": [
 8,

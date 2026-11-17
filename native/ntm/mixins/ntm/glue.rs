@@ -283,10 +283,51 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     server.native_use(&mut host, &dim, core, pos, &player)
 }
 
+/// `ItemWiring.onItemUse`: the cable drum on a pylon or a connector (not sneaking). The first click
+/// writes the endpoint into the item's `custom_data` (`x`, `y`, `z`); the second links and clears it.
+fn use_wire(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
+    if game.keys.held(horizon_client::actions::Action::Sneak) {
+        return false;
+    }
+    let core = game.machine_cell_core(pos);
+    let start = stack.data().and_then(|d| d.other("minecraft:custom_data")).and_then(|t| match t {
+        Tag::Compound(c) => {
+            let get = |k: &str| match c.get(&JavaString::from(k)) { Some(Tag::Int(n)) => Some(*n), _ => None };
+            Some([get("x")?, get("y")?, get("z")?])
+        }
+        _ => None,
+    });
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return false };
+    let dim = game.dim.id().to_string();
+    let player = game.native_actor_uuid().unwrap_or_default();
+    let mut host = Host { game, buttons: Vec::new() };
+    reconcile(server, &mut host);
+    let used = server.native_wire_use(&mut host, &dim, core, start, &player);
+    let game = host.game;
+    let write = |game: &mut crate::game::Game<'_>, at: Option<[i32; 3]>| {
+        let Some(h) = game.held_mut() else { return };
+        let mut data = match h.data().and_then(|d| d.other("minecraft:custom_data")) {
+            Some(Tag::Compound(c)) => c.clone(),
+            _ => Default::default(),
+        };
+        for (k, v) in ["x", "y", "z"].into_iter().zip(at.unwrap_or_default()) {
+            if at.is_some() { data.insert(JavaString::from(k), Tag::Int(v)); } else { data.remove(&JavaString::from(k)); }
+        }
+        h.data_mut().set_other("minecraft:custom_data", if data.is_empty() { None } else { Some(Tag::Compound(data)) });
+    };
+    match used {
+        ntm_core::wire::WireUse::NotTaken => false,
+        ntm_core::wire::WireUse::Started(at) => { write(game, Some(at)); true }
+        ntm_core::wire::WireUse::Finished(_) => { write(game, None); true }
+    }
+}
+
 /// A player used `stack` on the block at `pos`: the fluid identifier on a
 /// duct sets its fluid (`custom_data` `ntm_fluid`). True when taken.
 pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3], face: [i32; 3]) -> bool {
     if crate::game::ntm_items::use_on_block(game, stack, pos, face) { return true; }
+    if &*stack.item == ntm_core::wire::WIRE_ITEM { return use_wire(game, stack, pos); }
     if matches!(&*stack.item,"ntm:hand_drill"|"ntm:hand_drill_desh") { return use_block(game,pos,pos,face,false); }
     if &*stack.item == DETONATOR {
         return detonator(game, Some(pos));

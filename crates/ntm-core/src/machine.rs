@@ -103,6 +103,8 @@ pub enum Kind {
     Compressor,
     /// The power switch and the redstone power switch (`crate::cable_switch`).
     CableSwitch,
+    /// The wire endpoints: connectors and pylons (`crate::wire`).
+    Wire,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -211,6 +213,7 @@ pub enum Data {
     Deuterium(crate::deuterium::DeuteriumExtractor),
     Compressor(Box<crate::compressor::Compressor>),
     CableSwitch(crate::cable_switch::CableSwitch),
+    Wire(crate::wire::Wire),
     Inert { name: String },
 }
 
@@ -320,6 +323,7 @@ impl Machine {
             },
             Kind::Intake => Data::Intake(crate::intake::Intake::new()),
             Kind::Deuterium => Data::Deuterium(crate::deuterium::DeuteriumExtractor::new()),
+            Kind::Wire => Data::Wire(crate::wire::Wire::new()),
             Kind::CableSwitch => Data::CableSwitch(crate::cable_switch::CableSwitch::new(block_id)),
             Kind::Compressor => Data::Compressor(Box::new(crate::compressor::Compressor::new(
                 crate::compressor::Shape::of(block_id).unwrap_or_default(),
@@ -405,6 +409,7 @@ impl Machine {
             Data::Deuterium(_) => Kind::Deuterium,
             Data::Compressor(_) => Kind::Compressor,
             Data::CableSwitch(_) => Kind::CableSwitch,
+            Data::Wire(_) => Kind::Wire,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -457,6 +462,7 @@ impl Machine {
             Data::Deuterium(m) => m,
             Data::Compressor(m) => &**m,
             Data::CableSwitch(m) => m,
+            Data::Wire(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -509,6 +515,7 @@ impl Machine {
             Data::Deuterium(m) => m,
             Data::Compressor(m) => &mut **m,
             Data::CableSwitch(m) => m,
+            Data::Wire(m) => m,
             Data::Inert { name } => name,
         }
     }

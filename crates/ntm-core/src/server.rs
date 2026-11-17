@@ -611,6 +611,31 @@ impl Server {
             r.topo_dirty = true;
         }
 
+        // `TileEntityPylonBase.disconnectAll`: a wire to an endpoint that is gone comes off, whichever way the
+        // endpoint left (a break, a replacement, an explosion): its cell is loaded and no endpoint now.
+        let mut stale: Vec<(Key, Pos)> = Vec::new();
+        for (k, m) in &r.world.machines {
+            let crate::machine::Data::Wire(w) = &m.data else { continue };
+            if r.loaded.get(k) != Some(&true) {
+                continue;
+            }
+            for c in &w.connected {
+                if !matches!(r.world.machines.get(&(k.0.clone(), *c)).map(|o| &o.data), Some(crate::machine::Data::Wire(_))) {
+                    stale.push((k.clone(), *c));
+                }
+            }
+        }
+        for (k, c) in stale {
+            let Some(block) = host.get_block(&k.0, c) else { continue };
+            if registry::spec(blockstate::id_of(&block)).is_some_and(|s| s.kind == Kind::Wire) {
+                continue;
+            }
+            if let Some(crate::machine::Data::Wire(w)) = r.world.machines.get_mut(&k).map(|m| &mut m.data) {
+                w.forget(c);
+                r.topo_dirty = true;
+            }
+        }
+
         // Energy: a machine may be in several networks (one per separate
         // port): they move energy one after the other.
         if r.topo_dirty {
@@ -678,7 +703,8 @@ impl Server {
 fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
     type Ports = BTreeMap<Pos, Vec<crate::energy::Port>>;
     type PortCells = BTreeMap<(Pos,usize),Pos>;
-    type Shape = (BTreeSet<Pos>, Ports, PortCells);
+    type Links = BTreeMap<Pos, Vec<Pos>>;
+    type Shape = (BTreeSet<Pos>, Ports, PortCells, Links);
     let mut dims: BTreeMap<&str, Shape> = BTreeMap::new();
     for (d, p) in &w.cables {
         dims.entry(d).or_default().0.insert(*p);
@@ -701,10 +727,19 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
             // A multiblock's bottom cells carry its power, as HBM's proxies.
             let cells = container_bridge::proxy_cells(&m.block, *p, m.facing.as_deref());
             dims.entry(d).or_default().0.extend(cells);
+            // A wire counts when both its ends list each other (`UniNodespace.checkConnection`).
+            if let crate::machine::Data::Wire(wire) = &m.data {
+                for c in &wire.connected {
+                    let both = matches!(w.machines.get(&(d.clone(), *c)).map(|o| &o.data), Some(crate::machine::Data::Wire(o)) if o.lists(*p));
+                    if both {
+                        dims.entry(d).or_default().3.entry(*p).or_default().push(*c);
+                    }
+                }
+            }
         }
     }
     dims.into_iter()
-        .map(|(d, (c, m, at))| (d.to_string(), Topology::build_at(&c, &m, &at)))
+        .map(|(d, (c, m, at, links))| (d.to_string(), Topology::build_linked(&c, &m, &at, &links)))
         .collect()
 }
 

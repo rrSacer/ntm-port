@@ -1,0 +1,9 @@
+{
+  "obj": "ntm:models/obj/pylon.obj",
+  "texture": "ntm:textures/models/network/pylon.png",
+  "rotation": 0,
+  "radius": 6.5,
+  "hide": [
+    "Pylon_steel"
+  ]
+}

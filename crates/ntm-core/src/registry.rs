@@ -49,6 +49,9 @@ pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port>
     if spec.id == crate::intake::BLOCK {
         return crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().map(|(_, dirs)| dirs).collect();
     }
+    if spec.kind == Kind::Wire {
+        return crate::wire::ports(spec.id, facing);
+    }
     // The compressors' ports are on cells round the core, each one face out.
     if spec.kind == Kind::Compressor {
         return crate::compressor::Compressor::port_cells(spec.id, [0, 0, 0], facing).into_iter().map(|(_, face)| vec![face]).collect();
@@ -1064,63 +1067,63 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:red_connector",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_connector_super",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_steel",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_medium_wood",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_medium_wood_transformer",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_medium_steel",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_medium_steel_transformer",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_large",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
