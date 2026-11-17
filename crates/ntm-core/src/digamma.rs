@@ -128,6 +128,24 @@ pub fn matter_spread(meta: u8, is_matter: impl Fn([i32; 3]) -> bool) -> Vec<([i3
     out
 }
 
+/// `MainRegistry.polaroidID` (`main/MainRegistry.java:250-256`), drawn once per launch: the config's
+/// `generalOverride` when it is 1 to 18, else 1 to 18 but 4 and 9 (`rand.nextInt(18) + 1` until neither).
+pub fn polaroid(general_override: Option<i32>, mut next_int: impl FnMut(i32) -> i32) -> i32 {
+    if let Some(o) = general_override.filter(|o| (1..19).contains(o)) {
+        return o;
+    }
+    let mut id = next_int(18) + 1;
+    while id == 4 || id == 9 {
+        id = next_int(18) + 1;
+    }
+    id
+}
+
+/// `TileEntityFEL:187`: what a DRX beam leaves where it burns, `digamma_matter` only with polaroid 11.
+pub fn drx_block(polaroid: i32) -> &'static str {
+    if polaroid == 11 { MATTER_BLOCK } else { FLAME_BLOCK }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -237,5 +255,20 @@ mod tests {
         assert!(around.iter().all(|(_, m)| *m == 4));
         assert!(matter_spread(6, |_| false).iter().all(|(_, m)| *m == 7));
         assert!(matter_spread(MATTER_LAST, |_| false).is_empty());
+    }
+
+    #[test]
+    fn the_polaroid_takes_the_override_or_skips_4_and_9() {
+        assert_eq!(polaroid(Some(11), |_| panic!()), 11);
+        assert_eq!(polaroid(Some(18), |_| panic!()), 18);
+        let mut rolls = vec![3, 8, 10].into_iter();
+        assert_eq!(polaroid(Some(19), |n| { assert_eq!(n, 18); rolls.next().unwrap() }), 11);
+        let mut rolls = vec![0].into_iter();
+        assert_eq!(polaroid(Some(0), |_| rolls.next().unwrap()), 1);
+        let mut rolls = vec![17].into_iter();
+        assert_eq!(polaroid(None, |_| rolls.next().unwrap()), 18);
+        assert_eq!(drx_block(11), MATTER_BLOCK);
+        assert_eq!(drx_block(10), FLAME_BLOCK);
+        assert_eq!(drx_block(12), FLAME_BLOCK);
     }
 }

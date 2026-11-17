@@ -71,6 +71,7 @@ impl Server {
         let mut bridge=container_bridge::Bridge::default();
         for r in &world.removals {if r.engine_slots{bridge.last.insert(r.key.clone(),Vec::new());}}
         Server {
+            polaroid: launch_polaroid(),
             field: Default::default(),
             blasts: crate::blast::Runtime::default(),
             fluidnet: fluid_server::FluidNet::default(),
@@ -190,6 +191,8 @@ impl Server {
         // handleRadiationFX follows handleRadiationEffect in EntityEffectHandler.onUpdate:119-122.
         self.chunk_radiation_contaminate(host);
         self.zirnox_irradiation(host);
+        // DigammaFlame.onEntityCollidedWithBlock (moveEntity) and a new body's maxHealth modifier.
+        self.digamma_tick(host);
         phases.mark("zirnox");
         // ChunkRadiationManager.updateSystem: ServerTickEvent, Phase.END, after the worlds and the players.
         self.chunk_radiation_tick(host);
@@ -1068,3 +1071,13 @@ mod tests {
         assert!(!again.native_has(OW, AT));
     }
 }
+
+/// `MainRegistry.polaroidID` of this launch: `NTM_POLAROID` stands for the config's `generalOverride`, the draw is a
+/// `new Random()`'s.
+fn launch_polaroid() -> i32 {
+    let general_override = std::env::var("NTM_POLAROID").ok().and_then(|v| v.parse().ok());
+    let seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_nanos() as i64);
+    let mut rand = crate::rbmk::jrandom::JavaRandom::new(seed);
+    crate::digamma::polaroid(general_override, |n| rand.next_int(n))
+}
+

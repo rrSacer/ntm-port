@@ -158,6 +158,27 @@ pub trait ServerHost: Kv {
     /// Whether player `id`'s position was set this tick, not moved (`setPositionAndUpdate`: a command, a pearl, a
     /// portal): no step. Asked once a tick for each player.
     fn teleported(&mut self,_id:&str)->bool{false}
+    /// Player `id`'s digamma (`HbmLivingProps.digamma`) in their own storage, 0 for a new body (None: the host has
+    /// no player storage, and nobody takes digamma).
+    fn player_digamma(&mut self, _id: &str) -> Option<f32> {
+        None
+    }
+    /// Writes their digamma if the storage still holds `expected`, with `setDigamma`'s `maxHealth` modifier
+    /// (`digamma::health_modifier`) and their health capped to the new maximum.
+    fn commit_player_digamma(&mut self, _id: &str, _expected: f32, _desired: f32) -> bool {
+        false
+    }
+    /// Puts the `maxHealth` modifier of the digamma in player `id`'s storage back on their body (a new body, a
+    /// joining player).
+    fn sync_digamma(&mut self, _id: &str) {}
+    /// Player `id`'s `maxHealth` with every modifier.
+    fn max_health(&mut self, _id: &str) -> Option<f64> {
+        None
+    }
+    /// The items player `id` wears, helmet to boots.
+    fn worn_armor(&mut self, _id: &str) -> Option<[Option<String>; 4]> {
+        None
+    }
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
@@ -436,6 +457,8 @@ struct Ready {
 }
 
 pub struct Server {
+    /// `MainRegistry.polaroidID`, drawn when the server starts (`digamma::polaroid`).
+    pub polaroid: i32,
     /// The world's radiation by chunk (`server::chunk_radiation_server::Field`): out of `Ready`, which every group of
     /// machines copies for its transaction.
     field: chunk_radiation_server::Field,
@@ -748,6 +771,7 @@ mod fluid_server;
 mod foundry_server;
 pub mod native_server;
 mod radiation_server;
+mod digamma_server;
 mod chunk_radiation_server;
 
 #[cfg(test)]
