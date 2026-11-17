@@ -13,9 +13,14 @@ run-sawmill-proof.py, owns the process and the cut. NTM_SAW_SCENARIO picks one:
   hand       a sawmill that sawed a log in the base (6 planks and its sawdust out) and one without its blade; in hand a
              blade and 2 logs; the act takes the outputs, puts a log in and the blade back, each by hand (R5). Control:
              barrels, the same stacks moved by hand (`item replace`)
+  hopper     step 3c: a sawmill that sawed a log fed by the hopper above it (6 planks and its sawdust out, a log left in
+             that hopper, blocked: the three slots must be empty); the act puts a hopper below it into a chest: the
+             outputs leave, then the last log goes in and stays. Control: a barrel with the same stacks under the same
+             hoppers (vanilla's hoppers move the log too: the totals are compared)
 
 The atoms counted (`disk_count.py` by the same rule): blades loose, in a player, in a chest, installed (`has_blade`)
-or in a sawmill item without `ntm:no_blade`; and, for `hand`, the planks, logs and sawdust.
+or in a sawmill item without `ntm:no_blade`; and, for `hand` and `hopper`, the planks, logs and sawdust. A sawmill's
+slots are its block entity's since step 3c (its model's before: read as a fallback).
 """
 import os
 import re
@@ -35,9 +40,14 @@ WOOD = ('minecraft:oak_planks', 'minecraft:oak_log', 'ntm:powder_sawdust')
 # Where the sawmill's core stands, by scenario: x=47 in chunk 2 (x=40 well inside it: the blade appears in the air one
 # up in front, with a dropped item's random motion, and must stay in the core's chunk for `overspeed`); z=8 in chunk 0,
 # z=16 in chunk 1.
-CORE = {'overspeed': (40, 101, 8), 'border': (47, 101, 16), 'break': (47, 101, 8), 'hand': (47, 101, 8)}[SCENARIO]
+# `border` at x=40 too: at x=47 the blade could drift east into chunk 3 as well, and the cut then wrote another chunk's
+# entities than the control's (`same_cut=false` with the same counts, the review's rerun).
+CORE = {'overspeed': (40, 101, 8), 'border': (40, 101, 16), 'break': (47, 101, 8), 'hand': (47, 101, 8),
+        'hopper': (40, 101, 8)}[SCENARIO]
 OTHER = (55, 101, 8)
 CHEST = (34, 101, 8)
+# `hopper`: the hopper above the core, the one below it, the chest it fills; all in the core's chunk (2, 0).
+ABOVE, BELOW, OUT = (CORE[0], CORE[1] + 1, CORE[2]), (CORE[0], CORE[1] - 1, CORE[2]), (CORE[0] + 1, CORE[1] - 1, CORE[2])
 
 
 def front(core):
@@ -60,7 +70,8 @@ def has_blade(g, core):
 
 
 def model_slots(g, core):
-    return re.findall(r'"id":"([a-z_:]+)","count":(\d+)', machine_state(g, core))
+    """The sawmill's slots: its block entity's (step 3c), else its model's (a binary from before)."""
+    return [(i, n) for n, i in items_in(g, core)] or re.findall(r'"id":"([a-z_:]+)","count":(\d+)', machine_state(g, core))
 
 
 def inventory(g):
@@ -96,8 +107,12 @@ def count(g):
             machines.append({'core': core, 'has_blade': has_blade(g, core), 'slots': model_slots(g, core)})
             blades += int(has_blade(g, core))
     out = {'blades': blades, 'inventory': inv, 'ground': ground, 'machines': machines}
-    if SCENARIO == 'hand':
+    if SCENARIO in ('hand', 'hopper'):
         wood = {w: inv.get(w, 0) + ground.get(w, 0) for w in WOOD}
+        if SCENARIO == 'hopper':
+            for p in (ABOVE, BELOW, OUT):
+                for w in WOOD:
+                    wood[w] += held_in(g, p, w)
         for core in (CORE, OTHER):
             if VANILLA:
                 for w in WOOD:
@@ -200,6 +215,35 @@ def prepare(g):
         g.command('clear @s')
         g.command(f'give @s {BLADE} 1')
         g.command('give @s minecraft:oak_log 2')
+    elif SCENARIO == 'hopper':
+        g.command('setblock %d %d %d minecraft:chest' % OUT)
+        if VANILLA:
+            g.command('setblock %d %d %d minecraft:barrel' % CORE)
+            g.command('item replace block %d %d %d container.1 with minecraft:oak_planks 6' % CORE)
+            g.command('item replace block %d %d %d container.2 with ntm:powder_sawdust 1' % CORE)
+            g.command('setblock %d %d %d minecraft:hopper[facing=down]' % ABOVE)
+            g.command('item replace block %d %d %d container.0 with minecraft:oak_log 1' % ABOVE)
+            # The barrel takes the log at once (vanilla has no rule): the base then holds it in the barrel.
+        else:
+            core = place(g, SAWMILL, CORE)
+            g.check('core_where_planned', tuple(core) == CORE, core)
+            feeder = (CORE[0] - 1, CORE[1] - 1, CORE[2])
+            g.command('setblock %d %d %d ntm:heater_firebox[facing=south,honey_level=0]' % BELOW)
+            g.command('setblock %d %d %d minecraft:hopper[facing=east]' % feeder)
+            g.command('item replace block %d %d %d container.0 with minecraft:coal 1' % feeder)
+            time.sleep(8)
+            g.command('setblock %d %d %d minecraft:hopper[facing=down]' % ABOVE)
+            g.command('item replace block %d %d %d container.0 with minecraft:oak_log 2' % ABOVE)
+            deadline = time.monotonic() + 60
+            while time.monotonic() < deadline and not any(i == 'minecraft:oak_planks' for i, _ in model_slots(g, CORE)):
+                time.sleep(1)
+            # Cold from here; the last log waits above, blocked by the outputs.
+            g.command('setblock %d %d %d minecraft:stone' % BELOW)
+            g.command('setblock %d %d %d minecraft:stone' % feeder)
+            time.sleep(3)
+            g.check('sawn_in_the_base', ('minecraft:oak_planks', '6') in model_slots(g, CORE), model_slots(g, CORE))
+            g.check('the_log_waits_above', held_in(g, ABOVE, 'minecraft:oak_log') == 1, items_in(g, ABOVE))
+        g.command('clear @s')
     g.command('kill @e[type=minecraft:item]')
     g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
     time.sleep(2)
@@ -282,6 +326,15 @@ def act(g):
             click(g, OTHER, BLADE)
             g.check('blade_back', has_blade(g, OTHER), machine_state(g, OTHER)[:300])
         g.command('gamemode creative @s')
+    elif SCENARIO == 'hopper':
+        # A hopper below into the chest: the outputs leave by `canExtractItem`, then the log above goes in and stays.
+        g.command('setblock %d %d %d minecraft:hopper[facing=east]' % BELOW)
+        time.sleep(10)
+        if not VANILLA:
+            slots = model_slots(g, CORE)
+            g.evidence['slots_after'] = slots
+            g.check('the_input_stays', slots == [('minecraft:oak_log', '1')] and held_in(g, OUT, 'minecraft:oak_log') == 0,
+                    [slots, items_in(g, OUT), items_in(g, BELOW)])
     # Both chunks change a block too, in both worlds (the cut then has their records).
     for z in (CORE[2] - 6, CORE[2] + 6):
         g.command(f'setblock 37 100 {z} minecraft:cobblestone')

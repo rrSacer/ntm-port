@@ -4,7 +4,7 @@ that follows the act, both worlds, the mod's and the vanilla control (barrels wh
 and counted atom by atom: the blades wherever they are (loose, held, in a chest, installed, or in a sawmill item without
 `ntm:no_blade`), and for `hand` the planks, logs and sawdust. The verdicts are run-crash-proof.py's, as T01's.
 
-  python3 tools/test-game/run-sawmill-proof.py --scenario overspeed|border|break|hand --binary B --resources R
+  python3 tools/test-game/run-sawmill-proof.py --scenario overspeed|border|break|hand|hopper --binary B --resources R
       --bundle H --scratch-root S [POINT ...]
 Run with HORIZON_NO_EAGER_SAVE=1 (the strict cuts).
 """
@@ -37,6 +37,8 @@ SCENARIOS = {
     'break': (('ntm:sawblade',), 1, STRICT),
     'hand': (('ntm:sawblade', 'minecraft:oak_planks', 'minecraft:oak_log', 'ntm:powder_sawdust'), 11,
              [*STRICT, 'players_saved']),
+    # Step 3c: 6 planks, 1 sawdust and 1 log, moved by hoppers within the core's chunk.
+    'hopper': (('minecraft:oak_planks', 'minecraft:oak_log', 'ntm:powder_sawdust'), 8, STRICT),
 }
 POINTS = STRICT
 

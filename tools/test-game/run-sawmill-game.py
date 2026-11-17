@@ -44,8 +44,10 @@ def has_blade(g, core):
 
 
 def slots(g, core):
-    text = machine_state(g, core)
-    return re.findall(r'"id":"([a-z_:]+)","count":(\d+)', text)
+    """The sawmill's slots: its block entity's (step 3c), else its model's (a binary from before)."""
+    text = ' '.join(g.command('data get block %d %d %d Items' % tuple(core)).get('chat', []))
+    found = [(i, n) for n, i in re.findall(r'count: ?(\d+)[^{}]*?id: ?"([a-z_:]+)"', text)]
+    return found or re.findall(r'"id":"([a-z_:]+)","count":(\d+)', machine_state(g, core))
 
 
 def area(g, own):
