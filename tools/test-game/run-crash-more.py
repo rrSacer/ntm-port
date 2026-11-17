@@ -71,6 +71,8 @@ def items_of(scenario):
         return ('ntm:key', 'ntm:padlock')
     if scenario == 'digamma-state':
         return ('ntm:digamma_diagnostic',)
+    if scenario == 'silex-state':
+        return ('ntm:ingot_uranium', 'ntm:nugget_u235', 'ntm:nugget_u238')
     if scenario == 'keyforge-break':
         return ('ntm:key', 'ntm:padlock')
     if scenario == 'funnel-state':
@@ -131,6 +133,7 @@ DEFAULT_POINTS = {
     'furnace-smelt': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'keyforge-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'digamma-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'silex-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'keyforge-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'funnel-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'radiolysis-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],

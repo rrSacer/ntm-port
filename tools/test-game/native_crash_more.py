@@ -1648,6 +1648,98 @@ def digamma_verify(g, again=False):
         g.check('a_death_outside_a_save_leaves_the_last_save', held == 'first', [held, d])
 
 
+# `silex-state`: a FEL on its visible laser and a SILEX of 16 tanks of peroxide and two uranium ingots, the world saved; it runs
+# on and is saved (or killed) at each boundary: whatever the cut, the SILEX holds a whole state: the peroxide is the tank's, the
+# full tanks' and the ingots' loaded (900 each), the fill and the nuggets are those ingots' (100 a nugget), and a death outside
+# any save (`kill`) leaves the base save's, exactly.
+def silex_parts(g):
+    import native_fel as F
+    F.X, F.Z = 140, 40
+    return F
+
+
+def silex_snapshot(F, g, core):
+    s = F.silex(g, core)
+    items = F.slot_items(s)
+    return {'fill': s.get('fill'), 'current': s.get('current'), 'progress': s.get('progress'), 'recipe_index': s.get('recipe_index'),
+            'tank': (s.get('tank') or {}).get('mb'), 'slots': {str(k): list(v) for k, v in items.items()}}
+
+
+def silex_crystal(F, g, core, on):
+    """The FEL's crystal in (the visible one) or out: without it the SILEX stands still, its state the same tick after tick."""
+    F.open_fel(g, core)
+    if on:
+        g.put('ntm:laser_crystal_bismuth', 1, 1)
+    else:
+        g.ctl('click-slot 301 shift')
+    g.close()
+    F.away(g, core)
+    g.ticks(4)
+
+
+def silex_prepare(g):
+    F = silex_parts(g)
+    g.ctl('wait-ready 120')
+    core, d, s_core = F.build(g)
+    F.open_fel(g, core)
+    g.put('ntm:battery_creative', 1, 0)
+    F.press_on(g)
+    g.close()
+    silex_crystal(F, g, core, True)
+    F.open_silex(g, s_core)
+    g.put('ntm:fluid_tank_full__peroxide', 16, 2)
+    g.put('ntm:ingot_uranium', 2, 0)
+    g.close()
+    F.away(g, core)
+    g.ticks(150)
+    silex_crystal(F, g, core, False)
+    snap = silex_snapshot(F, g, s_core)
+    g.check('the_silex_ran_and_stands_still_for_the_base_save', snap['current'] == 'ntm:ingot_uranium' and 0 < snap['fill'] < 1800 and snap['progress'] == 0, snap)
+    g.evidence.update(silex_core=list(s_core), fel_core=list(core), snapshot=snap)
+    g.ctl('save')
+
+
+def silex_act(g):
+    F = silex_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    base = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core, s_core = tuple(base['fel_core']), tuple(base['silex_core'])
+    silex_crystal(F, g, core, True)
+    g.ticks(120)
+    silex_crystal(F, g, core, False)
+    snap = silex_snapshot(F, g, s_core)
+    g.evidence['snapshot'] = snap
+    g.check('the_act_ran_on', snap['fill'] < base['snapshot']['fill'] and snap['progress'] == 0, [base['snapshot'], snap])
+    save_expecting_death(g)
+
+
+def silex_verify(g, again=False):
+    F = silex_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    base = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['snapshot']
+    act = json.loads((g.folder / 'native-crash-more-act.json').read_text()).get('snapshot')
+    core = tuple(json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['silex_core'])
+    g.command(f'tp @s {core[0] + 4.5} 100 {core[2] + .5}')
+    quiet(g, 6)
+    snap = silex_snapshot(F, g, core)
+    g.evidence['reopened' + ('_again' if again else '')] = snap
+    counted(g, 'one_silex', {'total': 1, 'expected': 1, 'snapshot': snap}, again)
+    slots = {int(k): tuple(v) for k, v in snap['slots'].items()}
+    ingots = slots.get(0, ('', 0))[1]
+    full, empty = slots.get(2, ('', 0))[1], slots.get(3, ('', 0))[1]
+    nuggets = sum(n for i, (item, n) in slots.items() if i >= 4 and item.startswith('ntm:nugget_'))
+    loaded = 2 - ingots
+    held = 'base' if snap == base else 'act' if snap == act else None
+    g.evidence['held' + ('_again' if again else '')] = held
+    g.check('a_whole_saved_state', held is not None, [base, act, snap])
+    g.check('the_peroxide_is_whole', snap['tank'] + 1000 * full + 900 * loaded == 16_000 and full + empty == 16, [snap, loaded])
+    g.check('the_fill_and_the_nuggets_are_the_loaded_ingots', snap['fill'] + 100 * nuggets == 900 * loaded, [snap, nuggets, loaded])
+    if NO_SAVE:
+        g.check('a_death_outside_a_save_leaves_the_base_save', held == 'base', [held])
+
+
 # `funnel-state`: ninety gold ingots in two columns of a funnel in the 3x3-only mode, compressing one block per column per tick,
 # the world saved and killed at each boundary: whatever the cut, the ingots and the blocks (nine each) are the ninety and the
 # mode is kept.
@@ -2015,6 +2107,7 @@ STEPS = {
     'orbus-state': (orbus_prepare, orbus_act, orbus_verify),
     'keyforge-state': (keyforge_prepare, keyforge_act, keyforge_verify),
     'digamma-state': (digamma_prepare, digamma_act, digamma_verify),
+    'silex-state': (silex_prepare, silex_act, silex_verify),
     'keyforge-break': (mb_break_prepare, break_act, mb_break_verify),
     'funnel-state': (funnel_prepare, funnel_act, funnel_verify),
     'funnel-break': (mb_break_prepare, break_act, mb_break_verify),
