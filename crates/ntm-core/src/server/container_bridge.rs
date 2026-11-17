@@ -388,6 +388,10 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
 /// Exact outward port cells, in the order of registry::ports. These do not
 /// become cables: the graph keeps each cell's faces and machine owner.
 pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
+    // TileEntityFEL.getPorts: four blocks behind the core, one above it.
+    if block == crate::fel::BLOCK {
+        return facing.and_then(crate::registry::facing_dir).map(|d| vec![[core[0] - 4*d[0], core[1] + 1, core[2] - 4*d[2]]]).unwrap_or_default();
+    }
     // The cyclotron's twelve ports (`crate::cyclotron::PORTS`).
     if block == crate::cyclotron::BLOCK {
         return facing.and_then(crate::registry::facing_dir).map(|f| crate::cyclotron::PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();

@@ -46,6 +46,9 @@ pub fn facing_dir(facing: &str) -> Option<crate::Pos> {
 /// The ports of a machine of `spec` facing `facing`.
 pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
     use crate::energy::DIRS;
+    if spec.kind == Kind::Fel {
+        return facing.and_then(facing_dir).map(|d| vec![vec![[-d[0], 0, -d[2]]]]).unwrap_or_default();
+    }
     // The exposure chamber's five ports, each open on the face `crate::exposure::PORTS` gives, turned with the facing.
     if spec.kind == Kind::Cyclotron {
         return facing

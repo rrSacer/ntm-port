@@ -287,4 +287,20 @@ mod tests {
         assert!(container().faces.iter().all(Vec::is_empty));
     }
 
+
+    #[test]
+    fn power_port_is_behind_and_above_core_in_every_orientation() {
+        let core = [10, 60, 20];
+        let spec = crate::registry::BlockSpec { id: BLOCK, kind: crate::machine::Kind::Fel, facing: Some("facing"), level: None, ports: crate::registry::Ports::None };
+        for (facing, position, face) in [
+            ("north", [10, 61, 24], [0, 0, 1]),
+            ("south", [10, 61, 16], [0, 0, -1]),
+            ("east", [6, 61, 20], [-1, 0, 0]),
+            ("west", [14, 61, 20], [1, 0, 0]),
+        ] {
+            assert_eq!(crate::server::container_bridge::energy_port_cells(BLOCK, core, Some(facing)), vec![position]);
+            assert_eq!(crate::registry::ports(&spec, Some(facing)), vec![vec![face]]);
+        }
+    }
+
 }
