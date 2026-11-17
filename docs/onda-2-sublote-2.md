@@ -466,3 +466,48 @@ interativamente em jogo.
   armazenamento limpo);
 - mutantes: 43 escolhidos à mão (`mutate-annihilator.py`), 43 mortos (os 3 últimos mortos em `898235b3` reforçando `prev_cmp` e
   `fluid_server` para células não-porta).
+
+### Digama: a infraestrutura do modo DRX de `machine_fel` (grupo 2a, em andamento)
+
+O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEntityFEL:134,187-190`) ele faz duas coisas: dá 0,1 de digama a cada tick a quem estiver no feixe e transforma o bloco queimado em fogo de digama, ou em matéria de digama quando o `polaroidID` é 11, com cinza de digama logo abaixo. Até aqui o port não tinha nenhuma dessas peças. O passo do FEL ficava congelado no DRX.
+
+**Contrato portado**
+
+- **Dose no jogador** (`HbmLivingProps.digamma`, `:130-199`): um `float` de 0 a 10, somado em `float`. Fica no anexo do próprio jogador (`ntm:item_state`, chave `digamma`, ao lado da dose de radiação) e é salvo com ele. O corpo novo, depois de uma morte, começa em 0, como o `HbmLivingProps` novo do Java (`copy_on_death: false`; o motor também só leva os valores-base dos atributos).
+- **Vida máxima** (`setDigamma:144-156`): o modificador `ntm:digamma`, `0,5^d − 1` com a operação 2 (`add_multiplied_total`), fica entre os modificadores permanentes do jogador, e a vida é limitada ao novo máximo. Um corpo que entra no mundo (ao entrar ou renascer) recebe de volta o modificador do anexo.
+- **Morte em 10** (`setDigamma:158`): 500 de dano `ntm:digamma`, que é absoluto, atravessa armadura e vale no criativo (`ModDamageSource.digamma`; tags `bypasses_armor`, `bypasses_effects` e `bypasses_invulnerability`). A mensagem de morte é a do Java (`death.attack.digamma`).
+- **Bloqueios** (`applyDigammaData:108-129`, `contaminate:265-300`): nada no criativo, nada nos primeiros 200 ticks, nada sob Stability (`ntm:stability`), nada com o conjunto completo FAU ou DNS (`checkForDigamma`). O `checkForDigamma2` (robes) exige Stability e por isso nunca libera sozinho.
+- **Gravação transacional**: dentro do passo de uma máquina, a dose fica guardada como a de radiação (`Deferred::digammas`) e só chega ao jogador depois do commit, em ordem, conferindo o valor anterior. Um passo recusado não grava nada.
+- **`ntm:fire_digamma`** (`DigammaFlame`): modelo em cruz com textura animada, luz 15, dureza 0, resistência 150, sem colisão mas com a célula inteira para mirar, sem drop e fora da aba criativa. Só fica sobre um bloco de topo sólido: o modelo de arbusto morto pergunta `mayPlaceOn`, e o glue responde lendo o chão como cubo opaco (gancho `may_place_on`). Cada célula dele que a caixa do jogador toca (`doBlockCollisions`, a caixa 0,6 × 1,8 recolhida em 0,001) dá 0,05 por tick.
+- **`ntm:digamma_matter`** (`DigammaMatter`): os metadados 0..7 viram um bloco cada (`digamma_matter`, `digamma_matter__<n>`). Cada um é inquebrável, tem resistência 18 000 000 e não tem colisão. Ao ser colocado agenda o próprio tick para daqui a 10 a 49 ticks. No tick ele some e, abaixo do metadado 7, coloca o metadado seguinte nas 18 células a até dois passos que ainda não têm matéria (`setBlock` com flag 3, seja qual for o bloco que estava ali).
+- **`polaroidID`** (`MainRegistry:250-256`): sorteado quando o servidor inicia, de 1 a 18 sem o 4 e o 9; `NTM_POLAROID` faz o papel do `generalOverride` do config. Com 11, o DRX deixa matéria em vez de fogo.
+- **DRX no FEL**: o feixe deixa o bloco de fogo, ou de matéria, com cinza embaixo, e dá 0,1 aos jogadores no feixe. O passo do FEL não congela mais no DRX.
+- **Diagnóstico de digama**: `ntm:digamma_diagnostic` passa a imprimir a dose guardada, truncada ao centésimo com o produto em `float` (`printDiagnosticData:235`). Antes imprimia 0.
+
+**Lacunas documentadas**
+
+- Só jogadores recebem digama. As outras entidades vivas do Java (`EntityLivingBase` no feixe e no fogo) dependem da API de entidades do port.
+- As armaduras FAU, DNS e robes não estão no catálogo: a imunidade está implementada por id, mas ninguém consegue vesti-las.
+- As conquistas `digammaSee`, `digammaFeel` e `digammaKnow` não existem: o port não tem conquistas.
+- O suor de soul sand (`handleDigamma:343-364`, partículas) é só visual e não foi portado; `digamma::sweat_chance` guarda a cadência.
+- O topo sólido é lido como cubo opaco (a regra geral do `isSideSolid`). Os casos especiais do 1.7.10 ficam de fora: laje superior, escada invertida, funil e neve cheia.
+- Os limites aleatórios de seleção da matéria (`setBlockBoundsBasedOnState`, só aparência) são a célula inteira. Um vizinho em chunk não carregado não recebe matéria; no Java, o `setBlock` carregaria o chunk.
+- As pílulas que mexem no digama (`xanax`, `fmn`, `five_htp`; K2) ainda fazem só a parte visível, embora o armazenamento agora exista.
+
+**Provas** (cliente `2e2a07bd5f2afebf30a18cd5a157e876fc293090d6e93fd1c95ddb1127d185d6`, pacote `10fce201165b456fbeacbd0e3c672d12635c8b13039c36f003319becd5428eda`, evidência em `content-gen-evidence/onda2-s2/`)
+
+- Testes de unidade: suíte do `ntm-core` com 844 passando, 0 falhas; clippy `--workspace --all-targets -D warnings` limpo; gerador de conteúdo com 340 testes, mais `test_digamma_blocks` (2) e `test_damage_types` (3).
+- Em jogo (`run-native-reactors.py digamma`): 19/19, sem avisos do backend:
+  - o fogo fica sobre pedra, some sem chão e não fica sobre vidro;
+  - no criativo não há dose; em sobrevivência o fogo dá dose (1,94 DRX). O modificador é 0,5^d − 1 e a vida máxima é 20 × (1 + m); a influência impressa é a do Java;
+  - fora do fogo a dose não muda; sob Stability também não;
+  - o xanax tira 0,5, o fmn limita a 2 (modificador −0,75) e o 5-HTP zera a dose e tira o modificador (vida máxima 20);
+  - a matéria no metadado 6, observada com o tempo congelado, tica no 33º tick: deixa as 18 células no metadado 7, que somem nos 50 ticks seguintes;
+  - a dose e o modificador continuam iguais depois de reabrir o mundo;
+  - em 10 o jogador morre com a mensagem do Java (“stepped into the abyss”), e o corpo novo começa em 0, sem modificador.
+- Cortes estritos (`HORIZON_NO_EAGER_SAVE=1`, `run-crash-more.py digamma-state`): 7/7. A dose reaberta é sempre a do último save do arquivo do jogador, com o próprio modificador:
+  - `kill`, `save_begin`, `chunks_written` e `entities_written` reabriram na primeira dose (1,44);
+  - `kv_committed`, `players_saved` e `none` reabriram na segunda (2,84 a 2,89).
+- Mutantes: 44 escolhidos à mão (`mutate-digamma.py`: modelo, servidor, DRX do FEL, gravação transacional, comprimidos e diagnóstico), 44 mortos. Um mutante equivalente ficou de fora: somar em f64 e arredondar para `float` dá o mesmo que somar em `float`.
+
+**O que falta para o FEL** (ainda não está pronto): a ligação com o SILEX (o modo de laser passado ao SILEX, a quebra do SILEX mal alinhado com seus drops e a própria máquina), o FEL ativo no registro e o comportamento do feixe nas partes dos multiblocos de outras máquinas (hoje o passo congela nelas). Depois, a prova em jogo do FEL com o SILEX, os cortes e os mutantes do FEL.
