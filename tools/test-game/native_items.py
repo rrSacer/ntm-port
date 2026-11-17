@@ -220,8 +220,12 @@ def setup(g):
     def candy_again():
         g.command('effect clear @s');g.command('ntmitem dose 0');give_hand(g,'ntm:cotton_candy',2);g.ctl('look-at 20 160 8')
     active,held=short_hold(g,.5,candy_again)
-    g.check('real_eating_started',active.get('using') is not None,active)
-    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,{'counts':counts(g),'holds':held})
+    # `using` is {slot, ticks}. Judge the observation on that clock;
+    # a control reply after completion is not evidence of a cancelled use.
+    using=active.get('using')
+    elapsed=using['ticks'] if isinstance(using, dict) else (using[1] if isinstance(using, list) else None)
+    g.check('real_eating_started',elapsed is not None and 0<=elapsed<32,active)
+    g.check('cancel_does_not_consume',counts(g).get('ntm:cotton_candy')==2,{'counts':counts(g),'holds':held,'observed_use_ticks':elapsed})
     for attempt in range(8):
         candy_again()
         # Three seconds of hunger (25 points of exhaustion a second): enough to take the saturation of a candy
@@ -577,7 +581,10 @@ def starve(g):
 
 
 def reset(g,mode='survival',dose=0):
-    g.close();g.command(f'gamemode {mode} @s');g.command('clear @s');g.command('ntmitem cure');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
+    g.close()
+    p=g.ctl('state')['player']
+    if p.get('death_time') is not None or p['health']<=0:g.ctl('respawn');g.ctl('wait-ready 60');g.close()
+    g.command(f'gamemode {mode} @s');g.command('clear @s');g.command('ntmitem cure');g.command('effect clear @s');g.command('kill @e[type=minecraft:item]')
     g.command(f'ntmitem dose {dose}');g.command('tp @s 20.5 101 11.5');pause(g,.5)
 
 
@@ -1499,6 +1506,7 @@ def fallout(g):
     g.check('teleporting_onto_the_mycelium_takes_no_step',teleported==(0,0,0),teleported)
     reset(g,'survival');walk_over(g,'ntm:waste_mycelium')
     g.check('walking_onto_the_mycelium_takes_a_step',potion()[1]==3,potion())
+    reset(g,'creative')
     # Random ticks: level 5 goes down levels, level 0 to slaked (1 in 15, 1 in 25).
     g.command('fill 21 101 10 31 101 12 minecraft:air');g.command('fill 21 100 10 31 100 12 ntm:sellafield__5')
     g.command('gamerule minecraft:random_tick_speed 1000');pause(g,15);g.command('gamerule minecraft:random_tick_speed 3')
