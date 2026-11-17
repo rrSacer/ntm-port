@@ -414,7 +414,7 @@ impl Server {
                 let Some(resistance) = host.block_resistance(&key.0, p) else { missing = true; return BeamCell::Transparent };
                 BeamCell::Obstacle { liquid: matches!(id, "minecraft:water" | "minecraft:lava"), resistance }
             }, || random.next_int(5) == 0);
-            if missing || matches!(mode, Wavelength::Drx | Wavelength::Gamma) { return false; }
+            if missing || mode == Wavelength::Drx { return false; }
             let mut blocks = Vec::new();
             for effect in effects {
                 match effect {
@@ -424,14 +424,17 @@ impl Server {
                 }
             }
             if !blocks.is_empty() && host.set_blocks(&key.0, &blocks).is_err() { return false; }
-            victims.extend(self.players.iter().filter(|p| p.dim == key.0 && crate::fel::beam_intersects_player(key.1, dir, previous_distance, p.pos)).map(|p| (p.id.clone(), mode)));
+            victims.extend(self.players.iter().filter(|p| p.dim == key.0 && crate::fel::beam_intersects_player(key.1, dir, previous_distance, p.pos)).map(|p| (p.id.clone(), p.creative, mode)));
         }
-        for (id, mode) in victims {
+        for (id, creative, mode) in victims {
             match mode {
                 Wavelength::Visible => { host.effect(&id, "minecraft:blindness", 60*60*65536, 0); host.fel_fire(&id, 200); }
                 Wavelength::Ir | Wavelength::Uv => host.fel_fire(&id, 200),
-                // The gamma and digamma paths require their contamination adapters.
-                Wavelength::Gamma | Wavelength::Drx | Wavelength::Null => {}
+                Wavelength::Gamma => {
+                    self.note_contamination(&id, 25_000);
+                    if !creative && !self.in_grace(&id) { self.expose_player(host, &id, 25_000); }
+                }
+                Wavelength::Drx | Wavelength::Null => {}
             }
         }
         true
@@ -940,6 +943,7 @@ impl Server {
             }
             let before = self.ready.clone();
             let lit_before = self.blasts.lit.clone();
+            let radiation_env_before = keys.iter().any(|k| before.world.machines.get(k).is_some_and(|m| matches!(m.data, crate::machine::Data::Fel(_)))).then(|| self.radiation_env.clone());
             let mut observed = BTreeMap::new();
             let accessible = keys.iter().all(|k| {
                 let Some(m) = self.ready.world.machines.get(k) else {
@@ -1168,6 +1172,7 @@ impl Server {
             if !accepted {
                 self.ready = before;
                 self.blasts.lit = lit_before;
+                if let Some(env) = radiation_env_before { self.radiation_env = env; }
                 // No simulation or network exchange while the BE is missing
                 // or its atomic host rejects the step. A future tick retries.
                 for k in &keys {
@@ -1237,6 +1242,28 @@ mod dose_tests {
         assert!(server.fel_tick(&mut host, &[key], &BTreeSet::new()));
         assert_eq!(host.fire, vec![("inside".into(), 200)]);
         assert_eq!(host.effects, vec![("inside".into(), "minecraft:blindness".into(), 60*60*65536)]);
+    }
+
+    #[test]
+    fn gamma_beam_records_environment_and_respects_creative_and_join_grace() {
+        let mut host = FelWorld::default();
+        let mut server = Server::native(&mut host, 200);
+        server.tick = 200;
+        server.blasts.entered.insert("normal".into(), 0);
+        server.blasts.entered.insert("creative".into(), 0);
+        server.blasts.entered.insert("new".into(), 199);
+        let key = ("minecraft:overworld".to_string(), [0, 64, 0]);
+        let mut machine = Machine::new(Kind::Fel, crate::fel::BLOCK, Some("north".into()));
+        let crate::machine::Data::Fel(f) = &mut machine.data else { panic!() };
+        f.on = true; f.power = 200_000; f.distance = 7;
+        f.slots[1] = Some(crate::server::container_bridge::Stack::new("ntm:laser_crystal_dnt", 1));
+        server.ready.world.machines.insert(key.clone(), machine);
+        server.set_players([("normal", false), ("creative", true), ("new", false)].into_iter().map(|(id, creative)| PlayerInfo { id:id.into(), name:id.into(), dim:key.0.clone(), pos:[0.5,64.0,-2.0], creative }).collect());
+        assert!(server.fel_tick(&mut host, &[key], &BTreeSet::new()));
+        assert_eq!(server.player_dose("normal").millirad, 25_000);
+        assert_eq!(server.player_dose("creative").millirad, 0);
+        assert_eq!(server.player_dose("new").millirad, 0);
+        for id in ["normal", "creative", "new"] { assert_eq!(server.radiation_env[id], 25_000); }
     }
 
     /// A player's dose storage that refuses a write expecting another dose, and the armor's factor.
