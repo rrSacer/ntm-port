@@ -128,31 +128,55 @@ fn breaking_an_endpoint_takes_its_wires_off_the_other_ends() {
     assert_eq!(power(&mut g, sink), gained, "a new pylon in the old place is not wired");
 }
 
-/// `UniNodespace.checkConnection`: a link needs both ends to list each other.
+/// `UniNodespace.checkConnection`: the node of every endpoint has its own point among its connections, so a wire listed
+/// by ONE end already joins the two (`TileEntityPylonBase.createNode`). Both ends list each other in play; the
+/// topology does not need it.
 #[test]
-fn a_link_one_end_does_not_list_carries_nothing() {
+fn a_wire_one_end_lists_joins_the_two_as_the_java_does() {
     let mut g = game();
     let (p1, p2) = ([10, 70, 0], [30, 70, 0]);
-    let (_src, sink) = two_pylons(&mut g, "ntm:red_pylon", p1, p2);
+    let (_src, _sink) = two_pylons(&mut g, "ntm:red_pylon", p1, p2);
+    let nets = |g: &mut Game| crate::server::build_topology(&g.server.ready.world)[OW].networks.clone();
+    assert!(nets(&mut g).iter().all(|n| !(n.contains(&p1) && n.contains(&p2))), "no wire, no net");
     {
         let r = g.ready();
         let Data::Wire(w) = &mut r.world.machines.get_mut(&(OW.to_string(), p1)).unwrap().data else { panic!() };
         w.add_connection(p2);
-        r.topo_dirty = true;
     }
-    g.run(30);
-    assert_eq!(power(&mut g, sink), 0);
-    {
+    let joined = nets(&mut g);
+    assert!(joined.iter().any(|n| n.contains(&p1) && n.contains(&p2)), "{joined:?}");
+    // The same from the other end, whichever of the two the flood fill reaches first.
+    for (list, forget) in [(p2, p1), (p1, p2)] {
         let r = g.ready();
-        let Data::Wire(w) = &mut r.world.machines.get_mut(&(OW.to_string(), p2)).unwrap().data else { panic!() };
-        w.add_connection(p1);
-        r.topo_dirty = true;
+        let Data::Wire(w) = &mut r.world.machines.get_mut(&(OW.to_string(), forget)).unwrap().data else { panic!() };
+        w.forget(list);
+        let Data::Wire(w) = &mut r.world.machines.get_mut(&(OW.to_string(), list)).unwrap().data else { panic!() };
+        w.add_connection(forget);
+        let joined = nets(&mut g);
+        assert!(joined.iter().any(|n| n.contains(&p1) && n.contains(&p2)), "{list:?} lists {forget:?}: {joined:?}");
     }
-    g.run(30);
-    assert!(power(&mut g, sink) > 0);
 }
 
-/// A connector is open only at the back (`canConnect`: `getOrientation(meta).getOpposite() == dir`).
+/// The old endpoint's `disconnectAll` took its wires off the others as it went; a new one in its place lists nobody,
+/// so the wires the others kept to that place are not the new one's.
+#[test]
+fn an_endpoint_replaced_in_place_does_not_inherit_the_old_wires() {
+    let mut g = game();
+    let (p1, p2) = ([10, 70, 0], [30, 70, 0]);
+    let (_src, sink) = two_pylons(&mut g, "ntm:red_pylon", p1, p2);
+    link(&mut g, p1, p2);
+    g.run(30);
+    let gained = power(&mut g, sink);
+    assert!(gained > 0);
+    // The block replaced by another pylon in the same step: it is a wire machine all the time.
+    g.place(p1, "ntm:red_pylon_steel[facing=north,honey_level=0]");
+    g.run(6);
+    assert!(wire(&mut g, p2).connected.is_empty(), "{:?}", wire(&mut g, p2));
+    let after = power(&mut g, sink);
+    g.run(30);
+    assert_eq!(power(&mut g, sink), after, "and nothing goes through any more");
+}
+
 #[test]
 fn a_connector_takes_power_only_from_the_block_behind_it() {
     // facing north: the wall is to the south, so the back is +Z. Two connectors 9 apart (range 10).

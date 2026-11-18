@@ -49,6 +49,13 @@ pub fn meta_of(kind: WireKind, facing: Option<&str>) -> i32 {
     match kind {
         WireKind::Connector | WireKind::ConnectorSuper => d,
         WireKind::Pylon | WireKind::PylonSteel => 12,
+        // `PylonLarge.getMetaForCore`: the player's yaw in 45 degree steps, folded to four (`& 3`). A player looking
+        // along an axis gets north (12) or south (13): the pylon turned 0 or 90 degrees. East and west are not reachable
+        // from the four directions the engine places by, so a block placed east or west is the turned one.
+        WireKind::Large => match dir_of(facing) {
+            Dir::North | Dir::South => 12,
+            _ => 13,
+        },
         _ => d + 10,
     }
 }
@@ -126,5 +133,25 @@ impl Logic for Wire {
     }
     fn view(&self) -> ViewModel {
         ViewModel::new("Torre de energia").text(format!("Ligações: {}", self.connected.len()), view::GREY)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn the_large_pylons_meta_is_one_of_the_two_a_player_along_an_axis_gets() {
+        // `PylonLarge.getMetaForCore`: yaw in 45 degree steps `& 3`; the four axis yaws give north (12) or south (13).
+        for facing in ["north", "south"] {
+            assert_eq!(meta_of(WireKind::Large, Some(facing)), 12, "{facing}");
+        }
+        for facing in ["east", "west"] {
+            assert_eq!(meta_of(WireKind::Large, Some(facing)), 13, "{facing}");
+        }
+        // The others keep reading their facing as the direction.
+        assert_eq!(meta_of(WireKind::Pylon, Some("east")), 12);
+        assert_eq!(meta_of(WireKind::MediumWood, Some("east")), 15);
+        assert_eq!(meta_of(WireKind::Connector, Some("east")), 5);
     }
 }

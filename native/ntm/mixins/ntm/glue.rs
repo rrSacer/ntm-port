@@ -285,10 +285,23 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     server.native_use(&mut host, &dim, core, pos, &player)
 }
 
+/// Whether the player who used the item is sneaking: a LAN guest's own state, else this client's key (the item hook
+/// does not say who; `native_actor_uuid` does, as `step_blocked` reads it).
+fn actor_sneaking(game: &crate::game::Game<'_>) -> bool {
+    let id = game.native_actor_uuid().unwrap_or_default();
+    if let Ok(uuid) = u128::from_str_radix(&id.replace('-', ""), 16)
+        && let Some(g) = game.lan.iter().flat_map(|h| h.hub.guests.iter()).find(|g| g.placed && g.uuid == uuid)
+    {
+        let guest: &horizon_client::lan::guest::Guest = g;
+        return guest.sneaking;
+    }
+    game.keys.held(horizon_client::actions::Action::Sneak)
+}
+
 /// `ItemWiring.onItemUse`: the cable drum on a pylon or a connector (not sneaking). The first click
 /// writes the endpoint into the item's `custom_data` (`x`, `y`, `z`); the second links and clears it.
 fn use_wire(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
-    if game.keys.held(horizon_client::actions::Action::Sneak) {
+    if actor_sneaking(game) {
         return false;
     }
     let core = game.machine_cell_core(pos);

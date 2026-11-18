@@ -111,9 +111,11 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 
 - [`crates/ntm-core/src/wire.rs`](../crates/ntm-core/src/wire.rs) (`Kind::Wire`, `Data::Wire { connected, color }`): as faces de cada ponto saem de
   `WireKind::node` e viram a porta única do núcleo (`registry::ports`). O `facing` do bloco é o `meta` do Java.
-- Topologia: `Topology::build_linked` (`energy.rs`) junta, a qualquer distância, os pontos de fio que **se listam mutuamente**
-  (`UniNodespace.checkConnection`); `server.rs::build_topology` monta as ligações e um passo por tick (`simulate`) tira da lista de um ponto o
-  outro que sumiu de uma célula carregada e não é mais ponto de fio (`disconnectAll`, qualquer que seja o jeito de o ponto sair).
+- Topologia: `Topology::build_linked` (`energy.rs`) junta, a qualquer distância, os pontos de fio **que um dos dois lista**: o nó de cada ponto tem o próprio
+  ponto entre as suas ligações (`TileEntityPylonBase.createNode`), que a ligação do outro lado casa (`UniNodespace.checkConnection`). Um fio listado só por
+  uma ponta já une as duas. `server.rs::build_topology` monta as ligações (nos dois sentidos) e um passo por tick (`simulate`) tira da lista de um ponto o
+  outro que sumiu de uma célula carregada, não é mais ponto de fio, ou é um ponto novo que **não lista este de volta** (o antigo tirou os seus fios dos
+  outros ao sair, `disconnectAll`; um novo no mesmo lugar não herda nenhum).
 - Carretel: `native_server.rs::native_wire_use` (regras do Java, mensagens em inglês iguais) e `glue.rs::use_wire` (lê e grava `x, y, z` no
   `custom_data` do item; não age agachado).
 - Conteúdo: `tools/visual-gen/visual.json` → arquivos de máquina com o multibloco (`1×5×1`, `1×7×1`, `3×14×3`) e os modelos OBJ dos 7 pylons
@@ -123,7 +125,7 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 
 - **Testes (`ntm-core`):** `server::tests::wire_tests` (10) e dois de `energy::tests`: o fio leva a energia só depois do segundo clique e **não perde nada**;
   os três erros dizem o porquê e não deixam ligação; os alcances (conector 10, super 100) e a repetição mantida; quebrar tira o fio do outro lado;
-  um fio que só um lado lista não conduz (`checkConnection`); o conector só recebe de trás (5 posições de bateria); as faces de cada um dos 9; um
+  um fio que só um lado lista já une as duas pontas (`checkConnection`) e um ponto trocado no lugar não herda os fios do antigo; o conector só recebe de trás (5 posições de bateria); as faces de cada um dos 9; um
   fio para um bloco que ainda é ponto é mantido e um ponto num chunk descarregado não é mexido; os 9 nascem de `Kind::Inert` e o save volta igual.
   `cargo test -p ntm-core --lib`: **811 passaram** (eram 799: +12, 10 de `wire_tests` e 2 de `energy::tests`); `energy_network_tests` + `ledger_persistence` 24 + 6; `cargo clippy --workspace --all-targets -- -D warnings` limpo.
 - **Mutantes (`/mnt/ssd120/sacer/so/c/mutate_wire.py`):** **19/20 mortos** (20 mutantes: resultado do clique, ligação de um lado só, topologia suja, mensagens, `meta` do conector e do médio, topologia de um lado só, retirada do fio do outro lado, repetição, índice da porta do fio, registro de 3 dos 9 blocos, filtro e lista das faces). O sobrevivente (`W20`, tirar o `loaded` do passo que desfaz fios) é **equivalente neste harness**: a máquina de um chunk descarregado sai do mapa antes do passo.
@@ -150,7 +152,7 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
   motor escolhe pela direção do jogador), então um conector posto no chão ou no teto fica de lado, e o modelo extraído (`connector.obj`, girado
   em X) não pôde ser usado: os conectores ficam com o cubo de antes.
 - **Pylon grande a 90°:** o Java gira o modelo e os pontos de montagem em passos de 45° (`getMetaForCore` com `rotationYaw * 4 / 180`); o motor só
-  tem quatro direções, então o modelo gira em passos de 90° e a distância é medida com o `meta` da direção escolhida.
+  tem quatro direções. Um jogador que olha ao longo de um eixo recebe, no Java, só o `meta` 12 (norte/sul, 0°) ou 13 (leste/oeste, 90°): é o que o bloco usa (`wire::meta_of`); os 45° não existem.
 - **Cor:** `setColor` (a tinta no pylon) e o desenho da cor não foram portados; o campo `color` é guardado e salvo.
 - **Substation:** o pylon grande avisa que exige uma subestação (`TileEntitySubstation`), que não é deste item.
 - **`IPersistentNBT`/descrição:** o texto de alcance e tipo do `addInformation` não aparece no item.
@@ -234,3 +236,12 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 - **Soquete:** o tooltip da barra aparece sempre (o Java só com bateria); as cores do delta (verde, vermelho, amarelo) não existem; o funil **não retira** a bateria
   (`canExtractItem` depende do modo e da carga, que a regra de slot não vê).
 - **Comparador:** só lê o bloco-núcleo, não as células do volume.
+
+### Correções da revisão independente (conectores e pylons)
+
+- A regra "o fio só conduz se os dois lados se listam" **não existe no Java** (`TileEntityPylonBase.java:71` põe o próprio ponto como primeira ligação do nó e
+  `UniNodespace.checkConnection` o casa): adotada a regra do Java (um lado que lista já une os dois); o que impede o ponto trocado de herdar fios é a limpeza por
+  tick, que tira da lista o ponto novo que não lista de volta (`disconnectAll` do antigo). Mutantes novos `W09` (sentido contrário da ligação), `W21` (limpeza sem
+  reciprocidade), `W22` (`meta` do pylon grande) e `W23` (ligação que exige listar de volta): 4/4 mortos.
+- Pylon grande: `meta` 12 (norte/sul) ou 13 (leste/oeste), os dois que um jogador ao longo de um eixo recebe (`PylonLarge.getMetaForCore`).
+- O agachar do carretel vem do jogador que usou o item (um convidado LAN usa o próprio estado, não a tecla do anfitrião).

@@ -648,7 +648,8 @@ impl Server {
         }
 
         // `TileEntityPylonBase.disconnectAll`: a wire to an endpoint that is gone comes off, whichever way the
-        // endpoint left (a break, a replacement, an explosion): its cell is loaded and no endpoint now.
+        // endpoint left (a break, a replacement, an explosion): its cell is loaded and no endpoint now, or a new
+        // endpoint that does not list this one back (the old one took its wires off the others as it went).
         let mut stale: Vec<(Key, Pos)> = Vec::new();
         for (k, m) in &r.world.machines {
             let crate::machine::Data::Wire(w) = &m.data else { continue };
@@ -656,14 +657,16 @@ impl Server {
                 continue;
             }
             for c in &w.connected {
-                if !matches!(r.world.machines.get(&(k.0.clone(), *c)).map(|o| &o.data), Some(crate::machine::Data::Wire(_))) {
-                    stale.push((k.clone(), *c));
+                match r.world.machines.get(&(k.0.clone(), *c)).map(|o| &o.data) {
+                    Some(crate::machine::Data::Wire(o)) if o.lists(k.1) => {}
+                    _ => stale.push((k.clone(), *c)),
                 }
             }
         }
         for (k, c) in stale {
             let Some(block) = host.get_block(&k.0, c) else { continue };
-            if registry::spec(blockstate::id_of(&block)).is_some_and(|s| s.kind == Kind::Wire) {
+            // A point still standing that this machine has not read yet (not in the map) is left alone.
+            if registry::spec(blockstate::id_of(&block)).is_some_and(|s| s.kind == Kind::Wire) && !r.world.machines.contains_key(&(k.0.clone(), c)) {
                 continue;
             }
             if let Some(crate::machine::Data::Wire(w)) = r.world.machines.get_mut(&k).map(|m| &mut m.data) {
@@ -767,12 +770,14 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
             if matches!(m.data, crate::machine::Data::Storage(_)) {
                 dims.entry(d).or_default().4.insert(*p);
             }
-            // A wire counts when both its ends list each other (`UniNodespace.checkConnection`).
+            // A wire listed by one end joins the two (`UniNodespace.checkConnection`: the node of the other end has
+            // its own point among its connections, which the listing end's connection matches).
             if let crate::machine::Data::Wire(wire) = &m.data {
                 for c in &wire.connected {
-                    let both = matches!(w.machines.get(&(d.clone(), *c)).map(|o| &o.data), Some(crate::machine::Data::Wire(o)) if o.lists(*p));
-                    if both {
-                        dims.entry(d).or_default().3.entry(*p).or_default().push(*c);
+                    if matches!(w.machines.get(&(d.clone(), *c)).map(|o| &o.data), Some(crate::machine::Data::Wire(_))) {
+                        let links = &mut dims.entry(d).or_default().3;
+                        links.entry(*p).or_default().push(*c);
+                        links.entry(*c).or_default().push(*p);
                     }
                 }
             }
