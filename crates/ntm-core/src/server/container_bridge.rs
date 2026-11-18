@@ -155,6 +155,9 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         Data::Sawmill(s) => Some(s),
+        Data::Intake(i) => Some(i),
+        Data::Compressor(c) => Some(&mut **c),
+        Data::Storage(s) => Some(&mut **s),
         _ => None,
     }
 }
@@ -226,6 +229,11 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_industrial_turbine", Layout::Native),
     ("ntm:machine_chungus", Layout::Native),
     ("ntm:machine_condenser_powered", Layout::Native),
+    ("ntm:machine_intake", Layout::Native),
+    ("ntm:machine_compressor", Layout::Native),
+    ("ntm:machine_compressor_compact", Layout::Native),
+    ("ntm:machine_battery_socket", Layout::Native),
+    ("ntm:machine_battery_redd", Layout::Native),
     ("ntm:machine_crucible", Layout::Native),
     ("ntm:foundry_mold", Layout::Native),
     ("ntm:foundry_basin", Layout::Native),
@@ -418,6 +426,15 @@ pub const MULTIBLOCKS: &[(&str, [i32; 3], [i32; 3])] = &[
 /// Exact outward port cells, in the order of registry::ports. These do not
 /// become cables: the graph keeps each cell's faces and machine owner.
 pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
+    if block == crate::intake::BLOCK {
+        return crate::intake::Intake::port_cells(core, facing).into_iter().map(|(p, _)| p).collect();
+    }
+    if crate::compressor::Shape::of(block).is_some() {
+        return crate::compressor::Compressor::port_cells(block, core, facing).into_iter().map(|(p, _)| p).collect();
+    }
+    if crate::storage::Body::of(block).is_some() {
+        return crate::storage::Storage::port_cells(block, core, facing).into_iter().map(|(p, _)| p).collect();
+    }
     // TileEntityFEL.getPorts: four blocks behind the core, one above it.
     if block == crate::fel::BLOCK {
         return facing.and_then(crate::registry::facing_dir).map(|d| vec![[core[0] - 4*d[0], core[1] + 1, core[2] - 4*d[2]]]).unwrap_or_default();
@@ -475,6 +492,7 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TileEntityProxyCombo().inventory().power().fluid(): every cell of the volume.
     ("ntm:machine_arc_welder", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1], [1, 0, 0], [1, 0, 1], [-1, 1, 0], [-1, 1, 1], [0, 1, 0], [0, 1, 1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_soldering_station", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1]]),
+    ("ntm:machine_intake", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1]]),
     // TilePortShapes.comboven: the ring round the core on its two layers.
     ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),
@@ -868,6 +886,13 @@ pub fn world_cell(core: Pos, facing: [i32; 3], l: [i32; 3]) -> Pos {
 /// The cells that carry the fluids of the multiblock of `block` at `core`.
 pub fn fluid_proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
     if block == crate::zirnox::BLOCK { return crate::zirnox::Zirnox::port_cells(core,facing).into_iter().map(|(p,_)|p).collect(); }
+    let tower = crate::steam::tower_ports(block, core);
+    if !tower.is_empty() {
+        return tower.into_iter().map(|(p, _)| p).collect();
+    }
+    if crate::compressor::Shape::of(block).is_some() {
+        return crate::compressor::Compressor::port_cells(block, core, facing).into_iter().map(|(p, _)| p).collect();
+    }
     let Some((_, cells)) = FLUID_PROXIES.iter().find(|(b, _)| *b == block) else {
         return Vec::new();
     };

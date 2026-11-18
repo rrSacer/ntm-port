@@ -1,0 +1,271 @@
+{
+  "texture": "ntm:textures/gui/storage/gui_battery_socket.png",
+  "size": [
+    176,
+    181
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    87
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        62,
+        17,
+        34,
+        52
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 2,
+      "min": 0,
+      "max": 0,
+      "rect": [
+        106,
+        16,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        52
+      ]
+    },
+    {
+      "value": 2,
+      "min": 1,
+      "max": 1,
+      "rect": [
+        106,
+        16,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        70
+      ]
+    },
+    {
+      "value": 2,
+      "min": 2,
+      "max": 2,
+      "rect": [
+        106,
+        16,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        88
+      ]
+    },
+    {
+      "value": 2,
+      "min": 3,
+      "max": 3,
+      "rect": [
+        106,
+        16,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        106
+      ]
+    },
+    {
+      "value": 3,
+      "min": 0,
+      "max": 0,
+      "rect": [
+        106,
+        52,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        52
+      ]
+    },
+    {
+      "value": 3,
+      "min": 1,
+      "max": 1,
+      "rect": [
+        106,
+        52,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        70
+      ]
+    },
+    {
+      "value": 3,
+      "min": 2,
+      "max": 2,
+      "rect": [
+        106,
+        52,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        88
+      ]
+    },
+    {
+      "value": 3,
+      "min": 3,
+      "max": 3,
+      "rect": [
+        106,
+        52,
+        18,
+        18
+      ],
+      "uv": [
+        176,
+        106
+      ]
+    },
+    {
+      "value": 4,
+      "min": 1,
+      "max": 1,
+      "rect": [
+        125,
+        35,
+        16,
+        16
+      ],
+      "uv": [
+        194,
+        52
+      ]
+    },
+    {
+      "value": 4,
+      "min": 2,
+      "max": 2,
+      "rect": [
+        125,
+        35,
+        16,
+        16
+      ],
+      "uv": [
+        194,
+        68
+      ]
+    },
+    {
+      "value": 4,
+      "min": 3,
+      "max": 3,
+      "rect": [
+        125,
+        35,
+        16,
+        16
+      ],
+      "uv": [
+        194,
+        84
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        62,
+        17,
+        34,
+        52
+      ],
+      "lines": [
+        "{5.6:si} / {7.8:si} HE",
+        "{9.10:sis} HE/s"
+      ]
+    },
+    {
+      "rect": [
+        125,
+        35,
+        16,
+        16
+      ],
+      "lines": [
+        "Charge priority (click to change)",
+        "Low: storage that must not starve machines",
+        "Normal: small grids",
+        "High: emergency buffers",
+        "This network does not apply priorities yet"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        106,
+        16,
+        18,
+        18
+      ],
+      "lines": [
+        "Mode without redstone"
+      ]
+    },
+    {
+      "id": 1,
+      "rect": [
+        106,
+        52,
+        18,
+        18
+      ],
+      "lines": [
+        "Mode with redstone"
+      ]
+    },
+    {
+      "id": 2,
+      "rect": [
+        125,
+        35,
+        16,
+        16
+      ],
+      "lines": [
+        "Charge priority (click to change)",
+        "Low: storage that must not starve machines",
+        "Normal: small grids",
+        "High: emergency buffers",
+        "This network does not apply priorities yet"
+      ]
+    }
+  ]
+}

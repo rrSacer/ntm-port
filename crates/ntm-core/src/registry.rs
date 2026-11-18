@@ -46,6 +46,20 @@ pub fn facing_dir(facing: &str) -> Option<crate::Pos> {
 /// The ports of a machine of `spec` facing `facing`.
 pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
     use crate::energy::DIRS;
+    if spec.id == crate::intake::BLOCK {
+        return crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().map(|(_, dirs)| dirs).collect();
+    }
+    if spec.kind == Kind::Wire {
+        return crate::wire::ports(spec.id, facing);
+    }
+    // The socket's and the REDD's ports are cells of their volume, each one face out.
+    if spec.kind == Kind::Storage {
+        return crate::storage::Storage::port_cells(spec.id, [0, 0, 0], facing).into_iter().map(|(_, face)| vec![face]).collect();
+    }
+    // The compressors' ports are on cells round the core, each one face out.
+    if spec.kind == Kind::Compressor {
+        return crate::compressor::Compressor::port_cells(spec.id, [0, 0, 0], facing).into_iter().map(|(_, face)| vec![face]).collect();
+    }
     if spec.kind == Kind::Fel {
         return facing.and_then(facing_dir).map(|d| vec![vec![[-d[0], 0, -d[2]]]]).unwrap_or_default();
     }
@@ -392,7 +406,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_drain",
-        kind: Kind::Inert,
+        kind: Kind::Drain,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -533,42 +547,42 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_tower_small",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_tower_large",
-        kind: Kind::Inert,
+        kind: Kind::Steam,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_deuterium_extractor",
-        kind: Kind::Inert,
+        kind: Kind::Deuterium,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_intake",
-        kind: Kind::Inert,
+        kind: Kind::Intake,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Sides,
     },
     BlockSpec {
         id: "ntm:machine_compressor",
-        kind: Kind::Inert,
+        kind: Kind::Compressor,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_compressor_compact",
-        kind: Kind::Inert,
+        kind: Kind::Compressor,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1064,94 +1078,93 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     // Energy batch 6 (3c5a6573): the battery socket and REDD, the
     // connectors and pylons (long wires), the switch and the detector.
-    // Inert until their stage is approved.
     BlockSpec {
         id: "ntm:machine_battery_socket",
-        kind: Kind::Inert,
+        kind: Kind::Storage,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_battery_redd",
-        kind: Kind::Inert,
+        kind: Kind::Storage,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_connector",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_connector_super",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_steel",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_medium_wood",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_medium_wood_transformer",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_medium_steel",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_medium_steel_transformer",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:red_pylon_large",
-        kind: Kind::Inert,
+        kind: Kind::Wire,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:cable_switch",
-        kind: Kind::Inert,
+        kind: Kind::CableSwitch,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:cable_detector",
-        kind: Kind::Inert,
+        kind: Kind::CableSwitch,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1733,7 +1746,7 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
-    if spec.kind == Kind::Zirnox {
+    if spec.kind == Kind::Zirnox || crate::steam::is_tower(spec.id) {
         return vec![vec![]];
     }
     if spec.id == "ntm:pile_device__vent" {
@@ -1769,7 +1782,13 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Annihilator
         | Kind::Cyclotron
         | Kind::Silex
-        | Kind::Combustion => vec![crate::energy::DIRS.to_vec()],
+        | Kind::Combustion
+        | Kind::Deuterium => vec![crate::energy::DIRS.to_vec()],
+        Kind::Intake => crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().next().map(|(_, d)| vec![d]).unwrap_or_default(),
+        // The core takes nothing: the compressors' fluid ports are cells of their volume.
+        Kind::Compressor => vec![Vec::new()],
+        // `getPorts`: the core's front and its two sides.
+        Kind::Drain => vec![crate::drain::Drain::faces(facing)],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
         Kind::Heater => vec![

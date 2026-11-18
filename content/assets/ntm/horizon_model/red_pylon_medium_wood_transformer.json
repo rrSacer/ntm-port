@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/pylon_medium.obj",
+  "texture": "ntm:textures/models/network/pylon_medium.png",
+  "rotation": 180,
+  "radius": 8.5
+}

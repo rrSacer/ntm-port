@@ -290,6 +290,18 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     if block == crate::sawmill::BLOCK {
         return crate::sawmill::allows(slots, slot, item, action);
     }
+    if let Some(body) = crate::storage::Body::of(block) {
+        // A hand: `Slot`s that take battery items (the machine file's `accept`) and give anything back. A
+        // hopper: any side reaches slot 0 of the socket and puts battery items in; it takes a pack only when
+        // `canExtractItem` allows (mode and charge of the machine, which this rule does not see: left out);
+        // the REDD has no `getAccessibleSlotsFromSide`.
+        return origin == SlotOrigin::Manual || (body == crate::storage::Body::Socket && action == SlotAction::Insert);
+    }
+    if crate::compressor::Shape::of(block).is_some() {
+        // A hand: plain `Slot`s. A hopper: `isItemValidForSlot` is false and
+        // `getAccessibleSlotsFromSide` empty (`TileEntityMachineBase` defaults).
+        return origin == SlotOrigin::Manual;
+    }
     if let Some(allowed) = crate::welders::allows(block, slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;
     }
@@ -347,7 +359,7 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
 /// The ported blocks whose Java block has `hasComparatorInputOverride`:
 /// `MachineBattery` (by charge), `MachineFluidTank` and `BlockFluidBarrel` (by fluid).
 pub fn has_comparator(block: &str) -> bool {
-    matches!(block, "ntm:machine_battery" | "ntm:machine_fluidtank" | "ntm:barrel_steel")
+    matches!(block, "ntm:machine_battery" | "ntm:machine_fluidtank" | "ntm:barrel_steel" | crate::storage::SOCKET | crate::storage::REDD)
 }
 
 /// `getComparatorPower` of the machine saved as `json`, 0 to 15: nothing stored is 0,
@@ -356,6 +368,10 @@ pub fn has_comparator(block: &str) -> bool {
 pub fn comparator_signal(json: &str) -> u8 {
     use crate::machine::{Data, Machine};
     let Ok(machine) = serde_json::from_str::<Machine>(json) else { return 0 };
+    // The socket and the REDD give the signal they computed (`getComparatorPower`, saved as `lastRedstone`).
+    if let Data::Storage(s) = &machine.data {
+        return s.last_redstone;
+    }
     let (stored, max) = match &machine.data {
         Data::Battery(b) => (b.power as f64, b.max as f64),
         Data::FluidStore(f) => (f64::from(f.tank.mb), f64::from(f.tank.cap)),
@@ -384,6 +400,18 @@ fn machine_files() -> &'static std::collections::HashMap<String, serde_json::Val
 
 /// Block `block`'s slot rules, from its machine file (none without one).
 pub fn block_slots(block: &str) -> Vec<SlotFilter> {
+    if crate::compressor::Shape::of(block).is_some() {
+        // `ContainerCompressor` builds plain `Slot`s (a hand may place anything) and its
+        // `transferStackInSlot` sends a battery to slot 1 and a fluid identifier to slot 0;
+        // anything else goes to the upgrade slots 2 and 3 (not expressible: an identifier
+        // meets the free upgrade slots when slot 0 is full, a nominal gap).
+        let mut slots = machine_files().get(block).map(|v| file_slots(v.to_string().as_bytes())).unwrap_or_default();
+        if slots.len() >= 2 {
+            slots[0].quick_move = Some(vec![crate::server::native_server::IDENTIFIER.into()]);
+            slots[1].quick_move = Some(vec![CREATIVE_BATTERY.into()]);
+        }
+        return slots;
+    }
     if block == crate::zirnox::BLOCK {
         // Java's `ContainerReactorZirnox` builds slots 0..23 as plain `Slot`s: a hand
         // may place anything, one item at a time. Only `transferStackInSlot` (shift-click)

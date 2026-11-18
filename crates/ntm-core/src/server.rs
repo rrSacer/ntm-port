@@ -701,6 +701,35 @@ impl Server {
             r.topo_dirty = true;
         }
 
+        // `TileEntityPylonBase.disconnectAll`: a wire to an endpoint that is gone comes off, whichever way the
+        // endpoint left (a break, a replacement, an explosion): its cell is loaded and no endpoint now, or an endpoint
+        // of another generation than the one wired (the old one took its wires off the others as it went). An endpoint
+        // that merely does not list this one back (a save cut between the two) keeps the wire: the Java joins them.
+        let mut stale: Vec<(Key, Pos)> = Vec::new();
+        for (k, m) in &r.world.machines {
+            let crate::machine::Data::Wire(w) = &m.data else { continue };
+            if r.loaded.get(k) != Some(&true) {
+                continue;
+            }
+            for (i, c) in w.connected.iter().enumerate() {
+                match r.world.machines.get(&(k.0.clone(), *c)) {
+                    Some(o) if matches!(o.data, crate::machine::Data::Wire(_)) && (w.generation_of(i) == 0 || w.generation_of(i) == o.generation) => {}
+                    _ => stale.push((k.clone(), *c)),
+                }
+            }
+        }
+        for (k, c) in stale {
+            let Some(block) = host.get_block(&k.0, c) else { continue };
+            // A point still standing that this machine has not read yet (not in the map) is left alone.
+            if registry::spec(blockstate::id_of(&block)).is_some_and(|s| s.kind == Kind::Wire) && !r.world.machines.contains_key(&(k.0.clone(), c)) {
+                continue;
+            }
+            if let Some(crate::machine::Data::Wire(w)) = r.world.machines.get_mut(&k).map(|m| &mut m.data) {
+                w.forget(c);
+                r.topo_dirty = true;
+            }
+        }
+
         // Energy: a machine may be in several networks (one per separate
         // port): they move energy one after the other.
         if r.topo_dirty {
@@ -768,12 +797,20 @@ impl Server {
 fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
     type Ports = BTreeMap<Pos, Vec<crate::energy::Port>>;
     type PortCells = BTreeMap<(Pos,usize),Pos>;
-    type Shape = (BTreeSet<Pos>, Ports, PortCells);
+    type Links = BTreeMap<Pos, Vec<Pos>>;
+    type Shape = (BTreeSet<Pos>, Ports, PortCells, Links, BTreeSet<Pos>);
     let mut dims: BTreeMap<&str, Shape> = BTreeMap::new();
     for (d, p) in &w.cables {
         dims.entry(d).or_default().0.insert(*p);
     }
     for ((d, p), m) in &w.machines {
+        // A power switch that is on is a cable (`TileEntityCableSwitch.shouldCreateNode`); off, it is nothing.
+        if let crate::machine::Data::CableSwitch(s) = &m.data {
+            if s.joins_net() {
+                dims.entry(d).or_default().0.insert(*p);
+            }
+            continue;
+        }
         let Some(spec) = registry::spec(&m.block) else { continue };
         let ports = registry::ports(spec, m.facing.as_deref());
         if m.kind() != Kind::Inert && !ports.is_empty() {
@@ -784,10 +821,25 @@ fn build_topology(w: &WorldState) -> BTreeMap<String, Topology> {
             // A multiblock's bottom cells carry its power, as HBM's proxies.
             let cells = container_bridge::proxy_cells(&m.block, *p, m.facing.as_deref());
             dims.entry(d).or_default().0.extend(cells);
+            // The socket and the REDD are conductors: all their ports are one node.
+            if matches!(m.data, crate::machine::Data::Storage(_)) {
+                dims.entry(d).or_default().4.insert(*p);
+            }
+            // A wire listed by one end joins the two (`UniNodespace.checkConnection`: the node of the other end has
+            // its own point among its connections, which the listing end's connection matches).
+            if let crate::machine::Data::Wire(wire) = &m.data {
+                for c in &wire.connected {
+                    if matches!(w.machines.get(&(d.clone(), *c)).map(|o| &o.data), Some(crate::machine::Data::Wire(_))) {
+                        let links = &mut dims.entry(d).or_default().3;
+                        links.entry(*p).or_default().push(*c);
+                        links.entry(*c).or_default().push(*p);
+                    }
+                }
+            }
         }
     }
     dims.into_iter()
-        .map(|(d, (c, m, at))| (d.to_string(), Topology::build_at(&c, &m, &at)))
+        .map(|(d, (c, m, at, links, cond))| (d.to_string(), Topology::build_conducting(&c, &m, &at, &links, &cond)))
         .collect()
 }
 

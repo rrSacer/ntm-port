@@ -308,6 +308,15 @@ impl BigInt {
         (if self.neg { m.wrapping_neg() } else { m }) as i64
     }
 
+    /// The value as a `long`, clamped to its range (for screens that hold one).
+    pub fn saturating_long(&self) -> i64 {
+        let m = u128::from(*self.mag.first().unwrap_or(&0)) | (u128::from(*self.mag.get(1).unwrap_or(&0)) << 32);
+        if self.mag.len() > 2 || m > i64::MAX as u128 + u128::from(self.neg) {
+            return if self.neg { i64::MIN } else { i64::MAX };
+        }
+        if self.neg { (m as i128).wrapping_neg() as i64 } else { m as i64 }
+    }
+
     /// `doubleValue()`: round to nearest even, infinity beyond the range.
     pub fn double_value(&self) -> f64 {
         let bits = match self.mag.last() {

@@ -238,6 +238,42 @@ impl Turbine {
 pub const CONDENSER_POWER: u64 = 10_000_000;
 /// HE a mB in the powered condenser.
 pub const CONDENSER_HE: u64 = 10;
+pub const TOWER_SMALL: &str = "ntm:machine_tower_small";
+pub const TOWER_SMALL_CAP: u32 = 1_000;
+pub const TOWER_LARGE: &str = "ntm:machine_tower_large";
+pub const TOWER_LARGE_CAP: u32 = 10_000;
+
+pub fn is_tower(block: &str) -> bool {
+    matches!(block, TOWER_SMALL | TOWER_LARGE)
+}
+
+/// Outward fluid ports (`TilePortShapes.auxTower` and `TilePortShapes.bigTower`).
+pub fn tower_ports(block: &str, core: crate::Pos) -> Vec<(crate::Pos, crate::Pos)> {
+    let add = |dx: i32, dz: i32, dir: crate::Pos| ([core[0] + dx, core[1], core[2] + dz], dir);
+    match block {
+        TOWER_SMALL => vec![
+            add(0, -2, [0, 0, -1]),
+            add(2, 0, [1, 0, 0]),
+            add(0, 2, [0, 0, 1]),
+            add(-2, 0, [-1, 0, 0]),
+        ],
+        TOWER_LARGE => vec![
+            add(-3, -4, [0, 0, -1]),
+            add(0, -4, [0, 0, -1]),
+            add(3, -4, [0, 0, -1]),
+            add(4, -3, [1, 0, 0]),
+            add(4, 0, [1, 0, 0]),
+            add(4, 3, [1, 0, 0]),
+            add(-3, 4, [0, 0, 1]),
+            add(0, 4, [0, 0, 1]),
+            add(3, 4, [0, 0, 1]),
+            add(-4, -3, [-1, 0, 0]),
+            add(-4, 0, [-1, 0, 0]),
+            add(-4, 3, [-1, 0, 0]),
+        ],
+        _ => Vec::new(),
+    }
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Condenser {
@@ -254,6 +290,10 @@ pub struct Condenser {
 impl Condenser {
     pub fn new(powered: bool) -> Self {
         let cap = if powered { 1_000_000 } else { 100 };
+        Self::with_caps(powered, cap)
+    }
+
+    pub fn with_caps(powered: bool, cap: u32) -> Self {
         Self { slots: Slots::new(), powered, input: Tank::typed("spentsteam", cap), output: Tank::typed("water", cap), power: 0, on: false }
     }
 
@@ -329,6 +369,8 @@ impl Steam {
             "ntm:machine_steam_engine" => Some(Self::Engine(SteamEngine::default())),
             "ntm:machine_condenser" => Some(Self::Condenser(Condenser::new(false))),
             "ntm:machine_condenser_powered" => Some(Self::Condenser(Condenser::new(true))),
+            TOWER_SMALL => Some(Self::Condenser(Condenser::with_caps(false, TOWER_SMALL_CAP))),
+            TOWER_LARGE => Some(Self::Condenser(Condenser::with_caps(false, TOWER_LARGE_CAP))),
             b => Shape::of(b).map(|s| Self::Turbine(Turbine::new(s))),
         }
     }
@@ -559,6 +601,88 @@ mod tests {
         p.tick();
         let Steam::Condenser(pc) = &p else { unreachable!() };
         assert_eq!((pc.output.mb, pc.power), (1_000, 0), "5 % de tolerância");
+    }
+
+    #[test]
+    fn tower_small_matches_java_caps_no_power_and_aux_tower_ports() {
+        let mut s = Steam::of(TOWER_SMALL).expect("tower_small");
+        assert!(s.energy().is_none());
+        assert!(s.slotted().is_none());
+        assert_eq!(s.fluid_demand("spentsteam"), 1_000);
+        assert_eq!(s.fluid_demand("water"), 0);
+        s.fluid_give("water", 500);
+        assert_eq!(s.fluid_demand("spentsteam"), 1_000);
+        s.fluid_give("spentsteam", 1_500);
+        assert_eq!(s.fluid_demand("spentsteam"), 0);
+        assert!(s.tick());
+        assert_eq!(s.fluid_offer("water"), 1_000);
+        assert_eq!(s.fluid_demand("spentsteam"), 1_000);
+        s.fluid_take("water", 400);
+        s.fluid_give("spentsteam", 600);
+        assert!(s.tick());
+        assert_eq!(s.fluid_offer("water"), 1_000);
+        assert_eq!(s.fluid_demand("spentsteam"), 800);
+        assert!(s.tick());
+        assert!(!s.tick());
+
+        let ports = tower_ports(TOWER_SMALL, [10, 64, 20]);
+        assert_eq!(
+            ports,
+            vec![
+                ([10, 64, 18], [0, 0, -1]),
+                ([12, 64, 20], [1, 0, 0]),
+                ([10, 64, 22], [0, 0, 1]),
+                ([8, 64, 20], [-1, 0, 0]),
+            ]
+        );
+        let back: Steam = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
+        assert_eq!(back.fluid_offer("water"), 1_000);
+        assert_eq!(back.fluid_demand("spentsteam"), 800);
+    }
+
+    #[test]
+    fn tower_large_matches_java_caps_no_power_and_big_tower_ports() {
+        let mut s = Steam::of(TOWER_LARGE).expect("tower_large");
+        assert!(s.energy().is_none());
+        assert!(s.slotted().is_none());
+        assert_eq!(s.fluid_demand("spentsteam"), 10_000);
+        assert_eq!(s.fluid_demand("water"), 0);
+        s.fluid_give("water", 5_000);
+        assert_eq!(s.fluid_demand("spentsteam"), 10_000);
+        s.fluid_give("spentsteam", 12_000);
+        assert_eq!(s.fluid_demand("spentsteam"), 0);
+        assert!(s.tick());
+        assert_eq!(s.fluid_offer("water"), 10_000);
+        assert_eq!(s.fluid_demand("spentsteam"), 10_000);
+        s.fluid_take("water", 4_000);
+        s.fluid_give("spentsteam", 6_000);
+        assert!(s.tick());
+        assert_eq!(s.fluid_offer("water"), 10_000);
+        assert_eq!(s.fluid_demand("spentsteam"), 8_000);
+        assert!(s.tick());
+        assert!(!s.tick());
+
+        let ports = tower_ports(TOWER_LARGE, [10, 64, 20]);
+        assert_eq!(
+            ports,
+            vec![
+                ([7, 64, 16], [0, 0, -1]),
+                ([10, 64, 16], [0, 0, -1]),
+                ([13, 64, 16], [0, 0, -1]),
+                ([14, 64, 17], [1, 0, 0]),
+                ([14, 64, 20], [1, 0, 0]),
+                ([14, 64, 23], [1, 0, 0]),
+                ([7, 64, 24], [0, 0, 1]),
+                ([10, 64, 24], [0, 0, 1]),
+                ([13, 64, 24], [0, 0, 1]),
+                ([6, 64, 17], [-1, 0, 0]),
+                ([6, 64, 20], [-1, 0, 0]),
+                ([6, 64, 23], [-1, 0, 0]),
+            ]
+        );
+        let back: Steam = serde_json::from_str(&serde_json::to_string(&s).unwrap()).unwrap();
+        assert_eq!(back.fluid_offer("water"), 10_000);
+        assert_eq!(back.fluid_demand("spentsteam"), 8_000);
     }
 }
 

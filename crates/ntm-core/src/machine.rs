@@ -114,6 +114,20 @@ pub enum Kind {
     Furnace,
     /// The arc welder and the soldering station (`crate::welders`).
     Welder,
+    /// The air intake (`crate::intake`).
+    Intake,
+    /// The deuterium extractor (`crate::deuterium`).
+    Deuterium,
+    /// The compressors, both bodies (`crate::compressor`).
+    Compressor,
+    /// The battery socket and the REDD (`crate::storage`).
+    Storage,
+    /// The drain (`crate::drain`).
+    Drain,
+    /// The power switch and the redstone power switch (`crate::cable_switch`).
+    CableSwitch,
+    /// The wire endpoints: connectors and pylons (`crate::wire`).
+    Wire,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -250,6 +264,13 @@ pub enum Data {
     Cyclotron(Box<crate::cyclotron::Cyclotron>),
     Furnace(Box<crate::furnaces::Furnace>),
     Welder(Box<crate::welders::Welder>),
+    Intake(crate::intake::Intake),
+    Deuterium(crate::deuterium::DeuteriumExtractor),
+    Compressor(Box<crate::compressor::Compressor>),
+    Storage(Box<crate::storage::Storage>),
+    Drain(crate::drain::Drain),
+    CableSwitch(crate::cable_switch::CableSwitch),
+    Wire(crate::wire::Wire),
     Inert { name: String },
 }
 
@@ -369,6 +390,17 @@ impl Machine {
                 Some(f) => Data::Furnace(Box::new(f)),
                 None => Data::Inert { name: block_id.into() },
             },
+            Kind::Intake => Data::Intake(crate::intake::Intake::new()),
+            Kind::Deuterium => Data::Deuterium(crate::deuterium::DeuteriumExtractor::new()),
+            Kind::Wire => Data::Wire(crate::wire::Wire::new()),
+            Kind::CableSwitch => Data::CableSwitch(crate::cable_switch::CableSwitch::new(block_id)),
+            Kind::Compressor => Data::Compressor(Box::new(crate::compressor::Compressor::new(
+                crate::compressor::Shape::of(block_id).unwrap_or_default(),
+            ))),
+            Kind::Drain => Data::Drain(Default::default()),
+            Kind::Storage => Data::Storage(Box::new(crate::storage::Storage::new(
+                crate::storage::Body::of(block_id).unwrap_or_default(),
+            ))),
             Kind::Inert => Data::Inert {
                 name: block_id.into(),
             },
@@ -456,6 +488,13 @@ impl Machine {
             Data::Cyclotron(_) => Kind::Cyclotron,
             Data::Furnace(_) => Kind::Furnace,
             Data::Welder(_) => Kind::Welder,
+            Data::Intake(_) => Kind::Intake,
+            Data::Deuterium(_) => Kind::Deuterium,
+            Data::Compressor(_) => Kind::Compressor,
+            Data::Storage(_) => Kind::Storage,
+            Data::Drain(_) => Kind::Drain,
+            Data::CableSwitch(_) => Kind::CableSwitch,
+            Data::Wire(_) => Kind::Wire,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -514,6 +553,13 @@ impl Machine {
             Data::Cyclotron(m) => &**m,
             Data::Furnace(m) => &**m,
             Data::Welder(m) => &**m,
+            Data::Intake(m) => m,
+            Data::Deuterium(m) => m,
+            Data::Compressor(m) => &**m,
+            Data::Storage(m) => &**m,
+            Data::Drain(m) => m,
+            Data::CableSwitch(m) => m,
+            Data::Wire(m) => m,
             Data::Inert { name } => name,
         }
     }
@@ -572,6 +618,13 @@ impl Machine {
             Data::Cyclotron(m) => &mut **m,
             Data::Furnace(m) => &mut **m,
             Data::Welder(m) => &mut **m,
+            Data::Intake(m) => m,
+            Data::Deuterium(m) => m,
+            Data::Compressor(m) => &mut **m,
+            Data::Storage(m) => &mut **m,
+            Data::Drain(m) => m,
+            Data::CableSwitch(m) => m,
+            Data::Wire(m) => m,
             Data::Inert { name } => name,
         }
     }

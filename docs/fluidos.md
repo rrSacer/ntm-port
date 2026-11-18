@@ -30,8 +30,12 @@ esta tabela.
 ## Tanque
 
 Um tipo (ou nenhum ainda) e mB. `set_type` esvazia o tanque quando o tipo muda,
-como `FluidTank.setTankType`. **Pressão (0–5 PU) fica de fora**: todo tanque
-está a 0, e as receitas que exigem pressão foram puladas na extração.
+como `FluidTank.setTankType`. **Pressão (0–5 PU):** cada tanque tem `pressure`
+(`FluidTank.withPressure`, que esvazia o tanque quando muda; saves sem o campo abrem a 0) e a rede
+só liga tanques de mesma pressão (`distribute` roda um nível de cada vez, como `FluidNetMK2.transferFluid`).
+Só os compressores (`docs/onda-2-grupo-c.md`) mudam a pressão; o hidrotratador (hidrogênio, 1 PU), o destilador a
+vácuo (óleo, 2 PU) e a ventilação da pile (ar, 1 PU) têm a do Java e também aceitam fluido a 0 PU (desvio
+documentado lá); todos os outros tanques ficam a 0.
 
 ## Recipientes
 

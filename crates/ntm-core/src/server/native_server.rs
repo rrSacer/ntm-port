@@ -410,20 +410,91 @@ impl Server {
         true
     }
 
+    /// A player right-clicked the power switch at `pos` without sneaking
+    /// (`CableSwitch.onBlockActivated`): it flips and the nets are built again.
+    /// The redstone switch takes no click. True when the switch took it.
+    pub fn native_switch_use(&mut self, dim: &str, pos: Pos) -> bool {
+        let Some(r) = self.ready() else { return false };
+        let key = (dim.to_string(), pos);
+        let Some(crate::machine::Data::CableSwitch(s)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) else { return false };
+        if !s.click() {
+            return false;
+        }
+        r.topo_dirty = true;
+        true
+    }
+
+    /// A player, not sneaking, used the wire (`ItemWiring.onItemUse`) on the block whose core is
+    /// `core`; `start` is the endpoint the item remembers (its `x`, `y`, `z`). The first click marks an
+    /// endpoint; the second links the two when they can be (same connection type, within the shorter
+    /// range), tells the player why not when they cannot, and in both cases the item forgets.
+    pub fn native_wire_use(&mut self, host: &mut impl ServerHost, dim: &str, core: Pos, start: Option<Pos>, player: &str) -> crate::wire::WireUse {
+        use crate::{energy_network::WireKind, machine::Data, wire::WireUse};
+        let Some(r) = self.ready() else { return WireUse::NotTaken };
+        let end = |r: &Ready, at: Pos| {
+            r.world.machines.get(&(dim.to_string(), at)).and_then(|m| match &m.data {
+                Data::Wire(_) => WireKind::from_id(&m.block).map(|k| (k, at, crate::wire::meta_of(k, m.facing.as_deref()))),
+                _ => None,
+            })
+        };
+        let Some(second) = end(r, core) else { return WireUse::NotTaken };
+        let Some(first_at) = start else {
+            host.tell(player, "Wire start");
+            return WireUse::Started(core);
+        };
+        let text = match end(r, first_at) {
+            Some(first) => {
+                let check = crate::wire::can_connect(first, second);
+                if check == crate::energy_network::LinkCheck::Ok {
+                    for (at, other) in [(first_at, core), (core, first_at)] {
+                        let generation = r.world.machines.get(&(dim.to_string(), other)).map_or(0, |m| m.generation);
+                        if let Some(Data::Wire(w)) = r.world.machines.get_mut(&(dim.to_string(), at)).map(|m| &mut m.data) {
+                            w.add_link(other, generation);
+                        }
+                    }
+                    r.topo_dirty = true;
+                }
+                crate::wire::message(check)
+            }
+            None => "Wire error",
+        };
+        host.tell(player, text);
+        WireUse::Finished(text)
+    }
+
     /// A player used `item` on the block at `pos` (its `custom_data`'s
     /// `ntm_fluid`: the fluid identifier's type). The multi fluid
     /// identifier on a duct sets the duct's fluid
     /// (`FluidDuctBase.handleActivation`, a plain click). True when taken.
     pub fn native_use_item(&mut self, dim: &str, pos: Pos, item: &str, fluid: Option<&str>) -> bool {
+        self.native_use_item_as(dim, pos, item, fluid, false)
+    }
+
+    /// As [`Server::native_use_item`], with whether the player is sneaking. A duct is typed whichever way (the Java types the
+    /// whole net of the same type from a sneaking click, `changeTypeRecursively`, and copies the duct's type with the alt key: not
+    /// ported, docs/onda-2-sumidouros.md); the drain is typed only when the player is not sneaking, and a sneaking click on it is
+    /// taken without doing anything (`MachineDrain.onBlockActivated`). The drain takes the `none` identifier too (it empties and
+    /// untypes the tank, `setTankType(NONE)`), which no duct does here.
+    pub fn native_use_item_as(&mut self, dim: &str, pos: Pos, item: &str, fluid: Option<&str>, sneaking: bool) -> bool {
         if item != IDENTIFIER {
             return false;
         }
-        let Some(fluid) = fluid.filter(|f| crate::fluid::get(f).is_some_and(|t| t.id != 0)) else { return false };
+        let Some(fluid) = fluid.filter(|f| crate::fluid::get(f).is_some()) else { return false };
+        let is_none = crate::fluid::get(fluid).is_some_and(|t| t.id == 0);
         let Some(r) = self.ready() else { return false };
         let Some(m) = r.world.machines.get_mut(&(dim.to_string(), pos)) else { return false };
-        let crate::machine::Data::Duct(d) = &mut m.data else { return false };
-        if d.fluid != fluid {
-            d.fluid = fluid.to_string();
+        match &mut m.data {
+            crate::machine::Data::Duct(d) if !is_none => {
+                if d.fluid != fluid {
+                    d.fluid = fluid.to_string();
+                }
+            }
+            crate::machine::Data::Drain(d) => {
+                if !sneaking {
+                    d.set_type(if is_none { "" } else { fluid });
+                }
+            }
+            _ => return false,
         }
         true
     }
@@ -440,7 +511,7 @@ impl Server {
             if r.loaded.get(k) != Some(&true) {
                 continue;
             }
-            if matches!(m.data, crate::machine::Data::Battery(_) | crate::machine::Data::Bomb(_)) {
+            if matches!(m.data, crate::machine::Data::Battery(_) | crate::machine::Data::Bomb(_)) || matches!(&m.data, crate::machine::Data::CableSwitch(s) if s.detector) {
                 by_dim.entry(k.0.clone()).or_default().push(k.1);
             } else if let crate::machine::Data::Combustion(_) = m.data {
                 let local = crate::combustion::Combustion::redstone_cells(&m.block);
@@ -450,6 +521,11 @@ impl Server {
                     (false, Some(f)) => local.iter().map(|&l| container_bridge::world_cell(k.1, f, l)).collect(),
                     (false, None) => vec![k.1],
                 };
+                by_dim.entry(k.0.clone()).or_default().extend(cells.iter().copied());
+                cells_of.insert(k.clone(), cells);
+            } else if let crate::machine::Data::Storage(_) = m.data {
+                // `getRelevantMode`: any of its port cells getting a signal puts it in `redHigh`.
+                let cells = crate::storage::Storage::redstone_cells(&m.block, k.1, m.facing.as_deref());
                 by_dim.entry(k.0.clone()).or_default().extend(cells.iter().copied());
                 cells_of.insert(k.clone(), cells);
             }
@@ -467,12 +543,19 @@ impl Server {
                 if let Some(crate::machine::Data::Battery(b)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) {
                     b.powered = s > 0;
                 }
+                if let Some(crate::machine::Data::CableSwitch(w)) = r.world.machines.get_mut(&key).map(|m| &mut m.data)
+                    && w.redstone(s > 0)
+                {
+                    r.topo_dirty = true;
+                }
             }
         }
         for (key, cells) in cells_of {
             let powered = cells.iter().any(|p| seen.get(&(key.0.clone(), *p)).is_some_and(|s| *s > 0));
-            if let Some(crate::machine::Data::Combustion(c)) = r.world.machines.get_mut(&key).map(|m| &mut m.data) {
-                c.set_powered(powered);
+            match r.world.machines.get_mut(&key).map(|m| &mut m.data) {
+                Some(crate::machine::Data::Combustion(c)) => c.set_powered(powered),
+                Some(crate::machine::Data::Storage(s)) => s.powered = powered,
+                _ => {}
             }
         }
     }
@@ -500,12 +583,22 @@ impl Server {
             // loop state and tick pulses only after all simulation stages finish.
             if completed_tick { m.audio = crate::sounds::machine(m); }
             let Ok(json) = serde_json::to_string(&*m) else { continue };
-            if r.native_saved.get(key) != Some(&json) {
+            // The energy network moves energy after the machines ran, so a pack in a socket or a REDD holds more or
+            // less than the slot the step wrote: the slot gets the machine's copy in the same tick, with its state.
+            // This runs also outside the tick's end (a hand drill on a pile): the copy is written only over the slots
+            // the machine itself left, never over a player's change it has not read yet (`Storage::publishable`).
+            let held = match &m.data {
+                crate::machine::Data::Storage(s) => host.machine_slots(&key.0, key.1).and_then(|now| s.publishable(&now)),
+                _ => None,
+            };
+            if r.native_saved.get(key) != Some(&json) || held.is_some() {
                 // Marked kept only once written: an unreachable block entity
                 // (its dimension not available now) is written again later.
                 let Some(expected)=host.machine_slots(&key.0,key.1).or_else(|| container_bridge::layout(&m.block).is_none().then(Vec::new)) else{continue};
                 let data=Self::machine_screen(&mut m.clone());
-                if !host.commit_machine(&MachineCommit{cells:Vec::new(),guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {continue;}
+                let desired = held.clone().unwrap_or_else(|| expected.clone());
+                if !host.commit_machine(&MachineCommit{cells:Vec::new(),guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired,expected,data,json:json.clone()}) {continue;}
+                if let crate::machine::Data::Storage(s) = &mut m.data { s.published(); }
                 r.native_saved.insert(key.clone(), json);
             }
             let seed=crate::hash::mix(crate::hash::fnv64(format!("{:?}:{}",key,tick).as_bytes())) as i64;

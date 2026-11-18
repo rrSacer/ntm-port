@@ -286,14 +286,72 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
             return true;
         }
     }
+    // CableSwitch.onBlockActivated: a plain click flips the power switch; sneaking, the click is not taken.
+    if !sneaking && server.native_switch_use(&dim, core) {
+        return true;
+    }
     let mut host = Host { game, buttons: Vec::new() };
     server.native_use(&mut host, &dim, core, pos, &player)
+}
+
+/// Whether the player who used the item is sneaking: a LAN guest's own state, else this client's key (the item hook
+/// does not say who; `native_actor_uuid` does, as `step_blocked` reads it).
+fn actor_sneaking(game: &crate::game::Game<'_>) -> bool {
+    let id = game.native_actor_uuid().unwrap_or_default();
+    if let Ok(uuid) = u128::from_str_radix(&id.replace('-', ""), 16)
+        && let Some(g) = game.lan.iter().flat_map(|h| h.hub.guests.iter()).find(|g| g.placed && g.uuid == uuid)
+    {
+        let guest: &horizon_client::lan::guest::Guest = g;
+        return guest.sneaking;
+    }
+    game.keys.held(horizon_client::actions::Action::Sneak)
+}
+
+/// `ItemWiring.onItemUse`: the cable drum on a pylon or a connector (not sneaking). The first click
+/// writes the endpoint into the item's `custom_data` (`x`, `y`, `z`); the second links and clears it.
+fn use_wire(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
+    if actor_sneaking(game) {
+        return false;
+    }
+    let core = game.machine_cell_core(pos);
+    let start = stack.data().and_then(|d| d.other("minecraft:custom_data")).and_then(|t| match t {
+        Tag::Compound(c) => {
+            let get = |k: &str| match c.get(&JavaString::from(k)) { Some(Tag::Int(n)) => Some(*n), _ => None };
+            Some([get("x")?, get("y")?, get("z")?])
+        }
+        _ => None,
+    });
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return false };
+    let dim = game.dim.id().to_string();
+    let player = game.native_actor_uuid().unwrap_or_default();
+    let mut host = Host { game, buttons: Vec::new() };
+    reconcile(server, &mut host);
+    let used = server.native_wire_use(&mut host, &dim, core, start, &player);
+    let game = host.game;
+    let write = |game: &mut crate::game::Game<'_>, at: Option<[i32; 3]>| {
+        let Some(h) = game.held_mut() else { return };
+        let mut data = match h.data().and_then(|d| d.other("minecraft:custom_data")) {
+            Some(Tag::Compound(c)) => c.clone(),
+            _ => Default::default(),
+        };
+        for (k, v) in ["x", "y", "z"].into_iter().zip(at.unwrap_or_default()) {
+            if at.is_some() { data.insert(JavaString::from(k), Tag::Int(v)); } else { data.remove(&JavaString::from(k)); }
+        }
+        h.data_mut().set_other("minecraft:custom_data", if data.is_empty() { None } else { Some(Tag::Compound(data)) });
+    };
+    match used {
+        ntm_core::wire::WireUse::NotTaken => false,
+        ntm_core::wire::WireUse::Started(at) => { write(game, Some(at)); true }
+        ntm_core::wire::WireUse::Finished(_) => { write(game, None); true }
+    }
 }
 
 /// A player used `stack` on the block at `pos`: the fluid identifier on a
 /// duct sets its fluid (`custom_data` `ntm_fluid`). True when taken.
 pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3], face: [i32; 3]) -> bool {
     if crate::game::ntm_items::use_on_block(game, stack, pos, face) { return true; }
+    if &*stack.item == ntm_core::wire::WIRE_ITEM { return use_wire(game, stack, pos); }
     if matches!(&*stack.item,"ntm:hand_drill"|"ntm:hand_drill_desh") { return use_block(game,pos,pos,face,false); }
     if &*stack.item == DETONATOR {
         return detonator(game, Some(pos));
@@ -305,9 +363,14 @@ pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos:
             _ => None,
         }
     });
+    // A multiblock's cell is the machine it belongs to (the drain's volume is three cells long).
+    let identifier = &*stack.item == ntm_core::server::native_server::IDENTIFIER;
+    // `MachineDrain.onBlockActivated` types only when the player is not sneaking (the server decides: a duct is typed either way).
+    let sneaking = identifier && actor_sneaking(game);
+    let core = if identifier { game.machine_cell_core(pos) } else { pos };
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
-    server.native_use_item(game.dim.id(), pos, &stack.item, fluid.as_deref())
+    server.native_use_item_as(game.dim.id(), core, &stack.item, fluid.as_deref(), sneaking)
 }
 
 /// The radiation server's reading for a player (`radBuf`, milliRAD/s).
@@ -2214,8 +2277,9 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     let s = s.as_ref().filter(|s| s.count > 0 && &*s.item != "minecraft:air")?;
     let mut t = Stack::new(&s.item, s.count);
     t.damage = s.damage;
-    // The items whose custom data a machine reads: rods and pellets, the fluid identifier (its type), the broken item (its product), and the keys and locks (their pins).
-    if ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() || ntm_core::radioisotopes::pellet(&s.item).is_some() || ntm_core::rbmk::persist::rod_of(&s.item).is_some()
+    // The items whose custom data a machine reads: rods and pellets, the fluid identifier (its type), the broken item (its product),
+    // the keys and locks (their pins) and the battery packs (their charge).
+    if ntm_core::storage::slot_item(&s.item) != ntm_core::energy_network::SlotItem::Other || ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() || ntm_core::radioisotopes::pellet(&s.item).is_some() || ntm_core::rbmk::persist::rod_of(&s.item).is_some()
         || &*s.item == ntm_core::server::native_server::IDENTIFIER || &*s.item == ntm_core::broken::ID
         || ntm_core::keyforge::is_pin_item(&s.item) {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);

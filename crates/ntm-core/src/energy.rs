@@ -83,6 +83,30 @@ impl Topology {
     /// A port may sit on a multiblock's edge instead of its core. It keeps
     /// its owner's identity and outward faces; it isn't a six-face cable.
     pub fn build_at(cables: &BTreeSet<Pos>, machines: &BTreeMap<Pos, Vec<Port>>, positions: &BTreeMap<(Pos, usize), Pos>) -> Self {
+        Self::build_linked(cables, machines, positions, &BTreeMap::new())
+    }
+
+    /// As [`Topology::build_at`], with wire links: `links` holds, for a machine, the machines
+    /// its first port is wired to (the pylons and connectors, `TileEntityPylonBase.connected`).
+    /// A link joins two first ports at any distance, and only when each lists the other (`checkConnection`).
+    pub fn build_linked(
+        cables: &BTreeSet<Pos>,
+        machines: &BTreeMap<Pos, Vec<Port>>,
+        positions: &BTreeMap<(Pos, usize), Pos>,
+        links: &BTreeMap<Pos, Vec<Pos>>,
+    ) -> Self {
+        Self::build_conducting(cables, machines, positions, links, &BTreeSet::new())
+    }
+
+    /// As [`Topology::build_linked`], with `conductors`: machines whose ports are one node
+    /// (`IEnergyConductorMK2`, the battery socket and the REDD), so what reaches one port reaches them all.
+    pub fn build_conducting(
+        cables: &BTreeSet<Pos>,
+        machines: &BTreeMap<Pos, Vec<Port>>,
+        positions: &BTreeMap<(Pos, usize), Pos>,
+        links: &BTreeMap<Pos, Vec<Pos>>,
+        conductors: &BTreeSet<Pos>,
+    ) -> Self {
         let mut ports_at: BTreeMap<Pos, Vec<(Pos,usize)>> = BTreeMap::new();
         for (&core,ports) in machines {
             for i in 0..ports.len() { ports_at.entry(positions.get(&(core,i)).copied().unwrap_or(core)).or_default().push((core,i)); }
@@ -95,6 +119,18 @@ impl Topology {
                 Node::Port(p, i) => (positions.get(&(p,i)).copied().unwrap_or(p), machines[&p][i].clone()),
             };
             let mut out = Vec::new();
+            if let Node::Port(p, _) = n
+                && conductors.contains(&p)
+            {
+                out.extend((0..machines[&p].len()).map(|j| Node::Port(p, j)));
+            }
+            if let Node::Port(p, 0) = n {
+                for q in links.get(&p).into_iter().flatten() {
+                    if machines.get(q).is_some_and(|ports| !ports.is_empty()) {
+                        out.push(Node::Port(*q, 0));
+                    }
+                }
+            }
             for d in faces {
                 let q = add(p, d);
                 if cables.contains(&q) {
@@ -368,5 +404,42 @@ mod tests {
         distribute(&mut [&mut generation, &mut a, &mut b, &mut c]);
         assert_eq!(a.power + b.power + c.power, 10);
         assert_eq!(generation.power, 0);
+    }
+
+    #[test]
+    fn a_wire_link_joins_two_first_ports_at_any_distance_and_only_when_listed() {
+        let a = [0, 70, 0];
+        let b = [90, 70, 40];
+        let machines: BTreeMap<Pos, Vec<Port>> = [(a, vec![vec![]]), (b, vec![vec![]])].into_iter().collect();
+        let none = BTreeMap::new();
+        assert!(Topology::build_linked(&BTreeSet::new(), &machines, &BTreeMap::new(), &none).networks.is_empty());
+        let links: BTreeMap<Pos, Vec<Pos>> = [(a, vec![b]), (b, vec![a])].into_iter().collect();
+        let t = Topology::build_linked(&BTreeSet::new(), &machines, &BTreeMap::new(), &links);
+        assert_eq!(t.networks, vec![vec![a, b]]);
+        // A link to a machine that is not there, or with no port, joins nothing.
+        let ghost: BTreeMap<Pos, Vec<Pos>> = [(a, vec![[5, 5, 5]])].into_iter().collect();
+        assert!(Topology::build_linked(&BTreeSet::new(), &machines, &BTreeMap::new(), &ghost).networks.is_empty());
+    }
+
+    /// A wire passes energy on: a battery on a cable on one pylon reaches another across the gap.
+    #[test]
+    fn a_link_carries_the_net_across_and_a_pylon_conducts_to_its_cables() {
+        let (p1, p2) = ([10, 70, 0], [60, 70, 0]);
+        let (bat, load) = ([8, 70, 0], [62, 70, 0]);
+        let cables: BTreeSet<Pos> = [[9, 70, 0], [61, 70, 0]].into_iter().collect();
+        let horiz = vec![[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]];
+        let machines: BTreeMap<Pos, Vec<Port>> = [
+            (p1, vec![horiz.clone()]),
+            (p2, vec![horiz]),
+            (bat, vec![vec![[1, 0, 0]]]),
+            (load, vec![vec![[-1, 0, 0]]]),
+        ]
+        .into_iter()
+        .collect();
+        let links: BTreeMap<Pos, Vec<Pos>> = [(p1, vec![p2]), (p2, vec![p1])].into_iter().collect();
+        let t = Topology::build_linked(&cables, &machines, &BTreeMap::new(), &links);
+        assert_eq!(t.networks, vec![vec![bat, p1, p2, load]]);
+        let without = Topology::build_linked(&cables, &machines, &BTreeMap::new(), &BTreeMap::new());
+        assert!(without.networks.iter().all(|n| !(n.contains(&bat) && n.contains(&load))));
     }
 }

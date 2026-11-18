@@ -2725,6 +2725,84 @@
 ],
 "synced": []
 },
+"ntm:machine_battery_redd": {
+"inventory": [
+8,
+99
+],
+"slots": [
+{
+"accept": [
+"ntm:battery_creative",
+"ntm:battery_pack__battery_lead",
+"ntm:battery_pack__battery_lithium",
+"ntm:battery_pack__battery_quantum",
+"ntm:battery_pack__battery_redstone",
+"ntm:battery_pack__battery_schrabidium",
+"ntm:battery_pack__battery_sodium",
+"ntm:battery_pack__capacitor_bismuth",
+"ntm:battery_pack__capacitor_copper",
+"ntm:battery_pack__capacitor_gold",
+"ntm:battery_pack__capacitor_niobium",
+"ntm:battery_pack__capacitor_spark",
+"ntm:battery_pack__capacitor_tantalum"
+],
+"max": 1,
+"x": 26,
+"y": 53
+},
+{
+"accept": [
+"ntm:battery_creative",
+"ntm:battery_pack__battery_lead",
+"ntm:battery_pack__battery_lithium",
+"ntm:battery_pack__battery_quantum",
+"ntm:battery_pack__battery_redstone",
+"ntm:battery_pack__battery_schrabidium",
+"ntm:battery_pack__battery_sodium",
+"ntm:battery_pack__capacitor_bismuth",
+"ntm:battery_pack__capacitor_copper",
+"ntm:battery_pack__capacitor_gold",
+"ntm:battery_pack__capacitor_niobium",
+"ntm:battery_pack__capacitor_spark",
+"ntm:battery_pack__capacitor_tantalum"
+],
+"max": 1,
+"x": 80,
+"y": 53
+}
+],
+"synced": []
+},
+"ntm:machine_battery_socket": {
+"inventory": [
+8,
+99
+],
+"slots": [
+{
+"accept": [
+"ntm:battery_creative",
+"ntm:battery_pack__battery_lead",
+"ntm:battery_pack__battery_lithium",
+"ntm:battery_pack__battery_quantum",
+"ntm:battery_pack__battery_redstone",
+"ntm:battery_pack__battery_schrabidium",
+"ntm:battery_pack__battery_sodium",
+"ntm:battery_pack__capacitor_bismuth",
+"ntm:battery_pack__capacitor_copper",
+"ntm:battery_pack__capacitor_gold",
+"ntm:battery_pack__capacitor_niobium",
+"ntm:battery_pack__capacitor_spark",
+"ntm:battery_pack__capacitor_tantalum"
+],
+"max": 1,
+"x": 35,
+"y": 35
+}
+],
+"synced": []
+},
 "ntm:machine_blast_furnace": {
 "inventory": [
 8,
@@ -3041,6 +3119,56 @@
 "synced": [
 4
 ]
+},
+"ntm:machine_compressor": {
+"inventory": [
+8,
+122
+],
+"slots": [
+{
+"x": 17,
+"y": 72
+},
+{
+"x": 152,
+"y": 72
+},
+{
+"x": 52,
+"y": 72
+},
+{
+"x": 70,
+"y": 72
+}
+],
+"synced": []
+},
+"ntm:machine_compressor_compact": {
+"inventory": [
+8,
+122
+],
+"slots": [
+{
+"x": 17,
+"y": 72
+},
+{
+"x": 152,
+"y": 72
+},
+{
+"x": 52,
+"y": 72
+},
+{
+"x": 70,
+"y": 72
+}
+],
+"synced": []
 },
 "ntm:machine_condenser": {
 "inventory": [
@@ -3490,6 +3618,14 @@
 ],
 "synced": []
 },
+"ntm:machine_deuterium_extractor": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:machine_diesel": {
 "inventory": [
 8,
@@ -3515,6 +3651,14 @@
 "y": 71
 }
 ],
+"synced": []
+},
+"ntm:machine_drain": {
+"inventory": [
+8,
+84
+],
+"slots": [],
 "synced": []
 },
 "ntm:machine_electric_furnace_off": {
@@ -4464,6 +4608,16 @@
 "synced": [
 0,
 1
+]
+},
+"ntm:machine_intake": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": [
+0
 ]
 },
 "ntm:machine_keyforge": {
@@ -5696,6 +5850,22 @@
 0,
 1
 ]
+},
+"ntm:machine_tower_large": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:machine_tower_small": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
 },
 "ntm:machine_turbinegas": {
 "inventory": [
@@ -6936,6 +7106,62 @@
 "synced": [
 0
 ]
+},
+"ntm:red_pylon": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_large": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_medium_steel": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_medium_steel_transformer": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_medium_wood": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_medium_wood_transformer": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:red_pylon_steel": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
 },
 "ntm:solar_mirror": {
 "inventory": [

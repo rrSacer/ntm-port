@@ -27054,7 +27054,7 @@
       },
       "category": "machine",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/deuterium_extractor_side.png",
-      "behavior_gap": "Inert source identity only. No processing, inventory, item use, locking/key pairing, opening, redstone, linked multiblock, moving collision, model animation, hazards or technical state is implemented. Source casing/icon projected on one static block/item.",
+      "behavior_gap": "Onda 2 grupo C: TileEntityDeuteriumExtractor (10 000 HE, 500 HE/t, 1 000 mB water -> 100 mB heavywater a 50:1 quando water >= 100). Sem ILookOverlay no port nativo.",
       "source_has_tile": true,
       "source_ancestry": [
         "MachineDeuteriumExtractor",
@@ -27063,7 +27063,7 @@
       "template": "minecraft:beehive",
       "textures": {
         "side": "blocks/deuterium_extractor_side",
-        "top": "blocks/deuterium_extractor_side",
+        "top": "blocks/deuterium_extractor_top_water",
         "front": "blocks/deuterium_extractor_side"
       },
       "opaque_machine_textures": true,

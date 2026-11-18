@@ -9,9 +9,16 @@
 //! each paying its HE at once and wanting the catalytic converter where the
 //! NTM does (never worn).
 //!
-//! Not here: the pressure the hydrotreater's hydrogen (1) and the vacuum
-//! distiller's oil (2) need (nothing in the port compresses a fluid yet),
-//! the containers' slots.
+//! Pressure: the hydrotreater's hydrogen tank is at 1 PU and the vacuum
+//! distiller's oil tank at 2 PU, as in the NTM (`withPressure(1)` and
+//! `withPressure(2)`), so a compressor's output reaches them. They also keep
+//! taking the same fluids at 0 PU. That is a divergence from the NTM, which
+//! takes them only at their pressure: it exists only because the user's
+//! protected script `tools/test-game/bedrock.py` (`petroleo_c`) feeds the
+//! two machines from plain pressure-0 barrels. A strict version (pressure
+//! only) depends on a future decision of the user.
+//!
+//! Not here: the containers' slots.
 
 use crate::{
     energy::{EnergyNode, Role},
@@ -105,6 +112,18 @@ impl Shape {
         }
     }
 
+    /// The pressure the NTM gives an input tank (`withPressure`): the
+    /// hydrotreater's hydrogen, 1 PU (all its recipes: `HydrotreatingRecipes`),
+    /// and the vacuum distiller's oil, 2 PU. Set in place: a save from before
+    /// pressure has these tanks at 0 and must not lose their content.
+    fn set_input_pressure(self, inputs: &mut [Tank]) {
+        match self {
+            Shape::Hydrotreater => inputs[1].pressure = 1,
+            Shape::Vacuum => inputs[0].pressure = 2,
+            Shape::Cracker | Shape::Reformer => {}
+        }
+    }
+
     fn title(self) -> &'static str {
         match self {
             Shape::Cracker => "Craqueador catalítico",
@@ -139,11 +158,13 @@ pub struct Processor {
 impl Processor {
     pub fn new(shape: Shape) -> Self {
         let s = shape.spec();
+        let mut inputs: Vec<Tank> = s.inputs.iter().map(|&c| Tank::new(c)).collect();
+        shape.set_input_pressure(&mut inputs);
         Self {
             shape,
             slots: vec![None; s.slots],
             power: 0,
-            inputs: s.inputs.iter().map(|&c| Tank::new(c)).collect(),
+            inputs,
             outputs: s.outputs.iter().map(|&c| Tank::new(c)).collect(),
             ticks: 0,
             on: false,
@@ -157,6 +178,7 @@ impl Processor {
     /// The tanks typed by the recipe (`setupTanks`); without one, the
     /// outputs lose their types.
     fn setup(&mut self) {
+        self.shape.set_input_pressure(&mut self.inputs);
         match self.recipe() {
             Some(r) => {
                 for (t, f) in self.inputs.iter_mut().zip(&r.fin).skip(1) {
@@ -233,17 +255,28 @@ impl EnergyNode for Processor {
 }
 
 /// The first input takes a fluid with a recipe (the first while empty);
-/// the second its recipe's; the outputs give.
+/// the second its recipe's; the outputs give. An input at a pressure takes
+/// its fluid at that pressure (the NTM) and at 0 (see the module doc).
+impl Processor {
+    /// Whether the input tank `t` takes a fluid arriving at `pressure`.
+    fn takes_at(t: &Tank, pressure: u8) -> bool {
+        pressure == t.pressure || pressure == 0
+    }
+}
+
 impl FluidNode for Processor {
     fn fluid_offer(&self, f: &str) -> u64 {
         self.outputs.iter().filter(|t| t.fluid == f).map(|t| u64::from(t.mb)).sum()
     }
     fn fluid_demand(&self, f: &str) -> u64 {
+        self.fluid_demand_at(f, 0)
+    }
+    fn fluid_demand_at(&self, f: &str, pressure: u8) -> u64 {
         let first = &self.inputs[0];
         if (first.fluid == f || first.mb == 0) && self.shape.recipe(f).is_some() {
-            return u64::from(first.free());
+            return if Self::takes_at(first, pressure) { u64::from(first.free()) } else { 0 };
         }
-        self.inputs.iter().skip(1).filter(|t| t.fluid == f).map(|t| u64::from(t.free())).sum()
+        self.inputs.iter().skip(1).filter(|t| t.fluid == f && Self::takes_at(t, pressure)).map(|t| u64::from(t.free())).sum()
     }
     fn fluid_types(&self) -> Vec<String> {
         self.inputs.iter().chain(&self.outputs).filter(|t| !t.fluid.is_empty()).map(|t| t.fluid.clone()).collect()
@@ -252,12 +285,20 @@ impl FluidNode for Processor {
         self.inputs[0].mb == 0
     }
     fn fluid_give(&mut self, f: &str, mb: u64) {
+        self.fluid_give_at(f, 0, mb);
+    }
+    fn fluid_give_at(&mut self, f: &str, pressure: u8, mb: u64) {
         let mb = mb.min(u64::from(u32::MAX)) as u32;
         if let Some(t) = self.inputs.iter_mut().skip(1).find(|t| t.fluid == f) {
-            t.fill(f, mb);
+            if Self::takes_at(t, pressure) {
+                t.fill(f, mb);
+            }
             return;
         }
         let first = &mut self.inputs[0];
+        if !Self::takes_at(first, pressure) {
+            return;
+        }
         if first.mb == 0 {
             first.set_type(f);
         }
@@ -386,5 +427,63 @@ mod tests {
         v.tick();
         let out: Vec<_> = v.outputs.iter().map(|t| (t.fluid.as_str(), t.mb)).collect();
         assert_eq!(out, vec![("heavyoil_vacuum", 40), ("reformate", 25), ("lightoil_vacuum", 20), ("sourgas", 15)]);
+    }
+
+    /// The hydrotreater's hydrogen is at 1 PU and the vacuum distiller's oil at
+    /// 2 PU (`withPressure(1)`, `withPressure(2)`); each takes its fluid at
+    /// that pressure and, for the protected `petroleo_c` script that feeds
+    /// them from plain barrels, at 0 PU. Never at another pressure.
+    #[test]
+    fn the_pressures_of_the_oil_chain_take_theirs_and_zero() {
+        let h = Processor::new(Shape::Hydrotreater);
+        assert_eq!((h.inputs[0].pressure, h.inputs[1].pressure), (0, 1));
+        let mut h = h;
+        h.fluid_give("oil", 1_000);
+        h.tick();
+        assert_eq!(h.inputs[1].fluid, "hydrogen");
+        for (p, hydrogen, oil) in [(0, true, true), (1, true, false), (2, false, false), (3, false, false), (5, false, false)] {
+            assert_eq!(h.fluid_demand_at("hydrogen", p) > 0, hydrogen, "hydrogen @{p}");
+            assert_eq!(h.fluid_demand_at("oil", p) > 0, oil, "oil @{p}");
+        }
+        assert_eq!(h.fluid_demand("hydrogen"), h.fluid_demand_at("hydrogen", 0));
+        h.fluid_give_at("hydrogen", 2, 500);
+        h.fluid_give_at("oil", 1, 500);
+        assert_eq!((h.inputs[1].mb, h.inputs[0].mb), (0, 1_000));
+        h.fluid_give_at("hydrogen", 1, 500);
+        h.fluid_give_at("hydrogen", 0, 300);
+        assert_eq!(h.inputs[1].mb, 800);
+
+        let mut v = Processor::new(Shape::Vacuum);
+        assert_eq!(v.inputs[0].pressure, 2);
+        for (p, ok) in [(0, true), (1, false), (2, true), (3, false), (5, false)] {
+            assert_eq!(v.fluid_demand_at("oil", p) > 0, ok, "oil @{p}");
+        }
+        v.fluid_give_at("oil", 1, 700);
+        assert_eq!(v.inputs[0].mb, 0);
+        v.fluid_give_at("oil", 2, 700);
+        v.fluid_give_at("oil", 0, 300);
+        assert_eq!(v.inputs[0].mb, 1_000);
+        // Its outputs leave at 0 PU only.
+        v.power = 1_000_000;
+        v.tick();
+        assert!(v.fluid_offer_at("heavyoil_vacuum", 0) > 0);
+        assert_eq!(v.fluid_offer_at("heavyoil_vacuum", 2), 0);
+    }
+
+    /// A processor saved before pressure has its tanks at 0: the first tick
+    /// puts the NTM's pressure on them without emptying them.
+    #[test]
+    fn an_old_save_gets_the_pressure_without_losing_its_content() {
+        let mut v = Processor::new(Shape::Vacuum);
+        v.fluid_give("oil", 5_000);
+        let text = serde_json::to_string(&v).unwrap().replace(r#","pressure":2"#, "");
+        assert!(!text.contains("pressure"));
+        let mut back: Processor = serde_json::from_str(&text).unwrap();
+        assert_eq!((back.inputs[0].pressure, back.inputs[0].mb), (0, 5_000));
+        back.tick();
+        assert_eq!((back.inputs[0].pressure, back.inputs[0].fluid.as_str()), (2, "oil"));
+        assert!(back.inputs[0].mb <= 5_000 && back.inputs[0].mb > 0);
+        let again = serde_json::to_string(&back).unwrap();
+        assert!(again.contains(r#""pressure":2"#));
     }
 }

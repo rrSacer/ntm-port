@@ -1,0 +1,9 @@
+{
+  "obj": "ntm:models/obj/pylon_medium.obj",
+  "texture": "ntm:textures/models/network/pylon_medium_steel.png",
+  "rotation": 180,
+  "radius": 8.5,
+  "hide": [
+    "Transformer"
+  ]
+}

@@ -22157,12 +22157,1162 @@
       }
     },
     "ntm:machine_battery_socket": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "TileEntityBatterySocket, ContainerBatterySocket, GUIBatterySocket 176x181, MachineBatterySocket {1,0,1,0,1,0} offset 0 (8 ports, makeExtra), RenderBatterySocket (Socket part; case 2: 90, translate -0.5 0 0.5); the pack's own model, the supports and the discharge arcs are not drawn",
+      "machine": {
+        "slots": [
+          {
+            "x": 35,
+            "y": 35,
+            "max": 1,
+            "accept": [
+              "ntm:battery_creative",
+              "ntm:battery_pack__battery_lead",
+              "ntm:battery_pack__battery_lithium",
+              "ntm:battery_pack__battery_quantum",
+              "ntm:battery_pack__battery_redstone",
+              "ntm:battery_pack__battery_schrabidium",
+              "ntm:battery_pack__battery_sodium",
+              "ntm:battery_pack__capacitor_bismuth",
+              "ntm:battery_pack__capacitor_copper",
+              "ntm:battery_pack__capacitor_gold",
+              "ntm:battery_pack__capacitor_niobium",
+              "ntm:battery_pack__capacitor_spark",
+              "ntm:battery_pack__capacitor_tantalum"
+            ]
+          }
+        ],
+        "inventory": [
+          8,
+          99
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            1,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_battery_socket.png",
+        "texture_from": "textures/gui/storage/gui_battery_socket.png",
+        "size": [
+          176,
+          181
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          87
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              62,
+              17,
+              34,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 2,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 2,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 3,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 3,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 3,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 4,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              52
+            ]
+          },
+          {
+            "value": 4,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              68
+            ]
+          },
+          {
+            "value": 4,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              84
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              62,
+              17,
+              34,
+              52
+            ],
+            "lines": [
+              "{5.6:si} / {7.8:si} HE",
+              "{9.10:sis} HE/s"
+            ]
+          },
+          {
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Charge priority (click to change)",
+              "Low: storage that must not starve machines",
+              "Normal: small grids",
+              "High: emergency buffers",
+              "This network does not apply priorities yet"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              106,
+              16,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode without redstone"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              106,
+              52,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode with redstone"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              125,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Charge priority (click to change)",
+              "Low: storage that must not starve machines",
+              "Normal: small grids",
+              "High: emergency buffers",
+              "This network does not apply priorities yet"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/battery_socket.obj",
+        "obj_from": "models/machines/battery.obj",
+        "texture": "ntm:textures/models/machines/battery_socket.png",
+        "texture_from": "textures/models/machines/battery_socket.png",
+        "rotation": 90,
+        "translate": [
+          -0.5,
+          0,
+          0.5
+        ],
+        "radius": 3.0,
+        "hide": [
+          "Supports",
+          "Capacitor",
+          "Battery"
+        ]
+      }
     },
     "ntm:machine_battery_redd": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "TileEntityBatteryREDD, ContainerBatteryREDD, GUIBatteryREDD 176x181, MachineBatteryREDD {9,0,2,2,4,4} offset 2 (6 ports, makeExtra), RenderBatteryREDD (Base, Wheel and Lights; case 2: 270; the wheel turns at the integer degrees per tick of getSpeed, data 7); the plasma, the zaps, the sparkle and the hum are not drawn",
+      "machine": {
+        "slots": [
+          {
+            "x": 26,
+            "y": 53,
+            "max": 1,
+            "accept": [
+              "ntm:battery_creative",
+              "ntm:battery_pack__battery_lead",
+              "ntm:battery_pack__battery_lithium",
+              "ntm:battery_pack__battery_quantum",
+              "ntm:battery_pack__battery_redstone",
+              "ntm:battery_pack__battery_schrabidium",
+              "ntm:battery_pack__battery_sodium",
+              "ntm:battery_pack__capacitor_bismuth",
+              "ntm:battery_pack__capacitor_copper",
+              "ntm:battery_pack__capacitor_gold",
+              "ntm:battery_pack__capacitor_niobium",
+              "ntm:battery_pack__capacitor_spark",
+              "ntm:battery_pack__capacitor_tantalum"
+            ]
+          },
+          {
+            "x": 80,
+            "y": 53,
+            "max": 1,
+            "accept": [
+              "ntm:battery_creative",
+              "ntm:battery_pack__battery_lead",
+              "ntm:battery_pack__battery_lithium",
+              "ntm:battery_pack__battery_quantum",
+              "ntm:battery_pack__battery_redstone",
+              "ntm:battery_pack__battery_schrabidium",
+              "ntm:battery_pack__battery_sodium",
+              "ntm:battery_pack__capacitor_bismuth",
+              "ntm:battery_pack__capacitor_copper",
+              "ntm:battery_pack__capacitor_gold",
+              "ntm:battery_pack__capacitor_niobium",
+              "ntm:battery_pack__capacitor_spark",
+              "ntm:battery_pack__capacitor_tantalum"
+            ]
+          }
+        ],
+        "inventory": [
+          8,
+          99
+        ],
+        "data": 8,
+        "multiblock": {
+          "min": [
+            -4,
+            0,
+            -2
+          ],
+          "max": [
+            4,
+            9,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_battery_redd.png",
+        "texture_from": "textures/gui/storage/gui_battery_redd.png",
+        "size": [
+          176,
+          181
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          87
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 0,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 0,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 0,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 1,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 1,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              70
+            ]
+          },
+          {
+            "value": 1,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              88
+            ]
+          },
+          {
+            "value": 1,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              106
+            ]
+          },
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              52
+            ]
+          },
+          {
+            "value": 2,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              68
+            ]
+          },
+          {
+            "value": 2,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "uv": [
+              194,
+              84
+            ]
+          }
+        ],
+        "texts": [
+          {
+            "at": [
+              121,
+              22
+            ],
+            "text": "{3.4:si} HE",
+            "color": "#00ff00",
+            "align": "right"
+          },
+          {
+            "at": [
+              121,
+              32
+            ],
+            "text": "{5.6:sis} HE/s",
+            "color": "#ffffff",
+            "align": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              20,
+              18,
+              102,
+              26
+            ],
+            "lines": [
+              "{3.4:int} HE",
+              "{5.6:int} HE/s"
+            ]
+          },
+          {
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Charge priority (click to change)",
+              "Low: storage that must not starve machines",
+              "Normal: small grids",
+              "High: emergency buffers",
+              "This network does not apply priorities yet"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              133,
+              16,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode without redstone"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              133,
+              52,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode with redstone"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              152,
+              35,
+              16,
+              16
+            ],
+            "lines": [
+              "Charge priority (click to change)",
+              "Low: storage that must not starve machines",
+              "Normal: small grids",
+              "High: emergency buffers",
+              "This network does not apply priorities yet"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/battery_redd.obj",
+        "obj_from": "models/machines/fensu2.obj",
+        "texture": "ntm:textures/models/machines/battery_redd.png",
+        "texture_from": "textures/models/machines/fensu2.png",
+        "rotation": 270,
+        "radius": 11.0,
+        "hide": [
+          "Plasma"
+        ],
+        "bones": {
+          "Wheel": {
+            "pivot": [
+              0,
+              5.5,
+              0
+            ]
+          },
+          "Lights": {
+            "pivot": [
+              0,
+              5.5,
+              0
+            ]
+          }
+        },
+        "loop_animation": [
+          {
+            "name": "animation.battery_redd.wheel1",
+            "length": 18.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel2",
+            "length": 9.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel3",
+            "length": 6.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel4",
+            "length": 4.5,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel5",
+            "length": 3.6,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel6",
+            "length": 3.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel7",
+            "length": 2.5714,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel8",
+            "length": 2.25,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel9",
+            "length": 2.0,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel10",
+            "length": 1.8,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel11",
+            "length": 1.6364,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel12",
+            "length": 1.5,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel13",
+            "length": 1.3846,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel14",
+            "length": 1.2857,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.battery_redd.wheel15",
+            "length": 1.2,
+            "bones": {
+              "Wheel": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              },
+              "Lights": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          }
+        ],
+        "play": [
+          {
+            "animation": "animation.battery_redd.wheel1",
+            "values": [
+              {
+                "value": 7,
+                "min": 1,
+                "max": 1
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel2",
+            "values": [
+              {
+                "value": 7,
+                "min": 2,
+                "max": 2
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel3",
+            "values": [
+              {
+                "value": 7,
+                "min": 3,
+                "max": 3
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel4",
+            "values": [
+              {
+                "value": 7,
+                "min": 4,
+                "max": 4
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel5",
+            "values": [
+              {
+                "value": 7,
+                "min": 5,
+                "max": 5
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel6",
+            "values": [
+              {
+                "value": 7,
+                "min": 6,
+                "max": 6
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel7",
+            "values": [
+              {
+                "value": 7,
+                "min": 7,
+                "max": 7
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel8",
+            "values": [
+              {
+                "value": 7,
+                "min": 8,
+                "max": 8
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel9",
+            "values": [
+              {
+                "value": 7,
+                "min": 9,
+                "max": 9
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel10",
+            "values": [
+              {
+                "value": 7,
+                "min": 10,
+                "max": 10
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel11",
+            "values": [
+              {
+                "value": 7,
+                "min": 11,
+                "max": 11
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel12",
+            "values": [
+              {
+                "value": 7,
+                "min": 12,
+                "max": 12
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel13",
+            "values": [
+              {
+                "value": 7,
+                "min": 13,
+                "max": 13
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel14",
+            "values": [
+              {
+                "value": 7,
+                "min": 14,
+                "max": 14
+              }
+            ]
+          },
+          {
+            "animation": "animation.battery_redd.wheel15",
+            "values": [
+              {
+                "value": 7,
+                "min": 15,
+                "max": 15
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:red_connector": {
       "auto": false,
@@ -22173,32 +23323,240 @@
       "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
     },
     "ntm:red_pylon": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonRedWire {4,0,0,0,0,0} offset 0, RenderPylon (Pylon)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            4,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon.obj",
+        "obj_from": "models/network/pylon.obj",
+        "texture": "ntm:textures/models/network/pylon.png",
+        "texture_from": "textures/models/network/pylon.png",
+        "rotation": 0,
+        "radius": 6.5,
+        "hide": [
+          "Pylon_steel"
+        ]
+      }
     },
     "ntm:red_pylon_steel": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonRedWire {4,0,0,0,0,0} offset 0, RenderPylon (Pylon_steel)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            4,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon.obj",
+        "obj_from": "models/network/pylon.obj",
+        "texture": "ntm:textures/models/network/pylon_steel.png",
+        "texture_from": "textures/models/network/pylon_steel.png",
+        "rotation": 0,
+        "radius": 6.5,
+        "hide": [
+          "Pylon"
+        ]
+      }
     },
     "ntm:red_pylon_medium_wood": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonMedium {6,0,0,0,0,0} offset 0, RenderPylonMedium (turn 180 against the engine facing)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            6,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_medium.obj",
+        "obj_from": "models/network/pylon_medium.obj",
+        "texture": "ntm:textures/models/network/pylon_medium.png",
+        "texture_from": "textures/models/network/pylon_medium.png",
+        "rotation": 180,
+        "radius": 8.5,
+        "hide": [
+          "Transformer"
+        ]
+      }
     },
     "ntm:red_pylon_medium_wood_transformer": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonMedium {6,0,0,0,0,0} offset 0, RenderPylonMedium (turn 180 against the engine facing)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            6,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_medium.obj",
+        "obj_from": "models/network/pylon_medium.obj",
+        "texture": "ntm:textures/models/network/pylon_medium.png",
+        "texture_from": "textures/models/network/pylon_medium.png",
+        "rotation": 180,
+        "radius": 8.5
+      }
     },
     "ntm:red_pylon_medium_steel": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonMedium {6,0,0,0,0,0} offset 0, RenderPylonMedium (turn 180 against the engine facing)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            6,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_medium.obj",
+        "obj_from": "models/network/pylon_medium.obj",
+        "texture": "ntm:textures/models/network/pylon_medium_steel.png",
+        "texture_from": "textures/models/network/pylon_medium_steel.png",
+        "rotation": 180,
+        "radius": 8.5,
+        "hide": [
+          "Transformer"
+        ]
+      }
     },
     "ntm:red_pylon_medium_steel_transformer": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonMedium {6,0,0,0,0,0} offset 0, RenderPylonMedium (turn 180 against the engine facing)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            6,
+            0
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_medium.obj",
+        "obj_from": "models/network/pylon_medium.obj",
+        "texture": "ntm:textures/models/network/pylon_medium_steel.png",
+        "texture_from": "textures/models/network/pylon_medium_steel.png",
+        "rotation": 180,
+        "radius": 8.5
+      }
     },
     "ntm:red_pylon_large": {
-      "auto": false,
-      "source": "Energy batch 6; source storage/network contract and cube fallback; native logic and faithful geometry deferred."
+      "source": "PylonLarge {13,0,1,1,1,1} offset 0, RenderPylonLarge (45 degree steps are not available: one fixed turn)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            13,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/pylon_large.obj",
+        "obj_from": "models/network/pylon_large.obj",
+        "texture": "ntm:textures/models/network/pylon_large.png",
+        "texture_from": "textures/models/network/pylon_large.png",
+        "rotation": 90,
+        "radius": 15.0
+      }
     },
     "ntm:cable_switch": {
       "auto": false,
@@ -37069,195 +38427,195 @@
       }
     },
     "ntm:machine_silex": {
-     "auto": false,
-     "source": "MachineSILEX dimensions {2,0,1,1,1,1}, offset 1, with the two makeExtra combo ports (inventory and fluid) at (±1,1,0); ContainerSILEX and GUISILEX 176x222 (processing/gui_silex.png): input (80,12), identifier (8,24), containers (26,24) and (44,24), output (116,90) and the queue (134|152, 72|90|108); the fill bar (26,72) 16x52, the progress (45,82) 69x43, the tank (8,42) 52x7; the laser's name and its wave are not drawn (the mode is in the fill's tip); button 0 at (10,92) is the void button (GUISILEX.mouseClicked, handleButtonPacket). The block's model stays the casing's (the renderer model is not ported)",
-     "machine": {
-      "slots": [
-       {
-        "x": 80,
-        "y": 12
-       },
-       {
-        "x": 8,
-        "y": 24
-       },
-       {
-        "x": 26,
-        "y": 24
-       },
-       {
-        "x": 44,
-        "y": 24,
-        "output": true
-       },
-       {
-        "x": 116,
-        "y": 90,
-        "output": true
-       },
-       {
-        "x": 134,
-        "y": 72,
-        "output": true
-       },
-       {
-        "x": 152,
-        "y": 72,
-        "output": true
-       },
-       {
-        "x": 134,
-        "y": 90,
-        "output": true
-       },
-       {
-        "x": 152,
-        "y": 90,
-        "output": true
-       },
-       {
-        "x": 134,
-        "y": 108,
-        "output": true
-       },
-       {
-        "x": 152,
-        "y": 108,
-        "output": true
-       }
-      ],
-      "inventory": [
-       8,
-       140
-      ],
-      "data": 8,
-      "multiblock": {
-       "min": [
-        -1,
-        0,
-        -1
-       ],
-       "max": [
-        1,
-        2,
-        1
-       ],
-       "offset": 1,
-       "dummy": "ntm:dummy_machine",
-       "inventory_ports": [
-        [
-         1,
-         1,
-         0
+      "auto": false,
+      "source": "MachineSILEX dimensions {2,0,1,1,1,1}, offset 1, with the two makeExtra combo ports (inventory and fluid) at (±1,1,0); ContainerSILEX and GUISILEX 176x222 (processing/gui_silex.png): input (80,12), identifier (8,24), containers (26,24) and (44,24), output (116,90) and the queue (134|152, 72|90|108); the fill bar (26,72) 16x52, the progress (45,82) 69x43, the tank (8,42) 52x7; the laser's name and its wave are not drawn (the mode is in the fill's tip); button 0 at (10,92) is the void button (GUISILEX.mouseClicked, handleButtonPacket). The block's model stays the casing's (the renderer model is not ported)",
+      "machine": {
+        "slots": [
+          {
+            "x": 80,
+            "y": 12
+          },
+          {
+            "x": 8,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 24
+          },
+          {
+            "x": 44,
+            "y": 24,
+            "output": true
+          },
+          {
+            "x": 116,
+            "y": 90,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 72,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 72,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 90,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 90,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 108,
+            "output": true
+          }
         ],
-        [
-         -1,
-         1,
-         0
-        ]
-       ]
-      }
-     },
-     "screen": {
-      "texture": "ntm:textures/gui/processing/gui_silex.png",
-      "texture_from": "textures/gui/processing/gui_silex.png",
-      "size": [
-       176,
-       222
-      ],
-      "title": [
-       34,
-       8,
-       "center"
-      ],
-      "inventory_label": [
-       8,
-       128
-      ],
-      "bars": [
-       {
-        "value": 0,
-        "max": 1,
-        "rect": [
-         26,
-         72,
-         16,
-         52
+        "inventory": [
+          8,
+          140
         ],
-        "uv": [
-         176,
-         57
-        ],
-        "dir": "up"
-       },
-       {
-        "value": 2,
-        "max": 3,
-        "rect": [
-         45,
-         82,
-         69,
-         43
-        ],
-        "uv": [
-         176,
-         0
-        ],
-        "dir": "right"
-       },
-       {
-        "value": 5,
-        "max": 6,
-        "rect": [
-         8,
-         42,
-         52,
-         7
-        ],
-        "color": 7,
-        "dir": "right"
-       }
-      ],
-      "tooltips": [
-       {
-        "rect": [
-         26,
-         72,
-         16,
-         52
-        ],
-        "lines": [
-         "{0} / {1} mB",
-         "Laser: {4}"
-        ]
-       },
-       {
-        "rect": [
-         8,
-         42,
-         52,
-         7
-        ],
-        "lines": [
-         "{5} / {6} mB"
-        ]
-       }
-      ],
-      "buttons": [
-        {
-          "id": 0,
-          "rect": [
-            10,
-            92,
-            12,
-            12
+        "data": 8,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
           ],
-          "lines": [
-            "Void contents"
+          "max": [
+            1,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              1,
+              1,
+              0
+            ],
+            [
+              -1,
+              1,
+              0
+            ]
           ]
         }
-      ]
-     }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_silex.png",
+        "texture_from": "textures/gui/processing/gui_silex.png",
+        "size": [
+          176,
+          222
+        ],
+        "title": [
+          34,
+          8,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          128
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              26,
+              72,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              57
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              45,
+              82,
+              69,
+              43
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              8,
+              42,
+              52,
+              7
+            ],
+            "color": 7,
+            "dir": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              26,
+              72,
+              16,
+              52
+            ],
+            "lines": [
+              "{0} / {1} mB",
+              "Laser: {4}"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              42,
+              52,
+              7
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              10,
+              92,
+              12,
+              12
+            ],
+            "lines": [
+              "Void contents"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_rotary_furnace": {
       "auto": false,
@@ -37472,21 +38830,21 @@
       }
     },
     "ntm:machine_industrial_generator": {
-     "source": "MachineIGenerator: one cell (getDimensions all 0, the old {2,0,3,2,1,1} commented out), no screen (its openGui commented out); RenderIGenerator draws igen.obj's Body and Rotor at a sixth of their size (glScaled 1/6), 0.5 back along z in the model's units, turned 180 for meta 2 as the extractor reads it; the Rotor stands still (updateEntity is empty)",
-     "model": {
-      "obj": "ntm:models/obj/igen.obj",
-      "obj_from": "models/machines/igen.obj",
-      "texture": "ntm:textures/models/machines/igen.png",
-      "texture_from": "textures/models/machines/igen.png",
-      "rotation": 180,
-      "scale": 0.16666667,
-      "translate": [
-       0,
-       0,
-       -0.5
-      ],
-      "radius": 1.5
-     }
+      "source": "MachineIGenerator: one cell (getDimensions all 0, the old {2,0,3,2,1,1} commented out), no screen (its openGui commented out); RenderIGenerator draws igen.obj's Body and Rotor at a sixth of their size (glScaled 1/6), 0.5 back along z in the model's units, turned 180 for meta 2 as the extractor reads it; the Rotor stands still (updateEntity is empty)",
+      "model": {
+        "obj": "ntm:models/obj/igen.obj",
+        "obj_from": "models/machines/igen.obj",
+        "texture": "ntm:textures/models/machines/igen.png",
+        "texture_from": "textures/models/machines/igen.png",
+        "rotation": 180,
+        "scale": 0.16666667,
+        "translate": [
+          0,
+          0,
+          -0.5
+        ],
+        "radius": 1.5
+      }
     },
     "ntm:machine_cyclotron": {
       "auto": false,
@@ -38404,8 +39762,36 @@
       }
     },
     "ntm:machine_drain": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineDrain {0,0,2,0,0,0} offset 0, TileEntityMachineDrain (2 000 mB, typed by a fluid identifier), RenderDrain (case 2: 90); the splash and the gas column of the client are not drawn",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            0,
+            2
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/drain.obj",
+        "obj_from": "models/machines/drain.obj",
+        "texture": "ntm:textures/models/machines/drain.png",
+        "texture_from": "textures/models/machines/drain.png",
+        "rotation": 90,
+        "radius": 3.5
+      }
     },
     "ntm:fan": {
       "source": "Inert fan: HBM's RenderFan turns about x and z by metadata, which the extractor does not read; no model until it does (gap)",
@@ -39568,53 +40954,929 @@
       }
     },
     "ntm:machine_lpw2": {
-     "source": "MachineLPW2 dimensions {6,0,3,3,9,10}, offset 3: x -9..10, y 0..6, z -3..3, as a main box of 16 across (the engine's most) and an extra box for x 7..10 (no proxies: createNewTileEntity gives nothing below meta 12), no screen (no onBlockActivated); RenderLPW2 draws lpw2.obj turned as the extractor reads it (90 for meta 2), still: its sway, bell, piston, rotor, turbine, cover, suspension and server motions are not drawn, nor its Screen (drawn with lpw2_term_error.png, a second texture, scrolling)",
-     "machine": {
-      "slots": [],
-      "inventory": [
-       8,
-       84
-      ],
-      "data": 0,
-      "multiblock": {"min": [-9, 0, -3], "max": [6, 6, 3], "offset": 3, "dummy": "ntm:dummy_machine", "extra": [{"min": [7, 0, -3], "max": [10, 6, 3]}]}
-     },
-     "model": {
-      "obj": "ntm:models/obj/lpw2.obj",
-      "obj_from": "models/machines/lpw2.obj",
-      "texture": "ntm:textures/models/machines/lpw2.png",
-      "texture_from": "textures/models/machines/lpw2.png",
-      "rotation": 90,
-      "hide": ["Screen"],
-       "radius": 11.5
-     }
+      "source": "MachineLPW2 dimensions {6,0,3,3,9,10}, offset 3: x -9..10, y 0..6, z -3..3, as a main box of 16 across (the engine's most) and an extra box for x 7..10 (no proxies: createNewTileEntity gives nothing below meta 12), no screen (no onBlockActivated); RenderLPW2 draws lpw2.obj turned as the extractor reads it (90 for meta 2), still: its sway, bell, piston, rotor, turbine, cover, suspension and server motions are not drawn, nor its Screen (drawn with lpw2_term_error.png, a second texture, scrolling)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -9,
+            0,
+            -3
+          ],
+          "max": [
+            6,
+            6,
+            3
+          ],
+          "offset": 3,
+          "dummy": "ntm:dummy_machine",
+          "extra": [
+            {
+              "min": [
+                7,
+                0,
+                -3
+              ],
+              "max": [
+                10,
+                6,
+                3
+              ]
+            }
+          ]
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/lpw2.obj",
+        "obj_from": "models/machines/lpw2.obj",
+        "texture": "ntm:textures/models/machines/lpw2.png",
+        "texture_from": "textures/models/machines/lpw2.png",
+        "rotation": 90,
+        "hide": [
+          "Screen"
+        ],
+        "radius": 11.5
+      }
     },
     "ntm:machine_ammo_press": {
       "auto": false,
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_tower_small": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineTowerSmall {18,0,2,2,2,2} offset 2, RenderSmallTower (no rotation); no GUI in HBM (ILookOverlay only)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            18,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/tower_small.obj",
+        "obj_from": "models/machines/tower_small.obj",
+        "texture": "ntm:textures/models/machines/tower_small.png",
+        "texture_from": "textures/models/machines/tower_small.png",
+        "rotation": 0,
+        "radius": 20.0
+      }
     },
     "ntm:machine_tower_large": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineTowerLarge {12,0,4,4,4,4} offset 4, RenderLargeTower (no rotation); no GUI in HBM (ILookOverlay only)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -4,
+            0,
+            -4
+          ],
+          "max": [
+            4,
+            12,
+            4
+          ],
+          "offset": 4,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/tower_large.obj",
+        "obj_from": "models/machines/tower_large.obj",
+        "texture": "ntm:textures/models/machines/tower_large.png",
+        "texture_from": "textures/models/machines/tower_large.png",
+        "rotation": 0,
+        "radius": 13.5
+      }
     },
     "ntm:machine_deuterium_extractor": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineDeuteriumExtractor (single block 1x1x1, no GUI in HBM, ILookOverlay only)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0
+      },
+      "auto": false
     },
     "ntm:machine_intake": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineIntake {0,0,1,0,1,0} offset 0, RenderIntake (case 2: 90, translate -0.5 0 0.5; Fan -45 deg/tick while active: value 0); no GUI in HBM",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 1,
+        "synced": [
+          0
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            0,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/intake.obj",
+        "obj_from": "models/machines/intake.obj",
+        "texture": "ntm:textures/models/machines/intake.png",
+        "texture_from": "textures/models/machines/intake.png",
+        "rotation": 90,
+        "translate": [
+          -0.5,
+          0,
+          0.5
+        ],
+        "radius": 2.5,
+        "bones": {
+          "Fan": {
+            "pivot": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.intake.fan",
+          "length": 0.4,
+          "bones": {
+            "Fan": {
+              "turn": [
+                0,
+                -360,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.intake.fan",
+            "values": [
+              {
+                "value": 0,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_compressor": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerCompressor, GUICompressor (176x204), MachineCompressor {2,0,1,2,1,1} + {3,-3,1,1,1,1} + {8,-4,0,0,1,1} offset 2, RenderCompressor (case 2: 90; Pump -3..0 blocks, Fan 15 deg/tick on X at y 1.5)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 72
+          },
+          {
+            "x": 152,
+            "y": 72
+          },
+          {
+            "x": 52,
+            "y": 72
+          },
+          {
+            "x": 70,
+            "y": 72
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -2
+          ],
+          "max": [
+            1,
+            2,
+            1
+          ],
+          "offset": 2,
+          "extra": [
+            {
+              "min": [
+                -1,
+                3,
+                -1
+              ],
+              "max": [
+                1,
+                3,
+                1
+              ]
+            },
+            {
+              "min": [
+                -1,
+                4,
+                0
+              ],
+              "max": [
+                1,
+                8,
+                0
+              ]
+            }
+          ],
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_compressor.png",
+        "texture_from": "textures/gui/processing/gui_compressor.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "title_color": "#C7C1A3",
+        "inventory_label": [
+          8,
+          110
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "color": 7,
+            "dir": "up"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              42,
+              26,
+              55,
+              17
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 11,
+            "min": 1,
+            "rect": [
+              156,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 10,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              43,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              54,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              65,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              76,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 4,
+            "max": 4,
+            "rect": [
+              87,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              43,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "0 PU -> 1 PU"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              54,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "1 PU -> 2 PU"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              65,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "2 PU -> 3 PU"
+            ]
+          },
+          {
+            "id": 3,
+            "rect": [
+              76,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "3 PU -> 4 PU"
+            ]
+          },
+          {
+            "id": 4,
+            "rect": [
+              87,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "4 PU -> 5 PU"
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          },
+          {
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/compressor.obj",
+        "obj_from": "models/machines/compressor.obj",
+        "texture": "ntm:textures/models/machines/compressor.png",
+        "texture_from": "textures/models/machines/compressor.png",
+        "rotation": 90,
+        "radius": 9.5,
+        "bones": {
+          "Fan": {
+            "pivot": [
+              0,
+              1.5,
+              0
+            ]
+          }
+        },
+        "loop_animation": [
+          {
+            "name": "animation.compressor.fan",
+            "length": 1.2,
+            "bones": {
+              "Fan": {
+                "turn": [
+                  360,
+                  0,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.compressor.pump",
+            "length": 1.5,
+            "bones": {
+              "Pump": {
+                "position": {
+                  "0.0": [
+                    0,
+                    -48,
+                    0
+                  ],
+                  "1.0": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "1.5": [
+                    0,
+                    -48,
+                    0
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "play": [
+          {
+            "animation": "animation.compressor.fan",
+            "values": [
+              {
+                "value": 0,
+                "min": 1
+              }
+            ]
+          },
+          {
+            "animation": "animation.compressor.pump",
+            "values": [
+              {
+                "value": 0,
+                "min": 1
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_compressor_compact": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerCompressor, GUICompressor (176x204), MachineCompressorCompact {2,0,1,1,3,3} offset 1, RenderCompressorCompact (case 2: 90)",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 72
+          },
+          {
+            "x": 152,
+            "y": 72
+          },
+          {
+            "x": 52,
+            "y": 72
+          },
+          {
+            "x": 70,
+            "y": 72
+          }
+        ],
+        "inventory": [
+          8,
+          122
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            -3,
+            0,
+            -1
+          ],
+          "max": [
+            3,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_compressor.png",
+        "texture_from": "textures/gui/processing/gui_compressor.png",
+        "size": [
+          176,
+          204
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "title_color": "#C7C1A3",
+        "inventory_label": [
+          8,
+          110
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "color": 4,
+            "dir": "up"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "color": 7,
+            "dir": "up"
+          },
+          {
+            "value": 8,
+            "max": 9,
+            "rect": [
+              42,
+              26,
+              55,
+              17
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 11,
+            "min": 1,
+            "rect": [
+              156,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              52
+            ]
+          },
+          {
+            "value": 10,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              43,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              54,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              65,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              76,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          },
+          {
+            "value": 10,
+            "min": 4,
+            "max": 4,
+            "rect": [
+              87,
+              46,
+              8,
+              124
+            ],
+            "uv": [
+              193,
+              18
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              43,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "0 PU -> 1 PU"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              54,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "1 PU -> 2 PU"
+            ]
+          },
+          {
+            "id": 2,
+            "rect": [
+              65,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "2 PU -> 3 PU"
+            ]
+          },
+          {
+            "id": 3,
+            "rect": [
+              76,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "3 PU -> 4 PU"
+            ]
+          },
+          {
+            "id": 4,
+            "rect": [
+              87,
+              46,
+              8,
+              14
+            ],
+            "lines": [
+              "4 PU -> 5 PU"
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              17,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{2} / {3} mB"
+            ]
+          },
+          {
+            "rect": [
+              107,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/compressor_compact.obj",
+        "obj_from": "models/machines/compressor_compact.obj",
+        "texture": "ntm:textures/models/machines/compressor_compact.png",
+        "texture_from": "textures/models/machines/compressor_compact.png",
+        "rotation": 90,
+        "radius": 4.5
+      }
     },
     "ntm:machine_autocrafter": {
       "auto": false,

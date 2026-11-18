@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/pylon_large.obj",
+  "texture": "ntm:textures/models/network/pylon_large.png",
+  "rotation": 90,
+  "radius": 15.0
+}

@@ -41,7 +41,7 @@ Entraram somente `hand_drill` e `hand_drill_desh`, com nomes e texturas originai
 
 ## Limites nominais
 
-- A rede de fluidos NTM atual só representa identidade e volume; **a pressão de 1 PU exigida pelo vent Java não é validada**. AIR e as capacidades/consumos reais são preservados, sem inventar um segundo sistema de pressão.
+- A rede de fluidos tem pressão (`docs/fluidos.md`): o tanque da ventilação está a 1 PU como no Java (`TileEntityPileVent.java:28`) e aceita ar a 1 PU e também a 0 PU (desvio documentado em `docs/onda-2-grupo-c.md`); qualquer outra pressão é recusada. AIR e as capacidades/consumos reais são preservados.
 - O tipo `EntityBulletBaseMK4` e a configuração `pile_debris` ainda não existem no port. Não são emitidos os **15 projéteis de destroços**, seus rastros de fogo, trajetória de 200 ticks ou explosões secundárias de força 5. A falha térmica, desmontagem, ejeção e explosão principal são executadas.
 - Os modelos TESR, fan/haste/pistão animados, connected textures, overlay de inspeção original, partículas customizadas `tower` e sons customizados de encaixe/ferrolho não foram portados nesta frente. Permanecem os cubos R1 e o estado nativo inspecionável; a interação com o núcleo fornece temperatura no chat.
 - Integração OpenComputers/Redstone-over-Radio e os usos das brocas em outros blocos `IToolable`, inclusive remanescente de crafting, estão fora deste runtime.

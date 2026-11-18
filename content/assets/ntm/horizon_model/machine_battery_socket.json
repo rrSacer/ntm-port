@@ -1,0 +1,16 @@
+{
+  "obj": "ntm:models/obj/battery_socket.obj",
+  "texture": "ntm:textures/models/machines/battery_socket.png",
+  "rotation": 90,
+  "translate": [
+    -0.5,
+    0,
+    0.5
+  ],
+  "radius": 3.0,
+  "hide": [
+    "Supports",
+    "Capacitor",
+    "Battery"
+  ]
+}

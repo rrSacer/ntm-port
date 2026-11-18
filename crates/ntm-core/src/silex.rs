@@ -400,7 +400,7 @@ impl Slotted for Silex {
         self.current = current.filter(|c| !c.is_empty() && self.fill > 0);
         self.recipe_index = index.max(0);
         let name = crate::fluid::types().iter().find(|f| i32::from(f.id) == fluid).map_or(String::new(), |f| f.string_id.clone());
-        self.tank = Tank { fluid: if fluid == 0 { String::new() } else { name }, mb: 0, cap: TANK };
+        self.tank = Tank { fluid: if fluid == 0 { String::new() } else { name }, mb: 0, cap: TANK, pressure: 0 };
         self.tank.mb = mb.clamp(0, TANK as i32) as u32;
     }
     /// Button 0: void the fill.
@@ -516,7 +516,7 @@ mod tests {
 
     #[test]
     fn only_peroxide_loads_an_item_and_only_onto_its_own_fill() {
-        let mut s = Silex { tank: Tank { fluid: "water".into(), mb: 16_000, cap: TANK }, load_delay: 20, ..Default::default() };
+        let mut s = Silex { tank: Tank { fluid: "water".into(), mb: 16_000, cap: TANK, pressure: 0 }, load_delay: 20, ..Default::default() };
         put(&mut s, INPUT, "ntm:ingot_uranium", 1);
         s.step();
         assert_eq!(s.fill, 0);
@@ -544,21 +544,21 @@ mod tests {
 
     #[test]
     fn a_converted_fluid_loads_50_a_tick_as_its_own_icon() {
-        let mut s = Silex { tank: Tank { fluid: "uf6".into(), mb: 120, cap: TANK }, ..Default::default() };
+        let mut s = Silex { tank: Tank { fluid: "uf6".into(), mb: 120, cap: TANK, pressure: 0 }, ..Default::default() };
         s.step();
         assert_eq!((s.fill, s.tank.mb, s.current.as_deref()), (50, 70, Some("fluid:uf6")));
         s.step();
         s.step();
         assert_eq!((s.fill, s.tank.mb), (120, 0));
         // A fluid with a recipe of its own does the same; one without, nothing.
-        let mut s = Silex { tank: Tank { fluid: "redmud".into(), mb: 1_000, cap: TANK }, ..Default::default() };
+        let mut s = Silex { tank: Tank { fluid: "redmud".into(), mb: 1_000, cap: TANK, pressure: 0 }, ..Default::default() };
         s.step();
         assert_eq!((s.fill, s.current.as_deref()), (50, Some("fluid:redmud")));
-        let mut s = Silex { tank: Tank { fluid: "water".into(), mb: 1_000, cap: TANK }, ..Default::default() };
+        let mut s = Silex { tank: Tank { fluid: "water".into(), mb: 1_000, cap: TANK, pressure: 0 }, ..Default::default() };
         s.step();
         assert_eq!((s.fill, s.tank.mb, s.current), (0, 1_000, None));
         // A fill of another item keeps it: the fluid waits.
-        let mut s = Silex { tank: Tank { fluid: "uf6".into(), mb: 1_000, cap: TANK }, fill: 900, current: Some("ntm:ingot_uranium".into()), ..Default::default() };
+        let mut s = Silex { tank: Tank { fluid: "uf6".into(), mb: 1_000, cap: TANK, pressure: 0 }, fill: 900, current: Some("ntm:ingot_uranium".into()), ..Default::default() };
         s.step();
         assert_eq!((s.fill, s.tank.mb, s.current.as_deref()), (900, 1_000, Some("ntm:ingot_uranium")));
     }
@@ -682,7 +682,7 @@ mod tests {
 
     #[test]
     fn the_state_outside_the_slots_round_trips() {
-        let s = Silex { fill: 1_234, current: Some("fluid:uf6".into()), progress: 42, recipe_index: 274, load_delay: 7, tank: Tank { fluid: "uf6".into(), mb: 555, cap: TANK }, ..Default::default() };
+        let s = Silex { fill: 1_234, current: Some("fluid:uf6".into()), progress: 42, recipe_index: 274, load_delay: 7, tank: Tank { fluid: "uf6".into(), mb: 555, cap: TANK, pressure: 0 }, ..Default::default() };
         // Loaded over a chamber that was running: `writeToNBT` keeps neither the progress nor the load delay, they
         // start again at 0.
         let mut back = Silex { progress: 55, load_delay: 13, ..Default::default() };
@@ -728,7 +728,7 @@ mod tests {
     /// `handleButtonPacket` from the void button: the fill and what it is of go.
     #[test]
     fn the_void_button_empties_the_fill() {
-        let mut s = Silex { fill: 900, current: Some("ntm:ingot_uranium".into()), progress: 30, tank: Tank { fluid: PEROXIDE.into(), mb: 500, cap: TANK }, ..Default::default() };
+        let mut s = Silex { fill: 900, current: Some("ntm:ingot_uranium".into()), progress: 30, tank: Tank { fluid: PEROXIDE.into(), mb: 500, cap: TANK, pressure: 0 }, ..Default::default() };
         s.button(1);
         assert_eq!(s.fill, 900, "another button");
         s.button(0);
