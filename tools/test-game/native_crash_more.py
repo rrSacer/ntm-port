@@ -46,7 +46,7 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 # `kv_committed`: the action saves by pausing the game, a save that does not wait; the process dies after its storage.
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
-BROKEN = ('break', 'replace', 'furnace-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'radiolysis-break', 'exposure-break', 'annihilator-break', 'cyclotron-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The transfers between two chunks (Loader→Core), with or without the core's ejection: their control is a hopper across
 # the border into a chest (and a dropper), counted equal to the control at each cut, as a break is.
@@ -701,13 +701,29 @@ def break_act(g):
     g.command('gamemode survival @s')
     prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
     core = tuple(prep['core'])
-    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 4))
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + (6 if SCENARIO == 'annihilator-break' and not VANILLA else 4)))
     g.command('give @s minecraft:diamond_pickaxe 1')
-    g.ctl('select minecraft:diamond_pickaxe')
+    for _ in range(25):
+        try:
+            g.ctl('select minecraft:diamond_pickaxe')
+            break
+        except RuntimeError:
+            time.sleep(.2)
+    else:
+        g.ctl('select minecraft:diamond_pickaxe')
     if SCENARIO in MB_BREAK and not VANILLA:
         # A multiblock's core hides behind its cells: the player breaks the first cell he can see (any cell breaks it).
         seen = None
-        for dx, dy, dz in [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]:
+        offsets = [(0, 1, 0), (0, 0, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1), (-1, 1, 1), (1, 1, 1), (-1, 1, 0), (1, 1, 0), (0, 0, 0)]
+        if SCENARIO in ('keyforge-break', 'funnel-break'):
+            offsets = [(0, 0, 0)]
+        if SCENARIO == 'annihilator-break':
+            import native_annihilator as A
+            offsets = [(c[0] - core[0], c[1] - core[1], c[2] - core[2]) for c in A.body(g, core)]
+        elif SCENARIO in ('orbus-break', 'radiolysis-break', 'exposure-break', 'cyclotron-break'):
+            import native_orbus
+            offsets = [(c[0] - core[0], c[1] - core[1], c[2] - core[2]) for c in native_orbus.dummies(g, core)]
+        for dx, dy, dz in offsets:
             cell = (core[0] + dx, core[1] + dy, core[2] + dz)
             try:
                 g.ctl('break %d %d %d --timeout 30' % cell)
@@ -1213,7 +1229,7 @@ def frozen_state(g, core, keys=('burn_time', 'max_burn_time', 'progress', 'proce
     return out
 
 
-MB_BLOCK = {'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
+MB_BLOCK = {'keyforge': ('ntm:machine_keyforge', '"rng"'), 'funnel': ('ntm:machine_funnel', '"mode"'), 'radiolysis': ('ntm:machine_radiolysis', '"clock"'), 'exposure': ('ntm:machine_exposure_chamber', '"consumption"'), 'annihilator': ('ntm:machine_annihilator', '"monitor"'), 'cyclotron': ('ntm:machine_cyclotron', '"progress"'), 'orbus': ('ntm:machine_orbus', '"cap":512000'), 'iron': ('ntm:furnace_iron', '"Iron"'), 'steel': ('ntm:furnace_steel', '"Steel"'),
             'combination': ('ntm:furnace_combination', '"Combination"')}
 MB_AT = (140, 100, 8)
 
@@ -1227,6 +1243,25 @@ def mb_place(g, kind, fire=True):
     g.command('clear @s')
     item, marker = MB_BLOCK[kind]
     g.command(f'give @s {item} 1')
+    if kind in ('orbus', 'keyforge', 'funnel', 'radiolysis', 'exposure', 'cyclotron', 'annihilator'):
+        if kind == 'annihilator':
+            from native_recipes import core_of as recipe_core_of
+            g.ground(x - 5, y, z - 10, width=12, depth=18)
+            g.command(f'fill {x - 5} {y} {z - 10} {x + 6} {y + 12} {z + 7} minecraft:air')
+            g.command('clear @s')
+            g.command(f'give @s {item} 1')
+            g.command(f'tp @s {x + .5} {y} {z + 3.5} facing {x + .5} {y} {z}')
+            g.ctl(f'place {x} {y} {z} --item {item}')
+            time.sleep(1.5)
+            return recipe_core_of(g, 'ntm:machine_annihilator', x, y, z, reach=(6, 6)), None
+        if kind in ('exposure', 'cyclotron'):
+            g.ground(x - 3, y, z, width=16, depth=10)
+            g.command('clear @s')
+            g.command(f'give @s {item} 1')
+        g.command(f'tp @s {x + .5} {y} {z + 3.5}')
+        g.ctl(f'place {x} {y} {z} --item {item}')
+        time.sleep(1.5)
+        return find_core(g, (x, y, z), marker), None
     if kind == 'iron':
         g.ctl(f'place {x} {y} {z} --item {item}')
         time.sleep(1.5)
@@ -1245,6 +1280,33 @@ def mb_place(g, kind, fire=True):
 
 def mb_open(g, kind, core):
     """The screen, through a cell of the multiblock a player can click from the south; patient, the host may be loaded."""
+    if kind in ('orbus', 'radiolysis'):
+        import native_orbus
+        native_orbus.open_through(g, native_orbus.dummies(g, core))
+        return
+    if kind == 'exposure':
+        import native_exposure as E
+        E.open_chamber(g, core)
+        return
+    if kind == 'annihilator':
+        import native_annihilator as A
+        A.open_annihilator(g, core)
+        return
+    if kind == 'cyclotron':
+        import native_cyclotron as N
+        N.open_cyclotron(g, core)
+        return
+    if kind == 'keyforge':
+        import native_keyforge as K
+        K.X, K.Z = core[0], core[2]
+        K.open_table(g)
+        return
+    if kind == 'funnel':
+        import native_funnel as F
+        F.X, F.Z = core[0], core[2]
+        F.FUNNEL = core
+        F.open_funnel(g)
+        return
     first = [(0, 1, 0)] if kind == 'iron' else [(0, 0, 1)]
     rest = [(dx, dy, dz) for dy in (1, 0, 2) for dz in (0, 1, -1) for dx in (0, -1, 1) if (dx, dy, dz) not in first]
     g.close()
@@ -1357,7 +1419,7 @@ def state_verify(g, again=False):
 
 # `iron-break`, `steel-break`, `combination-break`: the multiblock furnace holding items, broken, against the chest control
 # holding the same ones; counted item by item, once in the world.
-MB_BREAK = {'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
+MB_BREAK = {'keyforge-break': ('keyforge', [('ntm:key', 1, 0), ('ntm:padlock', 1, 1)]), 'funnel-break': ('funnel', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 2)]), 'radiolysis-break': ('radiolysis', [('minecraft:dirt', 6, 0), ('minecraft:stick', 3, 12)]), 'exposure-break': ('exposure', [('ntm:particle_higgs', 2, 0), ('minecraft:dirt', 6, 5)]), 'annihilator-break': ('annihilator', [('minecraft:dirt', 6, 8), ('ntm:fluid_identifier_multi', 1, 1)]), 'cyclotron-break': ('cyclotron', [('ntm:part_lithium', 2, 0), ('minecraft:dirt', 6, 3)]), 'orbus-break': ('orbus', [('ntm:fluid_tank_empty', 6, 4)]), 'iron-break': ('iron', [('minecraft:raw_iron', 6, 0), ('ntm:upgrade_speed_1', 1, 4)]),
             'steel-break': ('steel', [('minecraft:raw_iron', 6, 0), ('minecraft:raw_copper', 3, 1)]),
             'combination-break': ('combination', [('minecraft:coal', 8, 0), ('minecraft:bucket', 2, 2)])}
 
@@ -1408,15 +1470,610 @@ def mb_break_verify(g, again=False):
     g.command('tp @s %d %d %d' % (core[0] + 3, core[1], core[2] + 6))
     led = quiet(g, 12)
     state = g.ctl('block %d %d %d' % core).get('state', '')
-    standing = state.startswith(('ntm:furnace_', 'minecraft:chest'))
+    standing = state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'ntm:machine_annihilator', 'ntm:machine_cyclotron', 'minecraft:chest'))
     inside = mb_items(g, core, ids) if standing else 0
     ents = sum(entities(g, i) for i in ids)
     inv = sum(inventory(g, i) for i in ids)
     detail = {'block': state, 'inside': inside, 'entities': ents, 'inventory': inv, 'total': inside + ents + inv,
               'expected': sum(c for _, c, _ in loads), 'ledger': led, 'machine': machine_present(g, core)}
     counted(g, 'mb_items_exactly_once', detail, again)
-    if state.startswith('ntm:furnace_'):
+    if state.startswith(('ntm:furnace_', 'ntm:machine_orbus', 'ntm:machine_keyforge', 'ntm:machine_funnel', 'ntm:machine_radiolysis', 'ntm:machine_exposure_chamber', 'ntm:machine_annihilator', 'ntm:machine_cyclotron')):
         g.check('a_standing_furnace_is_a_live_machine', machine_present(g, core), detail)
+
+
+# `orbus-state`: five buckets in the orbus, in output mode with nothing to take them; the act lays a duct to a barrel at a
+# bottom port and one at a top port, so the water leaves while the world is saved and killed. Whatever the cut, the three
+# tanks hold the five thousand between them, and the orbus keeps its mode.
+def orbus_parts(g):
+    import native_orbus as O
+    O.X, O.Z = 140, 8
+    return O
+
+
+def orbus_prepare(g):
+    O = orbus_parts(g)
+    g.ctl('wait-ready 120')
+    core, facing = O.build(g)
+    cells = O.dummies(g, core)
+    O.pour(g, cells, 5)
+    O.set_output(g, cells)
+    held = O.tank(g, core)
+    g.check('five_buckets_in_output_mode', held[1] == 5000 and held[3] == 'Output', held)
+    g.evidence.update(core=list(core), facing=facing)
+    g.ctl('save')
+
+
+def orbus_act(g):
+    O = orbus_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core, facing = tuple(prep['core']), prep['facing']
+    O.lay_out(g, core, facing)
+    sprint(g, 40)
+    g.evidence['after_act'] = O.tank(g, core)
+    save_expecting_death(g)
+
+
+def orbus_verify(g, again=False):
+    O = orbus_parts(g)
+    from native_combustion import world_cell
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core, facing = tuple(prep['core']), prep['facing']
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 8))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        tanks = [O.tank(g, core)] + [O.tank(g, world_cell(core, facing, c)) for c in ((-2, -1, 1), (-2, 5, 0))]
+    finally:
+        g.command('tick unfreeze')
+    held = [t for t in tanks if t]
+    counted(g, 'five_thousand_between_the_tanks', {'total': sum(t[1] for t in held), 'expected': 5000, 'tanks': tanks}, again)
+    g.check('the_orbus_is_alive', machine_present(g, core), tanks)
+    g.check('the_orbus_kept_its_mode', tanks[0] is not None and tanks[0][3] == 'Output', tanks)
+
+
+# `keyforge-state`: a key with pins, a padlock that gets them and one that is rolled every tick, the world saved and killed at
+# each boundary: whatever the cut, the second holds the first's pins and the third three digits.
+def keyforge_parts(g):
+    import native_keyforge as K
+    K.X, K.Z = 140, 8
+    K.TABLE = (140, 100, 8)
+    return K
+
+
+def keyforge_prepare(g):
+    K = keyforge_parts(g)
+    g.ctl('wait-ready 120')
+    K.build(g)
+    K.open_table(g)
+    K.put(g, 'ntm:key', 0, '{pins:321}')
+    K.put(g, 'ntm:padlock', 1)
+    K.put(g, 'ntm:padlock_reinforced', 2)
+    g.close()
+    sprint(g, 30)
+    state = K.slots(g)
+    g.check('the_copy_is_made_before_the_base_save', state.get(1) == ('ntm:padlock', 321), state)
+    g.evidence['core'] = [140, 100, 8]
+    g.ctl('save')
+
+
+def keyforge_act(g):
+    K = keyforge_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 60)
+    g.evidence['after_act'] = K.slots(g)
+    save_expecting_death(g)
+
+
+def keyforge_verify(g, again=False):
+    K = keyforge_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s 140 100 12')
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        state = K.slots(g)
+    finally:
+        g.command('tick unfreeze')
+    counted(g, 'three_stacks_in_the_table', {'total': len(state), 'expected': 3, 'items': state}, again)
+    g.check('the_first_is_untouched', state.get(0) == ('ntm:key', 321), state)
+    g.check('the_second_holds_the_firsts_pins', state.get(1) == ('ntm:padlock', 321), state)
+    third = (state.get(2) or (None, None))[1]
+    g.check('the_third_holds_three_digits', third is not None and 100 <= third <= 999, state)
+    g.check('the_table_is_alive', machine_present(g, (140, 100, 8)), state)
+
+
+# `digamma-state`: a survival player dosed by the digamma flame, the world saved; dosed again and saved (or killed) at
+# each boundary: whatever the cut, the reopened player holds one of the two doses and the max health modifier of that
+# dose (both are in the player's file), and a death outside any save (`kill`) leaves the first, exactly.
+def digamma_parts(g):
+    import native_digamma as D
+    D.X, D.Z = 140, 8
+    D.FLAME = (140, D.Y, 8)
+    return D
+
+
+def digamma_dose(g, D, ticks):
+    D.stand(g, D.FLAME)
+    g.ticks(ticks)
+    D.away(g)
+    g.ticks(2)
+    d, _, raw = D.diagnostic(g)
+    return d, D.modifier(g), raw
+
+
+def digamma_prepare(g):
+    D = digamma_parts(g)
+    g.ctl('wait-ready 120')
+    D.build(g)
+    g.command(f'setblock {D.FLAME[0]} {D.FLAME[1]} {D.FLAME[2]} ntm:fire_digamma')
+    g.command('gamemode survival @s')
+    d, m, raw = digamma_dose(g, D, 20)
+    g.check('the_first_dose_is_there_before_the_base_save', d is not None and d > 0 and D.consistent(d, m), [d, m, raw])
+    g.evidence['digamma'] = {'digamma': d, 'modifier': m}
+    g.ctl('save')
+
+
+def digamma_act(g):
+    D = digamma_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode survival @s')
+    g.ticks(220)
+    d, m, raw = digamma_dose(g, D, 20)
+    g.evidence['digamma'] = {'digamma': d, 'modifier': m}
+    g.check('the_second_dose_is_more', d is not None and D.consistent(d, m), [d, m, raw])
+    save_expecting_death(g)
+
+
+def digamma_verify(g, again=False):
+    D = digamma_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    D.away(g)
+    first = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['digamma']
+    second = json.loads((g.folder / 'native-crash-more-act.json').read_text())['digamma']
+    d, _, raw = D.diagnostic(g)
+    m = D.modifier(g)
+    held = 'first' if d == first['digamma'] else 'second' if d == second['digamma'] else None
+    g.evidence['held' + ('_again' if again else '')] = held
+    counted(g, 'one_player', {'total': 1, 'expected': 1, 'digamma': d}, again)
+    g.check('a_whole_dose', held is not None and second['digamma'] > first['digamma'], [first, second, d, raw])
+    g.check('its_own_modifier', m is not None and abs(m - (first if held == 'first' else second)['modifier']) < 1e-9, [held, m, first, second])
+    if NO_SAVE:
+        g.check('a_death_outside_a_save_leaves_the_last_save', held == 'first', [held, d])
+
+
+# `silex-state`: a FEL on its visible laser and a SILEX of 16 tanks of peroxide and two uranium ingots, the world saved; it runs
+# on and is saved (or killed) at each boundary: whatever the cut, the SILEX holds a whole state: the peroxide is the tank's, the
+# full tanks' and the ingots' loaded (900 each), the fill and the nuggets are those ingots' (100 a nugget), and a death outside
+# any save (`kill`) leaves the base save's, exactly.
+def silex_parts(g):
+    import native_fel as F
+    F.X, F.Z = 140, 40
+    return F
+
+
+def silex_snapshot(F, g, core):
+    s = F.silex(g, core)
+    items = F.slot_items(s)
+    return {'fill': s.get('fill'), 'current': s.get('current'), 'progress': s.get('progress'), 'recipe_index': s.get('recipe_index'),
+            'tank': (s.get('tank') or {}).get('mb'), 'slots': {str(k): list(v) for k, v in items.items()}}
+
+
+def silex_crystal(F, g, core, on):
+    """The FEL's crystal in (the visible one) or out: without it the SILEX stands still, its state the same tick after tick."""
+    F.open_fel(g, core)
+    if on:
+        g.put('ntm:laser_crystal_bismuth', 1, 1)
+    else:
+        g.ctl('click-slot 301 shift')
+    g.close()
+    F.away(g, core)
+    g.ticks(4)
+
+
+def silex_prepare(g):
+    F = silex_parts(g)
+    g.ctl('wait-ready 120')
+    core, d, s_core = F.build(g)
+    F.open_fel(g, core)
+    g.put('ntm:battery_creative', 1, 0)
+    F.press_on(g)
+    g.close()
+    silex_crystal(F, g, core, True)
+    F.open_silex(g, s_core)
+    g.put('ntm:fluid_tank_full__peroxide', 16, 2)
+    g.put('ntm:ingot_uranium', 2, 0)
+    g.close()
+    F.away(g, core)
+    g.ticks(150)
+    silex_crystal(F, g, core, False)
+    snap = silex_snapshot(F, g, s_core)
+    g.check('the_silex_ran_and_stands_still_for_the_base_save', snap['current'] == 'ntm:ingot_uranium' and 0 < snap['fill'] < 1800 and snap['progress'] == 0, snap)
+    g.evidence.update(silex_core=list(s_core), fel_core=list(core), snapshot=snap)
+    g.ctl('save')
+
+
+def silex_act(g):
+    F = silex_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    base = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core, s_core = tuple(base['fel_core']), tuple(base['silex_core'])
+    silex_crystal(F, g, core, True)
+    g.ticks(120)
+    silex_crystal(F, g, core, False)
+    snap = silex_snapshot(F, g, s_core)
+    g.evidence['snapshot'] = snap
+    g.check('the_act_ran_on', snap['fill'] < base['snapshot']['fill'] and snap['progress'] == 0, [base['snapshot'], snap])
+    save_expecting_death(g)
+
+
+def silex_verify(g, again=False):
+    F = silex_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    base = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['snapshot']
+    act = json.loads((g.folder / 'native-crash-more-act.json').read_text()).get('snapshot')
+    core = tuple(json.loads((g.folder / 'native-crash-more-prepare.json').read_text())['silex_core'])
+    g.command(f'tp @s {core[0] + 4.5} 100 {core[2] + .5}')
+    quiet(g, 6)
+    snap = silex_snapshot(F, g, core)
+    g.evidence['reopened' + ('_again' if again else '')] = snap
+    counted(g, 'one_silex', {'total': 1, 'expected': 1, 'snapshot': snap}, again)
+    slots = {int(k): tuple(v) for k, v in snap['slots'].items()}
+    ingots = slots.get(0, ('', 0))[1]
+    full, empty = slots.get(2, ('', 0))[1], slots.get(3, ('', 0))[1]
+    nuggets = sum(n for i, (item, n) in slots.items() if i >= 4 and item.startswith('ntm:nugget_'))
+    loaded = 2 - ingots
+    held = 'base' if snap == base else 'act' if snap == act else None
+    g.evidence['held' + ('_again' if again else '')] = held
+    g.check('a_whole_saved_state', held is not None, [base, act, snap])
+    g.check('the_peroxide_is_whole', snap['tank'] + 1000 * full + 900 * loaded == 16_000 and full + empty == 16, [snap, loaded])
+    g.check('the_fill_and_the_nuggets_are_the_loaded_ingots', snap['fill'] + 100 * nuggets == 900 * loaded, [snap, nuggets, loaded])
+    if NO_SAVE:
+        g.check('a_death_outside_a_save_leaves_the_base_save', held == 'base', [held])
+
+
+# `funnel-state`: ninety gold ingots in two columns of a funnel in the 3x3-only mode, compressing one block per column per tick,
+# the world saved and killed at each boundary: whatever the cut, the ingots and the blocks (nine each) are the ninety and the
+# mode is kept.
+def funnel_parts(g):
+    import native_funnel as F
+    F.X, F.Z = 140, 8
+    F.FUNNEL = (140, 100, 8)
+    return F
+
+
+def funnel_total(items):
+    return sum(c for i, c in items.values() if i == 'minecraft:gold_ingot') + 9 * sum(c for i, c in items.values() if i == 'minecraft:gold_block')
+
+
+def funnel_prepare(g):
+    F = funnel_parts(g)
+    g.ctl('wait-ready 120')
+    F.build(g)
+    F.open_funnel(g)
+    F.press_mode(g)
+    g.put('minecraft:gold_ingot', 64, 0)
+    g.put('minecraft:gold_ingot', 26, 1)
+    g.close()
+    sprint(g, 2)
+    state = F.items(g)
+    g.check('part_of_it_is_compressed_before_the_base_save', funnel_total(state) == 90 and any(v[0] == 'minecraft:gold_block' for v in state.values()), state)
+    g.evidence['core'] = [140, 100, 8]
+    g.ctl('save')
+
+
+def funnel_act(g):
+    F = funnel_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 4)
+    g.evidence['after_act'] = F.items(g)
+    save_expecting_death(g)
+
+
+def funnel_verify(g, again=False):
+    F = funnel_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s 140 100 12')
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        state = F.items(g)
+        text = ' '.join(g.command('data get block 140 100 8 ntm').get('chat', [])).replace('\\"', '"')
+    finally:
+        g.command('tick unfreeze')
+    counted(g, 'ninety_ingots_in_ingots_and_blocks', {'total': funnel_total(state), 'expected': 90, 'items': state}, again)
+    g.check('the_ingots_and_blocks_are_the_ninety', funnel_total(state) == 90, state)
+    g.check('the_mode_is_3x3_only', '"mode":1' in text.replace(' ', ''), text[:300])
+    g.check('the_funnel_is_alive', machine_present(g, (140, 100, 8)), state)
+
+
+# `radiolysis-state`: four polonium pellets, a water identifier and a contaminated sword in the chamber, the world saved and killed at
+# each boundary while the identifier moves to its out slot and the sword is cleaned: whatever the cut, each item is exactly once
+# (the sword in the first or the second sterilization slot, the identifier in the first or the second fluid slot, the pellets four).
+def radiolysis_parts(g):
+    import native_radiolysis as R
+    R.X, R.Z = 135, 8
+    return R
+
+
+def radiolysis_prepare(g):
+    R = radiolysis_parts(g)
+    g.ctl('wait-ready 120')
+    core = R.build(g)
+    g.evidence['core'] = list(core)
+    R.fill_chamber(g, core)
+    g.ctl('save')
+
+
+def radiolysis_act(g):
+    R = radiolysis_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 30)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    g.evidence['after_act'] = R.items(g, tuple(prep['core']))
+    save_expecting_death(g)
+
+
+def radiolysis_verify(g, again=False):
+    R = radiolysis_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 6))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        s = R.items(g, core)
+    finally:
+        g.command('tick unfreeze')
+    ids = {}
+    for _, (i, n, _) in s.items():
+        ids[i] = ids.get(i, 0) + n
+    counted(g, 'six_items_exactly_once', {'total': sum(ids.values()), 'expected': 6, 'items': s}, again)
+    g.check('each_item_exactly_once', ids == {'ntm:pellet_rtg_polonium': 4, 'minecraft:iron_sword': 1, R.IDENTIFIER: 1}, s)
+    g.check('the_identifier_is_in_a_fluid_slot', (10 in s) != (11 in s) and R.IDENTIFIER in (s.get(10, ('',))[0], s.get(11, ('',))[0]), s)
+    g.check('the_sword_is_in_a_sterilization_slot', (12 in s) != (13 in s), s)
+    g.check('the_chamber_is_alive', machine_present(g, core), s)
+
+
+# `exposure-state`: two higgs capsules, ten uranium ingots and a creative battery in the exposure chamber, the world saved and killed at
+# each boundary while an ingot is in the making: whatever the cut, the capsules (in the slot or as the empty one that a loaded capsule
+# leaves) are two and the ingots (uranium or schraranium) ten, and a loaded particle is where its empty capsule is.
+def exposure_parts(g):
+    import native_exposure as E
+    E.X, E.Z = 140, 8
+    return E
+
+
+def exposure_prepare(g):
+    E = exposure_parts(g)
+    g.ctl('wait-ready 120')
+    core, facing = E.build(g)
+    g.evidence.update(core=list(core), facing=facing)
+    E.open_chamber(g, core)
+    E.put(g, 'ntm:particle_higgs', 0, 2)
+    E.put(g, 'ntm:ingot_uranium', 2, 10)
+    E.put(g, 'ntm:battery_creative', 4)
+    g.close()
+    sprint(g, 30)
+    g.ctl('save')
+
+
+def exposure_act(g):
+    E = exposure_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 60)
+    g.evidence['after_act'] = E.items(g, tuple(prep['core']))
+    save_expecting_death(g)
+
+
+def exposure_verify(g, again=False):
+    E = exposure_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 6))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        s, st = E.items(g, core), E.state(g, core)
+    finally:
+        g.command('tick unfreeze')
+    t = E.totals(s)
+    counted(g, 'twelve_items_exactly_once', {'total': sum(t.get(i, 0) for i in ('ntm:particle_higgs', 'ntm:particle_empty', 'ntm:ingot_uranium', 'ntm:ingot_schraranium')), 'expected': 12, 'items': s}, again)
+    g.check('two_capsules_in_the_slot_or_as_empty_ones', t.get('ntm:particle_higgs', 0) + t.get('ntm:particle_empty', 0) == 2, s)
+    g.check('ten_ingots_of_uranium_or_schraranium', t.get('ntm:ingot_uranium', 0) + t.get('ntm:ingot_schraranium', 0) == 10, s)
+    loaded = t.get('ntm:particle_empty', 0) == 1
+    g.check('a_loaded_particle_is_where_its_empty_capsule_is', (st.get('loaded') == 'ntm:particle_higgs') == loaded and (1 <= st.get('saved', 0) <= 8) == loaded, [s, {k: st.get(k) for k in ('loaded', 'saved', 'progress')}])
+    g.check('the_chamber_is_alive', machine_present(g, core), s)
+
+
+# `cyclotron-state`: two lithium particles and two lithium dusts in a cyclotron on a creative battery, with a speed and an effect
+# upgrade, its water coming over typed ducts from a store of barrels and its steam going to another store, the world saved and
+# killed at each boundary while the first cycle ends: whatever the cut, each particle is a lithium particle or the beryllium dust it
+# made (two together), so is each lithium dust (two), and the progress belongs to the slots: a cycle not yet made has the progress
+# it had at the base save or more, one made has begun again.
+# `annihilator-state`: 10 cobblestones already destroyed into `Recycling` plus 16 locked in a feeder chest above the
+# port hopper (all inside chunk 8,0); the act removes the redstone lock so the hopper feeds while the world is saved and
+# killed at each boundary. At every cut, `monitor + chest + hopper + input_slot == 26`, with `Pools` checked across a
+# monitor key toggle.
+def annihilator_parts(g):
+    import native_annihilator as A
+    A.X, A.Z = 140, 12
+    return A
+
+
+def annihilator_prepare(g):
+    A = annihilator_parts(g)
+    from native_combustion import world_cell, facing_of
+    g.ctl('wait-ready 120')
+    core, facing = A.build(g, A.X, A.Z)
+    cell = lambda lx, ly, lz: world_cell(core, facing, (lx, ly, lz))
+    delta = lambda v: [a - b for a, b in zip(cell(*v), cell(0, 0, 0))]
+    dir_name = lambda d: next(n for n, v in (('east', [1, 0, 0]), ('west', [-1, 0, 0]), ('south', [0, 0, 1]), ('north', [0, 0, -1])) if v == d)
+    in_dir = dir_name(delta((1, 0, 0)))
+    hopper = cell(-2, 0, -3)
+    chest = cell(-2, 1, -3)
+    lock = cell(-3, 0, -3)
+    g.command(f'setblock {lock[0]} {lock[1]} {lock[2]} minecraft:redstone_block')
+    g.command(f'setblock {hopper[0]} {hopper[1]} {hopper[2]} minecraft:hopper[facing={in_dir}]')
+    g.command(f'setblock {chest[0]} {chest[1]} {chest[2]} minecraft:chest')
+    g.command(f'item replace block {chest[0]} {chest[1]} {chest[2]} container.0 with minecraft:cobblestone 16')
+    A.open_annihilator(g, core)
+    A.put(g, 'minecraft:cobblestone', 0, 10)
+    A.put(g, 'minecraft:cobblestone', 8, 1)
+    g.close()
+    sprint(g, 5)
+    st = A.state(g, core)
+    ch = A.items(g, chest)
+    hp = A.items(g, hopper)
+    g.check('base_monitor_is_10_and_16_locked_in_chest', st.get('monitor') == '10' and ch.get(0) == ('minecraft:cobblestone', 16) and not hp, [st, ch, hp])
+    g.evidence.update(core=list(core), facing=facing, chest=list(chest), hopper=list(hopper), lock=list(lock))
+    g.ctl('save')
+
+
+def annihilator_act(g):
+    A = annihilator_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    lock = tuple(prep['lock'])
+    core = tuple(prep['core'])
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command(f'setblock {lock[0]} {lock[1]} {lock[2]} minecraft:air')
+    sprint(g, 35)
+    g.evidence['after_act'] = {'state': A.state(g, core), 'items': A.items(g, core)}
+    save_expecting_death(g)
+
+
+def annihilator_verify(g, again=False):
+    A = annihilator_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    chest = tuple(prep['chest'])
+    hopper = tuple(prep['hopper'])
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 8))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        s = A.items(g, core)
+        st = A.state(g, core)
+        ch = A.items(g, chest)
+        hp = A.items(g, hopper)
+    finally:
+        g.command('tick unfreeze')
+    burned = int(st.get('monitor', 0))
+    ch_cnt = sum(n for i, n in ch.values() if i == 'minecraft:cobblestone')
+    hp_cnt = sum(n for i, n in hp.values() if i == 'minecraft:cobblestone')
+    in_cnt = s.get(0, ('', 0))[1] if s.get(0, ('', 0))[0] == 'minecraft:cobblestone' else 0
+    detail = {'burned': burned, 'chest': ch_cnt, 'hopper': hp_cnt, 'input': in_cnt, 'total': burned + ch_cnt + hp_cnt + in_cnt, 'expected': 26}
+    counted(g, 'twenty_six_cobblestones_exactly_once', detail, again)
+    g.check('the_annihilator_is_alive', machine_present(g, core), st)
+    # Force a fresh Pools lookup (ANNIHILATOR_KEY + WAL replay) via monitor key toggle.
+    A.open_annihilator(g, core)
+    A.clear_slot(g, 8)
+    A.put(g, 'minecraft:dirt', 8, 1)
+    g.close()
+    sprint(g, 2)
+    g.check('dirt_pool_is_zero', A.state(g, core).get('monitor') == '0', A.state(g, core))
+    A.open_annihilator(g, core)
+    A.clear_slot(g, 8)
+    A.put(g, 'minecraft:cobblestone', 8, 1)
+    g.close()
+    sprint(g, 2)
+    g.command('tick freeze')
+    try:
+        s2 = A.items(g, core)
+        st2 = A.state(g, core)
+        ch2 = A.items(g, chest)
+        hp2 = A.items(g, hopper)
+    finally:
+        g.command('tick unfreeze')
+    b2 = int(st2.get('monitor', 0))
+    c2 = sum(n for i, n in ch2.values() if i == 'minecraft:cobblestone')
+    h2 = sum(n for i, n in hp2.values() if i == 'minecraft:cobblestone')
+    i2 = s2.get(0, ('', 0))[1] if s2.get(0, ('', 0))[0] == 'minecraft:cobblestone' else 0
+    g.check('pools_after_toggle_still_conserve_26', b2 + c2 + h2 + i2 == 26 and b2 >= burned, [detail, b2, c2, h2, i2])
+
+
+def cyclotron_parts(g):
+    import native_cyclotron as N
+    N.X, N.Z = 140, 24
+    return N
+
+
+def cyclotron_prepare(g):
+    N = cyclotron_parts(g)
+    g.ctl('wait-ready 120')
+    lay = N.layout(g)
+    core = lay['core']
+    w_cells, s_cells = N.dummies(g, lay['water']), N.dummies(g, lay['steam'])
+    N.pour_barrels(g, w_cells, N.BARRELS)
+    sprint(g, 30)
+    N.set_output(g, w_cells)
+    N.identify(g, s_cells, 'spentsteam')
+    N.open_cyclotron(g, core)
+    N.put(g, 'ntm:part_lithium', 0, 2)
+    N.put(g, 'ntm:powder_lithium', 3, 2)
+    N.put(g, 'ntm:battery_creative', 9)
+    N.put(g, 'ntm:upgrade_speed_1', 10)
+    N.put(g, 'ntm:upgrade_effect_3', 11)
+    g.close()
+    sprint(g, 80)
+    st = N.state(g, core)
+    g.evidence.update(core=list(core), facing=lay['facing'], base_progress=st.get('progress'))
+    g.check('the_cycle_is_half_way_before_the_base_save', 100 < st.get('progress', 0) < 600, st.get('progress'))
+    g.ctl('save')
+
+
+def cyclotron_act(g):
+    N = cyclotron_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 250)
+    g.evidence['after_act'] = N.items(g, tuple(prep['core']))
+    save_expecting_death(g)
+
+
+def cyclotron_verify(g, again=False):
+    N = cyclotron_parts(g)
+    prep = json.loads((g.folder / 'native-crash-more-prepare.json').read_text())
+    core = tuple(prep['core'])
+    base = prep.get('base_progress') or 0
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d %d %d' % (core[0], core[1], core[2] + 8))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        s, st = N.items(g, core), N.state(g, core)
+    finally:
+        g.command('tick unfreeze')
+    t = N.totals(s)
+    made = t.get('ntm:powder_beryllium', 0)
+    counted(g, 'four_items_exactly_once', {'total': t.get('ntm:part_lithium', 0) + t.get('ntm:powder_lithium', 0) + 2 * made, 'expected': 4, 'items': s}, again)
+    g.check('each_particle_is_there_or_made_its_dust', t.get('ntm:part_lithium', 0) + made == 2, s)
+    g.check('each_lithium_dust_is_there_or_became_beryllium', t.get('ntm:powder_lithium', 0) + made == 2, s)
+    progress = st.get('progress', -1)
+    g.check('the_progress_belongs_to_the_slots', (made == 0 and progress >= base) or (made == 1 and 0 <= progress < 690) or (made == 2 and progress == 0), [made, progress, base])
+    g.check('the_cyclotron_is_alive', machine_present(g, core), s)
 
 
 def drain(g):
@@ -1447,6 +2104,22 @@ STEPS = {
     'iron-state': (state_prepare, state_act, state_verify),
     'steel-state': (state_prepare, state_act, state_verify),
     'combination-state': (state_prepare, state_act, state_verify),
+    'orbus-state': (orbus_prepare, orbus_act, orbus_verify),
+    'keyforge-state': (keyforge_prepare, keyforge_act, keyforge_verify),
+    'digamma-state': (digamma_prepare, digamma_act, digamma_verify),
+    'silex-state': (silex_prepare, silex_act, silex_verify),
+    'keyforge-break': (mb_break_prepare, break_act, mb_break_verify),
+    'funnel-state': (funnel_prepare, funnel_act, funnel_verify),
+    'funnel-break': (mb_break_prepare, break_act, mb_break_verify),
+    'radiolysis-state': (radiolysis_prepare, radiolysis_act, radiolysis_verify),
+    'radiolysis-break': (mb_break_prepare, break_act, mb_break_verify),
+    'exposure-state': (exposure_prepare, exposure_act, exposure_verify),
+    'exposure-break': (mb_break_prepare, break_act, mb_break_verify),
+    'annihilator-state': (annihilator_prepare, annihilator_act, annihilator_verify),
+    'annihilator-break': (mb_break_prepare, break_act, mb_break_verify),
+    'cyclotron-state': (cyclotron_prepare, cyclotron_act, cyclotron_verify),
+    'cyclotron-break': (mb_break_prepare, break_act, mb_break_verify),
+    'orbus-break': (mb_break_prepare, break_act, mb_break_verify),
     'iron-break': (mb_break_prepare, break_act, mb_break_verify),
     'steel-break': (mb_break_prepare, break_act, mb_break_verify),
     'combination-break': (mb_break_prepare, break_act, mb_break_verify),

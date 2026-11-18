@@ -789,8 +789,8 @@ mod tests {
         );
     }
 
-    /// The pills whose Java also sets digamma, asbestos or black lung keep
-    /// only what the port has; the missing system is named in the catalog doc.
+    /// The pills whose Java also sets asbestos or black lung keep only what the port has; the missing system is
+    /// named in the catalog doc. Xanax's digamma is set by `digamma::pill`, at the commit of the use.
     #[test]
     fn pills_that_need_lung_or_digamma_state_do_their_visible_part_only() {
         for id in ["ntm:siox", "ntm:xanax"] {

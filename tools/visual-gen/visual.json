@@ -38328,11 +38328,294 @@
     },
     "ntm:machine_fel": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineFEL dimensions {2,0,4,2,1,1}, offset 2; ContainerFEL and GUIFEL 203x169: battery (182,144), crystal (141,23), power bar and on/off button. Renderer and beam are separate.",
+      "machine": {
+        "slots": [
+          {
+            "x": 182,
+            "y": 144
+          },
+          {
+            "x": 141,
+            "y": 23
+          }
+        ],
+        "inventory": [
+          8,
+          83
+        ],
+        "data": 6,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -2
+          ],
+          "max": [
+            1,
+            2,
+            4
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_fel.png",
+        "texture_from": "textures/gui/machine/gui_fel.png",
+        "size": [
+          203,
+          169
+        ],
+        "title": [
+          190,
+          7,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          71
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              182,
+              27,
+              16,
+              113
+            ],
+            "uv": [
+              203,
+              17
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              142,
+              41,
+              29,
+              17
+            ],
+            "uv": [
+              203,
+              0
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              142,
+              41,
+              29,
+              17
+            ],
+            "lines": [
+              "Ligar / desligar"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_silex": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+     "auto": false,
+     "source": "MachineSILEX dimensions {2,0,1,1,1,1}, offset 1, with the two makeExtra combo ports (inventory and fluid) at (±1,1,0); ContainerSILEX and GUISILEX 176x222 (processing/gui_silex.png): input (80,12), identifier (8,24), containers (26,24) and (44,24), output (116,90) and the queue (134|152, 72|90|108); the fill bar (26,72) 16x52, the progress (45,82) 69x43, the tank (8,42) 52x7; the laser's name and its wave are not drawn (the mode is in the fill's tip); button 0 at (10,92) is the void button (GUISILEX.mouseClicked, handleButtonPacket). The block's model stays the casing's (the renderer model is not ported)",
+     "machine": {
+      "slots": [
+       {
+        "x": 80,
+        "y": 12
+       },
+       {
+        "x": 8,
+        "y": 24
+       },
+       {
+        "x": 26,
+        "y": 24
+       },
+       {
+        "x": 44,
+        "y": 24,
+        "output": true
+       },
+       {
+        "x": 116,
+        "y": 90,
+        "output": true
+       },
+       {
+        "x": 134,
+        "y": 72,
+        "output": true
+       },
+       {
+        "x": 152,
+        "y": 72,
+        "output": true
+       },
+       {
+        "x": 134,
+        "y": 90,
+        "output": true
+       },
+       {
+        "x": 152,
+        "y": 90,
+        "output": true
+       },
+       {
+        "x": 134,
+        "y": 108,
+        "output": true
+       },
+       {
+        "x": 152,
+        "y": 108,
+        "output": true
+       }
+      ],
+      "inventory": [
+       8,
+       140
+      ],
+      "data": 8,
+      "multiblock": {
+       "min": [
+        -1,
+        0,
+        -1
+       ],
+       "max": [
+        1,
+        2,
+        1
+       ],
+       "offset": 1,
+       "dummy": "ntm:dummy_machine",
+       "inventory_ports": [
+        [
+         1,
+         1,
+         0
+        ],
+        [
+         -1,
+         1,
+         0
+        ]
+       ]
+      }
+     },
+     "screen": {
+      "texture": "ntm:textures/gui/processing/gui_silex.png",
+      "texture_from": "textures/gui/processing/gui_silex.png",
+      "size": [
+       176,
+       222
+      ],
+      "title": [
+       34,
+       8,
+       "center"
+      ],
+      "inventory_label": [
+       8,
+       128
+      ],
+      "bars": [
+       {
+        "value": 0,
+        "max": 1,
+        "rect": [
+         26,
+         72,
+         16,
+         52
+        ],
+        "uv": [
+         176,
+         57
+        ],
+        "dir": "up"
+       },
+       {
+        "value": 2,
+        "max": 3,
+        "rect": [
+         45,
+         82,
+         69,
+         43
+        ],
+        "uv": [
+         176,
+         0
+        ],
+        "dir": "right"
+       },
+       {
+        "value": 5,
+        "max": 6,
+        "rect": [
+         8,
+         42,
+         52,
+         7
+        ],
+        "color": 7,
+        "dir": "right"
+       }
+      ],
+      "tooltips": [
+       {
+        "rect": [
+         26,
+         72,
+         16,
+         52
+        ],
+        "lines": [
+         "{0} / {1} mB",
+         "Laser: {4}"
+        ]
+       },
+       {
+        "rect": [
+         8,
+         42,
+         52,
+         7
+        ],
+        "lines": [
+         "{5} / {6} mB"
+        ]
+       }
+      ],
+      "buttons": [
+        {
+          "id": 0,
+          "rect": [
+            10,
+            92,
+            12,
+            12
+          ],
+          "lines": [
+            "Void contents"
+          ]
+        }
+      ]
+     }
     },
     "ntm:machine_rotary_furnace": {
       "auto": false,
@@ -38547,16 +38830,572 @@
       }
     },
     "ntm:machine_industrial_generator": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+     "source": "MachineIGenerator: one cell (getDimensions all 0, the old {2,0,3,2,1,1} commented out), no screen (its openGui commented out); RenderIGenerator draws igen.obj's Body and Rotor at a sixth of their size (glScaled 1/6), 0.5 back along z in the model's units, turned 180 for meta 2 as the extractor reads it; the Rotor stands still (updateEntity is empty)",
+     "model": {
+      "obj": "ntm:models/obj/igen.obj",
+      "obj_from": "models/machines/igen.obj",
+      "texture": "ntm:textures/models/machines/igen.png",
+      "texture_from": "textures/models/machines/igen.png",
+      "rotation": 180,
+      "scale": 0.16666667,
+      "translate": [
+       0,
+       0,
+       -0.5
+      ],
+      "radius": 1.5
+     }
     },
     "ntm:machine_cyclotron": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineCyclotron, GUIMachineCyclotron 190x215 (machine/gui_cyclotron.png): the three particles (11, 18+18i), the three targets (101, 18+18i), the three outputs (131, 18+18i; SlotCraftingOutput), the battery (168,83) and the two upgrades (60,81) and (78,81); the power bar (168,18) 16x62, the progress arrow (48,27) 34 wide as `getProgressScaled(34)`, the lamp (172,4) while that is above 0, the three tanks (11,81), (11,90) and (107,81); MachineCyclotron: dims {2,0,2,2,2,2} offset 2 (5x5x3) with the twelve `makeExtra` ports, three on each side; the info panel's text is its tip; the block's model stays the casing's (the renderer model is not ported)",
+      "machine": {
+        "slots": [
+          {
+            "x": 11,
+            "y": 18
+          },
+          {
+            "x": 11,
+            "y": 36
+          },
+          {
+            "x": 11,
+            "y": 54
+          },
+          {
+            "x": 101,
+            "y": 18
+          },
+          {
+            "x": 101,
+            "y": 36
+          },
+          {
+            "x": 101,
+            "y": 54
+          },
+          {
+            "x": 131,
+            "y": 18,
+            "output": true
+          },
+          {
+            "x": 131,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 131,
+            "y": 54,
+            "output": true
+          },
+          {
+            "x": 168,
+            "y": 83
+          },
+          {
+            "x": 60,
+            "y": 81
+          },
+          {
+            "x": 78,
+            "y": 81
+          }
+        ],
+        "inventory": [
+          15,
+          133
+        ],
+        "data": 13,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            2,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -2,
+              0,
+              -1
+            ],
+            [
+              -2,
+              0,
+              0
+            ],
+            [
+              -2,
+              0,
+              1
+            ],
+            [
+              2,
+              0,
+              -1
+            ],
+            [
+              2,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              1
+            ],
+            [
+              -1,
+              0,
+              -2
+            ],
+            [
+              0,
+              0,
+              -2
+            ],
+            [
+              1,
+              0,
+              -2
+            ],
+            [
+              -1,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              2
+            ],
+            [
+              1,
+              0,
+              2
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_cyclotron.png",
+        "texture_from": "textures/gui/machine/gui_cyclotron.png",
+        "size": [
+          190,
+          215
+        ],
+        "title": [
+          79,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          15,
+          121
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              168,
+              18,
+              16,
+              62
+            ],
+            "uv": [
+              190,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              48,
+              27,
+              34,
+              34
+            ],
+            "uv": [
+              206,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              11,
+              81,
+              34,
+              7
+            ],
+            "color": 6,
+            "dir": "right"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              11,
+              90,
+              34,
+              7
+            ],
+            "color": 9,
+            "dir": "right"
+          },
+          {
+            "value": 10,
+            "max": 11,
+            "rect": [
+              107,
+              81,
+              34,
+              16
+            ],
+            "color": 12,
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 2,
+            "min": 1,
+            "rect": [
+              172,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              190,
+              63
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              168,
+              18,
+              16,
+              63
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              11,
+              81,
+              34,
+              7
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              11,
+              90,
+              34,
+              7
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          },
+          {
+            "rect": [
+              107,
+              81,
+              34,
+              16
+            ],
+            "lines": [
+              "{10} / {11} mB"
+            ]
+          },
+          {
+            "rect": [
+              49,
+              85,
+              8,
+              8
+            ],
+            "lines": [
+              "Acceptable Upgrades:",
+              " * Speed: Stacks to level 3",
+              " * Effectiveness: Stacks to level 3",
+              " * Power-Saving: Stacks to level 3"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_exposure_chamber": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineExposureChamber, GUIMachineExposureChamber 176x186 (processing/gui_exposure_chamber.png): the particle (8,18), the empty capsule out (8,54), the ingredient (80,36), the output (116,36), the battery (152,54) and the two upgrades (44,54) and (62,54), as the engine's slots 0..6 (Java's 0, 2, 3, 4, 5, 6, 7: its slot 1 is the loaded particle, a ghost kept in the machine); the energy bar (152,18) 16x34, the progress (36,39) 42x10, the particles left (26,36) 9x16 and the lamp (156,4); MachineExposureChamber: dims {4,0,2,2,2,2} offset 2 and five boxes (`getAllDimensions`: the corridor, two bridges and two legs, at the placer's right) with the five `makeExtra` ports (`getPorts`) at the ends of the legs and the corridor; the three info panels are not drawn; the block's model stays the casing's (the renderer model is not ported)",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 54,
+            "output": true
+          },
+          {
+            "x": 80,
+            "y": 36
+          },
+          {
+            "x": 116,
+            "y": 36,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 54
+          },
+          {
+            "x": 44,
+            "y": 54
+          },
+          {
+            "x": 62,
+            "y": 54
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 7,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            4,
+            2
+          ],
+          "offset": 2,
+          "extra": [
+            {
+              "min": [
+                3,
+                0,
+                0
+              ],
+              "max": [
+                8,
+                3,
+                0
+              ]
+            },
+            {
+              "min": [
+                3,
+                2,
+                1
+              ],
+              "max": [
+                6,
+                2,
+                1
+              ]
+            },
+            {
+              "min": [
+                3,
+                2,
+                -1
+              ],
+              "max": [
+                6,
+                2,
+                -1
+              ]
+            },
+            {
+              "min": [
+                7,
+                0,
+                1
+              ],
+              "max": [
+                8,
+                3,
+                1
+              ]
+            },
+            {
+              "min": [
+                7,
+                0,
+                -1
+              ],
+              "max": [
+                8,
+                3,
+                -1
+              ]
+            }
+          ],
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              7,
+              0,
+              -1
+            ],
+            [
+              7,
+              0,
+              1
+            ],
+            [
+              8,
+              0,
+              -1
+            ],
+            [
+              8,
+              0,
+              1
+            ],
+            [
+              8,
+              0,
+              0
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_exposure_chamber.png",
+        "texture_from": "textures/gui/processing/gui_exposure_chamber.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          92
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              36,
+              39,
+              42,
+              10
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              26,
+              36,
+              9,
+              16
+            ],
+            "uv": [
+              192,
+              10
+            ],
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 6,
+            "min": 1,
+            "rect": [
+              156,
+              4,
+              9,
+              12
+            ],
+            "uv": [
+              176,
+              34
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              26,
+              36,
+              9,
+              16
+            ],
+            "lines": [
+              "{4} / {5}"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_electric_furnace_on": {
       "source": "ContainerElectricFurnace, GUIMachineElectricFurnace 176x186 (processing/gui_electric_furnace.png); the logic's slot order (input, battery, output: the vanilla furnace menu's) at HBM's places, no upgrade slot (the logic has none); the flames while it smelts (value 2), HBM's lit block",
@@ -38696,7 +39535,231 @@
     },
     "ntm:machine_radiolysis": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerRadiolysis, GUIRadiolysis 230x166 (gui_radiolysis.png): ten pellet slots in two columns at (188+18i, 8+18j), the fluid identifier in (34,17) and out (34,53), the sterilization in (148,17) and out (148,53), the battery (8,53); the power bar (8,17) 16x34, the input tank (61,17) 8x52 and the two output ones (87,17) and (87,53) 12x16; the three info panels left of the screen are not drawn (their texts are in the power bar's tip); MachineRadiolysis: 3x3x3 on the core's bottom centre (dims 2,0,1,1,1,1, offset 0) with the four `flare` ports (makeExtra) beside the core; the block's model stays the casing's (the renderer model is not ported)",
+      "machine": {
+        "slots": [
+          {
+            "x": 188,
+            "y": 8
+          },
+          {
+            "x": 188,
+            "y": 26
+          },
+          {
+            "x": 188,
+            "y": 44
+          },
+          {
+            "x": 188,
+            "y": 62
+          },
+          {
+            "x": 188,
+            "y": 80
+          },
+          {
+            "x": 206,
+            "y": 8
+          },
+          {
+            "x": 206,
+            "y": 26
+          },
+          {
+            "x": 206,
+            "y": 44
+          },
+          {
+            "x": 206,
+            "y": 62
+          },
+          {
+            "x": 206,
+            "y": 80
+          },
+          {
+            "x": 34,
+            "y": 17
+          },
+          {
+            "x": 34,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 148,
+            "y": 17
+          },
+          {
+            "x": 148,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 8,
+            "y": 53
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 12,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            2,
+            1
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              -1
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/gui_radiolysis.png",
+        "texture_from": "textures/gui/gui_radiolysis.png",
+        "size": [
+          230,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              8,
+              17,
+              16,
+              34
+            ],
+            "uv": [
+              240,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 3,
+            "max": 4,
+            "rect": [
+              61,
+              17,
+              8,
+              52
+            ],
+            "color": 5,
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              87,
+              17,
+              12,
+              16
+            ],
+            "color": 8,
+            "dir": "up"
+          },
+          {
+            "value": 9,
+            "max": 10,
+            "rect": [
+              87,
+              53,
+              12,
+              16
+            ],
+            "color": 11,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              8,
+              17,
+              16,
+              34
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE",
+              "Current heat level: {2}"
+            ]
+          },
+          {
+            "rect": [
+              61,
+              17,
+              8,
+              52
+            ],
+            "lines": [
+              "{3} / {4} mB"
+            ]
+          },
+          {
+            "rect": [
+              87,
+              17,
+              12,
+              16
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          },
+          {
+            "rect": [
+              87,
+              53,
+              12,
+              16
+            ],
+            "lines": [
+              "{9} / {10} mB"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_drain": {
       "auto": false,
@@ -38707,8 +39770,73 @@
       "auto": false
     },
     "ntm:machine_keyforge": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineKeyForge, GUIMachineKeyForge 176x186 (machine/gui_keyforge.png): the key to copy (44,36), the one that gets the copy (80,36) and the one that is randomized (116,36); the two info panels (12,28) and (12,44) are tooltips here (their icons are not drawn); TileEntityMachineKeyForge: no multiblock, no power, no data",
+      "machine": {
+        "slots": [
+          {
+            "x": 44,
+            "y": 36
+          },
+          {
+            "x": 80,
+            "y": 36
+          },
+          {
+            "x": 116,
+            "y": 36
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 0
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/machine/gui_keyforge.png",
+        "texture_from": "textures/gui/machine/gui_keyforge.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          92
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              12,
+              28,
+              16,
+              16
+            ],
+            "lines": [
+              "Linking",
+              "The first slot will copy the key/lock's",
+              "pin configuration and paste it to the second slot."
+            ]
+          },
+          {
+            "rect": [
+              12,
+              44,
+              16,
+              16
+            ],
+            "lines": [
+              "Setup",
+              "The third slot will randomize the",
+              "key/lock's pin configuration."
+            ]
+          }
+        ]
+      }
     },
     "ntm:tesla": {
       "auto": false,
@@ -38731,11 +39859,466 @@
     },
     "ntm:machine_annihilator": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineAnnihilator, GUIMachineAnnihilator 176x208 (processing/gui_annihilator.png): input (17,45), identifier (35,45), outputs 2..7 grid [80,36,3,2], monitor (152,18), request (152,62), payout (152,80); MachineAnnihilator.getDimensions {2,0,4,4,1,1} offset 4 + chimney extra {8,-2,1,1,1,1}; three fluid/inventory ports [-1,0,-3], [1,0,-3], [0,0,-4]; pool name editable GuiTextField and OBJ/belt renderer deferred.",
+      "machine": {
+        "slots": [
+          {
+            "x": 17,
+            "y": 45
+          },
+          {
+            "x": 35,
+            "y": 45,
+            "accept": [
+              "ntm:fluid_identifier_multi"
+            ]
+          },
+          {
+            "grid": [
+              80,
+              36,
+              3,
+              2
+            ],
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 18
+          },
+          {
+            "x": 152,
+            "y": 62
+          },
+          {
+            "x": 152,
+            "y": 80,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          126
+        ],
+        "data": 1,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -4
+          ],
+          "max": [
+            1,
+            2,
+            4
+          ],
+          "offset": 4,
+          "extra": [
+            {
+              "min": [
+                -1,
+                3,
+                2
+              ],
+              "max": [
+                1,
+                8,
+                4
+              ]
+            }
+          ],
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              -1,
+              0,
+              -3
+            ],
+            [
+              1,
+              0,
+              -3
+            ],
+            [
+              0,
+              0,
+              -4
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_annihilator.png",
+        "texture_from": "textures/gui/processing/gui_annihilator.png",
+        "size": [
+          176,
+          208
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          114
+        ],
+        "texts": [
+          {
+            "at": [
+              31,
+              85
+            ],
+            "text": "Recycling",
+            "color": "#00ff00",
+            "align": "left"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              151,
+              35,
+              18,
+              18
+            ],
+            "lines": [
+              "Monitored: {0}"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_rockmill": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineRockMill, GUIMachineRockMill (processing/gui_rockmill.png 176x220): 0 the battery (152,91), 1 the blueprint (35,90; no pools in the port), 2-4 the inputs (8/26/44,27), 5-7 the outputs (80/98/116,27); the power bar (152,18,16,71), the progress arrow (62,90,70,16), the LEDs (51/56,85), the two 52x16 tanks (8,63) and (80,63); button 0 at (7,89) opens the crafter's recipe list in place of HBM's GUIScreenRecipeSelector; MachineRockMill.getDimensions {2,0,2,2,2,2} offset 2, the eight getAllPorts cells are makeExtra combo proxies (inventory, power, fluid); RenderRockMill rotates the model 90 degrees, Base always, Frame only with a block on top (hidden here: no neighbour query in the model), the Wheel turning about -y up to 15 degrees a tick (MAX_SPEED) while it works",
+      "machine": {
+        "slots": [
+          {
+            "x": 152,
+            "y": 91,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          },
+          {
+            "x": 35,
+            "y": 90,
+            "accept": []
+          },
+          {
+            "x": 8,
+            "y": 27,
+            "accept_recipes": "rockmill"
+          },
+          {
+            "x": 26,
+            "y": 27,
+            "accept_recipes": "rockmill"
+          },
+          {
+            "x": 44,
+            "y": 27,
+            "accept_recipes": "rockmill"
+          },
+          {
+            "x": 80,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 98,
+            "y": 27,
+            "output": true
+          },
+          {
+            "x": 116,
+            "y": 27,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          138
+        ],
+        "data": 31,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            2,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              2,
+              0,
+              1
+            ],
+            [
+              -2,
+              0,
+              1
+            ],
+            [
+              2,
+              0,
+              -1
+            ],
+            [
+              -2,
+              0,
+              -1
+            ],
+            [
+              1,
+              0,
+              2
+            ],
+            [
+              1,
+              0,
+              -2
+            ],
+            [
+              -1,
+              0,
+              2
+            ],
+            [
+              -1,
+              0,
+              -2
+            ]
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_rockmill.png",
+        "texture_from": "textures/gui/processing/gui_rockmill.png",
+        "size": [
+          176,
+          220
+        ],
+        "title": [
+          70,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          126
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              152,
+              18,
+              16,
+              71
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max_value": 1000,
+            "rect": [
+              62,
+              90,
+              70,
+              16
+            ],
+            "uv": [
+              176,
+              71
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              8,
+              63,
+              52,
+              16
+            ],
+            "color": 6,
+            "dir": "right"
+          },
+          {
+            "value": 7,
+            "max": 8,
+            "rect": [
+              80,
+              63,
+              52,
+              16
+            ],
+            "color": 9,
+            "dir": "right"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 10,
+            "min": 1,
+            "rect": [
+              51,
+              85,
+              3,
+              6
+            ],
+            "uv": [
+              192,
+              0
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "rect": [
+              51,
+              85,
+              3,
+              6
+            ],
+            "uv": [
+              195,
+              0
+            ]
+          },
+          {
+            "value": 11,
+            "min": 1,
+            "rect": [
+              56,
+              85,
+              3,
+              6
+            ],
+            "uv": [
+              192,
+              0
+            ]
+          },
+          {
+            "value": 10,
+            "min": 2,
+            "rect": [
+              56,
+              85,
+              3,
+              6
+            ],
+            "uv": [
+              195,
+              0
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              71
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              63,
+              52,
+              16
+            ],
+            "lines": [
+              "{4} / {5} mB"
+            ]
+          },
+          {
+            "rect": [
+              80,
+              63,
+              52,
+              16
+            ],
+            "lines": [
+              "{7} / {8} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              7,
+              89,
+              18,
+              18
+            ],
+            "lines": [
+              "Escolher receita"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/rockmill.obj",
+        "obj_from": "models/machines/rockmill.obj",
+        "texture": "ntm:textures/models/machines/rockmill.png",
+        "texture_from": "textures/models/machines/rockmill.png",
+        "rotation": 90,
+        "radius": 3.2,
+        "hide": [
+          "Frame"
+        ],
+        "bones": {
+          "Wheel": {
+            "pivot": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "loop_animation": {
+          "name": "animation.rockmill.work",
+          "length": 1.2,
+          "bones": {
+            "Wheel": {
+              "turn": [
+                0,
+                -360,
+                0
+              ]
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.rockmill.work",
+            "property": "honey_level",
+            "not": "0"
+          }
+        ]
+      }
     },
     "ntm:machine_mining_laser": {
       "auto": false,
@@ -39170,12 +40753,198 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_orbus": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerBarrel, GUIBarrel 176x166 (storage/gui_barrel.png), as the barrel's: TileEntityMachineOrbus extends TileEntityBarrel (512 000 mB); MachineOrbus.getDimensions {4,0,2,1,2,1} offset 1, TileEntityProxyCombo(false, false, true) (fluid only); the eight ports of getAllPorts (the 2x2 columns at y 0 and y 4) are fluid_proxies; no item ports",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 17
+          },
+          {
+            "x": 8,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 35,
+            "y": 17
+          },
+          {
+            "x": 35,
+            "y": 53,
+            "output": true
+          },
+          {
+            "x": 125,
+            "y": 17
+          },
+          {
+            "x": 125,
+            "y": 53,
+            "output": true
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 4,
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            4,
+            2
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_barrel.png",
+        "texture_from": "textures/gui/storage/gui_barrel.png",
+        "size": [
+          176,
+          166
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          72
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              71,
+              17,
+              34,
+              52
+            ],
+            "color": 2,
+            "dir": "up"
+          }
+        ],
+        "overlays": [
+          {
+            "value": 3,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 3,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              18
+            ]
+          },
+          {
+            "value": 3,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              36
+            ]
+          },
+          {
+            "value": 3,
+            "min": 3,
+            "max": 3,
+            "rect": [
+              151,
+              34,
+              18,
+              18
+            ],
+            "uv": [
+              176,
+              54
+            ]
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              71,
+              17,
+              34,
+              52
+            ],
+            "lines": [
+              "{0} / {1} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              151,
+              35,
+              18,
+              18
+            ],
+            "lines": [
+              "Mode"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_lpw2": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+     "source": "MachineLPW2 dimensions {6,0,3,3,9,10}, offset 3: x -9..10, y 0..6, z -3..3, as a main box of 16 across (the engine's most) and an extra box for x 7..10 (no proxies: createNewTileEntity gives nothing below meta 12), no screen (no onBlockActivated); RenderLPW2 draws lpw2.obj turned as the extractor reads it (90 for meta 2), still: its sway, bell, piston, rotor, turbine, cover, suspension and server motions are not drawn, nor its Screen (drawn with lpw2_term_error.png, a second texture, scrolling)",
+     "machine": {
+      "slots": [],
+      "inventory": [
+       8,
+       84
+      ],
+      "data": 0,
+      "multiblock": {"min": [-9, 0, -3], "max": [6, 6, 3], "offset": 3, "dummy": "ntm:dummy_machine", "extra": [{"min": [7, 0, -3], "max": [10, 6, 3]}]}
+     },
+     "model": {
+      "obj": "ntm:models/obj/lpw2.obj",
+      "obj_from": "models/machines/lpw2.obj",
+      "texture": "ntm:textures/models/machines/lpw2.png",
+      "texture_from": "textures/models/machines/lpw2.png",
+      "rotation": 90,
+      "hide": ["Screen"],
+       "radius": 11.5
+     }
     },
     "ntm:machine_ammo_press": {
       "auto": false,
@@ -40058,7 +41827,169 @@
     },
     "ntm:machine_funnel": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFunnel, GUIFunnel 176x168 (processing/gui_funnel.png): nine inputs at (8+18i, 18), nine SlotCraftingOutput results at (8+18i, 54), the mode button at (159,73) 10x10 drawn from the texture at (176, mode*10); TileEntityMachineFunnel: no multiblock, no power; the block's model stays the casing's (the renderer model is not ported); the button's tooltip lists the three modes (GUIFunnel's shows the current one only)",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 26,
+            "y": 18
+          },
+          {
+            "x": 44,
+            "y": 18
+          },
+          {
+            "x": 62,
+            "y": 18
+          },
+          {
+            "x": 80,
+            "y": 18
+          },
+          {
+            "x": 98,
+            "y": 18
+          },
+          {
+            "x": 116,
+            "y": 18
+          },
+          {
+            "x": 134,
+            "y": 18
+          },
+          {
+            "x": 152,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 54
+          },
+          {
+            "x": 26,
+            "y": 54
+          },
+          {
+            "x": 44,
+            "y": 54
+          },
+          {
+            "x": 62,
+            "y": 54
+          },
+          {
+            "x": 80,
+            "y": 54
+          },
+          {
+            "x": 98,
+            "y": 54
+          },
+          {
+            "x": 116,
+            "y": 54
+          },
+          {
+            "x": 134,
+            "y": 54
+          },
+          {
+            "x": 152,
+            "y": 54
+          }
+        ],
+        "inventory": [
+          8,
+          86
+        ],
+        "data": 1
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_funnel.png",
+        "texture_from": "textures/gui/processing/gui_funnel.png",
+        "size": [
+          176,
+          168
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          74
+        ],
+        "overlays": [
+          {
+            "value": 0,
+            "min": 0,
+            "max": 0,
+            "rect": [
+              159,
+              73,
+              10,
+              10
+            ],
+            "uv": [
+              176,
+              0
+            ]
+          },
+          {
+            "value": 0,
+            "min": 1,
+            "max": 1,
+            "rect": [
+              159,
+              73,
+              10,
+              10
+            ],
+            "uv": [
+              176,
+              10
+            ]
+          },
+          {
+            "value": 0,
+            "min": 2,
+            "max": 2,
+            "rect": [
+              159,
+              73,
+              10,
+              10
+            ],
+            "uv": [
+              176,
+              20
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              159,
+              73,
+              10,
+              10
+            ],
+            "lines": [
+              "Mode",
+              "0: 3x3 then 2x2",
+              "1: 3x3 only",
+              "2: 2x2 only"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_siren": {
       "auto": false,

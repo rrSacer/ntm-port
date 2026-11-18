@@ -11,19 +11,28 @@ to `death.attack.<name>` when that key has no translation; the Java's lang has n
 always shows the base text. The engine has no such fallback (an untranslated `.player` key shows raw), so the base text
 is emitted under both keys.
 """
-# name, bypasses armor: `ModDamageSource.radiation = new DamageSource("radiation").setDamageBypassesArmor()`.
+# name, bypasses armor, absolute, allowed in creative:
+# `ModDamageSource.radiation = new DamageSource("radiation").setDamageBypassesArmor()`,
+# `ModDamageSource.digamma = new DamageSource("digamma").setDamageIsAbsolute().setDamageBypassesArmor()
+# .setDamageAllowedInCreativeMode()` (the blow of `HbmLivingProps.setDigamma` at 10).
+# `isDamageAbsolute` skips `applyPotionDamageCalculations` (Resistance and the protection enchantments): the
+# `minecraft:bypasses_effects` tag, which returns before both. `canHarmInCreative` is
+# `minecraft:bypasses_invulnerability`.
 SOURCES = [
-    ('radiation', True),
+    ('radiation', True, False, False),
+    ('digamma', True, True, True),
 ]
+TAGS = [('bypasses_armor', 1), ('bypasses_effects', 2), ('bypasses_invulnerability', 3)]
 
 
 def generate(emit, languages, translations):
-    for name, bypasses_armor in SOURCES:
+    for name, bypasses_armor, _, _ in SOURCES:
         emit(f'data/ntm/damage_type/{name}.json', {'message_id': name, 'exhaustion': 0.0 if bypasses_armor else 0.3,
                                                    'scaling': 'never'})
         for loc, table in translations.items():
             text = table[f'death.attack.{name}']
             languages[loc][f'death.attack.{name}'] = text
             languages[loc][f'death.attack.{name}.player'] = table.get(f'death.attack.{name}.player', text)
-    emit('data/minecraft/tags/damage_type/bypasses_armor.json',
-         {'replace': False, 'values': [f'ntm:{name}' for name, bypasses in SOURCES if bypasses]})
+    for tag, flag in TAGS:
+        emit(f'data/minecraft/tags/damage_type/{tag}.json',
+             {'replace': False, 'values': [f'ntm:{s[0]}' for s in SOURCES if s[flag]]})

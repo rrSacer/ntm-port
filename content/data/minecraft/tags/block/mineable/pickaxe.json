@@ -729,6 +729,15 @@
     "ntm:sellafield__3",
     "ntm:sellafield__4",
     "ntm:sellafield__5",
-    "ntm:geiger"
+    "ntm:geiger",
+    "ntm:fire_digamma",
+    "ntm:digamma_matter",
+    "ntm:digamma_matter__1",
+    "ntm:digamma_matter__2",
+    "ntm:digamma_matter__3",
+    "ntm:digamma_matter__4",
+    "ntm:digamma_matter__5",
+    "ntm:digamma_matter__6",
+    "ntm:digamma_matter__7"
   ]
 }

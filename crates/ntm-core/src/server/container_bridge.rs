@@ -130,6 +130,14 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Zirnox(z) if !z.destroyed => Some(&mut **z),
         Data::Rbmk(c) => Some(&mut **c),
         Data::BrickFurnace(f) => Some(f),
+        Data::KeyForge(f) => Some(f),
+        Data::Funnel(f) => Some(f),
+        Data::Radiolysis(r) => Some(&mut **r),
+        Data::Exposure(e) => Some(&mut **e),
+        Data::Fel(f) => Some(f),
+        Data::Silex(s) => Some(&mut **s),
+        Data::Annihilator(a) => Some(&mut **a),
+        Data::Cyclotron(c) => Some(&mut **c),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         Data::Intake(i) => Some(i),
@@ -180,6 +188,15 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_soldering_station", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
+    ("ntm:machine_orbus", Layout::Native),
+    ("ntm:machine_keyforge", Layout::Native),
+    ("ntm:machine_funnel", Layout::Native),
+    ("ntm:machine_radiolysis", Layout::Native),
+    ("ntm:machine_exposure_chamber", Layout::Native),
+    ("ntm:machine_fel", Layout::Native),
+    ("ntm:machine_silex", Layout::Native),
+    ("ntm:machine_annihilator", Layout::Native),
+    ("ntm:machine_cyclotron", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
     // Energy batch 3 (`crate::combustion`): the generators' slots are their
@@ -301,6 +318,15 @@ pub const SLOTTED: &[(&str, Layout)] = &[
             outputs: 2..2,
         },
     ),
+    // ContainerMachineRockMill: 0 the battery, 1 the blueprint (no pools in
+    // the port), 2–4 the inputs, 5–7 the outputs.
+    (
+        "ntm:machine_rockmill",
+        Layout::Crafter {
+            inputs: 2..5,
+            outputs: 5..8,
+        },
+    ),
     // ContainerElectrolyser: both lines on its 21 slots (`crate::electrolyser`).
     ("ntm:machine_electrolyser", Layout::Native),
     // ContainerMachineArcFurnaceLarge: 30 slots (`crate::arc_furnace`).
@@ -390,10 +416,27 @@ pub fn energy_port_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Po
     if crate::storage::Body::of(block).is_some() {
         return crate::storage::Storage::port_cells(block, core, facing).into_iter().map(|(p, _)| p).collect();
     }
+    // TileEntityFEL.getPorts: four blocks behind the core, one above it.
+    if block == crate::fel::BLOCK {
+        return facing.and_then(crate::registry::facing_dir).map(|d| vec![[core[0] - 4*d[0], core[1] + 1, core[2] - 4*d[2]]]).unwrap_or_default();
+    }
+    // The rock mill's eight (`crate::crafter::ROCKMILL_PORTS`).
+    if block == crate::crafter::ROCKMILL {
+        return facing.and_then(crate::registry::facing_dir).map(|f| crate::crafter::ROCKMILL_PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();
+    }
+    // The cyclotron's twelve ports (`crate::cyclotron::PORTS`).
+    if block == crate::cyclotron::BLOCK {
+        return facing.and_then(crate::registry::facing_dir).map(|f| crate::cyclotron::PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();
+    }
+    // The exposure chamber's five ports, at the ends of its two legs and of its corridor (`getPorts`, `crate::exposure::PORTS`).
+    if block == crate::exposure::BLOCK {
+        return facing.and_then(crate::registry::facing_dir).map(|f| crate::exposure::PORTS.iter().map(|(cell, _)| world_cell(core, f, *cell)).collect()).unwrap_or_default();
+    }
     if block == crate::radioisotopes::RADGEN {
         return facing.and_then(crate::registry::facing_dir).map(|d|vec![[core[0]-d[0]*3,core[1],core[2]-d[2]*3]]).unwrap_or_default();
     }
-    if matches!(block, "ntm:machine_stirling" | "ntm:machine_stirling_steel" | "ntm:machine_stirling_creative") {
+    // The radiolysis chamber's four `flare` ports are the cells beside its core, each open outwards like the stirling's.
+    if matches!(block, "ntm:machine_stirling" | "ntm:machine_stirling_steel" | "ntm:machine_stirling_creative" | crate::radiolysis::BLOCK) {
         crate::energy::DIRS.iter().filter(|d| d[1] == 0).map(|d| [core[0]+d[0], core[1], core[2]+d[2]]).collect()
     } else { Vec::new() }
 }
@@ -434,6 +477,22 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TilePortShapes.comboven: the ring round the core on its two layers.
     ("ntm:furnace_combination", &[[-1, 0, -1], [-1, 0, 0], [-1, 0, 1], [0, 0, -1], [0, 0, 1], [1, 0, -1], [1, 0, 0], [1, 0, 1], [-1, 1, -1], [-1, 1, 0], [-1, 1, 1], [0, 1, -1], [0, 1, 1], [1, 1, -1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_solar_boiler", &[[0,2,0]]),
+    // MachineCyclotron.getAllPorts: three on each side of the 5x5 footprint, at (-x, -z) of the NTM's.
+    // MachineAnnihilator.getPorts: front port and the two side ports near it.
+    ("ntm:machine_annihilator", &[[-1, 0, -3], [1, 0, -3], [0, 0, -4]]),
+    // MachineSILEX.getAllPorts (`{±1, 1, 0}`, the makeExtra combo proxies: inventory and fluid) and TileEntitySILEX.getPorts:
+    // the two cells beside the middle of its second layer (symmetric, so the mirroring does not move them).
+    ("ntm:machine_silex", &[[1, 1, 0], [-1, 1, 0]]),
+    // MachineRockMill.getAllPorts: two beside the middle of each side of its 5x5 footprint (`crate::crafter::ROCKMILL_PORTS`).
+    ("ntm:machine_rockmill", &[[2, 0, 1], [-2, 0, 1], [2, 0, -1], [-2, 0, -1], [1, 0, 2], [1, 0, -2], [-1, 0, 2], [-1, 0, -2]]),
+    ("ntm:machine_cyclotron", &[[-2, 0, -1], [-2, 0, 0], [-2, 0, 1], [2, 0, -1], [2, 0, 0], [2, 0, 1], [-1, 0, -2], [0, 0, -2], [1, 0, -2], [-1, 0, 2], [0, 0, 2], [1, 0, 2]]),
+    // MachineRadiolysis.getAllPorts (`makeExtra` cells, the `flare` ports): the four beside the core on its layer (symmetric,
+    // so the mirroring below does not move them).
+    ("ntm:machine_radiolysis", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
+    // MachineOrbus.getAllPorts: the 2x2 columns at the bottom and at the top (y 4), the core being the first bottom one. The
+    // NTM's port (x, y, z) is at (-x, y, -z) here (`rotatePorts` takes x to the placer's left and z towards them,
+    // docs/visual-fiel.md). Their directions (down, up) are not kept.
+    ("ntm:machine_orbus", &[[0, 0, 1], [-1, 0, 1], [-1, 0, 0], [0, 4, 1], [0, 4, 0], [-1, 4, 1], [-1, 4, 0]]),
     // MachineExcavator.getAllPorts: (±1, 1, 3) and (±3, 1, 0). The whole
     // layer above the core holds them and reaches the core through the cell
     // over it.
@@ -1175,6 +1234,95 @@ mod tests {
         // The electrolyser's right-hand ports are three cells from its core.
         let cell = fluid_proxy_cells("ntm:machine_electrolyser", [0, 64, 0], Some("north"));
         assert!(cell.contains(&[-3, 64, 4]) && cell.contains(&[1, 64, -5]));
+    }
+
+    /// The cyclotron's twelve ports (`getAllPorts`): three on each side of its 5x5 footprint, each open outwards, whatever the
+    /// facing; the fluid proxies are the same cells.
+    #[test]
+    fn the_cyclotron_has_three_ports_on_each_side_of_its_footprint() {
+        use crate::cyclotron::{BLOCK, PORTS};
+        for facing in ["north", "south", "east", "west"] {
+            let f = crate::registry::facing_dir(facing).expect("a facing");
+            let core = [10, 64, 10];
+            let cells = energy_port_cells(BLOCK, core, Some(facing));
+            let ports = crate::registry::ports(crate::registry::spec(BLOCK).expect("a block"), Some(facing));
+            let fluid = fluid_proxy_cells(BLOCK, core, Some(facing));
+            assert_eq!((cells.len(), ports.len(), fluid.len()), (12, 12, 12), "{facing}");
+            for (i, (cell, face)) in PORTS.iter().enumerate() {
+                assert_eq!(cells[i], world_cell(core, f, *cell), "{facing} {i}");
+                assert_eq!(ports[i], vec![world_cell([0, 0, 0], f, *face)], "{facing} {i}");
+                assert!(fluid.contains(&cells[i]), "{facing} {i}");
+            }
+            // Three cells on each of the four sides of the footprint: the side is the axis on which a cell is two from the core.
+            let mut sides = std::collections::BTreeMap::new();
+            for c in &cells {
+                let (dx, dz) = (c[0] - core[0], c[2] - core[2]);
+                let side = if dx.abs() == 2 { (dx.signum(), 0) } else { (0, dz.signum()) };
+                *sides.entry(side).or_insert(0) += 1;
+            }
+            assert!(sides.values().all(|&n| n == 3) && sides.len() == 4, "{facing} {sides:?}");
+        }
+    }
+
+    /// The exposure chamber's five ports (`getPorts`): at the ends of the legs and the corridor on the placer's right, each open
+    /// outwards, whatever the facing.
+    #[test]
+    fn the_exposure_chamber_has_its_five_ports_at_the_ends_of_its_legs() {
+        use crate::exposure::{BLOCK, PORTS};
+        for facing in ["north", "south", "east", "west"] {
+            let f = crate::registry::facing_dir(facing).expect("a facing");
+            let core = [10, 64, 10];
+            let cells = energy_port_cells(BLOCK, core, Some(facing));
+            let ports = crate::registry::ports(crate::registry::spec(BLOCK).expect("a block"), Some(facing));
+            assert_eq!((cells.len(), ports.len()), (5, 5), "{facing}");
+            for (i, (cell, face)) in PORTS.iter().enumerate() {
+                assert_eq!(cells[i], world_cell(core, f, *cell), "{facing} {i}");
+                assert_eq!(ports[i], vec![world_cell([0, 0, 0], f, *face)], "{facing} {i}");
+            }
+        }
+        // In the placer's frame (the visual spec's boxes): every port is a cell of the volume and opens on one outside it.
+        const BOXES: [([i32; 3], [i32; 3]); 6] = [
+            ([-2, 0, -2], [2, 4, 2]),
+            ([3, 0, 0], [8, 3, 0]),
+            ([3, 2, 1], [6, 2, 1]),
+            ([3, 2, -1], [6, 2, -1]),
+            ([7, 0, 1], [8, 3, 1]),
+            ([7, 0, -1], [8, 3, -1]),
+        ];
+        let inside = |c: [i32; 3]| BOXES.iter().any(|(lo, hi)| (0..3).all(|k| lo[k] <= c[k] && c[k] <= hi[k]));
+        for (cell, face) in PORTS {
+            assert!(inside(cell), "{cell:?} is a cell of the volume");
+            assert!(!inside([cell[0] + face[0], cell[1] + face[1], cell[2] + face[2]]), "{cell:?} opens into the volume");
+        }
+        assert_eq!(energy_port_cells(BLOCK, [0, 0, 0], None), Vec::<Pos>::new());
+    }
+
+    /// The orbus's eight ports (`MachineOrbus.getAllPorts`): the 2x2 columns at the bottom and the top of the 5-high box,
+    /// the core being one of the bottom ones; the other seven are its fluid proxies, turned with the facing.
+    #[test]
+    fn the_orbus_has_two_columns_of_ports_four_blocks_apart() {
+        for facing in ["north", "south", "east", "west"] {
+            let cells = fluid_proxy_cells("ntm:machine_orbus", [10, 64, 10], Some(facing));
+            assert_eq!(cells.len(), 7, "{facing}");
+            let low: Vec<_> = cells.iter().filter(|c| c[1] == 64).collect();
+            let high: Vec<_> = cells.iter().filter(|c| c[1] == 68).collect();
+            assert_eq!((low.len(), high.len()), (3, 4), "{facing}");
+            // Each top port is straight over a bottom one (the core included).
+            for h in &high {
+                assert!(low.iter().any(|l| l[0] == h[0] && l[2] == h[2]) || (h[0], h[2]) == (10, 10), "{facing} {h:?}");
+            }
+            // The NTM's ports (0..1, -1..0) are at (-x, -z) here: the column is on the placer's left and far side of the core.
+            let f = crate::registry::facing_dir(facing).expect("a facing");
+            for l in [[0, 0, 1], [-1, 0, 1], [-1, 0, 0], [0, 4, 1], [0, 4, 0], [-1, 4, 1], [-1, 4, 0]] {
+                assert!(cells.contains(&world_cell([10, 64, 10], f, l)), "{facing} {l:?}");
+            }
+            for l in [[0, 0, -1], [1, 0, -1], [1, 0, 0]] {
+                assert!(!cells.contains(&world_cell([10, 64, 10], f, l)), "{facing} {l:?} is the mirrored one");
+            }
+            // A 2x2 footprint: the three bottom proxies and the core span two cells each way.
+            let (xs, zs): (Vec<i32>, Vec<i32>) = low.iter().map(|c| (c[0], c[2])).chain([(10, 10)]).unzip();
+            assert_eq!((xs.iter().max().unwrap() - xs.iter().min().unwrap(), zs.iter().max().unwrap() - zs.iter().min().unwrap()), (1, 1), "{facing}");
+        }
     }
 
     #[test]

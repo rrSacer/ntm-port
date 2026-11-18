@@ -120,7 +120,7 @@ fn item(slots: &Slots, i: usize) -> Option<&str> {
 /// `ItemFluidIDMulti`'s type in the stack's `custom_data` (`ntm_fluid`): `None` for a stack that is not an
 /// identifier, and for one that is the type it names, `""` (no fluid, `Fluids.NONE`) when it names none, an
 /// unknown fluid, or nothing at all (a bare identifier's `getType` is NONE).
-fn identifier_type(stack: &Stack) -> Option<String> {
+pub(crate) fn identifier_type(stack: &Stack) -> Option<String> {
     if stack.id != IDENTIFIER {
         return None;
     }

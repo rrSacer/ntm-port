@@ -182,6 +182,12 @@ impl Server {
                         }
                     }
                 }
+                if let Some(m) = self.ready.world.machines.get(&(dim.clone(), core)) && m.block == crate::annihilator::BLOCK {
+                    faces.insert(core, vec![vec![]]);
+                    for (p, d) in crate::annihilator::port_cells(core, m.facing.as_deref()) {
+                        faces.insert(p, vec![vec![d]]);
+                    }
+                }
             }
             let nets = if faces.is_empty() { fluid_networks(&cables,&machines,&proxies) } else { fluid_networks_at(&cables, &machines, &proxies, &faces) };
             p.done.push((dim, f, nets));

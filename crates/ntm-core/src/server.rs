@@ -26,6 +26,8 @@ pub trait ServerHost: Kv {
     /// Native explosion (power 12, fire and block destruction) in its own level.
     fn zirnox_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { false }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String>;
+    /// Beam obstruction at a loaded cell. None freezes a FEL tick.
+    fn fel_opaque(&mut self, _dim: &str, _p: Pos) -> Option<bool> { None }
     fn set_blocks(&mut self, dim: &str, blocks: &[(Pos, String)]) -> Result<(), String>;
     /// Role changes already represented by the confirmed model. Hosts may
     /// suppress their synchronous notifications for these owner cells only.
@@ -156,9 +158,32 @@ pub trait ServerHost: Kv {
     /// Whether player `id`'s position was set this tick, not moved (`setPositionAndUpdate`: a command, a pearl, a
     /// portal): no step. Asked once a tick for each player.
     fn teleported(&mut self,_id:&str)->bool{false}
+    /// Player `id`'s digamma (`HbmLivingProps.digamma`) in their own storage, 0 for a new body (None: the host has
+    /// no player storage, and nobody takes digamma). `legacy` seeds a storage that has no dose yet.
+    fn player_digamma(&mut self, _id: &str, _legacy: &crate::radiation::Dose) -> Option<f32> {
+        None
+    }
+    /// Writes their digamma if the storage still holds `expected`, with `setDigamma`'s `maxHealth` modifier
+    /// (`digamma::health_modifier`) and their health capped to the new maximum.
+    fn commit_player_digamma(&mut self, _id: &str, _legacy: &crate::radiation::Dose, _expected: f32, _desired: f32) -> bool {
+        false
+    }
+    /// Puts the `maxHealth` modifier of the digamma in player `id`'s storage back on their body (a new body, a
+    /// joining player).
+    fn sync_digamma(&mut self, _id: &str, _legacy: &crate::radiation::Dose) {}
+    /// Player `id`'s `maxHealth` with every modifier.
+    fn max_health(&mut self, _id: &str) -> Option<f64> {
+        None
+    }
+    /// The items player `id` wears, helmet to boots.
+    fn worn_armor(&mut self, _id: &str) -> Option<[Option<String>; 4]> {
+        None
+    }
     /// Damage to player `id` of a registered type (`minecraft:magic`); the
     /// host skips creative and spectator players.
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
+    /// Set an online player's remaining fire duration, in ticks.
+    fn fel_fire(&mut self, _id: &str, _ticks: u32) {}
     /// A status effect on player `id` (`poison`) for `ticks`.
     fn effect(&mut self, _id: &str, _effect: &str, _ticks: u32, _amplifier: u8) {}
     /// The world's seed (`World.getSeed`): it seeds the sickness rolls' random (radiation::SicknessRng).
@@ -406,6 +431,9 @@ struct Ready {
     radiation_effect_read: BTreeMap<String, (u32, u8)>,
     /// Each player's step counters (`distanceWalkedOnStepModified`, `nextStepDistance`): an entity's, not saved.
     walks: BTreeMap<String, crate::walking::Walk>,
+    /// The wavelength a FEL gave each SILEX (`silex.mode = this.mode`, `TileEntityFEL:162`), taken by the SILEX's next
+    /// step: in `Ready`, so a refused FEL step gives none. Not saved (the SILEX's own mode goes back to NULL each tick).
+    silex_lasers: BTreeMap<Key, crate::fel::Wavelength>,
     /// RBMK columns whose meltdown is due and already logged (once per column and state; T16 runs it).
     rbmk_melting: BTreeSet<Key>,
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
@@ -419,6 +447,10 @@ struct Ready {
     kept_sickness: Option<u64>,
     /// The stamp of the chunks' saved radiation as last kept (`persist::CHUNK_RADIATION_KEY`); None: write it next time.
     kept_chunk_radiation: Option<u64>,
+    /// Live annihilator pools (`Ready`-scoped so failed machine steps roll them back cleanly).
+    annihilator: crate::annihilator::Pools,
+    /// The stamp of `world.annihilator` as last written (`persist::ANNIHILATOR_KEY`).
+    kept_annihilator: Option<u64>,
     /// What the RBMK's steps gave the world's radiation by chunk (`incrementRad`, `RadEvent`), in order, until the
     /// field takes them after the machines: a step refused takes its events back with the rest of `Ready`.
     chunk_rad_pending: Vec<(String, [i32; 3], f32)>,
@@ -428,6 +460,8 @@ struct Ready {
 }
 
 pub struct Server {
+    /// `MainRegistry.polaroidID`, drawn when the server starts (`digamma::polaroid`).
+    pub polaroid: i32,
     /// The world's radiation by chunk (`server::chunk_radiation_server::Field`): out of `Ready`, which every group of
     /// machines copies for its transaction.
     field: chunk_radiation_server::Field,
@@ -462,6 +496,8 @@ pub struct Server {
     /// did not wait, confirmed once the writer has put everything it queued on the disk (`native_writes_finished`).
     taken: Option<transaction::Taken>,
     awaiting: Option<transaction::Taken>,
+    taken_annihilator: Option<crate::annihilator::Pools>,
+    awaiting_annihilator: Option<crate::annihilator::Pools>,
     /// Drawn when the server starts: the names of the batches it puts out are its own, whatever an older storage or
     /// a newer chunk record names (a storage set back by a death names no batch twice).
     nonce: u64,
@@ -784,6 +820,7 @@ mod fluid_server;
 mod foundry_server;
 pub mod native_server;
 mod radiation_server;
+mod digamma_server;
 mod chunk_radiation_server;
 
 #[cfg(test)]

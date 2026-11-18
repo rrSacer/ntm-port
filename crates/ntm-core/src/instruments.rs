@@ -93,9 +93,10 @@ pub fn dosimeter_lines(buffer_millirad_s: i64) -> Vec<String> {
     ]
 }
 
-/// `printDiagnosticData` with the digamma the port has: none.
-pub fn diagnostic_lines(digamma: f64) -> Vec<String> {
-    let d = (digamma * 100.0).trunc() / 100.0;
+/// `ContaminationUtil.printDiagnosticData:233-242`: the player's digamma (`HbmLivingProps.getDigamma`, a float) to
+/// the hundredth (`(int) (digamma * 100) / 100D`, the product in float) and what it takes of their health.
+pub fn diagnostic_lines(digamma: f32) -> Vec<String> {
+    let d = f64::from((digamma * 100.0) as i32) / 100.0;
     let half = ((1.0 - 0.5f64.powf(d)) * 10000.0).trunc() / 100.0;
     vec![
         "§5===== Ϝ DIGAMMA DIAGNOSTIC Ϝ =====".into(),
@@ -278,10 +279,21 @@ mod tests {
     }
 
     #[test]
-    fn the_diagnostic_prints_zero_digamma_in_the_port() {
+    fn the_diagnostic_prints_the_digamma_to_the_hundredth() {
         let lines = diagnostic_lines(0.0);
         assert_eq!(lines[1], "§dDigamma exposure: §c 0.0 DRX");
         assert_eq!(lines[2], "§dDigamma influence: §c 0.0%");
+        let lines = diagnostic_lines(1.0);
+        assert_eq!(lines[1], "§dDigamma exposure: §c 1.0 DRX");
+        assert_eq!(lines[2], "§dDigamma influence: §c 50.0%");
+        // Twelve ticks of the DRX beam: 1.2000002F, 120.00002F a hundred times, 1.2 DRX, 56.47%.
+        let mut d = 0.0f32;
+        for _ in 0..12 { d = crate::digamma::increment(d, 0.1); }
+        let lines = diagnostic_lines(d);
+        assert_eq!(lines[1], "§dDigamma exposure: §c 1.2 DRX");
+        assert_eq!(lines[2], "§dDigamma influence: §c 56.47%");
+        assert_eq!(diagnostic_lines(0.299)[1], "§dDigamma exposure: §c 0.29 DRX");
+        assert_eq!(diagnostic_lines(10.0)[2], "§dDigamma influence: §c 99.9%");
     }
 
     #[test]

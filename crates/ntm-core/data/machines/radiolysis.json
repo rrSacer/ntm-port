@@ -1,0 +1,308 @@
+{
+  "schema": 1,
+  "station": "radiolysis",
+  "source": "TileEntityMachineRadiolysis, RadiolysisRecipes, CrackingRecipes",
+  "cracking": {
+    "biogas": {
+      "out": [
+        [
+          "petroleum",
+          20
+        ],
+        [
+          "aromatics",
+          20
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:54"
+    },
+    "bitumen": {
+      "out": [
+        [
+          "oil",
+          80
+        ],
+        [
+          "aromatics",
+          20
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:44"
+    },
+    "diesel": {
+      "out": [
+        [
+          "kerosene",
+          40
+        ],
+        [
+          "petroleum",
+          30
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:47"
+    },
+    "diesel_crack": {
+      "out": [
+        [
+          "kerosene",
+          40
+        ],
+        [
+          "petroleum",
+          30
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:48"
+    },
+    "gas": {
+      "out": [
+        [
+          "petroleum",
+          30
+        ],
+        [
+          "unsaturateds",
+          20
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:46"
+    },
+    "heatingoil_vacuum": {
+      "out": [
+        [
+          "heatingoil",
+          80
+        ],
+        [
+          "reformgas",
+          20
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:52"
+    },
+    "kerosene": {
+      "out": [
+        [
+          "petroleum",
+          60
+        ],
+        [
+          "none",
+          0
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:49"
+    },
+    "oil": {
+      "out": [
+        [
+          "crackoil",
+          80
+        ],
+        [
+          "petroleum",
+          20
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:43"
+    },
+    "reformate": {
+      "out": [
+        [
+          "unsaturateds",
+          40
+        ],
+        [
+          "reformgas",
+          60
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:53"
+    },
+    "smear": {
+      "out": [
+        [
+          "naphtha",
+          60
+        ],
+        [
+          "petroleum",
+          40
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:45"
+    },
+    "water": {
+      "out": [
+        [
+          "peroxide",
+          80
+        ],
+        [
+          "hydrogen",
+          20
+        ]
+      ],
+      "source": "RadiolysisRecipes.java:50"
+    },
+    "woodoil": {
+      "out": [
+        [
+          "heatingoil",
+          40
+        ],
+        [
+          "aromatics",
+          10
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:50"
+    },
+    "xylene": {
+      "out": [
+        [
+          "aromatics",
+          80
+        ],
+        [
+          "petroleum",
+          20
+        ]
+      ],
+      "source": "src/main/java/com/hbm/inventory/recipes/CrackingRecipes.java:51"
+    }
+  },
+  "foods": {
+    "ntm": [
+      "ntm:apple_euphemium",
+      "ntm:balefire_and_ham",
+      "ntm:balefire_scrambled",
+      "ntm:bio_wafer",
+      "ntm:bomb_waffle",
+      "ntm:cheese",
+      "ntm:cheese_quesadilla",
+      "ntm:chocolate",
+      "ntm:cotton_candy",
+      "ntm:definitelyfood",
+      "ntm:five_htp",
+      "ntm:fmn",
+      "ntm:fooditem",
+      "ntm:glowing_stew",
+      "ntm:glyphid_meat",
+      "ntm:glyphid_meat_grilled",
+      "ntm:ingot_c4",
+      "ntm:ingot_semtex",
+      "ntm:ingot_smore",
+      "ntm:lemon",
+      "ntm:loop_stew",
+      "ntm:loops",
+      "ntm:med_ipecac",
+      "ntm:med_ptsd",
+      "ntm:mucho_mango",
+      "ntm:nugget",
+      "ntm:pill_herbal",
+      "ntm:pill_iodine",
+      "ntm:pill_red",
+      "ntm:plan_c",
+      "ntm:powder_cement",
+      "ntm:pudding",
+      "ntm:radx",
+      "ntm:schnitzel_vegan",
+      "ntm:siox",
+      "ntm:spongebob_macaroni",
+      "ntm:static_sandwich",
+      "ntm:twinkie",
+      "ntm:xanax"
+    ],
+    "vanilla": [
+      "minecraft:apple",
+      "minecraft:baked_potato",
+      "minecraft:beef",
+      "minecraft:bread",
+      "minecraft:carrot",
+      "minecraft:chicken",
+      "minecraft:cod",
+      "minecraft:cooked_beef",
+      "minecraft:cooked_chicken",
+      "minecraft:cooked_cod",
+      "minecraft:cooked_porkchop",
+      "minecraft:cooked_salmon",
+      "minecraft:cookie",
+      "minecraft:enchanted_golden_apple",
+      "minecraft:golden_apple",
+      "minecraft:golden_carrot",
+      "minecraft:melon_slice",
+      "minecraft:mushroom_stew",
+      "minecraft:poisonous_potato",
+      "minecraft:porkchop",
+      "minecraft:potato",
+      "minecraft:pufferfish",
+      "minecraft:pumpkin_pie",
+      "minecraft:rotten_flesh",
+      "minecraft:salmon",
+      "minecraft:spider_eye",
+      "minecraft:tropical_fish"
+    ],
+    "not_eaten": [
+      "ntm:pancake"
+    ]
+  },
+  "depleted": [
+    "ntm:pellet_rtg_depleted__bismuth",
+    "ntm:pellet_rtg_depleted__lead",
+    "ntm:pellet_rtg_depleted__mercury",
+    "ntm:pellet_rtg_depleted__neptunium",
+    "ntm:pellet_rtg_depleted__nickel",
+    "ntm:pellet_rtg_depleted__zirconium"
+  ],
+  "food_classes": [
+    "ItemAppleEuphemium",
+    "ItemAppleSchrabidium",
+    "ItemCottonCandy",
+    "ItemCrayon",
+    "ItemFood",
+    "ItemLemon",
+    "ItemMuchoMango",
+    "ItemPancake",
+    "ItemPill",
+    "ItemSchnitzelVegan",
+    "ItemSoup",
+    "ItemTemFlakes",
+    "ItemWaffle"
+  ],
+  "skipped": [
+    {
+      "item": "crayon",
+      "class": "ItemCrayon",
+      "reason": "not in the catalog"
+    },
+    {
+      "item": "apple_lead",
+      "class": "ItemAppleSchrabidium",
+      "reason": "not in the catalog"
+    },
+    {
+      "item": "apple_schrabidium",
+      "class": "ItemAppleSchrabidium",
+      "reason": "not in the catalog"
+    },
+    {
+      "item": "tem_flakes",
+      "class": "ItemTemFlakes",
+      "reason": "not in the catalog"
+    },
+    {
+      "item": "med_schizophrenia",
+      "class": "ItemLemon",
+      "reason": "not in the catalog"
+    }
+  ],
+  "coverage": {
+    "cracking": 13,
+    "ntm_foods": 39,
+    "vanilla_foods": 27,
+    "depleted": 6,
+    "skipped": 5
+  }
+}

@@ -26,9 +26,10 @@ def java_lang(name):
 
 class DamageTypes(unittest.TestCase):
     def test_every_emitted_type_is_its_mod_damage_source(self):
-        tag = json.loads((CONTENT / 'data/minecraft/tags/damage_type/bypasses_armor.json').read_text())
+        tags = {t: json.loads((CONTENT / f'data/minecraft/tags/damage_type/{t}.json').read_text())
+                for t in ('bypasses_armor', 'bypasses_effects', 'bypasses_invulnerability')}
         types = sorted(p.stem for p in (CONTENT / 'data/ntm/damage_type').glob('*.json'))
-        self.assertEqual(types, ['radiation'])
+        self.assertEqual(types, ['digamma', 'radiation'])
         for name in types:
             line = re.search(rf'public static DamageSource \w+ = \(new DamageSource\("{name}"\)\)([^;]*);', SOURCE)
             self.assertIsNotNone(line, name)
@@ -39,9 +40,13 @@ class DamageTypes(unittest.TestCase):
             self.assertEqual(data, {'message_id': name, 'exhaustion': 0.0 if bypasses else 0.3,
                                     'scaling': 'when_caused_by_living_non_player'
                                     if '.setDifficultyScaled()' in line.group(1) else 'never'})
-            self.assertEqual(f'ntm:{name}' in tag['values'], bypasses, name)
-        self.assertFalse(tag['replace'])
-        self.assertEqual(json.loads(json.dumps(tag['values'])), ['ntm:radiation'])
+            for tag, call in [('bypasses_armor', '.setDamageBypassesArmor()'), ('bypasses_effects', '.setDamageIsAbsolute()'),
+                              ('bypasses_invulnerability', '.setDamageAllowedInCreativeMode()')]:
+                self.assertEqual(f'ntm:{name}' in tags[tag]['values'], call in line.group(1), (name, tag))
+        for tag in tags.values():
+            self.assertFalse(tag['replace'])
+        self.assertEqual(tags['bypasses_armor']['values'], ['ntm:radiation', 'ntm:digamma'])
+        self.assertEqual(tags['bypasses_effects']['values'], ['ntm:digamma'])
 
     def test_radiation_is_the_armor_bypassing_source_at_line_15(self):
         self.assertEqual(SOURCE.splitlines()[14].strip(), 'public static DamageSource radiation = '
@@ -57,8 +62,9 @@ class DamageTypes(unittest.TestCase):
                 # No `.player` in the Java's lang: func_151519_b falls back to the base text.
                 self.assertNotIn(f'death.attack.{name}.player', java)
                 self.assertEqual(port[f'death.attack.{name}.player'], base, (loc, name))
-        self.assertEqual(json.loads((CONTENT / 'assets/ntm/lang/pt_br.json').read_text())['death.attack.radiation'],
-                         '%1$s morreu por envenenamento por radiação.')
+        pt = json.loads((CONTENT / 'assets/ntm/lang/pt_br.json').read_text())
+        self.assertEqual(pt['death.attack.radiation'], '%1$s morreu por envenenamento por radiação.')
+        self.assertEqual(pt['death.attack.digamma'], '%1$s entrou no abismo.')
 
 
 if __name__ == '__main__':

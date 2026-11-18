@@ -377,18 +377,18 @@
       "sound": "random.burp"
     },
     "ntm:xanax": {
-      "origin": "ItemPill, ModItems.java:2831: digamma -0.5 only (HbmLivingProps), not in the port",
+      "origin": "ItemPill, ModItems.java:2831: digamma -0.5 only (HbmLivingProps)",
       "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
       "sound": "random.burp"
     },
     "ntm:fmn": {
-      "origin": "ItemPill, ModItems.java:2832: digamma capped at 2 (not in the port) and blindness 60 ticks",
+      "origin": "ItemPill, ModItems.java:2832: digamma capped at 2 and blindness 60 ticks",
       "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
       "effects": [["blindness", 60, 0]],
       "sound": "random.burp"
     },
     "ntm:five_htp": {
-      "origin": "ItemPill, ModItems.java:2833: digamma to 0 (not in the port) and Stability 10 minutes",
+      "origin": "ItemPill, ModItems.java:2833: digamma to 0 and Stability 10 minutes",
       "ticks": 10, "animation": "eat", "sickness_gate": true, "consume": "always",
       "effects": [["ntm:stability", 12000, 0]],
       "sound": "random.burp"

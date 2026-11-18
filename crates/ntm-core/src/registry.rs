@@ -60,6 +60,28 @@ pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port>
     if spec.kind == Kind::Compressor {
         return crate::compressor::Compressor::port_cells(spec.id, [0, 0, 0], facing).into_iter().map(|(_, face)| vec![face]).collect();
     }
+    if spec.kind == Kind::Fel {
+        return facing.and_then(facing_dir).map(|d| vec![vec![[-d[0], 0, -d[2]]]]).unwrap_or_default();
+    }
+    // The exposure chamber's five ports, each open on the face `crate::exposure::PORTS` gives, turned with the facing.
+    if spec.kind == Kind::Cyclotron {
+        return facing
+            .and_then(facing_dir)
+            .map(|f| crate::cyclotron::PORTS.iter().map(|(_, face)| vec![crate::server::container_bridge::world_cell([0, 0, 0], f, *face)]).collect())
+            .unwrap_or_default();
+    }
+    if spec.id == crate::crafter::ROCKMILL {
+        return facing
+            .and_then(facing_dir)
+            .map(|f| crate::crafter::ROCKMILL_PORTS.iter().map(|(_, face)| vec![crate::server::container_bridge::world_cell([0, 0, 0], f, *face)]).collect())
+            .unwrap_or_default();
+    }
+    if spec.kind == Kind::ExposureChamber {
+        return facing
+            .and_then(facing_dir)
+            .map(|f| crate::exposure::PORTS.iter().map(|(_, face)| vec![crate::server::container_bridge::world_cell([0, 0, 0], f, *face)]).collect())
+            .unwrap_or_default();
+    }
     match spec.ports {
         Ports::None => Vec::new(),
         Ports::AllRound => vec![DIRS.to_vec()],
@@ -300,14 +322,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_fel",
-        kind: Kind::Inert,
+        kind: Kind::Fel,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_silex",
-        kind: Kind::Inert,
+        kind: Kind::Silex,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -342,14 +364,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_cyclotron",
-        kind: Kind::Inert,
+        kind: Kind::Cyclotron,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_exposure_chamber",
-        kind: Kind::Inert,
+        kind: Kind::ExposureChamber,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -377,10 +399,10 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_radiolysis",
-        kind: Kind::Inert,
+        kind: Kind::Radiolysis,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Sides,
     },
     BlockSpec {
         id: "ntm:machine_drain",
@@ -398,7 +420,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_keyforge",
-        kind: Kind::Inert,
+        kind: Kind::KeyForge,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -440,17 +462,18 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_annihilator",
-        kind: Kind::Inert,
+        kind: Kind::Annihilator,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:machine_rockmill",
-        kind: Kind::Inert,
+        kind: Kind::Crafter,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        // Its eight ports (`crate::crafter::ROCKMILL_PORTS`).
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_mining_laser",
@@ -503,7 +526,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_orbus",
-        kind: Kind::Inert,
+        kind: Kind::FluidStore,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -573,7 +596,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_funnel",
-        kind: Kind::Inert,
+        kind: Kind::Funnel,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1754,6 +1777,10 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         | Kind::Drill
         | Kind::Steam
         | Kind::Welder
+        | Kind::Radiolysis
+        | Kind::Annihilator
+        | Kind::Cyclotron
+        | Kind::Silex
         | Kind::Combustion
         | Kind::Deuterium => vec![crate::energy::DIRS.to_vec()],
         Kind::Intake => crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().next().map(|(_, d)| vec![d]).unwrap_or_default(),

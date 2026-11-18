@@ -50,6 +50,13 @@ fn codec(value: &Compound) -> Result<Compound, AttachmentError> {
             }
         }
     }
+    // `HbmLivingProps.digamma`: a float from 0 to 10.
+    if let Some(value) = value.get(&JavaString::from("digamma")) {
+        match value {
+            Tag::Float(bits) if (0.0..=ntm_core::digamma::MAX).contains(&f32::from_bits(*bits)) => {}
+            _ => return Err(AttachmentError::Decode),
+        }
+    }
     Ok(value.clone())
 }
 static STATE: AttachmentType<Compound> = AttachmentType {
@@ -218,8 +225,9 @@ fn instrument(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         }
         "ntm:digamma_diagnostic" => {
             play(game, "hbm:item.techBoop");
-            // HbmLivingProps.getDigamma: the port has no digamma, so it is 0.
-            ins::diagnostic_lines(0.0).iter().for_each(|l| say(game, l));
+            // HbmLivingProps.getDigamma: the attachment's (0 for one that has none).
+            let digamma = game.native_player_snapshot(&STATE).map_or(0.0, |s| digamma_of(&s.state));
+            ins::diagnostic_lines(digamma).iter().for_each(|l| say(game, l));
         }
         "ntm:survey_scanner" => survey(game, say),
         _ => pipette(game, stack, say),
@@ -673,6 +681,11 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
     if spec.cooldown > 0 {
         set(&mut desired.state, "sickness", spec.cooldown as u64);
     }
+    // `ItemPill.onFoodEaten`: xanax, fmn and 5-HTP set the digamma (`setDigamma`), its modifier after the commit.
+    let digamma = ntm_core::digamma::pill(&stack.item, digamma_of(&desired.state));
+    if let Some(d) = digamma {
+        desired.state.insert("digamma".into(), Tag::Float(d.to_bits()));
+    }
     let benefits = NativePlayerBenefits {
         food: spec.food_stats(),
         heal: spec.heal,
@@ -698,6 +711,9 @@ pub(super) fn complete(game: &mut Game<'_>, stack: &ItemStack) -> bool {
         }
         if let Some(sound) = spec.sound.as_deref() {
             play(game, sound);
+        }
+        if let Some(d) = digamma {
+            digamma_modifier(game, d);
         }
         after_commit(game, spec);
     }
@@ -1154,6 +1170,70 @@ pub(super) fn write_dose(game: &mut Game<'_>, before: &Dose, after: &Dose) -> bo
     }
     set(&mut desired.state, "dose", after.millirad);
     game.native_commit_player(&STATE, &expected, desired, Default::default())
+}
+/// The digamma in the attachment (`HbmLivingProps.digamma`, `hfr_digamma`), 0 when it has none. `legacy` seeds an
+/// attachment that has no dose yet.
+pub(super) fn read_digamma(game: &mut Game<'_>, legacy: &Dose) -> Option<f32> {
+    let mut snap = game.native_player_snapshot(&STATE)?;
+    init(&mut snap, legacy.clone());
+    Some(digamma_of(&snap.state))
+}
+fn digamma_of(c: &Compound) -> f32 {
+    match c.get(&JavaString::from("digamma")) {
+        Some(Tag::Float(bits)) => f32::from_bits(*bits),
+        _ => 0.0,
+    }
+}
+/// `setDigamma`: the digamma written if the attachment still holds `before`, then its `maxHealth` modifier.
+pub(super) fn write_digamma(game: &mut Game<'_>, legacy: &Dose, before: f32, after: f32) -> bool {
+    let Some(expected) = game.native_player_snapshot(&STATE) else {
+        return false;
+    };
+    let mut desired = expected.clone();
+    init(&mut desired, legacy.clone());
+    if digamma_of(&desired.state) != before {
+        return false;
+    }
+    desired.state.insert("digamma".into(), Tag::Float(after.to_bits()));
+    if !game.native_commit_player(&STATE, &expected, desired, Default::default()) {
+        return false;
+    }
+    digamma_modifier(game, after);
+    true
+}
+/// The `maxHealth` modifier of the digamma in the attachment, put back on the body.
+pub(super) fn sync_digamma(game: &mut Game<'_>, legacy: &Dose) {
+    if let Some(d) = read_digamma(game, legacy) {
+        digamma_modifier(game, d);
+    }
+}
+/// `setDigamma:144-156`: the `digamma_UUID` modifier, `0.5^digamma - 1` with operation 2, kept with the player's
+/// attributes (none at 0, which changes nothing), and the health capped to the new maximum.
+fn digamma_modifier(game: &mut Game<'_>, digamma: f32) {
+    use horizon_world::attributes::{Modifier, Operation};
+    let Some(p) = game.player.as_mut() else { return };
+    let Some(key) = p.attributes.key("minecraft:max_health") else { return };
+    let Ok(Some(handle)) = p.attributes.get_instance(Some(key)) else { return };
+    let Ok(modifier) = Modifier::new(ntm_core::digamma::MODIFIER, f64::from(ntm_core::digamma::health_modifier(digamma)), Operation::AddMultipliedTotal) else { return };
+    let edited = p.attributes.edit(&handle, |value, observer| {
+        value.remove(modifier.id(), observer)?;
+        if digamma > 0.0 {
+            value.add_permanent(modifier, observer)?;
+        }
+        Ok(())
+    });
+    if let Err(e) = edited {
+        eprintln!("ntm: digamma modifier: {e:?}");
+    }
+    let _ = p.clamp_health_to_max();
+}
+/// The acting player's `maxHealth` with every modifier.
+pub(super) fn max_health(game: &mut Game<'_>) -> Option<f64> {
+    game.player.as_mut()?.attribute("minecraft:max_health").ok()
+}
+/// What the acting player wears, helmet to boots.
+pub(super) fn worn_armor(game: &Game<'_>) -> [Option<String>; 4] {
+    std::array::from_fn(|i| game.armor[i].as_ref().map(|s| s.item.to_string()))
 }
 /// The radiation potion (`HbmPotion.radiation`) in the attachment: `irradiated` ticks left at amplifier
 /// `irradiated_level` (Onda 1, slice 5c, D3), and the world's entry it took in (`irradiated_migrated`,

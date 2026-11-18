@@ -7,6 +7,7 @@ use ntm_core::client_rad;
 /// The Geiger counter: a box in the top left with the rate and the dose, in
 /// the colour of the dose, once the server has sent one.
 pub(super) fn hud(game: &mut crate::game::Game<'_>, batch: &mut HudBatch, corners: &mut Corners) {
+    look_overlay(game, batch);
     if !game.native_corner_shown(Corner::TopLeft) {
         return;
     }
@@ -19,6 +20,21 @@ pub(super) fn hud(game: &mut crate::game::Game<'_>, batch: &mut HudBatch, corner
     game.native_fill(batch, [x, y, width, height], 0x7800_0000);
     for (i, line) in lines.iter().enumerate() {
         game.native_text(batch, line, [x + 3.0, y + 2.0 + i as f32 * 10.0], color, true);
+    }
+}
+
+/// `ILookOverlay.printHook` of the block in the crosshair (`ModEventHandlerClient:205-221`): `printGeneric`'s title
+/// and lines right of the crosshair (`ntm_core::look_overlay`).
+fn look_overlay(game: &mut crate::game::Game<'_>, batch: &mut HudBatch) {
+    use ntm_core::look_overlay as lo;
+    let Some(hit) = game.native_raycast(lo::reach(game.creative)) else { return };
+    let Some(o) = lo::of_block(&hit.block) else { return };
+    let (shadow, title, lines) = lo::layout(batch.width, batch.height, o.lines.len());
+    game.native_text(batch, &o.title, shadow, o.background, false);
+    game.native_text(batch, &o.title, title, o.title_color, false);
+    for (line, at) in o.lines.iter().zip(lines) {
+        let (color, text) = lo::line_color(line);
+        game.native_text(batch, text, at, color, true);
     }
 }
 

@@ -7,6 +7,7 @@ import atexit
 from contextlib import contextmanager
 import json
 import os
+import re
 import socket
 import time
 from pathlib import Path
@@ -171,6 +172,12 @@ class Game:
         time.sleep(.4)
         screen = self.ctl('screen')
         self.check(f'insert_{item}_{slot}', not screen.get('carried'), screen)
+
+    def dropped(self, item):
+        """How many of `item` lie on the ground: the stacks of every item entity summed (an entity count
+        would take two stacks of one for one stack of two)."""
+        lines = self.command('execute as @e[type=minecraft:item] run data get entity @s Item').get('chat', [])
+        return sum(int(n) for line in lines if f'"{item}"' in line for n in re.findall(r'(?:count|Count): ?(\d+)', line))
 
     def poll(self, predicate, timeout=180):
         deadline = time.monotonic() + timeout

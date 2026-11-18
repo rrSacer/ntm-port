@@ -1,0 +1,449 @@
+{
+  "schema": 1,
+  "station": "cyclotron",
+  "source": "CyclotronRecipes.registerDefaults",
+  "recipes": [
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustLithium",
+      "ingredients": [
+        "ntm:powder_lithium"
+      ],
+      "output": "ntm:powder_beryllium",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:34"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustBeryllium",
+      "ingredients": [
+        "ntm:powder_beryllium"
+      ],
+      "output": "ntm:powder_boron",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:35"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustBoron",
+      "ingredients": [
+        "ntm:powder_boron"
+      ],
+      "output": "ntm:powder_coal",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:36"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustNetherQuartz",
+      "ingredients": [
+        "ntm:powder_quartz"
+      ],
+      "output": "ntm:powder_fire",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:37"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustIron",
+      "ingredients": [
+        "ntm:powder_iron"
+      ],
+      "output": "ntm:powder_cobalt",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:39"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_strontium"
+      ],
+      "output": "ntm:powder_zirconium",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:40"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustGold",
+      "ingredients": [
+        "ntm:powder_gold"
+      ],
+      "output": "ntm:nugget_mercury",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:41"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustPolonium",
+      "ingredients": [
+        "ntm:powder_polonium"
+      ],
+      "output": "ntm:powder_astatine",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:42"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustUranium",
+      "ingredients": [
+        "ntm:powder_uranium"
+      ],
+      "output": "ntm:powder_neptunium",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:45"
+    },
+    {
+      "particle": "ntm:part_lithium",
+      "ore": "dustNeptunium237",
+      "ingredients": [
+        "ntm:powder_neptunium"
+      ],
+      "output": "ntm:powder_plutonium",
+      "output_stack": 64,
+      "amat": 50,
+      "source": "CyclotronRecipes.java:46"
+    },
+    {
+      "particle": "ntm:part_beryllium",
+      "ore": "dustLithium",
+      "ingredients": [
+        "ntm:powder_lithium"
+      ],
+      "output": "ntm:powder_boron",
+      "output_stack": 64,
+      "amat": 25,
+      "source": "CyclotronRecipes.java:52"
+    },
+    {
+      "particle": "ntm:part_beryllium",
+      "ore": "dustNetherQuartz",
+      "ingredients": [
+        "ntm:powder_quartz"
+      ],
+      "output": "ntm:sulfur",
+      "output_stack": 64,
+      "amat": 25,
+      "source": "CyclotronRecipes.java:53"
+    },
+    {
+      "particle": "ntm:part_beryllium",
+      "ore": "dustTitanium",
+      "ingredients": [
+        "ntm:powder_titanium"
+      ],
+      "output": "ntm:powder_iron",
+      "output_stack": 64,
+      "amat": 25,
+      "source": "CyclotronRecipes.java:54"
+    },
+    {
+      "particle": "ntm:part_beryllium",
+      "ore": "dustCobalt",
+      "ingredients": [
+        "ntm:powder_cobalt"
+      ],
+      "output": "ntm:powder_copper",
+      "output_stack": 64,
+      "amat": 25,
+      "source": "CyclotronRecipes.java:55"
+    },
+    {
+      "particle": "ntm:part_beryllium",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_strontium"
+      ],
+      "output": "ntm:powder_niobium",
+      "output_stack": 64,
+      "amat": 25,
+      "source": "CyclotronRecipes.java:56"
+    },
+    {
+      "particle": "ntm:part_beryllium",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_cerium"
+      ],
+      "output": "ntm:powder_neodymium",
+      "output_stack": 64,
+      "amat": 25,
+      "source": "CyclotronRecipes.java:57"
+    },
+    {
+      "particle": "ntm:part_beryllium",
+      "ore": "dustThorium",
+      "ingredients": [
+        "ntm:powder_thorium"
+      ],
+      "output": "ntm:powder_uranium",
+      "output_stack": 64,
+      "amat": 25,
+      "source": "CyclotronRecipes.java:58"
+    },
+    {
+      "particle": "ntm:part_carbon",
+      "ore": "dustBoron",
+      "ingredients": [
+        "ntm:powder_boron"
+      ],
+      "output": "ntm:powder_aluminium",
+      "output_stack": 64,
+      "amat": 10,
+      "source": "CyclotronRecipes.java:64"
+    },
+    {
+      "particle": "ntm:part_carbon",
+      "ore": "dustSulfur",
+      "ingredients": [
+        "ntm:sulfur"
+      ],
+      "output": "ntm:powder_titanium",
+      "output_stack": 64,
+      "amat": 10,
+      "source": "CyclotronRecipes.java:65"
+    },
+    {
+      "particle": "ntm:part_carbon",
+      "ore": "dustTitanium",
+      "ingredients": [
+        "ntm:powder_titanium"
+      ],
+      "output": "ntm:powder_cobalt",
+      "output_stack": 64,
+      "amat": 10,
+      "source": "CyclotronRecipes.java:66"
+    },
+    {
+      "particle": "ntm:part_carbon",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_caesium"
+      ],
+      "output": "ntm:powder_lanthanium",
+      "output_stack": 64,
+      "amat": 10,
+      "source": "CyclotronRecipes.java:67"
+    },
+    {
+      "particle": "ntm:part_carbon",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_neodymium"
+      ],
+      "output": "ntm:powder_gold",
+      "output_stack": 64,
+      "amat": 10,
+      "source": "CyclotronRecipes.java:68"
+    },
+    {
+      "particle": "ntm:part_carbon",
+      "ore": null,
+      "ingredients": [
+        "ntm:nugget_mercury"
+      ],
+      "output": "ntm:powder_polonium",
+      "output_stack": 64,
+      "amat": 10,
+      "source": "CyclotronRecipes.java:69"
+    },
+    {
+      "particle": "ntm:part_carbon",
+      "ore": "dustLead",
+      "ingredients": [
+        "ntm:powder_lead"
+      ],
+      "output": "ntm:powder_ra226",
+      "output_stack": 64,
+      "amat": 10,
+      "source": "CyclotronRecipes.java:70"
+    },
+    {
+      "particle": "ntm:part_carbon",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_astatine"
+      ],
+      "output": "ntm:powder_actinium",
+      "output_stack": 64,
+      "amat": 10,
+      "source": "CyclotronRecipes.java:71"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": "dustBeryllium",
+      "ingredients": [
+        "ntm:powder_beryllium"
+      ],
+      "output": "ntm:powder_quartz",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:77"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": "dustCoal",
+      "ingredients": [
+        "ntm:powder_coal"
+      ],
+      "output": "ntm:powder_bromine",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:78"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": "dustTitanium",
+      "ingredients": [
+        "ntm:powder_titanium"
+      ],
+      "output": "ntm:powder_strontium",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:79"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": "dustIron",
+      "ingredients": [
+        "ntm:powder_iron"
+      ],
+      "output": "ntm:powder_niobium",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:80"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_bromine"
+      ],
+      "output": "ntm:powder_iodine",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:81"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_strontium"
+      ],
+      "output": "ntm:powder_neodymium",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:82"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_niobium"
+      ],
+      "output": "ntm:powder_caesium",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:83"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_iodine"
+      ],
+      "output": "ntm:powder_polonium",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:84"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_caesium"
+      ],
+      "output": "ntm:powder_actinium",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:85"
+    },
+    {
+      "particle": "ntm:part_copper",
+      "ore": "dustGold",
+      "ingredients": [
+        "ntm:powder_gold"
+      ],
+      "output": "ntm:powder_uranium",
+      "output_stack": 64,
+      "amat": 15,
+      "source": "CyclotronRecipes.java:86"
+    },
+    {
+      "particle": "ntm:part_plutonium",
+      "ore": "dustPlutonium",
+      "ingredients": [
+        "ntm:powder_plutonium"
+      ],
+      "output": "ntm:powder_tennessine",
+      "output_stack": 64,
+      "amat": 100,
+      "source": "CyclotronRecipes.java:93"
+    },
+    {
+      "particle": "ntm:part_plutonium",
+      "ore": null,
+      "ingredients": [
+        "ntm:powder_tennessine"
+      ],
+      "output": "ntm:powder_australium",
+      "output_stack": 64,
+      "amat": 100,
+      "source": "CyclotronRecipes.java:94"
+    },
+    {
+      "particle": "ntm:part_plutonium",
+      "ore": null,
+      "ingredients": [
+        "ntm:pellet_charged"
+      ],
+      "output": "ntm:nugget_schrabidium",
+      "output_stack": 64,
+      "amat": 1000,
+      "source": "CyclotronRecipes.java:95"
+    }
+  ],
+  "skipped": [
+    {
+      "source": "CyclotronRecipes.java:38",
+      "reason": "no item behind dustPhosphorus"
+    },
+    {
+      "source": "CyclotronRecipes.java:43",
+      "reason": "no item behind dustLanthanium"
+    },
+    {
+      "source": "CyclotronRecipes.java:44",
+      "reason": "no item behind dustActinium"
+    },
+    {
+      "source": "CyclotronRecipes.java:92",
+      "reason": "no item behind dustPhosphorus"
+    }
+  ],
+  "collisions": [],
+  "coverage": {
+    "recipes": 38,
+    "skipped": 4,
+    "collisions": 0
+  }
+}

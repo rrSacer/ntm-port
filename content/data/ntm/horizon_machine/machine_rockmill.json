@@ -1,0 +1,139 @@
+{
+  "use_range": 12.0,
+  "slots": [
+    {
+      "x": 152,
+      "y": 91,
+      "accept": [
+        "ntm:battery_creative"
+      ],
+      "max": 1
+    },
+    {
+      "x": 35,
+      "y": 90,
+      "accept": []
+    },
+    {
+      "x": 8,
+      "y": 27,
+      "accept": [
+        "minecraft:cobblestone",
+        "minecraft:gravel",
+        "minecraft:netherrack",
+        "minecraft:sand",
+        "minecraft:soul_sand",
+        "ntm:basalt",
+        "ntm:stone_gneiss",
+        "ntm:stone_resource__bauxite",
+        "ntm:stone_resource__hematite"
+      ]
+    },
+    {
+      "x": 26,
+      "y": 27,
+      "accept": [
+        "minecraft:cobblestone",
+        "minecraft:gravel",
+        "minecraft:netherrack",
+        "minecraft:sand",
+        "minecraft:soul_sand",
+        "ntm:basalt",
+        "ntm:stone_gneiss",
+        "ntm:stone_resource__bauxite",
+        "ntm:stone_resource__hematite"
+      ]
+    },
+    {
+      "x": 44,
+      "y": 27,
+      "accept": [
+        "minecraft:cobblestone",
+        "minecraft:gravel",
+        "minecraft:netherrack",
+        "minecraft:sand",
+        "minecraft:soul_sand",
+        "ntm:basalt",
+        "ntm:stone_gneiss",
+        "ntm:stone_resource__bauxite",
+        "ntm:stone_resource__hematite"
+      ]
+    },
+    {
+      "x": 80,
+      "y": 27,
+      "output": true
+    },
+    {
+      "x": 98,
+      "y": 27,
+      "output": true
+    },
+    {
+      "x": 116,
+      "y": 27,
+      "output": true
+    }
+  ],
+  "inventory": [
+    8,
+    138
+  ],
+  "data": 31,
+  "multiblock": {
+    "min": [
+      -2,
+      0,
+      -2
+    ],
+    "max": [
+      2,
+      2,
+      2
+    ],
+    "offset": 2,
+    "dummy": "ntm:dummy_machine",
+    "inventory_ports": [
+      [
+        2,
+        0,
+        1
+      ],
+      [
+        -2,
+        0,
+        1
+      ],
+      [
+        2,
+        0,
+        -1
+      ],
+      [
+        -2,
+        0,
+        -1
+      ],
+      [
+        1,
+        0,
+        2
+      ],
+      [
+        1,
+        0,
+        -2
+      ],
+      [
+        -1,
+        0,
+        2
+      ],
+      [
+        -1,
+        0,
+        -2
+      ]
+    ]
+  }
+}

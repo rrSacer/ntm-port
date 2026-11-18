@@ -1,0 +1,40 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_annihilator.png",
+  "size": [
+    176,
+    208
+  ],
+  "title": [
+    70,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    114
+  ],
+  "texts": [
+    {
+      "at": [
+        31,
+        85
+      ],
+      "text": "Recycling",
+      "color": "#00ff00",
+      "align": "left"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        151,
+        35,
+        18,
+        18
+      ],
+      "lines": [
+        "Monitored: {0}"
+      ]
+    }
+  ]
+}

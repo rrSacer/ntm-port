@@ -168,6 +168,8 @@ pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: 
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
     if old != new {
         field_block_added(dim, pos, &new);
+        matter_added(dim, pos, &new, level.world.game_time as i64);
+        flame_neighbours(level, dim, pos);
     }
     // A Geiger counter block taken away: a new one starts from 0 (a new TileEntityGeiger).
     if old == GEIGER && new != GEIGER {
@@ -542,13 +544,90 @@ fn field_block_added(dim: &str, pos: [i32; 3], new: &str) {
 /// The first ticks queued since: scheduled in the level in place (another level's are its own game's).
 fn schedule_field_ticks(game: &mut crate::game::Game<'_>) {
     let queued = std::mem::take(&mut *lock(&FIELD_SCHEDULE));
-    if queued.is_empty() {
+    let matter = std::mem::take(&mut *lock(&MATTER_SCHEDULE));
+    if queued.is_empty() && matter.is_empty() {
         return;
     }
     let dim = game.dim.id().to_string();
     game.with_level(|_, level, ticks| {
         for (_, pos, block) in queued.iter().filter(|q| q.0 == dim) {
             level.native_schedule_block_tick(ticks, *pos, block, ntm_core::field_sources::TICK_RATE);
+        }
+        for (_, pos, block, delay) in matter.iter().filter(|q| q.0 == dim) {
+            level.native_schedule_block_tick(ticks, *pos, block, *delay as i32);
+        }
+    });
+}
+
+/// `DigammaMatter.onBlockAdded`'s first ticks, (dimension, position, block, delay), as FIELD_SCHEDULE's.
+static MATTER_SCHEDULE: Mutex<Vec<(String, [i32; 3], String, u32)>> = Mutex::new(Vec::new());
+
+/// A digamma matter block added: its tick 10 to 49 ticks on (`10 + rand.nextInt(40)`, a static `Random`; the mods
+/// have none: a hash of the cell and the game time).
+fn matter_added(dim: &str, pos: [i32; 3], new: &str, time: i64) {
+    let id = ntm_core::blockstate::id_of(new);
+    if ntm_core::digamma::matter_meta(id).is_none() {
+        return;
+    }
+    let seed = ntm_core::hash::fnv64(&[pos[0].to_le_bytes(), pos[1].to_le_bytes(), pos[2].to_le_bytes(), (time as i32).to_le_bytes()].concat());
+    let delay = ntm_core::digamma::matter_delay(|n| (ntm_core::hash::mix(seed) % n as u64) as i32);
+    lock(&MATTER_SCHEDULE).push((dim.to_string(), pos, id.to_string(), delay));
+}
+
+/// `DigammaMatter.updateTick`: the block goes, and below metadata 7 each cell within two steps that holds no matter
+/// takes the next (`digamma::matter_spread`), with `setBlock`'s flag 3. A cell whose chunk is not loaded is left.
+fn matter_tick(level: &mut crate::game::GameLevel<'_>, ticks: &mut horizon_world::level::Ticks, pos: horizon_core::position::BlockPos, meta: u8) {
+    let Some(air) = level.registry.default_state("minecraft:air") else { return };
+    let behaviours = level.behaviours;
+    behaviours.set_block(level, ticks, pos, air, 3);
+    let cells = ntm_core::digamma::matter_spread(meta, |o| {
+        let state = level.world.block(pos.x + o[0], pos.y + o[1], pos.z + o[2]);
+        ntm_core::digamma::matter_meta(&level.facts.get(state).name).is_some()
+    });
+    for (o, next) in cells {
+        let at = horizon_core::position::BlockPos::new(pos.x + o[0], pos.y + o[1], pos.z + o[2]);
+        if !level.world.loaded(at.x, at.z) {
+            continue;
+        }
+        if let Some(state) = level.registry.default_state(&ntm_core::digamma::matter_id(next)) {
+            behaviours.set_block(level, ticks, at, state, 3);
+        }
+    }
+}
+
+/// Digamma flames whose ground went, (dimension, position): taken away at the end of the tick.
+static FLAME_CHECKS: Mutex<Vec<(String, [i32; 3])>> = Mutex::new(Vec::new());
+
+/// `DigammaFlame.onNeighborBlockChange`: a block changed beside a digamma flame, which goes when the block under it has no
+/// solid top any more (`World.doesBlockHaveSolidTopSurface(x, y - 1, z)`, read as an opaque full cube: `isSideSolid`'s
+/// rule for a plain block).
+fn flame_neighbours(level: &crate::game::GameLevel<'_>, dim: &str, pos: [i32; 3]) {
+    for d in ntm_core::energy::DIRS {
+        let at = [pos[0] + d[0], pos[1] + d[1], pos[2] + d[2]];
+        if &*level.facts.get(level.world.block(at[0], at[1], at[2])).name != ntm_core::digamma::FLAME_BLOCK {
+            continue;
+        }
+        if !level.facts.get(level.world.block(at[0], at[1] - 1, at[2])).solid_render {
+            lock(&FLAME_CHECKS).push((dim.to_string(), at));
+        }
+    }
+}
+
+/// The flames queued since: each still a flame on no solid top goes (`setBlockToAir`).
+fn remove_unsupported_flames(game: &mut crate::game::Game<'_>) {
+    let queued = std::mem::take(&mut *lock(&FLAME_CHECKS));
+    if queued.is_empty() {
+        return;
+    }
+    let dim = game.dim.id().to_string();
+    game.with_level(|_, level, ticks| {
+        let Some(air) = level.registry.default_state("minecraft:air") else { return };
+        for (_, at) in queued.iter().filter(|q| q.0 == dim) {
+            let flame = &*level.facts.get(level.world.block(at[0], at[1], at[2])).name == ntm_core::digamma::FLAME_BLOCK;
+            if flame && !level.facts.get(level.world.block(at[0], at[1] - 1, at[2])).solid_render {
+                let behaviours = level.behaviours;
+                behaviours.set_block(level, ticks, horizon_core::position::BlockPos::new(at[0], at[1], at[2]), air, 3);
+            }
         }
     });
 }
@@ -588,6 +667,10 @@ pub(super) fn field_scheduled_tick(level: &mut crate::game::GameLevel<'_>, ticks
         return;
     }
     let name = level.facts.get(state).name.to_string();
+    if let Some(meta) = ntm_core::digamma::matter_meta(&name) {
+        matter_tick(level, ticks, pos, meta);
+        return;
+    }
     field_tick(level, ticks, level_dim_id(dimension), [pos.x, pos.y, pos.z], &name, false);
 }
 
@@ -1123,6 +1206,7 @@ pub(super) fn chunk_unloaded(game: &mut crate::game::Game<'_>, dim: &str, chunk:
 /// The end of a server tick: the server's phases.
 pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
     schedule_field_ticks(game);
+    remove_unsupported_flames(game);
     horizon_client::spans::time("ntm_ledger_tick", || ledger_tick(game));
     let mut retry=Vec::new();
     for (origin,expected) in std::mem::take(&mut *lock(&POST_SYNC)){
@@ -1504,6 +1588,12 @@ impl ServerHost for Host<'_, '_> {
     fn pile_depletion(&mut self, stack: &Stack) -> f64 {
         stack.custom.as_ref().and_then(|c| horizon_world::nbt::parse_snbt(c).ok().map(|(tag,_)| tag)).as_ref().map_or(0.0, |t| pile_depletion(Some(t)))
     }
+    fn fel_opaque(&mut self,dim:&str,p:[i32;3])->Option<bool> {
+        self.game.native_loaded_block(dim,p)?;
+        let target=dim_of(dim)?;
+        let world=if target==self.game.dim {&self.game.world} else {self.game.levels.parked_world(target)?};
+        Some(self.game.res.facts().get(world.block(p[0],p[1],p[2])).can_occlude)
+    }
     fn block_resistance(&mut self,dim:&str,p:[i32;3])->Option<f32> {
         self.game.native_loaded_block(dim,p)?;
         let target=dim_of(dim)?;
@@ -1671,6 +1761,17 @@ impl ServerHost for Host<'_, '_> {
     fn commit_player_dose(&mut self,id:&str,expected:&ntm_core::radiation::Dose,desired:&ntm_core::radiation::Dose)->bool{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::write_dose(g,expected,desired)).unwrap_or(false)
     }
+    fn player_digamma(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<f32>{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::read_digamma(g,legacy)).flatten()
+    }
+    fn commit_player_digamma(&mut self,id:&str,legacy:&ntm_core::radiation::Dose,expected:f32,desired:f32)->bool{
+        self.game.native_visit_player(id,|g|crate::game::ntm_items::write_digamma(g,legacy,expected,desired)).unwrap_or(false)
+    }
+    fn sync_digamma(&mut self,id:&str,legacy:&ntm_core::radiation::Dose){
+        let _=self.game.native_visit_player(id,|g|crate::game::ntm_items::sync_digamma(g,legacy));
+    }
+    fn max_health(&mut self,id:&str)->Option<f64>{self.game.native_visit_player(id,|g|crate::game::ntm_items::max_health(g)).flatten()}
+    fn worn_armor(&mut self,id:&str)->Option<[Option<String>;4]>{self.game.native_visit_player(id,|g|crate::game::ntm_items::worn_armor(g))}
     fn radiation_factor(&mut self,id:&str)->f64{self.game.native_visit_player(id,|g|crate::game::ntm_items::radiation_factor(g)).unwrap_or(1.0)}
     fn player_irradiation(&mut self,id:&str,legacy:&ntm_core::radiation::Dose)->Option<ntm_core::zirnox::StoredPotion>{
         self.game.native_visit_player(id,|g|crate::game::ntm_items::read_irradiation(g,legacy)).flatten()
@@ -1744,6 +1845,11 @@ impl ServerHost for Host<'_, '_> {
     }
     fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c| (c.item, c.count)).collect())
+    }
+    fn fel_fire(&mut self, id: &str, ticks: u32) {
+        let _ = self.game.native_visit_player(id, |g| {
+            if let Some(p) = g.player.as_mut() { p.set_remaining_fire_ticks(p.fire_ticks.max(ticks as i32)); }
+        });
     }
     fn hurt(&mut self, id: &str, amount: f32, kind: &str) {
         if let Err(e) = self.game.native_hurt(id, amount, kind) {
@@ -1882,6 +1988,14 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::radioisotopes::RTG => Some(SlotPolicy(rtg_slot_policy)),
         ntm_core::radioisotopes::RADGEN => Some(SlotPolicy(radgen_slot_policy)),
         _ if ntm_core::native::is_brick_furnace(block) => Some(SlotPolicy(brick_slot_policy)),
+        ntm_core::keyforge::BLOCK => Some(SlotPolicy(keyforge_slot_policy)),
+        ntm_core::funnel::BLOCK => Some(SlotPolicy(funnel_slot_policy)),
+        ntm_core::radiolysis::BLOCK => Some(SlotPolicy(radiolysis_slot_policy)),
+        ntm_core::exposure::BLOCK => Some(SlotPolicy(exposure_slot_policy)),
+        ntm_core::fel::BLOCK => Some(SlotPolicy(fel_slot_policy)),
+        ntm_core::annihilator::BLOCK => Some(SlotPolicy(annihilator_slot_policy)),
+        ntm_core::cyclotron::BLOCK => Some(SlotPolicy(cyclotron_slot_policy)),
+        ntm_core::silex::BLOCK => Some(SlotPolicy(silex_slot_policy)),
         ntm_core::furnaces::IRON => Some(SlotPolicy(iron_furnace_slot_policy)),
         ntm_core::furnaces::STEEL => Some(SlotPolicy(steel_furnace_slot_policy)),
         ntm_core::furnaces::COMBINATION => Some(SlotPolicy(combination_furnace_slot_policy)),
@@ -1906,6 +2020,38 @@ fn rtg_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
 fn radgen_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::radioisotopes::RADGEN, slots, slot, item, action, origin)
+}
+fn keyforge_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::keyforge::BLOCK, slots, slot, item, action, origin)
+}
+fn funnel_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::funnel::BLOCK, slots, slot, item, action, origin)
+}
+fn annihilator_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::annihilator::BLOCK, slots, slot, item, action, origin)
+}
+fn silex_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::silex::BLOCK, slots, slot, item, action, origin)
+}
+fn cyclotron_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::cyclotron::BLOCK, slots, slot, item, action, origin)
+}
+fn fel_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::fel::BLOCK, slots, slot, item, action, origin)
+}
+fn exposure_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::exposure::BLOCK, slots, slot, item, action, origin)
+}
+fn radiolysis_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::radiolysis::BLOCK, slots, slot, item, action, origin)
 }
 fn arc_welder_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
@@ -1971,11 +2117,16 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     let s = s.as_ref().filter(|s| s.count > 0 && &*s.item != "minecraft:air")?;
     let mut t = Stack::new(&s.item, s.count);
     t.damage = s.damage;
-    // The items whose custom data a machine reads: rods and pellets, the fluid identifier (its type), the broken item (its product)
-    // and the battery packs (their charge).
+    // The items whose custom data a machine reads: rods and pellets, the fluid identifier (its type), the broken item (its product),
+    // the keys and locks (their pins) and the battery packs (their charge).
     if ntm_core::storage::slot_item(&s.item) != ntm_core::energy_network::SlotItem::Other || ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() || ntm_core::radioisotopes::pellet(&s.item).is_some() || ntm_core::rbmk::persist::rod_of(&s.item).is_some()
-        || &*s.item == ntm_core::server::native_server::IDENTIFIER || &*s.item == ntm_core::broken::ID {
+        || &*s.item == ntm_core::server::native_server::IDENTIFIER || &*s.item == ntm_core::broken::ID
+        || ntm_core::keyforge::is_pin_item(&s.item) {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
+    } else if let Some(custom) = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt)
+        // Any item may carry the contagion (`ntmContagion`) the radiolysis chamber sterilizes.
+        && custom.contains(ntm_core::radiolysis::CONTAGION) {
+        t.custom = Some(custom);
     }
     Some(t)
 }
@@ -2000,6 +2151,10 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
             rod_doubles(&mut tag);
         }
         it.data_mut().set_other("minecraft:custom_data",Some(tag));
+    } else if let Some(it) = result.as_mut() && new.custom.is_none()
+        && it.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt).is_some_and(|c| c.contains(ntm_core::radiolysis::CONTAGION)) {
+        // The logic took the contagion off the item's only custom data: it has none left.
+        it.data_mut().set_other("minecraft:custom_data",None);
     }
     result
 }
