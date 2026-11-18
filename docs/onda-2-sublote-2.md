@@ -798,7 +798,9 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - `hasContainerItem` é aproximado: baldes cheios, garrafa de mel, sopro de dragão e os recipientes de fluido do NTM.
 - Uma cópia posta no molde perde o custom data que já trazia quando ganha o modo (a ponte só lia o custom data de alguns itens).
 - O "primeiro nome do OreDict" de um prefixo segue a ordem alfabética: o OreDict do port guarda os nomes de um item ordenados, e o `getOreIDs` do Java os dá na ordem de registro. A pólvora (`dustAnyPropellant`, `dustGunpowder`) pode receber o outro nome.
-- As famílias vanilla são uma tabela à mão: um item de 1.7.10 com metadados que não esteja nela é tratado como de um metadado só.
+- **As famílias vanilla são uma lista parcial**, uma tabela à mão: um item de 1.7.10 com metadados que não esteja nela é tratado como de um metadado só.
+  - Faltam, entre outros: terra e podzol (`dirt`), flores (`red_flower`, `double_plant`), grama alta (`tallgrass`), lajes de pedra (`stone_slab`), peixes crus e cozidos (`fish`, `cooked_fish`), cabeças (`skull`), muros de pedregulho (`cobblestone_wall`), bigorna (`anvil`), blocos com traça (`monster_egg`), poções (`potion`) e ovos de criatura (`spawn_egg`).
+  - Para esses itens, o `initPatternSmart` dá `wildcard` onde o 1.7.10 daria `exact`, e o `wildcard` não junta as variantes. O teste `the_modes_turn_as_the_pattern_matcher_does` fixa um desses casos: `smart_mode("minecraft:dirt") == WILDCARD`, que no 1.7.10 seria `EXACT` (a terra tem o podzol como metadado). Completar a lista muda esse teste e pede nova rodada de provas e mutantes.
 - A cópia do motor não leva os itens que um item guarda (caixa de shulker, saco, besta carregada), e o `copy()` do Java levaria o NBT inteiro. Em 1.7.10 nenhum item comum de molde guarda itens assim, e a cópia nunca cai.
 - **Pin do motor:** o `compatibility.json` aponta para o motor `51e7c5324c`, mas o `horizon_branch` continua `ntm-current`. Antes da `main`, o motor da autocrafter precisa entrar numa branch integrada, e o `horizon_branch` apontar para ela.
 
