@@ -1797,10 +1797,13 @@ def funnel_verify(g, again=False):
     g.check('the_funnel_is_alive', machine_present(g, (140, 100, 8)), state)
 
 
-# `autocrafter-state`: an autocrafter with a template of two planks (sticks) and 20 planks in each of two inputs, crafting one
-# a tick, the world saved and killed at each boundary: whatever the cut, the planks and the sticks are the forty planks (two
-# planks make four sticks), the two inputs hold the same, and the template's copies, their modes and the result are kept.
+# `autocrafter-state`: an autocrafter with a template of two planks (sticks), fed by a hopper above it holding 64 planks
+# (the hopper puts them in as `isItemValidForSlot` lets it: a hand may not put more than 4), crafting as the planks come,
+# the world saved and killed at each boundary while it works: whatever the cut, the planks in the hopper and the inputs
+# and the sticks are the 64 planks (two planks make four sticks), and the template's copies, their modes and the result
+# are kept. The copies are not items: the disk count leaves the template's slots out (`disk_count.TEMPLATES`).
 AUTOCRAFTER = (140, 100, 8)
+AUTOCRAFTER_HOPPER = (140, 101, 8)
 
 
 def autocrafter_parts(g):
@@ -1813,9 +1816,11 @@ def autocrafter_parts(g):
 def autocrafter_state(g):
     import native_funnel as F
     items = F.items(g, AUTOCRAFTER)
-    # The inputs' planks (slots 10-18): the template's are copies.
+    hopper = F.items(g, AUTOCRAFTER_HOPPER)
     planks = sum(c for k, (i, c) in items.items() if i == 'minecraft:oak_planks' and 10 <= k <= 18)
-    return items, planks
+    planks += sum(c for i, c in hopper.values() if i == 'minecraft:oak_planks')
+    sticks = items.get(19, ('', 0))[1] if items.get(19, ('',))[0] == 'minecraft:stick' else 0
+    return items, hopper, planks, sticks
 
 
 def autocrafter_prepare(g):
@@ -1824,29 +1829,24 @@ def autocrafter_prepare(g):
     g.close()
     g.ground(AUTOCRAFTER[0] - 3, 100, AUTOCRAFTER[2] - 3, width=8, depth=8)
     g.command('clear @s')
-    g.command('give @s ntm:machine_autocrafter 1')
-    g.command(f'tp @s {AUTOCRAFTER[0] + .5} 100 {AUTOCRAFTER[2] + 3.5} facing {AUTOCRAFTER[0] + .5} 100 {AUTOCRAFTER[2]}')
-    time.sleep(1)
-    g.ctl('place %d %d %d --item ntm:machine_autocrafter' % AUTOCRAFTER)
-    time.sleep(1.5)
-    g.command('clear @s')
+    A.place(g, AUTOCRAFTER)
     g.open(*AUTOCRAFTER)
     g.put('ntm:battery_creative', 1, 20)
     for i in (1, 4):
         A.template(g, 'minecraft:oak_planks', i)
-    g.ctl('click-slot 301 right')
-    time.sleep(1)
-    g.put('minecraft:oak_planks', 20, 11)
-    g.put('minecraft:oak_planks', 20, 14)
     g.close()
+    g.command('setblock %d %d %d minecraft:hopper[facing=down]' % AUTOCRAFTER_HOPPER)
+    g.command('item replace block %d %d %d container.0 with minecraft:oak_planks 64' % AUTOCRAFTER_HOPPER)
+    sprint(g, 60)
     g.command('tick freeze')
     try:
-        items, planks = autocrafter_state(g)
-        modes = A.modes(g)
+        items, hopper, planks, sticks = autocrafter_state(g)
+        modes = A.modes(g, AUTOCRAFTER)
     finally:
         g.command('tick unfreeze')
-    g.evidence.update(base=items, modes=modes)
-    g.check('it_crafts_before_the_base_save', planks < 40 and modes == ['plankWood', 'wildcard'], [items, modes])
+    g.evidence.update(base={'items': items, 'hopper': hopper, 'sticks': sticks}, modes=modes)
+    g.check('it_crafts_from_the_hopper_before_the_base_save', 0 < sticks < 64 and planks + sticks // 2 == 64
+            and modes == ['exact', 'exact'], [items, hopper, modes])
     g.ctl('save')
 
 
@@ -1854,8 +1854,11 @@ def autocrafter_act(g):
     autocrafter_parts(g)
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
-    sprint(g, 4)
-    g.evidence['after_act'] = autocrafter_state(g)[0]
+    before = autocrafter_state(g)[3]
+    sprint(g, 48)
+    after = autocrafter_state(g)
+    g.evidence['after_act'] = {'items': after[0], 'hopper': after[1], 'sticks': after[3]}
+    g.check('it_crafts_on_through_the_act', after[3] > before and after[3] < 64, [before, after[3]])
     save_expecting_death(g)
 
 
@@ -1864,20 +1867,16 @@ def autocrafter_verify(g, again=False):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     g.command('tp @s %d 100 %d' % (AUTOCRAFTER[0], AUTOCRAFTER[2] + 4))
-    quiet(g, 6)
     g.command('tick freeze')
     try:
-        items, planks = autocrafter_state(g)
-        modes = A.modes(g)
+        items, hopper, planks, sticks = autocrafter_state(g)
+        modes = A.modes(g, AUTOCRAFTER)
     finally:
         g.command('tick unfreeze')
-    # The output's sticks: the result slot's are the template's copy, not crafted.
-    sticks = items.get(19, ('', 0))[1] if items.get(19, ('',))[0] == 'minecraft:stick' else 0
-    counted(g, 'forty_planks_in_planks_and_sticks', {'total': planks + sticks // 2, 'expected': 40, 'items': items}, again)
-    g.check('the_planks_and_sticks_are_the_forty', planks + sticks // 2 == 40 and sticks % 4 == 0, [planks, sticks, items])
-    g.check('the_two_inputs_hold_the_same', items.get(11, ('', 0))[1] == items.get(14, ('', 0))[1], items)
+    counted(g, 'sixty_four_planks_in_planks_and_sticks', {'total': planks + sticks // 2, 'expected': 64, 'items': items, 'hopper': hopper}, again)
+    g.check('the_planks_and_sticks_are_the_sixty_four', planks + sticks // 2 == 64 and sticks % 4 == 0, [planks, sticks, items, hopper])
     g.check('the_template_its_modes_and_the_result_are_kept', items.get(1, ('',))[0] == 'minecraft:oak_planks'
-            and items.get(4, ('',))[0] == 'minecraft:oak_planks' and modes == ['plankWood', 'wildcard']
+            and items.get(4, ('',))[0] == 'minecraft:oak_planks' and modes == ['exact', 'exact']
             and items.get(9) == ('minecraft:stick', 4), [items, modes])
     g.check('the_autocrafter_is_alive', machine_present(g, AUTOCRAFTER), items)
 

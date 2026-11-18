@@ -91,8 +91,9 @@ def _held(folder, chunk, prefixes):
         return sum(_stack(e.get('Item'), prefixes) for e in chunk.get('Entities', []) or [] if e.get('id') == 'minecraft:item')
     total = 0
     for be in chunk.get('block_entities', []) or []:
-        items = sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
-        model = _model(be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
+        items = sum(_stack(s, prefixes) for s in _real(be))
+        n, without = _templates(be)
+        model = _model(json.dumps(without) if n else be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
         total += max(model, items)
     return total
 
@@ -179,6 +180,36 @@ def count(folder, prefixes, dims=('overworld',)):
     return out
 
 
+# Template slots (the engine's `PatternSlot`) hold copies, not items: an autocrafter's template (0-8) and its result (9).
+TEMPLATES = {'Autocrafter': 10}
+
+
+def _templates(be):
+    """How many of a block entity's first slots are template copies (0 for any other machine), and its model without
+    them."""
+    if not isinstance(be.get('ntm'), str):
+        return 0, None
+    try:
+        model = json.loads(be['ntm'])
+    except ValueError:
+        return 0, None
+    # `Machine.data` is tagged inside (`{"k": "Autocrafter", "slots": [...]}`).
+    data = model.get('data') if isinstance(model, dict) else None
+    n = TEMPLATES.get(data.get('k')) if isinstance(data, dict) else None
+    if not n:
+        return 0, model
+    slots = data.get('slots')
+    if isinstance(slots, list):
+        data['slots'] = [None] * min(n, len(slots)) + slots[n:]
+    return n, model
+
+
+def _real(be):
+    """A block entity's `Items` without its template copies."""
+    n, _ = _templates(be)
+    return [s for s in be.get('Items', []) or [] if not (isinstance(s, dict) and int(s.get('Slot', 99)) < n)]
+
+
 def _count_dim(dim, prefixes, out):
     for path in sorted((dim / 'entities').glob('r.*.mca')):
         for chunk in records(path):
@@ -188,9 +219,10 @@ def _count_dim(dim, prefixes, out):
     for path in sorted((dim / 'region').glob('r.*.mca')):
         for chunk in records(path):
             for be in chunk.get('block_entities', []) or []:
-                items = sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
+                items = sum(_stack(s, prefixes) for s in _real(be))
                 # A machine whose model also lists its slots (a pile loader) holds them once.
-                model = _model(be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
+                n, without = _templates(be)
+                model = (_model(json.dumps(without) if n else be['ntm'], prefixes)) if isinstance(be.get('ntm'), str) else 0
                 if model:
                     out['machines'] += max(model, items)
                 else:
@@ -397,11 +429,12 @@ def _items_dim(dim, prefixes, out):
         for chunk in records(path):
             for be in chunk.get('block_entities', []) or []:
                 slots, model = {}, {}
-                for s in be.get('Items', []) or []:
+                for s in _real(be):
                     _stack_items(s, prefixes, slots)
                 if isinstance(be.get('ntm'), str):
+                    n, without = _templates(be)
                     try:
-                        _machine_items(json.loads(be['ntm']), prefixes, model)
+                        _machine_items(without if n else json.loads(be['ntm']), prefixes, model)
                     except ValueError:
                         pass
                 # A machine whose model also lists its slots (a pile loader) holds them once.
