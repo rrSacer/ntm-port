@@ -750,3 +750,13 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 3. Um modo por slot, trocado por clique, visível na tela. Os botões de tela existem; falta uma forma de ligá-los a cada slot e de mostrar o modo sobre ele. Os nomes do OreDict precisam das tags de item equivalentes.
 
 Sem (1) a máquina não tem o que fabricar; sem (2) não há como montar o molde. Ela espera essas três APIs.
+
+## Lacunas transversais (revisão dos lotes do 2b)
+
+Valem para todas as máquinas de multibloco do port, não para uma só.
+
+- **Quebra à mão:** um `BlockDummyable` com `requires_tool` não solta o próprio item quando é quebrado à mão. No Java, as máquinas de multibloco caem como item mesmo sem a ferramenta certa.
+- **Clique sem agachar:** a revisão constatou que o clique sem agachar num `BlockDummyable` não é consumido pelo bloco e segue para o uso do item da mão. Falta conferir, máquina a máquina, o que o `onBlockActivated` de cada uma responde no Java (o do LPW2 nem existe).
+- **Resistência das partes:** as partes de um multibloco são `ntm:dummy_machine`, comum a todos, com resistência 10. No Java elas são o próprio bloco da máquina e têm a resistência dele (`machine_lpw2`, acima).
+
+Os três pedem uma mudança no tratamento de multiblocos (`horizon_machine`) ou no motor, comum a todas as máquinas; ficam registrados aqui em vez de remendados máquina a máquina.
