@@ -372,11 +372,11 @@ def main():
   m3_catalog.build(args.source,args.output)
  manifest=json.loads(args.catalog.read_text())
  if args.catalog.resolve()==(HERE/'m1.json').resolve() and (HERE/'bulk.json').exists():
-  for extension in ('bulk.json','bombs.json','m3.json','item_hooks.json','radiation_blocks.json'):
+  for extension in ('bulk.json','bombs.json','m3.json','item_hooks.json','radiation_blocks.json','digamma_blocks.json','k3_overrides.json'):
    if not (HERE/extension).exists():continue
    bulk=json.loads((HERE/extension).read_text())
    original_ids={e['id'] for e in manifest['entries']}
-   if extension in ('bombs.json','m3.json','item_hooks.json','radiation_blocks.json'):
+   if extension in ('bombs.json','m3.json','item_hooks.json','radiation_blocks.json','digamma_blocks.json','k3_overrides.json'):
     for spec in bulk['entries']:
      previous=next((r for r in manifest['entries'] if r['id']==spec['id']),None)
      if previous:

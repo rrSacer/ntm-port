@@ -1,0 +1,116 @@
+{
+  "texture": "ntm:textures/gui/gui_radiolysis.png",
+  "size": [
+    230,
+    166
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    72
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        8,
+        17,
+        16,
+        34
+      ],
+      "uv": [
+        240,
+        0
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 3,
+      "max": 4,
+      "rect": [
+        61,
+        17,
+        8,
+        52
+      ],
+      "color": 5,
+      "dir": "up"
+    },
+    {
+      "value": 6,
+      "max": 7,
+      "rect": [
+        87,
+        17,
+        12,
+        16
+      ],
+      "color": 8,
+      "dir": "up"
+    },
+    {
+      "value": 9,
+      "max": 10,
+      "rect": [
+        87,
+        53,
+        12,
+        16
+      ],
+      "color": 11,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        8,
+        17,
+        16,
+        34
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE",
+        "Current heat level: {2}"
+      ]
+    },
+    {
+      "rect": [
+        61,
+        17,
+        8,
+        52
+      ],
+      "lines": [
+        "{3} / {4} mB"
+      ]
+    },
+    {
+      "rect": [
+        87,
+        17,
+        12,
+        16
+      ],
+      "lines": [
+        "{6} / {7} mB"
+      ]
+    },
+    {
+      "rect": [
+        87,
+        53,
+        12,
+        16
+      ],
+      "lines": [
+        "{9} / {10} mB"
+      ]
+    }
+  ]
+}

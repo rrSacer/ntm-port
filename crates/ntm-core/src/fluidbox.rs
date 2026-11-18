@@ -116,8 +116,9 @@ impl Mode {
 pub struct FluidStore {
     pub tank: Tank,
     pub mode: Mode,
-    /// mB a tick it moves at most (0: no limit). The big tank's
-    /// `max(500, fill/100)` (`TileEntityMachineFluidTank.java:49-50`).
+    /// mB a tick it moves at most (0: no limit): the floor of the big tank's
+    /// `max(500, fill/100)` out and `max(500, room/100)` in
+    /// (`TileEntityMachineFluidTank.java:49-50`; the orbus has 1 000).
     #[serde(default)]
     pub rate_floor: u32,
     /// `ContainerBarrel` / `ContainerMachineFluidTank`: the identifier and
@@ -162,17 +163,34 @@ impl FluidStore {
         true
     }
 
-    fn rate(&self) -> u64 {
+    /// `FluidTank.setType(0, 1, slots)`: an identifier of another type than the tank's in slot 0 types the tank (emptying it) and
+    /// goes to slot 1, which has to be empty; a bare identifier names no type (`NONE`), the tank's own when it has none.
+    fn identify(&mut self) {
+        let Some(kind) = self.slots[0].as_ref().and_then(crate::combustion::identifier_type) else { return };
+        if self.slots[1].is_none() && self.tank.fluid != kind {
+            self.tank.set_type(&kind);
+            self.slots[1] = self.slots[0].take();
+        }
+    }
+
+    /// What it gives a tick: `getProviderSpeed`, `max(floor, fill / 100)`.
+    fn send_rate(&self) -> u64 {
         if self.rate_floor == 0 { u64::MAX } else { u64::from(self.rate_floor.max(self.tank.mb / 100)) }
+    }
+
+    /// What it takes a tick: `getReceiverSpeed`, `max(floor, (max - fill) / 100)` (`TileEntityMachineFluidTank.java:49`,
+    /// `TileEntityMachineOrbus.java`): the room it has left, not what it holds.
+    fn receive_rate(&self) -> u64 {
+        if self.rate_floor == 0 { u64::MAX } else { u64::from(self.rate_floor.max(self.tank.free() / 100)) }
     }
 }
 
 impl FluidNode for FluidStore {
     fn fluid_offer(&self, f: &str) -> u64 {
-        if matches!(self.mode, Mode::Buffer | Mode::Output) && self.tank.fluid == f { u64::from(self.tank.mb).min(self.rate()) } else { 0 }
+        if matches!(self.mode, Mode::Buffer | Mode::Output) && self.tank.fluid == f { u64::from(self.tank.mb).min(self.send_rate()) } else { 0 }
     }
     fn fluid_demand(&self, f: &str) -> u64 {
-        if matches!(self.mode, Mode::Buffer | Mode::Input) && self.tank.accepts(f) { u64::from(self.tank.free()).min(self.rate()) } else { 0 }
+        if matches!(self.mode, Mode::Buffer | Mode::Input) && self.tank.accepts(f) { u64::from(self.tank.free()).min(self.receive_rate()) } else { 0 }
     }
     fn fluid_priority(&self) -> u8 {
         if self.mode == Mode::Buffer { PRIORITY_LOW } else { fluid::PRIORITY_NORMAL }
@@ -196,6 +214,8 @@ impl crate::server::container_bridge::Slotted for FluidStore {
         &mut self.slots
     }
     fn sync_in(&mut self) {
+        // `TileEntityBarrel.updateEntity` (line 108, which the big tank and the orbus extend): `tank.setType(0, 1, slots)`.
+        self.identify();
         self.swap(2, 3, |t, item| {
             let c = fluid::contents(item).filter(|c| t.accepts(&c.fluid) && t.free() >= c.mb)?;
             t.fill(&c.fluid, c.mb);
@@ -346,6 +366,25 @@ mod tests {
         assert_eq!(t.fluid_offer("oil"), 2000, "max(500, fill/100)");
     }
 
+    /// The speed in is the room left over a hundred (`getReceiverSpeed`), the speed out what it holds over a hundred.
+    #[test]
+    fn the_big_tanks_take_by_their_room_and_give_by_their_content() {
+        let mut t = FluidStore::new(512_000, 1_000);
+        t.mode = Mode::Buffer;
+        // Empty: it takes max(1 000, 512 000 / 100) = 5 120, gives nothing.
+        assert_eq!((t.fluid_demand("oil"), t.fluid_offer("oil")), (5_120, 0));
+        t.tank.fill("oil", 412_000);
+        // 100 000 of room: max(1 000, 1 000); 412 000 held: max(1 000, 4 120).
+        assert_eq!((t.fluid_demand("oil"), t.fluid_offer("oil")), (1_000, 4_120));
+        t.tank.fill("oil", 99_500);
+        // 500 of room: the floor, then what is left of it.
+        assert_eq!(t.fluid_demand("oil"), 500);
+        let mut small = FluidStore::new(256_000, 500);
+        assert_eq!(small.fluid_demand("water"), 2_560, "max(500, 256 000 / 100)");
+        small.tank.fill("water", 255_900);
+        assert_eq!(small.fluid_demand("water"), 100, "100 of room");
+    }
+
     #[test]
     fn a_duct_takes_its_type_from_the_screen_or_the_hand() {
         let mut d = Duct::default();
@@ -357,5 +396,35 @@ mod tests {
         d.action(actions::PAGE_BACK, None, &mut fx);
         assert!(d.page > 0, "volta para a última página");
         assert!(d.view().widgets.len() <= 9, "cabe na tela");
+    }
+
+    fn identifier(fluid: &str) -> crate::server::container_bridge::Stack {
+        crate::server::container_bridge::Stack { custom: Some(format!("{{ntm_fluid:\"{fluid}\"}}")), ..crate::server::container_bridge::Stack::new("ntm:fluid_identifier_multi", 1) }
+    }
+
+    #[test]
+    fn an_identifier_in_the_first_slot_types_the_store_and_goes_to_the_second() {
+        use crate::server::container_bridge::Slotted;
+        let mut s = FluidStore::new(512_000, 1_000);
+        s.slots[0] = Some(identifier("spentsteam"));
+        s.sync_in();
+        assert_eq!((s.tank.fluid.as_str(), s.slots[0].clone(), s.slots[1].clone()), ("spentsteam", None, Some(identifier("spentsteam"))));
+        // The same type does nothing, and another type with the second slot taken does nothing either.
+        s.tank.mb = 700;
+        s.slots[0] = Some(identifier("spentsteam"));
+        s.sync_in();
+        assert!(s.slots[0].is_some() && s.tank.mb == 700);
+        s.slots[0] = Some(identifier("water"));
+        s.sync_in();
+        assert_eq!((s.tank.fluid.as_str(), s.tank.mb), ("spentsteam", 700));
+        // With the second slot free, another type empties it.
+        s.slots[1] = None;
+        s.sync_in();
+        assert_eq!((s.tank.fluid.as_str(), s.tank.mb, s.slots[0].clone()), ("water", 0, None));
+        // A bare identifier of no type leaves an untyped store as it is.
+        let mut e = FluidStore::new(16_000, 0);
+        e.slots[0] = Some(crate::server::container_bridge::Stack::new("ntm:fluid_identifier_multi", 1));
+        e.sync_in();
+        assert!(e.slots[0].is_some() && e.slots[1].is_none() && e.tank.fluid.is_empty());
     }
 }

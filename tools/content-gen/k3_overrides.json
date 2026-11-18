@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "source": "Hand rows over the K3 catalog (catalog_k3.py) for the machines of Onda 2, sublote 2, group 2b: what the K3 scan does not read (resistance) and each one's gap text. generate.py merges them by id.",
+  "entries": [
+    {
+      "id": "machine_industrial_generator",
+      "type": "block",
+      "behavior_gap": "Inert: a memorial in the 1.7.10 itself (MachineIGenerator): one cell, no screen (its openGui is commented out), an empty updateEntity and 21 slots no side reaches; ported: its ILookOverlay text (ntm-core look_overlay, drawn by the client HUD) and igen.obj at a sixth of its size. The 21 slots are not ported: nothing can put an item in them."
+    },
+    {
+      "id": "machine_lpw2",
+      "type": "block",
+      "block_properties": {
+        "explosion_resistance": 100.0
+      },
+      "behavior_gap": "Decorative in the 1.7.10 itself (MachineLPW2, TileEntityMachineLPW2: no logic, a render box only): its 20 x 7 x 7 multiblock (offset 3) and lpw2.obj are ported, still; the renderer's motions (sway, bell, piston, rotor, turbines, cover, suspension, servers) are not, nor its Screen part (a second texture, lpw2_term_error.png, scrolling)."
+    },
+    {
+      "id": "machine_rockmill",
+      "type": "block",
+      "block_properties": {
+        "explosion_resistance": 100.0
+      },
+      "behavior_gap": "Ported (ntm-core crafter Station::RockMill): RockMillRecipes (11; the two SIFT-mod ones are left out), the ChanceOutputMulti outputs picked by weight with a fixed hash instead of the world's random, the tanks sized to the recipe, the buffer max(power, recipe x 100, 2 500), the battery slot (creative battery only), the auto switch of the crushing group and its eight port cells. Not ported: the blueprint slot (no pools in the port; the rock mill's recipes have none), the step sound of the crushed block every 3 ticks, the block-dust particles, the Frame part (drawn only with a block on top) and the wheel's spin-up and spin-down (it turns at full speed while it works)."
+    },
+    {
+      "id": "machine_autocrafter",
+      "type": "block",
+      "block_properties": {
+        "hardness": 10.0,
+        "explosion_resistance": 20.0
+      },
+      "behavior_gap": "Ported (ntm-core autocrafter, on the engine's crafting query and template slots): the template of nine SlotPatterns and the recipes it matches (a right click on the result turns them), the ModulePatternMatcher modes (exact, wildcard, bedrock grade, OreDict names) turned by a right click and shown in the copy's tooltip, one craft a tick at 100 HE into the output with the containers left where an input ran out, the hoppers' rules (isItemValidForSlot, canExtractItem) and power from every face. Not ported: batteries other than the creative one, the NEI/copy-tool filter packets (setFilterContents), and a crafted result's components other than its custom data."
+    }
+  ]
+}

@@ -1033,11 +1033,11 @@
 "in": [
 {
 "ids": [
-"minecraft:red_sand",
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 1,
-"label": "red sand"
+"label": "sand"
 }
 ],
 "fin": [
@@ -12564,11 +12564,11 @@
 "in": [
 {
 "ids": [
-"minecraft:red_sand",
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 1,
-"label": "red sand"
+"label": "sand"
 }
 ],
 "fin": [

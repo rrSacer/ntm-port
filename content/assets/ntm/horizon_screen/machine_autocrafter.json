@@ -1,0 +1,58 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_autocrafter.png",
+  "size": [
+    176,
+    240
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    146
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        17,
+        45,
+        16,
+        52
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        17,
+        45,
+        16,
+        52
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE"
+      ]
+    },
+    {
+      "rect": [
+        116,
+        40,
+        16,
+        16
+      ],
+      "lines": [
+        "§cRight click to change",
+        "§e{2} / {3}"
+      ]
+    }
+  ]
+}

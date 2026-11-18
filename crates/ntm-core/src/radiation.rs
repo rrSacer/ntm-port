@@ -85,6 +85,11 @@ pub fn rtg_hazard(id: &str) -> Option<&'static Hazard> {
     all_hazards().iter().find(|h| h.id==id && h.rtg_target_rad_s.is_some())
 }
 
+/// Base radiation hazard of `id` in RAD/s (`HazardSystem.getHazardLevelFromStack(stack, RADIATION)`).
+pub fn item_rad_s(id: &str) -> f32 {
+    hazards().iter().find(|h| h.id == id).map_or(0.0, |h| h.radiation_rad_s)
+}
+
 /// The bits of `radiation_millirad_s` some item has set, lowest first. Bit K
 /// has the item tag [`bit_tag`]`(K)`: every item whose rate has bit K set
 /// (`content/data/ntm/tags/item/rad/bit_K.json`, emitted from the same table).

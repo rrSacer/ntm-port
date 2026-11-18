@@ -68,6 +68,33 @@ pub fn container(block: &str) -> Option<Container> {
     if let Some(c) = crate::furnaces::container(block).or_else(|| crate::welders::container(block)) {
         return Some(c);
     }
+    if block == crate::keyforge::BLOCK {
+        return Some(crate::keyforge::container());
+    }
+    if block == crate::autocrafter::BLOCK {
+        return Some(crate::autocrafter::container());
+    }
+    if block == crate::funnel::BLOCK {
+        return Some(crate::funnel::container());
+    }
+    if block == crate::radiolysis::BLOCK {
+        return Some(crate::radiolysis::container());
+    }
+    if block == crate::exposure::BLOCK {
+        return Some(crate::exposure::container());
+    }
+    if block == crate::fel::BLOCK {
+        return Some(crate::fel::container());
+    }
+    if block == crate::annihilator::BLOCK {
+        return Some(crate::annihilator::container());
+    }
+    if block == crate::silex::BLOCK {
+        return Some(crate::silex::container());
+    }
+    if block == crate::cyclotron::BLOCK {
+        return Some(crate::cyclotron::container());
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -98,6 +125,16 @@ pub struct SlotFilter {
     pub quick_move: Option<Vec<String>>,
     /// A shift-click fills this run of slots from its last to its first (`mergeItemStack(.., true)`).
     pub quick_reverse: bool,
+    /// A template slot (`SlotPattern`, the engine's `PatternSlot`): a click leaves a copy of the cursor there
+    /// (`place`), a right click on what it shows presses menu button `right_click`.
+    pub pattern: Option<Pattern>,
+}
+
+/// A template slot's clicks (the engine's `PatternSlot`).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Pattern {
+    pub place: bool,
+    pub right_click: Option<i32>,
 }
 
 /// The rules of block `block`'s slots, in order (menu, clicks and hoppers
@@ -109,6 +146,102 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
     }
     if crate::welders::Model::of(block).is_some() {
         return crate::welders::filters(block);
+    }
+    if block == crate::keyforge::BLOCK {
+        // `ContainerMachineKeyForge.transferStackInSlot`: a shift-click from the inventory fills the first slot only.
+        let first = SlotFilter::default();
+        let held = SlotFilter { quick_move: Some(Vec::new()), ..Default::default() };
+        return vec![first, held.clone(), held];
+    }
+    if block == crate::autocrafter::BLOCK {
+        // `ContainerAutocrafter`: the template's nine `SlotPattern`s (a right click turns the mode), the result's one
+        // (a right click shows the next recipe); a shift-click from the inventory moves a battery into its slot only.
+        use crate::autocrafter as a;
+        let mut rules = vec![SlotFilter { quick_move: Some(Vec::new()), ..Default::default() }; a::SLOTS];
+        for i in a::TEMPLATE {
+            rules[i].pattern = Some(Pattern { place: true, right_click: Some((a::MODE_BUTTON + i as u32) as i32) });
+        }
+        rules[a::RESULT].pattern = Some(Pattern { place: false, right_click: Some(a::NEXT_RECIPE as i32) });
+        rules[a::BATTERY].quick_move = Some(vec![CREATIVE_BATTERY.into()]);
+        return rules;
+    }
+    if block == crate::funnel::BLOCK {
+        // `ContainerFunnel`: the nine results are `SlotCraftingOutput`s; a shift-click moves the inputs and results
+        // out to the inventory (last to first) and the inventory's items into the nine inputs.
+        let output = SlotFilter { output: true, ..Default::default() };
+        let mut rules = vec![SlotFilter::default(); crate::funnel::INPUTS];
+        rules.extend(vec![output; crate::funnel::INPUTS]);
+        return rules;
+    }
+    if block == crate::annihilator::BLOCK {
+        // `ContainerMachineAnnihilator`: slot 0 accepts anything, slot 1 takes fluid identifiers
+        // (`quick_reverse` so shift-clicking an identifier targets slot 1 before slot 0),
+        // outputs 2..8 and payout 10 are `SlotCraftingOutput`s, slots 8..10 are not shift-click targets.
+        let mut rules = vec![SlotFilter::default(); crate::annihilator::SLOTS];
+        rules[crate::annihilator::INPUT].quick_reverse = true;
+        rules[crate::annihilator::FLUID_ID].accept = Some(vec![crate::server::native_server::IDENTIFIER.into()]);
+        rules[crate::annihilator::FLUID_ID].quick_reverse = true;
+        for i in crate::annihilator::OUTPUTS {
+            rules[i].output = true;
+        }
+        rules[crate::annihilator::MONITOR].quick_move = Some(Vec::new());
+        rules[crate::annihilator::REQUEST].quick_move = Some(Vec::new());
+        rules[crate::annihilator::PAYOUT].output = true;
+        rules[crate::annihilator::PAYOUT].quick_move = Some(Vec::new());
+        return rules;
+    }
+    if block == crate::silex::BLOCK {
+        // `ContainerSILEX`: the empty containers' slot is a `SlotTakeOnly`, the output and the queue `SlotCraftingOutput`s; a
+        // shift-click (`transferStackInSlot`) puts an identifier into its slot, a full container into the full containers'
+        // slot and anything else into the input. The three are visited from the last, so the input comes after them.
+        // The Java takes a container only when it holds the tank's fluid; a slot's rule cannot see the tank, so any full
+        // container goes there (docs/onda-2-sublote-2.md).
+        let mut rules = vec![SlotFilter::default(); crate::silex::SLOTS];
+        for i in std::iter::once(crate::silex::CONTAINER_OUT).chain(crate::silex::OUTPUT..crate::silex::SLOTS) {
+            rules[i].output = true;
+        }
+        rules[crate::silex::IDENTIFIER].quick_move = Some(vec!["ntm:fluid_identifier_multi".to_string()]);
+        rules[crate::silex::CONTAINER_IN].quick_move = Some(crate::fluid::all_full_containers());
+        for i in [crate::silex::INPUT, crate::silex::IDENTIFIER, crate::silex::CONTAINER_IN] {
+            rules[i].quick_reverse = true;
+        }
+        return rules;
+    }
+    if block == crate::cyclotron::BLOCK {
+        // `ContainerMachineCyclotron`: the three outputs are `SlotCraftingOutput`s; a shift-click puts a particle into the first three
+        // slots, a battery into the ninth and an upgrade into the last two, and anything else into the targets (here: the
+        // ingredients of the recipes).
+        let mut rules = vec![SlotFilter::default(); crate::cyclotron::SLOTS];
+        for i in crate::cyclotron::PARTICLES {
+            rules[i].quick_move = Some(crate::cyclotron::particles());
+        }
+        for i in crate::cyclotron::TARGETS {
+            rules[i].quick_move = Some(crate::cyclotron::targets());
+        }
+        for i in crate::cyclotron::OUTPUTS {
+            rules[i].output = true;
+        }
+        rules[crate::cyclotron::BATTERY].quick_move = Some(vec![crate::machine::CREATIVE_BATTERY.to_string()]);
+        for i in crate::cyclotron::UPGRADES {
+            rules[i].quick_move = Some(crate::upgrades::ITEMS.iter().map(|s| s.to_string()).collect());
+        }
+        return rules;
+    }
+    if block == crate::exposure::BLOCK {
+        // `ContainerMachineExposureChamber`: the empty capsules' slot is a `SlotTakeOnly` and the output a `SlotCraftingOutput`.
+        let mut rules = vec![SlotFilter::default(); crate::exposure::SLOTS];
+        for i in [crate::exposure::CAPSULE, crate::exposure::OUTPUT] {
+            rules[i].output = true;
+        }
+        return rules;
+    }
+    if block == crate::radiolysis::BLOCK {
+        // `ContainerRadiolysis`: the fluid identifier's and the sterilized item's out slots are `SlotTakeOnly`s.
+        let mut rules = vec![SlotFilter::default(); crate::radiolysis::SLOTS];
+        for i in [crate::radiolysis::FLUID_OUT, crate::radiolysis::STERILIZE_OUT] {
+            rules[i].output = true;
+        }
+        return rules;
     }
     if is_brick_furnace(block) {
         // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
@@ -162,6 +295,33 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if let Some(allowed) = crate::furnaces::allows(block, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;
+    }
+    if block == crate::keyforge::BLOCK {
+        return crate::keyforge::allows(slot, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::annihilator::BLOCK {
+        return crate::annihilator::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::silex::BLOCK {
+        return crate::silex::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::cyclotron::BLOCK {
+        return crate::cyclotron::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::exposure::BLOCK {
+        return crate::exposure::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::fel::BLOCK {
+        return crate::fel::allows(slot, origin == SlotOrigin::Manual);
+    }
+    if block == crate::radiolysis::BLOCK {
+        return crate::radiolysis::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::autocrafter::BLOCK {
+        return crate::autocrafter::allows(slots, slot, item, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::funnel::BLOCK {
+        return crate::funnel::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if is_brick_furnace(block) {
         // The plain slots 0 and 1 take anything from a hand (1.7.10's
@@ -267,6 +427,7 @@ pub fn file_slots(file: &[u8]) -> Vec<SlotFilter> {
             output: s.get("output").and_then(|o| o.as_bool()).unwrap_or(false),
             quick_move: None,
             quick_reverse: false,
+            pattern: None,
         };
         let cells = match s.get("grid").and_then(|g| g.as_array()) {
             Some(g) if g.len() == 4 => (g[2].as_u64().unwrap_or(1) * g[3].as_u64().unwrap_or(1)) as usize,
@@ -355,7 +516,8 @@ pub fn recipes(block: &str) -> Option<Vec<RecipeRow>> {
             return None;
         }
         let rows = st.recipes().iter().enumerate().map(|(i, r)| {
-            let outputs: Vec<(String, u32)> = r.items_out.iter().map(|o| (o.0.clone(), o.1)).collect();
+            // A pick by weight lists each of its outputs.
+            let outputs: Vec<(String, u32)> = r.items_out.iter().map(|o| (o.0.clone(), o.1)).chain(r.pick.iter().map(|p| (p.0.clone(), p.1))).collect();
             RecipeRow {
                 index: i as u32,
                 label: r.label.clone(),
@@ -475,6 +637,20 @@ mod tests {
         assert_eq!(comparator_signal(&tank(256_000)), 15);
         assert_eq!(comparator_signal("{}"), 0);
         assert!(has_comparator("ntm:barrel_steel") && !has_comparator("ntm:machine_zirnox"));
+    }
+
+    /// `TileEntityMachineOrbus`: a barrel of 512 000 mB whose speeds floor at 1 000; it has no comparator (a
+    /// `BlockDummyable` without the override), unlike the barrel and the tank.
+    #[test]
+    fn the_orbus_is_a_barrel_of_512000_at_a_floor_of_1000() {
+        let m = crate::machine::Machine::new(crate::machine::Kind::FluidStore, "ntm:machine_orbus", None);
+        let crate::machine::Data::FluidStore(f) = &m.data else { panic!() };
+        assert_eq!((f.tank.cap, f.rate_floor), (512_000, 1_000));
+        assert_eq!(crate::registry::spec("ntm:machine_orbus").map(|s| s.kind), Some(crate::machine::Kind::FluidStore));
+        assert!(!has_comparator("ntm:machine_orbus"));
+        // The tank (256 000, floor 500) and the barrel (16 000, none) are as they were.
+        let crate::machine::Data::FluidStore(t) = &crate::machine::Machine::new(crate::machine::Kind::FluidStore, "ntm:machine_fluidtank", None).data else { panic!() };
+        assert_eq!((t.tank.cap, t.rate_floor), (256_000, 500));
     }
 
     #[test]

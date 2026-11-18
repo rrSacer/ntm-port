@@ -286,3 +286,166 @@ fn the_arc_welder_welds_on_a_creative_battery_and_keeps_its_state() {
     // The screen's ten values, then the saved ones (eight, and the high words of the three energy longs).
     assert_eq!(data.len(), 10 + 11);
 }
+
+/// The locksmith table through the bridge: the pins ride in the item's `custom_data` into the machine's slots and back to
+/// the engine's, copied from the first to the second and re-rolled in the third.
+#[test]
+fn the_locksmith_table_copies_and_randomizes_pins_through_the_bridge() {
+    use crate::keyforge::{pins, set_pins};
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_keyforge[facing=north,honey_level=0]", 3);
+    let mut key = Stack::new("ntm:key", 1);
+    set_pins(&mut key, 456);
+    put(&mut g, 0, Some(key));
+    put(&mut g, 1, Some(Stack::new("ntm:padlock", 1)));
+    put(&mut g, 2, Some(Stack::new("ntm:padlock_reinforced", 1)));
+    g.run(4);
+    let s = slots(&g);
+    assert_eq!(pins(s[0].as_ref().unwrap()), 456, "the first is untouched");
+    assert_eq!(pins(s[1].as_ref().unwrap()), 456, "the second got its pins");
+    let first = pins(s[2].as_ref().unwrap());
+    assert!((100..=999).contains(&first), "{first}");
+    g.run(8);
+    let later = pins(slots(&g)[2].as_ref().unwrap());
+    assert!((100..=999).contains(&later));
+    // A fake key in the second slot is left as it was.
+    let mut fake = Stack::new("ntm:key_fake", 1);
+    set_pins(&mut fake, 7);
+    put(&mut g, 1, Some(fake));
+    g.run(4);
+    assert_eq!(pins(slots(&g)[1].as_ref().unwrap()), 7);
+}
+
+/// The funnel through the bridge: nine items of a column become the result in the bottom row, and the button cycles
+/// the mode (the screen's value).
+#[test]
+fn the_funnel_compresses_a_column_and_its_button_cycles_the_mode() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_funnel[facing=north,honey_level=0]", 18);
+    put(&mut g, 4, Some(Stack::new("minecraft:gold_ingot", 20)));
+    put(&mut g, 7, Some(Stack::new("minecraft:glowstone_dust", 5)));
+    g.run(3);
+    let s = slots(&g);
+    assert_eq!(count(&s, "minecraft:gold_block"), 2, "{s:?}");
+    assert_eq!(s[4].as_ref().map(|x| x.count), Some(2), "{s:?}");
+    assert_eq!(s[4 + 9].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:gold_block", 2)));
+    assert_eq!(s[7 + 9].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:glowstone", 1)), "{s:?}");
+    assert_eq!(s[7].as_ref().map(|x| x.count), Some(1));
+    // Mode 3x3 only: a stack of four is left alone.
+    g.world.borrow_mut().presses.push((OW.to_string(), AT, 0));
+    g.run(1);
+    put(&mut g, 7, Some(Stack::new("minecraft:glowstone_dust", 4)));
+    g.run(3);
+    assert_eq!(slots(&g)[7].as_ref().map(|x| x.count), Some(4));
+    assert_eq!(g.world.borrow().engine[&(OW.to_string(), AT)].1.first(), Some(&1));
+}
+
+/// The autocrafter through the bridge and the server's step (its host is the step's, which must hand the recipes on):
+/// the template's copies get their modes and the result, and two planks in each of two inputs make eight sticks.
+#[test]
+fn the_autocrafter_asks_the_recipes_through_the_step_and_crafts() {
+    use crate::autocrafter as a;
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_autocrafter[facing=north,honey_level=0]", a::SLOTS);
+    put(&mut g, a::BATTERY, Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1)));
+    put(&mut g, 1, Some(Stack::new("minecraft:oak_planks", 1)));
+    put(&mut g, 4, Some(Stack::new("minecraft:oak_planks", 1)));
+    g.run(2);
+    let s = slots(&g);
+    assert_eq!(s[a::RESULT].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:stick", 4)), "{s:?}");
+    assert_eq!(s[1].as_ref().and_then(a::mode_of).as_deref(), Some(a::EXACT), "{s:?}");
+    put(&mut g, 11, Some(Stack::new("minecraft:oak_planks", 2)));
+    put(&mut g, 14, Some(Stack::new("minecraft:oak_planks", 2)));
+    g.run(4);
+    let s = slots(&g);
+    assert_eq!(s[a::OUTPUT].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:stick", 8)), "{s:?}");
+    assert!(s[11].is_none() && s[14].is_none(), "{s:?}");
+}
+
+/// The radiolysis chamber through the bridge: ten polonium pellets give 500 heat, the identifier in the first fluid slot types the
+/// input and goes to the second, an item with the contagion comes out of the sterilization slot clean, and the pellets lose life.
+#[test]
+fn the_radiolysis_chamber_runs_its_pellets_identifier_and_sterilization_through_the_bridge() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_radiolysis[facing=north,honey_level=0]", 15);
+    for i in 0..10 {
+        put(&mut g, i, Some(Stack::new("ntm:pellet_rtg_polonium", 1)));
+    }
+    let mut id = Stack::new("ntm:fluid_identifier_multi", 1);
+    id.custom = Some("{ntm_fluid:\"water\"}".into());
+    put(&mut g, 10, Some(id.clone()));
+    let mut sword = Stack::new("minecraft:iron_sword", 1);
+    sword.custom = Some("{ntmContagion:1b}".into());
+    put(&mut g, 12, Some(sword));
+    g.run(250);
+    let s = slots(&g);
+    assert_eq!((s[10].clone(), s[11].clone()), (None, Some(id)), "{s:?}");
+    assert_eq!((s[12].clone(), s[13].clone()), (None, Some(Stack::new("minecraft:iron_sword", 1))), "{s:?}");
+    assert!(s[..10].iter().all(|p| p.as_ref().is_some_and(|p| p.id == "ntm:pellet_rtg_polonium" && p.custom.as_deref().is_some_and(|c| c.contains("PELLET_DEPLETION")))), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    assert_eq!((data.len(), data[1], data[2]), (12, 1_000_000, 500), "{data:?}");
+    assert!(data[0] > 0, "the heat's power is in the store");
+}
+
+/// The exposure chamber through the bridge: a higgs capsule and a uranium ingot on a creative battery make an ingot, the empty
+/// capsule comes out in its slot, and the screen's seven values follow.
+#[test]
+fn the_exposure_chamber_runs_a_capsule_through_the_engine_slots() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_exposure_chamber[facing=north,honey_level=0]", 7);
+    put(&mut g, 0, Some(Stack::new("ntm:particle_higgs", 2)));
+    put(&mut g, 2, Some(Stack::new("ntm:ingot_uranium", 5)));
+    put(&mut g, 4, Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1)));
+    g.run(260);
+    let s = slots(&g);
+    assert_eq!(s[0], Some(Stack::new("ntm:particle_higgs", 1)), "{s:?}");
+    assert_eq!(s[1], Some(Stack::new("ntm:particle_empty", 1)), "{s:?}");
+    assert_eq!(s[2], Some(Stack::new("ntm:ingot_uranium", 4)), "{s:?}");
+    assert_eq!(s[3], Some(Stack::new("ntm:ingot_schraranium", 1)), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    // The screen's seven values, then the four saved ones (power, progress, uses, the particle's code).
+    assert_eq!((data.len(), data[1], data[4], data[5], data[9], data[10]), (11, 1_000_000, 7, 8, 7, 1), "{data:?}");
+}
+
+/// The cyclotron through the bridge: a creative battery, water in its tank by a network is not needed to start (the tank is given
+/// by the test), lithium dust and a lithium particle make beryllium dust and antimatter, and the screen's thirteen values follow.
+#[test]
+fn the_cyclotron_runs_a_lane_through_the_engine_slots() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_cyclotron[facing=north,honey_level=0]", 12);
+    put(&mut g, 0, Some(Stack::new("ntm:part_lithium", 2)));
+    put(&mut g, 3, Some(Stack::new("ntm:powder_lithium", 2)));
+    put(&mut g, 9, Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1)));
+    g.run(40);
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    // The screen's thirteen values, then the five saved ones (power, progress, water, steam, antimatter): with no water the
+    // tank is empty and nothing runs.
+    assert_eq!((data.len(), data[2], data[4], data[7], data[10]), (18, 0, 0, 0, 0), "{data:?}");
+    let s = slots(&g);
+    assert_eq!((s[0].clone(), s[3].clone(), s[6].clone()), (Some(Stack::new("ntm:part_lithium", 2)), Some(Stack::new("ntm:powder_lithium", 2)), None), "{s:?}");
+}
+
+/// The annihilator through the bridge: items in slot 0 disappear into the world pool,
+/// the monitor item in slot 8 updates data slot 0, and request slot 9 consumes one per tick.
+#[test]
+fn the_annihilator_runs_items_monitor_and_request_through_the_bridge() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_annihilator[facing=south,honey_level=0]", 11);
+    put(&mut g, 0, Some(Stack::new("minecraft:iron_ore", 10)));
+    put(&mut g, 8, Some(Stack::new("minecraft:iron_ore", 1)));
+    put(&mut g, 9, Some(Stack::new("minecraft:iron_ore", 2)));
+    g.run(1);
+    let s = slots(&g);
+    assert!(s[0].is_none(), "{s:?}");
+    assert_eq!(s[9], Some(Stack::new("minecraft:iron_ore", 1)), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    assert_eq!(data, vec![10], "monitor tracks the 10 destroyed before request: {data:?}");
+    g.run(1);
+    let s = slots(&g);
+    assert!(s[9].is_none(), "{s:?}");
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    assert_eq!(data, vec![11], "monitor reads 11 before tick 2 request runs: {data:?}");
+    g.run(1);
+    let data = g.world.borrow().engine[&(OW.to_string(), AT)].1.clone();
+    assert_eq!(data, vec![12], "monitor tracks total 12: {data:?}");
+}

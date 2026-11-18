@@ -93,6 +93,23 @@ pub enum Kind {
     Rbmk,
     /// The brick furnace (`crate::furnace_brick`), lit or not.
     BrickFurnace,
+    /// The locksmith table (`crate::keyforge`).
+    KeyForge,
+    /// The funnel that compresses items (`crate::funnel`).
+    Funnel,
+    /// The automatic crafting table (`crate::autocrafter`).
+    Autocrafter,
+    /// The radiolysis chamber (`crate::radiolysis`).
+    Radiolysis,
+    /// The exposure chamber (`crate::exposure`).
+    ExposureChamber,
+    Fel,
+    /// The SILEX (`crate::silex`).
+    Silex,
+    /// The annihilator (`crate::annihilator`).
+    Annihilator,
+    /// The cyclotron (`crate::cyclotron`).
+    Cyclotron,
     /// The K3 furnaces of several slots (`crate::furnaces`).
     Furnace,
     /// The arc welder and the soldering station (`crate::welders`).
@@ -222,6 +239,15 @@ pub enum Data {
     Radioisotope(Box<crate::radioisotopes::Radioisotope>),
     Rbmk(Box<crate::rbmk::persist::RbmkColumn>),
     BrickFurnace(crate::furnace_brick::BrickFurnace),
+    KeyForge(crate::keyforge::KeyForge),
+    Funnel(crate::funnel::Funnel),
+    Autocrafter(Box<crate::autocrafter::Autocrafter>),
+    Radiolysis(Box<crate::radiolysis::Radiolysis>),
+    Exposure(Box<crate::exposure::Exposure>),
+    Fel(crate::fel::Fel),
+    Silex(Box<crate::silex::Silex>),
+    Annihilator(Box<crate::annihilator::Annihilator>),
+    Cyclotron(Box<crate::cyclotron::Cyclotron>),
     Furnace(Box<crate::furnaces::Furnace>),
     Welder(Box<crate::welders::Welder>),
     Inert { name: String },
@@ -318,12 +344,23 @@ impl Machine {
                 None => Data::Inert { name: block_id.into() },
             },
             // `TileEntityBarrel` steel 16 000 mB; `TileEntityMachineFluidTank`
-            // 256 000 mB at max(500, fill/100) a tick.
+            // 256 000 mB at max(500, fill/100) a tick; the orbus (a barrel of
+            // 512 000 mB, `TileEntityMachineOrbus`) at max(1 000, ...).
             Kind::FluidStore => Data::FluidStore(match block_id {
                 "ntm:machine_fluidtank" => crate::fluidbox::FluidStore::new(256_000, 500),
+                "ntm:machine_orbus" => crate::fluidbox::FluidStore::new(512_000, 1_000),
                 _ => crate::fluidbox::FluidStore::new(16_000, 0),
             }),
             Kind::BrickFurnace => Data::BrickFurnace(Default::default()),
+            Kind::KeyForge => Data::KeyForge(Default::default()),
+            Kind::Funnel => Data::Funnel(Default::default()),
+            Kind::Autocrafter => Data::Autocrafter(Box::new(crate::autocrafter::Autocrafter::new())),
+            Kind::Radiolysis => Data::Radiolysis(Default::default()),
+            Kind::ExposureChamber => Data::Exposure(Box::new(crate::exposure::Exposure::new())),
+            Kind::Fel => Data::Fel(Default::default()),
+            Kind::Silex => Data::Silex(Default::default()),
+            Kind::Annihilator => Data::Annihilator(Default::default()),
+            Kind::Cyclotron => Data::Cyclotron(Default::default()),
             Kind::Welder => match crate::welders::Welder::of(block_id) {
                 Some(w) => Data::Welder(Box::new(w)),
                 None => Data::Inert { name: block_id.into() },
@@ -408,6 +445,15 @@ impl Machine {
             Data::SolarStirling(_) => Kind::SolarStirling,
             Data::Sawmill(_) => Kind::Sawmill,
             Data::BrickFurnace(_) => Kind::BrickFurnace,
+            Data::KeyForge(_) => Kind::KeyForge,
+            Data::Funnel(_) => Kind::Funnel,
+            Data::Autocrafter(_) => Kind::Autocrafter,
+            Data::Radiolysis(_) => Kind::Radiolysis,
+            Data::Exposure(_) => Kind::ExposureChamber,
+            Data::Fel(_) => Kind::Fel,
+            Data::Silex(_) => Kind::Silex,
+            Data::Annihilator(_) => Kind::Annihilator,
+            Data::Cyclotron(_) => Kind::Cyclotron,
             Data::Furnace(_) => Kind::Furnace,
             Data::Welder(_) => Kind::Welder,
             Data::Inert { .. } => Kind::Inert,
@@ -457,6 +503,15 @@ impl Machine {
             Data::SolarStirling(m) => &**m,
             Data::Sawmill(m) => m,
             Data::BrickFurnace(m) => m,
+            Data::KeyForge(m) => m,
+            Data::Funnel(m) => m,
+            Data::Autocrafter(m) => &**m,
+            Data::Radiolysis(m) => &**m,
+            Data::Exposure(m) => &**m,
+            Data::Fel(m) => m,
+            Data::Silex(m) => &**m,
+            Data::Annihilator(m) => &**m,
+            Data::Cyclotron(m) => &**m,
             Data::Furnace(m) => &**m,
             Data::Welder(m) => &**m,
             Data::Inert { name } => name,
@@ -506,6 +561,15 @@ impl Machine {
             Data::SolarStirling(m) => &mut **m,
             Data::Sawmill(m) => m,
             Data::BrickFurnace(m) => m,
+            Data::KeyForge(m) => m,
+            Data::Funnel(m) => m,
+            Data::Autocrafter(m) => &mut **m,
+            Data::Radiolysis(m) => &mut **m,
+            Data::Exposure(m) => &mut **m,
+            Data::Fel(m) => m,
+            Data::Silex(m) => &mut **m,
+            Data::Annihilator(m) => &mut **m,
+            Data::Cyclotron(m) => &mut **m,
             Data::Furnace(m) => &mut **m,
             Data::Welder(m) => &mut **m,
             Data::Inert { name } => name,

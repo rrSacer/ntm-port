@@ -721,7 +721,8 @@
 },
 {
 "ids": [
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 8,
 "label": "sand"
@@ -766,7 +767,8 @@
 },
 {
 "ids": [
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 8,
 "label": "sand"
@@ -811,7 +813,8 @@
 },
 {
 "ids": [
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 8,
 "label": "sand"
@@ -848,7 +851,8 @@
 },
 {
 "ids": [
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 6,
 "label": "sand"
@@ -1760,7 +1764,8 @@
 },
 {
 "ids": [
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 1,
 "label": "sand"

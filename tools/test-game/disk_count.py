@@ -93,15 +93,16 @@ def _held(folder, chunk, prefixes):
 
 
 def _be_atoms(be, prefixes):
-    """A block entity's atoms: its slots' and its NTM model's, item by item, each once where both list it (a pile
-    loader's model lists its slots too). A sawmill since step 3c keeps its stacks in the slots and its blade in the
-    model: a whole-count `max` lost one of the two."""
+    """A block entity's atoms: its real slots' and its NTM model's (without template copies), item by item, each once
+    where both list it (a pile loader's model lists its slots too). A sawmill since step 3c keeps its stacks in the
+    slots and its blade in the model: a whole-count `max` lost one of the two."""
     slots, model = {}, {}
-    for s in be.get('Items', []) or []:
+    for s in _real(be):
         _stack_items(s, prefixes, slots)
     if isinstance(be.get('ntm'), str):
+        n, without = _templates(be)
         try:
-            _machine_items(json.loads(be['ntm']), prefixes, model)
+            _machine_items(without if n else json.loads(be['ntm']), prefixes, model)
         except ValueError:
             pass
     return sum(max(slots.get(k, 0), model.get(k, 0)) for k in set(slots) | set(model))
@@ -208,6 +209,36 @@ def count(folder, prefixes, dims=('overworld',)):
     _count_player(world, prefixes, out)
     out['total'] = sum(out.values())
     return out
+
+
+# Template slots (the engine's `PatternSlot`) hold copies, not items: an autocrafter's template (0-8) and its result (9).
+TEMPLATES = {'Autocrafter': 10}
+
+
+def _templates(be):
+    """How many of a block entity's first slots are template copies (0 for any other machine), and its model without
+    them."""
+    if not isinstance(be.get('ntm'), str):
+        return 0, None
+    try:
+        model = json.loads(be['ntm'])
+    except ValueError:
+        return 0, None
+    # `Machine.data` is tagged inside (`{"k": "Autocrafter", "slots": [...]}`).
+    data = model.get('data') if isinstance(model, dict) else None
+    n = TEMPLATES.get(data.get('k')) if isinstance(data, dict) else None
+    if not n:
+        return 0, model
+    slots = data.get('slots')
+    if isinstance(slots, list):
+        data['slots'] = [None] * min(n, len(slots)) + slots[n:]
+    return n, model
+
+
+def _real(be):
+    """A block entity's `Items` without its template copies."""
+    n, _ = _templates(be)
+    return [s for s in be.get('Items', []) or [] if not (isinstance(s, dict) and int(s.get('Slot', 99)) < n)]
 
 
 def _count_dim(dim, prefixes, out):
@@ -437,11 +468,12 @@ def _items_dim(dim, prefixes, out):
         for chunk in records(path):
             for be in chunk.get('block_entities', []) or []:
                 slots, model = {}, {}
-                for s in be.get('Items', []) or []:
+                for s in _real(be):
                     _stack_items(s, prefixes, slots)
                 if isinstance(be.get('ntm'), str):
+                    n, without = _templates(be)
                     try:
-                        _machine_items(json.loads(be['ntm']), prefixes, model)
+                        _machine_items(without if n else json.loads(be['ntm']), prefixes, model)
                     except ValueError:
                         pass
                 # A machine whose model also lists its slots (a pile loader) holds them once.

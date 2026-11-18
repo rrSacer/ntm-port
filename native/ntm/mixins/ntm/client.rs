@@ -7,6 +7,7 @@ use ntm_core::client_rad;
 /// The Geiger counter: a box in the top left with the rate and the dose, in
 /// the colour of the dose, once the server has sent one.
 pub(super) fn hud(game: &mut crate::game::Game<'_>, batch: &mut HudBatch, corners: &mut Corners) {
+    look_overlay(game, batch);
     if !game.native_corner_shown(Corner::TopLeft) {
         return;
     }
@@ -19,6 +20,21 @@ pub(super) fn hud(game: &mut crate::game::Game<'_>, batch: &mut HudBatch, corner
     game.native_fill(batch, [x, y, width, height], 0x7800_0000);
     for (i, line) in lines.iter().enumerate() {
         game.native_text(batch, line, [x + 3.0, y + 2.0 + i as f32 * 10.0], color, true);
+    }
+}
+
+/// `ILookOverlay.printHook` of the block in the crosshair (`ModEventHandlerClient:205-221`): `printGeneric`'s title
+/// and lines right of the crosshair (`ntm_core::look_overlay`).
+fn look_overlay(game: &mut crate::game::Game<'_>, batch: &mut HudBatch) {
+    use ntm_core::look_overlay as lo;
+    let Some(hit) = game.native_raycast(lo::reach(game.creative)) else { return };
+    let Some(o) = lo::of_block(&hit.block) else { return };
+    let (shadow, title, lines) = lo::layout(batch.width, batch.height, o.lines.len());
+    game.native_text(batch, &o.title, shadow, o.background, false);
+    game.native_text(batch, &o.title, title, o.title_color, false);
+    for (line, at) in o.lines.iter().zip(lines) {
+        let (color, text) = lo::line_color(line);
+        game.native_text(batch, text, at, color, true);
     }
 }
 
@@ -50,6 +66,10 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
     }
     crate::game::ntm_armor_table::mods_tooltip(_game, stack, lines);
     let native=crate::game::ntm_glue::stack(&Some(stack.clone()));
+    // An autocrafter's template copy: its filter mode (`GUIAutocrafter.drawScreen`).
+    for line in native.as_ref().map(ntm_core::autocrafter::template_lines).unwrap_or_default() {
+        lines.push((Text::legacy(&line),u32::MAX));
+    }
     if let Some(p)=ntm_core::radioisotopes::pellet(&stack.item) {
         let life=native.as_ref().map_or(p.lifespan_ticks,ntm_core::radioisotopes::life);
         lines.push((Text::legacy(&format!("Calor: {} TU/t",p.heat_tu.decay_enabled)),u32::MAX));

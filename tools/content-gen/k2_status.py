@@ -23,9 +23,6 @@ NEEDS = {
     'ntm:syringe_taint': HIT + '; `HbmPotion.taint.performEffect` (a cada 2 ticks, com chance 1/40 por tentativa: `(amplificador + 1)` de dano `taint`, exceto em `EntityCreeperTainted` e `EntityTaintCrab`; mais a trilha de blocos taint sob `ENTITY_TAINT_TRAILS`) não tem tick de efeito de conteúdo: o efeito `ntm:taint` existe, passivo',
     'ntm:syringe_antidote': HIT, 'ntm:syringe_poison': HIT, 'ntm:syringe_awesome': HIT,
     'ntm:siox': '`HbmLivingProps.asbestos` e `blackLung` (sistema de doenças do pulmão)',
-    'ntm:xanax': '`HbmLivingProps.digamma` (sistema digamma do jogador)',
-    'ntm:fmn': '`HbmLivingProps.digamma` (a cegueira de 60 ticks está portada)',
-    'ntm:five_htp': '`HbmLivingProps.digamma` (o efeito Stability está portado)',
     'ntm:pill_herbal': 'asbestos e black lung (a dose −100 RAD e os efeitos estão portados)',
     'ntm:pill_red': 'o `PermaSyncHandler` só desenha uma marca no cliente; o efeito `ntm:death` existe, passivo, 1 hora',
     'ntm:cigarette': 'asbestos e black lung; conquista `achNo9`',
@@ -121,7 +118,7 @@ def render():
 EXTRA = [
     ('ntm:geiger_counter', 'ativo', '`ItemGeigerCounter`', 'relatório de 5 linhas e cliques a cada 5 ticks pelo `radBuf` do servidor de radiação; "radiação do chunk" é a taxa das zonas de fallout do port (`ChunkRadiationManager` não existe); texto em inglês'),
     ('ntm:dosimeter', 'ativo', '`ItemDosimeter`', 'idem, teto de 3,6 RAD/s'),
-    ('ntm:digamma_diagnostic', 'parcial', '`ItemDigammaDiagnostic`', '`HbmLivingProps.digamma` não existe: imprime 0'),
+    ('ntm:digamma_diagnostic', 'ativo', '`ItemDigammaDiagnostic`', 'imprime o `HbmLivingProps.digamma` guardado no jogador (Onda 2, sublote 2, `machine_fel`); texto em inglês'),
     ('ntm:survey_scanner', 'parcial', '`ItemSurveyScanner`', 'marcadores de partícula do minério de bedrock, `TileEntityBedrockOre` e a viagem ao End com `entanglement_kit`'),
     ('ntm:pipette, ntm:pipette_boron, ntm:pipette_laboratory', 'parcial', '`ItemPipette`', 'capacidade por clique direito portada; encher e esvaziar exige o slot de fluido de máquinas (`IFillableItem`)'),
     ('ntm:inf_water, ntm:inf_water_mk2, ntm:fluid_barrel_infinite, ntm:chlorine_pinwheel', 'dependente', '`ItemInfiniteFluid`', '`FluidLoaderInfinite` (o slot de tanque das máquinas que os usa)'),

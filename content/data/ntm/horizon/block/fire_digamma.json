@@ -1,0 +1,27 @@
+{
+  "template": "minecraft:glass",
+  "properties": {
+    "hardness": 0.0,
+    "explosion_resistance": 150.0,
+    "requires_tool": false,
+    "sounds": "minecraft:stone",
+    "light": 15,
+    "occludes": false
+  },
+  "item": true,
+  "shapes": {
+    "default": [
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ]
+    ]
+  },
+  "collision_shapes": {
+    "default": []
+  }
+}

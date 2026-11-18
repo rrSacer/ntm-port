@@ -120,6 +120,32 @@ pub fn can_extract(block: &str, slot: usize) -> bool {
     block == RADGEN && (12..24).contains(&slot)
 }
 
+/// `RTGUtil.updateRTGs` over `slots`: the heat of every pellet in them (`getPower`, scaled by what is left of the pellet when
+/// `scale_power`), wrapping as the Java `int` does and not capped, and the decay of each (`ItemRTGPellet.handleDecay`): a spent
+/// one becomes its depleted pellet, any other loses a tick of its life.
+pub fn update_rtgs(slots: &mut [Option<Stack>], decay: bool, scale_power: bool) -> i32 {
+    let mut total = 0i32;
+    for s in slots.iter_mut().flatten() {
+        let Some(p) = pellet(&s.id) else { continue };
+        let remaining = life(s);
+        let base = if decay { p.heat_tu.decay_enabled } else { p.heat_tu.decay_disabled };
+        let heat = if scale_power {
+            (f64::from(base) * (remaining as f64 / p.lifespan_ticks as f64)).ceil() as i32 as i16 as i32
+        } else {
+            base
+        };
+        total = total.wrapping_add(heat);
+        if decay {
+            if remaining <= 0 {
+                *s = Stack::new(&p.decay_item, 1);
+            } else {
+                s.custom = Some(crate::snbt::with_field(s.custom.as_deref(), DEPLETION, &format!("{}l", remaining - 1)));
+            }
+        }
+    }
+    total
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Rtg {
     pub power: u64,
@@ -150,34 +176,7 @@ impl Rtg {
     }
     pub fn step(&mut self) {
         self.finish();
-        self.heat = 0;
-        for s in self.slots.iter_mut().flatten() {
-            let Some(p) = pellet(&s.id) else { continue };
-            let remaining = life(s);
-            let base = if self.decay {
-                p.heat_tu.decay_enabled
-            } else {
-                p.heat_tu.decay_disabled
-            };
-            let heat = if self.scale_power {
-                (f64::from(base) * (remaining as f64 / p.lifespan_ticks as f64)).ceil() as i32
-                    as i16 as i32
-            } else {
-                base
-            };
-            self.heat = self.heat.wrapping_add(heat);
-            if self.decay {
-                if remaining <= 0 {
-                    *s = Stack::new(&p.decay_item, 1);
-                } else {
-                    s.custom = Some(crate::snbt::with_field(
-                        s.custom.as_deref(),
-                        DEPLETION,
-                        &format!("{}l", remaining - 1),
-                    ));
-                }
-            }
-        }
+        self.heat = update_rtgs(&mut self.slots, self.decay, self.scale_power);
         self.heat = self.heat.min(self.max_heat());
         self.pending = (self.heat * 5).max(0) as u64;
     }

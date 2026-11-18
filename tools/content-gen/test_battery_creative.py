@@ -23,7 +23,9 @@ class CreativeBattery(unittest.TestCase):
             self.assertNotEqual(json.loads(file.read_text())['result']['id'], 'ntm:battery_creative')
         for file in (ROOT / 'content/machine-recipes').glob('*.json'):
             for recipe in json.loads(file.read_text()).get('recipes', []):
-                self.assertFalse(any(output[0] == 'ntm:battery_creative' for output in recipe.get('outputItems', [])))
+                # A `ChanceOutputMulti` is {'multi': [[id, n, weight], ...]}: each of its outputs counts.
+                outputs = [o for output in recipe.get('outputItems', []) for o in (output['multi'] if isinstance(output, dict) else [output])]
+                self.assertFalse(any(output[0] == 'ntm:battery_creative' for output in outputs))
 
 
 if __name__ == '__main__': unittest.main()

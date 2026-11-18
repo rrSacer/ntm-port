@@ -1,0 +1,26 @@
+{
+  "obj": "ntm:models/obj/rockmill.obj",
+  "texture": "ntm:textures/models/machines/rockmill.png",
+  "rotation": 90,
+  "radius": 3.2,
+  "hide": [
+    "Frame"
+  ],
+  "bones": {
+    "Wheel": {
+      "pivot": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "play": [
+    {
+      "animation": "animation.rockmill.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_rockmill.animation.json"
+}

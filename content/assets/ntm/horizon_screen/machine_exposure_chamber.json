@@ -1,0 +1,103 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_exposure_chamber.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    70,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    92
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        152,
+        18,
+        16,
+        34
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        36,
+        39,
+        42,
+        10
+      ],
+      "uv": [
+        192,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 4,
+      "max": 5,
+      "rect": [
+        26,
+        36,
+        9,
+        16
+      ],
+      "uv": [
+        192,
+        10
+      ],
+      "dir": "up"
+    }
+  ],
+  "overlays": [
+    {
+      "value": 6,
+      "min": 1,
+      "rect": [
+        156,
+        4,
+        9,
+        12
+      ],
+      "uv": [
+        176,
+        34
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        152,
+        18,
+        16,
+        34
+      ],
+      "lines": [
+        "{0:si} / {1:si} HE"
+      ]
+    },
+    {
+      "rect": [
+        26,
+        36,
+        9,
+        16
+      ],
+      "lines": [
+        "{4} / {5}"
+      ]
+    }
+  ]
+}

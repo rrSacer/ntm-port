@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "ntm:radiation"
+    "ntm:radiation",
+    "ntm:digamma"
   ]
 }

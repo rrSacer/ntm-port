@@ -31,7 +31,7 @@ spec = importlib.util.spec_from_file_location('crash_proof', here / 'run-crash-p
 crash_proof = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crash_proof)
 INCOMING = 'ntm:pile_rod__zr'
-BROKEN = ('break', 'replace', 'furnace-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
+BROKEN = ('break', 'replace', 'furnace-break', 'keyforge-break', 'funnel-break', 'radiolysis-break', 'exposure-break', 'annihilator-break', 'cyclotron-break', 'orbus-break', 'iron-break', 'steel-break', 'combination-break', 'frozen-break', 'frozen-unload', 'origin-pickup', 'origin-pickup-away', 'origin-merge', 'origin-vanish', 'origin-kill',
           'merge-stale', 'origin-away', 'pickup-merge')
 # The scenarios whose action writes files itself (a chunk it unloads): after a death outside a save they hold what those
 # files hold, not the last save.
@@ -52,7 +52,7 @@ EMITTING = {'crossing': (('ntm:pile_rod',), 12, 12), 'crossing-kill': (('ntm:pil
 
 
 # The multiblock furnaces' break scenarios: the items counted before the cut (6 + 1, 6 + 3, 8 + 2).
-MB_TOTALS = {'iron-break': 7, 'steel-break': 9, 'combination-break': 10}
+MB_TOTALS = {'keyforge-break': 2, 'funnel-break': 9, 'radiolysis-break': 9, 'exposure-break': 8, 'annihilator-break': 7, 'cyclotron-break': 8, 'orbus-break': 6, 'iron-break': 7, 'steel-break': 9, 'combination-break': 10}
 
 
 # Breaks of a machine holding rods (its hidden contents), with what both worlds hold before: counted equal to the control.
@@ -67,6 +67,40 @@ def items_of(scenario):
     if scenario in ('iron-state', 'steel-state', 'combination-state'):
         return {'iron-state': ('minecraft:raw_iron', 'minecraft:iron_ingot'), 'steel-state': ('minecraft:iron_ore', 'minecraft:iron_ingot'),
                 'combination-state': ('minecraft:coal', 'ntm:coke__coal')}[scenario]
+    if scenario == 'keyforge-state':
+        return ('ntm:key', 'ntm:padlock')
+    if scenario == 'digamma-state':
+        return ('ntm:digamma_diagnostic',)
+    if scenario == 'silex-state':
+        return ('ntm:ingot_uranium', 'ntm:nugget_u235', 'ntm:nugget_u238')
+    if scenario == 'keyforge-break':
+        return ('ntm:key', 'ntm:padlock')
+    if scenario == 'funnel-state':
+        return ('minecraft:gold_ingot', 'minecraft:gold_block')
+    if scenario == 'autocrafter-state':
+        return ('minecraft:oak_planks', 'minecraft:stick')
+    if scenario == 'funnel-break':
+        return ('minecraft:dirt', 'minecraft:stick')
+    if scenario == 'radiolysis-state':
+        return ('ntm:pellet_rtg_polonium', 'minecraft:iron_sword', 'ntm:fluid_identifier_multi')
+    if scenario == 'radiolysis-break':
+        return ('minecraft:dirt', 'minecraft:stick')
+    if scenario == 'exposure-state':
+        return ('ntm:particle_higgs', 'ntm:particle_empty', 'ntm:ingot_uranium', 'ntm:ingot_schraranium')
+    if scenario == 'exposure-break':
+        return ('ntm:particle_higgs', 'minecraft:dirt')
+    if scenario == 'annihilator-state':
+        return ('minecraft:cobblestone',)
+    if scenario == 'annihilator-break':
+        return ('minecraft:dirt', 'ntm:fluid_identifier_multi')
+    if scenario == 'cyclotron-state':
+        return ('ntm:part_lithium', 'ntm:powder_lithium', 'ntm:powder_beryllium')
+    if scenario == 'cyclotron-break':
+        return ('ntm:part_lithium', 'minecraft:dirt')
+    if scenario == 'orbus-state':
+        return ('minecraft:water_bucket',)
+    if scenario == 'orbus-break':
+        return ('ntm:fluid_tank_empty',)
     if scenario in ('iron-break', 'steel-break', 'combination-break'):
         return {'iron-break': ('minecraft:raw_iron', 'ntm:upgrade_speed_1'), 'steel-break': ('minecraft:raw_iron', 'minecraft:raw_copper'),
                 'combination-break': ('minecraft:coal', 'minecraft:bucket')}[scenario]
@@ -99,6 +133,23 @@ DEFAULT_POINTS = {
     'furnace-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'welder-run': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'furnace-smelt': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'keyforge-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'digamma-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'silex-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'keyforge-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'funnel-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'autocrafter-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'radiolysis-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'exposure-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'annihilator-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'annihilator-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'cyclotron-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'cyclotron-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'exposure-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'radiolysis-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'funnel-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
+    'orbus-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'orbus-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'iron-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'steel-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'combination-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
@@ -362,6 +413,8 @@ def main():
         env['DISPLAY'] = ':' + pipe.readline().strip()
     report = {'ok': False, 'scenario': args.scenario, 'binary': str(args.binary),
               'binary_sha256': crash_proof.digest(args.binary), 'bundle_sha256': crash_proof.digest(args.bundle),
+              # A strict run (`HORIZON_NO_EAGER_SAVE=1`): no chunk reaches the disk outside a save, the cuts' contract.
+              'strict': os.environ.get('HORIZON_NO_EAGER_SAVE') == '1',
               'points': []}
     controlled = args.scenario in BROKEN or args.scenario in EMITTING or args.scenario in TRANSFERS
     try:
@@ -389,7 +442,8 @@ def main():
                 outcomes[control] = play(args, where, scratch, copy_env, args.scenario, point, control)
             exact = point in crash_proof.KILLS and args.scenario not in WRITES_IN_ACT
             # Eager chunk saves wrote files outside a save in a world: not the last save; judged by L and D item by item.
-            eager = exact and crash_proof.wrote_outside_a_save(outcomes[False], outcomes[True])
+            # (a scenario with no vanilla control, such as a machine's own state, has nothing to compare: not eager)
+            eager = exact and True in outcomes and crash_proof.wrote_outside_a_save(outcomes[False], outcomes[True])
             exact = exact and not eager
             if args.scenario in EMITTING:
                 _, expected, control_expected = EMITTING[args.scenario]

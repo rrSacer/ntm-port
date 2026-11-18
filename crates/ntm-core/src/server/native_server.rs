@@ -63,12 +63,15 @@ impl Server {
         let rbmk_stamp = world.rbmk_stamp();
         let sickness_stamp = world.sickness_stamp();
         let chunk_radiation_stamp = world.chunk_radiation_stamp();
+        let annihilator = (*world.annihilator).clone();
+        let annihilator_stamp = world.annihilator_stamp();
         #[cfg(debug_assertions)]
         let kept = world.kept(0);
         let broken=world.removals.iter().map(|r|(r.key.clone(),r.machine.block.clone())).collect();
         let mut bridge=container_bridge::Bridge::default();
         for r in &world.removals {if r.engine_slots{bridge.last.insert(r.key.clone(),Vec::new());}}
         Server {
+            polaroid: launch_polaroid(),
             field: Default::default(),
             blasts: crate::blast::Runtime::default(),
             fluidnet: fluid_server::FluidNet::default(),
@@ -86,6 +89,8 @@ impl Server {
                 kept_rbmk: Some(rbmk_stamp),
                 kept_sickness: Some(sickness_stamp),
                 kept_chunk_radiation: Some(chunk_radiation_stamp),
+                annihilator,
+                kept_annihilator: Some(annihilator_stamp),
                 #[cfg(debug_assertions)]
                 kept,
                 ..Ready::default()
@@ -98,6 +103,8 @@ impl Server {
             captured: None,
             taken: None,
             awaiting: None,
+            taken_annihilator: None,
+            awaiting_annihilator: None,
             nonce: obligations::draw_nonce(),
         }
     }
@@ -185,6 +192,8 @@ impl Server {
         // handleRadiationFX follows handleRadiationEffect in EntityEffectHandler.onUpdate:119-122.
         self.chunk_radiation_contaminate(host);
         self.zirnox_irradiation(host);
+        // DigammaFlame.onEntityCollidedWithBlock (moveEntity) and a new body's maxHealth modifier.
+        self.digamma_tick(host);
         phases.mark("zirnox");
         // ChunkRadiationManager.updateSystem: ServerTickEvent, Phase.END, after the worlds and the players.
         self.chunk_radiation_tick(host);
@@ -243,7 +252,7 @@ impl Server {
         let written = if self.world_part_changed() || clock {
             self.write_world(host)
         } else {
-            self.write_rbmk(host).and_then(|()| self.write_sickness(host)).and_then(|()| self.write_chunk_radiation(host))
+            self.write_rbmk(host).and_then(|()| self.write_sickness(host)).and_then(|()| self.write_chunk_radiation(host)).and_then(|()| self.write_annihilator(host))
         };
         if let Err(e) = written {
             host.log(&format!("world state: {e}"));
@@ -333,6 +342,13 @@ impl Server {
         }
         if r.world.generations.get(&key)!=Some(&m.generation){r.world.generations.insert(key.clone(),m.generation);}
         for cell in container_bridge::energy_port_cells(&m.block,pos,m.facing.as_deref()) { r.native_scan.push_back((dim.to_string(),cell)); }
+        if let crate::machine::Data::Annihilator(a) = &mut m.data {
+            for p in &a.pending {
+                r.annihilator.replay_push(&key, m.generation, p);
+            }
+            let confirmed = r.world.annihilator.applied_seq(&key, m.generation);
+            a.pending.retain(|p| p.seq > confirmed);
+        }
         r.world.machines.insert(key.clone(), m);
         r.seen.insert(key.clone());
         r.topo_dirty = true;
@@ -510,6 +526,15 @@ impl Server {
         r.sound_marks.retain(|k,_|r.world.machines.contains_key(k));
         r.native_saved.retain(|k, _| r.world.machines.contains_key(k));
     }
+}
+
+/// `MainRegistry.polaroidID` of this launch: `NTM_POLAROID` stands for the config's `generalOverride`, the draw is a
+/// `new Random()`'s.
+fn launch_polaroid() -> i32 {
+    let general_override = std::env::var("NTM_POLAROID").ok().and_then(|v| v.parse().ok());
+    let seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_nanos() as i64);
+    let mut rand = crate::rbmk::jrandom::JavaRandom::new(seed);
+    crate::digamma::polaroid(general_override, |n| rand.next_int(n))
 }
 
 #[cfg(test)]

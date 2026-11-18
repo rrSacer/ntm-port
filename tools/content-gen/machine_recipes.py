@@ -112,6 +112,8 @@ class MachineResolver(Resolver):
                     self.ore['any' + group[2]].update(self.ore.get(self.constants[member], []))
         for key, value in {'oreCoal': 'coal_ore', 'oreRedstone': 'redstone_ore', 'oreLapis': 'lapis_ore', 'oreNetherQuartz': 'nether_quartz_ore'}.items():
             self.ore[key].add('minecraft:' + value)
+        # Forge registers Blocks.sand with wildcard metadata: `sand` is sand and red sand, for every machine.
+        self.ore['sand'].add('minecraft:red_sand')
 
     def ingredient(self, expr, emit):
         for old, new in self.shapes.items():
@@ -178,14 +180,33 @@ class MachineResolver(Resolver):
         ident = self.ingredient(args[0], lambda path, body: local.__setitem__(path, body))
         options = self.expand_tag(ident, local)
         if not options: raise Unsupported('empty ingredient ' + expr)
-        # Prefer a port item; preserve all interchangeable choices alongside it.
-        options.sort(key=lambda ident: (not ident.startswith('ntm:'), ident))
+        # Prefer a port item, then the vanilla item the key names (`sand`: minecraft:sand, not red sand); preserve all
+        # interchangeable choices alongside it.
+        named = 'minecraft:' + self.constants.get(args[0].strip(), '')
+        options.sort(key=lambda ident: (not ident.startswith('ntm:'), ident != named, ident))
         return [options[0], count], options
 
     def fluid(self, expr):
         match = re.fullmatch(r'new FluidStack\(\s*Fluids\.(\w+)\s*,(.*)\)', expr.strip(), re.S)
         if not match or match[1] not in self.fluids: raise Unsupported('unresolved fluid: ' + expr)
         return [self.fluids[match[1]]['id'], integer(match[2])]
+
+
+def output_item(resolver, expr):
+    """An output: an item stack, or `new ChanceOutputMulti(new ChanceOutput(stack, weight), ...)`, one of its stacks
+    picked by weight (`WeightedRandom.getRandomItem`), as `{"multi": [[id, count, weight], ...]}`."""
+    multi = re.fullmatch(r'new ChanceOutputMulti\((.*)\)', expr.strip(), re.S)
+    if not multi:
+        return list(resolver.item(expr))
+    pool = []
+    for part in split(multi[1]):
+        one = re.fullmatch(r'new ChanceOutput\((.*)\)', part.strip(), re.S)
+        if not one: raise Unsupported('unsupported weighted output ' + part)
+        args = split(one[1])
+        if len(args) != 2 or not re.fullmatch(r'\d+', args[1].strip()): raise Unsupported('weighted output without an int weight: ' + part)
+        ident, count = resolver.item(args[0])
+        pool.append([ident, count, int(args[1])])
+    return {'multi': pool}
 
 
 def split_ternary(expr):
@@ -224,7 +245,8 @@ def export(source, output, rows):
             return direction + ': ' + translations[locale].get('hbmfluid.' + fluid, fluid.title())
         outputs = row.get('outputs', row.get('outputItems', []))
         if outputs:
-            ident, count = outputs[0]; title = names.get(ident, {}).get(locale)
+            # A weighted pick (`ChanceOutputMulti`) is named by its first item.
+            ident, count = outputs[0]['multi'][0][:2] if isinstance(outputs[0], dict) else outputs[0]; title = names.get(ident, {}).get(locale)
             if title is None:
                 path = ident.split(':', 1)[1]
                 title = vanilla_names[locale].get('item.minecraft.' + path, vanilla_names[locale].get('block.minecraft.' + path, path.replace('_', ' ').title()))
@@ -232,7 +254,7 @@ def export(source, output, rows):
         ident, amount = row['outputFluids'][0]
         return translations[locale].get('hbmfluid.' + ident, ident.title()) + f' · {amount} mB'
     counts = {}
-    for machine, cls in [('assembly', 'AssemblyMachineRecipes'), ('chemical_plant', 'ChemicalPlantRecipes'), ('centrifuge', 'CentrifugeRecipes')]:
+    for machine, cls in [('assembly', 'AssemblyMachineRecipes'), ('chemical_plant', 'ChemicalPlantRecipes'), ('centrifuge', 'CentrifugeRecipes'), ('rockmill', 'RockMillRecipes')]:
         path = Path('src/main/java/com/hbm/inventory/recipes') / (cls + '.java')
         text = clean((source / path).read_text())
         controls = ranges(text); recipes = []; skipped = []
@@ -241,6 +263,7 @@ def export(source, output, rows):
         next_method = re.search(r'\n\t(?:public|protected|private)\s', text[start + 1:])
         end = start + 1 + next_method.start() if next_method else len(text)
         source_calls = [(pos, args) for pos, args, _ in calls(text, pattern) if start < pos < end]
+        defaults = text[start:end]
         expanded_calls = []
         for pos, args in source_calls:
             if machine == 'assembly' and re.search(r'new GenericRecipe\("ass\.(?:un)?package"\s*\+\s*type.getUnlocalizedName\(\)\)', args):
@@ -254,6 +277,10 @@ def export(source, output, rows):
             else: expanded_calls.append((pos, args, False))
         for pos, args, expanded in expanded_calls:
             origin = str(path) + ':' + str(text[:pos].count('\n') + 1)
+            if machine == 'rockmill':
+                # RockMillRecipes.registerDefaults' local ints (`int duraShort = 100;`) stand for their values.
+                for var, value in re.findall(r'\bint\s+(\w+)\s*=\s*(\d+)\s*;', defaults):
+                    args = re.sub(r'\b' + var + r'\b', value, args)
             name_match = re.search(r'new GenericRecipe\("([^"]+)"\)', args)
             name = name_match[1] if name_match else 'source_line_' + origin.rsplit(':', 1)[1]
             try:
@@ -272,7 +299,7 @@ def export(source, output, rows):
                 else:
                     if not name_match: raise Unsupported('dynamic recipe name')
                     methods = {method[1:]: split(values) for _, values, method in calls(args, r'\.\w+')}
-                    allowed = {'setup', 'setupNamed', 'inputItems', 'inputFluids', 'outputItems', 'outputFluids', 'setPools', 'setPools528', 'setGroup', 'setIcon', 'setIconToFirstIngredient', 'inputItemsEx', 'inputFluidsEx'}
+                    allowed = {'setup', 'setupNamed', 'inputItems', 'inputFluids', 'outputItems', 'outputFluids', 'setPools', 'setPools528', 'setGroup', 'setIcon', 'setIconToFirstIngredient', 'inputItemsEx', 'inputFluidsEx', 'setNameWrapper'}
                     # Nested stack/frame methods are handled by the resolver;
                     # reject unknown top-level chain mutation by its boundary.
                     for match in re.finditer(r'\)\s*\.([A-Za-z]+)\(', args):
@@ -282,7 +309,14 @@ def export(source, output, rows):
                     row.update(duration=integer(setup[0]), power=integer(setup[1]))
                     inputs = [resolver.input(x) for x in methods.get('inputItems', [])]
                     row['inputItems'] = [{'ids': options, 'count': representative[1]} for representative, options in inputs]
-                    row['outputItems'] = [list(resolver.item(x)) for x in methods.get('outputItems', [])]
+                    row['outputItems'] = [output_item(resolver, x) for x in methods.get('outputItems', [])]
+                    # `setGroup(group, INSTANCE)`: an auto switch group, a literal or a local String of registerDefaults.
+                    group = methods.get('setGroup') if machine == 'rockmill' else None
+                    if group:
+                        literal = re.fullmatch(r'\s*"([^"]+)"\s*', group[0])
+                        local = re.search(r'String\s+' + re.escape(group[0].strip()) + r'\s*=\s*"([^"]+)"', defaults)
+                        if not (literal or local): raise Unsupported('dynamic auto switch group ' + group[0])
+                        row['autoSwitchGroup'] = (literal or local)[1]
                     for method in ('inputFluids', 'outputFluids'): row[method] = [resolver.fluid(x) for x in methods.get(method, [])]
                     row['pools'] = [string(x) for x in methods.get('setPools', [])]
                 if not row.get('outputs', row.get('outputItems', [])) and not row.get('outputFluids'):
@@ -294,7 +328,7 @@ def export(source, output, rows):
                 skipped.append({'name': name, 'source': origin, 'reason': str(error), 'expression': args})
         body = {'schema': 1, 'machine': machine, 'profile': PROFILE,
                 'units': {'duration': 'ticks', 'power': 'HE/t', 'fluids': 'mB'},
-                'ingredient_policy': 'first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices',
+                'ingredient_policy': 'first ntm id, then the vanilla id the OreDict key names, then lexical vanilla; alternatives are authoritative OreDict choices',
                 'coverage': {'emitted': len(recipes), 'scanned_source_calls': len(source_calls), 'skipped_source_calls': len(skipped),
                              'expanded_fluid_recipes': sum('expansion' in row for row in recipes),
                              'note': 'Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded'},

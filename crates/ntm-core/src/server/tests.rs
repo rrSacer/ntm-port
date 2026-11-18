@@ -260,6 +260,19 @@ impl ServerHost for SHost {
     fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
         std::mem::take(&mut self.world.borrow_mut().presses).into_iter().map(|(d, p, b)| ("p1".to_string(), d, p, b)).collect()
     }
+    /// The engine's crafting tables, here one recipe: two planks one above the other make four sticks.
+    fn crafting_matches(&mut self, grid: &[Option<container_bridge::Stack>]) -> Vec<crate::autocrafter::CraftMatch> {
+        let filled: Vec<(usize, &str)> = grid.iter().enumerate().filter_map(|(i, s)| s.as_ref().map(|s| (i, s.id.as_str()))).collect();
+        match filled.as_slice() {
+            [(a, "minecraft:oak_planks"), (b, "minecraft:oak_planks")] if b - a == 3 => vec![crate::autocrafter::CraftMatch {
+                id: "minecraft:stick".into(),
+                result: container_bridge::Stack::new("minecraft:stick", 4),
+                max_stack: 64,
+                remainders: vec![None; 9],
+            }],
+            _ => Vec::new(),
+        }
+    }
     fn machine_data(&mut self, dim: &str, p: Pos) -> Option<Vec<i32>> {
         self.world.borrow().engine.get(&(dim.to_string(), p)).map(|e| e.1.clone())
     }
@@ -710,3 +723,4 @@ mod oil_c_tests;
 mod oil_d_tests;
 mod heater_tests;
 mod steam_tests;
+mod annihilator_tests;

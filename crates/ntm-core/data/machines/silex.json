@@ -1,0 +1,5227 @@
+{
+ "schema": 1,
+ "source": "SILEXRecipes.java via tools/rbmk-oracle (content/machine-recipes/reactors_rbmk.json)",
+ "recipes": [
+  {
+   "input": {
+    "ore": "ingotPlutonium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu238",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu240",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "ore": "ingotUranium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_u235",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_u238",
+     "count": 1,
+     "weight": 11,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:crystal_schraranium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 3,
+   "outputs": [
+    {
+     "item": "ntm:nugget_schrabidium",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_uranium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_neptunium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:crystal_trixite"
+   },
+   "produced": 1200,
+   "consumed": 100,
+   "laser": 3,
+   "outputs": [
+    {
+     "item": "ntm:powder_plutonium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cobalt",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_niobium",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_nitan_mix",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_spark_mix",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:fallout__item"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_co60",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_sr90_tiny",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_i131_tiny",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cs137_tiny",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_au198",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "fluid:redmud"
+   },
+   "produced": 300,
+   "consumed": 50,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:powder_aluminium",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_neodymium_tiny",
+     "count": 3,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_boron_tiny",
+     "count": 3,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_iron",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_titanium",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_sodium",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "fluid:fullerene"
+   },
+   "produced": 1000,
+   "consumed": 1000,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:powder_ash__fullerene",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "fluid:vitriol"
+   },
+   "produced": 1000,
+   "consumed": 300,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:powder_bromine",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_iodine",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_iron",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:sulfur",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "fluid:death"
+   },
+   "produced": 1000,
+   "consumed": 1000,
+   "laser": 4,
+   "outputs": [
+    {
+     "item": "ntm:powder_impure_osmiridium",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:ingot_am_mix"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_am241",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_am242",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:ingot_australium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_australium_lesser",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_australium_greater",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:ingot_pu_mix"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu240",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:ingot_schraranium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_schrabidium",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_uranium",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_neptunium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "minecraft:lapis_lazuli"
+   },
+   "produced": 100,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:sulfur",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_aluminium",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cobalt",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "minecraft:gravel"
+   },
+   "produced": 1000,
+   "consumed": 250,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "minecraft:flint",
+     "count": 1,
+     "weight": 80,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_boron",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_lithium",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:fluorite",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long__uranium235"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_neptunium",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu240",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_technetium",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long__uranium233"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_u235",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_neptunium",
+     "count": 1,
+     "weight": 25,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_technetium",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long__neptunium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_u238",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 40,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu240",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_technetium",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long__thorium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_u233",
+     "count": 1,
+     "weight": 40,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_u235",
+     "count": 1,
+     "weight": 35,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 25,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long__schrabidium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_solinium",
+     "count": 1,
+     "weight": 25,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_euphemium",
+     "count": 1,
+     "weight": 18,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_gh336",
+     "count": 1,
+     "weight": 16,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_tantalium",
+     "count": 1,
+     "weight": 8,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_neodymium_tiny",
+     "count": 1,
+     "weight": 8,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 25,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long_depleted__uranium235"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 65,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long_depleted__uranium233"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 60,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 25,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long_depleted__neptunium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_u238",
+     "count": 1,
+     "weight": 16,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 55,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 9,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long_depleted__thorium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 35,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 40,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_long_depleted__schrabidium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_solinium",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_euphemium",
+     "count": 1,
+     "weight": 18,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_gh336",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_tantalium",
+     "count": 1,
+     "weight": 8,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_neodymium_tiny",
+     "count": 1,
+     "weight": 8,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 31,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short__uranium235"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu238",
+     "count": 1,
+     "weight": 12,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_sr90_tiny",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_i131_tiny",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cs137_tiny",
+     "count": 1,
+     "weight": 12,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 56,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short__uranium233"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu238",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_sr90_tiny",
+     "count": 1,
+     "weight": 12,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_i131_tiny",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cs137_tiny",
+     "count": 1,
+     "weight": 14,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 60,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short__neptunium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu238",
+     "count": 1,
+     "weight": 40,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_sr90_tiny",
+     "count": 1,
+     "weight": 7,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_i131_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cs137_tiny",
+     "count": 1,
+     "weight": 8,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 40,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short__plutonium239"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu240",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu241",
+     "count": 1,
+     "weight": 25,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_sr90_tiny",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_i131_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cs137_tiny",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 52,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short__plutonium240"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu241",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_neptunium",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_sr90_tiny",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_i131_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cs137_tiny",
+     "count": 1,
+     "weight": 7,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 66,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short__plutonium241"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_am241",
+     "count": 1,
+     "weight": 25,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_am242",
+     "count": 1,
+     "weight": 35,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_technetium",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_i131_tiny",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cs137_tiny",
+     "count": 1,
+     "weight": 7,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 25,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short__schrabidium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pb209",
+     "count": 1,
+     "weight": 7,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_au198",
+     "count": 1,
+     "weight": 7,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cs137_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_i131_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 76,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short_depleted__uranium235"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 32,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 22,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_u238",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 16,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short_depleted__uranium233"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 12,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 34,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 13,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_u238",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 29,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short_depleted__neptunium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 7,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 29,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_u238",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 17,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short_depleted__plutonium239"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 16,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 40,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_u238",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 39,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short_depleted__plutonium240"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 22,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 17,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_u238",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 36,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short_depleted__plutonium241"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 60,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:nuclear_waste_short_depleted__schrabidium"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 7,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_mercury_tiny",
+     "count": 1,
+     "weight": 12,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cerium_tiny",
+     "count": 1,
+     "weight": 14,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_lanthanium_tiny",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    },
+    {
+     "item": "ntm:dust_tiny",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 32,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:ore_tikite"
+   },
+   "produced": 900,
+   "consumed": 100,
+   "laser": 3,
+   "outputs": [
+    {
+     "item": "ntm:powder_plutonium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_cobalt",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_niobium",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_nitan_mix",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_balefire"
+   },
+   "produced": 400,
+   "consumed": 100,
+   "laser": 3,
+   "outputs": [
+    {
+     "item": "ntm:powder_balefire",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_balefire_gold"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_au198",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_balefire",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_drx"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 4,
+   "outputs": [
+    {
+     "item": "ntm:undefined",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:undefined",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:undefined",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:undefined",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:undefined",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:undefined",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_flashlead"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_au198",
+     "count": 1,
+     "weight": 44,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pb209",
+     "count": 1,
+     "weight": 44,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_mercury_tiny",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_gh336",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_heaus"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_australium_greater",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_au198",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "minecraft:gold_nugget",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pb209",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_hen"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_neptunium",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__neptunium",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__neptunium",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_hep239"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 85,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__plutonium239",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_hep241"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu241",
+     "count": 1,
+     "weight": 85,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__plutonium241",
+     "count": 1,
+     "weight": 15,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_hes"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_hes",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__neptunium",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__neptunium",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__schrabidium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__schrabidium",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_coal_tiny",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_heu233"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_u233",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__uranium233",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__uranium233",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_heu235"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_u235",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__uranium235",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__uranium235",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_leaus"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_australium_lesser",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pb209",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_lep"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_plutonium_fuel",
+     "count": 1,
+     "weight": 84,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__plutonium239",
+     "count": 1,
+     "weight": 7,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__plutonium240",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_les"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_les",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__neptunium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__neptunium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__schrabidium",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__schrabidium",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_coal_tiny",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_men"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_neptunium_fuel",
+     "count": 1,
+     "weight": 84,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__neptunium",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__neptunium",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_mep"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu_mix",
+     "count": 1,
+     "weight": 85,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__plutonium239",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__plutonium240",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_mes"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_schrabidium_fuel",
+     "count": 1,
+     "weight": 90,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__neptunium",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__neptunium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__schrabidium",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__schrabidium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_coal_tiny",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_meu"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_uranium_fuel",
+     "count": 1,
+     "weight": 84,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__uranium235",
+     "count": 1,
+     "weight": 4,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__uranium235",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_mox"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_mox_fuel",
+     "count": 1,
+     "weight": 84,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu_mix",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__uranium235",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__uranium235",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__plutonium239",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_po210be"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_polonium",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_beryllium",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_coal_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_pu238be"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu238",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_beryllium",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_tiny",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_coal_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_ra226be"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_ra226",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_beryllium",
+     "count": 1,
+     "weight": 45,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_lead",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_polonium",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:powder_coal_tiny",
+     "count": 1,
+     "weight": 5,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_thmeu"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_thorium_fuel",
+     "count": 1,
+     "weight": 84,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_u233",
+     "count": 1,
+     "weight": 6,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__thorium",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_ueu"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_uranium",
+     "count": 1,
+     "weight": 86,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu239",
+     "count": 1,
+     "weight": 10,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__uranium235",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__uranium235",
+     "count": 1,
+     "weight": 2,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_uzh"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 1,
+   "outputs": [
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 75,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_uranium_fuel",
+     "count": 1,
+     "weight": 20,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu_mix",
+     "count": 1,
+     "weight": 3,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_long_tiny__uranium235",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nuclear_waste_short_tiny__uranium235",
+     "count": 1,
+     "weight": 1,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_zfb_am_mix"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_pu241",
+     "count": 1,
+     "weight": 100,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_am_mix",
+     "count": 1,
+     "weight": 50,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 150,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_zfb_bismuth"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_uranium",
+     "count": 1,
+     "weight": 50,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu241",
+     "count": 1,
+     "weight": 50,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_bismuth",
+     "count": 1,
+     "weight": 50,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 150,
+     "stack": 64
+    }
+   ]
+  },
+  {
+   "input": {
+    "item": "ntm:rbmk_pellet_zfb_pu241"
+   },
+   "produced": 600,
+   "consumed": 100,
+   "laser": 2,
+   "outputs": [
+    {
+     "item": "ntm:nugget_u235",
+     "count": 1,
+     "weight": 50,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu240",
+     "count": 1,
+     "weight": 50,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_pu241",
+     "count": 1,
+     "weight": 50,
+     "stack": 64
+    },
+    {
+     "item": "ntm:nugget_zirconium",
+     "count": 1,
+     "weight": 150,
+     "stack": 64
+    }
+   ]
+  }
+ ],
+ "item_translation": [
+  [
+   "fluid:uf6",
+   "ntm:ingot_uranium"
+  ],
+  [
+   "fluid:puf6",
+   "ntm:ingot_plutonium"
+  ],
+  [
+   "ntm:powder_australium",
+   "ntm:ingot_australium"
+  ],
+  [
+   "ntm:powder_lapis",
+   "minecraft:lapis_lazuli"
+  ]
+ ],
+ "dict_translation": [
+  [
+   "dustPlutonium",
+   "ingotPlutonium"
+  ],
+  [
+   "dustUranium",
+   "ingotUranium"
+  ]
+ ],
+ "tiny_waste": [
+  [
+   "ntm:nuclear_waste_short_tiny__uranium235",
+   "ntm:nuclear_waste_short__uranium235"
+  ],
+  [
+   "ntm:nuclear_waste_short_tiny__uranium233",
+   "ntm:nuclear_waste_short__uranium233"
+  ],
+  [
+   "ntm:nuclear_waste_short_tiny__neptunium",
+   "ntm:nuclear_waste_short__neptunium"
+  ],
+  [
+   "ntm:nuclear_waste_short_tiny__plutonium239",
+   "ntm:nuclear_waste_short__plutonium239"
+  ],
+  [
+   "ntm:nuclear_waste_short_tiny__plutonium240",
+   "ntm:nuclear_waste_short__plutonium240"
+  ],
+  [
+   "ntm:nuclear_waste_short_tiny__plutonium241",
+   "ntm:nuclear_waste_short__plutonium241"
+  ],
+  [
+   "ntm:nuclear_waste_short_tiny__americium242",
+   "ntm:nuclear_waste_short__americium242"
+  ],
+  [
+   "ntm:nuclear_waste_short_tiny__schrabidium",
+   "ntm:nuclear_waste_short__schrabidium"
+  ],
+  [
+   "ntm:nuclear_waste_long_tiny__uranium235",
+   "ntm:nuclear_waste_long__uranium235"
+  ],
+  [
+   "ntm:nuclear_waste_long_tiny__uranium233",
+   "ntm:nuclear_waste_long__uranium233"
+  ],
+  [
+   "ntm:nuclear_waste_long_tiny__neptunium",
+   "ntm:nuclear_waste_long__neptunium"
+  ],
+  [
+   "ntm:nuclear_waste_long_tiny__thorium",
+   "ntm:nuclear_waste_long__thorium"
+  ],
+  [
+   "ntm:nuclear_waste_long_tiny__schrabidium",
+   "ntm:nuclear_waste_long__schrabidium"
+  ],
+  [
+   "ntm:nuclear_waste_short_depleted_tiny__uranium235",
+   "ntm:nuclear_waste_short_depleted__uranium235"
+  ],
+  [
+   "ntm:nuclear_waste_short_depleted_tiny__uranium233",
+   "ntm:nuclear_waste_short_depleted__uranium233"
+  ],
+  [
+   "ntm:nuclear_waste_short_depleted_tiny__neptunium",
+   "ntm:nuclear_waste_short_depleted__neptunium"
+  ],
+  [
+   "ntm:nuclear_waste_short_depleted_tiny__plutonium239",
+   "ntm:nuclear_waste_short_depleted__plutonium239"
+  ],
+  [
+   "ntm:nuclear_waste_short_depleted_tiny__plutonium240",
+   "ntm:nuclear_waste_short_depleted__plutonium240"
+  ],
+  [
+   "ntm:nuclear_waste_short_depleted_tiny__plutonium241",
+   "ntm:nuclear_waste_short_depleted__plutonium241"
+  ],
+  [
+   "ntm:nuclear_waste_short_depleted_tiny__americium242",
+   "ntm:nuclear_waste_short_depleted__americium242"
+  ],
+  [
+   "ntm:nuclear_waste_short_depleted_tiny__schrabidium",
+   "ntm:nuclear_waste_short_depleted__schrabidium"
+  ],
+  [
+   "ntm:nuclear_waste_long_depleted_tiny__uranium235",
+   "ntm:nuclear_waste_long_depleted__uranium235"
+  ],
+  [
+   "ntm:nuclear_waste_long_depleted_tiny__uranium233",
+   "ntm:nuclear_waste_long_depleted__uranium233"
+  ],
+  [
+   "ntm:nuclear_waste_long_depleted_tiny__neptunium",
+   "ntm:nuclear_waste_long_depleted__neptunium"
+  ],
+  [
+   "ntm:nuclear_waste_long_depleted_tiny__thorium",
+   "ntm:nuclear_waste_long_depleted__thorium"
+  ],
+  [
+   "ntm:nuclear_waste_long_depleted_tiny__schrabidium",
+   "ntm:nuclear_waste_long_depleted__schrabidium"
+  ]
+ ],
+ "collisions": [],
+ "skipped": [
+  {
+   "index": 41,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_balefire",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_balefire:1 is not in the catalog"
+  },
+  {
+   "index": 42,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_balefire",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_balefire:2 is not in the catalog"
+  },
+  {
+   "index": 43,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_balefire",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_balefire:3 is not in the catalog"
+  },
+  {
+   "index": 44,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_balefire",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_balefire:4 is not in the catalog"
+  },
+  {
+   "index": 46,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_balefire_gold",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_balefire_gold:1 is not in the catalog"
+  },
+  {
+   "index": 47,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_balefire_gold",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_balefire_gold:2 is not in the catalog"
+  },
+  {
+   "index": 48,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_balefire_gold",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_balefire_gold:3 is not in the catalog"
+  },
+  {
+   "index": 49,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_balefire_gold",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_balefire_gold:4 is not in the catalog"
+  },
+  {
+   "index": 51,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:1 is not in the catalog"
+  },
+  {
+   "index": 52,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:2 is not in the catalog"
+  },
+  {
+   "index": 53,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:3 is not in the catalog"
+  },
+  {
+   "index": 54,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:4 is not in the catalog"
+  },
+  {
+   "index": 55,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:5 is not in the catalog"
+  },
+  {
+   "index": 56,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:6 is not in the catalog"
+  },
+  {
+   "index": 57,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:7 is not in the catalog"
+  },
+  {
+   "index": 58,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:8 is not in the catalog"
+  },
+  {
+   "index": 59,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_drx",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_drx:9 is not in the catalog"
+  },
+  {
+   "index": 61,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_flashlead",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_flashlead:1 is not in the catalog"
+  },
+  {
+   "index": 62,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_flashlead",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_flashlead:2 is not in the catalog"
+  },
+  {
+   "index": 63,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_flashlead",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_flashlead:3 is not in the catalog"
+  },
+  {
+   "index": 64,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_flashlead",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_flashlead:4 is not in the catalog"
+  },
+  {
+   "index": 66,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:1 is not in the catalog"
+  },
+  {
+   "index": 67,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:2 is not in the catalog"
+  },
+  {
+   "index": 68,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:3 is not in the catalog"
+  },
+  {
+   "index": 69,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:4 is not in the catalog"
+  },
+  {
+   "index": 70,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:5 is not in the catalog"
+  },
+  {
+   "index": 71,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:6 is not in the catalog"
+  },
+  {
+   "index": 72,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:7 is not in the catalog"
+  },
+  {
+   "index": 73,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:8 is not in the catalog"
+  },
+  {
+   "index": 74,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heaus",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heaus:9 is not in the catalog"
+  },
+  {
+   "index": 76,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:1 is not in the catalog"
+  },
+  {
+   "index": 77,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:2 is not in the catalog"
+  },
+  {
+   "index": 78,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:3 is not in the catalog"
+  },
+  {
+   "index": 79,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:4 is not in the catalog"
+  },
+  {
+   "index": 80,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:5 is not in the catalog"
+  },
+  {
+   "index": 81,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:6 is not in the catalog"
+  },
+  {
+   "index": 82,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:7 is not in the catalog"
+  },
+  {
+   "index": 83,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:8 is not in the catalog"
+  },
+  {
+   "index": 84,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hen",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hen:9 is not in the catalog"
+  },
+  {
+   "index": 86,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:1 is not in the catalog"
+  },
+  {
+   "index": 87,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:2 is not in the catalog"
+  },
+  {
+   "index": 88,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:3 is not in the catalog"
+  },
+  {
+   "index": 89,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:4 is not in the catalog"
+  },
+  {
+   "index": 90,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:5 is not in the catalog"
+  },
+  {
+   "index": 91,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:6 is not in the catalog"
+  },
+  {
+   "index": 92,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:7 is not in the catalog"
+  },
+  {
+   "index": 93,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:8 is not in the catalog"
+  },
+  {
+   "index": 94,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep239",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep239:9 is not in the catalog"
+  },
+  {
+   "index": 96,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:1 is not in the catalog"
+  },
+  {
+   "index": 97,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:2 is not in the catalog"
+  },
+  {
+   "index": 98,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:3 is not in the catalog"
+  },
+  {
+   "index": 99,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:4 is not in the catalog"
+  },
+  {
+   "index": 100,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:5 is not in the catalog"
+  },
+  {
+   "index": 101,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:6 is not in the catalog"
+  },
+  {
+   "index": 102,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:7 is not in the catalog"
+  },
+  {
+   "index": 103,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:8 is not in the catalog"
+  },
+  {
+   "index": 104,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hep241",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hep241:9 is not in the catalog"
+  },
+  {
+   "index": 106,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:1 is not in the catalog"
+  },
+  {
+   "index": 107,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:2 is not in the catalog"
+  },
+  {
+   "index": 108,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:3 is not in the catalog"
+  },
+  {
+   "index": 109,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:4 is not in the catalog"
+  },
+  {
+   "index": 110,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:5 is not in the catalog"
+  },
+  {
+   "index": 111,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:6 is not in the catalog"
+  },
+  {
+   "index": 112,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:7 is not in the catalog"
+  },
+  {
+   "index": 113,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:8 is not in the catalog"
+  },
+  {
+   "index": 114,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_hes",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_hes:9 is not in the catalog"
+  },
+  {
+   "index": 116,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:1 is not in the catalog"
+  },
+  {
+   "index": 117,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:2 is not in the catalog"
+  },
+  {
+   "index": 118,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:3 is not in the catalog"
+  },
+  {
+   "index": 119,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:4 is not in the catalog"
+  },
+  {
+   "index": 120,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:5 is not in the catalog"
+  },
+  {
+   "index": 121,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:6 is not in the catalog"
+  },
+  {
+   "index": 122,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:7 is not in the catalog"
+  },
+  {
+   "index": 123,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:8 is not in the catalog"
+  },
+  {
+   "index": 124,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu233",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu233:9 is not in the catalog"
+  },
+  {
+   "index": 126,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:1 is not in the catalog"
+  },
+  {
+   "index": 127,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:2 is not in the catalog"
+  },
+  {
+   "index": 128,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:3 is not in the catalog"
+  },
+  {
+   "index": 129,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:4 is not in the catalog"
+  },
+  {
+   "index": 130,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:5 is not in the catalog"
+  },
+  {
+   "index": 131,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:6 is not in the catalog"
+  },
+  {
+   "index": 132,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:7 is not in the catalog"
+  },
+  {
+   "index": 133,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:8 is not in the catalog"
+  },
+  {
+   "index": 134,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_heu235",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_heu235:9 is not in the catalog"
+  },
+  {
+   "index": 136,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:1 is not in the catalog"
+  },
+  {
+   "index": 137,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:2 is not in the catalog"
+  },
+  {
+   "index": 138,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:3 is not in the catalog"
+  },
+  {
+   "index": 139,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:4 is not in the catalog"
+  },
+  {
+   "index": 140,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:5 is not in the catalog"
+  },
+  {
+   "index": 141,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:6 is not in the catalog"
+  },
+  {
+   "index": 142,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:7 is not in the catalog"
+  },
+  {
+   "index": 143,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:8 is not in the catalog"
+  },
+  {
+   "index": 144,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_leaus",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_leaus:9 is not in the catalog"
+  },
+  {
+   "index": 146,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:1 is not in the catalog"
+  },
+  {
+   "index": 147,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:2 is not in the catalog"
+  },
+  {
+   "index": 148,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:3 is not in the catalog"
+  },
+  {
+   "index": 149,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:4 is not in the catalog"
+  },
+  {
+   "index": 150,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:5 is not in the catalog"
+  },
+  {
+   "index": 151,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:6 is not in the catalog"
+  },
+  {
+   "index": 152,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:7 is not in the catalog"
+  },
+  {
+   "index": 153,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:8 is not in the catalog"
+  },
+  {
+   "index": 154,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_lep",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_lep:9 is not in the catalog"
+  },
+  {
+   "index": 156,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:1 is not in the catalog"
+  },
+  {
+   "index": 157,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:2 is not in the catalog"
+  },
+  {
+   "index": 158,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:3 is not in the catalog"
+  },
+  {
+   "index": 159,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:4 is not in the catalog"
+  },
+  {
+   "index": 160,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:5 is not in the catalog"
+  },
+  {
+   "index": 161,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:6 is not in the catalog"
+  },
+  {
+   "index": 162,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:7 is not in the catalog"
+  },
+  {
+   "index": 163,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:8 is not in the catalog"
+  },
+  {
+   "index": 164,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_les",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_les:9 is not in the catalog"
+  },
+  {
+   "index": 166,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:1 is not in the catalog"
+  },
+  {
+   "index": 167,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:2 is not in the catalog"
+  },
+  {
+   "index": 168,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:3 is not in the catalog"
+  },
+  {
+   "index": 169,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:4 is not in the catalog"
+  },
+  {
+   "index": 170,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:5 is not in the catalog"
+  },
+  {
+   "index": 171,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:6 is not in the catalog"
+  },
+  {
+   "index": 172,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:7 is not in the catalog"
+  },
+  {
+   "index": 173,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:8 is not in the catalog"
+  },
+  {
+   "index": 174,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_men",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_men:9 is not in the catalog"
+  },
+  {
+   "index": 176,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:1 is not in the catalog"
+  },
+  {
+   "index": 177,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:2 is not in the catalog"
+  },
+  {
+   "index": 178,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:3 is not in the catalog"
+  },
+  {
+   "index": 179,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:4 is not in the catalog"
+  },
+  {
+   "index": 180,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:5 is not in the catalog"
+  },
+  {
+   "index": 181,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:6 is not in the catalog"
+  },
+  {
+   "index": 182,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:7 is not in the catalog"
+  },
+  {
+   "index": 183,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:8 is not in the catalog"
+  },
+  {
+   "index": 184,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mep",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mep:9 is not in the catalog"
+  },
+  {
+   "index": 186,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:1 is not in the catalog"
+  },
+  {
+   "index": 187,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:2 is not in the catalog"
+  },
+  {
+   "index": 188,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:3 is not in the catalog"
+  },
+  {
+   "index": 189,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:4 is not in the catalog"
+  },
+  {
+   "index": 190,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:5 is not in the catalog"
+  },
+  {
+   "index": 191,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:6 is not in the catalog"
+  },
+  {
+   "index": 192,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:7 is not in the catalog"
+  },
+  {
+   "index": 193,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:8 is not in the catalog"
+  },
+  {
+   "index": 194,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mes",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mes:9 is not in the catalog"
+  },
+  {
+   "index": 196,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:1 is not in the catalog"
+  },
+  {
+   "index": 197,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:2 is not in the catalog"
+  },
+  {
+   "index": 198,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:3 is not in the catalog"
+  },
+  {
+   "index": 199,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:4 is not in the catalog"
+  },
+  {
+   "index": 200,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:5 is not in the catalog"
+  },
+  {
+   "index": 201,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:6 is not in the catalog"
+  },
+  {
+   "index": 202,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:7 is not in the catalog"
+  },
+  {
+   "index": 203,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:8 is not in the catalog"
+  },
+  {
+   "index": 204,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_meu",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_meu:9 is not in the catalog"
+  },
+  {
+   "index": 206,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:1 is not in the catalog"
+  },
+  {
+   "index": 207,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:2 is not in the catalog"
+  },
+  {
+   "index": 208,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:3 is not in the catalog"
+  },
+  {
+   "index": 209,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:4 is not in the catalog"
+  },
+  {
+   "index": 210,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:5 is not in the catalog"
+  },
+  {
+   "index": 211,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:6 is not in the catalog"
+  },
+  {
+   "index": 212,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:7 is not in the catalog"
+  },
+  {
+   "index": 213,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:8 is not in the catalog"
+  },
+  {
+   "index": 214,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_mox",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_mox:9 is not in the catalog"
+  },
+  {
+   "index": 216,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_po210be",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_po210be:1 is not in the catalog"
+  },
+  {
+   "index": 217,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_po210be",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_po210be:2 is not in the catalog"
+  },
+  {
+   "index": 218,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_po210be",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_po210be:3 is not in the catalog"
+  },
+  {
+   "index": 219,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_po210be",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_po210be:4 is not in the catalog"
+  },
+  {
+   "index": 221,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:1 is not in the catalog"
+  },
+  {
+   "index": 222,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:2 is not in the catalog"
+  },
+  {
+   "index": 223,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:3 is not in the catalog"
+  },
+  {
+   "index": 224,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:4 is not in the catalog"
+  },
+  {
+   "index": 225,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:5 is not in the catalog"
+  },
+  {
+   "index": 226,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:6 is not in the catalog"
+  },
+  {
+   "index": 227,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:7 is not in the catalog"
+  },
+  {
+   "index": 228,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:8 is not in the catalog"
+  },
+  {
+   "index": 229,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_pu238be",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_pu238be:9 is not in the catalog"
+  },
+  {
+   "index": 231,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ra226be",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ra226be:1 is not in the catalog"
+  },
+  {
+   "index": 232,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ra226be",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ra226be:2 is not in the catalog"
+  },
+  {
+   "index": 233,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ra226be",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ra226be:3 is not in the catalog"
+  },
+  {
+   "index": 234,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ra226be",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ra226be:4 is not in the catalog"
+  },
+  {
+   "index": 236,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:1 is not in the catalog"
+  },
+  {
+   "index": 237,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:2 is not in the catalog"
+  },
+  {
+   "index": 238,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:3 is not in the catalog"
+  },
+  {
+   "index": 239,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:4 is not in the catalog"
+  },
+  {
+   "index": 240,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:5 is not in the catalog"
+  },
+  {
+   "index": 241,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:6 is not in the catalog"
+  },
+  {
+   "index": 242,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:7 is not in the catalog"
+  },
+  {
+   "index": 243,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:8 is not in the catalog"
+  },
+  {
+   "index": 244,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_thmeu",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_thmeu:9 is not in the catalog"
+  },
+  {
+   "index": 246,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:1 is not in the catalog"
+  },
+  {
+   "index": 247,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:2 is not in the catalog"
+  },
+  {
+   "index": 248,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:3 is not in the catalog"
+  },
+  {
+   "index": 249,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:4 is not in the catalog"
+  },
+  {
+   "index": 250,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:5 is not in the catalog"
+  },
+  {
+   "index": 251,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:6 is not in the catalog"
+  },
+  {
+   "index": 252,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:7 is not in the catalog"
+  },
+  {
+   "index": 253,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:8 is not in the catalog"
+  },
+  {
+   "index": 254,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_ueu",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_ueu:9 is not in the catalog"
+  },
+  {
+   "index": 256,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:1 is not in the catalog"
+  },
+  {
+   "index": 257,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:2 is not in the catalog"
+  },
+  {
+   "index": 258,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:3 is not in the catalog"
+  },
+  {
+   "index": 259,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:4 is not in the catalog"
+  },
+  {
+   "index": 260,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:5 is not in the catalog"
+  },
+  {
+   "index": 261,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:6 is not in the catalog"
+  },
+  {
+   "index": 262,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:7 is not in the catalog"
+  },
+  {
+   "index": 263,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:8 is not in the catalog"
+  },
+  {
+   "index": 264,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_uzh",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_uzh:9 is not in the catalog"
+  },
+  {
+   "index": 266,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:1 is not in the catalog"
+  },
+  {
+   "index": 267,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:2 is not in the catalog"
+  },
+  {
+   "index": 268,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:3 is not in the catalog"
+  },
+  {
+   "index": 269,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:4 is not in the catalog"
+  },
+  {
+   "index": 270,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:5 is not in the catalog"
+  },
+  {
+   "index": 271,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:6 is not in the catalog"
+  },
+  {
+   "index": 272,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:7 is not in the catalog"
+  },
+  {
+   "index": 273,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:8 is not in the catalog"
+  },
+  {
+   "index": 274,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_am_mix",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_am_mix:9 is not in the catalog"
+  },
+  {
+   "index": 276,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:1 is not in the catalog"
+  },
+  {
+   "index": 277,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:2 is not in the catalog"
+  },
+  {
+   "index": 278,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:3 is not in the catalog"
+  },
+  {
+   "index": 279,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:4 is not in the catalog"
+  },
+  {
+   "index": 280,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:5 is not in the catalog"
+  },
+  {
+   "index": 281,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:6 is not in the catalog"
+  },
+  {
+   "index": 282,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:7 is not in the catalog"
+  },
+  {
+   "index": 283,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:8 is not in the catalog"
+  },
+  {
+   "index": 284,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_bismuth",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_bismuth:9 is not in the catalog"
+  },
+  {
+   "index": 286,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 1,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:1 is not in the catalog"
+  },
+  {
+   "index": 287,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 2,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:2 is not in the catalog"
+  },
+  {
+   "index": 288,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 3,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:3 is not in the catalog"
+  },
+  {
+   "index": 289,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 4,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:4 is not in the catalog"
+  },
+  {
+   "index": 290,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 5,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:5 is not in the catalog"
+  },
+  {
+   "index": 291,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 6,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:6 is not in the catalog"
+  },
+  {
+   "index": 292,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 7,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:7 is not in the catalog"
+  },
+  {
+   "index": 293,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 8,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:8 is not in the catalog"
+  },
+  {
+   "index": 294,
+   "input": {
+    "stack": {
+     "item": "rbmk_pellet_zfb_pu241",
+     "count": 1,
+     "meta": 9,
+     "nbt": null
+    }
+   },
+   "reason": "rbmk_pellet_zfb_pu241:9 is not in the catalog"
+  }
+ ]
+}
