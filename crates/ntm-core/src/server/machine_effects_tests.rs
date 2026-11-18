@@ -23,6 +23,8 @@ struct Host {
     refuse_commit: bool,
     /// The host's copy of the sawmills without their blade (`sawmill_blade`).
     without_blade: BTreeSet<Pos>,
+    /// The slots each accepted commit wrote (`MachineCommit::desired`).
+    desired: BTreeMap<Pos, container_bridge::Slots>,
 }
 impl Kv for Host {
     fn get(&mut self, key: &str) -> Option<Vec<u8>> {
@@ -57,6 +59,7 @@ impl ServerHost for Host {
         }
         self.order.push("commit");
         self.saved.insert(commit.pos, commit.json.clone());
+        self.desired.insert(commit.pos, commit.desired.clone());
         true
     }
     fn set_blocks(&mut self, _: &str, _: &[(Pos, String)]) -> Result<(), String> {
@@ -764,6 +767,32 @@ fn a_failing_sawmill_commits_its_lost_blade_with_the_blast_then_the_blade() {
         (1, 1),
         "a lost blade breaks once"
     );
+}
+/// The third review's P3: the step that saws and breaks the blade at once (`TileEntitySawmill.updateEntity` saws, then
+/// counts the overspeed past 300) is one commit: its outputs in the slots it writes, the lost blade in its model, and
+/// the blast and the blade as its batch.
+#[test]
+fn a_sawmill_that_saws_and_breaks_in_one_step_commits_its_outputs_with_the_failure() {
+    use container_bridge::Stack;
+    let mut host = Host::default();
+    let mut server = Server::native(&mut host, 0);
+    let key = failing_sawmill(&mut host, &mut server);
+    let s = sawmill_of(&mut server, &key);
+    // 301 heat: 30 progress, from 590 past the 600 of the log.
+    s.slots[0] = Some(Stack::new("minecraft:oak_log", 1));
+    s.progress = 590;
+    assert!(s.fails_on_finish() && s.saws_on_finish());
+    server.sawmill_finish(&mut host);
+    let s = sawmill_of(&mut server, &key).clone();
+    assert!(!s.has_blade);
+    let planks = Some(Stack::new("minecraft:oak_planks", 6));
+    assert_eq!((s.slot(0), s.slot(1)), (None, planks.as_ref()));
+    assert_eq!(host.order, ["commit"], "one commit");
+    let desired = &host.desired[&CORE];
+    assert_eq!((desired[0].clone(), desired[1].clone()), (None, planks), "the outputs in the failure's own slots");
+    assert_eq!(server.ready.world.machine_effects.len(), 1);
+    assert_eq!(server.ready.world.machine_effects[0].effects, VecDeque::from([blast(), blade()]));
+    assert!(host.without_blade.contains(&CORE));
 }
 #[test]
 fn a_refused_sawmill_failure_publishes_nothing_and_breaks_on_the_next_hot_tick() {
