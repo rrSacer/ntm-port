@@ -353,7 +353,7 @@ fn the_autocrafter_asks_the_recipes_through_the_step_and_crafts() {
     g.run(2);
     let s = slots(&g);
     assert_eq!(s[a::RESULT].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:stick", 4)), "{s:?}");
-    assert_eq!(s[1].as_ref().and_then(a::mode_of).as_deref(), Some(a::WILDCARD), "{s:?}");
+    assert_eq!(s[1].as_ref().and_then(a::mode_of).as_deref(), Some(a::EXACT), "{s:?}");
     put(&mut g, 11, Some(Stack::new("minecraft:oak_planks", 2)));
     put(&mut g, 14, Some(Stack::new("minecraft:oak_planks", 2)));
     g.run(4);

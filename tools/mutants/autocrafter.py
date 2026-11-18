@@ -6,7 +6,17 @@ from pathlib import Path
 repo, target, log = Path(sys.argv[1]), sys.argv[2], Path(sys.argv[3])
 src = repo / 'crates/ntm-core/src'
 MUTANTS = [
-    ('autocrafter.rs', 'if !first || self.recipe_index >= self.recipes.len() {', 'if self.recipe_index >= self.recipes.len() {'),
+    ('autocrafter.rs', 'if clicked.contains(&true) || self.recipe_index >= self.recipes.len() {', 'if self.recipe_index >= self.recipes.len() {'),
+    # The third review: a copy put again, the hand's rule, the vanilla families, exact by damage.
+    ('autocrafter.rs', 'self.slots[i].as_ref().is_some_and(|s| mode_of(s).is_none())\n                    || ', ''),
+    ('autocrafter.rs', '(_, true) => can_insert(slots, slot, item),', '(_, true) => manual || can_insert(slots, slot, item),'),
+    ('autocrafter.rs', '(true, true) if slot == OUTPUT || slot == BATTERY => true,', '(true, true) if slot == BATTERY => true,'),
+    ('autocrafter.rs', '        _ if wood("_planks") => "planks",\n', ''),
+    ('autocrafter.rs', '        _ if colored("_wool") => "wool",\n', ''),
+    ('autocrafter.rs', '        _ if DYES.contains(&path) => "dye",\n', ''),
+    ('autocrafter.rs', '(id.starts_with("ntm:") && id.contains("__")) || vanilla_family(id).is_some()', 'id.starts_with("ntm:") && id.contains("__")'),
+    ('autocrafter.rs', 'vanilla_family(id).unwrap_or_else(|| id.split_once("__").map_or(id, |(b, _)| b))', 'id.split_once("__").map_or(id, |(b, _)| b)'),
+    ('autocrafter.rs', 'EXACT => input_id == filter_id && input.damage == filter.damage,', 'EXACT => input_id == filter_id,'),
     ('autocrafter.rs', 'self.slots[i] = template[i].clone().map(|s| with_mode(s, mode.as_deref()));', 'self.slots[i] = template[i].clone();'),
     ('autocrafter.rs', 'if self.recipes.is_empty() || self.power < CONSUMPTION {', 'if self.recipes.is_empty() || self.power < 1 {'),
     ('autocrafter.rs', '        self.power -= CONSUMPTION;\n', ''),
@@ -17,7 +27,7 @@ MUTANTS = [
     ('autocrafter.rs', '        if self.recipe_index >= self.recipes.len() {\n            self.recipe_index = 0;\n        }\n        self.show_result();', '        if self.recipe_index > self.recipes.len() {\n            self.recipe_index = 0;\n        }\n        self.show_result();'),
     ('autocrafter.rs', 'for prefix in ["ingot", "block", "dust", "nugget", "plate"] {', 'for prefix in ["block", "dust", "nugget", "plate"] {'),
     ('autocrafter.rs', '        Some(EXACT) if bedrock_grade(id).is_some() => BEDROCK.into(),\n', ''),
-    ('autocrafter.rs', 'WILDCARD => base(input) == base(filter),', 'WILDCARD => input == filter,'),
+    ('autocrafter.rs', 'WILDCARD => base(input_id) == base(filter_id),', 'WILDCARD => input_id == filter_id,'),
     ('autocrafter.rs', 'held.as_ref().is_some_and(|h| h.count + item.count > INPUT_MAX) || item.count > INPUT_MAX', 'held.as_ref().is_some_and(|h| h.count + item.count > INPUT_MAX)'),
     ('autocrafter.rs', '        if other.count < size {\n            return false;', '        if other.count <= size {\n            return false;'),
     ('autocrafter.rs', '    if slot == OUTPUT {\n        return true;\n    }', '    if slot == OUTPUT {\n        return false;\n    }'),

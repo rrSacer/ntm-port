@@ -36,7 +36,7 @@ pub const MODE_BUTTON: u32 = 100;
 pub const NEXT_RECIPE: u32 = 109;
 /// The custom data field of a template copy that holds its filter mode.
 pub const MODE_KEY: &str = "ntm_autocrafter_mode";
-/// `isItemValidForSlot`: no input slot holds more than 4 (line 279).
+/// `isItemValidForSlot`: no input slot holds more than 4 (line 216).
 pub const INPUT_MAX: u32 = 4;
 
 /// `ModulePatternMatcher`'s modes: an OreDict name for any other.
@@ -79,24 +79,27 @@ impl Autocrafter {
     }
 
     /// Reads the recipes again where the template or the inputs changed, through `query` (the engine's
-    /// `crafting_matches` of a 3x3 grid). A template slot that changed takes its `initPatternSmart` mode and the
-    /// recipe goes back to the first (`slotClick`, `updateTemplateGrid`); the first look of a session keeps the saved
-    /// modes and recipe (`readFromNBT`).
+    /// `crafting_matches` of a 3x3 grid). A template slot clicked (`slotClick`: its item changed, or a copy without a
+    /// mode, which the engine has just put there, even of the same item) takes its `initPatternSmart` mode and the
+    /// recipe goes back to the first (`updateTemplateGrid`); the first look of a session keeps the saved modes and
+    /// recipe (`readFromNBT`).
     pub fn refresh(&mut self, mut query: impl FnMut(&[Option<Stack>]) -> Vec<CraftMatch>) {
         self.slots.resize(SLOTS, None);
         let template: Vec<Option<Stack>> = self.slots[TEMPLATE].iter().map(|s| s.as_ref().map(without_mode)).collect();
-        if self.template_seen.as_ref() != Some(&template) {
-            let first = self.template_seen.is_none();
-            if let Some(seen) = self.template_seen.take() {
-                for i in TEMPLATE {
-                    if seen[i] != template[i] {
-                        let mode = template[i].as_ref().map(|s| smart_mode(&s.id));
-                        self.slots[i] = template[i].clone().map(|s| with_mode(s, mode.as_deref()));
-                    }
-                }
+        let first = self.template_seen.is_none();
+        let clicked: Vec<bool> = TEMPLATE
+            .map(|i| {
+                self.slots[i].as_ref().is_some_and(|s| mode_of(s).is_none())
+                    || self.template_seen.as_ref().is_some_and(|seen| seen[i] != template[i])
+            })
+            .collect();
+        if first || clicked.contains(&true) {
+            for i in TEMPLATE.filter(|&i| clicked[i]) {
+                let mode = template[i].as_ref().map(|s| smart_mode(&s.id));
+                self.slots[i] = template[i].clone().map(|s| with_mode(s, mode.as_deref()));
             }
             self.recipes = query(&template);
-            if !first || self.recipe_index >= self.recipes.len() {
+            if clicked.contains(&true) || self.recipe_index >= self.recipes.len() {
                 self.recipe_index = 0;
             }
             self.template_seen = Some(template);
@@ -193,14 +196,55 @@ pub fn without_mode(s: &Stack) -> Stack {
     with_mode(s.clone(), None)
 }
 
-/// `getHasSubtypes`: an item of several metas, which the port names `base__variant`.
+const COLORS: [&str; 16] = [
+    "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red",
+    "black",
+];
+const DYES: [&str; 16] = [
+    "ink_sac", "red_dye", "green_dye", "cocoa_beans", "lapis_lazuli", "purple_dye", "cyan_dye", "light_gray_dye", "gray_dye", "pink_dye", "lime_dye",
+    "yellow_dye", "light_blue_dye", "magenta_dye", "orange_dye", "bone_meal",
+];
+const WOODS: [&str; 6] = ["oak", "spruce", "birch", "jungle", "acacia", "dark_oak"];
+
+/// The 1.7.10 item (one id, several metas) a vanilla id of 26.3 was a meta of: `minecraft:planks` for every plank,
+/// `minecraft:dye` for every dye. None for an item that had one meta.
+fn vanilla_family(id: &str) -> Option<&'static str> {
+    let path = id.strip_prefix("minecraft:")?;
+    let colored = |suffix: &str| path.strip_suffix(suffix).is_some_and(|c| COLORS.contains(&c));
+    let wood = |suffix: &str| path.strip_suffix(suffix).is_some_and(|w| WOODS.contains(&w));
+    Some(match path {
+        _ if wood("_planks") => "planks",
+        _ if wood("_slab") => "wooden_slab",
+        _ if wood("_sapling") => "sapling",
+        "oak_log" | "spruce_log" | "birch_log" | "jungle_log" => "log",
+        "acacia_log" | "dark_oak_log" => "log2",
+        "oak_leaves" | "spruce_leaves" | "birch_leaves" | "jungle_leaves" => "leaves",
+        "acacia_leaves" | "dark_oak_leaves" => "leaves2",
+        _ if colored("_wool") => "wool",
+        _ if colored("_carpet") => "carpet",
+        _ if colored("_terracotta") => "stained_hardened_clay",
+        _ if colored("_stained_glass") => "stained_glass",
+        _ if colored("_stained_glass_pane") => "stained_glass_pane",
+        _ if DYES.contains(&path) => "dye",
+        "sand" | "red_sand" => "sand",
+        "stone_bricks" | "mossy_stone_bricks" | "cracked_stone_bricks" | "chiseled_stone_bricks" => "stonebrick",
+        "sandstone" | "chiseled_sandstone" | "cut_sandstone" => "sandstone",
+        "quartz_block" | "chiseled_quartz_block" | "quartz_pillar" => "quartz_block",
+        "coal" | "charcoal" => "coal",
+        "golden_apple" | "enchanted_golden_apple" => "golden_apple",
+        _ => return None,
+    })
+}
+
+/// `getHasSubtypes`: an item of several metas, which the port names `base__variant` (the NTM's) or splits into ids
+/// of one 1.7.10 item (vanilla's: `vanilla_family`).
 fn has_subtypes(id: &str) -> bool {
-    id.starts_with("ntm:") && id.contains("__")
+    (id.starts_with("ntm:") && id.contains("__")) || vanilla_family(id).is_some()
 }
 
 /// `getItem()`: the item without its meta.
 fn base(id: &str) -> &str {
-    id.split_once("__").map_or(id, |(b, _)| b)
+    vanilla_family(id).unwrap_or_else(|| id.split_once("__").map_or(id, |(b, _)| b))
 }
 
 /// `ItemBedrockOreNew.getGrade`: `ntm:bedrock_ore__<grade>_<type>`.
@@ -210,7 +254,10 @@ fn bedrock_grade(id: &str) -> Option<&str> {
 }
 
 /// `initPatternSmart`: the first OreDict name for an ingot, a block, a dust, a nugget or a plate, else bedrock for a
-/// bedrock ore, exact for an item of several metas and wildcard for any other.
+/// bedrock ore, exact for an item of several metas and wildcard for any other. "First" is in name order: the port's
+/// OreDict (`crate::oredict::names`) keeps an item's names sorted, where `getOreIDs` gives them in the order they
+/// were registered, so an item with two names of one prefix (gunpowder: `dustAnyPropellant`, `dustGunpowder`) may
+/// take the other one.
 pub fn smart_mode(id: &str) -> String {
     let names = crate::oredict::names(id);
     for prefix in ["ingot", "block", "dust", "nugget", "plate"] {
@@ -242,13 +289,15 @@ pub fn next_mode(id: &str, mode: Option<&str>) -> String {
     }
 }
 
-/// `isValidForFilter`: whether `input` passes template `filter` in `mode` (exact when it has none).
-pub fn valid_for_filter(filter: &str, mode: Option<&str>, input: &str) -> bool {
+/// `isValidForFilter`: whether `input` passes template `filter` in `mode` (exact when it has none). Exact is
+/// `isItemEqual`: the item, its meta (the port's id) and its damage.
+pub fn valid_for_filter(filter: &Stack, mode: Option<&str>, input: &Stack) -> bool {
+    let (filter_id, input_id) = (filter.id.as_str(), input.id.as_str());
     match mode.unwrap_or(EXACT) {
-        EXACT => input == filter,
-        WILDCARD => base(input) == base(filter),
-        BEDROCK => base(input) == base(filter) && bedrock_grade(input).is_some() && bedrock_grade(input) == bedrock_grade(filter),
-        name => crate::oredict::has(input, name),
+        EXACT => input_id == filter_id && input.damage == filter.damage,
+        WILDCARD => base(input_id) == base(filter_id),
+        BEDROCK => base(input_id) == base(filter_id) && bedrock_grade(input_id).is_some() && bedrock_grade(input_id) == bedrock_grade(filter_id),
+        name => crate::oredict::has(input_id, name),
     }
 }
 
@@ -298,7 +347,7 @@ pub fn can_insert(slots: &[Option<Stack>], slot: usize, item: &Stack) -> bool {
     for i in TEMPLATE {
         let Some(filter) = slots.get(i).cloned().flatten() else { continue };
         let Some(mode) = mode_of(&filter).filter(|m| !m.is_empty()) else { continue };
-        if valid_for_filter(&without_mode(&filter).id, Some(&mode), &item.id) {
+        if valid_for_filter(&without_mode(&filter), Some(&mode), item) {
             valid.push(i + INPUTS.start);
             if i + INPUTS.start == slot && held.is_none() {
                 return true;
@@ -332,20 +381,22 @@ pub fn can_extract(slots: &[Option<Stack>], slot: usize, item: &Stack) -> bool {
     let Some(filter) = slots.get(slot - INPUTS.start).cloned().flatten() else { return true };
     match mode_of(&filter).filter(|m| !m.is_empty()) {
         None => true,
-        Some(mode) => !valid_for_filter(&without_mode(&filter).id, Some(&mode), &item.id),
+        Some(mode) => !valid_for_filter(&without_mode(&filter), Some(&mode), item),
     }
 }
 
-/// What a hand and a hopper may do with slot `slot`. A hand reaches every slot but the template's (the engine's
-/// template slots) as 1.7.10's `Slot` does, with no check; a hopper only the inputs and the output
-/// (`getAccessibleSlotsFromSide`).
+/// What a hand and a hopper may do with slot `slot` (the template's are the engine's template slots). The inputs are
+/// `SlotNonRetarded`s (`ContainerAutocrafter`, line 30): a hand puts into them what `isItemValidForSlot` takes, as a
+/// hopper does; the output and the battery are plain `Slot`s, which take anything by hand. A hand takes from all; a
+/// hopper reaches only the inputs and the output (`getAccessibleSlotsFromSide`, `canExtractItem`).
 pub fn allows(slots: &[Option<Stack>], slot: usize, item: &Stack, insert: bool, manual: bool) -> bool {
     if slot >= SLOTS || slot <= RESULT {
         return false;
     }
     match (manual, insert) {
-        (true, _) => true,
-        (false, true) => can_insert(slots, slot, item),
+        (true, true) if slot == OUTPUT || slot == BATTERY => true,
+        (_, true) => can_insert(slots, slot, item),
+        (true, false) => true,
         (false, false) => can_extract(slots, slot, item),
     }
 }
@@ -472,8 +523,9 @@ mod tests {
         assert_eq!(a.recipes.len(), 2);
         assert_eq!(a.slots[RESULT], s("minecraft:stick", 4));
         assert_eq!(a.screen_data()[2..], [1, 2]);
-        // initPatternSmart: planks have the OreDict name plankWood (no ingot, block...), no metas: wildcard.
-        assert_eq!(mode_of(a.slots[1].as_ref().unwrap()).as_deref(), Some(WILDCARD));
+        // initPatternSmart: planks have the OreDict name plankWood (no ingot, block...) and several metas in 1.7.10
+        // (`Blocks.planks`): exact.
+        assert_eq!(mode_of(a.slots[1].as_ref().unwrap()).as_deref(), Some(EXACT));
         a.button(NEXT_RECIPE);
         assert_eq!((a.recipe_index, a.slots[RESULT].clone()), (1, s("minecraft:ladder", 1)));
         a.button(NEXT_RECIPE);
@@ -535,6 +587,9 @@ mod tests {
         assert_eq!(smart_mode("ntm:bedrock_ore__base_heavy"), BEDROCK);
         assert_eq!(smart_mode("ntm:powder_ash__misc"), EXACT, "an item of several metas");
         assert_eq!(smart_mode("minecraft:stick"), WILDCARD, "stickWood is no ingot, block, dust, nugget or plate");
+        assert_eq!(smart_mode("minecraft:oak_planks"), EXACT, "Blocks.planks has several metas");
+        assert_eq!(next_mode("minecraft:oak_planks", Some(EXACT)), WILDCARD);
+        assert_eq!(next_mode("minecraft:oak_planks", Some(WILDCARD)), "plankWood");
         assert_eq!(smart_mode("minecraft:dirt"), WILDCARD);
         assert_eq!(next_mode("minecraft:dirt", None), EXACT);
         assert_eq!(next_mode("minecraft:dirt", Some(EXACT)), WILDCARD);
@@ -560,13 +615,25 @@ mod tests {
 
     #[test]
     fn the_filter_modes_match_as_isvalidforfilter() {
-        assert!(valid_for_filter("minecraft:iron_ingot", Some(EXACT), "minecraft:iron_ingot"));
-        assert!(!valid_for_filter("ntm:powder_ash__misc", Some(EXACT), "ntm:powder_ash__wood"));
-        assert!(valid_for_filter("ntm:powder_ash__misc", Some(WILDCARD), "ntm:powder_ash__wood"));
-        assert!(valid_for_filter("ntm:bedrock_ore__base_heavy", Some(BEDROCK), "ntm:bedrock_ore__base_light"));
-        assert!(!valid_for_filter("ntm:bedrock_ore__base_heavy", Some(BEDROCK), "ntm:bedrock_ore__base_roasted_heavy"));
-        assert!(valid_for_filter("minecraft:oak_log", Some("logWood"), "minecraft:birch_log"));
-        assert!(!valid_for_filter("minecraft:oak_log", None, "minecraft:birch_log"), "no mode is exact");
+        let st = |id: &str| Stack::new(id, 1);
+        let valid = |filter: &str, mode: Option<&str>, input: &str| valid_for_filter(&st(filter), mode, &st(input));
+        assert!(valid("minecraft:iron_ingot", Some(EXACT), "minecraft:iron_ingot"));
+        assert!(!valid("ntm:powder_ash__misc", Some(EXACT), "ntm:powder_ash__wood"));
+        assert!(valid("ntm:powder_ash__misc", Some(WILDCARD), "ntm:powder_ash__wood"));
+        assert!(valid("ntm:bedrock_ore__base_heavy", Some(BEDROCK), "ntm:bedrock_ore__base_light"));
+        assert!(!valid("ntm:bedrock_ore__base_heavy", Some(BEDROCK), "ntm:bedrock_ore__base_roasted_heavy"));
+        assert!(valid("minecraft:oak_log", Some("logWood"), "minecraft:birch_log"));
+        assert!(!valid("minecraft:oak_log", None, "minecraft:birch_log"), "no mode is exact");
+        // A 1.7.10 item of several metas: wildcard takes every meta (every plank), exact only its own.
+        assert!(valid("minecraft:oak_planks", Some(WILDCARD), "minecraft:birch_planks"));
+        assert!(!valid("minecraft:oak_planks", Some(EXACT), "minecraft:birch_planks"));
+        assert!(!valid("minecraft:oak_planks", Some(WILDCARD), "minecraft:oak_log"));
+        assert!(valid("minecraft:white_wool", Some(WILDCARD), "minecraft:black_wool") && valid("minecraft:ink_sac", Some(WILDCARD), "minecraft:bone_meal"));
+        // Exact is `isItemEqual`: the damage too.
+        let mut worn = st("minecraft:iron_sword");
+        worn.damage = 5;
+        assert!(!valid_for_filter(&st("minecraft:iron_sword"), Some(EXACT), &worn));
+        assert!(valid_for_filter(&st("minecraft:iron_sword"), Some(WILDCARD), &worn));
     }
 
     #[test]
@@ -590,7 +657,17 @@ mod tests {
         assert!(can_extract(&slots, OUTPUT, &planks) && !can_extract(&slots, 10, &planks));
         assert!(can_extract(&slots, 10, &Stack::new("minecraft:dirt", 1)) && can_extract(&slots, 12, &planks));
         assert!(!allows(&slots, BATTERY, &planks, true, false) && !allows(&slots, 3, &planks, true, true));
-        assert!(allows(&slots, 12, &Stack::new("minecraft:dirt", 1), true, true), "a hand puts anything into an input");
+        // A hand follows the inputs' rule (`SlotNonRetarded`): a template above, its mode, 4 at most, no stacked container.
+        assert!(!allows(&slots, 12, &Stack::new("minecraft:dirt", 1), true, true), "no template above it");
+        slots[10] = None;
+        slots[11] = None;
+        assert!(allows(&slots, 10, &planks, true, true));
+        assert!(!allows(&slots, 10, &Stack::new("minecraft:oak_planks", 16), true, true), "a stack of 16 by hand");
+        assert!(!allows(&slots, 10, &Stack::new("minecraft:dirt", 1), true, true), "the template refuses it");
+        // The output and the battery are plain slots: a hand puts anything there; a hand takes from every slot.
+        assert!(allows(&slots, OUTPUT, &Stack::new("minecraft:dirt", 64), true, true));
+        assert!(allows(&slots, BATTERY, &Stack::new("minecraft:dirt", 1), true, true));
+        assert!(allows(&slots, 13, &planks, false, true), "a hand takes anything back");
         assert_eq!(container().faces[0], [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]);
         assert_eq!(container().menu, Some("minecraft:generic_9x3"), "a menu to open it");
     }
@@ -627,6 +704,22 @@ mod tests {
         assert_eq!(smart_mode("minecraft:gunpowder"), "dustAnyPropellant", "the first dust name, in name order");
     }
 
+    /// `slotClick` puts the held stack and `initPatternSmart`s it every time, the same item too: the engine's copy comes
+    /// without a mode, and gets the smart one again (and the recipe goes back to the first).
+    #[test]
+    fn a_copy_put_again_gets_its_mode_again() {
+        let mut a = placed();
+        template(&mut a, &[(1, "minecraft:oak_planks"), (4, "minecraft:oak_planks")]);
+        a.button(MODE_BUTTON + 1);
+        a.button(NEXT_RECIPE);
+        assert_eq!((mode_of(a.slots[1].as_ref().unwrap()).as_deref(), a.recipe_index), (Some(WILDCARD), 1));
+        // The same planks clicked onto slot 1 again: a copy without a mode.
+        a.slots[1] = s("minecraft:oak_planks", 1);
+        a.refresh(query);
+        assert_eq!((mode_of(a.slots[1].as_ref().unwrap()).as_deref(), a.recipe_index), (Some(EXACT), 0));
+        assert_eq!(mode_of(a.slots[4].as_ref().unwrap()).as_deref(), Some(EXACT), "the other copy keeps its own");
+    }
+
     #[test]
     fn its_state_survives_the_save() {
         let mut a = placed();
@@ -638,7 +731,7 @@ mod tests {
         b.load_state(&a.save_state());
         b.refresh(query);
         assert_eq!((b.power, b.recipe_index, b.slots[RESULT].clone()), (4_321, 1, s("minecraft:ladder", 1)));
-        assert_eq!(mode_of(b.slots[1].as_ref().unwrap()).as_deref(), Some(WILDCARD), "the modes ride on the copies");
+        assert_eq!(mode_of(b.slots[1].as_ref().unwrap()).as_deref(), Some(EXACT), "the modes ride on the copies");
         let mut c = Autocrafter::new();
         c.slots = a.slots.clone();
         c.load_state(&[0, 7]);
