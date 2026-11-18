@@ -171,7 +171,7 @@ pub(super) fn block_changed(level: &crate::game::GameLevel<'_>, dim: &str, pos: 
     let (old, new) = (level.facts.get(old).name.to_string(), level.facts.get(new).name.to_string());
     if old != new {
         field_block_added(dim, pos, &new);
-        matter_added(dim, pos, &new, level.world.game_time as i64);
+        matter_added(dim, pos, &new, level.world.game_time);
         flame_neighbours(level, dim, pos);
     }
     // A Geiger counter block taken away: a new one starts from 0 (a new TileEntityGeiger).
