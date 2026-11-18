@@ -102465,7 +102465,7 @@
       },
       "category": "machine",
       "source_texture": "src/main/resources/assets/hbm/textures/blocks/machine_autocrafter_top.png",
-      "behavior_gap": "Inert source identity only. No processing, inventory, item use, locking/key pairing, opening, redstone, linked multiblock, moving collision, model animation, hazards or technical state is implemented. Source casing/icon projected on one static block/item.",
+      "behavior_gap": "Ported (ntm-core autocrafter, on the engine's crafting query and template slots): the template of nine SlotPatterns and the recipes it matches (a right click on the result turns them), the ModulePatternMatcher modes (exact, wildcard, bedrock grade, OreDict names) turned by a right click and shown in the copy's tooltip, one craft a tick at 100 HE into the output with the containers left where an input ran out, the hoppers' rules (isItemValidForSlot, canExtractItem) and power from every face. Not ported: batteries other than the creative one, the NEI/copy-tool filter packets (setFilterContents), and a crafted result's components other than its custom data.",
       "source_has_tile": true,
       "source_ancestry": [
         "MachineAutocrafter",
@@ -102481,6 +102481,10 @@
       "source_tiles": [
         "TileEntityMachineAutocrafter"
       ],
+      "block_properties": {
+        "hardness": 10.0,
+        "explosion_resistance": 20.0
+      },
       "source_registry": "hbm:tile.machine_autocrafter",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",

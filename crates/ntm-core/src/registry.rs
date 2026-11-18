@@ -575,10 +575,11 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_autocrafter",
-        kind: Kind::Inert,
+        kind: Kind::Autocrafter,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        // `TilePortShapes.around`.
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_funnel",

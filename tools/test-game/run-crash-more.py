@@ -77,6 +77,8 @@ def items_of(scenario):
         return ('ntm:key', 'ntm:padlock')
     if scenario == 'funnel-state':
         return ('minecraft:gold_ingot', 'minecraft:gold_block')
+    if scenario == 'autocrafter-state':
+        return ('minecraft:oak_planks', 'minecraft:stick')
     if scenario == 'funnel-break':
         return ('minecraft:dirt', 'minecraft:stick')
     if scenario == 'radiolysis-state':
@@ -136,6 +138,7 @@ DEFAULT_POINTS = {
     'silex-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'keyforge-break': ['none', 'kill', 'kv_committed', 'save_begin', 'live_chunk:8,0', 'chunks_written', 'entities_written'],
     'funnel-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
+    'autocrafter-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'radiolysis-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'exposure-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],
     'annihilator-state': ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'players_saved'],

@@ -1797,6 +1797,91 @@ def funnel_verify(g, again=False):
     g.check('the_funnel_is_alive', machine_present(g, (140, 100, 8)), state)
 
 
+# `autocrafter-state`: an autocrafter with a template of two planks (sticks) and 20 planks in each of two inputs, crafting one
+# a tick, the world saved and killed at each boundary: whatever the cut, the planks and the sticks are the forty planks (two
+# planks make four sticks), the two inputs hold the same, and the template's copies, their modes and the result are kept.
+AUTOCRAFTER = (140, 100, 8)
+
+
+def autocrafter_parts(g):
+    import native_autocrafter as A
+    A.X, A.Y, A.Z = AUTOCRAFTER
+    A.AT = AUTOCRAFTER
+    return A
+
+
+def autocrafter_state(g):
+    import native_funnel as F
+    items = F.items(g, AUTOCRAFTER)
+    # The inputs' planks (slots 10-18): the template's are copies.
+    planks = sum(c for k, (i, c) in items.items() if i == 'minecraft:oak_planks' and 10 <= k <= 18)
+    return items, planks
+
+
+def autocrafter_prepare(g):
+    A = autocrafter_parts(g)
+    g.ctl('wait-ready 120')
+    g.close()
+    g.ground(AUTOCRAFTER[0] - 3, 100, AUTOCRAFTER[2] - 3, width=8, depth=8)
+    g.command('clear @s')
+    g.command('give @s ntm:machine_autocrafter 1')
+    g.command(f'tp @s {AUTOCRAFTER[0] + .5} 100 {AUTOCRAFTER[2] + 3.5} facing {AUTOCRAFTER[0] + .5} 100 {AUTOCRAFTER[2]}')
+    time.sleep(1)
+    g.ctl('place %d %d %d --item ntm:machine_autocrafter' % AUTOCRAFTER)
+    time.sleep(1.5)
+    g.command('clear @s')
+    g.open(*AUTOCRAFTER)
+    g.put('ntm:battery_creative', 1, 20)
+    for i in (1, 4):
+        A.template(g, 'minecraft:oak_planks', i)
+    g.ctl('click-slot 301 right')
+    time.sleep(1)
+    g.put('minecraft:oak_planks', 20, 11)
+    g.put('minecraft:oak_planks', 20, 14)
+    g.close()
+    g.command('tick freeze')
+    try:
+        items, planks = autocrafter_state(g)
+        modes = A.modes(g)
+    finally:
+        g.command('tick unfreeze')
+    g.evidence.update(base=items, modes=modes)
+    g.check('it_crafts_before_the_base_save', planks < 40 and modes == ['plankWood', 'wildcard'], [items, modes])
+    g.ctl('save')
+
+
+def autocrafter_act(g):
+    autocrafter_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    sprint(g, 4)
+    g.evidence['after_act'] = autocrafter_state(g)[0]
+    save_expecting_death(g)
+
+
+def autocrafter_verify(g, again=False):
+    A = autocrafter_parts(g)
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('tp @s %d 100 %d' % (AUTOCRAFTER[0], AUTOCRAFTER[2] + 4))
+    quiet(g, 6)
+    g.command('tick freeze')
+    try:
+        items, planks = autocrafter_state(g)
+        modes = A.modes(g)
+    finally:
+        g.command('tick unfreeze')
+    # The output's sticks: the result slot's are the template's copy, not crafted.
+    sticks = items.get(19, ('', 0))[1] if items.get(19, ('',))[0] == 'minecraft:stick' else 0
+    counted(g, 'forty_planks_in_planks_and_sticks', {'total': planks + sticks // 2, 'expected': 40, 'items': items}, again)
+    g.check('the_planks_and_sticks_are_the_forty', planks + sticks // 2 == 40 and sticks % 4 == 0, [planks, sticks, items])
+    g.check('the_two_inputs_hold_the_same', items.get(11, ('', 0))[1] == items.get(14, ('', 0))[1], items)
+    g.check('the_template_its_modes_and_the_result_are_kept', items.get(1, ('',))[0] == 'minecraft:oak_planks'
+            and items.get(4, ('',))[0] == 'minecraft:oak_planks' and modes == ['plankWood', 'wildcard']
+            and items.get(9) == ('minecraft:stick', 4), [items, modes])
+    g.check('the_autocrafter_is_alive', machine_present(g, AUTOCRAFTER), items)
+
+
 # `radiolysis-state`: four polonium pellets, a water identifier and a contaminated sword in the chamber, the world saved and killed at
 # each boundary while the identifier moves to its out slot and the sword is cleaned: whatever the cut, each item is exactly once
 # (the sword in the first or the second sterilization slot, the identifier in the first or the second fluid slot, the pellets four).
@@ -2110,6 +2195,7 @@ STEPS = {
     'silex-state': (silex_prepare, silex_act, silex_verify),
     'keyforge-break': (mb_break_prepare, break_act, mb_break_verify),
     'funnel-state': (funnel_prepare, funnel_act, funnel_verify),
+    'autocrafter-state': (autocrafter_prepare, autocrafter_act, autocrafter_verify),
     'funnel-break': (mb_break_prepare, break_act, mb_break_verify),
     'radiolysis-state': (radiolysis_prepare, radiolysis_act, radiolysis_verify),
     'radiolysis-break': (mb_break_prepare, break_act, mb_break_verify),

@@ -95,6 +95,8 @@ pub enum Kind {
     KeyForge,
     /// The funnel that compresses items (`crate::funnel`).
     Funnel,
+    /// The automatic crafting table (`crate::autocrafter`).
+    Autocrafter,
     /// The radiolysis chamber (`crate::radiolysis`).
     Radiolysis,
     /// The exposure chamber (`crate::exposure`).
@@ -214,6 +216,7 @@ pub enum Data {
     BrickFurnace(crate::furnace_brick::BrickFurnace),
     KeyForge(crate::keyforge::KeyForge),
     Funnel(crate::funnel::Funnel),
+    Autocrafter(Box<crate::autocrafter::Autocrafter>),
     Radiolysis(Box<crate::radiolysis::Radiolysis>),
     Exposure(Box<crate::exposure::Exposure>),
     Fel(crate::fel::Fel),
@@ -325,6 +328,7 @@ impl Machine {
             Kind::BrickFurnace => Data::BrickFurnace(Default::default()),
             Kind::KeyForge => Data::KeyForge(Default::default()),
             Kind::Funnel => Data::Funnel(Default::default()),
+            Kind::Autocrafter => Data::Autocrafter(Box::new(crate::autocrafter::Autocrafter::new())),
             Kind::Radiolysis => Data::Radiolysis(Default::default()),
             Kind::ExposureChamber => Data::Exposure(Box::new(crate::exposure::Exposure::new())),
             Kind::Fel => Data::Fel(Default::default()),
@@ -416,6 +420,7 @@ impl Machine {
             Data::BrickFurnace(_) => Kind::BrickFurnace,
             Data::KeyForge(_) => Kind::KeyForge,
             Data::Funnel(_) => Kind::Funnel,
+            Data::Autocrafter(_) => Kind::Autocrafter,
             Data::Radiolysis(_) => Kind::Radiolysis,
             Data::Exposure(_) => Kind::ExposureChamber,
             Data::Fel(_) => Kind::Fel,
@@ -472,6 +477,7 @@ impl Machine {
             Data::BrickFurnace(m) => m,
             Data::KeyForge(m) => m,
             Data::Funnel(m) => m,
+            Data::Autocrafter(m) => &**m,
             Data::Radiolysis(m) => &**m,
             Data::Exposure(m) => &**m,
             Data::Fel(m) => m,
@@ -528,6 +534,7 @@ impl Machine {
             Data::BrickFurnace(m) => m,
             Data::KeyForge(m) => m,
             Data::Funnel(m) => m,
+            Data::Autocrafter(m) => &mut **m,
             Data::Radiolysis(m) => &mut **m,
             Data::Exposure(m) => &mut **m,
             Data::Fel(m) => m,

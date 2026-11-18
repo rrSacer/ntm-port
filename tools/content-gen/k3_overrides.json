@@ -22,6 +22,15 @@
         "explosion_resistance": 100.0
       },
       "behavior_gap": "Ported (ntm-core crafter Station::RockMill): RockMillRecipes (11; the two SIFT-mod ones are left out), the ChanceOutputMulti outputs picked by weight with a fixed hash instead of the world's random, the tanks sized to the recipe, the buffer max(power, recipe x 100, 2 500), the battery slot (creative battery only), the auto switch of the crushing group and its eight port cells. Not ported: the blueprint slot (no pools in the port; the rock mill's recipes have none), the step sound of the crushed block every 3 ticks, the block-dust particles, the Frame part (drawn only with a block on top) and the wheel's spin-up and spin-down (it turns at full speed while it works)."
+    },
+    {
+      "id": "machine_autocrafter",
+      "type": "block",
+      "block_properties": {
+        "hardness": 10.0,
+        "explosion_resistance": 20.0
+      },
+      "behavior_gap": "Ported (ntm-core autocrafter, on the engine's crafting query and template slots): the template of nine SlotPatterns and the recipes it matches (a right click on the result turns them), the ModulePatternMatcher modes (exact, wildcard, bedrock grade, OreDict names) turned by a right click and shown in the copy's tooltip, one craft a tick at 100 HE into the output with the containers left where an input ran out, the hoppers' rules (isItemValidForSlot, canExtractItem) and power from every face. Not ported: batteries other than the creative one, the NEI/copy-tool filter packets (setFilterContents), and a crafted result's components other than its custom data."
     }
   ]
 }

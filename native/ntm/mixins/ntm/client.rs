@@ -66,6 +66,10 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
     }
     crate::game::ntm_armor_table::mods_tooltip(_game, stack, lines);
     let native=crate::game::ntm_glue::stack(&Some(stack.clone()));
+    // An autocrafter's template copy: its filter mode (`GUIAutocrafter.drawScreen`).
+    for line in native.as_ref().map(ntm_core::autocrafter::template_lines).unwrap_or_default() {
+        lines.push((Text::legacy(&line),u32::MAX));
+    }
     if let Some(p)=ntm_core::radioisotopes::pellet(&stack.item) {
         let life=native.as_ref().map_or(p.lifespan_ticks,ntm_core::radioisotopes::life);
         lines.push((Text::legacy(&format!("Calor: {} TU/t",p.heat_tu.decay_enabled)),u32::MAX));

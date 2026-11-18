@@ -39618,7 +39618,164 @@
     },
     "ntm:machine_autocrafter": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerAutocrafter, GUIAutocrafter 176x240 (processing/gui_autocrafter.png): the template's nine SlotPatterns at (44+18j, 22+18i) and its result at (116,40), the nine inputs at (44+18j, 86+18i), the output at (116,104), the battery at (17,99), the inventory at (8,158); the power bar (17,45) 16x52 drawn from (176,0) upwards; the template slots are the engine's PatternSlot (a right click turns the mode, menu button 100+i; the result's, button 109, the next recipe), their mode in the copy's tooltip, the result's index and count in the tooltip over it; TileEntityMachineAutocrafter: no multiblock, power from every face (TilePortShapes.around); the block keeps its K3 textures",
+      "machine": {
+        "slots": [
+          {
+            "x": 44,
+            "y": 22
+          },
+          {
+            "x": 62,
+            "y": 22
+          },
+          {
+            "x": 80,
+            "y": 22
+          },
+          {
+            "x": 44,
+            "y": 40
+          },
+          {
+            "x": 62,
+            "y": 40
+          },
+          {
+            "x": 80,
+            "y": 40
+          },
+          {
+            "x": 44,
+            "y": 58
+          },
+          {
+            "x": 62,
+            "y": 58
+          },
+          {
+            "x": 80,
+            "y": 58
+          },
+          {
+            "x": 116,
+            "y": 40
+          },
+          {
+            "x": 44,
+            "y": 86
+          },
+          {
+            "x": 62,
+            "y": 86
+          },
+          {
+            "x": 80,
+            "y": 86
+          },
+          {
+            "x": 44,
+            "y": 104
+          },
+          {
+            "x": 62,
+            "y": 104
+          },
+          {
+            "x": 80,
+            "y": 104
+          },
+          {
+            "x": 44,
+            "y": 122
+          },
+          {
+            "x": 62,
+            "y": 122
+          },
+          {
+            "x": 80,
+            "y": 122
+          },
+          {
+            "x": 116,
+            "y": 104,
+            "output": true
+          },
+          {
+            "x": 17,
+            "y": 99,
+            "accept": [
+              "ntm:battery_creative"
+            ],
+            "max": 1
+          }
+        ],
+        "inventory": [
+          8,
+          158
+        ],
+        "data": 4
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_autocrafter.png",
+        "texture_from": "textures/gui/processing/gui_autocrafter.png",
+        "size": [
+          176,
+          240
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          146
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              17,
+              45,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              17,
+              45,
+              16,
+              52
+            ],
+            "lines": [
+              "{0:si} / {1:si} HE"
+            ]
+          },
+          {
+            "rect": [
+              116,
+              40,
+              16,
+              16
+            ],
+            "lines": [
+              "§cRight click to change",
+              "§e{2} / {3}"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_funnel": {
       "auto": false,

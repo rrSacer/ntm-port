@@ -340,6 +340,28 @@ fn the_funnel_compresses_a_column_and_its_button_cycles_the_mode() {
     assert_eq!(g.world.borrow().engine[&(OW.to_string(), AT)].1.first(), Some(&1));
 }
 
+/// The autocrafter through the bridge and the server's step (its host is the step's, which must hand the recipes on):
+/// the template's copies get their modes and the result, and two planks in each of two inputs make eight sticks.
+#[test]
+fn the_autocrafter_asks_the_recipes_through_the_step_and_crafts() {
+    use crate::autocrafter as a;
+    let mut g = game();
+    engine_block(&mut g, "ntm:machine_autocrafter[facing=north,honey_level=0]", a::SLOTS);
+    put(&mut g, a::BATTERY, Some(Stack::new(crate::machine::CREATIVE_BATTERY, 1)));
+    put(&mut g, 1, Some(Stack::new("minecraft:oak_planks", 1)));
+    put(&mut g, 4, Some(Stack::new("minecraft:oak_planks", 1)));
+    g.run(2);
+    let s = slots(&g);
+    assert_eq!(s[a::RESULT].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:stick", 4)), "{s:?}");
+    assert_eq!(s[1].as_ref().and_then(a::mode_of).as_deref(), Some(a::WILDCARD), "{s:?}");
+    put(&mut g, 11, Some(Stack::new("minecraft:oak_planks", 2)));
+    put(&mut g, 14, Some(Stack::new("minecraft:oak_planks", 2)));
+    g.run(4);
+    let s = slots(&g);
+    assert_eq!(s[a::OUTPUT].as_ref().map(|x| (x.id.as_str(), x.count)), Some(("minecraft:stick", 8)), "{s:?}");
+    assert!(s[11].is_none() && s[14].is_none(), "{s:?}");
+}
+
 /// The radiolysis chamber through the bridge: ten polonium pellets give 500 heat, the identifier in the first fluid slot types the
 /// input and goes to the second, an item with the contagion comes out of the sterilization slot clean, and the pellets lose life.
 #[test]

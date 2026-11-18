@@ -146,6 +146,10 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
     fn machine_data(&mut self, d: &str, p: Pos) -> Option<Vec<i32>> {
         self.host.machine_data(d, p)
     }
+    /// A read of the world's recipes, which no step changes: the autocrafter's.
+    fn crafting_matches(&mut self, grid: &[Option<Stack>]) -> Vec<crate::autocrafter::CraftMatch> {
+        self.host.crafting_matches(grid)
+    }
     fn redstone_many(&mut self, d: &str, p: &[Pos]) -> Vec<Option<u8>> {
         self.host.redstone_many(d, p)
     }

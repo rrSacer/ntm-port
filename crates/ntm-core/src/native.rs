@@ -67,6 +67,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::keyforge::BLOCK {
         return Some(crate::keyforge::container());
     }
+    if block == crate::autocrafter::BLOCK {
+        return Some(crate::autocrafter::container());
+    }
     if block == crate::funnel::BLOCK {
         return Some(crate::funnel::container());
     }
@@ -118,6 +121,16 @@ pub struct SlotFilter {
     pub quick_move: Option<Vec<String>>,
     /// A shift-click fills this run of slots from its last to its first (`mergeItemStack(.., true)`).
     pub quick_reverse: bool,
+    /// A template slot (`SlotPattern`, the engine's `PatternSlot`): a click leaves a copy of the cursor there
+    /// (`place`), a right click on what it shows presses menu button `right_click`.
+    pub pattern: Option<Pattern>,
+}
+
+/// A template slot's clicks (the engine's `PatternSlot`).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Pattern {
+    pub place: bool,
+    pub right_click: Option<i32>,
 }
 
 /// The rules of block `block`'s slots, in order (menu, clicks and hoppers
@@ -135,6 +148,18 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         let first = SlotFilter::default();
         let held = SlotFilter { quick_move: Some(Vec::new()), ..Default::default() };
         return vec![first, held.clone(), held];
+    }
+    if block == crate::autocrafter::BLOCK {
+        // `ContainerAutocrafter`: the template's nine `SlotPattern`s (a right click turns the mode), the result's one
+        // (a right click shows the next recipe); a shift-click from the inventory moves a battery into its slot only.
+        use crate::autocrafter as a;
+        let mut rules = vec![SlotFilter { quick_move: Some(Vec::new()), ..Default::default() }; a::SLOTS];
+        for i in a::TEMPLATE {
+            rules[i].pattern = Some(Pattern { place: true, right_click: Some((a::MODE_BUTTON + i as u32) as i32) });
+        }
+        rules[a::RESULT].pattern = Some(Pattern { place: false, right_click: Some(a::NEXT_RECIPE as i32) });
+        rules[a::BATTERY].quick_move = Some(vec![CREATIVE_BATTERY.into()]);
+        return rules;
     }
     if block == crate::funnel::BLOCK {
         // `ContainerFunnel`: the nine results are `SlotCraftingOutput`s; a shift-click moves the inputs and results
@@ -285,6 +310,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     if block == crate::radiolysis::BLOCK {
         return crate::radiolysis::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
+    if block == crate::autocrafter::BLOCK {
+        return crate::autocrafter::allows(slots, slot, item, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
     if block == crate::funnel::BLOCK {
         return crate::funnel::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
@@ -388,6 +416,7 @@ pub fn file_slots(file: &[u8]) -> Vec<SlotFilter> {
             output: s.get("output").and_then(|o| o.as_bool()).unwrap_or(false),
             quick_move: None,
             quick_reverse: false,
+            pattern: None,
         };
         let cells = match s.get("grid").and_then(|g| g.as_array()) {
             Some(g) if g.len() == 4 => (g[2].as_u64().unwrap_or(1) * g[3].as_u64().unwrap_or(1)) as usize,

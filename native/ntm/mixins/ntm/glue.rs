@@ -1696,6 +1696,19 @@ impl ServerHost for Host<'_, '_> {
     fn machine_buttons(&mut self) -> Vec<(String, String, [i32; 3], u32)> {
         std::mem::take(&mut self.buttons)
     }
+    /// The engine's crafting tables (`native_crafting_matches`), for the autocrafter.
+    fn crafting_matches(&mut self, grid: &[Option<Stack>]) -> Vec<ntm_core::autocrafter::CraftMatch> {
+        let cells: Vec<Option<ItemStack>> = grid.iter().map(|s| item(s.as_ref(), None)).collect();
+        self.game.native_crafting_matches(&cells).into_iter().filter_map(|m| {
+            let max_stack = self.game.native_max_stack_size(&m.result.item).unwrap_or(64);
+            Some(ntm_core::autocrafter::CraftMatch {
+                id: m.id,
+                result: stack(&Some(m.result))?,
+                max_stack,
+                remainders: m.remainders.iter().map(stack).collect(),
+            })
+        }).collect()
+    }
     fn redstone_many(&mut self, dim: &str, cells: &[[i32; 3]]) -> Vec<Option<u8>> {
         // A level that is not in place is visited whole by the engine's read, with no
         // trace in the level in place and its idleness kept (`visit_level`).
@@ -1945,6 +1958,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         _ if ntm_core::native::is_brick_furnace(block) => Some(SlotPolicy(brick_slot_policy)),
         ntm_core::keyforge::BLOCK => Some(SlotPolicy(keyforge_slot_policy)),
         ntm_core::funnel::BLOCK => Some(SlotPolicy(funnel_slot_policy)),
+        ntm_core::autocrafter::BLOCK => Some(SlotPolicy(autocrafter_slot_policy)),
         ntm_core::radiolysis::BLOCK => Some(SlotPolicy(radiolysis_slot_policy)),
         ntm_core::exposure::BLOCK => Some(SlotPolicy(exposure_slot_policy)),
         ntm_core::fel::BLOCK => Some(SlotPolicy(fel_slot_policy)),
@@ -1961,6 +1975,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
         accept: f.accept, reject: f.reject, max: f.max, output: f.output,
         quick_move: f.quick_move, quick_reverse: f.quick_reverse, policy,
+        pattern: f.pattern.map(|p| horizon_client::containers::PatternSlot { place: p.place, right_click: p.right_click }),
     }));
 }
 
@@ -1979,6 +1994,10 @@ fn radgen_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack
 fn keyforge_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::keyforge::BLOCK, slots, slot, item, action, origin)
+}
+fn autocrafter_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::autocrafter::BLOCK, slots, slot, item, action, origin)
 }
 fn funnel_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
@@ -2078,8 +2097,9 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
         || ntm_core::keyforge::is_pin_item(&s.item) {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
     } else if let Some(custom) = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt)
-        // Any item may carry the contagion (`ntmContagion`) the radiolysis chamber sterilizes.
-        && custom.contains(ntm_core::radiolysis::CONTAGION) {
+        // Any item may carry the contagion (`ntmContagion`) the radiolysis chamber sterilizes, and an autocrafter's
+        // template copy its filter mode.
+        && (custom.contains(ntm_core::radiolysis::CONTAGION) || custom.contains(ntm_core::autocrafter::MODE_KEY)) {
         t.custom = Some(custom);
     }
     Some(t)
@@ -2106,7 +2126,8 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
         }
         it.data_mut().set_other("minecraft:custom_data",Some(tag));
     } else if let Some(it) = result.as_mut() && new.custom.is_none()
-        && it.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt).is_some_and(|c| c.contains(ntm_core::radiolysis::CONTAGION)) {
+        && it.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt)
+            .is_some_and(|c| c.contains(ntm_core::radiolysis::CONTAGION) || c.contains(ntm_core::autocrafter::MODE_KEY)) {
         // The logic took the contagion off the item's only custom data: it has none left.
         it.data_mut().set_other("minecraft:custom_data",None);
     }

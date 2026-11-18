@@ -132,6 +132,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::BrickFurnace(f) => Some(f),
         Data::KeyForge(f) => Some(f),
         Data::Funnel(f) => Some(f),
+        Data::Autocrafter(a) => Some(&mut **a),
         Data::Radiolysis(r) => Some(&mut **r),
         Data::Exposure(e) => Some(&mut **e),
         Data::Fel(f) => Some(f),
@@ -188,6 +189,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_orbus", Layout::Native),
     ("ntm:machine_keyforge", Layout::Native),
     ("ntm:machine_funnel", Layout::Native),
+    // ContainerAutocrafter: 0-8 the template, 9 its result, 10-18 the inputs, 19 the output, 20 the battery.
+    ("ntm:machine_autocrafter", Layout::Native),
     ("ntm:machine_radiolysis", Layout::Native),
     ("ntm:machine_exposure_chamber", Layout::Native),
     ("ntm:machine_fel", Layout::Native),
@@ -1068,6 +1071,10 @@ impl Server {
                     if !(first && empty && n.migrates()) {
                         *n.slots_mut() = now.clone();
                         n.sync_in();
+                    }
+                    // The autocrafter asks the world's crafting recipes again where its template or inputs changed.
+                    if let Data::Autocrafter(a) = data {
+                        a.refresh(|grid| host.crafting_matches(grid));
                     }
                 }
                 _ => continue,

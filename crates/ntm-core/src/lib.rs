@@ -54,6 +54,7 @@ pub mod instruments;
 pub mod item_hooks;
 pub mod ledger;
 pub mod look_overlay;
+pub mod autocrafter;
 pub mod machine;
 pub mod native;
 pub mod oil_drill;

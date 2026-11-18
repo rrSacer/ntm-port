@@ -117,6 +117,11 @@ pub trait ServerHost: Kv {
     fn machine_data(&mut self, _dim: &str, _p: Pos) -> Option<Vec<i32>> {
         None
     }
+    /// Every crafting-table recipe a 3x3 grid (nine cells, row-major) matches, in the table's order, with what each
+    /// makes and leaves (the engine's `native_crafting_matches`). None without an engine that answers it.
+    fn crafting_matches(&mut self, _grid: &[Option<container_bridge::Stack>]) -> Vec<crate::autocrafter::CraftMatch> {
+        Vec::new()
+    }
     /// Machine menu buttons pressed: player, dimension, position, button.
     fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
         Vec::new()
