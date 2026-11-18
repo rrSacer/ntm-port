@@ -160,6 +160,9 @@ Refeito com este binário e validado:
   - A primeira tentativa, `sawcut-border-attempt1.json`, deu `same_cut=false` em `world_saved` com as mesmas
     contagens. A lâmina do port escorregou em z para o chunk do núcleo.
   - Agora o controle põe a sua lâmina, parada, onde a do port caiu na mesma rodada.
+  - Desde o `d5e0f2b5`, a posição da lâmina do controle no `overspeed` e no `border` não é mais independente. Ela
+    vem do mundo do port na mesma rodada (`NTM_SAW_BLADE_AT`). O controle prova a conservação e o mesmo corte, mas não
+    um lugar de queda próprio do vanilla.
 
 Um tronco na entrada junto com saídas nos slots não é um estado alcançável jogando: tanto a mão quanto o funil
 exigem os três slots vazios. Sob sobrevelocidade, um tronco é serrado muito antes de a lâmina quebrar, e o

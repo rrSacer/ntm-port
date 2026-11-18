@@ -231,6 +231,11 @@ impl Slotted for Sawmill {
     fn sync_in(&mut self) {
         self.slots.resize(3, None);
     }
+    /// An item in the model's slots marks an old record: the record never writes them now, so only a record from
+    /// before the container fills them before the bridge has seen this machine. That reading holds while every caller
+    /// asks before the bridge's first `slots_in` fills them from the block entity, or knows the bridge has seen the
+    /// machine (`remember_removal` asks `bridge.last` first, and runs before `slots_gone` forgets it). An explicit
+    /// "from an old record" mark would not depend on that order: a P3 of the third review, for the next change here.
     fn migrates(&self) -> bool {
         self.slots.iter().any(Option::is_some)
     }

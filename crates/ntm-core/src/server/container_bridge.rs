@@ -99,7 +99,8 @@ pub(super) fn held_contents(data: &Data) -> Vec<(String, u32)> {
 }
 
 /// Whether the machine in `data` still holds, in its record, slots its block entity never had (`Slotted::migrates`):
-/// a removal before its first `slots_in` drops them from the model, the engine having none to spill.
+/// a removal before its first `slots_in` drops them from the model, the engine having none to spill. Meaningful only
+/// before the bridge has seen the machine (see the sawmill's `migrates`): its caller asks `bridge.last` first.
 pub(super) fn migrating(data: &Data) -> bool {
     let mut d = data.clone();
     slotted(&mut d).is_some_and(|n| n.migrates())
