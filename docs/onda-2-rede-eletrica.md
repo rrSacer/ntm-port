@@ -267,3 +267,13 @@ Os roteiros e as evidências desta frente ficam fora do repositório, em `/mnt/s
 `run_wire_proof.py`, `run_cable_switch_proof.py`, `run_compressor_proof.py`, os `mutate_*.py` e os relatórios (`storage-*-proof-report.json`, `*-gameplay.json`). Os cortes de gravação rodam
 sempre com `HORIZON_NO_EAGER_SAVE=1` (modo estrito); o cliente de cada rodada é o `horizon-client` release do `CARGO_TARGET_DIR` próprio da frente, com o hash registrado na seção da
 máquina. Mutantes: cada rodada usa um alvo de compilação próprio (nunca o de outra cópia), para o Cargo não reaproveitar o binário de teste do mutante anterior.
+
+### Revalidação depois da 3ª revisão
+
+- Commits: `a85b6bc5` (a cópia dos slots só vai para o slot que ainda é o que a máquina deixou: `Storage::publishable`, também fora do fim do tick), `018884ae` (a limpeza de fios por geração, o fio de um lado só
+  continua conduzindo) e `d5b87fe9` (a guarda compara o dado do item na grafia do motor: o motor devolve `{charge: 5L}` e a máquina escreveu `{charge:5l}`, então no jogo a guarda **nunca casava** e o slot
+  ficava um tick atrás; a prova em jogo mostrou +1 000 HE depois de devolver a bateria e o teste de unidade com a grafia do motor morre sem a correção).
+- `horizon-client` release SHA-256 `aaa9796bdf2b3c1e63b80d8af6cb798dc9774c5b91f0ea636a241b03bb925fc4`; `cargo test -p ntm-core --lib`: 1 009 testes, clippy limpo.
+- Em jogo: soquete e REDD (gameplay, incluindo a bateria tirada e devolvida à mão com a energia fluindo) passam; **corte estrito 7/7** de cada um, e o do fio (`run_wire_proof.py`) 7/7 (o ponto `none` teve
+  um tempo esgotado de inicialização do cliente sob a restrição de CPU e passou repetido sozinho, com o prazo de espera do cliente subido para 15 min).
+- Os mutantes do fio (`W24`/`W25`: ignorar a geração, exigir a listagem de volta) e o da guarda (sem comparar o dado canônico, sem comparar o que o motor deixou) morrem nos testes novos.
