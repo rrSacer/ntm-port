@@ -308,3 +308,33 @@ fn a_pack_taken_by_hand_while_the_energy_flows_takes_what_the_network_left_and_n
     }
     assert!(bat_power(&mut g, east) > 0, "and it did flow");
 }
+
+/// `native_save(false)` also runs outside the tick's end (the hand drill on a pile, `atomic_pile_edit`), where the machine
+/// has not read the slots a player moved: it must not write its copy over them.
+#[test]
+fn a_save_outside_the_tick_never_gives_back_a_taken_pack_nor_takes_a_put_one_away() {
+    let mut g = game();
+    let (west, east) = socket_line(&mut g);
+    battery(&mut g, west, BatteryMode::None, 0);
+    battery(&mut g, east, BatteryMode::Input, 0);
+    edit(&mut g, CORE, |s| s.red_low = MODE_OUTPUT);
+    put(&mut g, CORE, 0, LEAD, Some(5_000_000));
+    g.run(3);
+    let slot = |g: &mut Game| g.world.borrow().engine[&(OW.to_string(), CORE)].0[0].clone();
+    // A tick of flow leaves the copy ahead of the slot; the player takes the pack before the tick's end write.
+    let taken = slot(&mut g).unwrap();
+    g.world.borrow_mut().engine.get_mut(&(OW.to_string(), CORE)).unwrap().0[0] = None;
+    g.server.native_save(&mut g.sh, false);
+    assert_eq!(slot(&mut g), None, "the taken pack is not given back");
+    // The next tick adopts the player's change; the pack is outside, once.
+    g.run(1);
+    assert_eq!(slot(&mut g), None);
+    assert_eq!(pack_charge(&mut g, CORE, 0), None);
+    // The player puts it into the empty socket and a save outside the tick comes before the machine reads it.
+    g.world.borrow_mut().engine.get_mut(&(OW.to_string(), CORE)).unwrap().0[0] = Some(taken.clone());
+    g.server.native_save(&mut g.sh, false);
+    assert_eq!(slot(&mut g), Some(taken.clone()), "the put pack is not taken away");
+    g.run(1);
+    assert_eq!(slot(&mut g).and_then(|s| storage::charge_of(&s)).map(|c| c <= storage::charge_of(&taken).unwrap()), Some(true));
+    assert!(pack_charge(&mut g, CORE, 0).is_some());
+}

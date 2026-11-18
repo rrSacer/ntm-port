@@ -558,9 +558,13 @@ impl Server {
             let Ok(json) = serde_json::to_string(&*m) else { continue };
             // The energy network moves energy after the machines ran, so a pack in a socket or a REDD holds more or
             // less than the slot the step wrote: the slot gets the machine's copy in the same tick, with its state.
-            let held = if let crate::machine::Data::Storage(s) = &m.data { s.kept_slots() } else { None };
-            let slots_changed = held.as_ref().is_some_and(|k| host.machine_slots(&key.0, key.1).is_some_and(|now| now != *k));
-            if r.native_saved.get(key) != Some(&json) || slots_changed {
+            // This runs also outside the tick's end (a hand drill on a pile): the copy is written only over the slots
+            // the machine itself left, never over a player's change it has not read yet (`Storage::publishable`).
+            let held = match &m.data {
+                crate::machine::Data::Storage(s) => host.machine_slots(&key.0, key.1).and_then(|now| s.publishable(&now)),
+                _ => None,
+            };
+            if r.native_saved.get(key) != Some(&json) || held.is_some() {
                 // Marked kept only once written: an unreachable block entity
                 // (its dimension not available now) is written again later.
                 let Some(expected)=host.machine_slots(&key.0,key.1).or_else(|| container_bridge::layout(&m.block).is_none().then(Vec::new)) else{continue};

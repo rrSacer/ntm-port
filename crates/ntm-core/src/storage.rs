@@ -152,7 +152,7 @@ pub struct Storage {
     pub slots: Slots,
     /// The machine's own copy of them. The energy network moves energy after the machines ran, outside the step
     /// that writes the slots, so between the step and the end of the tick this copy is the truth: the tick's end
-    /// writes it to the slots (`kept_slots`, `published`) in the same commit as the machine's state, so no player
+    /// writes it to the slots (`publishable`, `published`) in the same commit as the machine's state, so no player
     /// ever sees a slot behind the network. `sync_in` adopts a slot a player (or a hopper) changed.
     #[serde(skip)]
     pub kept: Slots,
@@ -333,16 +333,25 @@ impl Storage {
         before != (self.red_low, self.red_high, self.priority, self.last_redstone, self.power.clone()) || kept_before != self.kept
     }
 
-    /// The machine's copy of its slots (the engine's get it at the end of the tick, after the network moved).
-    pub fn kept_slots(&self) -> Option<Slots> {
-        self.synced.then(|| {
-            let mut k = self.kept.clone();
-            k.resize(self.body.slot_count(), None);
-            k
-        })
+    /// The machine's copy of its slots, to be written to the engine's `now` at the end of the tick (after the
+    /// network moved energy). Only when the engine's slots are still exactly what this machine last put there (or
+    /// read from them): anything else is a player's (or a hopper's) change this machine has not seen yet, and
+    /// writing the copy over it would give a taken battery back or take a put one away. `None`: nothing to write.
+    pub fn publishable(&self, now: &Slots) -> Option<Slots> {
+        if !self.synced {
+            return None;
+        }
+        let n = self.body.slot_count();
+        let fit = |s: &Slots| {
+            let mut s = s.clone();
+            s.resize(n, None);
+            s
+        };
+        let (now, kept) = (fit(now), fit(&self.kept));
+        (now == fit(&self.sent) && now != kept).then_some(kept)
     }
 
-    /// The engine took `kept_slots`: they are what the slots hold now.
+    /// The engine took what `publishable` gave: it is what the slots hold now.
     pub fn published(&mut self) {
         self.sync_out();
     }
@@ -876,10 +885,9 @@ mod tests {
         assert!(!json.contains("charge") && !json.contains("kept"), "{json}");
         let load = |slot: Option<Stack>| {
             let mut s = serde_json::from_str::<Storage>(&json).unwrap();
-            assert_eq!(s.kept_slots(), None, "not to be written over the slots before they are read");
+            assert_eq!(s.publishable(&vec![slot.clone()]), None, "nothing to be written over the slots before they are read");
             *s.slots_mut() = vec![slot];
             s.sync_in();
-            assert!(s.kept_slots().is_some());
             s.kept[0].clone()
         };
         // Whatever is in the slot, exactly: a pack swapped for another of the same kind, with another charge, is that one.
@@ -903,13 +911,44 @@ mod tests {
         s.take(gave);
         assert_eq!(charge(&s), Some(5_000 - gave as i64));
         assert_eq!(s.slots[0].as_ref().and_then(charge_of), Some(5_000), "the slot is the step's");
-        let publish = s.kept_slots().unwrap();
+        let publish = s.publishable(&s.slots.clone()).unwrap();
         assert_eq!(publish[0].as_ref().and_then(charge_of), Some(5_000 - gave as i64));
         s.published();
         assert_eq!(s.slots[0].as_ref().and_then(charge_of), Some(5_000 - gave as i64));
         // The next step reads the slots it just wrote: no change from outside, the copy stays.
         s.sync_in();
         assert_eq!(charge(&s), Some(5_000 - gave as i64));
+    }
+
+    #[test]
+    fn the_copy_is_never_written_over_a_slot_a_player_changed_since_the_machine_wrote_it() {
+        let mut s = Storage::new(Body::Socket);
+        s.red_low = MODE_OUTPUT;
+        s.kept = vec![pack(LEAD, Some(5_000))];
+        s.sync_out();
+        let written = s.slots.clone();
+        let gave = s.offer();
+        s.take(gave);
+        // The slots are as the machine left them: the network's move is to be written.
+        assert!(s.publishable(&written).is_some());
+        // A player took the pack out: giving the copy back would duplicate it.
+        assert_eq!(s.publishable(&vec![None]), None);
+        // A player put another in: writing None over it would take it away.
+        let mut empty = Storage::new(Body::Socket);
+        empty.synced = true;
+        assert_eq!(empty.publishable(&vec![pack(LEAD, Some(9))]), None);
+        // Nothing to write when they already are the copy.
+        assert_eq!(empty.publishable(&vec![None]), None);
+        // The REDD's two slots, each as it is: a change in either holds the copy back.
+        let mut r = Storage::new(Body::Redd);
+        r.kept = vec![pack(LEAD, Some(5)), None];
+        r.sync_out();
+        let base = r.slots.clone();
+        r.kept[0] = pack(LEAD, Some(4));
+        assert!(r.publishable(&base).is_some());
+        let mut other = base.clone();
+        other[1] = pack(LEAD, Some(1));
+        assert_eq!(r.publishable(&other), None);
     }
 
     #[test]
