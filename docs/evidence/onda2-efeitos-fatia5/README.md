@@ -120,7 +120,53 @@ grupo `hopper`, mais os grupos `review`, `hand`, `saw` e `d3` refeitos).
     máximo perdia um dos dois. Agora conta item a item.
 - `sawcut-border-matrix.json`: 9/9, com o núcleo em x=40 e `same_cut=true` em todos os pontos.
 
-Desde esta revisão, o `same_cut` de `none` e dos kills (`kill`, `kv_committed`) traz `same_cut_by_definition=true`:
+A segunda revisão reprovou este passo. As provas da seção abaixo, com o binário da correção, substituem as
+destas pastas. Os cortes `overspeed` e `break` desta pasta e da `review/` foram feitos sem itens nos slots.
+
+### Segunda revisão: provas refeitas ([review2/](review2/))
+
+Commits, um por item:
+
+- `3a9f670a` (P1: a restauração pelo journal adota os slots do BE);
+- `81fb8bbb` (P2 residual: sai o ramo de marca atrasada);
+- `5de819f2` (P3: a remoção de uma serraria do formato antigo);
+- `91c336d2` e `bf0dd17b` (P3: o `SlotCopy` com nome);
+- `80392695` (P3: a nota das portas);
+- `8a371510` (P2-1: os cortes com os slots cheios);
+- `d5e0f2b5` (os controles espelham a lâmina e recolhem todos os itens).
+
+Cliente SHA-256 `062e13c5…`, pacote `eebe930a…`. Validação: 768 testes da biblioteca e Clippy limpo; 27 mutantes
+mortos, entre eles os novos `RestoredSlotsOverwritten`, `WordToTheMachineThere` e `MigratingRemovalOnEngine`.
+
+Refeito com este binário e validado:
+
+- `d3-probe.json`: passa.
+- `hopper-game.json`: 11/11, as 9 da primeira sessão e mais duas na segunda.
+  - Depois de reabrir o mundo, o tronco nomeado continua no slot com o nome.
+  - Com a serraria quebrada, o tronco que cai ainda tem `custom_name "Tora"`.
+- `sawmill-game.json`: 9/9.
+- `sawcut-overspeed-matrix.json`: 7/7. A lâmina quebra com as saídas no slot (6 tábuas e 1 serragem). São 8 átomos,
+  contra um barril com a mesma lâmina e as mesmas saídas.
+- `sawcut-break-matrix.json`: 7/7. Uma serraria sem lâmina com tronco, 6 tábuas e 1 serragem é quebrada, os itens
+  são recolhidos e a serraria é posta de novo: 9 átomos.
+  - Em `kv_committed` sobram 8 nos dois mundos, porque o arquivo do jogador é gravado antes das regiões.
+  - Em `chunks_written` e `entities_written` faltam 8 nos dois mundos, porque a região é gravada antes do jogador.
+  - São os mesmos resíduos vanilla do controle, item a item.
+  - A primeira tentativa, `sawcut-break-attempt1.json`, ficou sem comparação em `kv_committed`. O `act` do controle
+    falhou: o jogador só ia até o primeiro item caído, e o barril ficou fora de alcance.
+- `sawcut-hopper-matrix.json`: 7/7.
+- `sawcut-hand-matrix.json`: 8/8, com os mesmos resíduos vanilla do controle.
+- `sawcut-border-matrix.json`: 9/9.
+  - A primeira tentativa, `sawcut-border-attempt1.json`, deu `same_cut=false` em `world_saved` com as mesmas
+    contagens. A lâmina do port escorregou em z para o chunk do núcleo.
+  - Agora o controle põe a sua lâmina, parada, onde a do port caiu na mesma rodada.
+
+Um tronco na entrada junto com saídas nos slots não é um estado alcançável jogando: tanto a mão quanto o funil
+exigem os três slots vazios. Sob sobrevelocidade, um tronco é serrado muito antes de a lâmina quebrar, e o
+resultado sobrescreve o slot 1, como no Java. Por isso o `overspeed` falha com as saídas, e é o `break`, sem calor,
+que tem os três slots cheios.
+
+Desde a primeira revisão, o `same_cut` de `none` e dos kills (`kill`, `kv_committed`) traz `same_cut_by_definition=true`:
 esses pontos não cortam um save, então ali o `same_cut` não prova que os dois mundos pararam no mesmo limite.
 
 ## Escopo mantido
