@@ -51,9 +51,16 @@ pub fn is_food(item: &str) -> bool {
     FOODS.contains(&item)
 }
 
-/// `isItemValidForSlot`: only slot 0, and only what has a smelting result.
-pub fn accepts(slot: usize, item: &str) -> bool {
-    slot == INPUT && recipes::furnace().smelt(item).is_some()
+/// What a hand and a hopper may do with the slots. `ContainerMicrowave` has plain `Slot`s at 0 and 2 (`isItemValid` is always true:
+/// a hand puts anything there, a battery included, and takes from every slot) and a `SlotCraftingOutput` at 1. A hopper asks the
+/// tile: `isItemValidForSlot` is slot 0 with a smelting result (`canInsertItem` is the same), `canExtractItem` is slot 1.
+pub fn allows(slot: usize, item: &str, insert: bool, manual: bool) -> bool {
+    match (insert, manual) {
+        (true, true) => slot == INPUT || slot == BATTERY,
+        (false, true) => slot < SLOTS,
+        (true, false) => slot == INPUT && recipes::furnace().smelt(item).is_some(),
+        (false, false) => slot == OUTPUT,
+    }
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -358,9 +365,19 @@ mod tests {
 
     #[test]
     fn the_slots_take_what_the_java_takes() {
-        assert!(accepts(INPUT, "minecraft:beef") && accepts(INPUT, "minecraft:iron_ore"));
-        assert!(!accepts(INPUT, "minecraft:stick"), "no smelting result");
-        assert!(!accepts(OUTPUT, "minecraft:beef") && !accepts(BATTERY, "minecraft:beef"));
+        // a hopper: only smeltables into slot 0, only slot 1 out
+        assert!(allows(INPUT, "minecraft:beef", true, false) && allows(INPUT, "minecraft:iron_ore", true, false));
+        assert!(!allows(INPUT, "minecraft:stick", true, false), "no smelting result");
+        assert!(!allows(OUTPUT, "minecraft:beef", true, false) && !allows(BATTERY, "minecraft:beef", true, false));
+        assert!(!allows(INPUT, "minecraft:beef", false, false) && !allows(BATTERY, "ntm:battery_creative", false, false));
+        assert!(allows(OUTPUT, "minecraft:beef", false, false));
+        // a hand: anything into the plain slots 0 and 2 (a battery by hand), nothing into the output, takes from all
+        for item in ["minecraft:beef", "minecraft:stick", "ntm:battery_creative"] {
+            assert!(allows(INPUT, item, true, true) && allows(BATTERY, item, true, true), "{item}");
+            assert!(!allows(OUTPUT, item, true, true), "{item}");
+        }
+        assert!((0..SLOTS).all(|slot| allows(slot, "minecraft:stick", false, true)));
+        assert!(!allows(SLOTS, "minecraft:beef", true, true) && !allows(SLOTS, "minecraft:beef", false, true));
         let c = container();
         assert_eq!((c.slots, c.inputs, c.outputs), (3, vec![INPUT], vec![OUTPUT]));
         assert_eq!(c.faces[0], vec![OUTPUT], "the bottom gives the output");

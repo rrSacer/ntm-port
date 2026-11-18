@@ -210,15 +210,10 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         return rules;
     }
     if block == crate::microwave::BLOCK {
-        // `ContainerMicrowave`: the input takes what the furnace smelts (`isItemValidForSlot`, hand and hopper alike), the output is a
-        // `SlotCraftingOutput` and the battery slot takes nothing (`isItemValidForSlot` is false for every slot but 0).
-        let mut smeltable: Vec<String> = crate::recipes::furnace().inputs().map(str::to_string).collect();
-        smeltable.sort();
-        return vec![
-            SlotFilter { accept: Some(smeltable), ..Default::default() },
-            SlotFilter { output: true, ..Default::default() },
-            SlotFilter { accept: Some(Vec::new()), ..Default::default() },
-        ];
+        // `ContainerMicrowave`: plain `Slot`s at 0 and 2 and a `SlotCraftingOutput` at 1; what a hopper may do is `slot_allows`.
+        let mut rules = vec![SlotFilter::default(); crate::microwave::SLOTS];
+        rules[crate::microwave::OUTPUT].output = true;
+        return rules;
     }
     if block == crate::radiolysis::BLOCK {
         // `ContainerRadiolysis`: the fluid identifier's and the sterilized item's out slots are `SlotTakeOnly`s.
@@ -307,6 +302,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::fel::BLOCK {
         return crate::fel::allows(slot, origin == SlotOrigin::Manual);
+    }
+    if block == crate::microwave::BLOCK {
+        return crate::microwave::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if block == crate::radiolysis::BLOCK {
         return crate::radiolysis::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);

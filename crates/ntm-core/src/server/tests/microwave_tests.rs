@@ -88,17 +88,29 @@ fn what_is_not_food_stays_and_the_top_speed_does_not_run() {
 }
 
 #[test]
-fn a_battery_in_its_slot_charges_it_and_a_hand_cannot_put_one_there() {
+fn a_battery_in_its_slot_charges_it_and_a_hand_can_put_one_there_but_a_hopper_cannot() {
     use crate::native::{SlotAction, SlotOrigin, slot_allows, slot_filters};
     let rules = slot_filters(microwave::BLOCK);
     assert_eq!(rules.len(), 3);
-    assert!(rules[0].accept.as_ref().unwrap().contains(&"minecraft:beef".to_string()));
-    assert!(!rules[0].accept.as_ref().unwrap().contains(&"minecraft:stick".to_string()));
-    assert!(rules[1].output);
-    assert_eq!(rules[2].accept, Some(Vec::new()), "the battery slot takes nothing");
+    assert!(rules[0].accept.is_none() && rules[2].accept.is_none(), "plain `Slot`s: the menu takes anything");
+    assert!(rules[1].output && !rules[0].output && !rules[2].output);
     let beef = Stack::new("minecraft:beef", 1);
-    // a hopper: only into slot 0, and only the output comes out
-    assert!(slot_allows(microwave::BLOCK, &[], 0, &beef, SlotAction::Insert, SlotOrigin::Automation));
+    let stick = Stack::new("minecraft:stick", 1);
+    let battery = Stack::new(crate::machine::CREATIVE_BATTERY, 1);
+    let can = |slot, item: &Stack, action, origin| slot_allows(microwave::BLOCK, &[], slot, item, action, origin);
+    // a hand: anything into the plain slots 0 and 2 (the battery, by hand), nothing into the output
+    for item in [&beef, &stick, &battery] {
+        assert!(can(microwave::INPUT, item, SlotAction::Insert, SlotOrigin::Manual));
+        assert!(can(microwave::BATTERY, item, SlotAction::Insert, SlotOrigin::Manual));
+        assert!(!can(microwave::OUTPUT, item, SlotAction::Insert, SlotOrigin::Manual));
+    }
+    // a hopper: only smeltables into slot 0, and only the output comes out
+    assert!(can(microwave::INPUT, &beef, SlotAction::Insert, SlotOrigin::Automation));
+    assert!(!can(microwave::INPUT, &stick, SlotAction::Insert, SlotOrigin::Automation));
+    assert!(!can(microwave::BATTERY, &battery, SlotAction::Insert, SlotOrigin::Automation));
+    assert!(can(microwave::OUTPUT, &beef, SlotAction::Extract, SlotOrigin::Automation));
+    assert!(!can(microwave::INPUT, &beef, SlotAction::Extract, SlotOrigin::Automation));
+    assert!(!can(microwave::BATTERY, &battery, SlotAction::Extract, SlotOrigin::Automation));
     // a battery put there by a command still charges the buffer
     let mut g = game();
     g.place(CORE, STATE);
