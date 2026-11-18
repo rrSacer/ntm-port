@@ -102,7 +102,8 @@
 "in": [
 {
 "ids": [
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 1,
 "label": "sand"
@@ -478,7 +479,8 @@
 "in": [
 {
 "ids": [
-"minecraft:sand"
+"minecraft:sand",
+"minecraft:red_sand"
 ],
 "n": 2,
 "label": "sand"

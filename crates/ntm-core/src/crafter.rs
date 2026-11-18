@@ -404,13 +404,10 @@ impl Crafter {
         }
         for (t, f) in self.tin.iter_mut().zip(r.fluids_in.iter().map(|f| f.0.as_str()).chain(std::iter::repeat(""))) {
             t.set_type(f);
-            // The assembly machine sizes its tanks to the recipe; the rock
-            // mill keeps room for what it holds (`changeTankSize(max(fill,
-            // fill * 2, 4 000))`).
+            // The assembly machine sizes its tanks to the recipe (the rock
+            // mill's, `size_tanks`, keep room for what they hold too).
             if self.station == Station::Assembly {
                 t.cap = 4_000.max(r.fluids_in.first().map_or(0, |f| f.1 * 2));
-            } else if self.station == Station::RockMill {
-                t.cap = 4_000.max(r.fluids_in.first().map_or(0, |f| f.1 * 2)).max(t.mb);
             }
         }
         // The liquefactor's tank takes the fluid as it makes it, and only
@@ -422,9 +419,22 @@ impl Crafter {
             t.set_type(f);
             if self.station == Station::Assembly {
                 t.cap = 4_000.max(r.fluids_out.first().map_or(0, |f| f.1 * 2));
-            } else if self.station == Station::RockMill {
-                t.cap = 4_000.max(r.fluids_out.first().map_or(0, |f| f.1 * 2)).max(t.mb);
             }
+        }
+        if self.station == Station::RockMill {
+            self.size_tanks(r);
+        }
+    }
+
+    /// The rock mill's `changeTankSize(max(fill, recipe's fluid * 2, 4 000))`
+    /// on its tank in and out.
+    fn size_tanks(&mut self, r: &Recipe) {
+        let size = |t: &Tank, f: Option<&(String, u32)>| 4_000.max(f.map_or(0, |f| f.1 * 2)).max(t.mb);
+        for t in &mut self.tin {
+            t.cap = size(t, r.fluids_in.first());
+        }
+        for t in &mut self.tout {
+            t.cap = size(t, r.fluids_out.first());
         }
     }
 
@@ -532,11 +542,17 @@ impl Crafter {
 
     /// `ModuleMachineBase.canProcess`'s auto switch: the recipe of the
     /// current one's group whose first input is in the machine and isn't
-    /// one of the current recipe's (the NTM reads input slot 0; the port's
-    /// inputs are a pile, read in the order they came in).
+    /// one of the current recipe's. The NTM reads input slot 0, which holds
+    /// one item: the port's inputs are a pile that may hold two, so it
+    /// switches only once none of the current recipe's first input is left
+    /// (two stones together would otherwise switch back and forth each
+    /// tick, nothing ground, a tank of another fluid emptied each time).
     pub(crate) fn switch_to(&self, recipes: &'static [Recipe]) -> Option<&'static Recipe> {
         let r = self.current_in(recipes)?;
         let g = r.group.as_deref()?;
+        if r.items_in.first().is_some_and(|i| count(&self.items, &i.ids) > 0) {
+            return None;
+        }
         let mine = |item: &str| r.items_in.iter().any(|i| i.ids.iter().any(|x| x == item));
         self.items.iter().filter(|(i, _)| !mine(i)).find_map(|(item, _)| {
             recipes.iter().find(|o| o.name != r.name && o.group.as_deref() == Some(g) && o.items_in.first().is_some_and(|i| i.ids.contains(item)))
@@ -642,6 +658,11 @@ impl Logic for Crafter {
         let Some(r) = self.current() else {
             return false;
         };
+        // `ModuleMachineRockMill.setupTanks`, each tick: the tanks keep room
+        // for what they hold, twice the recipe's, at least 4 000 mB.
+        if self.station == Station::RockMill {
+            self.size_tanks(r);
+        }
         if !self.can_run(r) || self.power < r.power {
             // The electrolyser keeps its progress (`canProcessFluid` false
             // leaves it).
@@ -903,7 +924,10 @@ mod purex_tests {
         c.recipe = Some("purex.pwr_a".into());
         c.items = vec![("ntm:pwr_a".into(), 2)];
         assert!(c.switch_to(t).is_none(), "a sua própria entrada");
+        // With its own input still there it keeps its recipe (the review's oscillation: the NTM's slot 0 holds one item).
         c.items.push(("ntm:pwr_b".into(), 1));
+        assert!(c.switch_to(t).is_none(), "pwr_a is still there");
+        c.items = vec![("ntm:pwr_b".into(), 1)];
         assert_eq!(c.switch_to(t).map(|r| r.name.as_str()), Some("purex.pwr_b"));
         // Another group's input, or a recipe with no group: no switch.
         c.items = vec![("ntm:zirnox".into(), 1)];
@@ -1038,6 +1062,83 @@ mod rockmill_tests {
         c.items = vec![("minecraft:gravel".into(), 1)];
         c.tick();
         assert_eq!(c.recipe.as_deref(), Some("rock.clay"), "no group, no switch");
+    }
+
+    /// Review P1: two stones together. The NTM switches by input slot 0, which holds one of them; the port's pile
+    /// holds both, so it grinds the current recipe's stone until none is left and only then switches, and a tank of
+    /// another fluid is not emptied back and forth.
+    #[test]
+    fn two_stones_together_grind_one_then_the_other() {
+        let (mut c, _) = mill("rock.cobble");
+        c.items = vec![("minecraft:cobblestone".into(), 1), ("minecraft:netherrack".into(), 1)];
+        c.tin[0].fill("water", 500);
+        c.tout[0].fill("colloid", 300);
+        c.power = 100_000;
+        for _ in 0..100 {
+            c.tick();
+            assert_eq!(c.recipe.as_deref(), Some("rock.cobble"), "no switch while cobblestone is left");
+        }
+        assert_eq!((c.done, c.items.clone()), (1, vec![("minecraft:netherrack".to_string(), 1)]));
+        assert_eq!(c.tout[0].mb, 550, "the colloid kept");
+        c.out.clear();
+        assert!(c.tick());
+        assert_eq!(c.recipe.as_deref(), Some("rock.netherrack"), "the cobblestone gone, the netherrack's turn");
+        for _ in 0..3 {
+            c.tick();
+            assert_eq!(c.recipe.as_deref(), Some("rock.netherrack"), "and it stays");
+        }
+    }
+
+    /// The PUREX switches the same way (`autoswitch.pwr`...): its fuel first, then the other.
+    #[test]
+    fn the_purex_does_not_switch_back_and_forth_either() {
+        let recipes = Station::Purex.recipes();
+        let Some((a, b)) = recipes.iter().find_map(|r| {
+            let g = r.group.as_deref()?;
+            let other = recipes.iter().find(|o| o.name != r.name && o.group.as_deref() == Some(g))?;
+            Some((r, other))
+        }) else {
+            panic!("no PUREX group");
+        };
+        let mut c = Crafter::new(Station::Purex);
+        c.set_recipe(a);
+        let first = |r: &Recipe| r.items_in[0].ids[0].clone();
+        c.items = vec![(first(a), 1), (first(b), 1)];
+        for _ in 0..5 {
+            assert!(c.switch_to(recipes).is_none());
+            c.tick();
+            assert_eq!(c.recipe.as_deref(), Some(a.name.as_str()));
+        }
+        c.items = vec![(first(b), 1)];
+        assert_eq!(c.switch_to(recipes).map(|r| r.name.as_str()), Some(b.name.as_str()));
+    }
+
+    /// `setupTanks` each tick: a tank that held more than the recipe asks keeps room for it, then shrinks back.
+    #[test]
+    fn the_tanks_are_sized_each_tick() {
+        let (mut c, _) = mill("rock.colloid");
+        c.tin[0].cap = 6_000;
+        c.tin[0].fill("colloid", 5_000);
+        c.tick();
+        assert_eq!(c.tin[0].cap, 5_000, "max(fill, 2 000, 4 000)");
+        c.tin[0].drain(4_500);
+        c.tick();
+        assert_eq!(c.tin[0].cap, 4_000);
+        // The output tank too: colloid out of a crushing recipe, more than 4 000 left from before.
+        let (mut c, _) = mill("rock.cobble");
+        c.tout[0].cap = 6_000;
+        c.tout[0].fill("colloid", 5_000);
+        c.tick();
+        assert_eq!(c.tout[0].cap, 5_000, "max(fill, 500, 4 000)");
+    }
+
+    /// `OreDictStack(KEY_SAND)`: Forge's `sand` holds red sand (wildcard metadata).
+    #[test]
+    fn red_sand_is_sand() {
+        for name in ["rock.sand", "rock.clay"] {
+            let r = Station::RockMill.recipes().iter().find(|r| r.name == name).unwrap();
+            assert!(r.items_in[0].ids.iter().any(|i| i == "minecraft:red_sand"), "{name}");
+        }
     }
 
     #[test]

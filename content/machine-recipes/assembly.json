@@ -13,7 +13,7 @@
     "power": "HE/t",
     "fluids": "mB"
   },
-  "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
+  "ingredient_policy": "first ntm id, then the vanilla id the OreDict key names, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
     "emitted": 502,
     "scanned_source_calls": 357,

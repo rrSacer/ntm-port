@@ -112,6 +112,8 @@ class MachineResolver(Resolver):
                     self.ore['any' + group[2]].update(self.ore.get(self.constants[member], []))
         for key, value in {'oreCoal': 'coal_ore', 'oreRedstone': 'redstone_ore', 'oreLapis': 'lapis_ore', 'oreNetherQuartz': 'nether_quartz_ore'}.items():
             self.ore[key].add('minecraft:' + value)
+        # Forge registers Blocks.sand with wildcard metadata: `sand` is sand and red sand, for every machine.
+        self.ore['sand'].add('minecraft:red_sand')
 
     def ingredient(self, expr, emit):
         for old, new in self.shapes.items():
@@ -178,8 +180,10 @@ class MachineResolver(Resolver):
         ident = self.ingredient(args[0], lambda path, body: local.__setitem__(path, body))
         options = self.expand_tag(ident, local)
         if not options: raise Unsupported('empty ingredient ' + expr)
-        # Prefer a port item; preserve all interchangeable choices alongside it.
-        options.sort(key=lambda ident: (not ident.startswith('ntm:'), ident))
+        # Prefer a port item, then the vanilla item the key names (`sand`: minecraft:sand, not red sand); preserve all
+        # interchangeable choices alongside it.
+        named = 'minecraft:' + self.constants.get(args[0].strip(), '')
+        options.sort(key=lambda ident: (not ident.startswith('ntm:'), ident != named, ident))
         return [options[0], count], options
 
     def fluid(self, expr):
@@ -324,7 +328,7 @@ def export(source, output, rows):
                 skipped.append({'name': name, 'source': origin, 'reason': str(error), 'expression': args})
         body = {'schema': 1, 'machine': machine, 'profile': PROFILE,
                 'units': {'duration': 'ticks', 'power': 'HE/t', 'fluids': 'mB'},
-                'ingredient_policy': 'first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices',
+                'ingredient_policy': 'first ntm id, then the vanilla id the OreDict key names, then lexical vanilla; alternatives are authoritative OreDict choices',
                 'coverage': {'emitted': len(recipes), 'scanned_source_calls': len(source_calls), 'skipped_source_calls': len(skipped),
                              'expanded_fluid_recipes': sum('expansion' in row for row in recipes),
                              'note': 'Skipped calls are not expanded loop instances; 2 fluid-pack source calls expand explicitly. External IMC/config JSON overrides excluded'},

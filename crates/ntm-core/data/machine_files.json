@@ -5439,6 +5439,7 @@
 "minecraft:cobblestone",
 "minecraft:gravel",
 "minecraft:netherrack",
+"minecraft:red_sand",
 "minecraft:sand",
 "minecraft:soul_sand",
 "ntm:basalt",
@@ -5450,32 +5451,12 @@
 "y": 27
 },
 {
-"accept": [
-"minecraft:cobblestone",
-"minecraft:gravel",
-"minecraft:netherrack",
-"minecraft:sand",
-"minecraft:soul_sand",
-"ntm:basalt",
-"ntm:stone_gneiss",
-"ntm:stone_resource__bauxite",
-"ntm:stone_resource__hematite"
-],
+"accept": [],
 "x": 26,
 "y": 27
 },
 {
-"accept": [
-"minecraft:cobblestone",
-"minecraft:gravel",
-"minecraft:netherrack",
-"minecraft:sand",
-"minecraft:soul_sand",
-"ntm:basalt",
-"ntm:stone_gneiss",
-"ntm:stone_resource__bauxite",
-"ntm:stone_resource__hematite"
-],
+"accept": [],
 "x": 44,
 "y": 27
 },

@@ -539,11 +539,11 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - **Menu** (`ContainerSILEX`): a mão põe na entrada, no identificador e no recipiente cheio, e tira de todos.
   - O shift-click (`transferStackInSlot`) leva um identificador ao slot dele, um recipiente cheio ao slot 2 e o resto à entrada.
   - As duas portas combo (inventário e fluido) ficam em (±1, 1, 0).
-- **Botão de esvaziar** (`GUISILEX:54-61`, `handleButtonPacket:133-137`): o botão 0 em (10, 92) zera a carga e esquece o item.
+- **Botão de esvaziar** (`GUISILEX:54-61`, `handleButtonPacket:133-137`): o botão 0 em (10, 92) zera a carga e esquece o item. Provado só em teste de unidade (`the_void_button_empties_the_fill`); não tem prova em jogo.
 - **Tela:** o laser mostrado é o do tick. O Java envia a tela (`networkPackNT`) antes de o `mode` voltar a NULL.
 - **Estado fora dos slots** em `save_state`, como o `writeToNBT` (linhas 332-343): carga, índice da receita, tipo do tanque (id do fluido) e mB, e o item da carga **pelo id**.
   - O id é guardado como bytes UTF-8. Antes era a posição numa lista ordenada, que muda quando o OreDict ou o catálogo crescem (revisão, P1-1).
-  - Um save da primeira forma ainda abre pela posição.
+  - Um save da primeira forma ainda abre pela posição, mas na lista **desta** versão: se a lista cresceu desde o save, pode abrir outro item. Só mundos de teste antigos têm saves assim.
   - O progresso e o atraso da carga não são salvos, como no Java: recomeçam em 0. Assim um SILEX parado tem o mesmo estado a cada tick e nada a gravar.
 
 **Ligação com o FEL** (`TileEntityFEL:139-195`)
@@ -587,6 +587,7 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - **Persistência:** sem o cristal, o SILEX parado e o FEL ligado reabrem exatamente como salvos; com o cristal de volta, o SILEX continua.
   - **SILEX mal alinhado:** um segundo SILEX perpendicular, 14 células adiante, é derrubado inteiro. No chão ficam **exatamente** 1 `machine_silex` e 1 lingote, somando as pilhas e não as entidades; o alinhado fica intacto.
 - Cortes estritos (`HORIZON_NO_EAGER_SAVE=1`, `run-crash-more.py silex-state`): **7/7**, com o mesmo cliente.
+  - O `report.json` dessa rodada não registra o modo. O `run-crash-more.py` passou a gravar `strict` em todo relatório, para que o modo de uma rodada fique na própria evidência.
   - Sem o cristal antes de cada save, o SILEX fica parado, então a reabertura tem que ser exatamente o save-base ou o save do passo.
   - `kill` e `kv_committed` reabrem o save-base (carga 1 100). Os outros cinco pontos reabrem o do passo (carga 400).
   - O peróxido fecha (tanque + tanques cheios + 900 por lingote carregado = 16 000), e a carga mais 100 por pepita é igual a 900 por lingote carregado.
@@ -671,6 +672,7 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - `maxPower = max(power, receita.power × 100, 2 500)`; o progresso zera quando falta energia, entrada ou espaço.
 - As receitas de trituração dão uma saída sorteada por peso (`ChanceOutputMulti`). O `canFitOutput` exige o slot de saída vazio para sortear.
 - O grupo `autoswitch.crushing` troca de receita pela pedra que está no primeiro slot de entrada.
+- As entradas são `SlotNonRetarded`, que pergunta ao módulo (`ModuleMachineBase.isItemValid`). Como toda receita do moinho tem um item só, os slots 3 e 4 não aceitam nada, e o slot 2 aceita a entrada da receita atual ou a primeira entrada de outra receita do mesmo grupo.
 - A receita é escolhida pela tela (`receiveControl` "index"/"selection").
 - Efeitos só de som (passo do bloco moído, a cada 3 ticks) e de partículas no cliente; nada no mundo.
 
@@ -684,10 +686,16 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - campo `pick` com o sorteio por peso, por um hash fixo no lugar do aleatório do mundo;
   - o slot de saída vazio para sortear;
   - uma saída simples só empilha sobre o mesmo item;
-  - tanques e buffer como no Java;
+  - tanques e buffer como no Java, os tanques redimensionados a cada tick (`setupTanks`);
   - progresso zerado sem energia;
   - bateria no slot 0;
-  - troca automática do grupo de trituração.
+  - troca automática do grupo de trituração, **só quando não resta a entrada da receita atual**.
+    - O slot 0 do Java guarda uma pedra só, então ele nunca tem as duas ao mesmo tempo. A pilha de entradas do port pode ter, e trocaria a cada tick sem moer nada, esvaziando o tanque quando o fluido muda (revisão, P1).
+    - A PUREX passa pela mesma regra, com teste.
+- **Os slots 3 e 4 não aceitam nada.** Antes aceitavam pedra, e cabiam 3 × 64 onde o Java aceita 64.
+- **A areia vermelha** entra em `rock.sand` e `rock.clay`: o `sand` do Forge é `Blocks.sand` com metadado curinga.
+  - A regra está no resolvedor do extrator, para todas as máquinas: a planta química ganhou a areia vermelha em 5 receitas, e o forno a arco, o alto-forno e o cristalizador, que já a tinham, só mudaram a ordem.
+  - O representante de uma chave do OreDict é o item vanilla com o nome dela (`minecraft:sand`), e o moinho mostra "Moer sand".
 - **As 8 portas de energia e fluido nas células do Java,** e as mesmas células como portas de inventário do multibloco.
 - **A tela `gui_rockmill.png` 176 × 220:**
   - a barra de energia, a seta de progresso, os LEDs e os dois tanques;
@@ -703,16 +711,25 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - A bateria aceita só a bateria criativa, como nas outras estações do crafter.
 - A lista mostra as receitas de trituração como "Moer <entrada>". O seletor do Java mostra o ícone da receita.
 - Os nomes das pedras vanilla aparecem em inglês, porque o catálogo não tem nome pt_BR para elas.
+- **A recusa do slot 2 pela receita atual não foi portada** (revisão, P2): em `rock.clay` ou `rock.colloid`, o Java recusa pedregulho, e o port aceita qualquer pedra de alguma receita.
+  - A regra de um slot no motor (`ModSlotFilter`, a política) vê só os slots, não a receita da máquina.
+  - O item que não serve fica no slot sem ser usado, até a mão tirá-lo. O Java deixaria um funil tirá-lo (`isSlotClogged`); isso não foi conferido no port.
+  - Corrigir pede que a política veja o estado da máquina, uma extensão do motor.
 
-**Provas** (cliente `37145d44caaa4df963344ec7a9304ce351f301ef6e4412654a2c2fa8f2820e05`, pacote `103e7809f63f90d072791e9d6428c2a2e06c76a0c50b9816ff92e99e4f67efa0`)
-- `ntm-core`: 870 testes passando, 8 deles do moinho; clippy limpo.
+**Provas** (cliente `9fe45e0e9db04c426716737d9484fc3fda13e294b464fc2ba6ee123189681f0a`, pacote `526602e0e43d19cfa741736c06117b497ef040787d96d7d9178204205012f579`, com a correção da revisão; evidência em `content-gen-evidence/onda2-s2/rockmill`)
+- `ntm-core`: 877 testes passando, 12 deles do moinho; clippy limpo; gerador de conteúdo com 347 OK.
+  - Da revisão: duas pedras juntas (o pedregulho é moído até acabar, a receita não troca, o coloide fica, e só então a do netherrack); a PUREX sem oscilar; os tanques de entrada e de saída redimensionados a cada tick; a areia vermelha.
+  - O teste antigo da PUREX, que esperava a troca com a própria entrada ainda presente, passou a esperar o contrato novo.
 - Mutantes escolhidos à mão no código novo do crafter: 6/6 mortos.
   - De 7, um sobreviveu porque a regra "slot vazio para sortear" repetia a de saída única; ela foi tirada e virou comentário.
   - Outro sobreviveu porque faltava o caso do sorteio em 1,0; ganhou um teste.
-- Em jogo (`run-native-reactors.py rockmill`): 15/15.
+- Mutantes da correção (`tools/mutants/rockmill.py`): 8/8 mortos.
+  - O redimensionamento do tanque de saída sobreviveu de início; ganhou um teste e morreu.
+- Em jogo (`run-native-reactors.py rockmill`): 18/18.
   - O moinho ocupa os 5 × 3 × 5.
   - A água chega por um barril e um duto tipado até uma das portas.
   - A lista escolhe "Moer cobblestone" (índice 1).
+  - **Os slots 3 e 4 recusam:** 8 cascalhos clicados neles ficam no cursor.
   - Com a bateria criativa e 4 pedregulhos, ele moeu um em quartzo (o sorteio de 5 em 100 que saiu), mais 250 mB de coloide, e parou com 3 pedregulhos à espera do slot de saída.
   - Salvo e reaberto, ele manteve os mesmos slots, a receita e o coloide.
   - Tirada a saída, ele moeu o próximo em cascalho e chegou a 500 mB de coloide.
@@ -736,3 +753,13 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 3. Um modo por slot, trocado por clique, visível na tela. Os botões de tela existem; falta uma forma de ligá-los a cada slot e de mostrar o modo sobre ele. Os nomes do OreDict precisam das tags de item equivalentes.
 
 Sem (1) a máquina não tem o que fabricar; sem (2) não há como montar o molde. Ela espera essas três APIs.
+
+## Lacunas transversais (revisão dos lotes do 2b)
+
+Valem para todas as máquinas de multibloco do port, não para uma só.
+
+- **Quebra à mão:** um `BlockDummyable` com `requires_tool` não solta o próprio item quando é quebrado à mão. No Java, as máquinas de multibloco caem como item mesmo sem a ferramenta certa.
+- **Clique sem agachar:** a revisão constatou que o clique sem agachar num `BlockDummyable` não é consumido pelo bloco e segue para o uso do item da mão. Falta conferir, máquina a máquina, o que o `onBlockActivated` de cada uma responde no Java (o do LPW2 nem existe).
+- **Resistência das partes:** as partes de um multibloco são `ntm:dummy_machine`, comum a todos, com resistência 10. No Java elas são o próprio bloco da máquina e têm a resistência dele (`machine_lpw2`, acima).
+
+Os três pedem uma mudança no tratamento de multiblocos (`horizon_machine`) ou no motor, comum a todas as máquinas; ficam registrados aqui em vez de remendados máquina a máquina.
