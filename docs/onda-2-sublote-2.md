@@ -539,11 +539,11 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - **Menu** (`ContainerSILEX`): a mão põe na entrada, no identificador e no recipiente cheio, e tira de todos.
   - O shift-click (`transferStackInSlot`) leva um identificador ao slot dele, um recipiente cheio ao slot 2 e o resto à entrada.
   - As duas portas combo (inventário e fluido) ficam em (±1, 1, 0).
-- **Botão de esvaziar** (`GUISILEX:54-61`, `handleButtonPacket:133-137`): o botão 0 em (10, 92) zera a carga e esquece o item.
+- **Botão de esvaziar** (`GUISILEX:54-61`, `handleButtonPacket:133-137`): o botão 0 em (10, 92) zera a carga e esquece o item. Provado só em teste de unidade (`the_void_button_empties_the_fill`); não tem prova em jogo.
 - **Tela:** o laser mostrado é o do tick. O Java envia a tela (`networkPackNT`) antes de o `mode` voltar a NULL.
 - **Estado fora dos slots** em `save_state`, como o `writeToNBT` (linhas 332-343): carga, índice da receita, tipo do tanque (id do fluido) e mB, e o item da carga **pelo id**.
   - O id é guardado como bytes UTF-8. Antes era a posição numa lista ordenada, que muda quando o OreDict ou o catálogo crescem (revisão, P1-1).
-  - Um save da primeira forma ainda abre pela posição.
+  - Um save da primeira forma ainda abre pela posição, mas na lista **desta** versão: se a lista cresceu desde o save, pode abrir outro item. Só mundos de teste antigos têm saves assim.
   - O progresso e o atraso da carga não são salvos, como no Java: recomeçam em 0. Assim um SILEX parado tem o mesmo estado a cada tick e nada a gravar.
 
 **Ligação com o FEL** (`TileEntityFEL:139-195`)
@@ -587,6 +587,7 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - **Persistência:** sem o cristal, o SILEX parado e o FEL ligado reabrem exatamente como salvos; com o cristal de volta, o SILEX continua.
   - **SILEX mal alinhado:** um segundo SILEX perpendicular, 14 células adiante, é derrubado inteiro. No chão ficam **exatamente** 1 `machine_silex` e 1 lingote, somando as pilhas e não as entidades; o alinhado fica intacto.
 - Cortes estritos (`HORIZON_NO_EAGER_SAVE=1`, `run-crash-more.py silex-state`): **7/7**, com o mesmo cliente.
+  - O `report.json` dessa rodada não registra o modo. O `run-crash-more.py` passou a gravar `strict` em todo relatório, para que o modo de uma rodada fique na própria evidência.
   - Sem o cristal antes de cada save, o SILEX fica parado, então a reabertura tem que ser exatamente o save-base ou o save do passo.
   - `kill` e `kv_committed` reabrem o save-base (carga 1 100). Os outros cinco pontos reabrem o do passo (carga 400).
   - O peróxido fecha (tanque + tanques cheios + 900 por lingote carregado = 16 000), e a carga mais 100 por pepita é igual a 900 por lingote carregado.
@@ -693,6 +694,8 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
     - A PUREX passa pela mesma regra, com teste.
 - **Os slots 3 e 4 não aceitam nada.** Antes aceitavam pedra, e cabiam 3 × 64 onde o Java aceita 64.
 - **A areia vermelha** entra em `rock.sand` e `rock.clay`: o `sand` do Forge é `Blocks.sand` com metadado curinga.
+  - A regra está no resolvedor do extrator, para todas as máquinas: a planta química ganhou a areia vermelha em 5 receitas, e o forno a arco, o alto-forno e o cristalizador, que já a tinham, só mudaram a ordem.
+  - O representante de uma chave do OreDict é o item vanilla com o nome dela (`minecraft:sand`), e o moinho mostra "Moer sand".
 - **As 8 portas de energia e fluido nas células do Java,** e as mesmas células como portas de inventário do multibloco.
 - **A tela `gui_rockmill.png` 176 × 220:**
   - a barra de energia, a seta de progresso, os LEDs e os dois tanques;
@@ -707,7 +710,7 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - A roda gira em velocidade cheia enquanto trabalha: falta a aceleração e a desaceleração de 0,1 grau/tick².
 - A bateria aceita só a bateria criativa, como nas outras estações do crafter.
 - A lista mostra as receitas de trituração como "Moer <entrada>". O seletor do Java mostra o ícone da receita.
-- Os nomes das pedras vanilla aparecem em inglês, porque o catálogo não tem nome pt_BR para elas. A de areia aparece como "Moer red sand", porque o representante é o primeiro id em ordem lexical.
+- Os nomes das pedras vanilla aparecem em inglês, porque o catálogo não tem nome pt_BR para elas.
 - **A recusa do slot 2 pela receita atual não foi portada** (revisão, P2): em `rock.clay` ou `rock.colloid`, o Java recusa pedregulho, e o port aceita qualquer pedra de alguma receita.
   - A regra de um slot no motor (`ModSlotFilter`, a política) vê só os slots, não a receita da máquina.
   - O item que não serve fica no slot sem ser usado, até a mão tirá-lo. O Java deixaria um funil tirá-lo (`isSlotClogged`); isso não foi conferido no port.

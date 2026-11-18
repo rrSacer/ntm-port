@@ -13,7 +13,7 @@
     "power": "HE/t",
     "fluids": "mB"
   },
-  "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
+  "ingredient_policy": "first ntm id, then the vanilla id the OreDict key names, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
     "emitted": 62,
     "scanned_source_calls": 77,
@@ -741,7 +741,8 @@
         },
         {
           "ids": [
-            "minecraft:sand"
+            "minecraft:sand",
+            "minecraft:red_sand"
           ],
           "count": 8
         }
@@ -783,7 +784,8 @@
         },
         {
           "ids": [
-            "minecraft:sand"
+            "minecraft:sand",
+            "minecraft:red_sand"
           ],
           "count": 8
         }
@@ -825,7 +827,8 @@
         },
         {
           "ids": [
-            "minecraft:sand"
+            "minecraft:sand",
+            "minecraft:red_sand"
           ],
           "count": 8
         }
@@ -861,7 +864,8 @@
         },
         {
           "ids": [
-            "minecraft:sand"
+            "minecraft:sand",
+            "minecraft:red_sand"
           ],
           "count": 6
         }
@@ -1742,7 +1746,8 @@
         },
         {
           "ids": [
-            "minecraft:sand"
+            "minecraft:sand",
+            "minecraft:red_sand"
           ],
           "count": 1
         }

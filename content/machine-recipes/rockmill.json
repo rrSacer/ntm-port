@@ -13,7 +13,7 @@
     "power": "HE/t",
     "fluids": "mB"
   },
-  "ingredient_policy": "first ntm id, then lexical vanilla; alternatives are authoritative OreDict choices",
+  "ingredient_policy": "first ntm id, then the vanilla id the OreDict key names, then lexical vanilla; alternatives are authoritative OreDict choices",
   "coverage": {
     "emitted": 11,
     "scanned_source_calls": 13,
@@ -127,8 +127,8 @@
       "inputItems": [
         {
           "ids": [
-            "minecraft:red_sand",
-            "minecraft:sand"
+            "minecraft:sand",
+            "minecraft:red_sand"
           ],
           "count": 1
         }
@@ -525,8 +525,8 @@
       "inputItems": [
         {
           "ids": [
-            "minecraft:red_sand",
-            "minecraft:sand"
+            "minecraft:sand",
+            "minecraft:red_sand"
           ],
           "count": 2
         }

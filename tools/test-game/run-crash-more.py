@@ -410,6 +410,8 @@ def main():
         env['DISPLAY'] = ':' + pipe.readline().strip()
     report = {'ok': False, 'scenario': args.scenario, 'binary': str(args.binary),
               'binary_sha256': crash_proof.digest(args.binary), 'bundle_sha256': crash_proof.digest(args.bundle),
+              # A strict run (`HORIZON_NO_EAGER_SAVE=1`): no chunk reaches the disk outside a save, the cuts' contract.
+              'strict': os.environ.get('HORIZON_NO_EAGER_SAVE') == '1',
               'points': []}
     controlled = args.scenario in BROKEN or args.scenario in EMITTING or args.scenario in TRANSFERS
     try:
