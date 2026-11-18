@@ -18,6 +18,7 @@ pub mod client_rad;
 pub mod coker;
 pub mod cable_switch;
 pub mod wire;
+pub mod chimney;
 pub mod compressor;
 pub mod drain;
 pub mod microwave;

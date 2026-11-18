@@ -102,6 +102,25 @@ impl Server {
                 pit.add(ash, time as i32);
             }
         }
+        // The smoke a chimney took goes to the ashpit under its core as ash (and soot, the industrial one) (`TileEntityChimneyBase.updateEntity`):
+        // `ashLevelFly += ashTick` on an `int`, so it wraps as one; nothing under it and the smoke is gone, as the Java's.
+        let taken: Vec<(Key, (i64, i64))> = self
+            .ready
+            .world
+            .machines
+            .iter_mut()
+            .filter_map(|(k, m)| match &mut m.data {
+                Data::Chimney(c) => c.take_ash().map(|a| (k.clone(), a)),
+                _ => None,
+            })
+            .collect();
+        for ((dim, at), (ash, soot)) in taken {
+            let under = (dim, [at[0], at[1] - 1, at[2]]);
+            if let Some(Data::Ashpit(pit)) = self.ready.world.machines.get_mut(&under).map(|m| &mut m.data) {
+                pit.fly = (i64::from(pit.fly) + ash) as i32;
+                pit.soot = (i64::from(pit.soot) + soot) as i32;
+            }
+        }
     }
 
     /// The oil drills' work under them (`TileEntityOilDrillBase.updateEntity`):

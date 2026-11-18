@@ -1126,6 +1126,22 @@
 ],
 "synced": []
 },
+"ntm:chimney_brick": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:chimney_industrial": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:foundry_basin": {
 "inventory": [
 8,

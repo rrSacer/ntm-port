@@ -182,6 +182,12 @@ impl Server {
                         }
                     }
                 }
+                if let Some(m) = self.ready.world.machines.get(&(dim.clone(), core)) && crate::chimney::Body::of(&m.block).is_some() {
+                    faces.insert(core, vec![vec![]]);
+                    for (p, d) in crate::chimney::Chimney::port_cells(core, m.facing.as_deref()) {
+                        faces.insert(p, vec![vec![d]]);
+                    }
+                }
                 if let Some(m) = self.ready.world.machines.get(&(dim.clone(), core)) && m.block == crate::annihilator::BLOCK {
                     faces.insert(core, vec![vec![]]);
                     for (p, d) in crate::annihilator::port_cells(core, m.facing.as_deref()) {

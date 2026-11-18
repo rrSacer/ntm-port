@@ -40138,12 +40138,68 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:chimney_brick": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineChimneyBrick {12,0,1,1,1,1} offset 1, TileEntityChimneyBrick (no screen: a smoke sink); RenderChimneyBrick turns the model a fixed 180 degrees whatever the facing, which a model that turns with the block cannot say (the shaft is square, so only its marks could show it); the smoke column of the client is not drawn",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            12,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/chimney_brick.obj",
+        "obj_from": "models/machines/chimney_brick.obj",
+        "texture": "ntm:textures/models/machines/chimney_brick.png",
+        "texture_from": "textures/models/machines/chimney_brick.png",
+        "rotation": 0,
+        "radius": 14.0
+      }
     },
     "ntm:chimney_industrial": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineChimneyIndustrial {22,0,1,1,1,1} offset 1, TileEntityChimneyIndustrial (no screen: a smoke sink); RenderChimneyIndustrial turns the model a fixed 180 degrees whatever the facing, which a model that turns with the block cannot say (the shaft is square, so only its marks could show it); the smoke column of the client is not drawn",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            22,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/chimney_industrial.obj",
+        "obj_from": "models/machines/chimney_industrial.obj",
+        "texture": "ntm:textures/models/machines/chimney_industrial.png",
+        "texture_from": "textures/models/machines/chimney_industrial.png",
+        "rotation": 0,
+        "radius": 24.0
+      }
     },
     "ntm:machine_autosaw": {
       "auto": false,

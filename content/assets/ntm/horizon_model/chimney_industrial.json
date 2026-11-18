@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/chimney_industrial.obj",
+  "texture": "ntm:textures/models/machines/chimney_industrial.png",
+  "rotation": 0,
+  "radius": 24.0
+}
