@@ -151,22 +151,20 @@ pub struct Storage {
     #[serde(skip)]
     pub slots: Slots,
     /// The machine's own copy of them. The energy network moves energy after the machines ran, outside the step
-    /// that writes the slots, so between two steps this copy is the truth (`sync_in` adopts a slot a player
-    /// changed, `sync_out` writes this one). It is saved with the machine, after the network moved: a world opened
-    /// again finds the pack with the charge the network left it, not the step's.
-    #[serde(default)]
+    /// that writes the slots, so between the step and the end of the tick this copy is the truth: the tick's end
+    /// writes it to the slots (`kept_slots`, `published`) in the same commit as the machine's state, so no player
+    /// ever sees a slot behind the network. `sync_in` adopts a slot a player (or a hopper) changed.
+    #[serde(skip)]
     pub kept: Slots,
     /// What `sync_out` last put in `slots`: a slot that differs was changed by someone else.
     #[serde(skip)]
     sent: Slots,
-    /// Read from a save and not yet synced with the engine's slots.
-    #[serde(skip, default = "yes")]
-    fresh: bool,
+    /// `sync_in` has read the engine's slots since this machine was read from a save: until then `kept` is not
+    /// what the slots hold and must not be written over them.
+    #[serde(skip)]
+    synced: bool,
 }
 
-fn yes() -> bool {
-    true
-}
 
 impl Storage {
     pub fn new(body: Body) -> Self {
@@ -185,7 +183,7 @@ impl Storage {
             slots: vec![None; body.slot_count()],
             kept: vec![None; body.slot_count()],
             sent: vec![None; body.slot_count()],
-            fresh: false,
+            synced: true,
         }
     }
 
@@ -212,7 +210,7 @@ impl Storage {
         self.last_redstone = base.last_redstone;
     }
 
-    /// The meta the ports are laid from is not needed to run the machine, only to place its ports.
+    /// The pure socket over this machine's state; its `meta` (the orientation) only places ports, so it is not set.
     fn socket(&self) -> BatterySocket {
         let mut s = BatterySocket::new(10);
         s.base = self.base();
@@ -333,6 +331,20 @@ impl Storage {
             }
         }
         before != (self.red_low, self.red_high, self.priority, self.last_redstone, self.power.clone()) || kept_before != self.kept
+    }
+
+    /// The machine's copy of its slots (the engine's get it at the end of the tick, after the network moved).
+    pub fn kept_slots(&self) -> Option<Slots> {
+        self.synced.then(|| {
+            let mut k = self.kept.clone();
+            k.resize(self.body.slot_count(), None);
+            k
+        })
+    }
+
+    /// The engine took `kept_slots`: they are what the slots hold now.
+    pub fn published(&mut self) {
+        self.sync_out();
     }
 
     /// The rotor speed the client animates (`getSpeed`), 0 for the socket.
@@ -485,21 +497,7 @@ impl Slotted for Storage {
     /// The slots were just read from the engine: what a player put in or took out is the truth, the rest is
     /// the machine's own copy (which the network may have moved energy in since the last write).
     fn sync_in(&mut self) {
-        // Just read from a save: `kept` is the saved copy (newer than the slots by the energy moved after the
-        // last write), and holds the same pack the slot does or it is not trusted.
-        if self.fresh {
-            self.fresh = false;
-            self.fit_slots();
-            for i in 0..self.slots.len() {
-                let same = |a: &Option<Stack>, b: &Option<Stack>| matches!((a, b), (Some(a), Some(b)) if a.id == b.id && a.count == b.count);
-                if same(&self.kept[i], &self.slots[i]) {
-                    self.sent[i] = self.slots[i].clone();
-                } else {
-                    self.kept[i] = self.slots[i].clone();
-                    self.sent[i] = self.slots[i].clone();
-                }
-            }
-        }
+        self.synced = true;
         self.fit_slots();
         for i in 0..self.slots.len() {
             if self.slots[i] != self.sent[i] {
@@ -551,16 +549,6 @@ impl Slotted for Storage {
         self.keep_base(&base);
         false
     }
-}
-
-/// `canExtractItem` of the socket (a hopper): a drained pack leaves in output mode, a full one in input mode.
-pub fn can_extract(stack: &Stack, mode: i16) -> bool {
-    let slot = ItemSlot::new(slot_item(&stack.id), charge_of(stack));
-    if !slot.is_battery() {
-        return false;
-    }
-    let (charge, max) = (slot.get_charge(), slot.max_charge());
-    (mode == MODE_OUTPUT && charge == 0) || (mode == MODE_INPUT && charge == max)
 }
 
 #[cfg(test)]
@@ -880,39 +868,48 @@ mod tests {
     }
 
     #[test]
-    fn the_hopper_takes_a_pack_out_of_a_socket_only_when_it_is_drained_or_full_in_the_right_mode() {
-        let drained = Stack { custom: Some("{charge:0L}".into()), ..Stack::new(LEAD, 1) };
-        let full = Stack { custom: Some(format!("{{charge:{LEAD_MAX}L}}")), ..Stack::new(LEAD, 1) };
-        let half = Stack { custom: Some("{charge:5L}".into()), ..Stack::new(LEAD, 1) };
-        assert!(can_extract(&drained, MODE_OUTPUT) && !can_extract(&drained, MODE_INPUT));
-        assert!(can_extract(&full, MODE_INPUT) && !can_extract(&full, MODE_OUTPUT));
-        assert!(!can_extract(&half, MODE_INPUT) && !can_extract(&half, MODE_OUTPUT) && !can_extract(&half, MODE_BUFFER));
-        assert!(!can_extract(&Stack::new("ntm:ingot_steel", 1), MODE_OUTPUT));
+    fn a_saved_machine_takes_its_slots_as_the_engine_has_them() {
+        // The copy is not saved: the slots are, in the same commit as the state, and are what the machine reads.
+        let mut s = Storage::new(Body::Socket);
+        s.kept = vec![pack(LEAD, Some(900))];
+        let json = serde_json::to_string(&s).unwrap();
+        assert!(!json.contains("charge") && !json.contains("kept"), "{json}");
+        let load = |slot: Option<Stack>| {
+            let mut s = serde_json::from_str::<Storage>(&json).unwrap();
+            assert_eq!(s.kept_slots(), None, "not to be written over the slots before they are read");
+            *s.slots_mut() = vec![slot];
+            s.sync_in();
+            assert!(s.kept_slots().is_some());
+            s.kept[0].clone()
+        };
+        // Whatever is in the slot, exactly: a pack swapped for another of the same kind, with another charge, is that one.
+        assert_eq!(load(pack(LEAD, Some(500))), pack(LEAD, Some(500)));
+        assert_eq!(load(pack(LEAD, Some(0))), pack(LEAD, Some(0)));
+        assert_eq!(load(pack("ntm:battery_pack__battery_lithium", Some(1))), pack("ntm:battery_pack__battery_lithium", Some(1)));
+        assert_eq!(load(None), None);
+        // An old save with the copy in it still reads.
+        let old: Storage = serde_json::from_str(r#"{"body":"Socket","kept":[{"id":"x","count":1}]}"#).unwrap();
+        assert!(old.kept.is_empty());
     }
 
     #[test]
-    fn a_saved_machine_trusts_its_newer_copy_only_for_the_pack_the_slot_holds() {
-        let saved = |kept: Option<Stack>| {
-            let mut s = Storage::new(Body::Socket);
-            s.kept = vec![kept];
-            serde_json::from_str::<Storage>(&serde_json::to_string(&s).unwrap()).unwrap()
-        };
-        let read = |mut s: Storage, slot: Option<Stack>| {
-            *s.slots_mut() = vec![slot];
-            s.sync_in();
-            s.kept[0].clone()
-        };
-        // The network moved energy after the slot was written: the saved copy has more charge.
-        assert_eq!(read(saved(pack(LEAD, Some(900))), pack(LEAD, Some(500))), pack(LEAD, Some(900)));
-        // Another pack, or none, is in the slot: the slot is the truth and nothing is made out of the save.
-        assert_eq!(read(saved(pack(LEAD, Some(900))), pack("ntm:battery_pack__battery_lithium", Some(1))), pack("ntm:battery_pack__battery_lithium", Some(1)));
-        assert_eq!(read(saved(pack(LEAD, Some(900))), None), None);
-        assert_eq!(read(saved(None), pack(LEAD, Some(5))), pack(LEAD, Some(5)));
-        // An old save without the copy.
-        let mut old: Storage = serde_json::from_str(r#"{"body":"Socket"}"#).unwrap();
-        *old.slots_mut() = vec![pack(LEAD, Some(5))];
-        old.sync_in();
-        assert_eq!(old.kept[0], pack(LEAD, Some(5)));
+    fn the_slots_get_the_copy_at_the_end_of_the_tick_and_a_pack_taken_then_is_what_the_network_left() {
+        let mut s = Storage::new(Body::Socket);
+        s.red_low = MODE_OUTPUT;
+        s.kept = vec![pack(LEAD, Some(5_000))];
+        s.sync_out();
+        // The network took what the socket gave.
+        let gave = s.offer();
+        s.take(gave);
+        assert_eq!(charge(&s), Some(5_000 - gave as i64));
+        assert_eq!(s.slots[0].as_ref().and_then(charge_of), Some(5_000), "the slot is the step's");
+        let publish = s.kept_slots().unwrap();
+        assert_eq!(publish[0].as_ref().and_then(charge_of), Some(5_000 - gave as i64));
+        s.published();
+        assert_eq!(s.slots[0].as_ref().and_then(charge_of), Some(5_000 - gave as i64));
+        // The next step reads the slots it just wrote: no change from outside, the copy stays.
+        s.sync_in();
+        assert_eq!(charge(&s), Some(5_000 - gave as i64));
     }
 
     #[test]

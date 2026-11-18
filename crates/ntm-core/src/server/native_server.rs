@@ -556,12 +556,18 @@ impl Server {
             // loop state and tick pulses only after all simulation stages finish.
             if completed_tick { m.audio = crate::sounds::machine(m); }
             let Ok(json) = serde_json::to_string(&*m) else { continue };
-            if r.native_saved.get(key) != Some(&json) {
+            // The energy network moves energy after the machines ran, so a pack in a socket or a REDD holds more or
+            // less than the slot the step wrote: the slot gets the machine's copy in the same tick, with its state.
+            let held = if let crate::machine::Data::Storage(s) = &m.data { s.kept_slots() } else { None };
+            let slots_changed = held.as_ref().is_some_and(|k| host.machine_slots(&key.0, key.1).is_some_and(|now| now != *k));
+            if r.native_saved.get(key) != Some(&json) || slots_changed {
                 // Marked kept only once written: an unreachable block entity
                 // (its dimension not available now) is written again later.
                 let Some(expected)=host.machine_slots(&key.0,key.1).or_else(|| container_bridge::layout(&m.block).is_none().then(Vec::new)) else{continue};
                 let data=Self::machine_screen(&mut m.clone());
-                if !host.commit_machine(&MachineCommit{cells:Vec::new(),guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired:expected.clone(),expected,data,json:json.clone()}) {continue;}
+                let desired = held.clone().unwrap_or_else(|| expected.clone());
+                if !host.commit_machine(&MachineCommit{cells:Vec::new(),guard:CellGuard::machine(key,m),expected_saved:r.native_saved.contains_key(key),dim:key.0.clone(),pos:key.1,desired,expected,data,json:json.clone()}) {continue;}
+                if let crate::machine::Data::Storage(s) = &mut m.data { s.published(); }
                 r.native_saved.insert(key.clone(), json);
             }
             let seed=crate::hash::mix(crate::hash::fnv64(format!("{:?}:{}",key,tick).as_bytes())) as i64;

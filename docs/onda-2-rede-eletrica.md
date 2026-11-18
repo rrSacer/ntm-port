@@ -179,9 +179,10 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 - [`crates/ntm-core/src/storage.rs`](../crates/ntm-core/src/storage.rs) (`Kind::Storage`, `Data::Storage`, um corpo `Socket`/`Redd`): monta as regras puras
   sobre os slots do motor. A carga da bateria é o `charge` do `custom_data` do item (`{charge:123l}`); o **vidro do motor só devolvia o `custom_data` de
   alguns itens** (`glue.rs::stack`), as baterias entraram na lista.
-- **Cópia própria dos slots:** a rede move energia depois que as máquinas rodaram, fora do passo que grava os slots; entre dois passos a verdade é a
-  cópia da máquina (`kept`), gravada no slot a cada passo (`sync_out`); o que um jogador mexe no slot ganha (`sync_in`). A cópia é salva com a
-  máquina, depois da rede, e um mundo reaberto só a aceita se o slot tiver a mesma bateria.
+- **Cópia própria dos slots:** a rede move energia depois que as máquinas rodaram, fora do passo que grava os slots; entre o passo e o fim do tick a
+  verdade é a cópia da máquina (`kept`). **No fim do mesmo tick** (`native_save`, depois da rede) o slot do motor recebe a cópia no mesmo commit do estado
+  da máquina, então nenhum jogador vê o slot atrás da rede; o que um jogador (ou um funil) mexe no slot ganha (`sync_in`). A cópia **não** é salva: o
+  slot é, no mesmo commit, e é o que a máquina lê ao abrir o mundo (uma bateria trocada por outra do mesmo tipo é a outra, com a carga dela).
 - **Condutoras:** `Topology::build_conducting` (`energy.rs`) junta todas as portas da máquina; portas nas células da borda do volume (`registry::ports`,
   `energy_port_cells`): 8 do soquete e 6 da REDD, uma face cada, derivadas das posições do Java (`celula = posição - direção`).
 - Redstone: `native_redstone` lê as células de `getPortPos` (as 4 do soquete, as 6 da REDD); qualquer uma com sinal põe `redHigh`.
@@ -199,8 +200,8 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 - **Testes (`ntm-core`):** `storage::tests` (22) e `server::tests::storage_tests` (9), mais o de `screens` para `{a.b}`: geometria das 8 e das 6 portas para os quatro
   sentidos (portas na borda do volume, faces para fora, células de redstone dentro, as oito do Java escritas à mão), os quatro modos e a redstone, velocidades
   das baterias, tag criada em 0 e salva no item, bateria criativa que não se gasta, pixels da barra (0 a 52, exatos), botões de modo e prioridade, prioridade
-  inválida volta a `LOW`, reserva `BigInteger` além do `long`, bytes de `toByteArray`, `delta`/`log`, comparador lido antes dos itens, roda, `canExtractItem`,
-  cópia dos slots (um jogador que mexe vence, a cópia salva só vale para a mesma bateria), condutora (a energia atravessa em qualquer modo, sem perda),
+  inválida volta a `LOW`, reserva `BigInteger` além do `long`, bytes de `toByteArray`, `delta`/`log`, comparador lido antes dos itens, roda,
+  cópia dos slots (o slot recebe a cópia no fim do tick, um jogador que mexe vence, o mundo reaberto lê o slot), retirar a bateria à mão com a energia fluindo (rede + inventário conservados), condutora (a energia atravessa em qualquer modo, sem perda),
   carga da bateria exata, redstone em qualquer célula, regras de slot, save e reabertura. `cargo test -p ntm-core --lib`: **842 passaram** (eram 811);
   `cargo clippy --workspace --all-targets -- -D warnings` limpo.
 - **Mutantes (`/mnt/ssd120/sacer/so/c/mutate_storage.py`):** **34/35 mortos**. O sobrevivente (`S25`, `>=` no limite do `long` em `saturating_long`) é equivalente: no limite
@@ -233,5 +234,3 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 - **Soquete:** o tooltip da barra aparece sempre (o Java só com bateria); as cores do delta (verde, vermelho, amarelo) não existem; o funil **não retira** a bateria
   (`canExtractItem` depende do modo e da carga, que a regra de slot não vê).
 - **Comparador:** só lê o bloco-núcleo, não as células do volume.
-- **Carga atrasada:** o slot do motor recebe a carga no passo seguinte; um jogador que tira a bateria no mesmo tick em que a rede a carregou leva a carga do
-  passo anterior (no máximo um tick de transferência).

@@ -39,7 +39,7 @@ fn put(g: &mut Game, at: Pos, i: usize, id: &str, charge: Option<i64>) {
     g.run(1);
 }
 
-/// The pack's charge as the machine holds it: the engine's slot gets it with the next step (one tick behind).
+/// The pack's charge as the machine holds it (the engine's slot has the same at the end of each tick).
 fn pack_charge(g: &mut Game, at: Pos, i: usize) -> Option<i64> {
     store(g, at).kept[i].as_ref().and_then(storage::charge_of)
 }
@@ -96,10 +96,10 @@ fn a_socket_in_input_mode_charges_its_pack_from_the_net_and_the_stack_keeps_it()
     assert_eq!(before - bat_power(&mut g, west), charge as u64, "exactly what the battery lost");
     // A battery gives max / 600 a tick (1 666), the pack would take 10 000 (`chargeRate`).
     assert_eq!(charge, 10 * 1_666);
-    // The engine's slot is written with each step: the network moved energy after the last one.
-    assert_eq!(engine_charge(&mut g, CORE, 0), Some(9 * 1_666));
+    // The engine's slot gets the machine's copy at the end of every tick, after the network moved energy.
+    assert_eq!(engine_charge(&mut g, CORE, 0), Some(charge));
     g.run(1);
-    assert_eq!(engine_charge(&mut g, CORE, 0), Some(10 * 1_666));
+    assert_eq!(engine_charge(&mut g, CORE, 0), Some(11 * 1_666));
 }
 
 #[test]
@@ -257,14 +257,14 @@ fn the_buttons_of_the_screen_reach_the_machine() {
     g.place(CORE, "ntm:machine_battery_socket[facing=north,honey_level=0]");
     g.run(3);
     let mut was = [0, 2, 1];
-    for (id, check) in [(0u32, 0usize), (1, 1), (2, 2)] {
-        g.world.borrow_mut().presses.push((OW.to_string(), CORE, id));
+    for button in 0..3usize {
+        g.world.borrow_mut().presses.push((OW.to_string(), CORE, button as u32));
         g.run(1);
         let s = store(&mut g, CORE);
         let now = [s.red_low as i32, s.red_high as i32, i32::from(s.priority)];
-        for i in 0..3 {
-            assert_eq!(now[i], if i == check { was[i] + 1 } else { was[i] }, "button {id}");
-        }
+        let mut expected = was;
+        expected[button] += 1;
+        assert_eq!(now, expected, "button {button} steps its own setting and no other");
         was = now;
         let w = g.world.borrow();
         let data = &w.engine[&(OW.to_string(), CORE)].1;
@@ -272,3 +272,39 @@ fn the_buttons_of_the_screen_reach_the_machine() {
     }
 }
 
+
+/// What the rig holds in all: the source battery, the sink, the machine's pack and what a player carries.
+fn all_energy(g: &mut Game, west: Pos, east: Pos, carried: u64) -> u64 {
+    let pack = pack_charge(g, CORE, 0).unwrap_or(0) as u64;
+    bat_power(g, west) + bat_power(g, east) + pack + carried
+}
+
+#[test]
+fn a_pack_taken_by_hand_while_the_energy_flows_takes_what_the_network_left_and_no_more() {
+    // Output mode, a pack gives 1 000 a tick to the sink: the player takes it out at any tick and puts it back.
+    // Network + inventory is the same before and after, however often it is done (the old copy lagged a move behind).
+    let mut g = game();
+    let (west, east) = socket_line(&mut g);
+    battery(&mut g, west, BatteryMode::None, 0);
+    battery(&mut g, east, BatteryMode::Input, 0);
+    edit(&mut g, CORE, |s| s.red_low = MODE_OUTPUT);
+    put(&mut g, CORE, 0, LEAD, Some(5_000_000));
+    let total = all_energy(&mut g, west, east, 0);
+    assert_eq!(total, 5_000_000);
+    for round in 0..6 {
+        g.run(1 + round % 3);
+        assert_eq!(all_energy(&mut g, west, east, 0), total, "flowing, round {round}");
+        // The player takes the pack: what the engine's slot holds is what the pack is.
+        let taken = engine_charge(&mut g, CORE, 0).unwrap() as u64;
+        assert_eq!(taken, pack_charge(&mut g, CORE, 0).unwrap() as u64, "the slot is not behind the network");
+        let stack = g.world.borrow().engine[&(OW.to_string(), CORE)].0[0].clone().unwrap();
+        g.world.borrow_mut().engine.get_mut(&(OW.to_string(), CORE)).unwrap().0[0] = None;
+        g.run(1);
+        assert_eq!(all_energy(&mut g, west, east, taken), total, "taken, round {round}");
+        // And puts it back (the same stack, as a hand does).
+        g.world.borrow_mut().engine.get_mut(&(OW.to_string(), CORE)).unwrap().0[0] = Some(stack);
+        g.run(1);
+        assert_eq!(all_energy(&mut g, west, east, 0), total, "back, round {round}");
+    }
+    assert!(bat_power(&mut g, east) > 0, "and it did flow");
+}
