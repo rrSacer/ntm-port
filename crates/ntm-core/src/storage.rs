@@ -342,9 +342,15 @@ impl Storage {
             return None;
         }
         let n = self.body.slot_count();
+        // The item data as the engine writes it back, canonical: the same data this machine wrote (`slots_in` does the same).
         let fit = |s: &Slots| {
             let mut s = s.clone();
             s.resize(n, None);
+            for stack in s.iter_mut().flatten() {
+                if let Some(c) = stack.custom.as_deref().and_then(crate::snbt::canonical) {
+                    stack.custom = Some(c);
+                }
+            }
             s
         };
         let (now, kept) = (fit(now), fit(&self.kept));
@@ -949,6 +955,23 @@ mod tests {
         let mut other = base.clone();
         other[1] = pack(LEAD, Some(1));
         assert_eq!(r.publishable(&other), None);
+    }
+
+    #[test]
+    fn the_engines_spelling_of_the_item_data_is_the_same_data() {
+        // The engine writes `custom_data` back as `{charge: 14925000L}`; the machine wrote `{charge:14925000l}`.
+        let mut s = Storage::new(Body::Socket);
+        s.red_low = MODE_OUTPUT;
+        s.kept = vec![pack(LEAD, Some(5_000))];
+        s.sync_out();
+        let gave = s.offer();
+        assert_eq!(gave, 1_000);
+        s.take(gave);
+        let mut engine = s.slots.clone();
+        engine[0].as_mut().unwrap().custom = Some("{charge: 5000L}".into());
+        assert!(s.publishable(&engine).is_some(), "the slot is the machine's own: the copy is written");
+        engine[0].as_mut().unwrap().custom = Some("{charge: 4999L}".into());
+        assert_eq!(s.publishable(&engine), None, "another charge is a player's");
     }
 
     #[test]
