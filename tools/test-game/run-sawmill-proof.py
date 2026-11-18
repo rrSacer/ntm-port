@@ -87,6 +87,7 @@ def play(args, base, scratch, env, point, control=False):
         world.launch(None if point == 'kill' else point)
         acted = world.script('act', check=False, extra=rcp.act_extra(point))
         result['after_act'] = evidence(folder, 'act').get('after_act')
+        result['blade_at'] = evidence(folder, 'act').get('blade_at')
         result['died_in_act'] = bool(acted) and rcp.died_in_act(world, point)
         if acted and not result['died_in_act']:
             raise AssertionError('act failed before its save; see act evidence')
@@ -192,7 +193,13 @@ def main():
             if prepared:
                 raise AssertionError('prepare failed; see its evidence')
         for point in args.points or POINTS:
-            played = {c: play(args, where, scratch, homed(rcp.point_folder(scratch, point, c), c), point, c) for c, where in bases.items()}
+            # The mod's world first: where its blade came to lie goes to the control's (its `summon`), so both cuts write
+            # the same chunks whatever a dropped item's random motion did.
+            played = {False: play(args, bases[False], scratch, homed(rcp.point_folder(scratch, point, False), False), point, False)}
+            control_env = homed(rcp.point_folder(scratch, point, True), True)
+            if played[False].get('blade_at'):
+                control_env['NTM_SAW_BLADE_AT'] = ','.join(str(v) for v in played[False]['blade_at'])
+            played[True] = play(args, bases[True], scratch, control_env, point, True)
             # Exactly the last save only for `kill`: the pause of `kv_committed` writes the player's file (the transfer's
             # other side) ahead of the held regions, the vanilla residue the control shows at the same cut.
             outcome = no_worse_than_a_copy(rcp.emission_verdict(played[False], played[True], TOTAL, TOTAL, exact=point == 'kill'))

@@ -278,8 +278,13 @@ def act(g):
     if SCENARIO in ('overspeed', 'border'):
         b = front(CORE)
         if VANILLA:
+            # Where the mod's blade came to lie in the same point's play (its runner passes it on), else in front: a
+            # dropped item's random motion may carry it over a chunk's edge, and the cut must write the same chunks.
+            at = os.environ.get('NTM_SAW_BLADE_AT')
+            x, y, z = [float(v) for v in at.split(',')] if at else (b[0] + .5, b[1] + .5, b[2] + .5)
+            g.evidence['blade_summoned_at'] = [x, y, z]
             g.command('item replace block %d %d %d container.0 with minecraft:air' % CORE)
-            g.command(f'summon minecraft:item {b[0] + .5} {b[1] + .5} {b[2] + .5} {{Item:{{id:"{BLADE}",count:1}}}}')
+            g.command(f'summon minecraft:item {x} {y} {z} {{Item:{{id:"{BLADE}",count:1}},Motion:[0d,0d,0d]}}')
         else:
             hopper = (CORE[0] + 1, CORE[1] - 1, CORE[2])
             g.command('item replace block %d %d %d container.0 with ntm:rocket_fuel 4' % hopper)
@@ -298,6 +303,9 @@ def act(g):
             g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
             g.command('setblock %d %d %d minecraft:stone' % (CORE[0] + 1, CORE[1] - 1, CORE[2]))
         time.sleep(3)
+        if not VANILLA:
+            lying = [e['pos'] for e in g.ctl('entities 30')['entities'] if e.get('kind') == 'item' and e['item']['item'] == BLADE]
+            g.evidence['blade_at'] = lying[0] if lying else None
     elif SCENARIO == 'break':
         g.command('clear @s')
         g.command('gamemode survival @s')
@@ -314,10 +322,13 @@ def act(g):
                 continue
         g.check('broken', broken is not None, broken)
         time.sleep(1.5)
-        drop = next((e['pos'] for e in g.ctl('entities 20')['entities'] if e.get('kind') == 'item'), None)
-        g.check('it_dropped_its_item', drop is not None, drop)
-        g.command(f'tp @s {drop[0]} {drop[1]} {drop[2]}')
-        time.sleep(2)
+        drops = [e['pos'] for e in g.ctl('entities 20')['entities'] if e.get('kind') == 'item']
+        g.check('it_dropped_its_item', bool(drops), drops)
+        # Each of them picked up: a full block entity's spill lies around, its own item maybe out of one reach.
+        for d in drops:
+            g.command(f'tp @s {d[0]} {d[1]} {d[2]}')
+            time.sleep(1)
+        time.sleep(1)
         g.evidence['picked'] = inventory(g)
         g.command('gamemode creative @s')
         g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 3.5}')
