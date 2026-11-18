@@ -460,20 +460,33 @@ impl Server {
     /// identifier on a duct sets the duct's fluid
     /// (`FluidDuctBase.handleActivation`, a plain click). True when taken.
     pub fn native_use_item(&mut self, dim: &str, pos: Pos, item: &str, fluid: Option<&str>) -> bool {
+        self.native_use_item_as(dim, pos, item, fluid, false)
+    }
+
+    /// As [`Server::native_use_item`], with whether the player is sneaking. A duct is typed whichever way (the Java types the
+    /// whole net of the same type from a sneaking click, `changeTypeRecursively`, and copies the duct's type with the alt key: not
+    /// ported, docs/onda-2-sumidouros.md); the drain is typed only when the player is not sneaking, and a sneaking click on it is
+    /// taken without doing anything (`MachineDrain.onBlockActivated`). The drain takes the `none` identifier too (it empties and
+    /// untypes the tank, `setTankType(NONE)`), which no duct does here.
+    pub fn native_use_item_as(&mut self, dim: &str, pos: Pos, item: &str, fluid: Option<&str>, sneaking: bool) -> bool {
         if item != IDENTIFIER {
             return false;
         }
-        let Some(fluid) = fluid.filter(|f| crate::fluid::get(f).is_some_and(|t| t.id != 0)) else { return false };
+        let Some(fluid) = fluid.filter(|f| crate::fluid::get(f).is_some()) else { return false };
+        let is_none = crate::fluid::get(fluid).is_some_and(|t| t.id == 0);
         let Some(r) = self.ready() else { return false };
         let Some(m) = r.world.machines.get_mut(&(dim.to_string(), pos)) else { return false };
         match &mut m.data {
-            crate::machine::Data::Duct(d) => {
+            crate::machine::Data::Duct(d) if !is_none => {
                 if d.fluid != fluid {
                     d.fluid = fluid.to_string();
                 }
             }
-            // `MachineDrain.onBlockActivated`: not sneaking, with an identifier in the hand, `setTankType`.
-            crate::machine::Data::Drain(d) => d.set_type(fluid),
+            crate::machine::Data::Drain(d) => {
+                if !sneaking {
+                    d.set_type(if is_none { "" } else { fluid });
+                }
+            }
             _ => return false,
         }
         true

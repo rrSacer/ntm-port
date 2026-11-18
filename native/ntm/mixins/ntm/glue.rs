@@ -356,14 +356,12 @@ pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos:
     });
     // A multiblock's cell is the machine it belongs to (the drain's volume is three cells long).
     let identifier = &*stack.item == ntm_core::server::native_server::IDENTIFIER;
-    // `FluidDuctBase` and `MachineDrain.onBlockActivated` type only when the player is not sneaking.
-    if identifier && actor_sneaking(game) {
-        return false;
-    }
+    // `MachineDrain.onBlockActivated` types only when the player is not sneaking (the server decides: a duct is typed either way).
+    let sneaking = identifier && actor_sneaking(game);
     let core = if identifier { game.machine_cell_core(pos) } else { pos };
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
-    server.native_use_item(game.dim.id(), core, &stack.item, fluid.as_deref())
+    server.native_use_item_as(game.dim.id(), core, &stack.item, fluid.as_deref(), sneaking)
 }
 
 /// The radiation server's reading for a player (`radBuf`, milliRAD/s).

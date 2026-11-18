@@ -138,3 +138,69 @@ fn the_type_and_the_fill_survive_the_world_being_saved_and_opened_again() {
     g.run(4);
     assert_eq!(drain(&mut g).tank.fluid, "lava");
 }
+
+#[test]
+fn a_normal_receiver_is_served_before_the_drain_which_gets_what_is_left_and_a_duct_at_its_front_feeds_it() {
+    // `getFluidPriority` of the drain is LOW. A duct line runs to its front (north); a supplier at the far end of it, a barrel
+    // in input mode (normal priority) on the side of the line's first duct.
+    let mut g = game();
+    g.place(CORE, STATE);
+    let (d2, d1, supplier, receiver) = ([24, 70, 23], [24, 70, 22], [24, 70, 21], [25, 70, 22]);
+    g.place(d2, "ntm:fluid_duct_neo");
+    g.place(d1, "ntm:fluid_duct_neo");
+    g.place(supplier, "ntm:barrel_steel[facing=north,honey_level=0]");
+    g.place(receiver, "ntm:barrel_steel[facing=north,honey_level=0]");
+    g.run(2);
+    g.type_duct(d1, "water");
+    g.type_duct(d2, "water");
+    assert!(g.server.native_use_item(OW, CORE, crate::server::native_server::IDENTIFIER, Some("water")));
+    edit(&mut g, supplier, |d| {
+        let Data::FluidStore(f) = d else { panic!() };
+        f.tank.fill("water", 16_000);
+        f.mode = Mode::Output;
+    });
+    edit(&mut g, receiver, |d| {
+        let Data::FluidStore(f) = d else { panic!() };
+        f.tank.set_type("water");
+        f.mode = Mode::Input;
+    });
+    for tick in 0..10 {
+        g.run(1);
+        assert_eq!(drain(&mut g).tank.mb, 0, "tick {tick}: the drain gets nothing while the normal receiver has room");
+    }
+    let gained = barrel(&mut g, receiver).mb;
+    assert!(gained > 0 && gained == 16_000 - barrel(&mut g, supplier).mb, "the receiver took all that left the supplier: {gained}");
+    // When it is full the drain takes the rest, through the duct at its front.
+    g.run(200);
+    assert_eq!(barrel(&mut g, receiver).mb, 16_000);
+    assert_eq!(barrel(&mut g, supplier).mb, 0, "and the supplier went empty into the drain too");
+}
+
+#[test]
+fn a_sneaking_click_types_a_duct_and_never_the_drain_and_none_untypes_the_drain() {
+    let mut g = game();
+    g.place(CORE, STATE);
+    let duct = [CORE[0] + 4, CORE[1], CORE[2]];
+    g.place(duct, "ntm:fluid_duct_neo");
+    g.run(2);
+    let id = crate::server::native_server::IDENTIFIER;
+    // The drain: a sneaking click is taken (the Java returns true) and does nothing; a plain one types it.
+    assert!(g.server.native_use_item_as(OW, CORE, id, Some("water"), true));
+    assert_eq!(drain(&mut g).tank.fluid, "");
+    assert!(g.server.native_use_item_as(OW, CORE, id, Some("water"), false));
+    assert_eq!(drain(&mut g).tank.fluid, "water");
+    edit(&mut g, CORE, |d| {
+        let Data::Drain(x) = d else { panic!() };
+        x.tank.mb = 700;
+    });
+    // The `none` identifier untypes it and empties the tank (`setTankType(NONE)`); sneaking it still does not.
+    assert!(g.server.native_use_item_as(OW, CORE, id, Some("none"), true));
+    assert_eq!(drain(&mut g).tank.fluid, "water");
+    assert!(g.server.native_use_item_as(OW, CORE, id, Some("none"), false));
+    assert_eq!((drain(&mut g).tank.fluid.as_str(), drain(&mut g).tank.mb), ("", 0));
+    // A duct: typed from a sneaking click as it was (the Java types the whole net then: a gap), and `none` is no type for it.
+    assert!(g.server.native_use_item_as(OW, duct, id, Some("water"), true));
+    let Data::Duct(d) = g.machine(duct).data else { panic!() };
+    assert_eq!(d.fluid, "water");
+    assert!(!g.server.native_use_item_as(OW, duct, id, Some("none"), false));
+}

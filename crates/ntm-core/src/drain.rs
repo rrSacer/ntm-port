@@ -97,6 +97,11 @@ impl FluidNode for Drain {
         0
     }
 
+    /// `getFluidPriority`: `LOW`, served after every normal receiver.
+    fn fluid_priority(&self) -> u8 {
+        crate::fluid::PRIORITY_LOW
+    }
+
     /// A receiving tank takes only its own type: an untyped drain takes nothing.
     fn fluid_demand(&self, fluid: &str) -> u64 {
         if !self.tank.fluid.is_empty() && fluid == self.tank.fluid { u64::from(self.tank.free()) } else { 0 }
@@ -147,6 +152,7 @@ mod tests {
         let mut d = Drain::default();
         assert_eq!((d.fluid_demand("water"), d.fluid_types()), (0, Vec::<String>::new()), "untyped: nothing");
         assert_eq!(d.fluid_demand(""), 0, "not even the no-type");
+        assert_eq!(d.fluid_priority(), crate::fluid::PRIORITY_LOW);
         d.set_type("water");
         assert_eq!((d.fluid_demand("water"), d.fluid_demand("lava"), d.fluid_offer("water")), (2_000, 0, 0));
         d.fluid_give("water", 1_500);
