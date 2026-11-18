@@ -1,0 +1,131 @@
+{
+  "binary_sha256": "0ab20b4586614bcffe0a80bc21cf1b6425b50ac11acd74bc0a509e6fa46b29d5",
+  "bundle_sha256": "eebe930a4a39dacf367092946374fbeb2f536d9df732bda37bdc6216051bc23f",
+  "effects": [
+    {
+      "id": "15636620906904765671.0",
+      "what": "explosion [47.5, 102.0, 8.5] power=5 fire=false breaks=false"
+    },
+    {
+      "id": "15636620906904765671.1",
+      "what": "items [47, 102, 7] [(\"ntm:sawblade\", 1)]"
+    }
+  ],
+  "checks": {
+    "setup:with_its_blade": {
+      "ok": true,
+      "actual": "47, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_sawmill\",\"facing\":\"north\",\"data\":{\"k\":\"Sawmill\",\"has_blade\":true,\"progress\":0,\"done\":0}}'"
+    },
+    "setup:the_log_went_in_one": {
+      "ok": true,
+      "actual": [
+        [
+          "minecraft:oak_log",
+          "1"
+        ]
+      ]
+    },
+    "setup:six_planks_out": {
+      "ok": true,
+      "actual": [
+        [
+          "minecraft:oak_planks",
+          "6"
+        ],
+        [
+          "ntm:powder_sawdust",
+          "1"
+        ]
+      ]
+    },
+    "setup:the_outputs_taken_by_hand": {
+      "ok": true,
+      "actual": [
+        {
+          "planks": 6,
+          "sawdust": 1
+        },
+        []
+      ]
+    },
+    "setup:the_blade_breaks": {
+      "ok": true,
+      "actual": "47, 101, 8 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_sawmill\",\"facing\":\"north\",\"data\":{\"k\":\"Sawmill\",\"has_blade\":false,\"progress\":0,\"done\":1}}'"
+    },
+    "setup:one_blade_out": {
+      "ok": true,
+      "actual": [
+        {
+          "distance": 7.047665139636019,
+          "id": 6,
+          "item": {
+            "count": 1,
+            "item": "ntm:sawblade"
+          },
+          "kind": "item",
+          "pos": [
+            46.12918880220134,
+            101.0,
+            6.094572132185251
+          ],
+          "type": "minecraft:item"
+        }
+      ]
+    },
+    "setup:no_block_broken": {
+      "ok": true,
+      "actual": []
+    },
+    "setup:blade_picked_up": {
+      "ok": true,
+      "actual": 1
+    },
+    "setup:the_blade_back": {
+      "ok": true,
+      "actual": [
+        true,
+        0
+      ]
+    }
+  },
+  "evidence": {
+    "core": [
+      47,
+      101,
+      8
+    ],
+    "sawn": [
+      [
+        "minecraft:oak_planks",
+        "6"
+      ],
+      [
+        "ntm:powder_sawdust",
+        "1"
+      ]
+    ],
+    "taken": {
+      "planks": 6,
+      "sawdust": 1
+    },
+    "blades": [
+      {
+        "distance": 7.047665139636019,
+        "id": 6,
+        "item": {
+          "count": 1,
+          "item": "ntm:sawblade"
+        },
+        "kind": "item",
+        "pos": [
+          46.12918880220134,
+          101.0,
+          6.094572132185251
+        ],
+        "type": "minecraft:item"
+      }
+    ]
+  },
+  "blast_then_blade_once": true,
+  "ok": true
+}

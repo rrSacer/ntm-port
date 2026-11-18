@@ -1,0 +1,2 @@
+ntm: batch created owners=3 origins=3 critical=1 tombstones=0
+ntm: effect 16414950600813746932.0 items [200, 101, 8] [("ntm:rbmk_fuel_ueu", 1)] owners=3 origins=3

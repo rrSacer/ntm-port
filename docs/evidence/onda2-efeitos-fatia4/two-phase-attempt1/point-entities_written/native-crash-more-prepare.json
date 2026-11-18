@@ -1,0 +1,918 @@
+{
+  "scenario": "crash-more-prepare",
+  "ok": true,
+  "steps": [
+    {
+      "command": "close",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "command": "command gamemode creative @s",
+      "result": {
+        "chat": [],
+        "ok": true
+      }
+    },
+    {
+      "command": "command forceload add 30 0 64 24",
+      "result": {
+        "chat": [
+          "Marked 8 chunks in minecraft:overworld from [1, 0] to [4, 1] to be force loaded"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command fill 40 99 3 56 108 18 minecraft:air",
+      "result": {
+        "chat": [
+          "No blocks were filled"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command fill 40 99 3 56 99 18 minecraft:stone",
+      "result": {
+        "chat": [
+          "Successfully filled 272 block(s)"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command fill 45 100 8 49 104 12 ntm:pile_brick",
+      "result": {
+        "chat": [
+          "Successfully filled 125 block(s)"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "No items were found on player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:hand_drill_desh 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Desh Hand Drill] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "select ntm:hand_drill_desh",
+      "result": {
+        "held": {
+          "count": 1,
+          "item": "ntm:hand_drill_desh"
+        },
+        "ok": true,
+        "selected": 1
+      }
+    },
+    {
+      "command": "command tp @s 47.5 101 5.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 47.500000, 101.000000, 5.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 47 102 8 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_block__core",
+          "loaded": true,
+          "pos": [
+            47,
+            102,
+            8
+          ],
+          "state": "ntm:pile_block__core[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_brick",
+        "changed": true,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command data get block 47 102 8 ntm",
+      "result": {
+        "chat": [
+          "47, 102, 8 has the following block data: '{\"generation\":0,\"rev\":1,\"block\":\"ntm:pile_block__core\",\"facing\":\"north\",\"data\":{\"k\":\"Pile\",\"Core\":{\"shape\":{\"at\":[47,102,8],\"inward\":[0,0,1],\"up\":2,\"down\":2,\"left\":2,\"right\":2,\"depth\":5},\"channels\":[]}}}'"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command fill 46 104 6 48 104 7 minecraft:stone",
+      "result": {
+        "chat": [
+          "Successfully filled 6 block(s)"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command tp @s 46.5 101 5.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 46.500000, 101.000000, 5.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 46 102 8 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_block__fuel_in",
+          "loaded": true,
+          "pos": [
+            46,
+            102,
+            8
+          ],
+          "state": "ntm:pile_block__fuel_in[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_block__dummy[facing=north,honey_level=0]",
+        "changed": true,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command tp @s 48.5 101 5.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 48.500000, 101.000000, 5.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 48 102 8 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_block__fuel_in",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            8
+          ],
+          "state": "ntm:pile_block__fuel_in[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_block__dummy[facing=north,honey_level=0]",
+        "changed": true,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "Removed 1 item(s) from player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:pile_device__loader 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Chicago Pile Fuel Loader] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command tp @s 46.5 101 4.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 46.500000, 101.000000, 4.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "place 46 102 7 --item ntm:pile_device__loader",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            46,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "minecraft:air",
+        "changed": true,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "Removed 1 item(s) from player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:pile_device__loader 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Chicago Pile Fuel Loader] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command tp @s 48.5 101 4.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 48.500000, 101.000000, 4.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "place 48 102 7 --item ntm:pile_device__loader",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "minecraft:air",
+        "changed": true,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "Removed 1 item(s) from player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:pile_rod__ra226be 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Chicago Pile Ra226Be Neutron source] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "select ntm:pile_rod__ra226be",
+      "result": {
+        "held": {
+          "count": 1,
+          "item": "ntm:pile_rod__ra226be"
+        },
+        "ok": true,
+        "selected": 1
+      }
+    },
+    {
+      "command": "command tp @s 48.5 101 4.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 48.500000, 101.000000, 4.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {
+          "ntm:pile_rod__ra226be": -1
+        },
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "No items were found on player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:pile_rod__ra226be 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Chicago Pile Ra226Be Neutron source] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "select ntm:pile_rod__ra226be",
+      "result": {
+        "held": {
+          "count": 1,
+          "item": "ntm:pile_rod__ra226be"
+        },
+        "ok": true,
+        "selected": 1
+      }
+    },
+    {
+      "command": "command tp @s 48.5 101 4.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 48.500000, 101.000000, 4.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {
+          "ntm:pile_rod__ra226be": -1
+        },
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "No items were found on player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:pile_rod__ra226be 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Chicago Pile Ra226Be Neutron source] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "select ntm:pile_rod__ra226be",
+      "result": {
+        "held": {
+          "count": 1,
+          "item": "ntm:pile_rod__ra226be"
+        },
+        "ok": true,
+        "selected": 1
+      }
+    },
+    {
+      "command": "command tp @s 48.5 101 4.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 48.500000, 101.000000, 4.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {
+          "ntm:pile_rod__ra226be": -1
+        },
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "No items were found on player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:pile_rod__ra226be 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Chicago Pile Ra226Be Neutron source] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "select ntm:pile_rod__ra226be",
+      "result": {
+        "held": {
+          "count": 1,
+          "item": "ntm:pile_rod__ra226be"
+        },
+        "ok": true,
+        "selected": 1
+      }
+    },
+    {
+      "command": "command tp @s 48.5 101 4.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 48.500000, 101.000000, 4.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {
+          "ntm:pile_rod__ra226be": -1
+        },
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "No items were found on player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:pile_rod__ra226be 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Chicago Pile Ra226Be Neutron source] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "select ntm:pile_rod__ra226be",
+      "result": {
+        "held": {
+          "count": 1,
+          "item": "ntm:pile_rod__ra226be"
+        },
+        "ok": true,
+        "selected": 1
+      }
+    },
+    {
+      "command": "command tp @s 48.5 101 4.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 48.500000, 101.000000, 4.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {
+          "ntm:pile_rod__ra226be": -1
+        },
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {},
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "No items were found on player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command give @s ntm:pile_rod__zr 1",
+      "result": {
+        "chat": [
+          "Gave 1 [Chicago Pile Zirconium Rod] to CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "select ntm:pile_rod__zr",
+      "result": {
+        "held": {
+          "count": 1,
+          "item": "ntm:pile_rod__zr"
+        },
+        "ok": true,
+        "selected": 1
+      }
+    },
+    {
+      "command": "command tp @s 48.5 101 4.5",
+      "result": {
+        "chat": [
+          "Teleported CrashTest to 48.500000, 101.000000, 4.500000"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "interact 48 102 7 north",
+      "result": {
+        "block": {
+          "block": "ntm:pile_device__loader",
+          "loaded": true,
+          "pos": [
+            48,
+            102,
+            7
+          ],
+          "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+        },
+        "block_before": "ntm:pile_device__loader[facing=north,honey_level=0]",
+        "changed": false,
+        "inventory_change": {
+          "ntm:pile_rod__zr": -1
+        },
+        "ok": true,
+        "screen": "playing"
+      }
+    },
+    {
+      "command": "block 47 102 8",
+      "result": {
+        "block": "ntm:pile_block__core",
+        "loaded": true,
+        "pos": [
+          47,
+          102,
+          8
+        ],
+        "state": "ntm:pile_block__core[facing=north,honey_level=0]"
+      }
+    },
+    {
+      "command": "command data get block 47 102 8 ntm",
+      "result": {
+        "chat": [
+          "47, 102, 8 has the following block data: '{\"generation\":0,\"rev\":8,\"block\":\"ntm:pile_block__core\",\"facing\":\"north\",\"data\":{\"k\":\"Pile\",\"Core\":{\"shape\":{\"at\":[47,102,8],\"inward\":[0,0,1],\"up\":2,\"down\":2,\"left\":2,\"right\":2,\"depth\":5},\"channels\":[{\"entry\":[46,102,8],\"inward\":[0,0,1],\"kind\":\"Fuel\",\"rods\":[null,null,null,null,null],\"heat\":20.0,\"incoming\":5.0,\"air\":0,\"control\":1.0},{\"entry\":[48,102,8],\"inward\":[0,0,1],\"kind\":\"Fuel\",\"rods\":[{\"kind\":0,\"depletion\":0.0},{\"kind\":0,\"depletion\":0.0},{\"kind\":0,\"depletion\":0.0},{\"kind\":0,\"depletion\":0.0},{\"kind\":0,\"depletion\":0.0}],\"heat\":20.0,\"incoming\":5.0,\"air\":0,\"control\":1.0}]}}}'"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "block 46 102 7",
+      "result": {
+        "block": "ntm:pile_device__loader",
+        "loaded": true,
+        "pos": [
+          46,
+          102,
+          7
+        ],
+        "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+      }
+    },
+    {
+      "command": "command data get block 46 102 7 ntm",
+      "result": {
+        "chat": [
+          "46, 102, 7 has the following block data: '{\"generation\":2,\"block\":\"ntm:pile_device__loader\",\"facing\":\"north\",\"data\":{\"k\":\"Pile\",\"Loader\":{\"slots\":[null],\"loading\":false,\"level\":0.0,\"delay\":0,\"was_redstone\":false}}}'"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "block 48 102 7",
+      "result": {
+        "block": "ntm:pile_device__loader",
+        "loaded": true,
+        "pos": [
+          48,
+          102,
+          7
+        ],
+        "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+      }
+    },
+    {
+      "command": "command data get block 48 102 7 ntm",
+      "result": {
+        "chat": [
+          "48, 102, 7 has the following block data: '{\"generation\":2,\"rev\":5,\"block\":\"ntm:pile_device__loader\",\"facing\":\"north\",\"data\":{\"k\":\"Pile\",\"Loader\":{\"slots\":[{\"id\":\"ntm:pile_rod__zr\",\"count\":1}],\"loading\":false,\"level\":0.0,\"delay\":0,\"was_redstone\":false}}}'"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "block 47 102 12",
+      "result": {
+        "block": "ntm:pile_block__dummy",
+        "loaded": true,
+        "pos": [
+          47,
+          102,
+          12
+        ],
+        "state": "ntm:pile_block__dummy[facing=north,honey_level=0]"
+      }
+    },
+    {
+      "command": "block 48 102 7",
+      "result": {
+        "block": "ntm:pile_device__loader",
+        "loaded": true,
+        "pos": [
+          48,
+          102,
+          7
+        ],
+        "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+      }
+    },
+    {
+      "command": "block 47 102 8",
+      "result": {
+        "block": "ntm:pile_block__core",
+        "loaded": true,
+        "pos": [
+          47,
+          102,
+          8
+        ],
+        "state": "ntm:pile_block__core[facing=north,honey_level=0]"
+      }
+    },
+    {
+      "command": "block 46 102 7",
+      "result": {
+        "block": "ntm:pile_device__loader",
+        "loaded": true,
+        "pos": [
+          46,
+          102,
+          7
+        ],
+        "state": "ntm:pile_device__loader[facing=north,honey_level=0]"
+      }
+    },
+    {
+      "command": "block 48 102 8",
+      "result": {
+        "block": "ntm:pile_block__fuel_in",
+        "loaded": true,
+        "pos": [
+          48,
+          102,
+          8
+        ],
+        "state": "ntm:pile_block__fuel_in[facing=north,honey_level=0]"
+      }
+    },
+    {
+      "command": "command clear @s",
+      "result": {
+        "chat": [
+          "No items were found on player CrashTest"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "save",
+      "result": {
+        "ok": true
+      }
+    }
+  ],
+  "checks": {
+    "setup:formed": {
+      "ok": true,
+      "actual": {
+        "at": [
+          47,
+          102,
+          8
+        ],
+        "inward": [
+          0,
+          0,
+          1
+        ],
+        "up": 2,
+        "down": 2,
+        "left": 2,
+        "right": 2,
+        "depth": 5
+      }
+    },
+    "setup:prepared": {
+      "ok": true,
+      "actual": [
+        5,
+        1
+      ]
+    }
+  }
+}

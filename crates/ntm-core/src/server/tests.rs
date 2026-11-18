@@ -59,6 +59,11 @@ struct World {
     no_entities: bool,
     /// The whole stacks transfers copied into machines (`SlotCopy`), as the player held them.
     copied: Vec<String>,
+    /// The host's copy of the sawmills without their blade, as `sawmill_blade` keeps it (the glue's).
+    without_blade: BTreeSet<(String, Pos)>,
+    /// The host's explosions go off (`explode`, recorded in `blasts`); off, they are refused, as before.
+    explosions: bool,
+    blasts: Vec<(String, [f64; 3])>,
     /// The storage's writes fail (I/O).
     kv_fails: bool,
 }
@@ -89,6 +94,9 @@ impl World {
             ledgers: BTreeMap::new(),
             homes: BTreeMap::new(),
             copied: Vec::new(),
+            without_blade: BTreeSet::new(),
+            explosions: false,
+            blasts: Vec::new(),
             no_entities: false,
             kv_fails: false,
         };
@@ -186,6 +194,15 @@ impl ServerHost for SHost {
     fn home_loaded(&mut self,dim:&str,chunk:[i32;2])->bool{self.world.borrow().loaded(dim,[chunk[0]*16,0,chunk[1]*16])}
     /// Both sides checked before either changes: the player's expected stacks, then the machines' (`commit_machines`
     /// checks every one before it writes).
+    fn explode(&mut self,dim:&str,at:[f64;3],_power:f32,_fire:bool,_breaks:bool)->bool{
+        let mut w=self.world.borrow_mut();
+        if w.explosions{w.blasts.push((dim.into(),at));}
+        w.explosions
+    }
+    fn sawmill_blade(&mut self,dim:&str,pos:Pos,without:bool){
+        let mut w=self.world.borrow_mut();
+        if without{w.without_blade.insert((dim.into(),pos));}else{w.without_blade.remove(&(dim.into(),pos));}
+    }
     fn commit_player_transfer(&mut self,t:&PlayerTransfer,cs:&[MachineCommit])->bool{
         let Some(mut hands)=self.world.borrow().hands.clone() else{return false};
         if !t.publishable(){return false;}
@@ -199,7 +216,9 @@ impl ServerHost for SHost {
         let Some(copied)=copied else{return false};
         if !self.commit_machines(cs){return false;}
         for e in &t.edits{
-            let new=e.desired.clone().map(|stack|HeldStack{encoded:format!("{stack:?}"),stack});
+            // A desired stack keeps the expected stack's other components, as the host does.
+            let plain=hands.get(e.slot).is_none_or(|h|h.plain);
+            let new=e.desired.clone().map(|stack|HeldStack{encoded:format!("{stack:?}"),stack,plain});
             match e.slot{PlayerSlot::Inventory(i)=>hands.inventory[i]=new,PlayerSlot::Offhand=>hands.offhand=new,PlayerSlot::Carried=>hands.carried=new}
         }
         let mut w=self.world.borrow_mut();
@@ -296,6 +315,8 @@ impl ServerHost for SHost {
 /// One game: a world and the server.
 struct Game {
     tick: u64,
+    /// The tick alone takes the events (see `step`).
+    events_once: bool,
     world: Rc<RefCell<World>>,
     server: Server,
     sh: SHost,
@@ -332,11 +353,15 @@ impl Game {
         for ((dim, p), json) in saved {
             assert!(server.native_adopt(&dim, p, &json), "{json}");
         }
-        Self { tick: 0, world, server, sh }
+        Self { tick: 0, events_once: false, world, server, sh }
     }
-    /// One tick: the server's, then its block writes.
+    /// One tick: the server's, then its block writes. By default the events are taken before the tick too, as a host
+    /// call between two ticks does (`reconcile`, on a player's use), so a machine placed now has its block entity in
+    /// this tick; with `events_once` only the tick takes them, as a tick without such a call.
     fn step(&mut self) {
-        self.server.native_record_events(&mut self.sh);
+        if !self.events_once {
+            self.server.native_record_events(&mut self.sh);
+        }
         let confirmed=self.server.ready.bridge.last.clone();
         for (k,m) in &mut self.server.ready.world.machines {
             let mut w=self.world.borrow_mut();
@@ -660,6 +685,7 @@ mod ash_tests;
 mod chunk_radiation_tests;
 mod combustion_tests;
 mod solar_stirling_tests;
+mod sawmill_tests;
 mod fluid_tests;
 mod crafter_tests;
 mod review_m2_tests;

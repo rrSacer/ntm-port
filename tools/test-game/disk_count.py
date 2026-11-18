@@ -89,12 +89,22 @@ def records(path):
 def _held(folder, chunk, prefixes):
     if folder == 'entities':
         return sum(_stack(e.get('Item'), prefixes) for e in chunk.get('Entities', []) or [] if e.get('id') == 'minecraft:item')
-    total = 0
-    for be in chunk.get('block_entities', []) or []:
-        items = sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
-        model = _model(be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
-        total += max(model, items)
-    return total
+    return sum(_be_atoms(be, prefixes) for be in chunk.get('block_entities', []) or [])
+
+
+def _be_atoms(be, prefixes):
+    """A block entity's atoms: its slots' and its NTM model's, item by item, each once where both list it (a pile
+    loader's model lists its slots too). A sawmill since step 3c keeps its stacks in the slots and its blade in the
+    model: a whole-count `max` lost one of the two."""
+    slots, model = {}, {}
+    for s in be.get('Items', []) or []:
+        _stack_items(s, prefixes, slots)
+    if isinstance(be.get('ntm'), str):
+        try:
+            _machine_items(json.loads(be['ntm']), prefixes, model)
+        except ValueError:
+            pass
+    return sum(max(slots.get(k, 0), model.get(k, 0)) for k in set(slots) | set(model))
 
 
 def written(before, after, prefixes, dims=('overworld',)):
@@ -122,9 +132,30 @@ def written(before, after, prefixes, dims=('overworld',)):
     return out
 
 
+BLADE, SAWMILL = 'ntm:sawblade', 'ntm:machine_sawmill'
+
+
+def _blade_atom(s, prefixes):
+    """The sawmill's blade counted where it is (Onda 2, the plan's oracle): a sawmill item with it (no
+    `ntm:no_blade` in its `minecraft:custom_data`) holds one; only when the blade is counted."""
+    if not BLADE.startswith(prefixes) or not isinstance(s, dict) or (s.get('id') or s.get('Id')) != SAWMILL:
+        return 0
+    data = (s.get('components') or {}).get('minecraft:custom_data') or {}
+    without = isinstance(data, dict) and str(data.get('ntm:no_blade', '0')).rstrip('bB') in ('1', 'true')
+    return 0 if without else int(s.get('count', s.get('Count', 1)) or 0)
+
+
+def _installed_blade(v, prefixes):
+    """A sawmill's model with its blade (`"k":"Sawmill"`, `has_blade`): one blade."""
+    return int(BLADE.startswith(prefixes) and isinstance(v, dict) and v.get('k') == 'Sawmill' and v.get('has_blade', True) is True)
+
+
 def _stack(s, prefixes):
     if not isinstance(s, dict):
         return 0
+    blade = _blade_atom(s, prefixes)
+    if blade:
+        return blade
     item = s.get('id') or s.get('Id') or ''
     if not isinstance(item, str) or not item.startswith(prefixes):
         return 0
@@ -152,7 +183,7 @@ def _model(text, prefixes):
                     if k != 'Core':
                         walk(x)
                 return
-            total += _stack(v, prefixes)
+            total += _stack(v, prefixes) + _installed_blade(v, prefixes)
             for x in v.values():
                 walk(x)
         elif isinstance(v, list):
@@ -188,13 +219,11 @@ def _count_dim(dim, prefixes, out):
     for path in sorted((dim / 'region').glob('r.*.mca')):
         for chunk in records(path):
             for be in chunk.get('block_entities', []) or []:
-                items = sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
-                # A machine whose model also lists its slots (a pile loader) holds them once.
-                model = _model(be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
-                if model:
-                    out['machines'] += max(model, items)
+                # A machine whose model also lists its slots (a pile loader) holds them once, item by item.
+                if isinstance(be.get('ntm'), str):
+                    out['machines'] += _be_atoms(be, prefixes)
                 else:
-                    out['blocks'] += items
+                    out['blocks'] += sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
             # What the chunk's record owes the world (its ledger): items a reopen puts out.
             owed = {}
             _owed_items(_ledger(chunk), prefixes, owed)
@@ -305,6 +334,10 @@ def _add(out, item, n, prefixes):
 
 def _stack_items(s, prefixes, out):
     if isinstance(s, dict):
+        blade = _blade_atom(s, prefixes)
+        if blade:
+            _add(out, BLADE, blade, prefixes)
+            return
         item = s.get('id') or s.get('Id') or ''
         _add(out, item, int(s.get('count', s.get('Count', 1)) or 0), prefixes)
 
@@ -315,13 +348,18 @@ def _snbt_items(text, prefixes, out):
     except (AssertionError, IndexError):
         return
     if isinstance(s, dict):
+        blade = _blade_atom(s, prefixes)
+        if blade:
+            _add(out, BLADE, blade, prefixes)
+            return
         item = s.get('id', '')
         _add(out, item, int(float(str(s.get('count', '1')).rstrip('bsilBSIL') or 0)), prefixes)
 
 
-def _machine_items(m, prefixes, out):
+def _machine_items(m, prefixes, out, installed=True):
     """The items an NTM machine's model (`ntm_core::machine::Machine`, as JSON) holds: a pile core's rods by kind, and
-    the stacks of its slots."""
+    the stacks of its slots; and a sawmill's installed blade, unless `installed` is false: a removed sawmill's blade is
+    in the item its break dropped, counted there (the review's P3)."""
     def walk(v):
         if isinstance(v, dict):
             if 'Core' in v and isinstance(v['Core'], dict):
@@ -336,6 +374,8 @@ def _machine_items(m, prefixes, out):
                         walk(x)
                 return
             _stack_items(v, prefixes, out)
+            if installed and _installed_blade(v, prefixes):
+                _add(out, BLADE, 1, prefixes)
             for x in v.values():
                 walk(x)
         elif isinstance(v, list):
@@ -359,7 +399,7 @@ def _owed_items(ledger, prefixes, out):
         if e.get('state', 'Pending') == 'Pending':
             _snbt_items(e.get('item', ''), prefixes, out)
     for r in ledger.get('removals', []) or []:
-        _machine_items(r.get('machine', {}).get('data', {}), prefixes, out)
+        _machine_items(r.get('machine', {}).get('data', {}), prefixes, out, installed=False)
     for b in ledger.get('batches', []) or []:
         for effect in b.get('effects', []) or []:
             if 'Items' in effect:

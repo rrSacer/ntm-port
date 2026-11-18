@@ -1,0 +1,120 @@
+{
+  "ok": true,
+  "binary": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/proof-bin-f5/horizon-client",
+  "binary_sha256": "35df97c139dc4603cf56e0b71bcf5f87b1724147d08f838f1fff187dac48932c",
+  "bundle_sha256": "eebe930a4a39dacf367092946374fbeb2f536d9df732bda37bdc6216051bc23f",
+  "points": [
+    {
+      "point": "none",
+      "folder": "/mnt/ssd120/sacer/so/f5/stirling-ydmvf46v/point-none",
+      "ok": true,
+      "act_checks": {
+        "setup:the_gear_breaks": {
+          "ok": true,
+          "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":229,\"has_cog\":false,\"overspeed\":0}}}'"
+        },
+        "setup:no_block_broken": {
+          "ok": true,
+          "actual": []
+        }
+      },
+      "died_in_act": false,
+      "act": {
+        "blasts": [
+          {
+            "id": "12741859329030096478.0",
+            "at": [
+              47.5,
+              102.0,
+              9.5
+            ],
+            "power": 5.0,
+            "fire": false,
+            "breaks": false
+          }
+        ],
+        "ok": true
+      },
+      "verify": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 10396
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "again": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 10404
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "ids": [
+        "12741859329030096478.0"
+      ],
+      "each_id_once": true
+    }
+  ],
+  "prepare": {
+    "setup:cold_engine_with_its_gear": {
+      "ok": true,
+      "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":0,\"has_cog\":true,\"overspeed\":0}}}'"
+    }
+  }
+}

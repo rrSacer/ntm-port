@@ -1,0 +1,116 @@
+{
+  "scenario": "crash-more-prepare",
+  "ok": true,
+  "steps": [
+    {
+      "command": "close",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "command": "command gamemode creative @s",
+      "result": {
+        "chat": [],
+        "ok": true
+      }
+    },
+    {
+      "command": "command forceload add 30 0 64 24",
+      "result": {
+        "chat": [
+          "Marked 8 chunks in minecraft:overworld from [1, 0] to [4, 1] to be force loaded"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command fill 40 99 3 56 108 18 minecraft:air",
+      "result": {
+        "chat": [
+          "No blocks were filled"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command fill 40 99 3 56 99 18 minecraft:stone",
+      "result": {
+        "chat": [
+          "Successfully filled 272 block(s)"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command setblock 48 101 8 minecraft:redstone_block",
+      "result": {
+        "chat": [
+          "Changed the block at 48, 101, 8"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command setblock 48 102 8 minecraft:hopper[facing=west]",
+      "result": {
+        "chat": [
+          "Changed the block at 48, 102, 8"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace block 48 102 8 container.0 with ntm:pile_rod__zr 1",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) at 48, 102, 8 with [Chicago Pile Zirconium Rod]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command setblock 47 102 8 minecraft:dropper[facing=east]",
+      "result": {
+        "chat": [
+          "Changed the block at 47, 102, 8"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace block 47 102 8 container.0 with ntm:pile_rod__ra226be 4",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) at 47, 102, 8 with [Chicago Pile Ra226Be Neutron source]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command setblock 47 102 12 minecraft:dropper[facing=east]",
+      "result": {
+        "chat": [
+          "Changed the block at 47, 102, 12"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "command item replace block 47 102 12 container.0 with ntm:pile_rod__ra226be 1",
+      "result": {
+        "chat": [
+          "Replaced 1 slot(s) at 47, 102, 12 with [Chicago Pile Ra226Be Neutron source]"
+        ],
+        "ok": true
+      }
+    },
+    {
+      "command": "save",
+      "result": {
+        "ok": true
+      }
+    }
+  ],
+  "checks": {}
+}

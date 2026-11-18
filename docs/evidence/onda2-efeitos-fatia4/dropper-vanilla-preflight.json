@@ -1,0 +1,48 @@
+{
+  "scenario": "coupled-break",
+  "point": "entities_written",
+  "folder": "/mnt/ssd120/sacer/so/e4/more-coupled-break-1bh2cvbz/point-entities_written-vanilla",
+  "ok": false,
+  "vanilla_control": true,
+  "base_items": {
+    "ntm:pile_rod__ra226be": 5,
+    "ntm:pile_rod__zr": 1
+  },
+  "base_stock_by_chunk": [
+    [
+      2,
+      0,
+      5
+    ],
+    [
+      3,
+      0,
+      1
+    ]
+  ],
+  "act": {
+    "rods": [
+      0,
+      5
+    ],
+    "entities": 0
+  },
+  "while_away": null,
+  "act_checks": {
+    "setup:transfer_completed_before_the_cut": {
+      "ok": true
+    },
+    "setup:member_chunk_out_core_chunk_in": {
+      "ok": true
+    },
+    "setup:reference_stock_in_source_A": {
+      "ok": true
+    },
+    "setup:reference_source_paid": {
+      "ok": false,
+      "actual": 5
+    }
+  },
+  "died_in_act": false,
+  "error": "AssertionError('action failed before its save; see act evidence')"
+}

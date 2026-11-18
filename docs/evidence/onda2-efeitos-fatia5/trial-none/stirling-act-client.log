@@ -1,0 +1,55 @@
+Horizon 0.1.0
+Horizon: content from 1 mod(s) in /mnt/ssd120/sacer/so/f5/stirling-ydmvf46v/point-none/.horizon-cache/mod-content/49c921c134328e07
+Horizon: block sprites: 1896 layers at 128 px (largest 336 px, budget 256 MiB)
+load core tables: 1.63s
+load pack tables: 1.67s
+Horizon: 80 content mod multiblocks
+load items: 1.89s
+Horizon: 123 block models (139809 triangles)
+Horizon: resources loaded in 2.0s; 44569 block states, 5083 items, 67 biomes; 2 worker threads
+Horizon: no sound: audio off: HORIZON_NO_AUDIO is set
+Horizon: control socket /mnt/ssd120/sacer/so/f5/stirling-ydmvf46v/point-none/control.sock
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+Horizon renderer: Vulkan has no conformant adapter (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested); asking again for the ones wgpu hides as non-conformant
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+Horizon renderer: trying OpenGL (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested)
+MESA-EGL: warning: DRI3 error: Could not get DRI3 device
+MESA-EGL: warning: Ensure your X server supports DRI3 to get accelerated rendering
+Horizon renderer: OpenGL has no conformant adapter (OpenGL: only a software adapter (llvmpipe (LLVM 23.1.4, 256 bits))); asking again for the ones wgpu hides as non-conformant
+MESA-EGL: warning: DRI3 error: Could not get DRI3 device
+MESA-EGL: warning: Ensure your X server supports DRI3 to get accelerated rendering
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+Horizon renderer: Vulkan has no conformant adapter (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested); asking again for the ones wgpu hides as non-conformant
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+Horizon renderer: trying OpenGL (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested)
+MESA-EGL: warning: DRI3 error: Could not get DRI3 device
+MESA-EGL: warning: Ensure your X server supports DRI3 to get accelerated rendering
+Horizon renderer: llvmpipe (LLVM 23.1.4, 256 bits) (Gl, Cpu)
+Horizon renderer: requesting the device (driver 4.6 (Core Profile) Mesa 26.2.7-arch1.1) with features [TEXTURE_FORMAT_16BIT_NORM | TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES | TIMESTAMP_QUERY_INSIDE_ENCODERS | VERTEX_WRITABLE_STORAGE | CLEAR_TEXTURE | SHADER_EARLY_DEPTH_TEST | TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE] and the adapter's limits (buffers up to 2147483647 bytes, storage bindings up to 134217728 bytes, 2048 texture layers)
+Horizon renderer: device ready; configuring the surface (1280x720 Bgra8Unorm, Fifo)
+Horizon renderer: the chosen graphics API gave no GPU (No Vulkan or OpenGL graphics driver found: Horizon needs the Vulkan loader (libvulkan.so.1) and a Vulkan driver for your GPU (Mesa's, or NVIDIA's), or OpenGL through EGL (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested; OpenGL: only a software adapter (llvmpipe (LLVM 23.1.4, 256 bits)))); rendering on the CPU, which is slow
+Horizon renderer: HDR output not offered by this display
+Horizon renderer: creating the pipelines
+Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU culling unavailable, GPU timer on)
+Horizon: worldgen data loaded in 1.003366381s
+Horizon: live features ready in 1.151060925s
+ntm native: 228 machine blocks
+Horizon renderer: acquiring the first frame
+Horizon renderer: submitting the first frame
+[01:07:22] [Server thread/INFO]: CrashTest[/127.0.0.1:0] logged in with entity id 1 at (47.5, 101.0, 11.5)
+[01:07:22] [Server thread/INFO]: System chat: CrashTest joined the game
+Horizon renderer: presenting the first frame
+Horizon: first frame after 3957 ms
+[01:07:25] [Server thread/INFO]: System chat: [CrashTest: Teleported CrashTest to 47.500000, 103.000000, 9.500000]
+[01:07:25] [Server thread/INFO]: System chat: [CrashTest: Set own game mode to Survival Mode]
+[01:07:25] [Server thread/INFO]: System chat: [CrashTest: Applied effect Resistance to CrashTest]
+[01:07:26] [Server thread/INFO]: System chat: [CrashTest: Applied effect Instant Health to CrashTest]
+[01:07:27] [Server thread/INFO]: System chat: [CrashTest: Changed the block at 48, 100, 9]
+[01:07:28] [Server thread/INFO]: System chat: [CrashTest: Replaced 1 slot(s) at 48, 100, 9 with [Solid Fuel (Rocket Propellant)]]
+ntm: effect 12741859329030096478.0 explosion [47.5, 102.0, 9.5] power=5 fire=false breaks=false owners=1 origins=1
+ntm trace explosion plan {"center":[47.5,102.0,9.5],"dim":"minecraft:overworld","tick":739,"to_blow":2,"wood_targets":[]}
+[01:07:47] [Server thread/INFO]: System chat: [CrashTest: Set own game mode to Creative Mode]

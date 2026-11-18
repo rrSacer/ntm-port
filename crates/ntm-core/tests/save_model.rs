@@ -955,3 +955,6 @@ fn a_mod_that_takes_up_an_earlier_obligation_its_record_took_is_caught() {
     // old one; opened again, a mod that does not read the marker spills the stock a second time.
     caught(initial_legacy(Policy::NoMarker, true), 7, "an obligation taken up twice must be caught");
 }
+
+#[path = "common/world_effects_order_model.rs"]
+mod world_effects_order_model;
