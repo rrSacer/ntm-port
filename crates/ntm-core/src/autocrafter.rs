@@ -697,6 +697,7 @@ mod tests {
         assert!(!a.step(), "the same item with other custom data does not pile");
         let slots: Slots = vec![None; SLOTS];
         assert!(!allows(&slots, RESULT, &Stack::new("minecraft:stick", 1), true, true), "the result is the template's");
+        assert!(!allows(&slots, RESULT, &Stack::new("minecraft:stick", 1), false, true), "nor does a hand take its copy");
         let mut slots: Slots = vec![None; SLOTS];
         slots[2] = Some(with_mode(Stack::new("minecraft:water_bucket", 1), Some(EXACT)));
         assert!(can_insert(&slots, 12, &Stack::new("minecraft:water_bucket", 1)));
