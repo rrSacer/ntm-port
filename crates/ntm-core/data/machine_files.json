@@ -3555,6 +3555,14 @@
 ],
 "synced": []
 },
+"ntm:machine_drain": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:machine_electric_furnace_off": {
 "inventory": [
 8,

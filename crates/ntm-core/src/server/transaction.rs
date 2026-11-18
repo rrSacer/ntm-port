@@ -520,6 +520,20 @@ impl Server {
         true
     }
 
+    /// The radiation a drain released this tick (`FT_VentRadiation.onFluidRelease`) goes to its chunk.
+    fn drain_tick(&mut self, keys: &[Key], removed_keys: &BTreeSet<Key>) {
+        for k in keys {
+            if removed_keys.contains(k) || self.ready.broken.contains_key(k) {
+                continue;
+            }
+            let Some(crate::machine::Data::Drain(d)) = self.ready.world.machines.get_mut(k).map(|m| &mut m.data) else { continue };
+            let rad = std::mem::take(&mut d.rad);
+            if rad > 0.0 {
+                self.ready.chunk_rad_pending.push((k.0.clone(), k.1, rad));
+            }
+        }
+    }
+
     fn annihilator_tick(&mut self, keys: &[Key], removed_keys: &BTreeSet<Key>) {
         let recipes = crate::annihilator::recipes();
         for k in keys {
@@ -1132,6 +1146,7 @@ impl Server {
                     staged.valid = false;
                 }
                 self.annihilator_tick(&keys, &removed_keys);
+                self.drain_tick(&keys, &removed_keys);
                 self.excavator_tick(&mut staged);
                 self.drill_tick(&mut staged);
                 self.bombs_triggers(&mut staged);

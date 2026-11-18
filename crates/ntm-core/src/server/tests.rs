@@ -691,3 +691,4 @@ mod cable_switch_tests;
 mod wire_tests;
 mod storage_tests;
 mod annihilator_tests;
+mod drain_tests;

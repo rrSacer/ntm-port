@@ -466,9 +466,15 @@ impl Server {
         let Some(fluid) = fluid.filter(|f| crate::fluid::get(f).is_some_and(|t| t.id != 0)) else { return false };
         let Some(r) = self.ready() else { return false };
         let Some(m) = r.world.machines.get_mut(&(dim.to_string(), pos)) else { return false };
-        let crate::machine::Data::Duct(d) = &mut m.data else { return false };
-        if d.fluid != fluid {
-            d.fluid = fluid.to_string();
+        match &mut m.data {
+            crate::machine::Data::Duct(d) => {
+                if d.fluid != fluid {
+                    d.fluid = fluid.to_string();
+                }
+            }
+            // `MachineDrain.onBlockActivated`: not sneaking, with an identifier in the hand, `setTankType`.
+            crate::machine::Data::Drain(d) => d.set_type(fluid),
+            _ => return false,
         }
         true
     }

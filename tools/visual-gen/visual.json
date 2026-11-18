@@ -38427,195 +38427,195 @@
       }
     },
     "ntm:machine_silex": {
-     "auto": false,
-     "source": "MachineSILEX dimensions {2,0,1,1,1,1}, offset 1, with the two makeExtra combo ports (inventory and fluid) at (±1,1,0); ContainerSILEX and GUISILEX 176x222 (processing/gui_silex.png): input (80,12), identifier (8,24), containers (26,24) and (44,24), output (116,90) and the queue (134|152, 72|90|108); the fill bar (26,72) 16x52, the progress (45,82) 69x43, the tank (8,42) 52x7; the laser's name and its wave are not drawn (the mode is in the fill's tip); button 0 at (10,92) is the void button (GUISILEX.mouseClicked, handleButtonPacket). The block's model stays the casing's (the renderer model is not ported)",
-     "machine": {
-      "slots": [
-       {
-        "x": 80,
-        "y": 12
-       },
-       {
-        "x": 8,
-        "y": 24
-       },
-       {
-        "x": 26,
-        "y": 24
-       },
-       {
-        "x": 44,
-        "y": 24,
-        "output": true
-       },
-       {
-        "x": 116,
-        "y": 90,
-        "output": true
-       },
-       {
-        "x": 134,
-        "y": 72,
-        "output": true
-       },
-       {
-        "x": 152,
-        "y": 72,
-        "output": true
-       },
-       {
-        "x": 134,
-        "y": 90,
-        "output": true
-       },
-       {
-        "x": 152,
-        "y": 90,
-        "output": true
-       },
-       {
-        "x": 134,
-        "y": 108,
-        "output": true
-       },
-       {
-        "x": 152,
-        "y": 108,
-        "output": true
-       }
-      ],
-      "inventory": [
-       8,
-       140
-      ],
-      "data": 8,
-      "multiblock": {
-       "min": [
-        -1,
-        0,
-        -1
-       ],
-       "max": [
-        1,
-        2,
-        1
-       ],
-       "offset": 1,
-       "dummy": "ntm:dummy_machine",
-       "inventory_ports": [
-        [
-         1,
-         1,
-         0
+      "auto": false,
+      "source": "MachineSILEX dimensions {2,0,1,1,1,1}, offset 1, with the two makeExtra combo ports (inventory and fluid) at (±1,1,0); ContainerSILEX and GUISILEX 176x222 (processing/gui_silex.png): input (80,12), identifier (8,24), containers (26,24) and (44,24), output (116,90) and the queue (134|152, 72|90|108); the fill bar (26,72) 16x52, the progress (45,82) 69x43, the tank (8,42) 52x7; the laser's name and its wave are not drawn (the mode is in the fill's tip); button 0 at (10,92) is the void button (GUISILEX.mouseClicked, handleButtonPacket). The block's model stays the casing's (the renderer model is not ported)",
+      "machine": {
+        "slots": [
+          {
+            "x": 80,
+            "y": 12
+          },
+          {
+            "x": 8,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 24
+          },
+          {
+            "x": 44,
+            "y": 24,
+            "output": true
+          },
+          {
+            "x": 116,
+            "y": 90,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 72,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 72,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 90,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 90,
+            "output": true
+          },
+          {
+            "x": 134,
+            "y": 108,
+            "output": true
+          },
+          {
+            "x": 152,
+            "y": 108,
+            "output": true
+          }
         ],
-        [
-         -1,
-         1,
-         0
-        ]
-       ]
-      }
-     },
-     "screen": {
-      "texture": "ntm:textures/gui/processing/gui_silex.png",
-      "texture_from": "textures/gui/processing/gui_silex.png",
-      "size": [
-       176,
-       222
-      ],
-      "title": [
-       34,
-       8,
-       "center"
-      ],
-      "inventory_label": [
-       8,
-       128
-      ],
-      "bars": [
-       {
-        "value": 0,
-        "max": 1,
-        "rect": [
-         26,
-         72,
-         16,
-         52
+        "inventory": [
+          8,
+          140
         ],
-        "uv": [
-         176,
-         57
-        ],
-        "dir": "up"
-       },
-       {
-        "value": 2,
-        "max": 3,
-        "rect": [
-         45,
-         82,
-         69,
-         43
-        ],
-        "uv": [
-         176,
-         0
-        ],
-        "dir": "right"
-       },
-       {
-        "value": 5,
-        "max": 6,
-        "rect": [
-         8,
-         42,
-         52,
-         7
-        ],
-        "color": 7,
-        "dir": "right"
-       }
-      ],
-      "tooltips": [
-       {
-        "rect": [
-         26,
-         72,
-         16,
-         52
-        ],
-        "lines": [
-         "{0} / {1} mB",
-         "Laser: {4}"
-        ]
-       },
-       {
-        "rect": [
-         8,
-         42,
-         52,
-         7
-        ],
-        "lines": [
-         "{5} / {6} mB"
-        ]
-       }
-      ],
-      "buttons": [
-        {
-          "id": 0,
-          "rect": [
-            10,
-            92,
-            12,
-            12
+        "data": 8,
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
           ],
-          "lines": [
-            "Void contents"
+          "max": [
+            1,
+            2,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine",
+          "inventory_ports": [
+            [
+              1,
+              1,
+              0
+            ],
+            [
+              -1,
+              1,
+              0
+            ]
           ]
         }
-      ]
-     }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_silex.png",
+        "texture_from": "textures/gui/processing/gui_silex.png",
+        "size": [
+          176,
+          222
+        ],
+        "title": [
+          34,
+          8,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          128
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              26,
+              72,
+              16,
+              52
+            ],
+            "uv": [
+              176,
+              57
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              45,
+              82,
+              69,
+              43
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 5,
+            "max": 6,
+            "rect": [
+              8,
+              42,
+              52,
+              7
+            ],
+            "color": 7,
+            "dir": "right"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              26,
+              72,
+              16,
+              52
+            ],
+            "lines": [
+              "{0} / {1} mB",
+              "Laser: {4}"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              42,
+              52,
+              7
+            ],
+            "lines": [
+              "{5} / {6} mB"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              10,
+              92,
+              12,
+              12
+            ],
+            "lines": [
+              "Void contents"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_rotary_furnace": {
       "auto": false,
@@ -38830,21 +38830,21 @@
       }
     },
     "ntm:machine_industrial_generator": {
-     "source": "MachineIGenerator: one cell (getDimensions all 0, the old {2,0,3,2,1,1} commented out), no screen (its openGui commented out); RenderIGenerator draws igen.obj's Body and Rotor at a sixth of their size (glScaled 1/6), 0.5 back along z in the model's units, turned 180 for meta 2 as the extractor reads it; the Rotor stands still (updateEntity is empty)",
-     "model": {
-      "obj": "ntm:models/obj/igen.obj",
-      "obj_from": "models/machines/igen.obj",
-      "texture": "ntm:textures/models/machines/igen.png",
-      "texture_from": "textures/models/machines/igen.png",
-      "rotation": 180,
-      "scale": 0.16666667,
-      "translate": [
-       0,
-       0,
-       -0.5
-      ],
-      "radius": 1.5
-     }
+      "source": "MachineIGenerator: one cell (getDimensions all 0, the old {2,0,3,2,1,1} commented out), no screen (its openGui commented out); RenderIGenerator draws igen.obj's Body and Rotor at a sixth of their size (glScaled 1/6), 0.5 back along z in the model's units, turned 180 for meta 2 as the extractor reads it; the Rotor stands still (updateEntity is empty)",
+      "model": {
+        "obj": "ntm:models/obj/igen.obj",
+        "obj_from": "models/machines/igen.obj",
+        "texture": "ntm:textures/models/machines/igen.png",
+        "texture_from": "textures/models/machines/igen.png",
+        "rotation": 180,
+        "scale": 0.16666667,
+        "translate": [
+          0,
+          0,
+          -0.5
+        ],
+        "radius": 1.5
+      }
     },
     "ntm:machine_cyclotron": {
       "auto": false,
@@ -39762,8 +39762,36 @@
       }
     },
     "ntm:machine_drain": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineDrain {0,0,2,0,0,0} offset 0, TileEntityMachineDrain (2 000 mB, typed by a fluid identifier), RenderDrain (case 2: 90); the splash and the gas column of the client are not drawn",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            0,
+            0,
+            0
+          ],
+          "max": [
+            0,
+            0,
+            2
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/drain.obj",
+        "obj_from": "models/machines/drain.obj",
+        "texture": "ntm:textures/models/machines/drain.png",
+        "texture_from": "textures/models/machines/drain.png",
+        "rotation": 90,
+        "radius": 3.5
+      }
     },
     "ntm:fan": {
       "source": "Inert fan: HBM's RenderFan turns about x and z by metadata, which the extractor does not read; no model until it does (gap)",
@@ -40926,25 +40954,54 @@
       }
     },
     "ntm:machine_lpw2": {
-     "source": "MachineLPW2 dimensions {6,0,3,3,9,10}, offset 3: x -9..10, y 0..6, z -3..3, as a main box of 16 across (the engine's most) and an extra box for x 7..10 (no proxies: createNewTileEntity gives nothing below meta 12), no screen (no onBlockActivated); RenderLPW2 draws lpw2.obj turned as the extractor reads it (90 for meta 2), still: its sway, bell, piston, rotor, turbine, cover, suspension and server motions are not drawn, nor its Screen (drawn with lpw2_term_error.png, a second texture, scrolling)",
-     "machine": {
-      "slots": [],
-      "inventory": [
-       8,
-       84
-      ],
-      "data": 0,
-      "multiblock": {"min": [-9, 0, -3], "max": [6, 6, 3], "offset": 3, "dummy": "ntm:dummy_machine", "extra": [{"min": [7, 0, -3], "max": [10, 6, 3]}]}
-     },
-     "model": {
-      "obj": "ntm:models/obj/lpw2.obj",
-      "obj_from": "models/machines/lpw2.obj",
-      "texture": "ntm:textures/models/machines/lpw2.png",
-      "texture_from": "textures/models/machines/lpw2.png",
-      "rotation": 90,
-      "hide": ["Screen"],
-       "radius": 11.5
-     }
+      "source": "MachineLPW2 dimensions {6,0,3,3,9,10}, offset 3: x -9..10, y 0..6, z -3..3, as a main box of 16 across (the engine's most) and an extra box for x 7..10 (no proxies: createNewTileEntity gives nothing below meta 12), no screen (no onBlockActivated); RenderLPW2 draws lpw2.obj turned as the extractor reads it (90 for meta 2), still: its sway, bell, piston, rotor, turbine, cover, suspension and server motions are not drawn, nor its Screen (drawn with lpw2_term_error.png, a second texture, scrolling)",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 0,
+        "multiblock": {
+          "min": [
+            -9,
+            0,
+            -3
+          ],
+          "max": [
+            6,
+            6,
+            3
+          ],
+          "offset": 3,
+          "dummy": "ntm:dummy_machine",
+          "extra": [
+            {
+              "min": [
+                7,
+                0,
+                -3
+              ],
+              "max": [
+                10,
+                6,
+                3
+              ]
+            }
+          ]
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/lpw2.obj",
+        "obj_from": "models/machines/lpw2.obj",
+        "texture": "ntm:textures/models/machines/lpw2.png",
+        "texture_from": "textures/models/machines/lpw2.png",
+        "rotation": 90,
+        "hide": [
+          "Screen"
+        ],
+        "radius": 11.5
+      }
     },
     "ntm:machine_ammo_press": {
       "auto": false,

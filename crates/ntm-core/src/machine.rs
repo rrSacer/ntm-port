@@ -118,6 +118,8 @@ pub enum Kind {
     Compressor,
     /// The battery socket and the REDD (`crate::storage`).
     Storage,
+    /// The drain (`crate::drain`).
+    Drain,
     /// The power switch and the redstone power switch (`crate::cable_switch`).
     CableSwitch,
     /// The wire endpoints: connectors and pylons (`crate::wire`).
@@ -238,6 +240,7 @@ pub enum Data {
     Deuterium(crate::deuterium::DeuteriumExtractor),
     Compressor(Box<crate::compressor::Compressor>),
     Storage(Box<crate::storage::Storage>),
+    Drain(crate::drain::Drain),
     CableSwitch(crate::cable_switch::CableSwitch),
     Wire(crate::wire::Wire),
     Inert { name: String },
@@ -364,6 +367,7 @@ impl Machine {
             Kind::Compressor => Data::Compressor(Box::new(crate::compressor::Compressor::new(
                 crate::compressor::Shape::of(block_id).unwrap_or_default(),
             ))),
+            Kind::Drain => Data::Drain(Default::default()),
             Kind::Storage => Data::Storage(Box::new(crate::storage::Storage::new(
                 crate::storage::Body::of(block_id).unwrap_or_default(),
             ))),
@@ -456,6 +460,7 @@ impl Machine {
             Data::Deuterium(_) => Kind::Deuterium,
             Data::Compressor(_) => Kind::Compressor,
             Data::Storage(_) => Kind::Storage,
+            Data::Drain(_) => Kind::Drain,
             Data::CableSwitch(_) => Kind::CableSwitch,
             Data::Wire(_) => Kind::Wire,
             Data::Inert { .. } => Kind::Inert,
@@ -518,6 +523,7 @@ impl Machine {
             Data::Deuterium(m) => m,
             Data::Compressor(m) => &**m,
             Data::Storage(m) => &**m,
+            Data::Drain(m) => m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
             Data::Inert { name } => name,
@@ -580,6 +586,7 @@ impl Machine {
             Data::Deuterium(m) => m,
             Data::Compressor(m) => &mut **m,
             Data::Storage(m) => &mut **m,
+            Data::Drain(m) => m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
             Data::Inert { name } => name,

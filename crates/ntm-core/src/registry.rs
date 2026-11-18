@@ -406,7 +406,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_drain",
-        kind: Kind::Inert,
+        kind: Kind::Drain,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1786,6 +1786,8 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         Kind::Intake => crate::intake::Intake::port_cells([0, 0, 0], facing).into_iter().next().map(|(_, d)| vec![d]).unwrap_or_default(),
         // The core takes nothing: the compressors' fluid ports are cells of their volume.
         Kind::Compressor => vec![Vec::new()],
+        // `getPorts`: the core's front and its two sides.
+        Kind::Drain => vec![crate::drain::Drain::faces(facing)],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
         Kind::Heater => vec![
