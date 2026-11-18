@@ -45,8 +45,8 @@ Scripts e evidências: `/mnt/ssd120/sacer/so/c` (`run_drain_proof.py`, `mutate_d
 - **Mutantes (`mutate_drain.py`):** **20/20 mortos** (divisão por 3, sem o mínimo de 1, sem a regra da antimatéria, radiação plana, qualquer tipo, sem tipo, tipagem inerte, 2 faces, lado trocado, tanque de
   1 000, `fluid_take` que drena, registro inerte, sem o ramo do ralo no identificador, radiação não enviada, portas vazias, radiação acumulada, prioridade normal, tipar agachado, `none` não tratado, duto que aceita `none`). `D02` e `D06` sobreviveram/travaram e ganharam teste
   (laço limitado e a demanda do "sem tipo").
-- **Cliente nativo:** `horizon-client` release SHA-256 `aaa9796bdf2b3c1e63b80d8af6cb798dc9774c5b91f0ea636a241b03bb925fc4`.
-- **Prova em jogo (`run_drain_proof.py`):** ralo de 3 células posto pelo motor, dois barris de água (um na lateral, uma porta; um em cima, que não é porta). **9/9 checks `ok: true`**: o ralo nasce sem tipo e o volume tem as três
+- **Cliente nativo:** `horizon-client` release SHA-256 `64bb736823e347334835243c2604594fcf84420d4bf90663d6116aef6c467082` (reconstruído depois da correção da revisão, com o micro-ondas ainda por commitar na árvore de trabalho; o ralo é o mesmo código`.
+- **Prova em jogo (`run_drain_proof.py`):** ralo de 3 células posto pelo motor, dois barris de água (um na lateral, uma porta; um em cima, que não é porta). **10/10 checks `ok: true`**: o ralo nasce sem tipo e o volume tem as três
   células; um ralo sem tipo não pega nada; **o clique com o identificador agachado não tipa**, o simples (numa célula do fundo do volume) tipa; o barril lateral esvazia completamente e o ralo fica com ~0 mB; o
   barril de cima não perde nada; **o clique agachado num duto o tipa** (não regride) e o do ralo não.
 - **Corte de gravação estrito (`HORIZON_NO_EAGER_SAVE=1`), 7/7 pontos `ok: true`** (`none`, `kill`, `kv_committed`, `save_begin`, `chunks_written`, `entities_written`, `world_saved`), `kv_items=0`, `.mca`
