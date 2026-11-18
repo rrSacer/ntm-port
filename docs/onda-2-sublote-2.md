@@ -749,7 +749,8 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - O `initPatternSmart` escolhe o modo ao pôr o item.
   - O clique direito troca o modo (`nextMode`).
   - A dica do slot mostra "Right click to change" e o modo.
-- Funis (`isItemValidForSlot`, `canExtractItem`): põem um item no ingrediente cujo molde ele passa, no mais vazio dos que ele passa, até 4. Tiram a saída e o ingrediente que o molde não passa mais. A mão, pelo `Slot` do 1.7.10, alcança todos os slots sem checagem, menos o molde.
+- Funis (`isItemValidForSlot`, `canExtractItem`): põem um item no ingrediente cujo molde ele passa, no mais vazio dos que ele passa, até 4. Tiram a saída e o ingrediente que o molde não passa mais.
+- A mão: os ingredientes são `SlotNonRetarded` (`ContainerAutocrafter:30`), que perguntam ao `isItemValidForSlot`, como os funis. A saída e a bateria são `Slot`s comuns, que aceitam qualquer coisa. O `breakBlock` (`MachineAutocrafter:75`) solta os slots a partir do 10: o molde e o resultado não caem.
 - Energia por todas as faces (`TilePortShapes.around`); buffer de 10 000.
 
 **O motor** (branch `ntm-autocrafter-engine`, a partir do `2187c3192b`; o port fica preso nela, em `compatibility.json` e `horizon-mixin.toml`):
@@ -758,7 +759,16 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - O clique deixa uma cópia de um item do cursor, e o cursor fica inteiro; o cliente prevê o mesmo.
   - Nenhum outro gesto nem a automação movem item.
   - O clique direito num molde preenchido aperta o botão de menu do slot.
-- Testes do motor: 3 em `horizon-client-render`, 3 em `horizon-client-lib`, com os recursos do jogo carregados. Clippy dos dois crates limpo.
+- `1aece8f61f`: as cópias nunca caem nem levam o que o item guarda. O `breakBlock` e o `put_back_mod_block_entity` pulam os slots de molde (`spills`); a cópia (`template_copy`) tem 1 item, sem os itens de uma caixa de shulker, de um saco (`bundle`) ou de uma besta carregada.
+- `3234f57110`: o clique direito também aperta o botão num menu do próprio mod (`lan_machine_click`, por `Menu::pattern_button`). O shift-click dos mods não é perguntado num slot de molde.
+- `cbb1f8784c`: testes (arrasto sobre o molde, o bolo com os três baldes) e os limites no `docs/native-mods.md`. O `native_crafting_matches` é uma consulta pura: não chama `native_prepare_item_craft` nem `native_crafter_craft`, e não escala mapas. Um item real num slot de molde é trocado pela cópia, como o `putStack` do Java.
+- `3b0b2a76f9`: só formatação (`cargo fmt`) do que os commits acima deixaram.
+- `51e7c5324c`: testes do botão de um molde num menu do próprio mod (`Menu::pattern_button`) e do shift-click, que pula um slot de molde pela mesma regra da quebra (`spills`).
+- Testes do motor (registros em `content-gen-evidence/autocrafter/logs/engine-*.log`): 10 testes passando, rodados no mesmo código do `51e7c5324c` (`logs/engine-head.txt`).
+  - `horizon-client-render`, 4: a cópia do cursor e o botão, nenhuma cópia cai, as regras e limites de sempre.
+  - `horizon-client-lib`, 3: `find_all`, a previsão do cliente com o `pattern_button`, e o molde no servidor da LAN com o arrasto (`QUICK_CRAFT`) que o pula.
+  - `horizon-client`, 3: um funil nunca alcança um molde, o shift-click dos mods não é perguntado num molde, e o bolo devolve os três baldes, com o `recipe_id` de um mod e as grades vazias ou de outro tamanho (o teste é `#[ignore]` por precisar dos recursos; rodou com `--include-ignored`).
+  - Clippy dos três crates (`--all-targets`) sem avisos (`logs/engine-clippy.log`); `cargo fmt --check` limpo.
 
 **Portado** (`crates/ntm-core/src/autocrafter.rs`):
 - **O molde e as receitas:**
@@ -767,7 +777,8 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - A primeira olhada da sessão guarda os modos e a receita salvos.
   - O host do passo especulativo repassa a consulta (`Deferred::crafting_matches`).
 - **O modo vai nos dados da própria cópia** (`ntm_autocrafter_mode` no custom data). Assim a regra dos slots, que só vê os slots, filtra os funis por ele, e a dica da cópia o mostra.
-  - Os modos `exact` e `wildcard` leem o metadado do Java no id do port (`base__variante`).
+  - Os modos `exact` e `wildcard` leem o metadado do Java no id do port: `base__variante` nos itens do NTM, e nos vanilla a família do item de 1.7.10 que o 26.3 dividiu em ids (tábuas, toras, lã, corantes, vidro e argila coloridos, tapetes, mudas, folhas, lajes de madeira, areia, tijolos de pedra, arenito, quartzo, carvão, maçã dourada). Esses itens têm `getHasSubtypes`, então o `initPatternSmart` lhes dá `exact`.
+  - `exact` é o `isItemEqual`: o item, o metadado (o id do port) e o dano.
   - `bedrock` lê o grau no id (`bedrock_ore__<grau>_<tipo>`).
 - **Fabricação:**
   - um por tick, com 100 HE, na saída, se couber no mesmo item (`max_stack` do motor);
@@ -775,7 +786,8 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - pede de novo o que os ingredientes casam antes da próxima fabricação.
 - **Botões:** `MODE_BUTTON + i` (100–108) gira o modo do slot `i`; `NEXT_RECIPE` (109) mostra a próxima receita.
 - **Tela** `gui_autocrafter.png` 176 × 240: a barra de energia e a dica do resultado com o índice e o total.
-- Os funis seguem as regras do Java. A mão alcança todos os slots menos o molde. O shift-click do inventário só leva a bateria criativa ao slot 20.
+- Os funis e a mão seguem as regras do Java nos ingredientes (10–18): molde acima, modo compatível, até 4, nunca um recipiente empilhado. A saída e a bateria aceitam qualquer coisa pela mão. O shift-click do inventário só leva a bateria criativa ao slot 20.
+- Uma cópia recolocada pelo motor chega sem modo, mesmo do mesmo item. O `refresh` trata isso como um clique (`slotClick`): reaplica o `initPatternSmart` e volta à primeira receita (`updateTemplateGrid`).
 - **Estado salvo:** energia e índice da receita; os modos vão nas cópias.
 - Dureza 10, resistência 20, pelo `k3_overrides.json`.
 
@@ -785,24 +797,41 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - `setFilterContents` (NEI e a ferramenta de cópia) não foi portado.
 - `hasContainerItem` é aproximado: baldes cheios, garrafa de mel, sopro de dragão e os recipientes de fluido do NTM.
 - Uma cópia posta no molde perde o custom data que já trazia quando ganha o modo (a ponte só lia o custom data de alguns itens).
+- O "primeiro nome do OreDict" de um prefixo segue a ordem alfabética: o OreDict do port guarda os nomes de um item ordenados, e o `getOreIDs` do Java os dá na ordem de registro. A pólvora (`dustAnyPropellant`, `dustGunpowder`) pode receber o outro nome.
+- As famílias vanilla são uma tabela à mão: um item de 1.7.10 com metadados que não esteja nela é tratado como de um metadado só.
+- A cópia do motor não leva os itens que um item guarda (caixa de shulker, saco, besta carregada), e o `copy()` do Java levaria o NBT inteiro. Em 1.7.10 nenhum item comum de molde guarda itens assim, e a cópia nunca cai.
+- **Pin do motor:** o `compatibility.json` aponta para o motor `51e7c5324c`, mas o `horizon_branch` continua `ntm-current`. Antes da `main`, o motor da autocrafter precisa entrar numa branch integrada, e o `horizon_branch` apontar para ela.
 
-**Provas** (cliente `eb373c1043d708542ab875da96c267187d52828b8f43571ab3ea9168c4329ec4`, pacote `911a3b8ee94e3590c6a0691eb187fa2fb47547ccb28d9d7ac211f739fcc5c081`, motor `6280f4315d`; evidência em `content-gen-evidence/autocrafter`)
-- `ntm-core`: 886 testes passando, 9 da autocrafter. Um deles passa pelo passo do servidor (`the_autocrafter_asks_the_recipes_through_the_step_and_crafts`). Clippy limpo; gerador de conteúdo com 347 OK.
-- Em jogo (`run-native-reactors.py autocrafter`): **17/17**.
-  - Duas tábuas clicadas nos slots 1 e 4 do molde deixam cópias, e o cursor continua com as 3.
-  - O resultado mostra os 4 gravetos da receita do mundo.
-  - As cópias ganham `wildcard`, e o clique direito no slot 1 o gira para `plankWood`.
-  - Com 2 tábuas em cada um dos ingredientes 11 e 14, saem 8 gravetos e os ingredientes esvaziam.
-  - O clique direito no resultado, com uma receita só, volta a ela.
-  - Salvo e reaberto: as cópias, os modos (`plankWood`, `wildcard`), o resultado e os 8 gravetos estão lá. Mais uma tábua em cada ingrediente faz mais 4 gravetos, porque as receitas são pedidas de novo depois do load.
+**Provas** (cliente `c9cc2bf020205954da8360d27398b16b006305c31e8f5805ea1250ba725cf2f9`, pacote `911a3b8ee94e3590c6a0691eb187fa2fb47547ccb28d9d7ac211f739fcc5c081`, motor `51e7c5324c`; evidência em `content-gen-evidence/autocrafter`, registros em `content-gen-evidence/autocrafter/logs`). A prova em jogo e os cortes rodaram com o código do `f05e8b39`; o `365c1c4c` só acrescenta uma asserção a um teste.
+- `ntm-core` no `365c1c4c` (`logs/ntm-core-tests.log`):
+  - `--lib`: 887 testes passando;
+  - os 12 testes de integração: 118 passando;
+  - 10 da autocrafter: 9 no módulo e 1 pelo passo do servidor (`the_autocrafter_asks_the_recipes_through_the_step_and_crafts`).
+  - Clippy `--all-targets -D warnings` limpo (`logs/ntm-core-clippy.log`).
+  - O `tests/save_model.rs` ficou de fora: o modelo exaustivo leva horas em debug, e a autocrafter não mexe nele.
+  - A regra da mão nos ingredientes (`can_insert`: 4 vão, 16 não), a saída e a bateria livres, as famílias vanilla, `exact` pelo dano e a cópia recolocada que volta ao modo e à primeira receita têm testes próprios.
+- Em jogo (`run-native-reactors.py autocrafter`): **24/24**.
+  - Máquina A:
+    - duas tábuas nos slots 1 e 4 do molde deixam cópias, e o cursor fica com as 3; o resultado são os 4 gravetos da receita do mundo;
+    - as cópias ganham `exact` (as tábuas têm metadados em 1.7.10); o clique direito gira o slot 1 para `wildcard`, e as mesmas tábuas clicadas de novo o voltam a `exact`;
+    - uma pilha de 16 tábuas na mão não entra num ingrediente;
+    - com 4 tábuas em cada um dos ingredientes 11 e 14 e os ticks do servidor dados um a um (`tick freeze`, `tick step 1`), a saída tem 4, 8, 12 e 16 gravetos: um por tick;
+    - um shift-click num slot do molde o limpa, e nenhuma cópia vai para o inventário;
+    - garrafas de mel no molde e nos ingredientes fazem um bloco de mel e deixam as quatro garrafas vazias onde estavam;
+    - um lingote de urânio sozinho casa com duas receitas: o clique direito no resultado leva de 1/2 a 2/2.
+  - Máquina B, com um funil em cima com 4 tábuas de bétula e um molde de carvalho: `exact` as deixa no funil; com `wildcard`, o funil as põe e B faz 8 gravetos.
+  - Salvo e reaberto: o molde (o lingote), o modo, a segunda receita e o bloco de mel estão lá.
+  - Quebrada com uma picareta, A solta ela mesma, o bloco de mel e a bateria. Não solta lingote, pepitas, tábuas nem gravetos: nem a cópia do molde nem a do resultado.
+  - A conta da quebra é a do `ctl break` (`drops`: toda entidade de item nova perto do bloco, esteja no chão ou já pega pelo jogador). Numa rodada o jogador pegou o mel e a bateria antes da contagem do chão, e a prova, que só olhava o chão, falhou sem defeito na máquina; agora ela soma os dois e ainda exige zero cópias no chão.
 - Cortes estritos (`HORIZON_NO_EAGER_SAVE=1`, `run-crash-more.py autocrafter-state`, `"strict": true` no relatório): **7/7**.
-  - Molde de gravetos, 20 tábuas em cada um de dois ingredientes, fabricando um por tick.
-  - Em todo corte, as tábuas mais metade dos gravetos dão 40, os dois ingredientes têm o mesmo, e o molde, os modos e o resultado ficam.
-- Mutantes (`tools/mutants/autocrafter.py`): **22/22** mortos, na segunda rodada.
-  - Na primeira, 6 sobreviveram, e todos eram casos sem teste: a receita que volta à primeira quando o molde muda, os 100 HE de uma fabricação, uma saída com outro custom data, o slot do resultado fora do alcance da mão, dois baldes de uma vez, e o primeiro nome do OreDict de um prefixo.
-  - Ganharam o teste `the_edges_the_mutants_found`.
-  - Dois mutantes tiram o repasse da consulta no passo do servidor e a chamada do `refresh`; os dois morrem pelo teste do servidor.
-  - Os mutantes rodam numa cópia com uma pasta de compilação **própria**, e o teste-base passa nela (9/9). Com a pasta compartilhada, o cargo reaproveitou no repositório o binário de teste do último mutante (o mesmo pacote, com os mesmos caminhos relativos), e um teste passou a falhar sem razão até a recompilação.
+  - Um funil em cima com 64 tábuas alimenta a máquina, que fabrica enquanto o mundo é salvo e morto em cada fronteira.
+  - Em todo corte, as tábuas no funil e nos ingredientes mais metade dos gravetos dão 64, e os gravetos são múltiplos de 4. O molde, os modos (`exact`, `exact`) e o resultado ficam.
+  - O contador de disco (`disk_count.py`) não conta as cópias dos slots 0–9: o modelo da autocrafter (`"k": "Autocrafter"`) tem esses slots zerados antes da soma, e os `Items` do bloco também os pulam. Na primeira rodada desta revisão, a detecção procurava a chave errada e somava as 2 tábuas e os 4 gravetos das cópias (68 em vez de 64). Agora o disco dá 64 em todos os pontos.
+- Mutantes (`tools/mutants/autocrafter.py`, `logs/mutants.log`): **31/31** mortos no `365c1c4c`; o teste-base passa (10/10).
+  - Na rodada sobre o `f05e8b39` (`logs/mutants-f05e8b39.log`), 30 de 31 morreram. Sobreviveu o que deixa o slot do resultado (9) passar pela regra dos slots: o teste só perguntava se a mão põe algo nele, e isso a regra dos ingredientes já recusa. Com a regra mutada, a mão poderia tirar a cópia do resultado. O `365c1c4c` acrescenta essa recusa ao teste.
+  - Rodam numa cópia com uma pasta de compilação própria; o teste-base passa nela (`logs/mutants-baseline.log`), e a cópia volta igual ao repositório ao fim.
+  - Os da terceira revisão: a cópia recolocada, a regra da mão, a saída e a bateria livres, três famílias vanilla, `has_subtypes` e `base()` sem as famílias, e `exact` sem o dano.
+- **O que não roda como teste do motor:** o caminho inteiro pelo Hub (`pattern_presses` → `lan_station_button` → `native_menu_button`) precisa de um jogo com um mod nativo carregado. A prova em jogo o percorre: a autocrafter usa o menu vanilla `generic_9x3`, e os cliques direitos no molde e no resultado só mudam o modo e a receita por esse caminho.
 
 ## Lacunas transversais (revisão dos lotes do 2b)
 
