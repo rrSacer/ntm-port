@@ -1,0 +1,105 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.microwave.plate1": {
+      "loop": true,
+      "animation_length": 3.6,
+      "bones": {
+        "plate_Cylinder": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "3.60": [
+              0,
+              360,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.microwave.plate2": {
+      "loop": true,
+      "animation_length": 1.8,
+      "bones": {
+        "plate_Cylinder": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.80": [
+              0,
+              360,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.microwave.plate3": {
+      "loop": true,
+      "animation_length": 1.2,
+      "bones": {
+        "plate_Cylinder": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "1.20": [
+              0,
+              360,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.microwave.plate4": {
+      "loop": true,
+      "animation_length": 0.9,
+      "bones": {
+        "plate_Cylinder": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "0.90": [
+              0,
+              360,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "animation.microwave.plate5": {
+      "loop": true,
+      "animation_length": 0.72,
+      "bones": {
+        "plate_Cylinder": {
+          "rotation": {
+            "0.0": [
+              0,
+              0,
+              0
+            ],
+            "0.72": [
+              0,
+              360,
+              0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

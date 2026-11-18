@@ -385,10 +385,11 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_microwave",
-        kind: Kind::Inert,
+        kind: Kind::Microwave,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        // `TilePortShapes.around`: one port, every face.
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_teleporter",

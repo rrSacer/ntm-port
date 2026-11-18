@@ -1,0 +1,102 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_microwave.png",
+  "size": [
+    176,
+    168
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    74
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        8,
+        17,
+        16,
+        34
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 2,
+      "max": 3,
+      "rect": [
+        104,
+        34,
+        22,
+        16
+      ],
+      "uv": [
+        192,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 4,
+      "max": 5,
+      "rect": [
+        62,
+        26,
+        4,
+        34
+      ],
+      "uv": [
+        214,
+        0
+      ],
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        8,
+        17,
+        16,
+        34
+      ],
+      "lines": [
+        "{6:si} / {7:si} HE"
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "id": 0,
+      "rect": [
+        43,
+        25,
+        18,
+        18
+      ],
+      "lines": [
+        "Faster"
+      ]
+    },
+    {
+      "id": 1,
+      "rect": [
+        43,
+        43,
+        18,
+        18
+      ],
+      "lines": [
+        "Slower"
+      ]
+    }
+  ]
+}

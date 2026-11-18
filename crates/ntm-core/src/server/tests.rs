@@ -692,3 +692,4 @@ mod wire_tests;
 mod storage_tests;
 mod annihilator_tests;
 mod drain_tests;
+mod microwave_tests;

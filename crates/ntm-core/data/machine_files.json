@@ -4630,6 +4630,29 @@
 "slots": [],
 "synced": []
 },
+"ntm:machine_microwave": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 80,
+"y": 35
+},
+{
+"output": true,
+"x": 140,
+"y": 35
+},
+{
+"accept": [],
+"x": 8,
+"y": 53
+}
+],
+"synced": []
+},
 "ntm:machine_mixer": {
 "inventory": [
 8,

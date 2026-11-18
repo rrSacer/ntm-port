@@ -20,6 +20,7 @@ pub mod cable_switch;
 pub mod wire;
 pub mod compressor;
 pub mod drain;
+pub mod microwave;
 pub mod storage;
 pub mod deuterium;
 pub mod combustion;
