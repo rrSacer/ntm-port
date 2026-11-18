@@ -245,3 +245,15 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
   reciprocidade), `W22` (`meta` do pylon grande) e `W23` (ligação que exige listar de volta): 4/4 mortos.
 - Pylon grande: `meta` 12 (norte/sul) ou 13 (leste/oeste), os dois que um jogador ao longo de um eixo recebe (`PylonLarge.getMetaForCore`).
 - O agachar do carretel vem do jogador que usou o item (um convidado LAN usa o próprio estado, não a tecla do anfitrião).
+
+### Provas após a revisão e a mescla da `onda2-k3-s2`
+
+- `onda2-k3-s2` (5d6a0b6f) mesclada na `onda2-k3-c` (commit `19f3e3a2`): 7 conflitos de adição concorrente resolvidos preservando as duas partes, e o `Tank` do SILEX ganhou o campo
+  `pressure` da camada de pressão. `cargo test -p ntm-core --lib`: **990 passaram** (os 842 desta frente, os da s2 e os novos); `energy_network_tests` 24 e `ledger_persistence` 6;
+  `cargo clippy --workspace --all-targets -- -D warnings` limpo; o conteúdo foi regenerado (`generate.py`, `machine-gen`) e o pacote reconstruído.
+- **Soquete (jogo, 24 checks):** além dos de antes, **a bateria tirada à mão com a energia fluindo, três rodadas**: rede + inventário é exatamente o total (a carga lida do item no inventário), e ao
+  devolver também. **Soquete e REDD, corte estrito 7/7 cada** (a carga agora vem do slot do motor, gravado no mesmo commit do estado).
+- Os dois corpos mais **regressão em jogo de duas máquinas de frentes diferentes**: o compressor alto (a minha frente) passa 100% e o par FEL + SILEX (`run-crash-more.py silex-state none`, da s2) `ok: true`.
+  Um check do roteiro do compressor (`b_paid_2500_he_per_counting_tick`) lia as duas baterias sem congelar o jogo e oscilava em ±1 250 HE (metade do passo de 2 500 que duas baterias dão a cada tick): o
+  `snapshot` agora congela o jogo antes de ler.
+- Mutantes novos 8/8 mortos (`S36` a `S39` do fim do tick, `W09`, `W21`, `W22`, `W23` do fio e do pylon grande).
