@@ -114,8 +114,10 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 - Topologia: `Topology::build_linked` (`energy.rs`) junta, a qualquer distância, os pontos de fio **que um dos dois lista**: o nó de cada ponto tem o próprio
   ponto entre as suas ligações (`TileEntityPylonBase.createNode`), que a ligação do outro lado casa (`UniNodespace.checkConnection`). Um fio listado só por
   uma ponta já une as duas. `server.rs::build_topology` monta as ligações (nos dois sentidos) e um passo por tick (`simulate`) tira da lista de um ponto o
-  outro que sumiu de uma célula carregada, não é mais ponto de fio, ou é um ponto novo que **não lista este de volta** (o antigo tirou os seus fios dos
-  outros ao sair, `disconnectAll`; um novo no mesmo lugar não herda nenhum).
+  outro que sumiu de uma célula carregada, não é mais ponto de fio, ou é um ponto de **outra geração** do bloco que a ligada (o antigo tirou os seus fios dos
+  outros ao sair, `disconnectAll`; um novo no mesmo lugar não herda nenhum). Cada ligação guarda a geração do ponto de quando foi feita (`Wire::generations`;
+  0 ou ausente em um save antigo: não conhecida, só vale a regra de ser ponto de fio). Um ponto que só **não lista de volta** (um corte de save entre as duas gravações)
+  mantém o fio e conduz, como no Java.
 - Carretel: `native_server.rs::native_wire_use` (regras do Java, mensagens em inglês iguais) e `glue.rs::use_wire` (lê e grava `x, y, z` no
   `custom_data` do item; não age agachado).
 - Conteúdo: `tools/visual-gen/visual.json` → arquivos de máquina com o multibloco (`1×5×1`, `1×7×1`, `3×14×3`) e os modelos OBJ dos 7 pylons
@@ -240,8 +242,9 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
 ### Correções da revisão independente (conectores e pylons)
 
 - A regra "o fio só conduz se os dois lados se listam" **não existe no Java** (`TileEntityPylonBase.java:71` põe o próprio ponto como primeira ligação do nó e
-  `UniNodespace.checkConnection` o casa): adotada a regra do Java (um lado que lista já une os dois); o que impede o ponto trocado de herdar fios é a limpeza por
-  tick, que tira da lista o ponto novo que não lista de volta (`disconnectAll` do antigo). Mutantes novos `W09` (sentido contrário da ligação), `W21` (limpeza sem
+  `UniNodespace.checkConnection` o casa): adotada a regra do Java (um lado que lista já une os dois). O que impede o ponto trocado de herdar fios é a limpeza por
+  tick pela **geração** do bloco (`disconnectAll` do antigo); a primeira versão exigia que o outro lado listasse de volta e anulava a regra do Java no primeiro tick depois de
+  um corte de save (a 3ª revisão pegou): o teste agora passa pelos ticks (`a_wire_only_one_end_has_goes_on_conducting_through_the_ticks`). Mutantes novos `W09` (sentido contrário da ligação), `W21` (limpeza sem
   reciprocidade), `W22` (`meta` do pylon grande) e `W23` (ligação que exige listar de volta): 4/4 mortos.
 - Pylon grande: `meta` 12 (norte/sul) ou 13 (leste/oeste), os dois que um jogador ao longo de um eixo recebe (`PylonLarge.getMetaForCore`).
 - O agachar do carretel vem do jogador que usou o item (um convidado LAN usa o próprio estado, não a tecla do anfitrião).
@@ -257,3 +260,10 @@ Branch `onda2-k3-c`. Os 14 blocos da família `PowerNetMK2` que seguem `Kind::In
   Um check do roteiro do compressor (`b_paid_2500_he_per_counting_tick`) lia as duas baterias sem congelar o jogo e oscilava em ±1 250 HE (metade do passo de 2 500 que duas baterias dão a cada tick): o
   `snapshot` agora congela o jogo antes de ler.
 - Mutantes novos 8/8 mortos (`S36` a `S39` do fim do tick, `W09`, `W21`, `W22`, `W23` do fio e do pylon grande).
+
+### Onde ficam as provas
+
+Os roteiros e as evidências desta frente ficam fora do repositório, em `/mnt/ssd120/sacer/so/c`: `run_storage_proof.py` (soquete e REDD, `--body socket|redd`, `--only gameplay|crash`, `--points`),
+`run_wire_proof.py`, `run_cable_switch_proof.py`, `run_compressor_proof.py`, os `mutate_*.py` e os relatórios (`storage-*-proof-report.json`, `*-gameplay.json`). Os cortes de gravação rodam
+sempre com `HORIZON_NO_EAGER_SAVE=1` (modo estrito); o cliente de cada rodada é o `horizon-client` release do `CARGO_TARGET_DIR` próprio da frente, com o hash registrado na seção da
+máquina. Mutantes: cada rodada usa um alvo de compilação próprio (nunca o de outra cópia), para o Cargo não reaproveitar o binário de teste do mutante anterior.

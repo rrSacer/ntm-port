@@ -440,8 +440,9 @@ impl Server {
                 let check = crate::wire::can_connect(first, second);
                 if check == crate::energy_network::LinkCheck::Ok {
                     for (at, other) in [(first_at, core), (core, first_at)] {
+                        let generation = r.world.machines.get(&(dim.to_string(), other)).map_or(0, |m| m.generation);
                         if let Some(Data::Wire(w)) = r.world.machines.get_mut(&(dim.to_string(), at)).map(|m| &mut m.data) {
-                            w.add_connection(other);
+                            w.add_link(other, generation);
                         }
                     }
                     r.topo_dirty = true;

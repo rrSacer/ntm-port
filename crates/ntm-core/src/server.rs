@@ -648,17 +648,18 @@ impl Server {
         }
 
         // `TileEntityPylonBase.disconnectAll`: a wire to an endpoint that is gone comes off, whichever way the
-        // endpoint left (a break, a replacement, an explosion): its cell is loaded and no endpoint now, or a new
-        // endpoint that does not list this one back (the old one took its wires off the others as it went).
+        // endpoint left (a break, a replacement, an explosion): its cell is loaded and no endpoint now, or an endpoint
+        // of another generation than the one wired (the old one took its wires off the others as it went). An endpoint
+        // that merely does not list this one back (a save cut between the two) keeps the wire: the Java joins them.
         let mut stale: Vec<(Key, Pos)> = Vec::new();
         for (k, m) in &r.world.machines {
             let crate::machine::Data::Wire(w) = &m.data else { continue };
             if r.loaded.get(k) != Some(&true) {
                 continue;
             }
-            for c in &w.connected {
-                match r.world.machines.get(&(k.0.clone(), *c)).map(|o| &o.data) {
-                    Some(crate::machine::Data::Wire(o)) if o.lists(k.1) => {}
+            for (i, c) in w.connected.iter().enumerate() {
+                match r.world.machines.get(&(k.0.clone(), *c)) {
+                    Some(o) if matches!(o.data, crate::machine::Data::Wire(_)) && (w.generation_of(i) == 0 || w.generation_of(i) == o.generation) => {}
                     _ => stale.push((k.clone(), *c)),
                 }
             }

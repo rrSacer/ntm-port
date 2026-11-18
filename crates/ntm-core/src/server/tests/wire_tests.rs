@@ -222,7 +222,7 @@ fn all_nine_upgrade_from_inert_and_the_state_survives_a_save() {
         };
         assert_eq!(m.upgraded().kind(), Kind::Wire, "{}", k.id());
     }
-    let w = crate::wire::Wire { connected: vec![[1, 2, 3], [4, 5, 6]], color: 0x123456 };
+    let w = crate::wire::Wire { connected: vec![[1, 2, 3], [4, 5, 6]], color: 0x123456, ..Default::default() };
     let back: crate::wire::Wire = serde_json::from_str(&serde_json::to_string(&w).unwrap()).unwrap();
     assert_eq!(back, w);
     assert_eq!(serde_json::from_str::<crate::wire::Wire>("{}").unwrap(), crate::wire::Wire::default());
@@ -253,4 +253,38 @@ fn an_unloaded_wire_keeps_its_links() {
     g.place(p2, "minecraft:air");
     g.run(45);
     assert_eq!(wire(&mut g, p1).connected, vec![p2]);
+}
+
+/// A save cut can leave one end with the wire and the other without it (the two block entities are written apart):
+/// the Java joins them (`checkConnection`), and the tick's clean-up of replaced endpoints must not undo that.
+#[test]
+fn a_wire_only_one_end_has_goes_on_conducting_through_the_ticks() {
+    let mut g = game();
+    let (p1, p2) = ([10, 70, 0], [30, 70, 0]);
+    let (src, sink) = two_pylons(&mut g, "ntm:red_pylon", p1, p2);
+    link(&mut g, p1, p2);
+    g.run(10);
+    // The far end loses the wire (as a cut leaves it), the generation the near one wired is still the one there.
+    {
+        let r = g.ready();
+        let Data::Wire(w) = &mut r.world.machines.get_mut(&(OW.to_string(), p2)).unwrap().data else { panic!() };
+        w.forget(p1);
+        r.topo_dirty = true;
+    }
+    g.run(2);
+    assert_eq!((wire(&mut g, p1).connected, wire(&mut g, p2).connected), (vec![p2], Vec::<Pos>::new()), "kept");
+    let before = power(&mut g, sink);
+    g.run(30);
+    let gained = power(&mut g, sink) - before;
+    assert!(gained > 0, "and it conducts: {gained}");
+    assert_eq!(before + gained, power(&mut g, sink));
+    let _ = src;
+    // The same with a wire whose generation is not known (a save from before the field).
+    {
+        let r = g.ready();
+        let Data::Wire(w) = &mut r.world.machines.get_mut(&(OW.to_string(), p1)).unwrap().data else { panic!() };
+        w.generations.clear();
+    }
+    g.run(30);
+    assert_eq!(wire(&mut g, p1).connected, vec![p2], "still there");
 }

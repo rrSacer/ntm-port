@@ -6,9 +6,9 @@
 //!
 //! An endpoint is a node of the power net open on a few faces (what `createNode` lists) and, besides
 //! them, linked by wire to other endpoints of the same connection type within the shorter range
-//! (`canConnect`). The links are kept in the endpoint (`connected`) and in the other one: a link
-//! counts when both ends list each other (`UniNodespace.checkConnection`). Breaking an endpoint
-//! takes its links off the others (`disconnectAll`). The rules (ranges, types, mounts, faces) are
+//! (`canConnect`). The links are kept in the endpoint (`connected`) and in the other one; a link
+//! one end lists already joins the two (`UniNodespace.checkConnection`). Breaking an endpoint
+//! takes its links off the others (`disconnectAll`; here, a wire to an endpoint that is gone or replaced). The rules (ranges, types, mounts, faces) are
 //! [`crate::energy_network`]'s, proved against the Java.
 
 use crate::{
@@ -26,6 +26,11 @@ pub struct Wire {
     /// `connected`: the endpoints wired to this one (a repeat is kept, as in the Java).
     #[serde(default)]
     pub connected: Vec<Pos>,
+    /// The block entity generation each `connected` entry had when it was wired, in the same order (0, or missing
+    /// in a save from before: not known). Only to tell the endpoint that was wired from one that took its place
+    /// (`disconnectAll` of the old one took its wires off): a new generation at the cell is not the same endpoint.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub generations: Vec<u64>,
     /// `color`, painted with a dye (`setColor`).
     #[serde(default)]
     pub color: i32,
@@ -95,12 +100,35 @@ impl Wire {
 
     /// `addConnection`.
     pub fn add_connection(&mut self, at: Pos) {
+        self.add_link(at, 0);
+    }
+
+    /// `addConnection` of the endpoint at `at`, whose block entity is of `generation` (0: not known).
+    pub fn add_link(&mut self, at: Pos, generation: u64) {
+        self.generations.resize(self.connected.len(), 0);
         self.connected.push(at);
+        self.generations.push(generation);
+    }
+
+    /// The generation the endpoint at `connected[i]` had when it was wired (0: not known).
+    pub fn generation_of(&self, i: usize) -> u64 {
+        self.generations.get(i).copied().unwrap_or(0)
     }
 
     /// `disconnectAll`, on the other end: every link to `at` is taken off.
     pub fn forget(&mut self, at: Pos) {
-        self.connected.retain(|c| *c != at);
+        self.generations.resize(self.connected.len(), 0);
+        let keep: Vec<bool> = self.connected.iter().map(|c| *c != at).collect();
+        let mut i = 0;
+        self.connected.retain(|_| {
+            i += 1;
+            keep[i - 1]
+        });
+        let mut i = 0;
+        self.generations.retain(|_| {
+            i += 1;
+            keep[i - 1]
+        });
     }
 
     /// Whether the endpoint lists `at`.
