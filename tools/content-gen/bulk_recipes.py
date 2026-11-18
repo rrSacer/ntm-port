@@ -273,7 +273,7 @@ def generate(src,out,rows,emit):
             # keeping the previous vanilla catalog's conservative profile.
             # The onda 1 protection items need DictGroup ANY_RUBBER/ANY_PLASTIC the same way.
             onda1=re.match(r'new ItemStack\(ModItems\.(cladding_rubber|liquidator_(?:helmet|plate|legs|boots)|gas_mask_mono|ashglasses|jackt2?)(?:, 1)?\)',args.strip())
-            if (file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.hand_drill(?:_desh)?\)',args.strip())) or (file.name in ('ConsumableRecipes.java','ArmorRecipes.java','CraftingManager.java') and onda1):
+            if (file.name=='ToolRecipes.java' and re.match(r'new ItemStack\(ModItems\.(?:hand_drill|screwdriver)(?:_desh)?\b',args.strip())) or (file.name in ('ConsumableRecipes.java','ArmorRecipes.java','CraftingManager.java') and onda1):
                 if pile_resolver is None:
                     from machine_recipes import MachineResolver
                     pile_resolver=MachineResolver(src,rows)

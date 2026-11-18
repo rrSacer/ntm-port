@@ -103,18 +103,21 @@ def build(source):
 
 
 def pile_tools(source):
-    """The two original HAND_DRILL tools required to form/drill a pile."""
+    """The two original HAND_DRILL tools required to form/drill a pile, and the two SCREWDRIVERs that take an RBMK
+    column's lid off (rbmk-plano T02)."""
     items=(source/(BASE+'items/ModItems.java')).read_text()
     translations={loc:lang(source/f'src/main/resources/assets/hbm/lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]}
     rows=[]
-    for var in ('hand_drill','hand_drill_desh'):
-        match=re.search(r'\b'+var+r'\s*=\s*new ItemTooling\(ToolType.HAND_DRILL,\s*(\d+)\)',items)
-        if not match:raise ValueError('HAND_DRILL declaration drift: '+var)
+    gaps={'HAND_DRILL':'Native HAND_DRILL interaction on the MK2 pile only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented.',
+          'SCREWDRIVER':'Native SCREWDRIVER interaction on the RBMK columns (their lid) only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented.'}
+    for var,tool in (('hand_drill','HAND_DRILL'),('hand_drill_desh','HAND_DRILL'),('screwdriver','SCREWDRIVER'),('screwdriver_desh','SCREWDRIVER')):
+        match=re.search(r'\b'+var+r'\s*=\s*new ItemTooling\(ToolType.'+tool+r',\s*(\d+)\)',items)
+        if not match:raise ValueError(tool+' declaration drift: '+var)
         durability=int(match[1]);name,_=registration(items,var,'item')
         rows.append({'id':name,'source_variable':var,'source_class':'ItemTooling','type':'item','category':'tool',
                      'source_texture':f'src/main/resources/assets/hbm/textures/items/{name}.png',
                      'max_stack_size':1,'durability':{'max_damage':durability,'wear':durability>0},
                      **({'max_damage':durability} if durability else {}),
                      'names':{loc:tr['item.'+name+'.name'] for loc,tr in translations.items()},
-                     'behavior_gap':'Native HAND_DRILL interaction on the MK2 pile only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented.'})
+                     'behavior_gap':gaps[tool]})
     return rows

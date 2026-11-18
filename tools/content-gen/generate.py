@@ -332,6 +332,8 @@ def generate(src,out,rows,distributions,max_damage=True):
   emit_bytes('assets/ntm/textures/gui/machine/gui_armor_modifier.png',(src/gui).read_bytes())
   languages['en_us']['container.ntm.armor_table']='Armor Modification Table'
   languages['pt_br']['container.ntm.armor_table']='Mesa de Modificação de Armadura'
+  import rbmk_catalog
+  rbmk_catalog.tooltip_lang(src,languages)
  import mob_effects
  mob_effects.generate(src,emit,emit_bytes,languages,transform_png,{loc:lang(src/f'src/main/resources/assets/hbm/lang/{old}.lang') for loc,old in [('en_us','en_US'),('pt_br','pt_BR')]})
  import damage_types

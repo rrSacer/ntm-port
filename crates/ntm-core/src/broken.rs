@@ -17,7 +17,7 @@ pub fn make(product: &str, count: u32) -> Option<Stack> {
         return None;
     }
     let custom = snbt::canonical(&format!("{{{KEY}:{{id:\"{product}\"}}}}"))?;
-    Some(Stack { id: ID.into(), count, damage: 0, custom: Some(custom) })
+    Some(Stack { custom: Some(custom), ..Stack::new(ID, count) })
 }
 
 /// The product a broken stack stands for. `None` for any other item, and for

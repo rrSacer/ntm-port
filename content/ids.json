@@ -94100,6 +94100,64 @@
       "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
     },
     {
+      "id": "ntm:screwdriver",
+      "source_variable": "screwdriver",
+      "source_class": "ItemTooling",
+      "type": "item",
+      "category": "tool",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/screwdriver.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 100,
+        "wear": true
+      },
+      "max_damage": 100,
+      "names": {
+        "en_us": "Screwdriver",
+        "pt_br": "Chave de Fenda"
+      },
+      "behavior_gap": "Native SCREWDRIVER interaction on the RBMK columns (their lid) only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented.",
+      "source_registry": "hbm:item.screwdriver",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [
+        {
+          "machine": "anvil",
+          "source": "src/main/java/com/hbm/inventory/recipes/anvil/AnvilRecipes.java:527"
+        }
+      ],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
+      "id": "ntm:screwdriver_desh",
+      "source_variable": "screwdriver_desh",
+      "source_class": "ItemTooling",
+      "type": "item",
+      "category": "tool",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/screwdriver_desh.png",
+      "max_stack_size": 1,
+      "durability": {
+        "max_damage": 0,
+        "wear": false
+      },
+      "names": {
+        "en_us": "Desh Screwdriver",
+        "pt_br": "Chave de Fenda de Desh"
+      },
+      "behavior_gap": "Native SCREWDRIVER interaction on the RBMK columns (their lid) only. Other IToolable interactions, crafting remainder and no-repair source behavior are not implemented.",
+      "source_registry": "hbm:item.screwdriver_desh",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:rbmk_rod",
       "source_variable": "rbmk_rod",
       "type": "block",
@@ -94116,6 +94174,10 @@
         "front": "blocks/rbmk/rbmk_element_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_rod",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94156,6 +94218,10 @@
         "front": "blocks/rbmk/rbmk_element_mod_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_rod_mod",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94196,6 +94262,10 @@
         "front": "blocks/rbmk/rbmk_element_reasim_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_rod_reasim",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94236,6 +94306,10 @@
         "front": "blocks/rbmk/rbmk_element_reasim_mod_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_rod_reasim_mod",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94276,6 +94350,10 @@
         "front": "blocks/rbmk/rbmk_control_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_control",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94316,6 +94394,10 @@
         "front": "blocks/rbmk/rbmk_control_mod_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_control_mod",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94356,6 +94438,10 @@
         "front": "blocks/rbmk/rbmk_control_auto_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_control_auto",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94396,6 +94482,10 @@
         "front": "blocks/rbmk/rbmk_control_reasim_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_control_reasim",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94431,6 +94521,10 @@
         "front": "blocks/rbmk/rbmk_control_reasim_auto_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_control_reasim_auto",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94466,6 +94560,10 @@
         "front": "blocks/rbmk/rbmk_blank_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_blank",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94505,6 +94603,10 @@
         "front": "blocks/rbmk/rbmk_boiler_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_boiler",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94545,6 +94647,10 @@
         "front": "blocks/rbmk/rbmk_reflector_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_reflector",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94585,6 +94691,10 @@
         "front": "blocks/rbmk/rbmk_absorber_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_absorber",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94625,6 +94735,10 @@
         "front": "blocks/rbmk/rbmk_moderator_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_moderator",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94665,6 +94779,10 @@
         "front": "blocks/rbmk/rbmk_outgasser_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_outgasser",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94705,6 +94823,10 @@
         "front": "blocks/rbmk/rbmk_storage_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_storage",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94745,6 +94867,10 @@
         "front": "blocks/rbmk/rbmk_cooler_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_cooler",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
@@ -94785,6 +94911,10 @@
         "front": "blocks/rbmk/rbmk_heater_side"
       },
       "behavior_gap": "Source BlockDummyable/TESR model, column height, lids, fluids, flux, heat, panels and interaction are native/visual work; casing cube fallback only.",
+      "block_properties": {
+        "hardness": 3.0,
+        "explosion_resistance": 18.0
+      },
       "source_registry": "hbm:tile.rbmk_heater",
       "name_sources": {
         "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",

@@ -96,7 +96,8 @@ class AnvilContracts(unittest.TestCase):
         })
         self.assertEqual(self.data['coverage'], {
             'smithing': {'source_calls': 41, 'expanded': 58, 'emitted': 36, 'skipped': 22},
-            'construction': {'source_calls': 177, 'expanded': 257, 'emitted': 167, 'skipped': 90},
+            # 168: the screwdriver (RBMK T02) makes AnvilRecipes:523 (demon_core_open) resolvable.
+        'construction': {'source_calls': 177, 'expanded': 257, 'emitted': 168, 'skipped': 89},
         })
         for section, total in [('smithing', 58), ('construction', 257)]:
             emitted = self.data[section]

@@ -44,13 +44,19 @@ por `Reactor::ray_cells`, e o calor ligam) é um grupo acoplado cujo passo roda 
 de cada coluna fica no seu BE, a tag da barra (`yield`/`xenon`/`core`/`hull`, sem perda) no `custom_data` da pilha do
 slot, e o registro das colunas (ordem lógica) mais a RNG e a fila de fluxos de cada componente na chave `rbmk` do KV,
 tudo confirmado ou recusado junto. Fusão e divisão de componentes: `persist::settle`. A barra entra pela mão numa transferência única jogador↔BE. Continua para os tickets:
-dials como gamerules e oclusão HBM (T04: hoje dials padrão e "todo bloco não ar é opaco"), `rad`/`effects` (T04/T19),
-`meltdowns` (T16: hoje só registrados no log), tampas/altura/portas (T02: hoje sem tampa, altura 4), menu por contexto
-(T05: hoje o menu genérico do slot, sem a regra de casco quente), codec completo da pilha, tooltip e hazards (T03), e
-as demais colunas (controle, caldeira, aquecedor, cooler, outgasser, storage), ainda `Inert`.
+oclusão HBM e o runtime de dials por dimensão (T04: hoje "todo bloco não ar é opaco"; os dials já são as regras do
+mundo, T02), `rad`/`effects` (T04/T19), `meltdowns` (T16: hoje só registrados no log), menu por contexto (T05: hoje o
+menu genérico do slot, sem a regra de casco quente), codec completo da pilha, tooltip e hazards (T03).
+
+**T02 (branch `rbmk-t02`, motor `rbmk-t02-engine`)** ligou altura, dummies, tampas e portas (`server/rbmk_columns.rs`;
+ver `docs/horizon-current.md`, seção "RBMK T02"): as 18 colunas são colunas do motor de 2..16 células em
+`ntm:dummy_rbmk`, cada uma da altura com que foi colocada; as dez que eram `Inert` viraram `Kind::Rbmk` (tampa e slots
+Java; ainda fora do passo: a física delas é T08/T09/T11); dials como regras do mundo com `/ntmrbmk dial`, migração por
+`/ntmrbmk migrate`; tampas e chave de fenda; proxies e automação Java; formas de porta `persist::column_ports` (o fluxo
+é T08).
 
 0. Quebra de bloco: `Reactor::remove`; o `rbmk_storage` entra como `Kind::Storage`; `Inlet`/`Outlet` não participam do calor.
-1. Registrar os demais blocos `Inert` `rbmk_*` como `Kind` (o id de barra → `persist::rod_of`, que já trata `hep`→`hep239`).
+1. ~~Registrar os demais blocos `Inert` `rbmk_*` como `Kind`~~ (T02: adotados; falta pô-los no passo, T08/T09/T11).
 2. ~~Chamar `Reactor::step` uma vez por tick~~ (T01, provisório); ler `rad`, `meltdowns`, `effects`; `obstacles` com a opacidade HBM.
 3. ~~Persistir colunas, a tag das barras, a RNG e a fila de fluxos~~ (T01).
 4. Tanques do boiler/heater/cooler/outgasser ligados ao `FluidStore`, portas e loaders (posições: `getPorts*Loader`), `identifiers` do heater a partir do item do slot 0, `ore_names` da OreDict.

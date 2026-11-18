@@ -61,6 +61,15 @@ struct World {
     copied: Vec<String>,
     /// The storage's writes fail (I/O).
     kv_fails: bool,
+    /// The height the engine places RBMK columns with (`set_column_height`).
+    column_height: Option<i32>,
+    /// The tools a publication wore (`commit_lid_removal`).
+    worn: Vec<String>,
+    /// The drops a publication owed by their name (`RetainedDrop`): a known name drops nothing more.
+    retained: BTreeSet<u64>,
+    /// Cells the server wrote as its own (`set_machine_blocks`): their change is not told back to it, as the native
+    /// host's owned block scope keeps it from the block change hook.
+    owned: BTreeSet<(String, Pos)>,
 }
 
 impl World {
@@ -91,6 +100,10 @@ impl World {
             copied: Vec::new(),
             no_entities: false,
             kv_fails: false,
+            column_height: None,
+            worn: Vec::new(),
+            retained: BTreeSet::new(),
+            owned: BTreeSet::new(),
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -148,8 +161,18 @@ impl ServerHost for SHost {
             self.world.borrow().radiation_factor
         }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
-            if !drops.is_empty(){return false;}
+            // Retained drops only from an RBMK column's block entity (the cells `cell_snapshot` gives items for).
+            if drops.iter().any(|d|!crate::rbmk::persist::is_column(blockstate::id_of(&d.origin.state))){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
+            for d in drops{
+                let mut w=self.world.borrow_mut();
+                for item in &d.items{
+                    let f=crate::snbt::fields(item).expect("an item compound");
+                    let p=d.origin.pos;
+                    w.dropped.push(format!("{} {} {} {} {} {}",d.origin.dim,p[0],p[1],p[2],f["id"].trim_matches('"'),f["count"]));
+                }
+                w.engine.remove(&(d.origin.dim.clone(),d.origin.pos));
+            }
             let dims:BTreeSet<_>=cells.iter().map(|c|c.guard.dim.clone()).collect();
             if dims.len()>1{return false;}
             let Some(dim)=dims.first()else{return true};
@@ -207,6 +230,37 @@ impl ServerHost for SHost {
         w.copied.extend(copied);
         for (d,_) in &t.drops{w.dropped.push(format!("player {} {}",d.id,d.count));}
         true
+    }
+    fn commit_lid_removal(&mut self,c:&MachineCommit,drop:&RetainedDrop,tool:&str)->bool{
+        if !self.world.borrow().hands.as_ref().and_then(|h|h.held()).is_some_and(|h|h.stack.id==tool){return false;}
+        if !self.world.borrow().loaded(&drop.origin.dim,drop.origin.pos){return false;}
+        if !self.commit_machines(std::slice::from_ref(c)){return false;}
+        let mut w=self.world.borrow_mut();
+        let id=drop.id.unwrap_or_else(||crate::ledger::retained_id(&drop.origin.dim,drop.origin.pos,drop.origin.generation));
+        if w.retained.insert(id){
+            for item in &drop.items{
+                let f=crate::snbt::fields(item).expect("an item compound");
+                let p=drop.origin.pos;
+                w.dropped.push(format!("{} {} {} {} {} {}",drop.origin.dim,p[0],p[1],p[2],f["id"].trim_matches('"'),f["count"]));
+            }
+        }
+        w.worn.push(tool.into());
+        true
+    }
+    fn set_column_height(&mut self,height:i32){self.world.borrow_mut().column_height=Some(height);}
+    fn set_machine_blocks(&mut self,dim:&str,blocks:&[(Pos,String)],owners:&[(String,Pos)])->Result<(),String>{
+        self.world.borrow_mut().owned.extend(owners.iter().filter(|(d,p)|d==dim&&blocks.iter().any(|(q,_)|q==p)).cloned());
+        self.set_blocks(dim,blocks)
+    }
+    /// An RBMK column's block entity holds its engine slots, as SNBT stacks (the native host's `cell_snapshot`); the
+    /// other blocks' tests read cells without contents, as before.
+    fn cell_snapshot(&mut self,dim:&str,p:Pos)->Option<CellSnapshot>{
+        let state=self.get_block(dim,p)?;
+        let w=self.world.borrow();
+        let items=if crate::rbmk::persist::is_column(blockstate::id_of(&state)){
+            w.engine.get(&(dim.to_string(),p)).map(|e|e.0.iter().flatten().map(|s|format!("{{id:\"{}\",count:{}}}",s.id,s.count)).collect()).unwrap_or_default()
+        }else{Vec::new()};
+        Some(CellSnapshot{state,entity:None,items})
     }
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
         let mut w=self.world.borrow_mut();
@@ -670,6 +724,7 @@ mod blastfurnace_tests;
 mod foundry_tests;
 mod slot_items_tests;
 mod rbmk_tests;
+mod rbmk_t02_tests;
 mod anvil_tests;
 mod press_slots_tests;
 mod purex_tests;

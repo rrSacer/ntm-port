@@ -55,12 +55,13 @@ def source_tabs(ntm_src: Path):
                 out[m.group(1)] = (BY_SOURCE[t.group(1)][1], order)
                 order += 1
     # ItemTooling assigns its tab in the constructor, rather than each
-    # registration. Retain that original tab for the imported hand drills.
+    # registration. Retain that original tab for every tool of the class
+    # (the pile's hand drills, the RBMK lids' screwdrivers).
     tooling=(ntm_src/'src/main/java/com/hbm/items/tool/ItemTooling.java').read_text()
     match=re.search(r'setCreativeTab\(MainRegistry\.(\w+)\)',tooling)
     if match and match[1] in BY_SOURCE:
         items=(ntm_src/'src/main/java/com/hbm/items/ModItems.java').read_text()
-        for var in re.findall(r'\b(hand_drill(?:_desh)?)\s*=\s*new ItemTooling\(',items):
+        for var in re.findall(r'\b(\w+)\s*=\s*new ItemTooling\(',items):
             out[var]=(BY_SOURCE[match[1]][1],order);order+=1
     # ItemSimpleConsumable assigns its creative tab in the constructor.
     # Its factory lambdas contain semicolons, so statement splitting cannot

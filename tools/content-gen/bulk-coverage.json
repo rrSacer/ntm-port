@@ -2207,24 +2207,6 @@
       "reason": "requires item logic/durability/equipment/fluid API; not plain content"
     },
     {
-      "id": "screwdriver",
-      "type": "item",
-      "source_variable": "screwdriver",
-      "source_class": "ItemTooling",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3709",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
-      "id": "screwdriver_desh",
-      "type": "item",
-      "source_variable": "screwdriver_desh",
-      "source_class": "ItemTooling",
-      "source_location": "src/main/java/com/hbm/items/ModItems.java:3710",
-      "category": "component",
-      "reason": "requires item logic/durability/equipment/fluid API; not plain content"
-    },
-    {
       "id": "wrench_archineer",
       "type": "item",
       "source_variable": "wrench_archineer",
@@ -6296,7 +6278,7 @@
       "reason": "custom block behavior/model or unsupported block subclass"
     }
   ],
-  "claimed_elsewhere": 256,
+  "claimed_elsewhere": 258,
   "unresolved_registrations": [
     {
       "type": "item",

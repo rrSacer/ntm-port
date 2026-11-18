@@ -50,6 +50,20 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
     }
     crate::game::ntm_armor_table::mods_tooltip(_game, stack, lines);
     let native=crate::game::ntm_glue::stack(&Some(stack.clone()));
+    // An RBMK rod (`ItemRBMKRod.addInformation`): its state read from the stack's tag, the Java's keys translated here.
+    if let Some(rod)=ntm_core::rbmk::persist::rod_of(&stack.item) {
+        let mut state=native.as_ref().map(ntm_core::rbmk::persist::stack_rod).unwrap_or_default();
+        for line in ntm_core::rbmk::tooltip::lines(rod,&mut state) {
+            let args:Vec<Text>=line.args.iter().map(|a|match a.strip_prefix("§key:") { Some(k)=>Text::translate(k,&[]), None=>Text::legacy(a) }).collect();
+            // `EnumChatFormatting.X + I18nUtil.resolveKey(..)`: the line's codes style the whole translated line (a
+            // code alone in its own component would style nothing).
+            let text=match &line.key {
+                Some(k)=>Text::translate(k,&args).with_style(&legacy_style(line.style)),
+                None=>Text::legacy(&format!("{}{}",line.style,line.args[0])),
+            };
+            lines.push((text,u32::MAX));
+        }
+    }
     if let Some(p)=ntm_core::radioisotopes::pellet(&stack.item) {
         let life=native.as_ref().map_or(p.lifespan_ticks,ntm_core::radioisotopes::life);
         lines.push((Text::legacy(&format!("Calor: {} TU/t",p.heat_tu.decay_enabled)),u32::MAX));
@@ -57,8 +71,31 @@ pub(super) fn tooltip(_game: &crate::game::Game<'_>, stack: &ItemStack, lines: &
         lines.push((Text::legacy(&format!("Decai para: {}",p.decay_item)),u32::MAX));
     }
     let rate=native.as_ref().and_then(|s|ntm_core::zirnox::radiation_rate(s).or_else(||ntm_core::radioisotopes::radiation_rate(s)));
-    let hazard_lines=rate.map_or_else(||client_rad::tooltip_lines(&stack.item,stack.count),|rate|client_rad::tooltip_rate_lines(rate,stack.count));
+    // An RBMK rod's rate as `HazardTypeRadiation` prints its float level (truncated, never past a u32).
+    let rbmk=native.as_ref().and_then(ntm_core::rbmk::hazards::radiation_level);
+    let hazard_lines=match (rate,rbmk) {
+        (_,Some(level))=>ntm_core::rbmk::hazards::radiation_tooltip(level,stack.count),
+        (Some(rate),None)=>client_rad::tooltip_rate_lines(rate,stack.count),
+        (None,None)=>client_rad::tooltip_lines(&stack.item,stack.count),
+    };
     for line in hazard_lines {
         lines.push((Text::legacy(&line), u32::MAX));
     }
+    // `HazardTypeHot.addHazardInformation`, after the radiation as the rod registers them: gold, while the hull is hot.
+    if native.as_ref().and_then(ntm_core::rbmk::hazards::hot_level).is_some_and(|l|l>0) {
+        lines.push((Text::literal("[").append(Text::translate("trait.hot",&[])).append(Text::literal("]")).with_style(&legacy_style("\u{a7}6")),u32::MAX));
+    }
+}
+
+/// The style a run of legacy codes (`§9`, `§o`) leaves, as `StringDecomposer.iterateFormatted` applies them.
+fn legacy_style(codes: &str) -> horizon_client::text::Style {
+    let reset = horizon_client::text::Style::default();
+    let mut style = reset.clone();
+    let mut chars = codes.chars();
+    while let Some(c) = chars.next() {
+        if c == '\u{a7}' && let Some(code) = chars.next() {
+            style = horizon_client::text::legacy_format(&style, code, &reset);
+        }
+    }
+    style
 }

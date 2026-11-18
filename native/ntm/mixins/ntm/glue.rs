@@ -243,8 +243,9 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
         }
         return true;
     }
-    // A fuel rod into an RBMK fuel channel, moved with the hand in one transfer (T01).
-    if server.native_rbmk_use(&mut host, &dim, pos, core, &player) {
+    // A lid onto an RBMK column that has none (T02), a fuel rod into an empty fuel channel (T01): each moved with the
+    // hand in one transfer.
+    if server.native_rbmk_lid(&mut host, &dim, pos, core, &player) || server.native_rbmk_use(&mut host, &dim, pos, core, &player) {
         return true;
     }
     let game = host.game;
@@ -283,6 +284,7 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
 /// duct sets its fluid (`custom_data` `ntm_fluid`). True when taken.
 pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3], face: [i32; 3]) -> bool {
     if crate::game::ntm_items::use_on_block(game, stack, pos, face) { return true; }
+    if rbmk_item(game, stack, pos) { return true; }
     if matches!(&*stack.item,"ntm:hand_drill"|"ntm:hand_drill_desh") { return use_block(game,pos,pos,face,false); }
     if &*stack.item == DETONATOR {
         return detonator(game, Some(pos));
@@ -297,6 +299,24 @@ pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos:
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     server.native_use_item(game.dim.id(), pos, &stack.item, fluid.as_deref())
+}
+
+/// A lid or a screwdriver used on an RBMK column (T02), the use that reaches the item: a sneaking one (a plain one
+/// put the lid on or opened the menu first, `use_block`). The lid goes on (`ItemRBMKLid.onItemUse`); the screwdriver
+/// takes a lid off (`ItemTooling.onItemUse` → `RBMKBase.onScrew`) and wears.
+fn rbmk_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
+    let item = &*stack.item;
+    let screw = matches!(item, "ntm:screwdriver" | "ntm:screwdriver_desh");
+    if !screw && ntm_core::rbmk::persist::Lid::of_item(item).is_none() { return false; }
+    let core = game.machine_cell_core(pos);
+    if !game.native_loaded_block(game.dim.id(), core).is_some_and(|b| ntm_core::rbmk::persist::is_column(ntm_core::blockstate::id_of(&b))) { return false; }
+    let dim = game.dim.id().to_string();
+    let player = game.native_actor_uuid().unwrap_or_default();
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return false };
+    let mut host = Host { game, buttons: Vec::new() };
+    reconcile(server, &mut host);
+    if screw { server.native_rbmk_screw(&mut host, &dim, core, item) } else { server.native_rbmk_lid(&mut host, &dim, pos, core, &player) }
 }
 
 /// The radiation server's reading for a player (`radBuf`, milliRAD/s).
@@ -359,13 +379,18 @@ pub(super) fn command(game:&mut crate::game::Game<'_>,player:&horizon_client::mo
         }
         return true;
     }
-    if line.split_whitespace().next()!=Some("ntmbomba"){return false;}
+    let first=line.split_whitespace().next();
+    if first!=Some("ntmbomba")&&first!=Some("ntmrbmk"){return false;}
     let who=PlayerInfo{id:game.native_actor_uuid().unwrap_or_else(||player.uuid.to_string()),name:player.name.clone(),dim:player.dimension.clone(),pos:player.position,creative:player.game_mode==1};
     let mut guard=lock(&SERVER);
     let mut host=Host{game,buttons:Vec::new()};
     let (server,_)=guard.get_or_insert_with(||(Server::native(&mut host,0),0));
     reconcile(server,&mut host);
-    if let Some(reply)=server.native_bomb_command(&mut host,&who,player.permission,line){
+    let reply=match server.native_rbmk_command(&mut host,&who,player.permission,line){
+        Some(r)=>Some(r),
+        None=>server.native_bomb_command(&mut host,&who,player.permission,line),
+    };
+    if let Some(reply)=reply{
         let text=reply.unwrap_or_else(|e|format!("Erro: {e}"));
         for line in text.lines(){host.game.native_feedback(horizon_client::text::Text::literal(line));}
         return true;
@@ -1225,7 +1250,7 @@ fn cell_snapshot(game:&crate::game::Game<'_>,dim:&str,pos:[i32;3])->Option<ntm_c
 
 /// The contents of the cells machine commits consume, retained in the same publication.
 fn consumed_contents(commits:&[ntm_core::server::MachineCommit])->Vec<ntm_core::server::RetainedDrop>{
-    commits.iter().flat_map(|c|&c.cells).filter(|w|ntm_core::blockstate::id_of(&w.expected.state)!=ntm_core::blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|ntm_core::server::RetainedDrop{origin:w.guard.clone(),items:w.expected.items.clone()}).collect()
+    commits.iter().flat_map(|c|&c.cells).filter(|w|ntm_core::blockstate::id_of(&w.expected.state)!=ntm_core::blockstate::id_of(&w.desired)&&!w.expected.items.is_empty()).map(|w|ntm_core::server::RetainedDrop{origin:w.guard.clone(),items:w.expected.items.clone(),id:None}).collect()
 }
 
 impl Host<'_, '_> {
@@ -1297,7 +1322,7 @@ impl Host<'_, '_> {
             if self.game.visit_level(dim,|_|()).is_none(){return false;}
             let valid=d.items.iter().all(|i|horizon_world::nbt::parse_snbt(i).ok().and_then(|(t,_)|horizon_client::save::item_from_nbt(&t)).is_some());
             if !valid{return false;}
-            spawn.push((dim,d.origin.dim.clone(),d.origin.pos,ntm_core::ledger::retained_id(&d.origin.dim,d.origin.pos,d.origin.generation),d.items.clone()));
+            spawn.push((dim,d.origin.dim.clone(),d.origin.pos,d.id.unwrap_or_else(||ntm_core::ledger::retained_id(&d.origin.dim,d.origin.pos,d.origin.generation)),d.items.clone()));
         }
         // A transfer's player side: compared whole and published by the engine, or refused with nothing changed. The
         // machines' side passed every check above and nothing below can fail, so both land in this callback or neither.
@@ -1560,6 +1585,17 @@ impl ServerHost for Host<'_, '_> {
         // No cursor edit until T05 (`PlayerTransfer::publishable`): one published without an open menu loses the stack.
         if !t.publishable(){return false;}
         let Some(expected)=crate::game::ntm_items::transfer_snapshot(self.game) else{return false};
+        // A stack that leaves a machine slot in this transfer (a rod out of its channel) keeps its every component, as
+        // Java's `ItemStack.copy()`: the slot's own stack is its template, not the bridge's id, count and custom data.
+        let mut taken=Vec::new();
+        for c in commits{
+            for (i,(was,now)) in c.expected.iter().zip(&c.desired).enumerate(){
+                if let Some(was)=was && Some(was)!=now.as_ref() && let Some(cell)=self.entity(&c.dim,c.pos,|e|e.items.get(i).cloned().flatten()).flatten(){
+                    taken.push((was.clone(),cell));
+                }
+            }
+        }
+        let template=|s:&Stack|taken.iter().find(|(w,_)|w.id==s.id&&w.damage==s.damage&&w.custom==s.custom).map(|(_,cell)|cell.clone());
         let mut desired=expected.clone();
         for e in &t.edits{
             let cell=match e.slot{
@@ -1568,11 +1604,12 @@ impl ServerHost for Host<'_, '_> {
                 PlayerSlot::Carried=>&mut desired.carried,
             };
             if cell.as_ref().filter(|s|s.count>0&&&*s.item!="minecraft:air").map(item_snbt)!=e.expected{return false;}
-            *cell=item(e.desired.as_ref(),cell.take());
+            let old=cell.take();
+            *cell=item(e.desired.as_ref(),old.or_else(||e.desired.as_ref().and_then(template)));
         }
         let mut drops=Vec::new();
         for (s,mode) in &t.drops{
-            let Some(stack)=item(Some(s),None) else{return false};
+            let Some(stack)=item(Some(s),template(s)) else{return false};
             drops.push(NativeDrop::new(stack,match mode{TransferDrop::Thrown=>NativeDropMode::Thrown,TransferDrop::World{delay}=>NativeDropMode::World{delay:*delay}}));
         }
         // The machine slots that take a copy of a player's stack: the stack as the player held it, before the edits.
@@ -1590,6 +1627,20 @@ impl ServerHost for Host<'_, '_> {
         }
         let mut player=|g:&mut crate::game::Game<'_>|crate::game::ntm_items::transfer_commit(g,&expected,desired.clone(),drops.clone());
         self.publish_atomic_with(commits,&[],&consumed_contents(commits),false,Some(&mut player),&templates)
+    }
+    /// An RBMK lid off (`RBMKBase.onScrew`): the column, the lid owed at the top in its chunk's record, and the
+    /// screwdriver's wear (`ItemTooling.onItemUse`, still the one in hand) in one exclusive publication.
+    fn commit_lid_removal(&mut self,commit:&ntm_core::server::MachineCommit,drop:&ntm_core::server::RetainedDrop,tool:&str)->bool{
+        let mut wear=|g:&mut crate::game::Game<'_>|{
+            if !g.held().is_some_and(|h|&*h.item==tool){return false;}
+            g.damage_held_tool();
+            true
+        };
+        self.publish_atomic_with(std::slice::from_ref(commit),&[],std::slice::from_ref(drop),false,Some(&mut wear),&[])
+    }
+    /// The height the engine places the RBMK columns with from now on (`dialColumnHeight`).
+    fn set_column_height(&mut self,height:i32){
+        for block in ntm_core::rbmk::persist::COLUMNS{horizon_world::mod_multiblocks::set_column_height(block,Some(height));}
     }
     fn commit_structural(&mut self,cells:&[ntm_core::server::CellWrite],drops:&[ntm_core::server::RetainedDrop],owners:&[(String,[i32;3])])->bool{
         let own=cells.iter().filter(|c|owners.contains(&c.guard.key())).map(|c|(c.guard.dim.clone(),c.guard.pos,ntm_core::blockstate::id_of(&c.desired).into())).collect();
@@ -1694,8 +1745,45 @@ impl ServerHost for Host<'_, '_> {
     fn remove_effect(&mut self,id:&str,effect:&str){
         self.game.native_visit_player(id,|g|crate::game::ntm_items::remove_effect(g,effect));
     }
+    /// Read through the player, for the components that tell a renamed RBMK rod (`Stack::tagged`).
     fn inventory_stacks(&mut self,id:&str)->Option<Vec<Stack>> {
-        Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {id:c.item,count:c.count,damage:0,custom:c.custom_data}).collect())
+        let read=|s:&ItemStack| Stack {
+            custom:s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt),
+            tagged:ntm_core::rbmk::persist::rod_of(&s.item).is_some() && rod_tagged(s),
+            ..Stack::new(&s.item,s.count)
+        };
+        self.game.native_visit_player(id,|g|g.inventory.iter().flatten().chain(g.armor.iter().flatten()).chain(g.offhand.iter()).map(read).collect())
+            .or_else(||self.carried_stacks(id))
+    }
+    fn carried_stacks(&mut self,id:&str)->Option<Vec<Stack>> {
+        Some(self.game.native_player_inventory(id)?.into_iter().map(|c|Stack {custom:c.custom_data,..Stack::new(&c.item,c.count)}).collect())
+    }
+    fn set_fire_unless_wet(&mut self,id:&str,seconds:i32) {
+        // Wet from where the player is published, without a visit: visiting a burning guest each tick while the
+        // water puts them out brought their fire back (the J proof's `burning_into_water`, an engine contact).
+        let here=self.game.native_players().into_iter().find(|p|p.uuid==id).filter(|p|dim_of(&p.dimension)==Some(self.game.dim));
+        if let Some(p)=here {
+            let at=horizon_core::geometry::Vec3::new(p.pos[0],p.pos[1],p.pos[2]);
+            let feet=self.game.world.block(at.x.floor() as i32,at.y.floor() as i32,at.z.floor() as i32);
+            // The rain at the top of the box needs its real height: the visit below reads it.
+            if self.game.res.facts().get(feet).fluid==horizon_client::blocks::Fluid::Water || self.game.in_rain(at,at.y) {return;}
+        }
+        self.game.native_visit_player(id,|g| {
+            let Some(p)=g.player.as_ref() else {return};
+            // `Entity.isWet`: in water, or rain at the feet or the top of the box. The water at the feet counts too
+            // (as the trident's `in_water_or_rain`): the touching flag alone read dry for a tick in a proof.
+            let (at,top)=(p.position,p.bounds().max_position().y);
+            let feet=g.world.block(at.x.floor() as i32,at.y.floor() as i32,at.z.floor() as i32);
+            let water=g.res.facts().get(feet).fluid==horizon_client::blocks::Fluid::Water;
+            if p.fluids.was_touching_water || water || g.in_rain(at,top) {return;}
+            // `setFire(seconds)` as 1.7.10's: Fire Protection's highest level among the armour, not the engine's
+            // `burning_time` (which sums the pieces).
+            let protection=g.armor.iter().flatten().map(|a|a.enchantment_level("minecraft:fire_protection")).max().unwrap_or(0);
+            if let Some(p)=g.player.as_mut() {
+                let ticks=ntm_core::rbmk::hazards::fire_ticks(seconds,protection,p.fire_ticks);
+                p.set_remaining_fire_ticks(ticks);
+            }
+        });
     }
     fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
         Some(self.game.native_player_inventory(id)?.into_iter().map(|c| (c.item, c.count)).collect())
@@ -1842,6 +1930,9 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::furnaces::COMBINATION => Some(SlotPolicy(combination_furnace_slot_policy)),
         ntm_core::welders::ARC => Some(SlotPolicy(arc_welder_slot_policy)),
         ntm_core::welders::SOLDER => Some(SlotPolicy(soldering_slot_policy)),
+        "ntm:rbmk_storage" => Some(SlotPolicy(rbmk_storage_slot_policy)),
+        "ntm:rbmk_outgasser" => Some(SlotPolicy(rbmk_outgasser_slot_policy)),
+        b if ntm_core::rbmk::persist::is_column(b) => Some(SlotPolicy(rbmk_channel_slot_policy)),
         _ => None,
     };
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
@@ -1885,6 +1976,19 @@ fn iron_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &Ite
 fn brick_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy("ntm:machine_furnace_brick_off", slots, slot, item, action, origin)
+}
+fn rbmk_storage_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy("ntm:rbmk_storage", slots, slot, item, action, origin)
+}
+fn rbmk_outgasser_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy("ntm:rbmk_outgasser", slots, slot, item, action, origin)
+}
+/// The fuel channels and the heater: no slot to automation (`TileEntityRBMKSlottedBase`).
+fn rbmk_channel_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy("ntm:rbmk_rod", slots, slot, item, action, origin)
 }
 fn machine_slot_policy(block: &str, slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
@@ -1931,7 +2035,17 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
         || &*s.item == ntm_core::server::native_server::IDENTIFIER || &*s.item == ntm_core::broken::ID {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
     }
+    // An RBMK rod reads its keys from the 1.7.10 `stackTagCompound`, which any of these data made (`Stack::tagged`).
+    if ntm_core::rbmk::persist::rod_of(&s.item).is_some() {
+        t.tagged = rod_tagged(s);
+    }
     Some(t)
+}
+
+/// Whether the 1.7.10 stack had its `stackTagCompound`: any of these components made it.
+fn rod_tagged(s: &ItemStack) -> bool {
+    s.data().is_some_and(|d| d.custom_name.is_some() || !d.enchantments.is_empty() || d.repair_cost > 0
+        || d.other("minecraft:lore").is_some() || d.other("minecraft:custom_data").is_some())
 }
 
 /// The game's stack for `new`: the old one with its components when it is
@@ -1956,6 +2070,17 @@ fn item(new: Option<&Stack>, old: Option<ItemStack>) -> Option<ItemStack> {
         it.data_mut().set_other("minecraft:custom_data",Some(tag));
     }
     result
+}
+
+/// `ItemRBMKRod.onCreated` on a crafting grid's result: `setNBTDefaults` gives the rod a new tag (its full yield, core
+/// and hull 20), so a rod renamed after it is crafted keeps them, as in Java. A result that had custom data gets the
+/// defaults in its place (Java's `new NBTTagCompound()`); its other components stay (no recipe of the port makes any).
+pub(super) fn rbmk_crafted(result: &mut Option<ItemStack>) {
+    let Some(r) = result.as_ref() else { return };
+    let Some(rod) = ntm_core::rbmk::persist::rod_of(&r.item) else { return };
+    let Some(mut s) = stack(result) else { return };
+    s.custom = ntm_core::rbmk::persist::with_rod_stack(None, &ntm_core::rbmk::rods::RodStack::fresh(rod));
+    *result = item(Some(&s), result.take());
 }
 
 /// The engine's SNBT, as Java's, reads the bare words of a non-finite double (`NaNd`, `Infinityd`) as text: an RBMK

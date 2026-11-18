@@ -20,6 +20,9 @@ pub trait ServerHost: Kv {
     /// NativeCarried includes custom data already; older hosts keep their
     /// plain inventory contract through this default adapter.
     fn inventory_stacks(&mut self,id:&str)->Option<Vec<container_bridge::Stack>> {self.inventory(id).map(|v|v.into_iter().map(|(id,n)|container_bridge::Stack::new(&id,n)).collect())}
+    /// `inventory_stacks` without the components only an RBMK rod's tag flag reads (`Stack::tagged`), cheap enough for
+    /// every tick: what decides a rod's heat is its custom data.
+    fn carried_stacks(&mut self,id:&str)->Option<Vec<container_bridge::Stack>> {self.inventory_stacks(id)}
 
     fn block_resistance(&mut self,dim:&str,p:Pos)->Option<f32> {self.get_block(dim,p).map(|b|crate::blast::vanilla::resistance(&b).max(0.))}
 
@@ -161,6 +164,9 @@ pub trait ServerHost: Kv {
     fn hurt(&mut self, _id: &str, _amount: f32, _kind: &str) {}
     /// A status effect on player `id` (`poison`) for `ticks`.
     fn effect(&mut self, _id: &str, _effect: &str, _ticks: u32, _amplifier: u8) {}
+    /// `HazardTypeHot.onUpdate`: `if(!target.isWet()) target.setFire(seconds)`, player `id` burning for at least
+    /// `seconds` (less fire protection) unless in water or rain.
+    fn set_fire_unless_wet(&mut self, _id: &str, _seconds: i32) {}
     /// The world's seed (`World.getSeed`): it seeds the sickness rolls' random (radiation::SicknessRng).
     fn world_seed(&mut self) -> i64 {
         0
@@ -188,6 +194,14 @@ pub trait ServerHost: Kv {
     fn commit_player_transfer(&mut self, _transfer: &PlayerTransfer, _commits: &[MachineCommit]) -> bool {
         false
     }
+    /// An RBMK lid off its column (`RBMKBase.onScrew`): the column's commit and the lid owed at `drop.origin` (in its
+    /// chunk's record, or dropped there) published together, and the acting player's held `tool` worn in the same
+    /// publication, refused as a whole if it is no longer in hand. Unsupported hosts refuse.
+    fn commit_lid_removal(&mut self, _commit: &MachineCommit, _drop: &RetainedDrop, _tool: &str) -> bool {
+        false
+    }
+    /// The height RBMK columns are placed with from now on (`dialColumnHeight`, 2..16 cells): standing ones keep theirs.
+    fn set_column_height(&mut self, _height: i32) {}
 }
 
 /// A stack a player holds: what the logic reads of it, and the whole stack (SNBT, every component) the host compares
@@ -316,6 +330,10 @@ pub struct CellSnapshot {
 pub struct RetainedDrop {
     pub origin:CellGuard,
     pub items:Vec<String>,
+    /// The drop's own name in the ledger, for one an origin may owe more than once in a generation (an RBMK lid);
+    /// none: named by its origin (`ledger::retained_id`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id:Option<u64>,
 }
 /// Consumed world cells publish in the same atomic operation as the machine.
 #[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
@@ -411,6 +429,12 @@ struct Ready {
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
     /// place, taken by their reactor's next accepted step.
     rbmk_ejects: BTreeMap<Key, [f64; 3]>,
+    /// The RBMK dials as `RBMKDials` caches them (`rbmk_columns`): created when the server starts.
+    rbmk_dials: crate::rbmk::dials::DialState,
+    /// Cells above a column's cell that changed: an orphaned dummy there goes (`rbmk_columns`).
+    rbmk_orphans: Vec<(String, Pos)>,
+    /// Cells whose dummy went: the column's cells under it go down to its core, which breaks (`rbmk_columns`).
+    rbmk_breaks: Vec<(String, Pos)>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
@@ -488,6 +512,15 @@ impl Server {
         let items: Vec<(String, u32)> = items.into_iter().filter(|i| i.1 > 0).collect();
         if !items.is_empty() {
             host.drop_items(dim, pos, &items);
+        }
+        // `RBMKBase.breakBlock`: the lid at the top as the dial reads now (the core, if that cell is not loaded).
+        if let crate::machine::Data::Rbmk(c) = &m.data
+            && let Some(lid) = c.lid.item()
+        {
+            let top = self.rbmk_lid_drop_at(pos);
+            if !host.drop_items(dim, top, &[(lid.into(), 1)]) {
+                host.drop_items(dim, pos, &[(lid.into(), 1)]);
+            }
         }
     }
 
@@ -749,6 +782,7 @@ pub use pile_server::PileUse;
 
 mod zirnox_server;
 mod rbmk_server;
+pub mod rbmk_columns;
 mod transaction;
 pub mod obligations;
 mod generation;

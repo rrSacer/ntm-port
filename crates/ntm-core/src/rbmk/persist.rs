@@ -53,6 +53,148 @@ pub fn kind_of(block: &str) -> Option<(Kind, bool)> {
     })
 }
 
+/// The eighteen RBMK columns (`RBMKBase`): engine columns 2..16 cells high on `ntm:dummy_rbmk` (T02), each with its
+/// block entity. Only those of [`kind_of`] step yet; the others keep their lid and their slots.
+pub const COLUMNS: [&str; 18] = [
+    "ntm:rbmk_rod",
+    "ntm:rbmk_rod_mod",
+    "ntm:rbmk_rod_reasim",
+    "ntm:rbmk_rod_reasim_mod",
+    "ntm:rbmk_control",
+    "ntm:rbmk_control_mod",
+    "ntm:rbmk_control_auto",
+    "ntm:rbmk_control_reasim",
+    "ntm:rbmk_control_reasim_auto",
+    "ntm:rbmk_blank",
+    "ntm:rbmk_boiler",
+    "ntm:rbmk_reflector",
+    "ntm:rbmk_absorber",
+    "ntm:rbmk_moderator",
+    "ntm:rbmk_outgasser",
+    "ntm:rbmk_storage",
+    "ntm:rbmk_cooler",
+    "ntm:rbmk_heater",
+];
+
+/// The block every cell of a column but its core holds.
+pub const DUMMY: &str = "ntm:dummy_rbmk";
+
+pub fn is_column(block: &str) -> bool {
+    COLUMNS.contains(&block)
+}
+
+/// `RBMKBase.hasOwnLid`: the control rods, whose lid is theirs and never comes off (`isLidRemovable` false).
+pub fn has_own_lid(block: &str) -> bool {
+    matches!(
+        block,
+        "ntm:rbmk_control" | "ntm:rbmk_control_auto" | "ntm:rbmk_control_mod" | "ntm:rbmk_control_reasim" | "ntm:rbmk_control_reasim_auto"
+    )
+}
+
+/// The slots of a column's block entity (`TileEntityRBMKSlottedBase`'s size, the machine file's slots).
+pub fn slot_count(block: &str) -> usize {
+    match block {
+        "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod" | "ntm:rbmk_heater" => 1,
+        "ntm:rbmk_outgasser" => 2,
+        "ntm:rbmk_storage" => 12,
+        _ => 0,
+    }
+}
+
+/// The values a column's model and screen read (the machine file's `data`).
+pub fn screen_len(block: &str) -> usize {
+    match block {
+        "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod" | "ntm:rbmk_heater" => 7,
+        "ntm:rbmk_control" | "ntm:rbmk_control_mod" | "ntm:rbmk_control_reasim" | "ntm:rbmk_boiler" => 6,
+        "ntm:rbmk_control_auto" | "ntm:rbmk_control_reasim_auto" => 9,
+        "ntm:rbmk_outgasser" => 5,
+        _ => 1,
+    }
+}
+
+/// A column's lid (`RBMKBase.metaToLid`: the core's metadata in Java).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Lid {
+    /// `DIR_NO_LID`: as every column is placed (`getDirModified`).
+    #[default]
+    None,
+    /// `rbmk_lid`, `DIR_NORMAL_LID`.
+    Standard,
+    /// `rbmk_lid_glass`, `DIR_GLASS_LID`.
+    Glass,
+}
+
+impl Lid {
+    /// The lid item `item` is, if one.
+    pub fn of_item(item: &str) -> Option<Lid> {
+        match item {
+            "ntm:rbmk_lid" => Some(Lid::Standard),
+            "ntm:rbmk_lid_glass" => Some(Lid::Glass),
+            _ => None,
+        }
+    }
+    /// The item this lid drops as.
+    pub fn item(self) -> Option<&'static str> {
+        match self {
+            Lid::None => None,
+            Lid::Standard => Some("ntm:rbmk_lid"),
+            Lid::Glass => Some("ntm:rbmk_lid_glass"),
+        }
+    }
+}
+
+/// The six directions in `ForgeDirection.VALID_DIRECTIONS`' order: down, up, north, south, west, east.
+pub const VALID_DIRECTIONS: [[i32; 3]; 6] = [[0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1], [-1, 0, 0], [1, 0, 0]];
+
+/// A fluid port (`TilePort.PortDef.make`): the cell it sits in, and each cell it connects to with the direction from
+/// the port (`DirPos`).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct PortDef {
+    pub at: [i32; 3],
+    pub connections: Vec<([i32; 3], [i32; 3])>,
+}
+
+impl PortDef {
+    pub fn make(at: [i32; 3], dirs: &[[i32; 3]]) -> Self {
+        PortDef { at, connections: dirs.iter().map(|d| ([at[0] + d[0], at[1] + d[1], at[2] + d[2]], *d)).collect() }
+    }
+}
+
+/// Where an `rbmk_loader` stands under a piped column (the boiler, heater, cooler and outgasser `updateEntity`): two
+/// cells below wins over one (`ClassicLoader` is asked first).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum LoaderShape {
+    None,
+    Close,
+    Classic,
+}
+
+impl LoaderShape {
+    pub fn of(loader_one_below: bool, loader_two_below: bool) -> Self {
+        if loader_two_below {
+            LoaderShape::Classic
+        } else if loader_one_below {
+            LoaderShape::Close
+        } else {
+            LoaderShape::None
+        }
+    }
+}
+
+/// A piped column's fluid ports (`TileEntityRBMKBase.getPortsNoLoader`, `getPortsCloseLoader`,
+/// `getPortsClassicLoader`), its core at `core` and `column_height` its `getColumnHeight` (cells above the core). Java
+/// builds each shape once per block entity, with the dial as it read then, and keeps it (T08 decides what height it
+/// passes; the column's own is the world's).
+pub fn column_ports(core: [i32; 3], column_height: i32, shape: LoaderShape) -> Vec<PortDef> {
+    let [x, y, z] = core;
+    let top = PortDef::make([x, y + column_height, z], &[[0, 1, 0]]);
+    match shape {
+        LoaderShape::None => vec![top, PortDef::make(core, &[[0, -1, 0]])],
+        LoaderShape::Close => vec![top, PortDef::make([x, y - 1, z], &VALID_DIRECTIONS)],
+        LoaderShape::Classic => vec![top, PortDef::make(core, &[[0, -1, 0]]), PortDef::make([x, y - 2, z], &VALID_DIRECTIONS)],
+    }
+}
+
 /// The fuel rod an item is (`ItemRBMKRod`): `ntm:rbmk_fuel_<name>`, the Java variable of `hep` being `hep239`.
 pub fn rod_of(item: &str) -> Option<&'static RodType> {
     let name = item.strip_prefix("ntm:")?;
@@ -75,6 +217,18 @@ pub fn rod_stack(custom: Option<&str>) -> RodStack {
         v => v.parse::<f64>().ok(),
     });
     RodStack { has_tag: true, yield_: read("yield"), xenon: read("xenon"), core: read("core"), hull: read("hull"), ..RodStack::bare() }
+}
+
+/// The rod's tag of a whole stack (T03): the 1.7.10 stack has its `stackTagCompound` when it holds any data that one
+/// held (`Stack::tagged`), its keys in `minecraft:custom_data`; without one, `ItemRBMKRod.setNBTDefaults` on first use.
+/// A rod with a name, lore, enchantments or a repair cost and no key yet has a tag with none: its yield reads 0
+/// (`getDouble`), a dead rod, as in Java.
+pub fn stack_rod(s: &Stack) -> RodStack {
+    match (&s.custom, s.tagged) {
+        (Some(custom), _) => rod_stack(Some(custom)),
+        (None, true) => RodStack { has_tag: true, ..RodStack::bare() },
+        (None, false) => RodStack::bare(),
+    }
 }
 
 /// `custom` with the rod's tag written over its four keys, every other field kept. None: no tag to write (the stack
@@ -112,11 +266,24 @@ pub struct RbmkColumn {
     pub has_rod: bool,
     /// The engine's slots: the fuel channel's one slot, none for the others.
     pub slots: Slots,
+    /// Its lid (T02); none in a save from before.
+    #[serde(default, skip_serializing_if = "is_no_lid")]
+    pub lid: Lid,
+    /// How many values its screen reads ([`screen_len`]); 0 in a save from before T02 (a fuel channel's 7, else 1).
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub screen: u8,
+}
+
+fn is_no_lid(l: &Lid) -> bool {
+    *l == Lid::None
+}
+
+fn is_zero(n: &u8) -> bool {
+    *n == 0
 }
 
 impl RbmkColumn {
     pub fn of(block: &str) -> Self {
-        let rods = kind_of(block).is_some_and(|(k, _)| matches!(k, Kind::Rod | Kind::RodReaSim));
         RbmkColumn {
             schema: SCHEMA,
             heat: 0.0,
@@ -127,8 +294,15 @@ impl RbmkColumn {
             last_flux_quantity: 0.0,
             last_flux_ratio: 0.0,
             has_rod: false,
-            slots: if rods { vec![None] } else { Vec::new() },
+            slots: vec![None; slot_count(block)],
+            lid: Lid::None,
+            screen: screen_len(block) as u8,
         }
+    }
+
+    /// `TileEntityRBMKBase.hasLid` of a column of `block`: a control rod's own lid always, else the lid put on it.
+    pub fn has_lid(&self, block: &str) -> bool {
+        has_own_lid(block) || self.lid != Lid::None
     }
 }
 
@@ -145,9 +319,22 @@ impl Slotted for RbmkColumn {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
-    /// The models' values (`docs/visual-fiel.md`): still neutral, as before T01 (T19 lights them).
+    /// The models' values (`docs/visual-fiel.md`): the first is the lid the model shows (`lid_cover` at 1,
+    /// `lid_glass` at 2, as `RBMKBase.renderLid` from the core's metadata; a control rod's own is in its model); the
+    /// others still neutral (T19 lights them).
     fn screen_data(&self) -> Vec<i32> {
-        vec![0; if self.slots.is_empty() { 1 } else { 7 }]
+        let n = match self.screen {
+            0 if self.slots.is_empty() => 1,
+            0 => 7,
+            n => usize::from(n),
+        };
+        let mut v = vec![0; n];
+        v[0] = match self.lid {
+            Lid::None => 0,
+            Lid::Standard => 1,
+            Lid::Glass => 2,
+        };
+        v
     }
 }
 
@@ -400,6 +587,28 @@ mod tests {
         assert_eq!(settle(&n, std::iter::once(&lone), "d", 1).1[0], CompState::fresh("d", 1, [5, 5]));
     }
 
+    /// `ItemRBMKRod.getDouble` over the whole stack: no 1.7.10 tag, the defaults on first use; any data that made one
+    /// (a name, lore, enchantments, a repair cost) and no key, a yield of 0 (the renamed rod's bug, kept).
+    #[test]
+    fn a_stack_with_a_tag_but_no_key_reads_a_dead_rod_as_java() {
+        let rod = rod_of("ntm:rbmk_fuel_ueu").unwrap();
+        let plain = Stack::new("ntm:rbmk_fuel_ueu", 1);
+        let mut fresh = stack_rod(&plain);
+        assert!(!fresh.has_tag);
+        assert_eq!((fresh.yield_(rod), fresh.core_heat(rod), fresh.hull_heat(rod), fresh.poison(rod)), (rod.yield_, 20.0, 20.0, 0.0));
+        let renamed = Stack { tagged: true, ..plain.clone() };
+        let mut dead = stack_rod(&renamed);
+        assert!(dead.has_tag);
+        assert_eq!((dead.yield_(rod), dead.core_heat(rod), dead.hull_heat(rod), dead.enrichment(rod)), (0.0, 0.0, 0.0, 0.0));
+        // Its first write adds the keys to that tag, as `setDouble` does (the others still read 0).
+        dead.set_hull_heat(rod, 30.0);
+        let custom = with_rod_stack(None, &dead).unwrap();
+        assert_eq!(rod_stack(Some(&custom)), RodStack { has_tag: true, hull: Some(30.0), ..RodStack::bare() });
+        // A crafted rod (`onCreated`) carries the defaults: renamed then, it keeps them.
+        let crafted = Stack { custom: with_rod_stack(None, &RodStack::fresh(rod)), tagged: true, ..plain };
+        assert_eq!(stack_rod(&crafted).yield_, Some(rod.yield_));
+    }
+
     #[test]
     fn the_rod_tag_round_trips_through_the_stack_data_keeping_foreign_fields() {
         let rod = rod_of("ntm:rbmk_fuel_ueu").unwrap();
@@ -434,5 +643,33 @@ mod tests {
         assert!(with_rod_stack(None, &RodStack { has_tag: true, core: Some(f64::INFINITY), ..RodStack::bare() }).unwrap().contains("core:Infinityd"));
         // A word that is not a double is not one.
         assert_eq!(rod_stack(Some("{yield:\"5.0d\",core:infd}")).yield_, None);
+    }
+}
+
+#[cfg(test)]
+mod port_tests {
+    use super::*;
+
+    /// `getPorts*` of a column at (10, 64, -3), 4 high (`getColumnHeight` 3) and 16 high (15), as the Java builds them.
+    #[test]
+    fn the_piped_columns_ports_are_javas() {
+        let core = [10, 64, -3];
+        assert_eq!(LoaderShape::of(false, false), LoaderShape::None);
+        assert_eq!(LoaderShape::of(true, false), LoaderShape::Close);
+        assert_eq!(LoaderShape::of(true, true), LoaderShape::Classic, "two below is asked first");
+        assert_eq!(LoaderShape::of(false, true), LoaderShape::Classic);
+        let none = column_ports(core, 3, LoaderShape::None);
+        assert_eq!(none, vec![
+            PortDef { at: [10, 67, -3], connections: vec![([10, 68, -3], [0, 1, 0])] },
+            PortDef { at: [10, 64, -3], connections: vec![([10, 63, -3], [0, -1, 0])] },
+        ]);
+        let close = column_ports(core, 15, LoaderShape::Close);
+        assert_eq!(close[0], PortDef { at: [10, 79, -3], connections: vec![([10, 80, -3], [0, 1, 0])] });
+        assert_eq!(close[1].at, [10, 63, -3]);
+        assert_eq!(close[1].connections.iter().map(|c| c.0).collect::<Vec<_>>(), vec![[10, 62, -3], [10, 64, -3], [10, 63, -4], [10, 63, -2], [9, 63, -3], [11, 63, -3]]);
+        let classic = column_ports(core, 1, LoaderShape::Classic);
+        assert_eq!(classic.iter().map(|p| p.at).collect::<Vec<_>>(), vec![[10, 65, -3], [10, 64, -3], [10, 62, -3]]);
+        assert_eq!(classic[2].connections.len(), 6);
+        assert_eq!(classic[2].connections[1], ([10, 63, -3], [0, 1, 0]));
     }
 }

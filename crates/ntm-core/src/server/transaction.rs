@@ -435,7 +435,7 @@ impl Server {
                                 // old physical drop rather than silently losing it.
                                 if blockstate::id_of(&actual)==blockstate::id_of(&g.state){
                                     retained.retain(|d|d.origin.key()!=g.key());
-                                    if blockstate::id_of(&actual)!=blockstate::id_of(desired)&&!snapshot.items.is_empty(){retained.push(RetainedDrop{origin:g.clone(),items:snapshot.items.clone()});}
+                                    if blockstate::id_of(&actual)!=blockstate::id_of(desired)&&!snapshot.items.is_empty(){retained.push(RetainedDrop{origin:g.clone(),items:snapshot.items.clone(),id:None});}
                                 }
                                 cells.push(CellWrite{notify:false,initial:None,guard:g.clone(),expected:snapshot,desired:desired.clone(),destroy:false});
                                 physical=true;keep.push((*pos,desired.clone()));guards.push(g.clone());
