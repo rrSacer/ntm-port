@@ -60,6 +60,21 @@ def setup(g):
     g.evidence['recipe_index_plus_one'] = chosen
     g.check('the_list_picks_rock_cobble', chosen == 1, chosen)
     g.put('ntm:battery_creative', 1, 0)
+    # Slots 3 and 4 take nothing (`SlotNonRetarded` asks the module, whose recipes have one item): a stack clicked onto
+    # them stays on the cursor.
+    g.command('give @s minecraft:gravel 8')
+    time.sleep(1)
+    hot = next(s['slot'] for s in g.ctl('screen')['slots'] if s['slot'] < 36 and s.get('item') == 'minecraft:gravel')
+    g.ctl(f'click-slot {hot}')
+    refused = []
+    for slot in (303, 304):
+        g.ctl(f'click-slot {slot}')
+        time.sleep(.4)
+        screen = g.ctl('screen')
+        refused.append((screen.get('carried') or {}).get('count') == 8 and not any(s['slot'] == slot and s.get('item') for s in screen['slots']))
+    g.ctl(f'click-slot {hot}')
+    g.command('clear @s minecraft:gravel')
+    g.check('slots_3_and_4_take_nothing', all(refused), refused)
     g.put('minecraft:cobblestone', 4, 2)
     g.poll(lambda s: output(s), timeout=60)
     slots, colloid, water = settled(g, core)

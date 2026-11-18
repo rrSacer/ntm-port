@@ -38632,7 +38632,7 @@
       }
     },
     "ntm:machine_rockmill": {
-      "source": "ContainerMachineRockMill, GUIMachineRockMill (processing/gui_rockmill.png 176x220): 0 the battery (152,91), 1 the blueprint (35,90; no pools in the port), 2-4 the inputs (8/26/44,27), 5-7 the outputs (80/98/116,27); the power bar (152,18,16,71), the progress arrow (62,90,70,16), the LEDs (51/56,85), the two 52x16 tanks (8,63) and (80,63); button 0 at (7,89) opens the crafter's recipe list in place of HBM's GUIScreenRecipeSelector; MachineRockMill.getDimensions {2,0,2,2,2,2} offset 2, the eight getAllPorts cells are makeExtra combo proxies (inventory, power, fluid); RenderRockMill rotates the model 90 degrees, Base always, Frame only with a block on top (hidden here: no neighbour query in the model), the Wheel turning about -y up to 15 degrees a tick (MAX_SPEED) while it works",
+      "source": "ContainerMachineRockMill, GUIMachineRockMill (processing/gui_rockmill.png 176x220): 0 the battery (152,91), 1 the blueprint (35,90; no pools in the port), 2-4 the inputs (8/26/44,27; SlotNonRetarded asks the module, whose recipes have one item: 3 and 4 take nothing), 5-7 the outputs (80/98/116,27); the power bar (152,18,16,71), the progress arrow (62,90,70,16), the LEDs (51/56,85), the two 52x16 tanks (8,63) and (80,63); button 0 at (7,89) opens the crafter's recipe list in place of HBM's GUIScreenRecipeSelector; MachineRockMill.getDimensions {2,0,2,2,2,2} offset 2, the eight getAllPorts cells are makeExtra combo proxies (inventory, power, fluid); RenderRockMill rotates the model 90 degrees, Base always, Frame only with a block on top (hidden here: no neighbour query in the model), the Wheel turning about -y up to 15 degrees a tick (MAX_SPEED) while it works",
       "machine": {
         "slots": [
           {
@@ -38656,12 +38656,12 @@
           {
             "x": 26,
             "y": 27,
-            "accept_recipes": "rockmill"
+            "accept": []
           },
           {
             "x": 44,
             "y": 27,
-            "accept_recipes": "rockmill"
+            "accept": []
           },
           {
             "x": 80,

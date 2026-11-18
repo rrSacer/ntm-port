@@ -127,6 +127,7 @@
       "inputItems": [
         {
           "ids": [
+            "minecraft:red_sand",
             "minecraft:sand"
           ],
           "count": 1
@@ -524,6 +525,7 @@
       "inputItems": [
         {
           "ids": [
+            "minecraft:red_sand",
             "minecraft:sand"
           ],
           "count": 2

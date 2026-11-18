@@ -253,6 +253,9 @@ def export(source, output, rows):
     for machine, cls in [('assembly', 'AssemblyMachineRecipes'), ('chemical_plant', 'ChemicalPlantRecipes'), ('centrifuge', 'CentrifugeRecipes'), ('rockmill', 'RockMillRecipes')]:
         path = Path('src/main/java/com/hbm/inventory/recipes') / (cls + '.java')
         text = clean((source / path).read_text())
+        if machine == 'rockmill':
+            # Forge registers Blocks.sand with wildcard metadata: the rock mill's `sand` takes red sand too.
+            resolver.ore['sand'].add('minecraft:red_sand')
         controls = ranges(text); recipes = []; skipped = []
         pattern = r'\brecipes\.put' if machine == 'centrifuge' else r'\bthis\.register'
         start = text.index('public void registerDefaults()')

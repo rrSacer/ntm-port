@@ -95,17 +95,18 @@
 },
 {
 "name": "rock.sand",
-"label": "Moer sand",
+"label": "Moer red sand",
 "source": "src/main/java/com/hbm/inventory/recipes/RockMillRecipes.java:60",
 "duration": 100,
 "power": 25,
 "in": [
 {
 "ids": [
+"minecraft:red_sand",
 "minecraft:sand"
 ],
 "n": 1,
-"label": "sand"
+"label": "red sand"
 }
 ],
 "fin": [
@@ -478,10 +479,11 @@
 "in": [
 {
 "ids": [
+"minecraft:red_sand",
 "minecraft:sand"
 ],
 "n": 2,
-"label": "sand"
+"label": "red sand"
 }
 ],
 "fin": [

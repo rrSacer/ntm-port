@@ -671,6 +671,7 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - `maxPower = max(power, receita.power × 100, 2 500)`; o progresso zera quando falta energia, entrada ou espaço.
 - As receitas de trituração dão uma saída sorteada por peso (`ChanceOutputMulti`). O `canFitOutput` exige o slot de saída vazio para sortear.
 - O grupo `autoswitch.crushing` troca de receita pela pedra que está no primeiro slot de entrada.
+- As entradas são `SlotNonRetarded`, que pergunta ao módulo (`ModuleMachineBase.isItemValid`). Como toda receita do moinho tem um item só, os slots 3 e 4 não aceitam nada, e o slot 2 aceita a entrada da receita atual ou a primeira entrada de outra receita do mesmo grupo.
 - A receita é escolhida pela tela (`receiveControl` "index"/"selection").
 - Efeitos só de som (passo do bloco moído, a cada 3 ticks) e de partículas no cliente; nada no mundo.
 
@@ -684,10 +685,14 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
   - campo `pick` com o sorteio por peso, por um hash fixo no lugar do aleatório do mundo;
   - o slot de saída vazio para sortear;
   - uma saída simples só empilha sobre o mesmo item;
-  - tanques e buffer como no Java;
+  - tanques e buffer como no Java, os tanques redimensionados a cada tick (`setupTanks`);
   - progresso zerado sem energia;
   - bateria no slot 0;
-  - troca automática do grupo de trituração.
+  - troca automática do grupo de trituração, **só quando não resta a entrada da receita atual**.
+    - O slot 0 do Java guarda uma pedra só, então ele nunca tem as duas ao mesmo tempo. A pilha de entradas do port pode ter, e trocaria a cada tick sem moer nada, esvaziando o tanque quando o fluido muda (revisão, P1).
+    - A PUREX passa pela mesma regra, com teste.
+- **Os slots 3 e 4 não aceitam nada.** Antes aceitavam pedra, e cabiam 3 × 64 onde o Java aceita 64.
+- **A areia vermelha** entra em `rock.sand` e `rock.clay`: o `sand` do Forge é `Blocks.sand` com metadado curinga.
 - **As 8 portas de energia e fluido nas células do Java,** e as mesmas células como portas de inventário do multibloco.
 - **A tela `gui_rockmill.png` 176 × 220:**
   - a barra de energia, a seta de progresso, os LEDs e os dois tanques;
@@ -702,17 +707,26 @@ O cristal `ntm:laser_crystal_digamma` põe o FEL no modo DRX. No Java (`TileEnti
 - A roda gira em velocidade cheia enquanto trabalha: falta a aceleração e a desaceleração de 0,1 grau/tick².
 - A bateria aceita só a bateria criativa, como nas outras estações do crafter.
 - A lista mostra as receitas de trituração como "Moer <entrada>". O seletor do Java mostra o ícone da receita.
-- Os nomes das pedras vanilla aparecem em inglês, porque o catálogo não tem nome pt_BR para elas.
+- Os nomes das pedras vanilla aparecem em inglês, porque o catálogo não tem nome pt_BR para elas. A de areia aparece como "Moer red sand", porque o representante é o primeiro id em ordem lexical.
+- **A recusa do slot 2 pela receita atual não foi portada** (revisão, P2): em `rock.clay` ou `rock.colloid`, o Java recusa pedregulho, e o port aceita qualquer pedra de alguma receita.
+  - A regra de um slot no motor (`ModSlotFilter`, a política) vê só os slots, não a receita da máquina.
+  - O item que não serve fica no slot sem ser usado, até a mão tirá-lo. O Java deixaria um funil tirá-lo (`isSlotClogged`); isso não foi conferido no port.
+  - Corrigir pede que a política veja o estado da máquina, uma extensão do motor.
 
-**Provas** (cliente `37145d44caaa4df963344ec7a9304ce351f301ef6e4412654a2c2fa8f2820e05`, pacote `103e7809f63f90d072791e9d6428c2a2e06c76a0c50b9816ff92e99e4f67efa0`)
-- `ntm-core`: 870 testes passando, 8 deles do moinho; clippy limpo.
+**Provas** (cliente `9fe45e0e9db04c426716737d9484fc3fda13e294b464fc2ba6ee123189681f0a`, pacote `526602e0e43d19cfa741736c06117b497ef040787d96d7d9178204205012f579`, com a correção da revisão; evidência em `content-gen-evidence/onda2-s2/rockmill`)
+- `ntm-core`: 877 testes passando, 12 deles do moinho; clippy limpo; gerador de conteúdo com 347 OK.
+  - Da revisão: duas pedras juntas (o pedregulho é moído até acabar, a receita não troca, o coloide fica, e só então a do netherrack); a PUREX sem oscilar; os tanques de entrada e de saída redimensionados a cada tick; a areia vermelha.
+  - O teste antigo da PUREX, que esperava a troca com a própria entrada ainda presente, passou a esperar o contrato novo.
 - Mutantes escolhidos à mão no código novo do crafter: 6/6 mortos.
   - De 7, um sobreviveu porque a regra "slot vazio para sortear" repetia a de saída única; ela foi tirada e virou comentário.
   - Outro sobreviveu porque faltava o caso do sorteio em 1,0; ganhou um teste.
-- Em jogo (`run-native-reactors.py rockmill`): 15/15.
+- Mutantes da correção (`tools/mutants/rockmill.py`): 8/8 mortos.
+  - O redimensionamento do tanque de saída sobreviveu de início; ganhou um teste e morreu.
+- Em jogo (`run-native-reactors.py rockmill`): 18/18.
   - O moinho ocupa os 5 × 3 × 5.
   - A água chega por um barril e um duto tipado até uma das portas.
   - A lista escolhe "Moer cobblestone" (índice 1).
+  - **Os slots 3 e 4 recusam:** 8 cascalhos clicados neles ficam no cursor.
   - Com a bateria criativa e 4 pedregulhos, ele moeu um em quartzo (o sorteio de 5 em 100 que saiu), mais 250 mB de coloide, e parou com 3 pedregulhos à espera do slot de saída.
   - Salvo e reaberto, ele manteve os mesmos slots, a receita e o coloide.
   - Tirada a saída, ele moeu o próximo em cascalho e chegou a 500 mB de coloide.
