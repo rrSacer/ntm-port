@@ -746,6 +746,7 @@ mod slot_items_tests;
 mod rbmk_tests;
 mod rbmk_t02_tests;
 mod rbmk_t04_tests;
+mod rbmk_t05_tests;
 mod anvil_tests;
 mod press_slots_tests;
 mod purex_tests;
