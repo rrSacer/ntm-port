@@ -53,6 +53,7 @@ pub mod persist;
 pub mod processing;
 pub mod press;
 pub mod recipes;
+pub mod rotary_furnace;
 pub mod refinery;
 pub mod screens;
 pub mod shredder;
@@ -115,6 +116,7 @@ pub fn warm_tables() {
     blastfurnace::Tables::ntm();
     recipes::furnace();
     recipes::press();
+    rotary_furnace::recipes();
     radiation::hazards();
     combustion::warm();
     radiation::bits();

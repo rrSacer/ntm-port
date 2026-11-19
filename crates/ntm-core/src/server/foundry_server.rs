@@ -141,7 +141,7 @@ impl Server {
                 Data::Crucible(_) => Some((k.clone(), 0)),
                 Data::Channel(_) => Some((k.clone(), 1)),
                 Data::FoundryTank(_) => Some((k.clone(), 2)),
-                Data::ArcFurnace(_) | Data::Electrolyser(_) => Some((k.clone(), 3)),
+                Data::ArcFurnace(_) | Data::Electrolyser(_) | Data::RotaryFurnace(_) => Some((k.clone(), 3)),
                 _ => None,
             })
             .collect();
@@ -180,6 +180,13 @@ fn molten_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &K
                 if let Some(target) = below(m, host, &key.0, at(k, 2), 6) {
                     changed |= e.pour(right, |mat, q| accept_pour(m, t, &target, mat, q));
                 }
+            }
+        }
+        Data::RotaryFurnace(r) => {
+            let rot = [d[2], 0, -d[0]];
+            let spout = [key.1[0] + rot[0] * 3, key.1[1] + 1, key.1[2] + rot[2] * 3];
+            if let Some(target) = below(m, host, &key.0, spout, CRUCIBLE_FALL) {
+                changed |= r.pour(|mat, q| accept_pour(m, t, &target, mat, q));
             }
         }
         _ => {}

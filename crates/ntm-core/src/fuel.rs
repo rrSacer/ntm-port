@@ -191,17 +191,34 @@ pub fn family(item: &str) -> Family {
     Family::Other
 }
 
-/// `ModuleBurnTime`: the time bonuses of a machine, by [`Family`].
+/// `ModuleBurnTime`: the time and heat bonuses of a machine, by [`Family`].
 #[derive(Clone, Copy, Debug)]
-pub struct Module(pub [f64; 8]);
+pub struct Module {
+    pub time: [f64; 8],
+    pub heat: [f64; 8],
+}
 
 impl Module {
-    pub const NONE: Module = Module([1.0; 8]);
+    pub const NONE: Module = Module { time: [1.0; 8], heat: [1.0; 8] };
     /// `TileEntityMachineWoodBurner.burnModule`: logs x4, wood x2.
     pub const WOOD_BURNER: Module = Module::NONE.with(Family::Log, 4.0).with(Family::Wood, 2.0);
+    /// `TileEntityMachineRotaryFurnace.burnModule` (`TileEntityMachineRotaryFurnace.java:67-75`).
+    pub const ROTARY_FURNACE: Module = Module::NONE
+        .with(Family::Coke, 1.25)
+        .with(Family::Rocket, 1.5)
+        .with(Family::Solid, 1.5)
+        .with(Family::Balefire, 1.5)
+        .with_heat(Family::Solid, 1.5)
+        .with_heat(Family::Rocket, 3.0)
+        .with_heat(Family::Balefire, 10.0);
 
     pub const fn with(mut self, family: Family, time: f64) -> Self {
-        self.0[family as usize] = time;
+        self.time[family as usize] = time;
+        self
+    }
+
+    pub const fn with_heat(mut self, family: Family, heat: f64) -> Self {
+        self.heat[family as usize] = heat;
         self
     }
 
@@ -212,7 +229,18 @@ impl Module {
         match family(item) {
             _ if fuel == 0 => 0,
             Family::Other => fuel,
-            f => (f64::from(fuel) * self.0[f as usize]) as u32,
+            f => (f64::from(fuel) * self.time[f as usize]) as u32,
+        }
+    }
+
+    /// `getMod(stack, modHeat)`: the heat multiplier by family (`1.0` for `Other`).
+    pub fn heat_mod(&self, item: &str) -> f64 {
+        if burn_time(item) == 0 {
+            return 1.0;
+        }
+        match family(item) {
+            Family::Other => 1.0,
+            f => self.heat[f as usize],
         }
     }
 }
@@ -393,6 +421,22 @@ mod tests {
         assert_eq!(m.burn_time("minecraft:coal"), 1600);
         assert_eq!(m.burn_time("minecraft:charcoal"), 1600);
         assert_eq!(m.burn_time("minecraft:stone"), 0);
+    }
+
+    #[test]
+    fn rotary_furnace_module_scales_time_and_heat() {
+        let m = Module::ROTARY_FURNACE;
+        assert_eq!(m.burn_time("ntm:coke__coal"), 4000);
+        assert_eq!(m.heat_mod("ntm:coke__coal"), 1.0);
+        assert_eq!(m.burn_time("ntm:solid_fuel"), 4800);
+        assert_eq!(m.heat_mod("ntm:solid_fuel"), 1.5);
+        assert_eq!(m.burn_time("ntm:rocket_fuel"), 9600);
+        assert_eq!(m.heat_mod("ntm:rocket_fuel"), 3.0);
+        assert_eq!(m.burn_time("ntm:solid_fuel_bf"), 48_000);
+        assert_eq!(m.heat_mod("ntm:solid_fuel_bf"), 10.0);
+        assert_eq!(m.burn_time("minecraft:coal"), 1600);
+        assert_eq!(m.heat_mod("minecraft:coal"), 1.0);
+        assert_eq!(m.heat_mod("minecraft:stone"), 1.0);
     }
 
     #[test]

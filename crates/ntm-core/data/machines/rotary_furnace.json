@@ -1,0 +1,391 @@
+{
+"station": "rotary_furnace",
+"source": "content/machine-recipes/rotary_furnace.json",
+"config": {
+"max_output_quanta": 10368,
+"pour_quanta": 72,
+"tank_in_mb": 16000,
+"steam_tank_mb": 12000,
+"spent_steam_tank_mb": 120,
+"slots": 5,
+"inputs": [
+0,
+3
+],
+"fluid_identifier": 3,
+"fuel": 4,
+"source": "src/main/java/com/hbm/tileentity/machine/TileEntityMachineRotaryFurnace.java"
+},
+"recipes": [
+{
+"name": "rotary.0",
+"label": "Metal: Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:39",
+"duration": 100,
+"steam": 100,
+"in": [
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"n": 1,
+"label": "iron ingot"
+},
+{
+"ids": [
+"minecraft:coal"
+],
+"n": 1,
+"label": "coal"
+}
+],
+"fluid": null,
+"out": [
+"steel",
+72
+]
+},
+{
+"name": "rotary.1",
+"label": "Metal: Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:40",
+"duration": 100,
+"steam": 100,
+"in": [
+{
+"ids": [
+"minecraft:iron_ingot"
+],
+"n": 1,
+"label": "iron ingot"
+},
+{
+"ids": [
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum"
+],
+"n": 1,
+"label": "Coque de Carvão"
+}
+],
+"fluid": null,
+"out": [
+"steel",
+72
+]
+},
+{
+"name": "rotary.2",
+"label": "Metal: Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:42",
+"duration": 200,
+"steam": 25,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore_fragment__iron"
+],
+"n": 9,
+"label": "Fragmento de Minério de Rocha-Mãe de Ferro"
+},
+{
+"ids": [
+"minecraft:coal"
+],
+"n": 1,
+"label": "coal"
+}
+],
+"fluid": null,
+"out": [
+"steel",
+144
+]
+},
+{
+"name": "rotary.3",
+"label": "Metal: Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:43",
+"duration": 200,
+"steam": 25,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore_fragment__iron"
+],
+"n": 9,
+"label": "Fragmento de Minério de Rocha-Mãe de Ferro"
+},
+{
+"ids": [
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum"
+],
+"n": 1,
+"label": "Coque de Carvão"
+}
+],
+"fluid": null,
+"out": [
+"steel",
+216
+]
+},
+{
+"name": "rotary.4",
+"label": "Metal: Aço",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:44",
+"duration": 400,
+"steam": 25,
+"in": [
+{
+"ids": [
+"ntm:bedrock_ore_fragment__iron"
+],
+"n": 9,
+"label": "Fragmento de Minério de Rocha-Mãe de Ferro"
+},
+{
+"ids": [
+"ntm:coke__coal",
+"ntm:coke__lignite",
+"ntm:coke__petroleum"
+],
+"n": 1,
+"label": "Coque de Carvão"
+},
+{
+"ids": [
+"ntm:powder_flux"
+],
+"n": 1,
+"label": "Fundente"
+}
+],
+"fluid": null,
+"out": [
+"steel",
+288
+]
+},
+{
+"name": "rotary.5",
+"label": "Metal: Desh",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:46",
+"duration": 100,
+"steam": 200,
+"in": [
+{
+"ids": [
+"ntm:powder_desh_ready"
+],
+"n": 1,
+"label": "Mistura DeshReady™"
+}
+],
+"fluid": [
+"lightoil",
+100
+],
+"out": [
+"desh",
+72
+]
+},
+{
+"name": "rotary.6",
+"label": "Metal: Bronze de Arma",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:48",
+"duration": 200,
+"steam": 100,
+"in": [
+{
+"ids": [
+"ntm:ingot_copper"
+],
+"n": 3,
+"label": "Cobre de Grau Industrial"
+},
+{
+"ids": [
+"ntm:ingot_aluminium"
+],
+"n": 1,
+"label": "Lingote de Alumínio"
+}
+],
+"fluid": null,
+"out": [
+"gunmetal",
+288
+]
+},
+{
+"name": "rotary.7",
+"label": "Metal: Aço de Arma",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:49",
+"duration": 200,
+"steam": 400,
+"in": [
+{
+"ids": [
+"ntm:ingot_steel"
+],
+"n": 1,
+"label": "Lingote de Aço"
+},
+{
+"ids": [
+"ntm:powder_flux"
+],
+"n": 2,
+"label": "Fundente"
+}
+],
+"fluid": [
+"gas_coker",
+100
+],
+"out": [
+"weaponsteel",
+72
+]
+},
+{
+"name": "rotary.8",
+"label": "Metal: Saturnita",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:50",
+"duration": 200,
+"steam": 400,
+"in": [
+{
+"ids": [
+"ntm:powder_dura_steel"
+],
+"n": 4,
+"label": "Pó de Aço Rápido"
+},
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1,
+"label": "Pó de Cobre"
+}
+],
+"fluid": [
+"reformgas",
+250
+],
+"out": [
+"saturn",
+144
+]
+},
+{
+"name": "rotary.9",
+"label": "Metal: Saturnita",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:51",
+"duration": 200,
+"steam": 300,
+"in": [
+{
+"ids": [
+"ntm:powder_dura_steel"
+],
+"n": 4,
+"label": "Pó de Aço Rápido"
+},
+{
+"ids": [
+"ntm:powder_copper"
+],
+"n": 1,
+"label": "Pó de Cobre"
+},
+{
+"ids": [
+"ntm:powder_borax"
+],
+"n": 1,
+"label": "Bórax"
+}
+],
+"fluid": [
+"reformgas",
+250
+],
+"out": [
+"saturn",
+288
+]
+},
+{
+"name": "rotary.10",
+"label": "Metal: Alumínio",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:52",
+"duration": 100,
+"steam": 400,
+"in": [],
+"fluid": [
+"sodium_aluminate",
+150
+],
+"out": [
+"aluminium",
+144
+]
+},
+{
+"name": "rotary.11",
+"label": "Metal: Alumínio",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:53",
+"duration": 40,
+"steam": 200,
+"in": [
+{
+"ids": [
+"ntm:powder_flux"
+],
+"n": 2,
+"label": "Fundente"
+}
+],
+"fluid": [
+"sodium_aluminate",
+150
+],
+"out": [
+"aluminium",
+216
+]
+},
+{
+"name": "rotary.12",
+"label": "Metal: Titânio",
+"source": "src/main/java/com/hbm/inventory/recipes/RotaryFurnaceRecipes.java:54",
+"duration": 40,
+"steam": 100,
+"in": [
+{
+"ids": [
+"ntm:powder_flux"
+],
+"n": 1,
+"label": "Fundente"
+}
+],
+"fluid": [
+"titanium_tetrachloride",
+1000
+],
+"out": [
+"titanium",
+288
+]
+}
+],
+"skipped": 0
+}

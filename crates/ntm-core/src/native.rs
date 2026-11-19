@@ -64,6 +64,15 @@ pub fn container(block: &str) -> Option<Container> {
     if let Some(c) = crate::furnaces::container(block).or_else(|| crate::welders::container(block)) {
         return Some(c);
     }
+    if block == crate::rotary_furnace::BLOCK {
+        return Some(Container {
+            slots: crate::rotary_furnace::slot::COUNT,
+            faces: std::array::from_fn(|_| vec![0, 1, 2, 4]),
+            inputs: vec![0, 1, 2, 4],
+            outputs: vec![],
+            menu: Some("minecraft:generic_9x3"),
+        });
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -105,6 +114,15 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
     }
     if crate::welders::Model::of(block).is_some() {
         return crate::welders::filters(block);
+    }
+    if block == crate::rotary_furnace::BLOCK {
+        return vec![
+            SlotFilter { quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_move: Some(vec!["ntm:fluid_identifier_multi".into()]), quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_move: Some(crate::fuel::fuels()), quick_reverse: true, ..Default::default() },
+        ];
     }
     if is_brick_furnace(block) {
         // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
@@ -155,6 +173,12 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if let Some(allowed) = crate::furnaces::allows(block, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;
+    }
+    if block == crate::rotary_furnace::BLOCK {
+        return match origin {
+            SlotOrigin::Manual => true,
+            SlotOrigin::Automation => action == SlotAction::Insert && (slot < 3 || slot == crate::rotary_furnace::slot::FUEL),
+        };
     }
     if is_brick_furnace(block) {
         // The plain slots 0 and 1 take anything from a hand (1.7.10's

@@ -132,6 +132,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::BrickFurnace(f) => Some(f),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
+        Data::RotaryFurnace(r) => Some(&mut **r),
         _ => None,
     }
 }
@@ -175,6 +176,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:furnace_combination", Layout::Native),
     ("ntm:machine_arc_welder", Layout::Native),
     ("ntm:machine_soldering_station", Layout::Native),
+    ("ntm:machine_rotary_furnace", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
@@ -411,6 +413,7 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 /// core: the blast furnace's ports up its front reach it down its column.
 pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TileEntityProxyCombo().inventory().power().fluid(): every cell of the volume.
+    ("ntm:machine_rotary_furnace", &[[-2, 0, 1], [-1, 0, 1], [2, 0, -1], [2, 0, 1]]),
     ("ntm:machine_arc_welder", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1], [1, 0, 0], [1, 0, 1], [-1, 1, 0], [-1, 1, 1], [0, 1, 0], [0, 1, 1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_soldering_station", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1]]),
     // TilePortShapes.comboven: the ring round the core on its two layers.

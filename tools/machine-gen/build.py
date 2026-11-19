@@ -159,6 +159,31 @@ def anvil():
             'recipes': smithing + construction, 'skipped': len(src['skipped'])}
 
 
+
+def rotary_furnace():
+    src = json.loads((root / 'content/machine-recipes/rotary_furnace.json').read_text())
+    out = []
+    for r in src['recipes']:
+        ins = [ingredient(x) for x in r['inputItems']]
+        out.append({
+            'name': r['name'],
+            'label': r.get('label') or r['name'],
+            'source': r['source'],
+            'duration': r['duration'],
+            'steam': r['steam'],
+            'in': ins,
+            'fluid': r['inputFluids'][0] if r['inputFluids'] else None,
+            'out': r['outputMaterials'][0],
+        })
+    return {
+        'station': 'rotary_furnace',
+        'source': 'content/machine-recipes/rotary_furnace.json',
+        'config': src['machine_config'],
+        'recipes': out,
+        'skipped': len(src['skipped']),
+    }
+
+
 def press():
     """As duas prensas (`press_recipes.json`, lido por `recipes::press`):
     as matrizes e, na ordem do NTM, uma receita por alternativa do OreDict
@@ -212,6 +237,13 @@ for st, section in (('pyrooven', None), ('electrolyser', 'fluid'), ('electrolyse
         p = root / f'crates/ntm-core/data/machines/{st}.json'
         p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
         print(f"{st}: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
+
+
+if (root / 'content/machine-recipes/rotary_furnace.json').exists():
+    data = rotary_furnace()
+    p = root / 'crates/ntm-core/data/machines/rotary_furnace.json'
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
+    print(f"rotary_furnace: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
 
 # A prensa fica fora de machines/: as duas prensas do M1 a leem de data/.
 if (root / 'content/machine-recipes/press.json').exists():

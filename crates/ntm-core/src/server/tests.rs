@@ -668,6 +668,7 @@ mod brick_furnace_tests;
 mod furnaces_tests;
 mod blastfurnace_tests;
 mod foundry_tests;
+mod rotary_furnace_tests;
 mod slot_items_tests;
 mod rbmk_tests;
 mod anvil_tests;

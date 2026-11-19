@@ -4894,6 +4894,35 @@
 20
 ]
 },
+"ntm:machine_rotary_furnace": {
+"inventory": [
+8,
+104
+],
+"slots": [
+{
+"x": 8,
+"y": 18
+},
+{
+"x": 26,
+"y": 18
+},
+{
+"x": 44,
+"y": 18
+},
+{
+"x": 8,
+"y": 54
+},
+{
+"x": 44,
+"y": 54
+}
+],
+"synced": []
+},
 "ntm:machine_rtg_grey": {
 "inventory": [
 8,

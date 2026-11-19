@@ -73,3 +73,12 @@ Nove testes novos verificam materiais/conversões/cores, aritmética e unidades,
 Validação desta entrega: nove testes da fundição, seis do alto-forno, sete do triturador e sete M3 passaram. A validação estática passou para 2551 IDs e 813 receitas vanilla registradas no pacote (inclui os outros geradores; o índice M1 conserva 235 fiéis e 10 temporárias). O pacote `dist/ntm-content-foundry.hmod` passou build/check API 0.2: 4.471.803 bytes, SHA-256 `dd06e62c9fecee0dedd413d398ec1a020736ce290e0af0fa804f8767cf92bbae`. O artefato é local/ignorado pelo git.
 
 `cargo test --workspace -j 3` também passou: 201 testes, dois ignorados. O Rust foi testado no checkout compartilhado durante a integração do agente de máquinas; somente `hazards.json`, gerado pelos IDs novos, entra no commit de conteúdo dentro de `crates/`.
+
+## Forno rotativo (`ntm:machine_rotary_furnace`)
+
+Port de `TileEntityMachineRotaryFurnace` (`updateEntity`:140-227, `canProcess`:324-338, `consumeItems`:339-352) e de `RotaryFurnaceRecipes`. As 13 receitas saem de `content/machine-recipes/rotary_furnace.json` (`tools/content-gen/rotary_furnace_recipes.py`) e viram `crates/ntm-core/data/machines/rotary_furnace.json` por `tools/machine-gen/build.py`.
+
+- 5 slots: três entradas sem ordem, o identificador de fluido (tipa o tanque de 16 000) e o combustível (`burnTime/2`, módulo de queima e calor `fuel::Module::ROTARY_FURNACE`). Vapor 12 000 e vapor gasto 120, na razão 100:1; `steamUseMult = 10·log10(velocidade) + 1`.
+- O bico fica a `rot·2,875`, `y+1,25`, com `rot = dir.getRotation(DOWN)`; despeja `INGOT.q(1)` = 72 quanta por tick, `safe = true`, num raio de até 6 blocos (`molten_tick`, `foundry_server.rs`).
+- **R8**: o `output` fundido não está em `held_contents`; o Java não tem `breakBlock` próprio e o perde ao quebrar. Teste `r8_breaking_rotary_furnace_loses_molten_output_and_keeps_only_slots`.
+- Lacunas declaradas: fumaça e fuligem (o port não tem poluição).
