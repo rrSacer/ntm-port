@@ -6,7 +6,8 @@ the vanilla control rewrites its own rule, `/gamerule random_tick_speed 7`, kept
 
 Modes prepare/act/verify/again/drain, as T03's; the runner (run-rbmk-t04-c-proof.py) cuts the save at the points
 between kv_committed and chunks_written. Verify adds, to T03's checks on the rods: the rule reads back as one of its two
-values (never a third, never unreadable), and NTM's satellite events read back, each on a tick multiple of 200.
+values (never a third, never unreadable), and NTM's satellite events read back as each reading allows
+(`rays_as_expected`: the tick of the reading and the channels with a rod recorded with it).
 """
 import re
 import sys
@@ -35,7 +36,23 @@ def rays(g):
     if not m:
         return {'readable': False, 'text': text[:200]}
     events = [e.split(':') for e in filter(None, m[2].split(';'))]
-    return {'readable': True, 'tick': int(m[1]), 'count': len(events), 'expires': [int(e[2]) for e in events]}
+    return {'readable': True, 'tick': int(m[1]), 'count': len(events), 'expires': [int(e[2]) for e in events],
+            'at': [[int(v) for v in e[0].split(',')] for e in events]}
+
+
+def channels_with_rod(g):
+    """The scenario's channels (P, S, Q) that hold a rod as the world reads now (`data get block ... Items`)."""
+    return [list(p) for p in (t03.CP, t03.CS, t03.CQ) if 'rbmk_fuel_' in t03.block_items(g, p)]
+
+
+def rays_as_expected(r, rods):
+    """What a reading may hold (T04 re-review P3(a)): an event only where a channel holds a rod (a channel reports
+    while it has a rod and flux, `TileEntityRBMKRod:122-124`), each on its phase (reported on a tick multiple of 200:
+    `expiresOn = tick + 300`), none past its expiry by more than the 20 ticks `updateSystem` may take to remove it.
+    None at all is expected when no channel took flux on the last multiple of 200, as after a cut that lost P's rod
+    (`chunks_written`: S's partner gone, S and Q starve)."""
+    return (r['readable'] and all(e % 200 == 100 for e in r['expires'])
+            and all(e > r['tick'] - 20 for e in r['expires']) and all(a in rods for a in r['at']))
 
 
 def set_rule(g, value):
@@ -67,10 +84,11 @@ def verify(g, again=False):
     g.evidence['rule' + suffix] = got
     g.check('rule_is_one_of_its_values' + suffix, got in (OLD, NEW), got)
     if not t03.VANILLA:
+        rods = channels_with_rod(g)
         r = rays(g)
+        r['channels_with_rod'] = rods
         g.evidence['rays' + suffix] = r
-        # Readable, each on its phase (the count may be 0: with P's rod out, an event left unrenewed expires).
-        g.check('rays_read_back' + suffix, r['readable'] and all(e % 200 == 100 for e in r['expires']), r)
+        g.check('rays_read_back' + suffix, rays_as_expected(r, rods), r)
 
 
 if __name__ == '__main__':
