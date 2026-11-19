@@ -310,6 +310,39 @@ impl ReactorDump {
         };
         Err(format!("{steps} steps from tick {}: {what}", self.tick))
     }
+
+    /// How many of the ticks between this dump and `later` the reactor stepped, when it may have waited up to
+    /// `max_wait` of them (D4: a reactor whose columns the world shows and the server has not adopted yet waits, as at
+    /// a world's opening): `(steps, waited)` for the one count that gives `later` bit for bit, its tick aside.
+    pub fn steps_to(&self, later: &ReactorDump, max_wait: u64) -> Result<(u64, u64), String> {
+        let span = later.tick - self.tick;
+        if span < 0 {
+            return Err(format!(
+                "the later dump is earlier ({} < {})",
+                later.tick, self.tick
+            ));
+        }
+        let span = span as u64;
+        let mut r = self.reactor().ok_or("an unreadable dump")?;
+        let first = span.saturating_sub(max_wait);
+        for _ in 0..first {
+            r.step();
+        }
+        for steps in first..=span {
+            let mut got = ReactorDump::of(&r, &self.dim);
+            got.tick = later.tick;
+            got.dials.clone_from(&later.dials);
+            got.obstacles.clone_from(&later.obstacles);
+            if got == *later {
+                return Ok((steps, span - steps));
+            }
+            r.step();
+        }
+        Err(format!(
+            "no count of steps from {first} to {span} gives it (tick {} to {})",
+            self.tick, later.tick
+        ))
+    }
 }
 
 #[cfg(test)]
@@ -363,10 +396,18 @@ mod tests {
         let mut touched = b.clone();
         touched.columns[1].heat = (f64::from_bits(touched.columns[1].heat) + 1e-9).to_bits();
         assert!(a.replays_to(&touched).is_err());
+        // Waited ticks are told: `b` read as two ticks later is 37 steps and 2 ticks waited; never more than asked.
+        let mut late = b.clone();
+        late.tick += 2;
+        assert_eq!(a.steps_to(&late, 3), Ok((37, 2)));
+        assert_eq!(a.steps_to(&b, 3), Ok((37, 0)));
+        assert!(a.steps_to(&late, 1).is_err());
+        assert!(a.steps_to(&touched, 3).is_err());
     }
 
     /// The dumps of a proof (`RBMK_T04_DUMPS`, a folder of `*.json` from `ntmtest rbmkdump`): each pair a chain names
-    /// (`<chain>-<n>.json`, in order of `n`) must replay. Run by the proof's runner, not by the suite.
+    /// (`<chain>-<n>.json`, in order of `n`) must replay, every tick a step, or with up to `RBMK_T04_WAIT` ticks
+    /// (default 0) the reactor waited (D4, a world's opening), each reported. Run after the proof, not by the suite.
     #[test]
     #[ignore]
     fn the_games_dumps_replay() {
@@ -386,11 +427,15 @@ mod tests {
             chains.entry(chain.to_string()).or_default().push((n, d));
         }
         assert!(!chains.is_empty(), "no dumps");
+        let wait = std::env::var("RBMK_T04_WAIT")
+            .ok()
+            .and_then(|w| w.parse().ok())
+            .unwrap_or(0);
         let mut failed = Vec::new();
         for (chain, mut dumps) in chains {
             dumps.sort_by_key(|d| d.0);
             for w in dumps.windows(2) {
-                let r = w[0].1.replays_to(&w[1].1);
+                let r = w[0].1.steps_to(&w[1].1, wait);
                 println!(
                     "{chain} {}→{}: ticks {}→{}, {} columns: {r:?}",
                     w[0].0,
