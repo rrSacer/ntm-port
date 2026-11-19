@@ -18,7 +18,8 @@ Mode `play`:
   - occlusion: beside the reactor, one small reactor per block between a source and a channel; the step's occlusion of
     that cell is Java's `isOpaqueCube` over the engine's blocks: stone, dirt and a blank's dummies count, glass,
     leaves, a slab, stairs, a pane, iron bars and a fuel channel's dummies do not; four stones block it whole;
-  - radiation: two equal pairs in their own chunks, one with lids: the open pair's chunk gets more radiation;
+  - radiation: two equal pairs in neighbouring chunks, one with lids, read in one command: the open pair's chunk holds
+    more at every read;
   - satellite events: the fuel channels that took flux report every 200 ticks for 300.
 Mode `reopen`: the reactor's state right after the reopen replays from the last dump before it; the satellite events
 are kept; a column set into the Nether (a world without a dial cache) writes `dialColumnHeight` back to its default
@@ -37,9 +38,6 @@ UEU = 'ntm:rbmk_fuel_ueu'
 DUMMY = 'ntm:dummy_rbmk'
 CENTRE = (7, Y, 7)
 OCC_Z = (40, 42, 43)  # source, probed cell, channel
-# The two pairs far from every other source and as far from them as each other (the field spreads chunk to chunk): a
-# first run with the lidded pair two chunks from the occlusion row read more there than at the open pair.
-RAD = {'open': (-600, Y, 600), 'lid': (600, Y, 600)}
 
 
 def layout(x, z):
@@ -223,9 +221,14 @@ def occlusion(g):
 
 
 def radiation(g):
-    for key, p in RAD.items():
+    """An open and a lidded pair in two neighbouring chunks far from every other source, read in one command
+    (`ntmtest rad` around them, the same tick for both) at five moments: the open pair's chunk holds more every time.
+    (Two reads a few ticks apart, across the field's update every 20 ticks, compare different moments: a first run read
+    the lidded chunk higher that way.)"""
+    pairs = {'open': (600, Y, 600), 'lid': (616, Y, 600)}  # chunks (37, 37) and (38, 37)
+    for key, p in pairs.items():
         floor(g, p[0] - 3, p[0] + 3, p[2] - 3, p[2] + 5)
-    for key, p in RAD.items():
+    for key, p in pairs.items():
         chan = (p[0], Y, p[2] + 1)
         # Each column used from the south before the next one stands there.
         for col, rod in ((p, SRC), (chan, UEU)):
@@ -233,12 +236,21 @@ def radiation(g):
             use_top(g, col, rod)
             if key == 'lid':
                 use_top(g, col, 'ntm:rbmk_lid')
-    lids = {k: [c['lid'] for c in (dump(g, f'rad_{k}-1', p) or {}).get('columns', [])] for k, p in RAD.items()}
+    lids = {k: [c['lid'] for c in (dump(g, f'rad_{k}-1', p) or {}).get('columns', [])] for k, p in pairs.items()}
     check(g, 'lids_as_placed', lids == {'open': [False, False], 'lid': [True, True]}, lids)
     time.sleep(20)
-    got = {k: rad(g, (p[0] >> 4, p[2] >> 4)) for k, p in RAD.items()}
-    g.evidence['chunk_radiation'] = got
-    check(g, 'open_columns_leak_more', got['open'] > got['lid'] >= 0, got)
+    import struct
+    reads = []
+    for _ in range(5):
+        text = ' '.join(g.command('ntmtest rad 38 37 1').get('chat', []))
+
+        def at(c):
+            m = re.search(rf'(?:^|[=;]){c[0]},{c[1]}:(\w+):', text)
+            return 0.0 if not m or m[1] == 'none' else struct.unpack('<f', struct.pack('<I', int(m[1])))[0]
+        reads.append({'open': at((37, 37)), 'lid': at((38, 37))})
+        time.sleep(2)
+    g.evidence['chunk_radiation_reads'] = reads
+    check(g, 'open_columns_leak_more_every_read', all(r['open'] > r['lid'] > 0 for r in reads), reads)
 
 
 def play(g):
@@ -296,6 +308,10 @@ def reopen(g):
     tick, events = rays(g)
     g.evidence['rays_after'] = {'tick': tick, 'count': len(events), 'events': events[:8]}
     check(g, 'satellite_events_kept', bool(events), g.evidence['rays_after'])
+    # The clock's phase across the opening (T04 review): every event, the ones reported since the opening too, on a
+    # tick multiple of 200 (expiresOn = tick + 300), and some reported since (the 15 s above hold a multiple of 200).
+    since = [e for e in events if e['expires_on'] - 300 > b3['tick']] if b3 else []
+    check(g, 'satellite_phase_kept', bool(since) and all(e['expires_on'] % 200 == 100 for e in events), {'since_opening': len(since), 'opening_tick': b3 and b3['tick']})
     # 3A: the Nether has no dial cache after the start; a column set there reads the height first, writing the rule
     # back to its default, while the overworld's cache keeps the 6 the player set.
     g.command('ntmrbmk dial dialColumnHeight 6 confirmar')
@@ -319,35 +335,11 @@ def reopen(g):
 
 
 def rad_only(g):
-    """Radiation alone, on a fresh world: an open and a lidded pair in two neighbouring chunks far from anything,
-    read in one command (`ntmtest rad` around them) at five moments: the open pair's chunk holds more every time."""
+    """`radiation` alone, on a fresh world."""
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     g.command('ntmrbmk dial dialReactivityMod 0.35')
-    pairs = {'open': (600, Y, 600), 'lid': (616, Y, 600)}  # chunks (37, 37) and (38, 37)
-    for key, p in pairs.items():
-        floor(g, p[0] - 3, p[0] + 3, p[2] - 3, p[2] + 5)
-    for key, p in pairs.items():
-        chan = (p[0], Y, p[2] + 1)
-        for col, rod in ((p, SRC), (chan, UEU)):
-            place(g, col, 'ntm:rbmk_rod')
-            use_top(g, col, rod)
-            if key == 'lid':
-                use_top(g, col, 'ntm:rbmk_lid')
-    lids = {k: [c['lid'] for c in (dump(g, f'radpair_{k}-1', p) or {}).get('columns', [])] for k, p in pairs.items()}
-    check(g, 'lids_as_placed', lids == {'open': [False, False], 'lid': [True, True]}, lids)
-    time.sleep(20)
-    import struct
-    reads = []
-    for _ in range(5):
-        text = ' '.join(g.command('ntmtest rad 38 37 1').get('chat', []))
-        def at(c):
-            m = re.search(rf'(?:^|[=;]){c[0]},{c[1]}:(\w+):', text)
-            return 0.0 if not m or m[1] == 'none' else struct.unpack('<f', struct.pack('<I', int(m[1])))[0]
-        reads.append({'open': at((37, 37)), 'lid': at((38, 37))})
-        time.sleep(2)
-    g.evidence['chunk_radiation_reads'] = reads
-    check(g, 'open_columns_leak_more_every_read', all(r['open'] > r['lid'] > 0 for r in reads), reads)
+    radiation(g)
     g.ctl('save')
 
 
