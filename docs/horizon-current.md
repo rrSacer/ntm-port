@@ -1348,6 +1348,23 @@ fontes do bundle de `274cac6b`; o que veio depois só muda testes, roteiros e do
 | C: cenário do T03 no binário novo (`HORIZON_NO_EAGER_SAVE=1`, `evidence/c-report-r2.json`) | 4/4 cortes, NTM igual ao controle vanilla item a item nas duas reaberturas: `kill`, `kv_committed`, `players_saved` 3 = 3; `live_chunk:2,0` 2 = 2 (o resíduo vanilla de sempre); sem duplicação, armazenamento sem item. A adoção na carga não muda o saldo |
 | C: corte estrito sobre o estado novo (`run-rbmk-t04-c-proof.py`, `HORIZON_NO_EAGER_SAVE=1`, `evidence/c-strict-report.json`, `c-strict-rules.json`) | Cenário C do T03 com `dialFluxRange` 5 → 7 logo antes do ato (o controle: `random_tick_speed` 5 → 7) e os eventos de satélite em jogo, cortado nos 5 pontos entre `kv_committed` e `chunks_written`: **5/5**, NTM igual ao controle item a item (3 = 3 em quatro cortes; `chunks_written` 2 = 2, a mesma última escrita que o vanilla perde); armazenamento sem item. A regra lida depois das duas reaberturas é a mesma nos dois mundos em todos os cortes: 7 em `kv_committed`, 5 (o valor do último save) nos três `region_record` e em `chunks_written`; nunca outro valor. Os eventos de satélite voltam legíveis e em fase (múltiplos de 200) em todos os cortes. Uma primeira rodada reprovou o controle por erro do roteiro (o nome antigo `randomTickSpeed`, depois um valor de base não salvo); corrigido em `85803721` e `992b5b26` |
 
+### P3 da re-revisão (19/11/2026)
+
+A re-revisão aprovou as correções (sem P1/P2) e apontou três P3, fechados um por commit:
+
+| Item | Como fica | Commit |
+| --- | --- | --- |
+| (c) contagem de adotadas na carga | `native_chunk_machines_loaded` conta só a máquina que a carga deixou viva no servidor: um fantasma (lote de lápide já aplicado) e uma geração que um lote pendente ainda nomeia não entram na conta do log | `d938dd14` |
+| (b) teste de servidor da adoção na carga | `a_chunk_load_leaves_a_ghost_unadopted_and_uncounted` (lápide aplicada: conta 0, um só fantasma, o bloco sai no tick, nada retido) e `a_chunk_load_leaves_an_older_generation_a_pending_batch_names` (lote pendente nomeando a geração antiga: conta 0, geração mantida, a geração atual adotada conta 1). Mutação "fantasma contado como adotado": pega | `ef469382` |
+| (a) eventos de satélite no corte estrito | Cada leitura grava o tick, as posições dos eventos e os canais com barra naquele momento, e afirma o conjunto que a leitura pode ter: evento só onde um canal tem barra (`TileEntityRBMKRod:122-124`), em fase (`expiresOn ≡ 100 mod 200`), nenhum vencido há mais de 20 ticks. Nenhum evento é leitura válida quando nenhum canal pegou fluxo no último múltiplo de 200 | `5cab42ec` |
+
+Corte estrito refeito com o roteiro novo (`evidence/c-strict-p3a/`), NTM igual ao controle vanilla item a item:
+`kv_committed` 3 = 3, eventos lidos = os três canais com barra (tick 1431, todos com `expiresOn` 1700), e 0 na segunda
+reabertura (tick 2139: o yield de P não muda em 3 s, o reator sem fluxo naquele momento); `chunks_written` 2 = 2 (a
+mesma última escrita que o vanilla perde), 0 eventos na primeira reabertura (tick 948: o corte perdeu a barra de P, S
+sem par, S e Q sem fluxo) e um evento em Q (`expiresOn` 1700) na segunda. Regra do dial: 7 e 7 em `kv_committed`, 5 e
+5 em `chunks_written`, os mesmos valores do controle.
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
