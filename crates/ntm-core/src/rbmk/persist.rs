@@ -569,13 +569,20 @@ pub fn report_ray(rays: &mut std::collections::BTreeMap<String, Vec<RayEvent>>, 
 /// `SatelliteRayScan.updateSystem(world)` of `dim` at world time `now` (`ModEventHandler.worldTick:661`, when
 /// `getTotalWorldTime() % 20 == 10`): its events with `now > expiresOn` go. Whether it removes any.
 pub fn expire_rays(rays: &std::collections::BTreeMap<String, Vec<RayEvent>>, dim: &str, now: i64) -> bool {
-    rays.get(dim).is_some_and(|l| l.iter().any(|e| now > e.expires_on))
+    rays.get(dim).is_some_and(|l| l.iter().any(|e| e.expired(now)))
+}
+
+impl RayEvent {
+    /// `world.getTotalWorldTime() > entry.getValue().expiresOn`.
+    pub fn expired(&self, now: i64) -> bool {
+        now > self.expires_on
+    }
 }
 
 /// The removal [`expire_rays`] finds.
 pub fn drop_expired_rays(rays: &mut std::collections::BTreeMap<String, Vec<RayEvent>>, dim: &str, now: i64) {
     if let Some(l) = rays.get_mut(dim) {
-        l.retain(|e| now <= e.expires_on);
+        l.retain(|e| !e.expired(now));
         if l.is_empty() {
             rays.remove(dim);
         }
@@ -678,6 +685,8 @@ mod tests {
         let o = &rays["o"];
         assert_eq!(o.iter().map(|e| (e.pos, e.info.as_str(), e.expires_on)).collect::<Vec<_>>(), vec![([1, 2, 3], "RADIO_WAVES", 700), ([4, 5, 6], INFO_NUCLEAR, 500)]);
         assert!(!expire_rays(&rays, "o", 500), "not past 500 at 500");
+        drop_expired_rays(&mut rays, "o", 500);
+        assert_eq!(rays["o"].len(), 2, "nothing goes at 500");
         assert!(expire_rays(&rays, "o", 501));
         drop_expired_rays(&mut rays, "o", 501);
         assert_eq!(rays["o"].len(), 1);

@@ -297,7 +297,7 @@ fn the_dials_are_a_cache_per_dimension() {
     assert!(!ne.xenon_disabled && ne.reasim_boilers);
 }
 
-/// 4A: a fuel channel with flux reports `INFO_NUCLEAR` for 300 ticks every 200 (`TileEntityRBMKRod:122`), kept by
+/// 4A: a fuel channel with flux reports `INFO_NUCLEAR` for 300 ticks every 200 (`TileEntityRBMKRod:124`), kept by
 /// dimension in the world's state with the step; a second report of the same place replaces the first where it stands;
 /// `updateSystem` takes it away once the time is past it, on the ticks 10 past a multiple of 20; it is saved and read
 /// back.
