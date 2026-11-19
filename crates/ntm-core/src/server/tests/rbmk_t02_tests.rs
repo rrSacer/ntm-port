@@ -335,7 +335,7 @@ fn a_broken_column_drops_its_lid_once_at_the_top_as_the_dial_reads() {
 }
 
 #[test]
-fn the_eighteen_columns_are_adopted_and_only_t01s_step() {
+fn the_eighteen_columns_are_adopted_and_step() {
     let mut g = game();
     for (i, id) in persist::COLUMNS.iter().enumerate() {
         g.place([2 * i as i32 - 18, Y, 4], &column(id.strip_prefix("ntm:").unwrap()));
@@ -348,7 +348,8 @@ fn the_eighteen_columns_are_adopted_and_only_t01s_step() {
         assert_eq!(c.has_lid(id), persist::has_own_lid(id), "{id}");
     }
     let members: Vec<String> = g.ready().world.rbmk.values().flat_map(|l| l.members.values().map(|m| m.block.clone())).collect();
-    assert_eq!(members.len(), 8, "{members:?}");
+    // T04: every column is a node of the streams and a neighbour in the heat, as each Java tile entity is.
+    assert_eq!(members.len(), 18, "{members:?}");
     assert!(members.iter().all(|b| persist::kind_of(b).is_some()));
     // A save of T01 (no lid, no screen) reads as before.
     let json = r#"{"schema":2,"heat":4625196817309925376,"reasim_water":0,"reasim_steam":0,"flux_quantity":0,"flux_fast_ratio":0,"last_flux_quantity":0,"last_flux_ratio":0,"has_rod":false,"slots":[null]}"#;

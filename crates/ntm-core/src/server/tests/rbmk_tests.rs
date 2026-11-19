@@ -621,10 +621,10 @@ fn an_unknown_column_that_only_heat_links_holds_its_component() {
 #[test]
 fn the_rays_cells_are_all_the_cells_a_stream_reads() {
     use crate::rbmk::{dials::DialState, jrandom::JavaRandom, persist::rod_of, reactor::{Column, Kind as K, Reactor}, rods::RodStack};
-    let mut d = DialState::default();
-    d.create(false);
-    d.refresh();
-    let dials = *d.cached().unwrap();
+    let (mut d, mut rules) = (DialState::default(), crate::rbmk::dials::GameRules::default());
+    d.create(&mut rules, OW, false);
+    d.refresh(&rules, OW);
+    let dials = *d.cached(OW).unwrap();
     let range = dials.flux_range;
     let build = |obstacles: &dyn Fn(i32, i32, i32) -> bool, keep: &dyn Fn(i32, i32) -> bool| {
         let mut r = Reactor::new(dials, JavaRandom::new(7), Y);

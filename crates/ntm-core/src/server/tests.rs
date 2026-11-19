@@ -277,6 +277,12 @@ impl ServerHost for SHost {
         let w = self.world.borrow();
         w.loaded(dim, p).then(|| w.get(dim, p))
     }
+    /// As the engine's `solid_render`: air, glass and leaves are not opaque cubes; the other blocks of the tests are.
+    fn block_opaque(&mut self, dim: &str, p: Pos) -> Option<(String, bool)> {
+        let b = self.get_block(dim, p)?;
+        let opaque = !matches!(blockstate::id_of(&b), "minecraft:air" | "minecraft:glass" | "minecraft:oak_leaves");
+        Some((b, opaque))
+    }
     fn set_blocks(&mut self, dim: &str, blocks: &[(Pos, String)]) -> Result<(), String> {
         // As the game: made after the tick (`apply_writes`).
         let mut w = self.world.borrow_mut();
@@ -725,6 +731,7 @@ mod foundry_tests;
 mod slot_items_tests;
 mod rbmk_tests;
 mod rbmk_t02_tests;
+mod rbmk_t04_tests;
 mod anvil_tests;
 mod press_slots_tests;
 mod purex_tests;

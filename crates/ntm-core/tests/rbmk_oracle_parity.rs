@@ -206,20 +206,19 @@ fn dial_cache_quirks_match_java() {
     }
 
     // createDials(force) refreshes before resetting the raw rules
-    let mut st = DialState::default();
-    st.rules.set("dialColumnHeight", "16");
-    st.create(true);
+    // (one world: T04's caches are per dimension, over the save's rules)
+    let (mut st, mut rules) = (DialState::default(), GameRules::default());
+    let w = "minecraft:overworld";
+    rules.set("dialColumnHeight", "16");
+    st.create(&mut rules, w, true);
+    assert_eq!(rules.string("dialColumnHeight"), cases[3]["raw"].as_str().unwrap());
     assert_eq!(
-        st.rules.string("dialColumnHeight"),
-        cases[3]["raw"].as_str().unwrap()
-    );
-    assert_eq!(
-        i64::from(st.get("KEY_COLUMN_HEIGHT").column_height),
+        i64::from(st.read(&mut rules, w, "KEY_COLUMN_HEIGHT").column_height),
         cases[3]["cached"].as_i64().unwrap()
     );
-    st.refresh();
+    st.refresh(&rules, w);
     assert_eq!(
-        i64::from(st.get("KEY_COLUMN_HEIGHT").column_height),
+        i64::from(st.read(&mut rules, w, "KEY_COLUMN_HEIGHT").column_height),
         cases[4]["cached"].as_i64().unwrap()
     );
 }
