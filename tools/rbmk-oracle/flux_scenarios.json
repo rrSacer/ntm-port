@@ -3366,6 +3366,304 @@
      "rod": "rbmk_fuel_po210be"
     }
    ]
+  },
+  {
+   "name": "reflector_absorber_eff_0_0",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "reflector",
+     "x": -1,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "lid": false,
+     "flux": [
+      300,
+      0.8
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    },
+    {
+     "kind": "absorber",
+     "x": 2,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      80,
+      0.3
+     ]
+    },
+    {
+     "kind": "reflector",
+     "x": 3,
+     "z": -1
+    },
+    {
+     "kind": "absorber",
+     "x": 3,
+     "z": 1
+    }
+   ],
+   "rules": {
+    "dialReflectorEfficiency": "0.0",
+    "dialAbsorberEfficiency": "0.0",
+    "dialModeratorEfficiency": "0.0",
+    "dialAbsorberHeatConversion": "0.2"
+   }
+  },
+  {
+   "name": "empty_channels_and_a_separate_reactor",
+   "ticks": 40,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_po210be",
+     "lid": false
+    },
+    {
+     "kind": "rod",
+     "x": 1,
+     "z": 0,
+     "lid": false
+    },
+    {
+     "kind": "rod_reasim",
+     "x": 2,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 3,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      0,
+      0
+     ]
+    },
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 1
+    },
+    {
+     "kind": "boiler",
+     "x": 0,
+     "z": 2
+    },
+    {
+     "kind": "heater",
+     "x": 0,
+     "z": -1
+    },
+    {
+     "kind": "cooler",
+     "x": 0,
+     "z": -2
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 3,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": -3,
+     "rod": "rbmk_fuel_ueu"
+    },
+    {
+     "kind": "rod",
+     "x": 40,
+     "z": 0,
+     "rod": "rbmk_fuel_po210be"
+    },
+    {
+     "kind": "rod",
+     "x": 41,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 43,
+     "z": 0,
+     "rod": "rbmk_fuel_meu"
+    },
+    {
+     "kind": "moderator",
+     "x": 42,
+     "z": 0,
+     "lid": false
+    }
+   ]
+  },
+  {
+   "name": "stream_ends_and_full_obstruction",
+   "ticks": 25,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_ueu",
+     "lid": false,
+     "flux": [
+      400,
+      0.5
+     ]
+    },
+    {
+     "kind": "control",
+     "x": 5,
+     "z": 0,
+     "level": 0.6,
+     "target": 0.6
+    },
+    {
+     "kind": "control",
+     "x": 0,
+     "z": 3,
+     "level": 0.0,
+     "target": 0.0
+    },
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 4,
+     "rod": "rbmk_fuel_ueu",
+     "flux": [
+      50,
+      0.5
+     ]
+    }
+   ],
+   "obstacles": [
+    {
+     "x": -1,
+     "z": 0,
+     "height": 4
+    },
+    {
+     "x": 0,
+     "z": -1,
+     "height": 2
+    },
+    {
+     "x": -3,
+     "z": 0,
+     "height": 4
+    },
+    {
+     "x": 0,
+     "z": -4,
+     "height": 1
+    }
+   ]
+  },
+  {
+   "name": "every_physical_dial",
+   "ticks": 60,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "rod",
+     "x": 0,
+     "z": 0,
+     "rod": "rbmk_fuel_heu235",
+     "moderated": true,
+     "flux": [
+      150,
+      0.5
+     ]
+    },
+    {
+     "kind": "moderator",
+     "x": 1,
+     "z": 0
+    },
+    {
+     "kind": "rod",
+     "x": 2,
+     "z": 0,
+     "rod": "rbmk_fuel_meu",
+     "flux": [
+      60,
+      0.4
+     ]
+    },
+    {
+     "kind": "control",
+     "x": 1,
+     "z": 1,
+     "level": 0.8,
+     "target": 0.8,
+     "moderated": true
+    },
+    {
+     "kind": "absorber",
+     "x": 2,
+     "z": 1
+    },
+    {
+     "kind": "reflector",
+     "x": 3,
+     "z": 0
+    },
+    {
+     "kind": "blank",
+     "x": 0,
+     "z": 1,
+     "heat": 600
+    }
+   ],
+   "rules": {
+    "dialPassiveCooling": "4.0",
+    "dialPassiveCoolingInner": "0.3",
+    "dialColumnHeatFlow": "0.45",
+    "dialDiffusionMod": "1.7",
+    "dialHeatProvision": "0.35",
+    "dialReactivityMod": "1.3",
+    "dialControlSpeed": "2.5",
+    "dialControlSurgeMod": "1.5",
+    "dialFluxRange": "4",
+    "dialColumnHeight": "6",
+    "dialModeratorEfficiency": "0.6",
+    "dialAbsorberEfficiency": "0.7",
+    "dialReflectorEfficiency": "0.9",
+    "dialAbsorberHeatConversion": "0.1"
+   },
+   "actions": [
+    {
+     "tick": 5,
+     "column": 3,
+     "target": 0.1
+    },
+    {
+     "tick": 35,
+     "column": 3,
+     "target": 0.9
+    }
+   ]
   }
  ]
 }

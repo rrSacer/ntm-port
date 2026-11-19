@@ -169,5 +169,35 @@ scenario("heater_every_heatable", 20, [col("heater", 8 * i, 0, heat=900, feed={"
 # 18. the satellite scan fires on world ticks divisible by 200: two sources feeding each other past tick 200
 scenario("satellite_scan_tick_200", 205, [rod(0, 0, "rbmk_fuel_po210be"), rod(1, 0, "rbmk_fuel_po210be")])
 
+# T04 (U). 19. reflector, absorber and moderator at efficiency 0: nothing reflected, absorbed or moderated
+scenario("reflector_absorber_eff_0_0", 30,
+         [col("reflector", -1, 0), rod(0, 0, flux=[300, 0.8], lid=False), col("moderator", 1, 0), col("absorber", 2, 0), rod(3, 0, flux=[80, 0.3]),
+          col("reflector", 3, -1), col("absorber", 3, 1)],
+         rules={"dialReflectorEfficiency": "0.0", "dialAbsorberEfficiency": "0.0", "dialModeratorEfficiency": "0.0", "dialAbsorberHeatConversion": "0.2"})
+
+# 20. empty channels on the path (they do not end a stream), every column type a stream passes (OTHER) and a second
+# reactor out of range of the first, with its own source
+scenario("empty_channels_and_a_separate_reactor", 40,
+         [rod(0, 0, "rbmk_fuel_po210be", lid=False), col("rod", 1, 0, lid=False), col("rod_reasim", 2, 0), rod(3, 0, flux=[0, 0]),
+          col("blank", 0, 1), col("boiler", 0, 2), col("heater", 0, -1), col("cooler", 0, -2), rod(0, 3), rod(0, -3),
+          rod(40, 0, "rbmk_fuel_po210be"), col("rod", 41, 0), rod(43, 0, "rbmk_fuel_meu"), col("moderator", 42, 0, lid=False)])
+
+# 21. the end of a stream: a control rod in the last cell (its multiplier taken twice, `runStreamInteraction:390`), one
+# at level 0 in the path, and full, partial and no obstruction where the end irradiates (origin + vector)
+scenario("stream_ends_and_full_obstruction", 25,
+         [rod(0, 0, flux=[400, 0.5], lid=False), col("control", 5, 0, level=0.6, target=0.6), col("control", 0, 3, level=0.0, target=0.0),
+          rod(0, 4, flux=[50, 0.5])],
+         obstacles=[{"x": -1, "z": 0, "height": 4}, {"x": 0, "z": -1, "height": 2}, {"x": -3, "z": 0, "height": 4}, {"x": 0, "z": -4, "height": 1}])
+
+# 22. every physical dial off its default at once, on a moderated core with a control rod moving
+c = [rod(0, 0, "rbmk_fuel_heu235", flux=[150, 0.5], moderated=True), col("moderator", 1, 0), rod(2, 0, "rbmk_fuel_meu", flux=[60, 0.4]),
+     col("control", 1, 1, level=0.8, target=0.8, moderated=True), col("absorber", 2, 1), col("reflector", 3, 0), col("blank", 0, 1, heat=600)]
+scenario("every_physical_dial", 60, c,
+         rules={"dialPassiveCooling": "4.0", "dialPassiveCoolingInner": "0.3", "dialColumnHeatFlow": "0.45", "dialDiffusionMod": "1.7",
+                "dialHeatProvision": "0.35", "dialReactivityMod": "1.3", "dialControlSpeed": "2.5", "dialControlSurgeMod": "1.5",
+                "dialFluxRange": "4", "dialColumnHeight": "6", "dialModeratorEfficiency": "0.6", "dialAbsorberEfficiency": "0.7",
+                "dialReflectorEfficiency": "0.9", "dialAbsorberHeatConversion": "0.1"},
+         actions=[{"tick": 5, "column": 3, "target": 0.1}, {"tick": 35, "column": 3, "target": 0.9}])
+
 pathlib.Path(__file__).with_name("flux_scenarios.json").write_text(json.dumps({"scenarios": S}, indent=1) + "\n")
 print(len(S), "scenarios")
