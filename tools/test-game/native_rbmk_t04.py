@@ -37,9 +37,9 @@ UEU = 'ntm:rbmk_fuel_ueu'
 DUMMY = 'ntm:dummy_rbmk'
 CENTRE = (7, Y, 7)
 OCC_Z = (40, 42, 43)  # source, probed cell, channel
-# The open pair the farther from the 15x15 reactor and the occlusion row (their radiation spreads chunk to chunk): any
-# spread favours the lidded pair, against the check.
-RAD = {'open': (200, Y, 8), 'lid': (100, Y, 8)}
+# The two pairs far from every other source and as far from them as each other (the field spreads chunk to chunk): a
+# first run with the lidded pair two chunks from the occlusion row read more there than at the open pair.
+RAD = {'open': (-600, Y, 600), 'lid': (600, Y, 600)}
 
 
 def layout(x, z):
@@ -70,6 +70,17 @@ def check(g, name, passed, actual):
     g.save(True)
 
 
+def retry(g, line, tries=10):
+    """A control line that needs what a command just gave: the client's inventory may be a moment behind."""
+    for i in range(tries):
+        try:
+            return g.ctl(line)
+        except RuntimeError:
+            if i == tries - 1:
+                raise
+            time.sleep(.5)
+
+
 def floor(g, x0, x1, z0, z1):
     g.command(f'forceload add {x0} {z0} {x1} {z1}')
     time.sleep(2)
@@ -79,18 +90,22 @@ def floor(g, x0, x1, z0, z1):
 
 def place(g, p, block):
     """The column `block` placed by the player at `p`, standing south of it (its dummies with it)."""
+    g.command('clear @s')
     g.command(f'give @s {block} 1')
     g.command(f'tp @s {p[0] + .5} {p[1]} {p[2] + 3.5} 180 45')
     time.sleep(.2)
-    g.ctl(f'place {p[0]} {p[1]} {p[2]} --item {block}')
+    retry(g, f'place {p[0]} {p[1]} {p[2]} --item {block}')
     time.sleep(.3)
 
 
 def use_top(g, p, item):
     """`item` from the hand on the column's top cell, from the south (a rod into a channel, a lid onto a column)."""
+    # One at a time: rods stack by one, and 64 of them would fill the inventory.
+    g.command('clear @s')
+    g.command(f'give @s {item} 1')
     g.command(f'tp @s {p[0] + .5} {Y} {p[2] + 2.5}')
     time.sleep(.2)
-    g.ctl(f'select {item}')
+    retry(g, f'select {item}')
     g.ctl(f'interact {p[0]} {p[1] + 3} {p[2]} south')
     time.sleep(.4)
     g.close()
@@ -153,8 +168,6 @@ def heat_of(d):
 
 def build_reactor(g):
     floor(g, -4, 18, -4, 22)
-    g.command('give @s ntm:rbmk_fuel_ueu 64')
-    g.command('give @s ntm:rbmk_fuel_po210be 8')
     for z in range(15):
         for x in range(15):
             block, _ = layout(x, z)
@@ -187,8 +200,6 @@ def occlusion(g):
         ('blank_dummies', [(-2, 'ntm:rbmk_blank'), (-1, DUMMY), (0, DUMMY), (1, DUMMY)], [0, 1]),
     ]
     floor(g, 30, 30 + 8 * len(variants), 36, 48)
-    g.command('give @s ntm:rbmk_fuel_ueu 16')
-    g.command('give @s ntm:rbmk_fuel_po210be 16')
     found = {}
     for i, (name, blocks, want) in enumerate(variants):
         x = 32 + 8 * i
@@ -214,18 +225,14 @@ def occlusion(g):
 def radiation(g):
     for key, p in RAD.items():
         floor(g, p[0] - 3, p[0] + 3, p[2] - 3, p[2] + 5)
-    g.command('give @s ntm:rbmk_fuel_ueu 4')
-    g.command('give @s ntm:rbmk_fuel_po210be 4')
-    g.command('give @s ntm:rbmk_lid 4')
     for key, p in RAD.items():
         chan = (p[0], Y, p[2] + 1)
-        place(g, p, 'ntm:rbmk_rod')
-        place(g, chan, 'ntm:rbmk_rod')
-        use_top(g, p, SRC)
-        use_top(g, chan, UEU)
-        if key == 'lid':
-            use_top(g, chan, 'ntm:rbmk_lid')
-            use_top(g, p, 'ntm:rbmk_lid')
+        # Each column used from the south before the next one stands there.
+        for col, rod in ((p, SRC), (chan, UEU)):
+            place(g, col, 'ntm:rbmk_rod')
+            use_top(g, col, rod)
+            if key == 'lid':
+                use_top(g, col, 'ntm:rbmk_lid')
     lids = {k: [c['lid'] for c in (dump(g, f'rad_{k}-1', p) or {}).get('columns', [])] for k, p in RAD.items()}
     check(g, 'lids_as_placed', lids == {'open': [False, False], 'lid': [True, True]}, lids)
     time.sleep(20)
@@ -238,6 +245,9 @@ def play(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
     g.command('ntmrbmk dial dialFluxRange 5')
+    # Without boilers (T08) a 15x15 core of 59 rods runs away at the default reactivity, as in Java (every column past
+    # 1500 zeroes its flux); at 0.35 (picked by stepping the core from this layout's dump) it runs, heating slowly.
+    g.command('ntmrbmk dial dialReactivityMod 0.35')
     build_reactor(g)
     time.sleep(15)
     a1 = dump(g, 'a-1')
@@ -308,11 +318,54 @@ def reopen(g):
     g.ctl('save')
 
 
+def rad_only(g):
+    """Radiation alone, on a fresh world: an open and a lidded pair in two neighbouring chunks far from anything,
+    read in one command (`ntmtest rad` around them) at five moments: the open pair's chunk holds more every time."""
+    g.ctl('wait-ready 120')
+    g.command('gamemode creative @s')
+    g.command('ntmrbmk dial dialReactivityMod 0.35')
+    pairs = {'open': (600, Y, 600), 'lid': (616, Y, 600)}  # chunks (37, 37) and (38, 37)
+    for key, p in pairs.items():
+        floor(g, p[0] - 3, p[0] + 3, p[2] - 3, p[2] + 5)
+    for key, p in pairs.items():
+        chan = (p[0], Y, p[2] + 1)
+        for col, rod in ((p, SRC), (chan, UEU)):
+            place(g, col, 'ntm:rbmk_rod')
+            use_top(g, col, rod)
+            if key == 'lid':
+                use_top(g, col, 'ntm:rbmk_lid')
+    lids = {k: [c['lid'] for c in (dump(g, f'radpair_{k}-1', p) or {}).get('columns', [])] for k, p in pairs.items()}
+    check(g, 'lids_as_placed', lids == {'open': [False, False], 'lid': [True, True]}, lids)
+    time.sleep(20)
+    import struct
+    reads = []
+    for _ in range(5):
+        text = ' '.join(g.command('ntmtest rad 38 37 1').get('chat', []))
+        def at(c):
+            m = re.search(rf'(?:^|[=;]){c[0]},{c[1]}:(\w+):', text)
+            return 0.0 if not m or m[1] == 'none' else struct.unpack('<f', struct.pack('<I', int(m[1])))[0]
+        reads.append({'open': at((37, 37)), 'lid': at((38, 37))})
+        time.sleep(2)
+    g.evidence['chunk_radiation_reads'] = reads
+    check(g, 'open_columns_leak_more_every_read', all(r['open'] > r['lid'] > 0 for r in reads), reads)
+    g.ctl('save')
+
+
+def again(g):
+    """A third opening of the same world: the reactor's first steps after it, against what the save on disk holds."""
+    g.ctl('wait-ready 120')
+    c1 = dump(g, 'c-1', timeout=60)
+    check(g, 'dump_at_once', c1 is not None, None)
+    time.sleep(5)
+    check(g, 'dump_later', dump(g, 'c-2') is not None, None)
+    g.ctl('save')
+
+
 if __name__ == '__main__':
     mode = sys.argv[2]
     g = Game(sys.argv[1], 'rbmk-t04-' + mode)
     g.evidence['phase'] = mode
-    {'play': play, 'reopen': reopen}[mode](g)
+    {'play': play, 'reopen': reopen, 'again': again, 'rad': rad_only}[mode](g)
     failed = [k for k, c in g.evidence['checks'].items() if not c['ok']]
     g.evidence['failed'] = failed
     g.evidence['ok'] = not failed
