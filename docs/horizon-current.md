@@ -1292,15 +1292,9 @@ dimensão fiéis ao `RBMKDials`), 4A (`SatelliteScan` num registro persistido po
   (camada, componente, ordem de registro), não a da lista de TEs carregados do Java (D1).
 - O que o save não guarda das dez colunas novas no passo volta ao valor do TE novo a cada tick (temporizador do
   cooler, `ventDelay` do boiler): sem fluido não há efeito observável; T07/T08/T09 persistem o que for deles.
-- **Um tick de espera ao abrir o mundo (achado, fora do T04).** Medido em jogo: o save guarda o relógio e o estado do
-  reator juntos (do dump `b-4` ao estado em disco, 271 passos em 271 ticks, bit a bit), mas depois de abrir o mundo o
-  reator dá um passo a menos que o relógio (25 em 26 ticks; nas três rodadas, exatamente 1 a cada abertura). A adoção
-  das máquinas acontece no tick do próprio BE (`glue::tick` → `native_adopt`); no primeiro tick do servidor depois da
-  carga os BEs ainda não tickaram e o `native_tick` do fim do tick vê as colunas mostradas e não adotadas: o reator
-  espera (D4) e o relógio do mod (`world.ticks`) avança. Nenhuma rodada se perde nem se repete no estado do reator
-  (ele retoma do estado salvo); o que muda é a fase do relógio (o `% 200` do satélite) e, frente ao Java, um tick a
-  menos por abertura para toda máquina do mod. Opções para o coordenador: adotar na carga do chunk em vez do tick do
-  BE; não avançar o relógio enquanto houver máquina mostrada e não adotada; ou registrar como desvio.
+- **Um tick de espera ao abrir o mundo: corrigido na revisão** (ver "Correções da revisão" abaixo). Medido na entrega:
+  o save guardava relógio e estado juntos (271 passos em 271 ticks), mas depois de abrir o reator dava um passo a menos
+  que o relógio (25 em 26), porque a máquina só era adotada no primeiro tick do BE, um tick depois da carga.
 
 ### Validação (19/11/2026)
 
@@ -1326,6 +1320,33 @@ Evidências em `/mnt/ssd120/sacer/so/rbmk-t04/evidence/` (JSON das aberturas, du
 | J: 3A em jogo | Uma coluna posta no Nether (sem cache) reescreveu `dialColumnHeight` para 4 enquanto o overworld, com cache em 6, colocou a coluna seguinte do jogador com 6 blocos |
 | C (`run-rbmk-t03-proof.py`, cenário do T03, no binário do T04, `HORIZON_NO_EAGER_SAVE=1`) | 4/4 cortes, NTM igual ao controle vanilla item a item nas duas reaberturas: `kill`, `kv_committed` e `players_saved` 3 = 3; `live_chunk:2,0` 2 = 2 (o mesmo resíduo vanilla do T03); sem duplicação, armazenamento sem item em todas as aberturas (a chave nova `rbmk_rays` não guarda item). Relatório em `evidence/c-report.json`; mundos apagados |
 | C: saldo térmico e de fluxo | O replay das cadeias reproduz bit a bit, a cada tick, o calor de cada coluna (produção da barra, `moveHeat`, resfriamento passivo, limites) e os buffers de fluxo (`fluxQuantity`/`lastFluxQuantity` e a fila de 240 fluxos) do núcleo validado pelo oráculo; nenhum item muda pelo passo (as barras só mudam pela própria tag) |
+
+### Correções da revisão (19/11/2026)
+
+A revisão independente aprovou a entrega (0 reprovações, sem P1/P2). Decisão do usuário: corrigir o tick de espera com a
+opção (a) e os P3 apontados, sem sync com o upstream (motor `2187c3192b`).
+
+| Item | Como fica | Commit |
+| --- | --- | --- |
+| Tick de espera ao abrir (opção a) | A glue lê, na carga de cada chunk (o gancho `chunk_load` do motor: "seus blocos e BEs já estão lá"), as máquinas do chunk com o estado salvo e as entrega ao servidor (`Server::native_chunk_machines_loaded`), que as adota no começo do tick seguinte, depois das obrigações do chunk e antes do passo. A adoção no primeiro tick do BE continua para o que a carga não trouxe (um BE salvo antes do primeiro tick) | `274cac6b` |
+| P3(a): radiação na prova principal | Os pares aberto e tampado em chunks vizinhos, lidos num único comando, cinco vezes | `99b1947c` |
+| P3(d): corte estrito sobre o estado novo | Cenário C do T03 com uma regra de dial reescrita antes do ato (o controle reescreve uma gamerule vanilla) e os eventos de satélite em jogo, cortado entre `kv_committed` e `chunks_written` | `e32ed906` |
+| P3(e): dummy órfão | Teste: uma sequência de dummies sobre nenhuma coluna, ou mais longa que qualquer coluna, conta como o bloco opaco do `RBMKBase` | `b4ce9677` |
+
+Testes: `machines_adopted_as_their_chunk_loads_lose_no_step_at_an_opening` abre o mundo como o motor (as máquinas só pela
+carga) e segue igual ao mundo que nunca fechou, 23 ticks e 23 passos; o mesmo mundo com a adoção atrasada um tick (o
+caminho de antes) fica um passo atrás. `an_orphan_dummy_counts_as_opaque`: dois dummies órfãos tomam metade do fluxo.
+Mutações: 3/3 pegas (adoção na carga sem efeito; órfão sobre um bloco transparente; sequência além do alcance
+transparente). Binário release `ebe6658680d151cd28555ea37f2cc665d3822dd3a9b77ef6421480d0a7dcd5ca` (motor `2187c3192b`,
+fontes do bundle de `274cac6b`; o que veio depois só muda testes, roteiros e docs), pacote `ntm.hmod` `ea71442a…`
+(conteúdo inalterado).
+
+| Prova | Resultado |
+| --- | --- |
+| U | Suíte `ntm-core` em debug 879 ok, 6 ignorados, 0 falhas; testes RBMK 53; `save_model` release 11/11; `keep_world_cost` 0,16–0,21 ms por tick; Clippy `-D warnings` do `ntm-core` (todos os alvos) e da glue (release, stage): 0 |
+| J (rodada 4, `evidence/j-run4/`) | **play 24/24, reopen 6/6**: inclui `open_columns_leak_more_every_read` e `satellite_phase_kept` (85 eventos relatados depois da abertura, todos em múltiplos de 200). Replay com tolerância zero de espera (`RBMK_T04_WAIT=0`): `a` 515/515, `b-1→b-2` 4401/4401, **`b-2→b-3` através da reabertura 67/67** (antes 34 em 35), `b-3→b-4` 312/312, **`b-4→b-5` através de uma terceira abertura 335/335**, `b-5→b-6` 115/115, todos bit a bit |
+| C: cenário do T03 no binário novo (`HORIZON_NO_EAGER_SAVE=1`, `evidence/c-report-r2.json`) | 4/4 cortes, NTM igual ao controle vanilla item a item nas duas reaberturas: `kill`, `kv_committed`, `players_saved` 3 = 3; `live_chunk:2,0` 2 = 2 (o resíduo vanilla de sempre); sem duplicação, armazenamento sem item. A adoção na carga não muda o saldo |
+| C: corte estrito sobre o estado novo (`run-rbmk-t04-c-proof.py`, `HORIZON_NO_EAGER_SAVE=1`, `evidence/c-strict-report.json`, `c-strict-rules.json`) | Cenário C do T03 com `dialFluxRange` 5 → 7 logo antes do ato (o controle: `random_tick_speed` 5 → 7) e os eventos de satélite em jogo, cortado nos 5 pontos entre `kv_committed` e `chunks_written`: **5/5**, NTM igual ao controle item a item (3 = 3 em quatro cortes; `chunks_written` 2 = 2, a mesma última escrita que o vanilla perde); armazenamento sem item. A regra lida depois das duas reaberturas é a mesma nos dois mundos em todos os cortes: 7 em `kv_committed`, 5 (o valor do último save) nos três `region_record` e em `chunks_written`; nunca outro valor. Os eventos de satélite voltam legíveis e em fase (múltiplos de 200) em todos os cortes. Uma primeira rodada reprovou o controle por erro do roteiro (o nome antigo `randomTickSpeed`, depois um valor de base não salvo); corrigido em `85803721` e `992b5b26` |
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
