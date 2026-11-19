@@ -609,6 +609,8 @@ mod tests {
         }
         fn tell(&mut self, _player: &str, text: &str) {self.told.push(text.into());}
         fn drop_items(&mut self,_:&str,_:Pos,items:&[(String,u32)])->bool{self.emitted.extend(items.iter().map(|(id,n)|Stack::new(id,*n)));true}
+        fn drop_stacks(&mut self,_:&str,_:Pos,stacks:&[Stack])->bool{self.emitted.extend(stacks.iter().cloned());true}
+        fn drop_encoded_items(&mut self,_:&str,_:Pos,items:&[String])->bool{self.emitted.extend(items.iter().filter_map(|i|crate::foundry::scrap::from_snbt(i)));true}
         fn log(&mut self, _text: &str) {}
         fn machine_slots(&mut self, _dim: &str, p: Pos) -> Option<Slots> {
             if self.unreachable {
@@ -896,16 +898,16 @@ mod tests {
         // N1 of the fresh review: the save takes the chunks only once the hidden metal is out, as a vanilla
         // container's items are out the instant its block goes.
         s.native_world_saving(&mut w);
-        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)],"put out before the save takes the chunks");
+        assert_eq!(w.emitted,vec![crate::foundry::scrap::stack("iron",144)],"put out before the save takes the chunks");
         assert!(s.ready.world.removals.is_empty()&&w.homes.is_empty(),"nothing left owing");
         s.native_world_saved(&mut w,true);
         let kept:crate::persist::Kept=serde_json::from_slice(&w.kv.map[crate::persist::KEY]).unwrap();assert!(kept.removals.is_empty());
         let mut reopened=reopen(&mut w,2);reopened.native_tick(&mut w,3);
         assert_eq!(w.player,vec![Stack::new("minecraft:iron_ingot",1)]);
-        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)]);
+        assert_eq!(w.emitted,vec![crate::foundry::scrap::stack("iron",144)]);
         assert!(!reopened.native_has(OW,AT));reopened.native_world_saved(&mut w,true);
         let mut again=reopen(&mut w,4);again.native_tick(&mut w,5);
-        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)]);
+        assert_eq!(w.emitted,vec![crate::foundry::scrap::stack("iron",144)]);
         assert!(again.ready.world.removals.is_empty());assert!(again.ready.world.machine_effects.is_empty());
     }
 

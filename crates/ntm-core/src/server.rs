@@ -127,6 +127,11 @@ pub trait ServerHost: Kv {
     /// Items a broken machine held outside its slots (the slots the game
     /// spills itself), dropped at `p`.
     fn drop_items(&mut self, _dim: &str, _p: Pos, _items: &[(String, u32)]) -> bool { false }
+    /// Items with their data (the exact scraps of a broken foundry machine), dropped at `p`.
+    fn drop_stacks(&mut self, dim: &str, p: Pos, stacks: &[container_bridge::Stack]) -> bool {
+        let encoded: Vec<String> = stacks.iter().map(crate::foundry::scrap::snbt).collect();
+        self.drop_encoded_items(dim, p, &encoded)
+    }
     /// The players in the world (None: the host can't tell, and
     /// [`Server::set_players`] says).
     fn players(&mut self) -> Option<Vec<PlayerInfo>> {
@@ -489,6 +494,11 @@ impl Server {
         if !items.is_empty() {
             host.drop_items(dim, pos, &items);
         }
+        // The molten metal: one scrap per stack, with all of its quanta (`ItemScraps.create`).
+        let scraps = crate::foundry::scrap::stacks(&m.logic().scraps());
+        if !scraps.is_empty() {
+            host.drop_stacks(dim, pos, &scraps);
+        }
     }
 
     fn block_event(&mut self, host: &mut impl ServerHost, e: BlockEvent) {
@@ -665,7 +675,7 @@ impl Server {
         for (key, m, seen) in removed {
             if seen {
                 self.drop_contents(host, &key.0, key.1, &m);
-            } else if !m.logic().contents().is_empty() {
+            } else if !m.logic().contents().is_empty() || !m.logic().scraps().is_empty() {
                 host.log(&format!(
                     "machine {} at {:?} was never seen in this world: its contents are not dropped",
                     m.block, key.1

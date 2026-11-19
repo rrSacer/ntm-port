@@ -55,7 +55,7 @@ As seis receitas vanilla de `CraftingManager.java:922–927` passam a resolver: 
 
 ## Limites e validação
 
-O contrato solicitado fixa os scraps em 72: `NBT amount`/`liquid` não atravessa os slots atuais. Quantidades arbitrárias em scraps exigem suporte de estado do item; o consumidor deve registrar esse limite ao esvaziar o cadinho. O runtime de canais/moldagem pertence às etapas 2/3. Esta entrega inclui seus blocos e tabela de moldes, sem afirmar aceitação funcional dessas etapas.
+O contrato original fixava os scraps em 72. Isso foi fechado pela decisão D4 (ver "Sucata exata" abaixo). O runtime de canais/moldagem pertence às etapas 2/3. Esta entrega inclui seus blocos e tabela de moldes, sem afirmar aceitação funcional dessas etapas.
 
 ```sh
 /usr/local/bin/agent-run python3 tools/content-gen/generate.py
@@ -82,3 +82,12 @@ Port de `TileEntityMachineRotaryFurnace` (`updateEntity`:140-227, `canProcess`:3
 - O bico fica a `rot·2,875`, `y+1,25`, com `rot = dir.getRotation(DOWN)`; despeja `INGOT.q(1)` = 72 quanta por tick, `safe = true`, num raio de até 6 blocos (`molten_tick`, `foundry_server.rs`).
 - **R8**: o `output` fundido não está em `held_contents`; o Java não tem `breakBlock` próprio e o perde ao quebrar. Teste `r8_breaking_rotary_furnace_loses_molten_output_and_keeps_only_slots`.
 - Lacunas declaradas: fumaça e fuligem (o port não tem poluição).
+
+## Sucata exata (D4)
+
+`ItemScraps` guarda o material como dano e a quantidade na tag `amount`; sem tag vale um lingote (`getMats`, `ItemScraps.java:118-132`). No port o item é `ntm:scraps__<material>` com a quantidade em `custom_data` como `{ntm_amount:N}` (`foundry/scrap.rs`). Em 72 o dado é omitido: é o mesmo valor e empilha com o item simples.
+
+- **Quem solta**: cadinho (uma por pilha, `MachineCrucible.breakBlock`:68,117), canal, tanque, molde, bacia (`FoundryCastingBase`:114,137; `FoundryTank`:105,128), forno a arco e eletrolisador. Cada um solta **uma** sucata por material com **todos** os quanta, como o Java. Antes eram `quanta/72` lingotes e o resto se perdia. O rotativo não solta nada (R8).
+- **Quem consome**: o cadinho (`Mats.getMaterialsFromItem`:250-252, depois a conversão `smeltsInto`) e o forno a arco em modo líquido (`ArcFurnaceRecipes.getOutput`:170-177) fundem a quantidade da sucata, sem arredondar.
+- **Caminho de queda**: `ServerHost::drop_stacks`. Dentro de uma transação vira `WorldEffect::EncodedItems` (SNBT do item no formato do ledger), reaplicado por id.
+- **Desvio declarado**: dado de item sem `ntm_amount` vale um lingote (o Java lê 0); nada no port grava esse dado.

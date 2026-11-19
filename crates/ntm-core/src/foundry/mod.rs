@@ -17,6 +17,7 @@ pub mod cast;
 pub mod crucible;
 pub mod firebox;
 pub mod flow;
+pub mod scrap;
 
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -168,13 +169,23 @@ impl Tables {
     /// its materials converted by `smelts_into`.
     pub fn smelting(&self, item: &str) -> Vec<Mat> {
         let Some(mats) = self.items.get(item) else { return Vec::new() };
-        mats.iter()
-            .filter_map(|(name, q)| {
-                let m = self.material(name)?;
-                let (cin, cout) = m.conv;
-                Some((m.smelts_into.clone(), q * cout / cin.max(1)))
-            })
-            .collect()
+        mats.iter().filter_map(|(name, q)| self.converted(name, *q)).collect()
+    }
+
+    /// `smelting` of a stack: a scrap is worth its own amount (`Mats.getMaterialsFromItem`:250-252,
+    /// `ItemScraps.getMats`), anything else what its item is.
+    pub fn smelting_of(&self, item: &str, custom: Option<&str>) -> Vec<Mat> {
+        match scrap::amount_of(item, custom) {
+            Some((mat, q)) => self.converted(&mat, q).into_iter().collect(),
+            None => self.smelting(item),
+        }
+    }
+
+    /// `x.amount * convOut / convIn` into what the material smelts into.
+    fn converted(&self, name: &str, q: u32) -> Option<Mat> {
+        let m = self.material(name)?;
+        let (cin, cout) = m.conv;
+        Some((m.smelts_into.clone(), q * cout / cin.max(1)))
     }
 
     pub fn alloy(&self, name: &str) -> Option<&Alloy> {

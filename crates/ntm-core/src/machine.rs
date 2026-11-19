@@ -153,6 +153,11 @@ pub trait Logic {
     fn contents(&self) -> Vec<(String, u32)> {
         Vec::new()
     }
+    /// Its molten metal as `(material, quanta)`, dropped as one exact scrap each when it is broken
+    /// (`ItemScraps.create`, `foundry::scrap`).
+    fn scraps(&self) -> Vec<(String, u32)> {
+        Vec::new()
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

@@ -78,10 +78,12 @@ pub fn solid_output(item: &str) -> Option<(String, u32)> {
 }
 
 /// What an item melts into in fluid mode (scraps into their own material).
-pub fn fluid_output(item: &str) -> Option<Vec<(String, u32)>> {
+pub fn fluid_output(item: &str, custom: Option<&str>) -> Option<Vec<(String, u32)>> {
     let t = fluid();
     if let Some(m) = t.scraps.get(item) {
-        return Some(m.clone());
+        // `ArcFurnaceRecipes.getOutput`:170-177: a scrap melts into its own amount (`ItemScraps.getMats`).
+        let exact = crate::foundry::scrap::amount_of(item, custom).map(|(_, q)| q);
+        return Some(m.iter().map(|(mat, q)| (mat.clone(), exact.unwrap_or(*q))).collect());
     }
     t.recipes.iter().find(|r| r.items_in.first().is_some_and(|i| i.ids.iter().any(|x| x == item))).map(|r| r.mout.clone()).filter(|m| !m.is_empty())
 }
@@ -116,13 +118,13 @@ impl Default for ArcFurnace {
 }
 
 impl ArcFurnace {
-    fn has_recipe(&self, item: &str) -> bool {
-        if self.liquid_mode { fluid_output(item).is_some() } else { solid_output(item).is_some() }
+    fn has_recipe(&self, item: &str, custom: Option<&str>) -> bool {
+        if self.liquid_mode { fluid_output(item, custom).is_some() } else { solid_output(item).is_some() }
     }
 
     /// `hasIngredients`: any grid item with a recipe in the mode.
     pub fn has_ingredients(&self) -> bool {
-        self.slots[slot::GRID].iter().flatten().any(|s| self.has_recipe(&s.id))
+        self.slots[slot::GRID].iter().flatten().any(|s| self.has_recipe(&s.id, s.custom.as_deref()))
     }
 
     /// `hasElectrodes`: three unburnt electrodes.
@@ -140,7 +142,7 @@ impl ArcFurnace {
         let mut moved = false;
         for q in slot::QUEUE {
             while let Some(s) = self.slots[q].clone() {
-                if !self.has_recipe(&s.id) {
+                if !self.has_recipe(&s.id, s.custom.as_deref()) {
                     break;
                 }
                 let Some(g) = slot::GRID.clone().find(|&g| self.slots[g].is_none()) else { return moved };
@@ -158,7 +160,7 @@ impl ArcFurnace {
         for g in slot::GRID {
             let Some(s) = self.slots[g].clone() else { continue };
             if self.liquid_mode {
-                let Some(outs) = fluid_output(&s.id) else { continue };
+                let Some(outs) = fluid_output(&s.id, s.custom.as_deref()) else { continue };
                 let need: u32 = outs.iter().map(|o| o.1).sum();
                 let mut n = s.count;
                 while n > 0 && self.liquid_total() + need <= MAX_LIQUID {
@@ -294,6 +296,10 @@ impl Logic for ArcFurnace {
     fn tick(&mut self) -> bool {
         self.step()
     }
+    /// The molten buffer, one scrap per material when it is broken.
+    fn scraps(&self) -> Vec<(String, u32)> {
+        self.liquids.iter().filter(|m| m.1 > 0).cloned().collect()
+    }
     fn energy(&mut self) -> Option<&mut dyn EnergyNode> {
         Some(self)
     }
@@ -321,10 +327,6 @@ impl Slotted for ArcFurnace {
             self.liquid_mode = !self.liquid_mode;
         }
         false
-    }
-    /// The molten buffer, as scraps, when it is broken.
-    fn held_contents(&self) -> Vec<(String, u32)> {
-        self.liquids.iter().filter(|m| m.1 >= 72).map(|m| (format!("ntm:scraps__{}", m.0), m.1 / 72)).collect()
     }
     /// Progress, lid, delay, the mode and the buffer (material id, quanta).
     fn save_state(&self) -> Vec<i32> {
@@ -366,6 +368,20 @@ mod tests {
         assert_eq!(f.slots.len(), slot::COUNT);
         f.step();
         f.screen_data();
+    }
+
+    /// D4: in fluid mode a scrap melts into its own amount, and a broken furnace gives back one
+    /// exact scrap per material.
+    #[test]
+    fn a_scrap_melts_into_its_own_amount_and_the_buffer_breaks_into_exact_scraps() {
+        let scrap = crate::foundry::scrap::stack("iron", 100);
+        assert_eq!(fluid_output(&scrap.id, scrap.custom.as_deref()), Some(vec![("iron".to_string(), 100)]));
+        assert_eq!(fluid_output("ntm:scraps__iron", None), Some(vec![("iron".to_string(), 72)]));
+        let mut f = ArcFurnace { liquid_mode: true, ..Default::default() };
+        f.slots[slot::GRID.start] = Some(scrap);
+        f.process();
+        assert_eq!(f.liquids, vec![("iron".to_string(), 100)]);
+        assert_eq!(Logic::scraps(&f), vec![("iron".to_string(), 100)]);
     }
 
     #[test]

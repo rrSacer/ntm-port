@@ -188,6 +188,10 @@ impl EnergyNode for Electrolyser {
 }
 
 impl Logic for Electrolyser {
+    /// The molten stacks, one scrap each when it is broken.
+    fn scraps(&self) -> Vec<(String, u32)> {
+        [&self.left, &self.right].into_iter().flatten().filter(|m| m.1 > 0).cloned().collect()
+    }
     fn tick(&mut self) -> bool {
         self.fluid.power = crate::machine::charge_from_slot(&self.slots, slot::BATTERY, self.fluid.power, self.fluid.max_power());
         let a = self.fluid.tick();
@@ -228,10 +232,6 @@ impl Slotted for Electrolyser {
     }
     fn screen_data(&self) -> Vec<i32> {
         Electrolyser::screen_data(self)
-    }
-    /// The molten stacks, as scraps, when it is broken.
-    fn held_contents(&self) -> Vec<(String, u32)> {
-        [&self.left, &self.right].into_iter().flatten().filter(|m| m.1 >= 72).map(|m| (format!("ntm:scraps__{}", m.0), m.1 / 72)).collect()
     }
     /// The metal line's progress and stacks.
     fn save_state(&self) -> Vec<i32> {

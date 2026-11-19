@@ -116,7 +116,7 @@ fn breaking_a_crucible_keeps_its_molten_metal_as_scraps() {
     g.run(3);
     engine_break(&mut g, core);
     let dropped = g.world.borrow().dropped.clone();
-    assert!(dropped.iter().any(|d| d.ends_with("ntm:scraps__iron 2")), "o metal sumiu: {dropped:?}");
+    assert!(dropped.iter().any(|d| d.ends_with("ntm:scraps__iron 1 {ntm_amount:144}")), "o metal sumiu: {dropped:?}");
 }
 
 /// The world's save holds a machine's slots and its state together (its

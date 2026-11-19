@@ -193,6 +193,14 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         });
         true
     }
+    fn drop_stacks(&mut self, d: &str, p: Pos, stacks: &[Stack]) -> bool {
+        self.critical.push_back(WorldEffect::EncodedItems {
+            dim: d.into(),
+            pos: p,
+            items: stacks.iter().map(crate::foundry::scrap::snbt).collect(),
+        });
+        true
+    }
     fn pile_drop(&mut self, d: &str, p: Pos, i: &str) -> bool {
         self.drop_items(d, p, &[(i.into(), 1)])
     }

@@ -105,9 +105,10 @@ fn breaking_a_crucible_drops_its_items_and_scraps() {
     g.break_block(CORE);
     g.run(60);
     let dropped = g.world.borrow().dropped.clone();
-    // The ingot, and two iron scraps (150 quanta); copper is under an ingot.
-    assert_eq!(dropped.len(), 2, "{dropped:?}");
-    assert!(dropped.iter().any(|d| d.ends_with("ntm:scraps__iron 2")), "{dropped:?}");
+    // The ingot, and one scrap per stack with all of its quanta (D4: the 30 of copper under an ingot too).
+    assert_eq!(dropped.len(), 3, "{dropped:?}");
+    assert!(dropped.iter().any(|d| d.ends_with("ntm:scraps__iron 1 {ntm_amount:150}")), "{dropped:?}");
+    assert!(dropped.iter().any(|d| d.ends_with("ntm:scraps__copper 1 {ntm_amount:30}")), "{dropped:?}");
 }
 
 // ------------------------------------------------------------- stage 2

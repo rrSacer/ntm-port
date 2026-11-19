@@ -291,6 +291,19 @@ impl ServerHost for SHost {
         }
         true
     }
+    fn drop_encoded_items(&mut self, dim: &str, p: Pos, items: &[String]) -> bool {
+        let stacks: Vec<_> = items.iter().filter_map(|i| crate::foundry::scrap::from_snbt(i)).collect();
+        assert_eq!(stacks.len(), items.len(), "an item the ledger form cannot read: {items:?}");
+        self.drop_stacks(dim, p, &stacks)
+    }
+    fn drop_stacks(&mut self, dim: &str, p: Pos, stacks: &[crate::server::container_bridge::Stack]) -> bool {
+        let mut w = self.world.borrow_mut();
+        for s in stacks {
+            let data = s.custom.as_deref().map_or(String::new(), |c| format!(" {c}"));
+            w.dropped.push(format!("{dim} {} {} {} {} {}{data}", p[0], p[1], p[2], s.id, s.count));
+        }
+        true
+    }
 }
 
 /// One game: a world and the server.

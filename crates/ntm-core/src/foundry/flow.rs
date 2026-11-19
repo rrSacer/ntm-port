@@ -57,10 +57,10 @@ impl Melt {
         }
     }
 
-    /// As scraps, a whole ingot's worth each (see `Crucible::scraps`).
-    pub fn scraps(&self) -> Vec<(String, u32)> {
+    /// What it holds, as the material and its exact quanta (one scrap, `foundry::scrap`).
+    pub fn molten(&self) -> Vec<(String, u32)> {
         match &self.mat {
-            Some(m) if self.amount >= 72 => vec![(format!("ntm:scraps__{m}"), self.amount / 72)],
+            Some(m) if self.amount > 0 => vec![(m.clone(), self.amount)],
             _ => Vec::new(),
         }
     }
@@ -169,8 +169,8 @@ impl Logic for Channel {
     fn view(&self) -> ViewModel {
         ViewModel::new("Canal de fundição").text(self.melt.line(), view::GREY)
     }
-    fn contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
+    fn scraps(&self) -> Vec<(String, u32)> {
+        self.melt.molten()
     }
 }
 
@@ -181,8 +181,8 @@ impl Logic for Tank {
     fn view(&self) -> ViewModel {
         ViewModel::new("Tanque de fundição").text(self.melt.line(), view::GREY)
     }
-    fn contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
+    fn scraps(&self) -> Vec<(String, u32)> {
+        self.melt.molten()
     }
 }
 
@@ -204,9 +204,6 @@ impl Melt {
 }
 
 impl Slotted for Channel {
-    fn held_contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
-    }
     fn save_state(&self) -> Vec<i32> {
         self.melt.save().to_vec()
     }
@@ -222,9 +219,6 @@ impl Slotted for Channel {
 }
 
 impl Slotted for Tank {
-    fn held_contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
-    }
     fn save_state(&self) -> Vec<i32> {
         self.melt.save().to_vec()
     }
@@ -308,6 +302,21 @@ mod tests {
 
     fn m(mat: &str, q: u32) -> Melt {
         Melt { mat: Some(mat.into()), amount: q }
+    }
+
+    /// D4, R7: what a broken channel, tank or cast holds comes out whole, whatever the amount
+    /// (the Java: `ItemScraps.create(new MaterialStack(type, amount))`); 30 quanta was lost before.
+    #[test]
+    fn a_broken_block_gives_back_every_quantum() {
+        for q in [1, 30, 71, 72, 73, 144, 1_000] {
+            let channel = Channel { melt: m("iron", q), ..Default::default() };
+            let tank = Tank { melt: m("iron", q), ..Default::default() };
+            let cast = crate::foundry::cast::Cast { melt: m("iron", q), ..crate::foundry::cast::Cast::new(0) };
+            for scraps in [Logic::scraps(&channel), Logic::scraps(&tank), Logic::scraps(&cast)] {
+                assert_eq!(scraps, vec![("iron".to_string(), q)], "{q}");
+            }
+        }
+        assert!(Logic::scraps(&Channel::default()).is_empty());
     }
 
     #[test]
