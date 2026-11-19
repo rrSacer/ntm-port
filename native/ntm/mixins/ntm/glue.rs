@@ -1060,6 +1060,10 @@ static ARRIVED: Mutex<Vec<Arrived>> = Mutex::new(Vec::new());
 /// radiation by chunk (`Server::native_chunk_radiation_loaded`/`_unloaded`).
 static RAD_CHUNKS: Mutex<Vec<(String, [i32; 2], bool)>> = Mutex::new(Vec::new());
 
+/// The machines of each chunk loaded since the server last took them, by cell and saved state: adopted as their chunk
+/// loads, not only at their block entity's first tick, which comes a tick later (RBMK T04).
+static CHUNK_MACHINES: Mutex<Vec<(String, Vec<([i32; 3], String)>)>> = Mutex::new(Vec::new());
+
 /// What the chunks loaded since owe, and the chunks loaded and unloaded since, given to the server.
 fn arrived(server: &mut Server) {
     for (dim, chunk, loaded) in std::mem::take(&mut *lock(&RAD_CHUNKS)) {
@@ -1071,6 +1075,10 @@ fn arrived(server: &mut Server) {
     }
     for (dim, chunk, removals, batches, migrated) in std::mem::take(&mut *lock(&ARRIVED)) {
         server.native_obligations_loaded(&dim, chunk, removals, batches, migrated);
+    }
+    // After what their chunks owe: a machine's adoption reads it.
+    for (dim, machines) in std::mem::take(&mut *lock(&CHUNK_MACHINES)) {
+        server.native_chunk_machines_loaded(&dim, &machines);
     }
 }
 
@@ -1091,6 +1099,27 @@ pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [
     }
     if !ledger.is_empty() {
         lock(&LEDGERS).insert(key, ledger);
+    }
+    // Its machines with their saved state (a block entity without one was placed and saved before its first tick:
+    // `tick` gives it its empty model).
+    let machines: Vec<([i32; 3], String)> = game
+        .world
+        .block_entities
+        .iter()
+        .filter(|(k, _)| k.0 >> 4 == chunk[0] && k.2 >> 4 == chunk[1])
+        .filter_map(|(&(x, y, z), be)| {
+            let horizon_client::containers::BlockEntity::Mod(m) = be else { return None };
+            if !is_machine(&m.id) {
+                return None;
+            }
+            match m.nbt.get(&JavaString::from(STATE)) {
+                Some(Tag::String(state)) => Some(([x, y, z], state.to_string_lossy())),
+                _ => None,
+            }
+        })
+        .collect();
+    if !machines.is_empty() {
+        lock(&CHUNK_MACHINES).push((dim.to_string(), machines));
     }
 }
 

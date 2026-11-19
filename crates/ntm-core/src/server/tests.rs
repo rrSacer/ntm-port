@@ -378,6 +378,9 @@ impl Game {
     /// The server opening `world`: the machines come back from what their
     /// block entities kept, as their first ticks adopt them.
     fn new(world: Rc<RefCell<World>>) -> Self {
+        Self::opened(world, true).0
+    }
+    fn opened(world: Rc<RefCell<World>>, adopt: bool) -> (Self, Vec<((String, Pos), String)>) {
         let mut sh = SHost { world: world.clone(), told: vec![], reads: 0 };
         let mut server = Server::native(&mut sh, 0);
         server.set_players(vec![player()]);
@@ -389,10 +392,18 @@ impl Game {
                 server.native_obligations_loaded(&dim, chunk, removals, batches, BTreeSet::new());
             }
         }
+        if !adopt {
+            return (Self { tick: 0, world, server, sh }, saved);
+        }
         for ((dim, p), json) in saved {
             assert!(server.native_adopt(&dim, p, &json), "{json}");
         }
-        Self { tick: 0, world, server, sh }
+        (Self { tick: 0, world, server, sh }, Vec::new())
+    }
+    /// The world opened again as the engine opens it: what each chunk's record owes comes with it, its machines are
+    /// left to the caller (the glue's chunk load, or a block entity's first tick), which gets their saved states.
+    fn unadopted(world: Rc<RefCell<World>>) -> (Self, Vec<((String, Pos), String)>) {
+        Self::opened(world, false)
     }
     /// One tick: the server's, then its block writes.
     fn step(&mut self) {

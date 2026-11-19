@@ -284,6 +284,16 @@ impl Server {
         self.ready().is_some_and(|r| r.world.machines.contains_key(&(dim.to_string(), pos)))
     }
 
+    /// The machines of a chunk just loaded, by cell and saved state (the engine's chunk load: its blocks and block
+    /// entities are there, its block entities tick from a later tick): adopted now, so that the first tick after a
+    /// world opens steps them, and the mod's clock never runs a tick a machine waits for its adoption (RBMK T04: with
+    /// the adoption at the block entity's first tick only, a reactor stepped one tick less than the clock at each
+    /// opening). A machine already known is left; the obligations of the chunk come first (`native_obligations_loaded`).
+    /// How many it adopted.
+    pub fn native_chunk_machines_loaded(&mut self, dim: &str, machines: &[(Pos, String)]) -> usize {
+        machines.iter().filter(|(p, json)| !self.native_has(dim, *p) && self.native_adopt(dim, *p, json)).count()
+    }
+
     pub fn native_adopt(&mut self, dim: &str, pos: Pos, json: &str) -> bool {
         let Some(r) = self.ready() else { return false };
         let key = (dim.to_string(), pos);

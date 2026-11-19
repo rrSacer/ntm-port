@@ -441,3 +441,81 @@ fn a_broken_layer_in_the_save_does_not_stop_the_reactor() {
     reopened.run(3);
     assert_ne!(rbmk(&mut reopened, [1, Y, 0]).heat, before, "it steps");
 }
+
+/// A small reactor: a Po-210/Be source, a uranium channel and a moderator between them.
+fn small_reactor() -> Game {
+    let mut g = game();
+    for (p, id) in [
+        ([0, Y, 0], "rbmk_rod"),
+        ([1, Y, 0], "rbmk_moderator"),
+        ([2, Y, 0], "rbmk_rod"),
+    ] {
+        g.place(p, &column(id));
+    }
+    g.run(2);
+    fuel_in(&mut g, OW, [0, Y, 0], "ntm:rbmk_fuel_po210be");
+    fuel_in(&mut g, OW, [2, Y, 0], "ntm:rbmk_fuel_ueu");
+    g
+}
+
+/// What a reopening must keep step for step: the columns' states and the layer (random and streams).
+fn stepped(g: &mut Game) -> (Vec<String>, Option<crate::rbmk::persist::Layer>) {
+    let cols = [[0, Y, 0], [1, Y, 0], [2, Y, 0]]
+        .iter()
+        .map(|p| serde_json::to_string(&rbmk(g, *p)).unwrap())
+        .collect();
+    (
+        cols,
+        g.ready().world.rbmk.get(&(OW.to_string(), Y)).cloned(),
+    )
+}
+
+/// The engine ticks a chunk's block entities from a tick after it loads, and a machine used to be adopted at its block
+/// entity's first tick only: the first tick after a world opened ran the clock with the reactor waiting (D4), a step
+/// short at every opening (measured in game, T04). Adopted as its chunk loads (`native_chunk_machines_loaded`, the
+/// glue's chunk load), the reopened world steps on exactly as one never closed, the clock with it.
+#[test]
+fn machines_adopted_as_their_chunk_loads_lose_no_step_at_an_opening() {
+    let mut once = small_reactor();
+    let mut twice = small_reactor();
+    once.run(40);
+    twice.run(17);
+    let world = twice.world.borrow().clone();
+    // As the glue: each chunk's machines when the chunk loads, before the first tick.
+    let (mut opened, saved) = Game::unadopted(Rc::new(RefCell::new(world.clone())));
+    let mut by_dim: BTreeMap<String, Vec<(Pos, String)>> = BTreeMap::new();
+    for ((dim, p), json) in saved.clone() {
+        by_dim.entry(dim).or_default().push((p, json));
+    }
+    for (dim, machines) in &by_dim {
+        assert_eq!(
+            opened.server.native_chunk_machines_loaded(dim, machines),
+            machines.len()
+        );
+        assert_eq!(
+            opened.server.native_chunk_machines_loaded(dim, machines),
+            0,
+            "a machine known is left"
+        );
+    }
+    let start = opened.ready().world.ticks;
+    opened.run(23);
+    assert_eq!(opened.ready().world.ticks - start, 23);
+    assert_eq!(
+        stepped(&mut opened),
+        stepped(&mut once),
+        "23 ticks, 23 steps: columns, random and streams"
+    );
+    // As before: adopted at the block entities' first tick, a tick after the opening: one step short of the clock.
+    let (mut late, saved) = Game::unadopted(Rc::new(RefCell::new(world)));
+    late.run(1);
+    for ((dim, p), json) in saved {
+        assert!(late.server.native_adopt(&dim, p, &json));
+    }
+    late.run(22);
+    assert_ne!(
+        stepped(&mut late),
+        stepped(&mut once),
+        "23 ticks, a step short"
+    );
+}
