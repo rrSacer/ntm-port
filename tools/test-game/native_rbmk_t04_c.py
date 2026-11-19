@@ -2,7 +2,7 @@
 """T04 strict cut (P3(d) of the T04 review): the T03 scenario C (native_rbmk_t03.py: a rod taken out of its channel
 beside a ReaSim source that keeps burning) with the state T04 added in play at the cut: the satellite events the
 burning channels report (`rbmk_rays`) and a dial rule rewritten just before the act (`/ntmrbmk dial dialFluxRange 7`;
-the vanilla control rewrites its own rule, `/gamerule randomTickSpeed 7`, kept in level.dat).
+the vanilla control rewrites its own rule, `/gamerule random_tick_speed 7`, kept in level.dat).
 
 Modes prepare/act/verify/again/drain, as T03's; the runner (run-rbmk-t04-c-proof.py) cuts the save at the points
 between kv_committed and chunks_written. Verify adds, to T03's checks on the rods: the rule reads back as one of its two
@@ -14,7 +14,7 @@ import time
 import native_rbmk_t03 as t03
 from native_game import Game
 
-NTM_RULE, VANILLA_RULE = 'dialFluxRange', 'randomTickSpeed'
+NTM_RULE, VANILLA_RULE = 'dialFluxRange', 'random_tick_speed'
 OLD, NEW = '5', '7'
 
 
