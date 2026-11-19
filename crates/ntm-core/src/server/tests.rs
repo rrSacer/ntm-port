@@ -354,6 +354,9 @@ impl ServerHost for SHost {
 }
 
 /// One game: a world and the server.
+/// The machines a world's block entities kept, by cell, as saved states.
+type SavedMachines = Vec<((String, Pos), String)>;
+
 struct Game {
     tick: u64,
     world: Rc<RefCell<World>>,
@@ -380,11 +383,11 @@ impl Game {
     fn new(world: Rc<RefCell<World>>) -> Self {
         Self::opened(world, true).0
     }
-    fn opened(world: Rc<RefCell<World>>, adopt: bool) -> (Self, Vec<((String, Pos), String)>) {
+    fn opened(world: Rc<RefCell<World>>, adopt: bool) -> (Self, SavedMachines) {
         let mut sh = SHost { world: world.clone(), told: vec![], reads: 0 };
         let mut server = Server::native(&mut sh, 0);
         server.set_players(vec![player()]);
-        let saved: Vec<((String, Pos), String)> = world.borrow().saved.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
+        let saved: SavedMachines = world.borrow().saved.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
         // What each loaded chunk's record owes comes with it, before its block entities are adopted.
         let homes: Vec<_> = world.borrow().homes.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
         for ((dim, chunk), (removals, batches)) in homes {
@@ -402,7 +405,7 @@ impl Game {
     }
     /// The world opened again as the engine opens it: what each chunk's record owes comes with it, its machines are
     /// left to the caller (the glue's chunk load, or a block entity's first tick), which gets their saved states.
-    fn unadopted(world: Rc<RefCell<World>>) -> (Self, Vec<((String, Pos), String)>) {
+    fn unadopted(world: Rc<RefCell<World>>) -> (Self, SavedMachines) {
         Self::opened(world, false)
     }
     /// One tick: the server's, then its block writes.
