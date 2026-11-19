@@ -168,6 +168,36 @@ def count(folder, dims=('overworld',)):
     return out
 
 
+def _chunk_quanta(folder, chunk):
+    """The quanta one chunk record holds: its item entities, or its block entities (and the ledger it owes)."""
+    if folder == 'entities':
+        return sum(stack_quanta(e.get('Item')) for e in chunk.get('Entities', []) or [] if e.get('id') == 'minecraft:item')
+    return sum(_be(be)[0] for be in chunk.get('block_entities', []) or []) + _owed(dc._ledger(chunk))
+
+
+def written(before, after, dims=('overworld',)):
+    """The chunks holding the metal (before or after) whose record differs between two copies of the world, per folder,
+    with what they held before and after: what the play wrote, as `disk_count.written` does for items."""
+    out = {}
+    for name, folder in ((n, f) for n in dims for f in ('region', 'entities')):
+        chunks = {}
+        for side, root in (('before', before), ('after', after)):
+            dim = Path(root) / 'saves' / 'CrashTest' / 'dimensions' / 'minecraft' / name / folder
+            for path in sorted(dim.glob('r.*.mca')):
+                rx, rz = (int(v) for v in path.name.split('.')[1:3])
+                for i, raw in dc.raw_records(path):
+                    chunks.setdefault((rx * 32 + i % 32, rz * 32 + i // 32), {})[side] = raw
+        rows = []
+        for (x, z), sides in sorted(chunks.items()):
+            if sides.get('before') == sides.get('after'):
+                continue
+            held = [_chunk_quanta(folder, dc.parse(sides[s])) if s in sides else 0 for s in ('before', 'after')]
+            if any(held):
+                rows.append([x, z, *held])
+        out[folder if name == 'overworld' else f'{name}/{folder}'] = rows
+    return out
+
+
 def _players(world):
     level = world / 'level.dat'
     data = dc.parse(gzip.decompress(level.read_bytes())).get('Data', {}) if level.exists() else {}
