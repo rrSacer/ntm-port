@@ -156,9 +156,11 @@ impl Server {
         phases.mark("heat");
         self.solar_tick(host);
         phases.mark("solar");
+        self.rbmk_world_tick(host);
         self.simulate(host);
         // The RBMK's incrementRad of the steps accepted (TileEntityRBMKRod:153, RBMKNeutronHandler:305,417,421).
         self.apply_chunk_rad_pending();
+        self.rbmk_flush_dumps(host);
         self.ash_tick();
         phases.mark("simulate");
         self.stirling_finish();

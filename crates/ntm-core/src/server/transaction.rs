@@ -132,6 +132,12 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         }
         self.host.get_block(d, p)
     }
+    /// The block as this step reads it (`get_block`, guarded alike), with the host's fact of whether it is opaque.
+    fn block_opaque(&mut self, d: &str, p: Pos) -> Option<(String, bool)> {
+        let b = self.get_block(d, p)?;
+        let (_, opaque) = self.host.block_opaque(d, p)?;
+        Some((b, opaque))
+    }
     fn block_resistance(&mut self, d: &str, p: Pos) -> Option<f32> {
         self.host.block_resistance(d, p)
     }
@@ -323,6 +329,7 @@ impl Server {
     pub(super) fn write_rbmk(&mut self, host: &mut impl ServerHost) -> Result<(), String> {
         if self.rbmk_changed() {
             host.set(crate::persist::RBMK_KEY, &self.ready.world.kept_rbmk())?;
+            host.set(crate::persist::RBMK_RAYS_KEY, &self.ready.world.kept_rbmk_rays())?;
             self.ready.kept_rbmk = Some(self.ready.world.rbmk_stamp());
         }
         Ok(())

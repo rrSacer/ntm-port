@@ -21,6 +21,7 @@ use crate::{
     rbmk::{
         dials::{DialState, Dials, KEYS},
         persist::{self, Lid},
+        reactor::Kind as ColumnKind,
     },
 };
 
@@ -92,25 +93,70 @@ fn is_air(state: &str) -> bool {
     matches!(blockstate::id_of(state), "minecraft:air" | "minecraft:cave_air" | "minecraft:void_air")
 }
 
+/// The dimension `createDials` makes the first cache of (`MainRegistry.serverStart`: `getEntityWorld()`, world 0).
+pub const OVERWORLD: &str = "minecraft:overworld";
+
+/// The dial a column's update reads first (T04, 3A: it is the one a world without a cache writes back to its
+/// default): a fuel channel holding a rod burns first (`TileEntityRBMKRod.updateEntity` → `ItemRBMKRod.burn:157`,
+/// `getXenon`); the columns with fluid ports build them first (`getPortsNoLoader:616`, `getColumnHeight`: boiler,
+/// heater, cooler, outgasser, and the powered control rods' `setupPowerPorts`); every other one starts in `moveHeat:161`
+/// (`getReasimBoilers`). A manual or automatic control rod reads its speed first only while it moves, which no rod of
+/// the save does before T07.
+pub fn first_dial(block: &str, fuelled: bool) -> &'static str {
+    match persist::kind_of(block).map(|k| k.0) {
+        Some(ColumnKind::Rod | ColumnKind::RodReaSim) if fuelled => "KEY_DISABLE_XENON",
+        Some(ColumnKind::Boiler | ColumnKind::Heater | ColumnKind::Cooler | ColumnKind::Outgasser | ColumnKind::ControlReaSim | ColumnKind::ControlReaSimAuto) => HEIGHT_KEY,
+        _ => "KEY_REASIM_BOILERS",
+    }
+}
+
+/// The key of the columns' height (`getColumnHeight`, `RBMKBase.getDimensions` as a column is placed).
+const HEIGHT_KEY: &str = "KEY_COLUMN_HEIGHT";
+
 impl Server {
-    /// The dials as the server reads them (`RBMKDials.getGameRule`): created when it started.
-    pub(super) fn rbmk_dials(&mut self) -> Dials {
-        *self.ready.rbmk_dials.get(KEYS[0].name)
+    /// The dials as `RBMKDials.getGameRule(world, name)` reads them in `dim` (T04, 3A): the dimension's cache, or, the
+    /// first time in a dimension without one, the dial `name` written back to its default in the save's rules and the
+    /// dimension's cache built from them.
+    pub(super) fn rbmk_dials(&mut self, dim: &str, name: &str) -> Dials {
+        if let Some(d) = self.ready.rbmk_dials.cached(dim) {
+            return *d;
+        }
+        let mut rules = (*self.ready.world.rbmk_rules).clone();
+        let d = self.ready.rbmk_dials.read(&mut rules, dim, name);
+        if rules != *self.ready.world.rbmk_rules {
+            *self.ready.world.rbmk_rules = rules;
+        }
+        d
     }
 
-    /// `createDials` as the server starts (`MainRegistry.serverStart`): the cache from the rules kept, then, unless
-    /// `dialSaveDials` is true, every rule back to its default (the cache keeps the old values until a refresh, D2);
-    /// the engine places columns as tall as the cache says.
+    /// What [`Server::rbmk_dials`] would give, without reading (the components a step looks at, the engine's height).
+    pub(super) fn rbmk_dials_peek(&self, dim: &str, name: &str) -> Dials {
+        self.ready.rbmk_dials.peek(&self.ready.world.rbmk_rules, dim, name)
+    }
+
+    /// `createDials` as the server starts (`MainRegistry.serverStart`): every cache emptied and the overworld's made
+    /// from the rules kept, then, unless `dialSaveDials` is true, every rule back to its default (the cache keeps the
+    /// old values until a refresh, D2); the engine places columns as tall as the cache says.
     pub(super) fn rbmk_start(&mut self, host: &mut impl ServerHost) {
         let mut d = DialState::default();
-        d.rules = (*self.ready.world.rbmk_rules).clone();
-        d.create(false);
-        if d.rules != *self.ready.world.rbmk_rules {
-            *self.ready.world.rbmk_rules = d.rules.clone();
+        let mut rules = (*self.ready.world.rbmk_rules).clone();
+        d.create(&mut rules, OVERWORLD, false);
+        if rules != *self.ready.world.rbmk_rules {
+            *self.ready.world.rbmk_rules = rules;
         }
         self.ready.rbmk_dials = d;
-        let height = self.rbmk_dials().column_height + 1;
-        host.set_column_height(height);
+        self.rbmk_engine_height(host, OVERWORLD);
+    }
+
+    /// The engine places a column as tall as `getColumnHeight` of the world it is placed in reads (`RBMKBase.
+    /// getDimensions`): `dim` is the acting player's. One height for the engine at a time: players in two dimensions
+    /// whose caches differ place at the height of the one asked last (a host-wide setting, registered in the docs).
+    pub(super) fn rbmk_engine_height(&mut self, host: &mut impl ServerHost, dim: &str) {
+        let height = self.rbmk_dials_peek(dim, HEIGHT_KEY).column_height + 1;
+        if self.ready.rbmk_engine_height != Some(height) {
+            host.set_column_height(height);
+            self.ready.rbmk_engine_height = Some(height);
+        }
     }
 
     /// `/ntmrbmk ...` (operator level 2, as `/gamerule`): `dial [rule [value]]` reads or sets a dial; `migrate x y z
@@ -125,13 +171,13 @@ impl Server {
         }
         let args: Vec<&str> = words.collect();
         Some(match args.first().copied() {
-            Some("dial") => self.rbmk_dial_command(host, &args[1..]),
+            Some("dial") => self.rbmk_dial_command(host, &who.dim, &args[1..]),
             Some("migrate") => self.rbmk_migrate_command(host, &who.dim, &args[1..]),
             _ => Err("Uso: /ntmrbmk dial [regra [valor]] | /ntmrbmk migrate x y z [x2 y2 z2]".into()),
         })
     }
 
-    fn rbmk_dial_command(&mut self, host: &mut impl ServerHost, args: &[&str]) -> Result<String, String> {
+    fn rbmk_dial_command(&mut self, host: &mut impl ServerHost, dim: &str, args: &[&str]) -> Result<String, String> {
         let rules = &self.ready.world.rbmk_rules;
         match args {
             [] => Ok(KEYS.iter().map(|k| format!("{} = {}", k.rule, rules.string(k.rule))).collect::<Vec<_>>().join("\n")),
@@ -149,10 +195,10 @@ impl Server {
                     ));
                 }
                 *self.ready.world.rbmk_rules = next;
-                self.ready.rbmk_dials.rules = (*self.ready.world.rbmk_rules).clone();
-                self.ready.rbmk_dials.refresh();
-                let height = self.rbmk_dials().column_height + 1;
-                host.set_column_height(height);
+                // `ModEventHandler.commandEvent`: `refresh(sender.getEntityWorld())`, the world of who typed it only (3A).
+                self.ready.rbmk_dials.refresh(&self.ready.world.rbmk_rules, dim);
+                self.rbmk_engine_height(host, dim);
+                let height = self.rbmk_dials(dim, HEIGHT_KEY).column_height + 1;
                 let warning = if height != 4 { " Aviso: o modelo ainda desenha 4 células (T02-V)." } else { "" };
                 Ok(format!("{} = {value}; colunas novas: {height} blocos (as de pé mudam só com /ntmrbmk migrate).{warning}", key.rule))
             }
@@ -171,7 +217,7 @@ impl Server {
         if volume > 32 * 32 * 32 {
             return Err("Caixa grande demais (32768 blocos no máximo)".into());
         }
-        let to = self.rbmk_dials().column_height + 1;
+        let to = self.rbmk_dials(dim, HEIGHT_KEY).column_height + 1;
         let mut cores = BTreeSet::new();
         for x in lo[0]..=hi[0] {
             for z in lo[2]..=hi[2] {
@@ -223,6 +269,11 @@ impl Server {
         }
         if old == persist::DUMMY && new != persist::DUMMY {
             self.ready.rbmk_breaks.push((dim.to_string(), pos));
+        }
+        // A column placed reads the height of its world (`RBMKBase.getDimensions`): the first read of a dimension
+        // without a cache (3A). The engine placed it at what that read gives (`rbmk_engine_height`).
+        if old != new && persist::is_column(new) {
+            self.rbmk_dials(dim, HEIGHT_KEY);
         }
     }
 
@@ -295,8 +346,8 @@ impl Server {
     }
 
     /// Where a lid comes off a column at `core` (`RBMKBase.onScrew` and `breakBlock`): its top as the dial reads now.
-    pub(super) fn rbmk_lid_drop_at(&mut self, core: Pos) -> Pos {
-        [core[0], core[1] + self.rbmk_dials().column_height, core[2]]
+    pub(super) fn rbmk_lid_drop_at(&mut self, dim: &str, core: Pos) -> Pos {
+        [core[0], core[1] + self.rbmk_dials(dim, HEIGHT_KEY).column_height, core[2]]
     }
 
     /// A lid in hand on an RBMK column (`ItemRBMKLid.onItemUse`, reached from `RBMKBase.openInv` when the column has
@@ -345,7 +396,7 @@ impl Server {
             return false;
         }
         let Some(expected) = host.machine_slots(dim, core) else { return false };
-        let mut top = self.rbmk_lid_drop_at(core);
+        let mut top = self.rbmk_lid_drop_at(dim, core);
         let Some(top_state) = host.get_block(dim, top).or_else(|| {
             top = core;
             host.get_block(dim, core)

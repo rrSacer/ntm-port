@@ -29,6 +29,15 @@ pub trait ServerHost: Kv {
     /// Native explosion (power 12, fire and block destruction) in its own level.
     fn zirnox_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { false }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String>;
+    /// The block at `p` and whether it is an opaque cube (1.7.10 `Block.isOpaqueCube`, the engine's `solid_render`);
+    /// None: not loaded. The RBMK's occlusion (`RBMKNeutronStream.getHits`, T04); the RBMK family's own blocks are
+    /// answered by the core (`rbmk::persist::java_opaque`). Without the engine's facts, any block but air.
+    fn block_opaque(&mut self, dim: &str, p: Pos) -> Option<(String, bool)> {
+        self.get_block(dim, p).map(|b| {
+            let opaque = !matches!(blockstate::id_of(&b), "minecraft:air" | "minecraft:cave_air" | "minecraft:void_air");
+            (b, opaque)
+        })
+    }
     fn set_blocks(&mut self, dim: &str, blocks: &[(Pos, String)]) -> Result<(), String>;
     /// Role changes already represented by the confirmed model. Hosts may
     /// suppress their synchronous notifications for these owner cells only.
@@ -429,8 +438,15 @@ struct Ready {
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
     /// place, taken by their reactor's next accepted step.
     rbmk_ejects: BTreeMap<Key, [f64; 3]>,
-    /// The RBMK dials as `RBMKDials` caches them (`rbmk_columns`): created when the server starts.
+    /// Test hooks only (`Server::native_test_rbmk_dump`): reactors whose next step's input is asked for, by a column of
+    /// theirs, and where to write it; and the dumps of the steps accepted, written after them.
+    rbmk_dump_asked: BTreeMap<Key, String>,
+    rbmk_dumps: Vec<(String, String)>,
+    /// The RBMK dials as `RBMKDials` caches them, one cache per dimension (`rbmk_columns`, T04 3A): the overworld's
+    /// created when the server starts.
     rbmk_dials: crate::rbmk::dials::DialState,
+    /// The column height last given to the engine (`ServerHost::set_column_height`).
+    rbmk_engine_height: Option<i32>,
     /// Cells above a column's cell that changed: an orphaned dummy there goes (`rbmk_columns`).
     rbmk_orphans: Vec<(String, Pos)>,
     /// Cells whose dummy went: the column's cells under it go down to its core, which breaks (`rbmk_columns`).
@@ -517,7 +533,7 @@ impl Server {
         if let crate::machine::Data::Rbmk(c) = &m.data
             && let Some(lid) = c.lid.item()
         {
-            let top = self.rbmk_lid_drop_at(pos);
+            let top = self.rbmk_lid_drop_at(dim, pos);
             if !host.drop_items(dim, top, &[(lid.into(), 1)]) {
                 host.drop_items(dim, pos, &[(lid.into(), 1)]);
             }

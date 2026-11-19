@@ -5,11 +5,9 @@
 //! columns' commit and set back with it when that is refused. Doubles go by their bits: a save and a reopening give
 //! the very same numbers, NaN included.
 //!
-//! **Provisional (T01, approved D-b):** only the columns the minimal step needs are wired (fuel channels, ReaSim
-//! channels, blank, moderator, reflector, absorber), at the default height and dials, without lids, ports, menus,
-//! radiation, meltdowns or occlusion other than "any block is opaque". T02 (height, lids, ports), T03 (the rod
-//! stack's codec, tooltips, hazards), T04 (scheduler, occlusion, radiation, dials) and T05 (slots by context) replace
-//! what is marked here.
+//! T02 (height, lids, ports), T03 (the rod stack's codec) and T04 (every column in the step, Java's opacity, the
+//! dials by dimension, the satellite events) replaced T01's provisional wiring; still not kept here: a control rod's
+//! level and target and power (T07), the fluid tanks (T08), the outgasser's progress (T09).
 
 use crate::{
     machine::Logic,
@@ -37,21 +35,61 @@ mod bits {
 /// The schema of [`RbmkColumn`] and [`Layer`]: a save of another schema is not read as this one.
 pub const SCHEMA: u32 = 2;
 
-/// The column kind of an RBMK block and whether it is moderated (`RBMKRod(true)`). None: not a column the
-/// provisional step runs (it stays inert).
+/// The column kind of an RBMK block and whether it is moderated (`RBMKRod(true)`, `RBMKControl(true)`:
+/// `ModBlocks:2113-2130`). None: not a column.
+///
+/// T04: all eighteen step, each as its tile entity is a node of the streams and a neighbour of `moveHeat`
+/// (`RBMKNeutronHandler.getNodes`, `TileEntityRBMKBase.moveHeat`). What the save does not hold yet steps as Java's
+/// fresh tile entity: a control rod at level and target 0 (it stops a stream: T07 moves it), dry boiler, heater and
+/// cooler tanks (T08 fills them), an outgasser that never processes (T09 feeds it, its slots are not read here).
 pub fn kind_of(block: &str) -> Option<(Kind, bool)> {
     Some(match block {
         "ntm:rbmk_rod" => (Kind::Rod, false),
         "ntm:rbmk_rod_mod" => (Kind::Rod, true),
         "ntm:rbmk_rod_reasim" => (Kind::RodReaSim, false),
         "ntm:rbmk_rod_reasim_mod" => (Kind::RodReaSim, true),
+        "ntm:rbmk_control" => (Kind::Control, false),
+        "ntm:rbmk_control_mod" => (Kind::Control, true),
+        "ntm:rbmk_control_auto" => (Kind::ControlAuto, false),
+        "ntm:rbmk_control_reasim" => (Kind::ControlReaSim, false),
+        "ntm:rbmk_control_reasim_auto" => (Kind::ControlReaSimAuto, false),
         "ntm:rbmk_blank" => (Kind::Blank, false),
+        "ntm:rbmk_boiler" => (Kind::Boiler, false),
         "ntm:rbmk_moderator" => (Kind::Moderator, false),
         "ntm:rbmk_reflector" => (Kind::Reflector, false),
         "ntm:rbmk_absorber" => (Kind::Absorber, false),
+        "ntm:rbmk_outgasser" => (Kind::Outgasser, false),
+        "ntm:rbmk_storage" => (Kind::Storage, false),
+        "ntm:rbmk_cooler" => (Kind::Cooler, false),
+        "ntm:rbmk_heater" => (Kind::Heater, false),
         _ => return None,
     })
 }
+
+/// `Block.isOpaqueCube` of an RBMK-family block as the pin overrides it, the one thing `RBMKNeutronStream.getHits`
+/// asks of a block (`RBMKNeutronHandler:400-414`). None: not one of them (the engine's facts answer).
+///
+/// - `RBMKBase:58` true for every column; `RBMKRod:33` false for the four fuel channels (`RBMKRodReaSim` extends it);
+/// - `BlockDummyable:358` false: console, crane console and autoloader; `RBMKMiniPanelBase:42` false: the nine panels;
+/// - `RBMKDebris:21` false: the four `pribris` (the others extend it);
+/// - the loader (`BlockGeneric`) and the steam inlet and outlet (`BlockContainer`) keep `Block`'s true.
+///
+/// A column's dummy is, in Java, the column's own block: the server reads its core below it ([`DUMMY_REACH`]).
+pub fn java_opaque(block: &str) -> Option<bool> {
+    Some(match block {
+        "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod" => false,
+        b if is_column(b) => true,
+        "ntm:rbmk_console" | "ntm:rbmk_crane_console" | "ntm:rbmk_autoloader" => false,
+        "ntm:rbmk_display_blank" | "ntm:rbmk_display" | "ntm:rbmk_key_pad" | "ntm:rbmk_gauge" | "ntm:rbmk_numitron" | "ntm:rbmk_graph" | "ntm:rbmk_lever"
+        | "ntm:rbmk_indicator" | "ntm:rbmk_terminal" => false,
+        "ntm:pribris" | "ntm:pribris_burning" | "ntm:pribris_radiating" | "ntm:pribris_digamma" => false,
+        "ntm:rbmk_loader" | "ntm:rbmk_steam_inlet" | "ntm:rbmk_steam_outlet" => true,
+        _ => return None,
+    })
+}
+
+/// How far down a column's dummy looks for its core (a column is at most 16 cells: the core and 15 dummies).
+pub const DUMMY_REACH: i32 = 15;
 
 /// The eighteen RBMK columns (`RBMKBase`): engine columns 2..16 cells high on `ntm:dummy_rbmk` (T02), each with its
 /// block entity. Only those of [`kind_of`] step yet; the others keep their lid and their slots.
@@ -503,6 +541,47 @@ pub fn ray_offsets(kind: Kind, range: i32) -> Vec<[i32; 2]> {
     crate::rbmk::reactor::Reactor::ray_cells(kind, 0, 0, range).into_iter().map(|(x, z)| [x, z]).collect()
 }
 
+/// `RayEvent.INFO_NUCLEAR`: what a fuel channel that took flux reports.
+pub const INFO_NUCLEAR: &str = "NEUTRON_EMISSION";
+
+/// One `SatelliteRayScan.RayEvent` (T04, decision 4A): what happened where, until when. The Java keeps them in a
+/// static `LinkedHashMap<DimPos, RayEvent>` in memory only; here they are kept with the world (the coordinator's 4A),
+/// ready for the satellites' front (`CMD_SURVEY` reads a dimension's within 250 blocks).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RayEvent {
+    pub pos: [i32; 3],
+    pub info: String,
+    /// `getTotalWorldTime() + lifetime` as reported.
+    pub expires_on: i64,
+}
+
+/// `SatelliteRayScan.reportEvent(world, x, y, z, info, lifetime)` in `dim`: the `LinkedHashMap.put` of its `DimPos`,
+/// which replaces the event of the same place where it stands in the order, or adds it at the end.
+pub fn report_ray(rays: &mut std::collections::BTreeMap<String, Vec<RayEvent>>, dim: &str, pos: [i32; 3], info: &str, now: i64, lifetime: i32) {
+    let event = RayEvent { pos, info: info.to_string(), expires_on: now + i64::from(lifetime) };
+    let list = rays.entry(dim.to_string()).or_default();
+    match list.iter_mut().find(|e| e.pos == pos) {
+        Some(e) => *e = event,
+        None => list.push(event),
+    }
+}
+
+/// `SatelliteRayScan.updateSystem(world)` of `dim` at world time `now` (`ModEventHandler.worldTick:661`, when
+/// `getTotalWorldTime() % 20 == 10`): its events with `now > expiresOn` go. Whether it removes any.
+pub fn expire_rays(rays: &std::collections::BTreeMap<String, Vec<RayEvent>>, dim: &str, now: i64) -> bool {
+    rays.get(dim).is_some_and(|l| l.iter().any(|e| now > e.expires_on))
+}
+
+/// The removal [`expire_rays`] finds.
+pub fn drop_expired_rays(rays: &mut std::collections::BTreeMap<String, Vec<RayEvent>>, dim: &str, now: i64) {
+    if let Some(l) = rays.get_mut(dim) {
+        l.retain(|e| now <= e.expires_on);
+        if l.is_empty() {
+            rays.remove(dim);
+        }
+    }
+}
+
 /// The stack a fuel channel's slot shows for a rod tag: `stack` with the tag written in its data.
 pub fn rod_in_slot(stack: &Stack, s: &RodStack) -> Stack {
     Stack { custom: with_rod_stack(stack.custom.as_deref(), s), ..stack.clone() }
@@ -585,6 +664,26 @@ mod tests {
         n.members.insert([5, 5], member(0, [5, 5]));
         let lone: std::collections::BTreeSet<[i32; 2]> = [[5, 5]].into();
         assert_eq!(settle(&n, std::iter::once(&lone), "d", 1).1[0], CompState::fresh("d", 1, [5, 5]));
+    }
+
+    /// `reportEvent` is a `LinkedHashMap.put` by place (a second report replaces the first where it stands); `updateSystem`
+    /// removes an event only once the time is strictly past it, one dimension at a time.
+    #[test]
+    fn ray_events_replace_in_place_and_expire_strictly_after() {
+        let mut rays = std::collections::BTreeMap::new();
+        report_ray(&mut rays, "o", [1, 2, 3], INFO_NUCLEAR, 200, 300);
+        report_ray(&mut rays, "o", [4, 5, 6], INFO_NUCLEAR, 200, 300);
+        report_ray(&mut rays, "n", [1, 2, 3], INFO_NUCLEAR, 0, 300);
+        report_ray(&mut rays, "o", [1, 2, 3], "RADIO_WAVES", 400, 300);
+        let o = &rays["o"];
+        assert_eq!(o.iter().map(|e| (e.pos, e.info.as_str(), e.expires_on)).collect::<Vec<_>>(), vec![([1, 2, 3], "RADIO_WAVES", 700), ([4, 5, 6], INFO_NUCLEAR, 500)]);
+        assert!(!expire_rays(&rays, "o", 500), "not past 500 at 500");
+        assert!(expire_rays(&rays, "o", 501));
+        drop_expired_rays(&mut rays, "o", 501);
+        assert_eq!(rays["o"].len(), 1);
+        assert_eq!(rays["n"].len(), 1, "another dimension is not touched");
+        drop_expired_rays(&mut rays, "o", 701);
+        assert!(!rays.contains_key("o"));
     }
 
     /// `ItemRBMKRod.getDouble` over the whole stack: no 1.7.10 tag, the defaults on first use; any data that made one

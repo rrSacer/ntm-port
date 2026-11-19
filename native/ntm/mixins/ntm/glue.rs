@@ -430,6 +430,18 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
         return true;
     }
+    // `ntmtest rbmkdump <x> <y> <z> <file>`: the input of the next step of the reactor of that column, written to the
+    // file once the step is accepted (rbmk T04's proof); `ntmtest rays`: the dimension's kept satellite events.
+    if w.first()==Some(&"rbmkdump") && let (Some(x),Some(y),Some(z),Some(path))=(n(1),n(2),n(3),w.get(4)){
+        let ok=server.native_test_rbmk_dump(&dim,[x as i32,y as i32,z as i32],path);
+        host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok={ok}")));
+        return true;
+    }
+    if w.first()==Some(&"rays"){
+        let reply=format!("ntmtest ok=true {}",server.native_test_rays(&dim));
+        host.game.native_feedback(horizon_client::text::Text::literal(reply));
+        return true;
+    }
     // `ntmtest dose`: the acting player's dose as the server keeps it (milliRAD, every tick, where the client's value
     // comes once a second) and their last `radBuf`.
     if w.first()==Some(&"dose"){
@@ -1534,6 +1546,15 @@ impl ServerHost for Host<'_, '_> {
     }
     fn get_block(&mut self, dim: &str, p: [i32; 3]) -> Option<String> {
         self.game.native_loaded_block(dim, p)
+    }
+    /// The RBMK's `getHits` (T04): 1.7.10 `isOpaqueCube` read as the engine's `solid_render` (a full cube that
+    /// occludes: glass, leaves, slabs, stairs and model blocks are not), from the requested level.
+    fn block_opaque(&mut self, dim: &str, p: [i32; 3]) -> Option<(String, bool)> {
+        let b = self.game.native_loaded_block(dim, p)?;
+        let dimension = dim_of(dim)?;
+        let world = if dimension == self.game.dim { &self.game.world } else { self.game.levels.parked_world(dimension)? };
+        let opaque = self.game.res.facts().get(world.block(p[0], p[1], p[2])).solid_render;
+        Some((b, opaque))
     }
     fn set_blocks(&mut self, dim: &str, blocks: &[([i32; 3], String)]) -> Result<(), String> {
         self.game.native_set_blocks(dim, blocks)
