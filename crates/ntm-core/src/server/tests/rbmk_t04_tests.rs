@@ -519,3 +519,32 @@ fn machines_adopted_as_their_chunk_loads_lose_no_step_at_an_opening() {
         "23 ticks, a step short"
     );
 }
+
+/// P3(e) of the T04 review: a dummy with no column under it (an orphan, or a run longer than a column can be) reads as
+/// the opaque `RBMKBase` block it would be in Java; two orphan dummies take half of a stream over a 4-high column.
+#[test]
+fn an_orphan_dummy_counts_as_opaque() {
+    let open = first_flux(None, &[]);
+    let bits = |q: f64| q.to_bits();
+    // Over air: the run of dummies ends on no column.
+    assert_eq!(
+        bits(first_flux(
+            None,
+            &[(0, persist::DUMMY), (1, persist::DUMMY)]
+        )),
+        bits(open * 0.5),
+        "orphans over air"
+    );
+    // A run longer than any column (16 dummies down from the probed cells, the core of a fuel channel under them
+    // out of reach): no core within reach, opaque.
+    let mut deep: Vec<(i32, String)> = (-15..=1)
+        .map(|dy| (dy, persist::DUMMY.to_string()))
+        .collect();
+    deep.push((-16, column("rbmk_rod")));
+    let deep: Vec<(i32, &str)> = deep.iter().map(|(dy, b)| (*dy, b.as_str())).collect();
+    assert_eq!(
+        bits(first_flux(None, &deep)),
+        bits(open * 0.5),
+        "no core within reach"
+    );
+}
