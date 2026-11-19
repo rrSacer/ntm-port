@@ -38,12 +38,43 @@ fn add(p: Pos, d: [i32; 3]) -> Pos {
     [p[0] + d[0], p[1] + d[1], p[2] + d[2]]
 }
 
+/// Where a stream landed: the machine (`key`, its core) and the block
+/// struck (`cell`, the core itself or one of the cells of its multiblock).
+#[derive(Clone, Debug)]
+struct Hit {
+    key: Key,
+    cell: Key,
+}
+
+/// The face a falling stream strikes (`mop.sideHit` of a ray from above).
+const TOP: [i32; 3] = [0, 1, 0];
+
+/// The core of the multiblock whose pour cell is `cell` (the block a jet
+/// struck): `MachineStrandCaster.findCore` for the four cells that are
+/// `moltenMetal` proxies. The core is at most one block aside and two below.
+pub(super) fn pour_core(m: &Machines, cell: &Key) -> Option<Key> {
+    for dx in -1..=1 {
+        for dz in -1..=1 {
+            let core = (cell.0.clone(), [cell.1[0] + dx, cell.1[1] - 2, cell.1[2] + dz]);
+            let Some(x) = m.get(&core) else { continue };
+            if x.block == crate::strand_caster::BLOCK
+                && x.facing.as_deref().is_some_and(|f| crate::strand_caster::takes_pour_at(core.1, f, cell.1, TOP))
+            {
+                return Some(core);
+            }
+        }
+    }
+    None
+}
+
 /// The first block a stream from `from` hits within `fall` blocks down
-/// (a machine, or anything that isn't air).
-fn below(m: &Machines, host: &mut impl ServerHost, dim: &str, from: Pos, fall: i32) -> Option<Key> {
-    (0..=fall).map(|k| (dim.to_string(), [from[0], from[1] - k, from[2]])).find(|p| {
+/// (a machine, a cell of one, or anything that isn't air).
+fn below(m: &Machines, host: &mut impl ServerHost, dim: &str, from: Pos, fall: i32) -> Option<Hit> {
+    let cell = (0..=fall).map(|k| (dim.to_string(), [from[0], from[1] - k, from[2]])).find(|p| {
         m.contains_key(p) || host.get_block(&p.0, p.1).is_none_or(|b| blockstate::id_of(&b) != "minecraft:air")
-    })
+    })?;
+    let key = if m.contains_key(&cell) { cell.clone() } else { pour_core(m, &cell).unwrap_or_else(|| cell.clone()) };
+    Some(Hit { key, cell })
 }
 
 /// No channel connected to `key` holds another material (the
@@ -70,7 +101,8 @@ fn network_takes(m: &Machines, key: &Key, mat: &str) -> bool {
 
 /// Metal falling onto `key` from above (`canAcceptPartialPour` + `pour`):
 /// what is left, or `None` when it takes none.
-fn accept_pour(m: &mut Machines, t: &Tables, key: &Key, mat: &str, q: u32) -> Option<u32> {
+fn accept_pour(m: &mut Machines, t: &Tables, hit: &Hit, mat: &str, q: u32) -> Option<u32> {
+    let key = &hit.key;
     if matches!(m.get(key).map(|x| &x.data), Some(Data::Channel(_))) && !network_takes(m, key, mat) {
         return None;
     }
@@ -79,6 +111,7 @@ fn accept_pour(m: &mut Machines, t: &Tables, key: &Key, mat: &str, q: u32) -> Op
         Data::FoundryTank(c) if c.melt.check(mat, TANK_CAP) => Some(c.melt.add(mat, q, TANK_CAP)),
         Data::Crucible(c) => c.pour(t, mat, q),
         Data::Mold(c) | Data::Basin(c) => c.accept(t, mat, q),
+        // The caster takes a jet on one of its four funnel cells (`hit.cell`, face UP).
         _ => None,
     }
 }
@@ -110,12 +143,12 @@ fn accept_flow(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &K
 /// A crucible stream's target as an [`Acceptor`].
 struct Target<'a> {
     m: &'a mut Machines,
-    key: Key,
+    hit: Hit,
 }
 
 impl Acceptor for Target<'_> {
     fn pour(&mut self, t: &Tables, mat: &str, q: u32) -> Option<u32> {
-        accept_pour(self.m, t, &self.key, mat, q)
+        accept_pour(self.m, t, &self.hit, mat, q)
     }
 }
 
@@ -215,8 +248,8 @@ fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: 
         for (stream, s) in [(Stream::Recipe, 1), (Stream::Waste, -1)] {
             let from = [key.1[0] + 2 * d[0] * s, key.1[1], key.1[2] + 2 * d[2] * s];
             let Some(target) = below(m, host, &key.0, from, CRUCIBLE_FALL) else { continue };
-            let landing = target.clone();
-            if c.pour_stream(t, stream, &mut Target { m, key: target }).is_some() {
+            let landing = target.cell.clone();
+            if c.pour_stream(t, stream, &mut Target { m, hit: target }).is_some() {
                 changed = true;
                 // The stream's splash where it lands (ParticleFoundry's
                 // drops), one per tick it pours.

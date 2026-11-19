@@ -348,3 +348,45 @@ fn rotary_furnace_pours_across_chunk_border_only_when_target_loaded() {
     assert_eq!(slots(&g, mold_at)[1], Some(Stack::new("ntm:ingot_steel", 1)));
     assert_eq!(furnace(&mut g, core).output, Some(("steel".into(), 72)));
 }
+
+/// F1: a jet that strikes a funnel cell of the strand caster resolves to its core,
+/// on exactly the four `getMetalPourPos` cells (`MachineStrandCaster.findCore`).
+#[test]
+fn a_jet_on_a_funnel_cell_resolves_to_the_caster_core() {
+    use crate::server::foundry_server::pour_core;
+    let mut g = game();
+    let caster = [0, 68, -3];
+    g.place(caster, "ntm:machine_strand_caster[facing=north,honey_level=0]");
+    g.run(2);
+    let cells = crate::strand_caster::pour_cells(caster, "north");
+    let key = (OW.to_string(), caster);
+    let machines = g.ready().world.machines.clone();
+    for c in &cells {
+        assert_eq!(pour_core(&machines, &(OW.to_string(), *c)), Some(key.clone()), "{c:?}");
+    }
+    // A cell of the funnel that is no pour cell, the core itself and a far cell resolve to nothing.
+    for c in [[-1, 70, -3], [0, 69, -3], [0, 70, -6], [5, 70, 5]] {
+        assert_eq!(pour_core(&machines, &(OW.to_string(), c)), None, "{c:?}");
+    }
+}
+
+/// F1 + `safe`: the jet of a rotary furnace over a funnel cell is parked (the
+/// caster model is a later slice), and not a quantum is lost.
+#[test]
+fn a_rotary_jet_on_a_funnel_cell_parks_without_loss() {
+    let mut g = game();
+    rotary(&mut g, CORE, "east");
+    let caster = [0, 68, -3];
+    g.place(caster, "ntm:machine_strand_caster[facing=north,honey_level=0]");
+    g.place([0, 70, -3], "minecraft:stone");
+    g.run(2);
+    {
+        let r = g.ready();
+        let Some(Data::RotaryFurnace(f)) = r.world.machines.get_mut(&(OW.to_string(), CORE)).map(|m| &mut m.data) else {
+            panic!()
+        };
+        f.output = Some(("steel".into(), 288));
+    }
+    g.run(20);
+    assert_eq!(furnace(&mut g, CORE).output, Some(("steel".into(), 288)));
+}

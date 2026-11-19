@@ -57,6 +57,7 @@ pub mod rotary_furnace;
 pub mod refinery;
 pub mod screens;
 pub mod shredder;
+pub mod strand_caster;
 pub mod radiation;
 pub mod radioisotopes;
 pub mod registry;
