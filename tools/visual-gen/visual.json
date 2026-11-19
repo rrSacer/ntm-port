@@ -36965,8 +36965,163 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_strand_caster": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineStrandCaster, GUIMachineStrandCaster (gui_strand_caster.png 176x214), MachineStrandCaster {0,0,6,0,1,0} + {2,0,1,0,1,0} offset 0; the model (RenderStrandCaster) is a declared gap: the casing keeps its cube",
+      "machine": {
+        "slots": [
+          {
+            "x": 57,
+            "y": 62
+          },
+          {
+            "x": 125,
+            "y": 26
+          },
+          {
+            "x": 143,
+            "y": 26
+          },
+          {
+            "x": 125,
+            "y": 44
+          },
+          {
+            "x": 143,
+            "y": 44
+          },
+          {
+            "x": 125,
+            "y": 62
+          },
+          {
+            "x": 143,
+            "y": 62
+          }
+        ],
+        "inventory": [
+          8,
+          132
+        ],
+        "data": 32,
+        "synced": [],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            1,
+            0,
+            6
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine",
+          "extra": [
+            {
+              "min": [
+                -1,
+                0,
+                0
+              ],
+              "max": [
+                1,
+                2,
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_strand_caster.png",
+        "texture_from": "textures/gui/processing/gui_strand_caster.png",
+        "size": [
+          176,
+          214
+        ],
+        "title": [
+          88,
+          4,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          118
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              17,
+              14,
+              34,
+              79
+            ],
+            "color": 2,
+            "dir": "up"
+          },
+          {
+            "value": 3,
+            "max": 4,
+            "rect": [
+              82,
+              38,
+              16,
+              24
+            ],
+            "color": 5,
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              82,
+              89,
+              16,
+              24
+            ],
+            "color": 8,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              16,
+              17,
+              36,
+              81
+            ],
+            "lines": [
+              "{0} / {1} quanta"
+            ]
+          },
+          {
+            "rect": [
+              82,
+              38,
+              16,
+              24
+            ],
+            "lines": [
+              "{3} / {4} mB"
+            ]
+          },
+          {
+            "rect": [
+              82,
+              89,
+              16,
+              24
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_fel": {
       "auto": false,
