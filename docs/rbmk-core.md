@@ -55,9 +55,18 @@ Java; ainda fora do passo: a física delas é T08/T09/T11); dials como regras do
 `/ntmrbmk migrate`; tampas e chave de fenda; proxies e automação Java; formas de porta `persist::column_ports` (o fluxo
 é T08).
 
+**T04 (branch `rbmk-t04`, sobre `rbmk-t03` fundida)** pôs as 18 colunas no passo (`persist::kind_of`: cada TE Java é
+nó dos fluxos e vizinho do `moveHeat`; o que o save ainda não guarda passa como o TE recém-colocado: controle em nível 0,
+tanques secos, outgasser que não processa), a oclusão Java (`isOpaqueCube`: `persist::java_opaque` para a família RBMK,
+dummy como o bloco da sua coluna, `solid_render` do motor para o resto; `ServerHost::block_opaque`), os dials como um
+cache por dimensão sobre as regras do save (`dials::DialState`, decisão 3A, primeira leitura de cada coluna em
+`rbmk_columns::first_dial`), `rad` sem NaN no campo de radiação por chunk e `Effect::SatelliteScan` num registro por
+dimensão com TTL 300 (`persist::RayEvent`, chave `rbmk_rays`, decisão 4A). O dump de passo (`rbmk::dump`,
+`ntmtest rbmkdump`) é a prova em jogo contra o núcleo. Ver `docs/horizon-current.md`, seção "RBMK T04".
+
 0. Quebra de bloco: `Reactor::remove`; o `rbmk_storage` entra como `Kind::Storage`; `Inlet`/`Outlet` não participam do calor.
-1. ~~Registrar os demais blocos `Inert` `rbmk_*` como `Kind`~~ (T02: adotados; falta pô-los no passo, T08/T09/T11).
-2. ~~Chamar `Reactor::step` uma vez por tick~~ (T01, provisório); ler `rad`, `meltdowns`, `effects`; `obstacles` com a opacidade HBM.
+1. ~~Registrar os demais blocos `Inert` `rbmk_*` como `Kind`~~ (T02: adotados; T04: no passo; a física própria deles com portas, receitas e alvos é T07/T08/T09/T11).
+2. ~~Chamar `Reactor::step` uma vez por tick~~ (T01); ~~ler `rad`, `effects`; `obstacles` com a opacidade HBM~~ (T04); `meltdowns` (T16).
 3. ~~Persistir colunas, a tag das barras, a RNG e a fila de fluxos~~ (T01).
 4. Tanques do boiler/heater/cooler/outgasser ligados ao `FluidStore`, portas e loaders (posições: `getPorts*Loader`), `identifiers` do heater a partir do item do slot 0, `ore_names` da OreDict.
 5. Energia dos controles ReaSim (`transfer_power`), hazards/tooltips dinâmicos das barras (T03), GUIs e console (T05/T06).

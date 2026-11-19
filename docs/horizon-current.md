@@ -1260,6 +1260,73 @@ prova J lê o inventário do lado do servidor (`data get entity`): barra feita n
 renomeada continua viva; a cópia da janela fica na evidência.
 
 
+## RBMK T04 — escalonador, fluxo cardinal/ReaSim e calor (18/11/2026)
+
+Branch `rbmk-t04`, a partir da `main` @ `fa3c1df3` com a `rbmk-t03` (`7286787a`, que contém a `rbmk-t02`) fundida em
+`6faa68cc` (decisão 1A do coordenador; pin do motor da `main`, `2187c3192b`, mantido). Sem mudança de motor. Decisões do
+coordenador para este ticket: 1A (base), 2B (colisão `+0,25` da tampa fica fora: pendência de motor), 3A (dials por
+dimensão fiéis ao `RBMKDials`), 4A (`SatelliteScan` num registro persistido por dimensão, TTL 300).
+
+### O que mudou
+
+| Item | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Colunas no passo | As 18 colunas entram no passo (`persist::kind_of`): cada TE é nó dos fluxos (`OTHER` deixa passar, controle em nível 0 encerra) e vizinho do `moveHeat`. O que o save ainda não guarda passa como o TE recém-colocado: controle em nível e alvo 0 (T07 move), tanques secos (T08), outgasser que não processa (T09: os slots dele não são lidos) | `RBMKNeutronHandler.getNodes:213-238`/`runStreamInteraction:242-397`, `TileEntityRBMKBase.moveHeat:159-215` |
+| Oclusão | `getHits` conta `isOpaqueCube` do bloco em cada altura da célula sem coluna da camada: a família RBMK pelo próprio override (`persist::java_opaque`: colunas `true`, canais `false`, console/guindaste/autoloader/painéis/pribris `false`, loader/inlet/outlet `true`); o dummy de uma coluna como o bloco da coluna (no Java o dummy é o próprio bloco), achado descendo até o núcleo; o resto pelo `solid_render` do motor (`ServerHost::block_opaque`, na glue e no `Deferred` do passo). Desconhecido continua congelando (D4) | `RBMKNeutronHandler.getHits:400-414`, `RBMKBase:58`, `RBMKRod:33`, `BlockDummyable:358`, `RBMKMiniPanelBase:42`, `RBMKDebris:21` |
+| Dials por dimensão (3A) | As regras são as do save (no 1.7.10 a dimensão lê as do overworld, `DerivedWorldInfo`); o cache é por `World`: o início do servidor faz o do overworld (`createDials`, que esvazia os outros); a primeira leitura numa dimensão sem cache reescreve **a regra lida** com o padrão e monta o cache dela; `/ntmrbmk dial` refaz só o cache da dimensão de quem digitou; uma coluna colocada lê a altura da sua dimensão. A primeira leitura de um passo é a da primeira coluna da ordem lógica: canal com barra `dialDisableXenon` (`burn:157`), colunas com portas `dialColumnHeight` (`getPorts*:616`), as outras `dialReasimBoilers` (`moveHeat:161`). A altura que o motor usa ao colocar segue a dimensão do jogador | `RBMKDials.createDials:55-71`, `refresh:77-115`, `getGameRule:124-155`, `ModEventHandler.commandEvent:1088`, `MainRegistry.serverStart:665` |
+| Radiação | `rad` do passo (barras destampadas, fluxos sobre e para dentro de colunas abertas, células de ar) vai ao campo por chunk com o commit (Onda 1). D2: incremento NaN não entra (o Java guarda e espalha o NaN; o JSON do campo gravaria `null` e perderia a chave inteira) | `TileEntityRBMKRod:153`, `RBMKNeutronHandler:305,417,421` |
+| Satélite (4A) | `Effect::SatelliteScan` vira `RayEvent` (posição, `NEUTRON_EMISSION`, `expiresOn = tick + 300`) no registro da dimensão, com a semântica de `LinkedHashMap.put` (o mesmo lugar substitui onde está); `updateSystem` tira os vencidos (`tick > expiresOn`) quando `tick % 20 == 10`, só nas dimensões abertas. Guardado na chave `rbmk_rays`, gravada com os reatores. Desvio aprovado: o Java guarda só em memória | `SatelliteRayScan.reportEvent:89-91`, `updateSystem:94-99`, `ModEventHandler.worldTick:661`, `TileEntityRBMKRod:124` |
+| Dump de passo | `rbmk::dump::ReactorDump`: a entrada exata de um passo (dials, RNG, fila, oclusão, colunas, pelos bits); `ntmtest rbmkdump` (só com `NTM_TEST_HOOKS=1`) grava a do próximo passo aceito. Dois dumps de um reator sem mão entre eles reproduzem um ao outro pelo núcleo puro | — |
+
+### Desvios e limites registrados
+
+- 2B: colisão `+0,25` da tampa (`RBMKBase.getCollisionBoundingBoxFromPool:128-148`) fora do T04: o
+  `BlockCollisionRegistry` do motor não tem formas dinâmicas por BE. Pendência de motor pós-T02.
+- `solid_render` como `isOpaqueCube`: blocos cujo `isOpaqueCube` do 1.7.10 diverge do moderno (folhas num servidor
+  dedicado do 1.7.10 são opacas; no integrado seguem os gráficos "fancy"; aqui nunca), e blocos de mod sem paridade
+  de forma, seguem o fato do motor.
+- Um motor, uma altura de colocação: jogadores em duas dimensões cujos caches diferem colocam colunas na altura da
+  dimensão do primeiro jogador. Uma coluna posta por `/setblock` também conta como leitura da altura (no Java só a
+  colocação do jogador lê).
+- Ordem de leitura por dimensão: a primeira leitura é a do primeiro passo de reator da dimensão na ordem dos grupos
+  (camada, componente, ordem de registro), não a da lista de TEs carregados do Java (D1).
+- O que o save não guarda das dez colunas novas no passo volta ao valor do TE novo a cada tick (temporizador do
+  cooler, `ventDelay` do boiler): sem fluido não há efeito observável; T07/T08/T09 persistem o que for deles.
+- **Um tick de espera ao abrir o mundo (achado, fora do T04).** Medido em jogo: o save guarda o relógio e o estado do
+  reator juntos (do dump `b-4` ao estado em disco, 271 passos em 271 ticks, bit a bit), mas depois de abrir o mundo o
+  reator dá um passo a menos que o relógio (25 em 26 ticks; nas três rodadas, exatamente 1 a cada abertura). A adoção
+  das máquinas acontece no tick do próprio BE (`glue::tick` → `native_adopt`); no primeiro tick do servidor depois da
+  carga os BEs ainda não tickaram e o `native_tick` do fim do tick vê as colunas mostradas e não adotadas: o reator
+  espera (D4) e o relógio do mod (`world.ticks`) avança. Nenhuma rodada se perde nem se repete no estado do reator
+  (ele retoma do estado salvo); o que muda é a fase do relógio (o `% 200` do satélite) e, frente ao Java, um tick a
+  menos por abertura para toda máquina do mod. Opções para o coordenador: adotar na carga do chunk em vez do tick do
+  BE; não avançar o relógio enquanto houver máquina mostrada e não adotada; ou registrar como desvio.
+
+### Validação (19/11/2026)
+
+Código: `ac410fab` (passo, oclusão, dials, satélite, D2, dump), `47cc7ca8` (testes), `6e086f21` (oráculo),
+`f21bfa3a` (predicado único de expiração), roteiros de prova e docs nos commits seguintes. Binário release
+`horizon-client` SHA-256 `aaa9076a25b2ff4a9079505faad1f1fea3e1525216163b93c5872fddcc46a814` (motor `2187c3192b`, o pin
+da `main`; fontes do bundle iguais a `ac410fab`; o que veio depois só muda testes, roteiros, docs e a forma do
+predicado de expiração, mesmo comportamento), pacote `ntm.hmod` `ea71442ae806f6082f29d109d2388bfb23b2f32e09d4b1436c3aeaa85c1671d6`.
+Evidências em `/mnt/ssd120/sacer/so/rbmk-t04/evidence/` (JSON das aberturas, dumps, replays, mutações, logs).
+
+| Prova | Resultado |
+| --- | --- |
+| U: oráculo Java | `run_flux.py --check` igual byte a byte (`593ceb71…`): 43 cenários, os 39 anteriores com resultados idênticos e 4 novos (eficiências 0; canais vazios no caminho, todos os tipos `OTHER` e um segundo reator fora de alcance; fim de stream com controle na última célula e obstrução total/parcial/nenhuma na célula de irradiação; todos os dials físicos fora do padrão com controle se movendo). `rbmk_flux_parity` compara tick a tick, por bits. Suíte Python do oráculo: 21/21 |
+| U: unidade | Lib `ntm-core`: 759 (debug, suíte inteira) + integração 118 = 877, 6 ignorados, 0 falhas; testes RBMK 51 depois dos últimos ajustes. Novos: oclusão (`isOpaqueCube`: vidro, console, painel, dummies de canal não contam; pedra 3/4 do fluxo, dummies de blank metade, bits exatos), as 18 colunas como nós (storage e caldeira deixam passar bit a bit, controle em nível 0 encerra) e no calor, primeira leitura de dial por tipo de coluna, cache por dimensão (comando, colocação no End, reabertura com leitura do primeiro canal no Nether), satélite (relato a cada 200, substituição no lugar, expiração estrita em `% 20 == 10`, save e leitura), NaN sem efeito no campo, camada corrompida no save, dump e replay |
+| U: mutações | 15/15 pegas (`evidence/mutations-1.log`, `mutations-2.log`): `kind_of` só com as oito do T01; canal opaco; dummy sempre opaco; tabela RBMK ignorada; host do passo sem `block_opaque`; primeira leitura sem gravar o padrão; comando refazendo o overworld; `createDials` sem esvaziar os caches; primeira leitura sempre `moveHeat`; relato de satélite somado em vez de substituído; expiração em `>=` (sobreviveu na 1ª passada: o predicado estava duplicado; unificado em `f21bfa3a` e pega); expiração todo tick; chave `rbmk_rays` não gravada; NaN chegando ao campo; dump sem a fila |
+| Clippy / rustfmt | `ntm-core` todos os alvos `-D warnings`: 0; glue (`horizon-client`, `horizon-client-lib`, release, no stage do build): 0. Arquivos novos (`dump.rs`, `rbmk_t04_tests.rs`) `rustfmt` limpos; os existentes seguem com as diferenças de antes (`docs/estado-da-integracao.md`) |
+| `save_model` (release) | 11/11 |
+| `keep_world_cost` (release) | 3 execuções, 0,17–0,30 ms por tick com 0, 5 mil e 50 mil gerações (a chave `rbmk_rays` vai com a `rbmk`); uma primeira execução com o jogo e uma compilação nos mesmos 2 núcleos passou de 1 ms e foi refeita |
+| J: reator 15×15 (rodada 3, `run-rbmk-t04-proof.py`) | **play 23/24, reopen 5/5**. 225 colunas colocadas e 59 canais abastecidos pela mão, um só reator com 12 tipos no passo (refletor, absorvedor, blank, caldeira, storage, resfriador, aquecedor, moderador, os dois canais e os dois controles). Com `dialReactivityMod 0,35` (escolhido passando o núcleo sobre o dump do próprio layout: no padrão 1,0, sem caldeiras, ele dispara e toda coluna passa de 1500 em 2 min, o que a rodada 1 mostrou) opera: fluxo nos 59 canais, 276 → 303 °C em 25 s. `dialFluxRange 3` chega à entrada do passo seguinte e volta a 5. Eventos de satélite: todos `NEUTRON_EMISSION`, `expiresOn ≡ 100 (mod 200)`, mantidos na reabertura (85) |
+| J: replay contra o núcleo | Cadeias da rodada 3: `a` 515 passos em 515 ticks, `b-1→b-2` 4249/4249 (com o jogador longe, nas provas de oclusão e radiação), `b-3→b-4` 312/312, todas bit a bit (225 colunas, RNG, fila); `b-2→b-3` atravessa a reabertura: 34 passos em 35 ticks (o tick de espera acima). Rodadas 1 e 2 iguais (516, 4039+1, 212; 512, 4224, 34+1, 313; terceira abertura `c` 111/111). Do dump antes do fim ao estado em disco: 271/271 |
+| J: oclusão sobre os blocos do motor | 12/12 nas três rodadas: aberto, vidro, folhas, laje, escada, painel de vidro, grades e os dummies de um canal → nenhuma; pedra (altura 1), terra (0), os dummies de um blank (0 e 1), quatro pedras (0–3) |
+| J: radiação | Prova curta (pares em chunks vizinhos lidos num comando, `evidence/j-rad-only.log`): o chunk do par destampado acima do tampado nas 5 leituras (1280/1140, 1426/1271, 1185/1054, 1329/1184, 1494/1333), ≈ +12%; o núcleo, sobre os dumps dos pares da rodada 3, dá +11% de `incrementRad` em 400 passos (8168 contra 7354). Na rodada 3 a comparação com leituras separadas por 6 ticks saiu invertida (954/987): a leitura do campo, não a física |
+| J: 3A em jogo | Uma coluna posta no Nether (sem cache) reescreveu `dialColumnHeight` para 4 enquanto o overworld, com cache em 6, colocou a coluna seguinte do jogador com 6 blocos |
+| C (`run-rbmk-t03-proof.py`, cenário do T03, no binário do T04, `HORIZON_NO_EAGER_SAVE=1`) | 4/4 cortes, NTM igual ao controle vanilla item a item nas duas reaberturas: `kill`, `kv_committed` e `players_saved` 3 = 3; `live_chunk:2,0` 2 = 2 (o mesmo resíduo vanilla do T03); sem duplicação, armazenamento sem item em todas as aberturas (a chave nova `rbmk_rays` não guarda item). Relatório em `evidence/c-report.json`; mundos apagados |
+| C: saldo térmico e de fluxo | O replay das cadeias reproduz bit a bit, a cada tick, o calor de cada coluna (produção da barra, `moveHeat`, resfriamento passivo, limites) e os buffers de fluxo (`fluxQuantity`/`lastFluxQuantity` e a fila de 240 fluxos) do núcleo validado pelo oráculo; nenhum item muda pelo passo (as barras só mudam pela própria tag) |
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
