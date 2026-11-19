@@ -146,6 +146,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         Data::RotaryFurnace(r) => Some(&mut **r),
+        Data::StrandCaster(c) => Some(&mut **c),
         Data::Sawmill(s) => Some(s),
         _ => None,
     }
@@ -191,6 +192,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_arc_welder", Layout::Native),
     ("ntm:machine_soldering_station", Layout::Native),
     ("ntm:machine_rotary_furnace", Layout::Native),
+    ("ntm:machine_strand_caster", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
     // Onda 2: the sawmill's three slots, open to hoppers (`crate::sawmill`).
     ("ntm:machine_sawmill", Layout::Native),
@@ -430,6 +432,8 @@ pub fn proxy_cells(block: &str, core: Pos, facing: Option<&str>) -> Vec<Pos> {
 pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // TileEntityProxyCombo().inventory().power().fluid(): every cell of the volume.
     ("ntm:machine_rotary_furnace", &[[-2, 0, 1], [-1, 0, 1], [2, 0, -1], [2, 0, 1]]),
+    // TileEntityMachineStrandCaster.getPorts: core + rot - dir and core - dir, then the same four blocks further back.
+    ("ntm:machine_strand_caster", &[[-1, 0, 1], [0, 0, 1], [-1, 0, 5], [0, 0, 5]]),
     ("ntm:machine_arc_welder", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1], [1, 0, 0], [1, 0, 1], [-1, 1, 0], [-1, 1, 1], [0, 1, 0], [0, 1, 1], [1, 1, 0], [1, 1, 1]]),
     ("ntm:machine_soldering_station", &[[-1, 0, 0], [-1, 0, 1], [0, 0, 1]]),
     // TilePortShapes.comboven: the ring round the core on its two layers.

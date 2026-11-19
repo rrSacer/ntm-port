@@ -1961,6 +1961,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::welders::ARC => Some(SlotPolicy(arc_welder_slot_policy)),
         ntm_core::welders::SOLDER => Some(SlotPolicy(soldering_slot_policy)),
         ntm_core::rotary_furnace::BLOCK => Some(SlotPolicy(rotary_furnace_slot_policy)),
+        ntm_core::strand_caster::BLOCK => Some(SlotPolicy(strand_caster_slot_policy)),
         ntm_core::sawmill::BLOCK => Some(SlotPolicy(sawmill_slot_policy)),
         _ => None,
     };
@@ -1989,6 +1990,10 @@ fn arc_welder_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemS
 fn soldering_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::welders::SOLDER, slots, slot, item, action, origin)
+}
+fn strand_caster_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::strand_caster::BLOCK, slots, slot, item, action, origin)
 }
 fn rotary_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {

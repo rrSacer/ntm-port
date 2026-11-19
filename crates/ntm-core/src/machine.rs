@@ -99,6 +99,8 @@ pub enum Kind {
     Welder,
     /// The rotary furnace (`crate::rotary_furnace`).
     RotaryFurnace,
+    /// The continuous caster (`crate::strand_caster`).
+    StrandCaster,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -137,6 +139,13 @@ pub enum MachineEffect {
         offset: crate::Pos,
         item: String,
         count: u32,
+    },
+    /// A drop with item data (`minecraft:custom_data` as SNBT): the foundry's scrap with its exact amount.
+    DropStack {
+        offset: crate::Pos,
+        item: String,
+        count: u32,
+        custom: Option<String>,
     },
 }
 
@@ -232,6 +241,7 @@ pub enum Data {
     Furnace(Box<crate::furnaces::Furnace>),
     Welder(Box<crate::welders::Welder>),
     RotaryFurnace(Box<crate::rotary_furnace::RotaryFurnace>),
+    StrandCaster(Box<crate::strand_caster::StrandCaster>),
     Inert { name: String },
 }
 
@@ -337,6 +347,7 @@ impl Machine {
                 None => Data::Inert { name: block_id.into() },
             },
             Kind::RotaryFurnace => Data::RotaryFurnace(Box::default()),
+            Kind::StrandCaster => Data::StrandCaster(Box::default()),
             Kind::Furnace => match crate::furnaces::of(block_id) {
                 Some(f) => Data::Furnace(Box::new(f)),
                 None => Data::Inert { name: block_id.into() },
@@ -420,6 +431,7 @@ impl Machine {
             Data::Furnace(_) => Kind::Furnace,
             Data::Welder(_) => Kind::Welder,
             Data::RotaryFurnace(_) => Kind::RotaryFurnace,
+            Data::StrandCaster(_) => Kind::StrandCaster,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -470,6 +482,7 @@ impl Machine {
             Data::Furnace(m) => &**m,
             Data::Welder(m) => &**m,
             Data::RotaryFurnace(m) => &**m,
+            Data::StrandCaster(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -520,6 +533,7 @@ impl Machine {
             Data::Furnace(m) => &mut **m,
             Data::Welder(m) => &mut **m,
             Data::RotaryFurnace(m) => &mut **m,
+            Data::StrandCaster(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }

@@ -68,6 +68,16 @@ pub fn container(block: &str) -> Option<Container> {
     if let Some(c) = crate::furnaces::container(block).or_else(|| crate::welders::container(block)) {
         return Some(c);
     }
+    if block == crate::strand_caster::BLOCK {
+        // `getAccessibleSlotsFromSide`: the six outputs on every side; the mold goes in by hand only.
+        return Some(Container {
+            slots: crate::strand_caster::slot::COUNT,
+            faces: std::array::from_fn(|_| crate::strand_caster::slot::OUT.collect()),
+            inputs: vec![],
+            outputs: crate::strand_caster::slot::OUT.collect(),
+            menu: Some("minecraft:generic_9x3"),
+        });
+    }
     if block == crate::rotary_furnace::BLOCK {
         return Some(Container {
             slots: crate::rotary_furnace::slot::COUNT,
@@ -118,6 +128,13 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
     }
     if crate::welders::Model::of(block).is_some() {
         return crate::welders::filters(block);
+    }
+    if block == crate::strand_caster::BLOCK {
+        // `isItemValidForSlot`: only a mold, in slot 0; the outputs are `SlotCraftingOutput`.
+        let molds: Vec<String> = crate::foundry::Tables::ntm().molds.iter().map(|m| m.item.clone()).collect();
+        let mut f = vec![SlotFilter { quick_move: Some(molds), quick_reverse: true, ..Default::default() }];
+        f.extend((1..crate::strand_caster::slot::COUNT).map(|_| SlotFilter { quick_reverse: true, ..Default::default() }));
+        return f;
     }
     if block == crate::rotary_furnace::BLOCK {
         return vec![
@@ -180,6 +197,14 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if let Some(allowed) = crate::furnaces::allows(block, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;
+    }
+    if block == crate::strand_caster::BLOCK {
+        // The mold in slot 0 by hand (`ContainerMachineStrandCaster`: `SlotNonRetarded`); nothing goes into the outputs
+        // and a funnel never sees the mold (`getAccessibleSlotsFromSide`).
+        return match action {
+            SlotAction::Insert => origin == SlotOrigin::Manual && slot == crate::strand_caster::slot::MOLD && crate::foundry::Tables::ntm().mold(&item.id).is_some(),
+            _ => origin == SlotOrigin::Manual || slot != crate::strand_caster::slot::MOLD,
+        };
     }
     if block == crate::rotary_furnace::BLOCK {
         return match origin {

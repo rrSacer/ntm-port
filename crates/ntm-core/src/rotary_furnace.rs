@@ -592,6 +592,7 @@ mod tests {
         let f = RotaryFurnace { output: Some(("steel".into(), 720)), ..Default::default() };
         assert!(f.held_contents().is_empty());
         assert!(f.contents().is_empty());
+        assert!(Logic::scraps(&f).is_empty(), "the Java loses it: no scrap either");
     }
 
     #[test]

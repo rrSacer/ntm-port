@@ -106,12 +106,14 @@ fn accept_pour(m: &mut Machines, t: &Tables, hit: &Hit, mat: &str, q: u32) -> Op
     if matches!(m.get(key).map(|x| &x.data), Some(Data::Channel(_))) && !network_takes(m, key, mat) {
         return None;
     }
+    let facing = m.get(key)?.facing.clone();
     match &mut m.get_mut(key)?.data {
         Data::Channel(c) if c.melt.check(mat, CHANNEL_CAP) => Some(c.melt.add(mat, q, CHANNEL_CAP)),
         Data::FoundryTank(c) if c.melt.check(mat, TANK_CAP) => Some(c.melt.add(mat, q, TANK_CAP)),
         Data::Crucible(c) => c.pour(t, mat, q),
         Data::Mold(c) | Data::Basin(c) => c.accept(t, mat, q),
         // The caster takes a jet on one of its four funnel cells (`hit.cell`, face UP).
+        Data::StrandCaster(c) => c.pour(t, &crate::strand_caster::Jet { core: key.1, facing: facing.as_deref()?, cell: hit.cell.1, face: TOP }, mat, q),
         _ => None,
     }
 }

@@ -929,6 +929,9 @@ impl Server {
                 }
                 self.requested_detonations(&mut staged);
                 for (key, m) in &mut self.ready.world.machines {
+                    if let crate::machine::Data::StrandCaster(c) = &mut m.data {
+                        c.now = self.tick;
+                    }
                     m.logic_mut().tick();
                     staged.critical.extend(m.logic_mut().world_effects().into_iter().map(|e| e.in_world(key, m.facing.as_deref())));
                     match &mut m.data {
