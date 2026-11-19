@@ -91,3 +91,28 @@ Port de `TileEntityMachineRotaryFurnace` (`updateEntity`:140-227, `canProcess`:3
 - **Quem consome**: o cadinho (`Mats.getMaterialsFromItem`:250-252, depois a conversão `smeltsInto`) e o forno a arco em modo líquido (`ArcFurnaceRecipes.getOutput`:170-177) fundem a quantidade da sucata, sem arredondar.
 - **Caminho de queda**: `ServerHost::drop_stacks`. Dentro de uma transação vira `WorldEffect::EncodedItems` (SNBT do item no formato do ledger), reaplicado por id.
 - **Desvio declarado**: dado de item sem `ntm_amount` vale um lingote (o Java lê 0); nada no port grava esse dado.
+
+## Alvo do jato e lingotamento contínuo (F1, F4, F5)
+
+- **F1, célula → núcleo** (`foundry_server.rs`, `below`/`Hit`): o jato acha o primeiro bloco que não é ar; se for uma das 4 células do funil (`getMetalPourPos`: `y+2` sobre `núcleo + rot − dir`, `núcleo − dir`, `núcleo + rot`, `núcleo`, com `rot = dir.getRotation(UP)`), resolve para o núcleo e passa a célula e a face UP ao aceitador (`MachineStrandCaster.canAcceptPartialPour`:107-117, `tryPourStack`: a face é a do raio). Outra célula, outra face, sem molde ou outro material: o jato fica parado e nada se perde (`safe`).
+- **F4, o modelo** (`strand_caster.rs`, de `TileEntityMachineStrandCaster` e `TileEntityFoundryCastingBase`): 7 slots (molde e 6 saídas); água 64 000 e vapor gasto 64 000, `5·custo` por molde fundido; aceita até `custo·9` com molde, capacidade `custo·10` (50 000 sem molde); funde em lote com 9 moldes ou 200 ticks depois do último progresso (`lastProgressTick`, o `t` do NBT, gravado em duas palavras; contado no tick do servidor); portas de fluido nas 4 células de `getPorts`; o molde entra só à mão e as saídas saem em qualquer face.
+- **F5, a sucata de excesso**: o que passa da capacidade (molde mais leve) sai como **uma** sucata com a quantidade exata em `y+2` (`Logic::world_effects` → `MachineEffect::DropStack` → `WorldEffect::EncodedItems`, no mesmo lote do modelo). Quebrar solta o molde, as saídas e uma sucata com todo o metal do poço (D4).
+
+Lacunas declaradas: o desenho animado do lingotamento (o gerador deixou o OBJ estático e a textura, sem a animação do `RenderStrandCaster`); as direções dos `PortDef` (as 4 células aceitam de qualquer lado, como os outros multiblocos); o funil só com o inventário do núcleo (os dummies não repassam inventário a funis); a pá e o molde na mão do Java (`MachineStrandCaster.onBlockActivated`, `IToolable`) ainda não existem; o tamanho da pilha das saídas é 64.
+
+### Mutantes (rodados à mão, todos mortos)
+
+| Mutante | Morto por |
+|---|---|
+| F1: a face do raio não é checada | `strand_caster::only_the_face_up…` |
+| F1: a resolução perde uma coluna do funil | `a_jet_on_a_funnel_cell_resolves…` |
+| F4: limite `custo·10` em vez de `·9` | `it_accepts_nine_molds…` |
+| F4: descarga parcial em 100 ticks | `a_partial_batch_waits_200…` |
+| F4: o transbordo não carimba `lastProgressTick` | `it_accepts_nine_molds…` |
+| F4: o lote não gasta água | `nine_molds_cast_at_once…` |
+| F5: o excesso se perde (sem efeito) | `the_excess_of_a_lighter_mold…` |
+| F5: o excesso arredondado a lingotes | `the_excess_of_a_lighter_mold…` |
+| F5: os efeitos não são drenados | `the_excess_of_a_lighter_mold…` |
+| D4: o poço arredondado ao quebrar | `a_broken_block_gives_back_every_quantum` |
+| D4: o cadinho ignora a quantidade da sucata | `a_scrap_melts_into_its_own_amount` |
+| R8: o fundido do rotativo vira sucata | `r8_molten_output_is_lost_on_break` (unidade e servidor) |
