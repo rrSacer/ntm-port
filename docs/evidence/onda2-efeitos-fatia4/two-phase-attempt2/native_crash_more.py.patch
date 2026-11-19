@@ -1,0 +1,116 @@
+--- ../test-game/native_crash_more.py	2026-11-12 18:40:32.220018370 -0300
++++ native_crash_more.py	2026-11-16 14:39:11.572475061 -0300
+@@ -193,7 +193,8 @@
+         g.command('setblock %d %d %d minecraft:redstone_block' % (hx[0], hx[1] - 1, hx[2]))
+         g.command('setblock %d %d %d minecraft:hopper[facing=%s]' % (*hx, facing))
+         g.command('item replace block %d %d %d container.0 with %s 1' % (*hx, INCOMING if full else ROD))
+-        g.command('setblock %d %d %d minecraft:chest' % geometry(cx)['core'])
++        core_state = 'minecraft:dropper[facing=east]' if SCENARIO == 'coupled-break' else 'minecraft:chest'
++        g.command('setblock %d %d %d %s' % (*geometry(cx)['core'], core_state))
+         if full:
+             g.command('item replace block %d %d %d container.0 with %s 4' % (*geometry(cx)['core'], ROD))
+             dropper(g, shooter_at(cx), ROD, 1, shooter_facing())
+@@ -282,49 +283,88 @@
+ 
+ 
+ def coupled_break_act(g):
+-    """R6-2 of the sixth review: the transfer of `coupled-ea` (a Zr into a full channel, a Ra-226Be out), then the core
+-    broken while the loader's chunk (3,0) is out and the core's (2,0) in; then the save. No chunk is forced: a forced
+-    chunk keeps its neighbours loaded, so the player walks west until (3,0) leaves the loaded area and (2,0) is its edge."""
++    """Debt/stock proof only: preserve vanilla stock in A while B is truly absent."""
+     cx, side, full = COUPLED[SCENARIO]
+     core, member = geometry(cx)['core'], (49, 102, 10)
+     coupled_transfer(g)
+-    # The rod the core ejected (the control's dropper fired) lies in (3,0) in both worlds: an item's flight could take
+-    # it across the border, into the other chunk's entities.
+     g.command('tp @e[type=minecraft:item] 52.5 100.5 12.5')
+     time.sleep(2)
+     g.command('forceload remove all')
++    states = []
+     found = None
+     for px in range(24, -200, -16):
+         g.command(f'tp @s {px + .5} 101 8.5')
+         deadline = time.monotonic() + 20
+-        while time.monotonic() < deadline and is_loaded(g, member):
++        while True:
++            a = g.ctl('block %d %d %d' % core)
++            b = g.ctl('block %d %d %d' % member)
++            if not b['loaded'] or time.monotonic() >= deadline:
++                break
+             time.sleep(1)
+-        if not is_loaded(g, member):
+-            found = px if is_loaded(g, core) else None
++        states.append({'player_x': px + .5, 'A': a, 'B': b})
++        if a['loaded'] and not b['loaded']:
++            found = px + .5
+             break
+-    g.evidence['player_x'] = found
+-    g.check('member_chunk_out_core_chunk_in', found is not None and is_loaded(g, core) and not is_loaded(g, member), found)
+-    g.command('setblock %d %d %d minecraft:air%s' % (*core, ' destroy' if VANILLA else ''))
+-    time.sleep(3)
+-    g.evidence['after_break'] = {'ledger': ledger(g), 'core': block(g, core)}
+-    if not VANILLA:
++        if not a['loaded']:
++            break
++    g.evidence['residence_search'] = states
++    g.check('A_resident_B_absent', found is not None, states)
++    if VANILLA:
++        g.evidence['stock_in_A'] = held(g, core, '')
++        g.check('vanilla_stock_waits_in_A', held(g, core, '') == 5, held(g, core, ''))
++        touch(g, (40, 4))
++    else:
++        g.command('setblock %d %d %d minecraft:air' % core)
++        # The outputs bound for the absent B may wait as the step's batch (stored in A's record by the save) instead of
++        # an owed entry in memory: the debt is judged on disk by the runner (`phase1_debt_valid`), only recorded here.
++        polls = []
++        for _ in range(6):
++            time.sleep(1)
++            polls.append(ledger(g))
++        g.evidence['after_break'] = {'ledger_polls': polls, 'core': block(g, core)}
+         g.check('the_core_is_gone', not machine_present(g, core), g.evidence['after_break'])
++    state = {'A': g.ctl('block %d %d %d' % core), 'B': g.ctl('block %d %d %d' % member)}
++    g.evidence['residence_before_cut'] = state
++    g.check('residence_preserved_before_cut', state['A']['loaded'] and not state['B']['loaded'], state)
+     save_expecting_death(g)
+ 
+ 
+ def coupled_break_verify(g, again=False):
+     cx, side, full = COUPLED[SCENARIO]
++    core = geometry(cx)['core']
+     g.ctl('wait-ready 120')
+     g.command('gamemode creative @s')
+     g.command('forceload add 30 0 64 24')
+     g.command('tp @s 53.5 101 15.5')
++    time.sleep(3)
++    g.ctl('wait-ready 120')
++    g.check('B_resident_for_payment', g.ctl('block 49 102 10')['loaded'], g.ctl('block 49 102 10'))
++    if VANILLA:
++        stock = held(g, core, '')
++        g.evidence['stock_before_payment'] = stock
++        g.check('vanilla_stock_matches_phase', stock == (0 if again else 5), stock)
++        # The dropper faces the empty hopper of the transfer (in B): it would fire into it and the hopper push back.
++        # Removed empty, so the shots fall into B as loose items, where the core's channels eject.
++        hx = hopper_at(cx)
++        if block(g, hx).startswith('minecraft:hopper'):
++            g.evidence['hopper_before_payment'] = held(g, hx, '')
++            g.check('transfer_hopper_empty', held(g, hx, '') == 0, held(g, hx, ''))
++            g.command('setblock %d %d %d minecraft:air' % hx)
++        if stock:
++            fire(g, core, 5)
++        g.check('vanilla_paid_once', held(g, core, '') == 0, held(g, core, ''))
+     led = quiet(g, 12)
+     channels, loaders = pile_rods(g, cx)
+-    outside = entities(g, ROD) + entities(g, INCOMING)
++    outputs = [e for e in g.ctl('entities 150')['entities'] if e.get('kind') == 'item' and e['item']['item'] in (ROD, INCOMING)]
++    g.evidence['paid_outputs'] = outputs
++    g.check('outputs_only_in_B', sum(e['item']['count'] for e in outputs) == 6 and all((int(e['pos'][0] // 16), int(e['pos'][2] // 16)) == (3, 0) for e in outputs), outputs)
++    g.check('no_debt_after_payment', led['pending'] == 0, led)
++    outside = sum(e['item']['count'] for e in outputs)
+     carried = inventory(g, ROD) + inventory(g, INCOMING)
+     detail = {'channels': channels, 'loaders': loaders, 'entities': outside, 'inventory': carried,
+               'total': channels + loaders + outside + carried, 'ledger': led}
+     counted(g, 'no_rod_lost_or_duplicated', detail, again)
++    g.ctl('save')
+ 
+ 
+ # -------------------------------------------------------------------------------------------------------- crossing

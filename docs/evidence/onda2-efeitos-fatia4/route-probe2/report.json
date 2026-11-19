@@ -1,0 +1,306 @@
+{
+  "ok": false,
+  "scenario": "coupled-break",
+  "binary": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/proof-bin/horizon-client",
+  "binary_sha256": "64e8570bf4c634047d3aadbfccc42ab620de4a724a341bbbc674ee79ddbc89be",
+  "bundle_sha256": "dca249694fb01df23c3fcd05f995eb844d4a2af4ea3954c22962579bd47f265e",
+  "points": [
+    {
+      "scenario": "coupled-break",
+      "point": "none",
+      "folder": "/mnt/ssd120/sacer/so/p5/more-coupled-break-d0e8oxuz/point-none",
+      "ok": false,
+      "vanilla_control": false,
+      "base_items": {
+        "ntm:pile_rod__ra226be": 5,
+        "ntm:pile_rod__zr": 1
+      },
+      "act": {
+        "rods": [
+          5,
+          0
+        ],
+        "entities": 1
+      },
+      "while_away": null,
+      "act_checks": {
+        "setup:saved_rod_starts_in_the_loader": {
+          "ok": true
+        },
+        "setup:transfer_completed_before_the_cut": {
+          "ok": true
+        },
+        "setup:A_resident_B_absent": {
+          "ok": true
+        },
+        "setup:the_core_is_gone": {
+          "ok": true
+        },
+        "setup:residence_preserved_before_cut": {
+          "ok": true
+        }
+      },
+      "died_in_act": false,
+      "exit": "survived",
+      "disk_before_reopen": {
+        "2": [
+          {
+            "role": "loader",
+            "rev": 1,
+            "rods": 0,
+            "items": [
+              null
+            ]
+          }
+        ],
+        "3": [
+          {
+            "role": "loader",
+            "rev": 7,
+            "rods": 0,
+            "items": [
+              null
+            ]
+          }
+        ]
+      },
+      "disk": {
+        "entities": 6,
+        "blocks": 0,
+        "machines": 0,
+        "owed": 0,
+        "player": 0,
+        "total": 6
+      },
+      "items": {
+        "ntm:pile_rod__ra226be": 5,
+        "ntm:pile_rod__zr": 1
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            5,
+            0
+          ],
+          [
+            3,
+            0,
+            1,
+            0
+          ]
+        ],
+        "entities": [
+          [
+            3,
+            0,
+            0,
+            6
+          ]
+        ]
+      },
+      "phase1_debt_valid": false,
+      "error": "AssertionError('phase 1 does not hold expected source debt/stock plus old B entity')",
+      "control": {
+        "scenario": "coupled-break",
+        "point": "none",
+        "folder": "/mnt/ssd120/sacer/so/p5/more-coupled-break-d0e8oxuz/point-none-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "ntm:pile_rod__ra226be": 5,
+          "ntm:pile_rod__zr": 1
+        },
+        "act": {
+          "rods": [
+            0,
+            5
+          ],
+          "entities": 0
+        },
+        "while_away": null,
+        "act_checks": {
+          "setup:transfer_completed_before_the_cut": {
+            "ok": true
+          },
+          "setup:A_resident_B_absent": {
+            "ok": true
+          },
+          "setup:vanilla_stock_waits_in_A": {
+            "ok": true
+          },
+          "setup:residence_preserved_before_cut": {
+            "ok": true
+          }
+        },
+        "died_in_act": false,
+        "exit": "survived",
+        "disk_before_reopen": {
+          "2": [],
+          "3": []
+        },
+        "disk": {
+          "entities": 1,
+          "blocks": 5,
+          "machines": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6
+        },
+        "items": {
+          "ntm:pile_rod__ra226be": 5,
+          "ntm:pile_rod__zr": 1
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              5,
+              5
+            ],
+            [
+              3,
+              0,
+              1,
+              0
+            ]
+          ],
+          "entities": [
+            [
+              3,
+              0,
+              0,
+              1
+            ]
+          ]
+        },
+        "phase1_debt_valid": true,
+        "first_reopen": {
+          "channels": 0,
+          "loaders": 0,
+          "entities": 6,
+          "inventory": 0,
+          "total": 6,
+          "ledger": {
+            "chunks": 0,
+            "applied": 0,
+            "pending": 0,
+            "obligations": 0,
+            "migrated": 0,
+            "kv_items": 0,
+            "kv_writes": 35,
+            "kv_bytes": 6790
+          }
+        },
+        "items_after": {
+          "ntm:pile_rod__ra226be": 5,
+          "ntm:pile_rod__zr": 1
+        },
+        "kv_items_after": 0,
+        "phase2_disk": {
+          "entities": 6,
+          "blocks": 0,
+          "machines": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6
+        },
+        "phase2_written": {
+          "region": [
+            [
+              2,
+              0,
+              5,
+              0
+            ]
+          ],
+          "entities": [
+            [
+              3,
+              0,
+              1,
+              6
+            ]
+          ]
+        },
+        "second_reopen": {
+          "channels": 0,
+          "loaders": 0,
+          "entities": 6,
+          "inventory": 0,
+          "total": 6,
+          "ledger": {
+            "chunks": 0,
+            "applied": 0,
+            "pending": 0,
+            "obligations": 0,
+            "migrated": 0,
+            "kv_items": 0,
+            "kv_writes": 21,
+            "kv_bytes": 4074
+          }
+        },
+        "items_again": {
+          "ntm:pile_rod__ra226be": 5,
+          "ntm:pile_rod__zr": 1
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6,
+        "first": null,
+        "second": null,
+        "expected": 6,
+        "control_expected": 6,
+        "control_disk": 6,
+        "parts_ok": false,
+        "as_the_files": false,
+        "as_the_files_items": false,
+        "storage_clean": false,
+        "same_cut": true,
+        "compared_with": "none",
+        "control_first": 6,
+        "no_duplicate": false,
+        "lost": null,
+        "control_lost": 0,
+        "no_worse_than_vanilla": false,
+        "items": {
+          "base": {
+            "ntm:pile_rod__ra226be": 5,
+            "ntm:pile_rod__zr": 1
+          },
+          "control_base": {
+            "ntm:pile_rod__ra226be": 5,
+            "ntm:pile_rod__zr": 1
+          },
+          "items_after": {
+            "mine": null,
+            "control": {
+              "ntm:pile_rod__ra226be": 5,
+              "ntm:pile_rod__zr": 1
+            }
+          },
+          "items_again": {
+            "mine": null,
+            "control": {
+              "ntm:pile_rod__ra226be": 5,
+              "ntm:pile_rod__zr": 1
+            }
+          }
+        },
+        "no_duplicate_item": false,
+        "no_worse_item": false,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      },
+      "phase2_same_cut": false,
+      "phase2_paid": false
+    }
+  ],
+  "scope": "two-phase debt/drain invariants only; not physical break or explosion replay parity"
+}

@@ -69,6 +69,8 @@ pub(super) fn world(open: bool) {
     lock(&CHANGES).clear();
     lock(&BUTTONS).clear();
     lock(&POST_SYNC).clear();
+    lock(&SAWMILLS_PLACED).clear();
+    lock(&SAWMILLS_WITHOUT_BLADE).clear();
     if !open {
         // The close/failure hook follows the final save. These are session caches, not facts of the next world.
         lock(&LEDGERS).clear();
@@ -89,6 +91,7 @@ pub(super) fn world(open: bool) {
 /// The block changes recorded since the server last took them, and the records loaded since, given to the server (it
 /// then takes them as the end of a tick does, `Server::native_settle`).
 fn feed_changes(server:&mut Server,host:&mut Host<'_,'_>){
+    sawmills_placed(server);
     let changes=std::mem::take(&mut *lock(&CHANGES));
     arrived(server);
     for (dim,pos,old,new) in changes {
@@ -207,6 +210,8 @@ pub(super) fn menu_button(game:&crate::game::Game<'_>,pos:[i32;3],id:i32,entity:
 /// Input callbacks may precede ServerTickEnd. Consume their external facts
 /// before capturing a machine generation or retrying any old world effect.
 fn reconcile(server:&mut Server,host:&mut Host<'_, '_>){
+    // The sawmills' words before the changes they came with, as `feed_changes` and the tick give them.
+    sawmills_placed(server);
     for (dim,pos,old,new) in std::mem::take(&mut *lock(&CHANGES)){
         let now=ntm_core::server::native_server::native_change_state(&new,host.game.native_loaded_block(&dim,pos));
         server.native_block_changed(&dim,pos,&old,&now);
@@ -245,6 +250,10 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     }
     // A fuel rod into an RBMK fuel channel, moved with the hand in one transfer (T01).
     if server.native_rbmk_use(&mut host, &dim, pos, core, &player) {
+        return true;
+    }
+    // The sawmill by hand, not sneaking (MachineSawmill.onBlockActivated): its blade back, its outputs taken, an input.
+    if !sneaking && server.native_sawmill_use(&mut host, &dim, pos, core, &player) {
         return true;
     }
     let game = host.game;
@@ -415,6 +424,9 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     let at=match (n(1),n(2),n(3)){(Some(x),Some(y),Some(z))=>Some([x as i32,y as i32,z as i32]),_=>None};
     let result:Result<(),&str>=match (w.first().copied(),at){
         (Some("eject"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>if server.native_test_eject(&dim,p,[x,y,z]){Ok(())}else{Err("no rod to put out")},_=>Err("usage")},
+        // `ntmtest drop <x> <y> <z> <cx> <cy> <cz>`: the rod out as an `Items` effect at the cell cx cy cz (owed when its
+        // chunk is out, D1+D2 fatia 4).
+        (Some("drop"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>if server.native_test_drop(&dim,p,[x as i32,y as i32,z as i32]){Ok(())}else{Err("no rod to put out")},_=>Err("usage")},
         // The player's state swapped in, as a player's own action has it (the snapshot of a transfer needs it).
         (Some("take"),Some(p))=>host.game.native_visit_player(&me,|g|{
             let mut host=Host{game:g,buttons:Vec::new()};
@@ -763,6 +775,8 @@ fn ledger_store(g: &mut crate::game::Game<'_>, key: &ChunkKey, ledger: ntm_core:
     let value = if ledger.is_empty() { String::new() } else { ledger.to_json() };
     if g.attachment_map_quiet(Holder::Chunk([key.1, key.2])).is_ok_and(|map| map.set(&LEDGER_TYPE, value).is_ok()) {
         g.world.modified.insert((key.1, key.2));
+        // Protect this chunk only when the game naturally schedules its next snapshot; never force a save here.
+        g.save.require_next_chunk_save((key.1, key.2)).expect("source save barrier registration failed");
     }
     if ledger.owed.is_empty() {
         lock(&OWING).remove(key);
@@ -877,6 +891,94 @@ fn spawn_items(g: &mut crate::game::Game<'_>, pos: [i32; 3], items: &[String]) {
 
 fn item_snbt(stack: &ItemStack) -> String {
     horizon_world::snbt_text::to_snbt(&horizon_client::save::item_to_nbt(stack))
+}
+
+/// D3 (Onda 2): the sawmill's item without its blade. The Java gives it damage 1 (`MachineSawmill.getDrops`) and reads it
+/// back on placement (`onBlockPlacedBy`); here it carries `minecraft:custom_data {"ntm:no_blade":1b}`.
+const SAWMILL: &str = "ntm:machine_sawmill";
+const NO_BLADE: &str = "ntm:no_blade";
+
+fn sawmill_without_blade(stack: &ItemStack) -> bool {
+    &*stack.item == SAWMILL
+        && stack.custom_data().and_then(|c| c.get(&JavaString::from(NO_BLADE))).is_some_and(|t| matches!(t, Tag::Byte(1)))
+}
+
+fn sawmill_item_without_blade(count: u32) -> Option<ItemStack> {
+    let text = format!("{{id:\"{SAWMILL}\",count:{count},components:{{\"minecraft:custom_data\":{{\"{NO_BLADE}\":1b}}}}}}");
+    horizon_world::nbt::parse_snbt(&text).ok().and_then(|(t, _)| horizon_client::save::item_from_nbt(&t))
+}
+
+/// The server's sawmills without their blade (`Server::native_sawmills_without_blade`), as of the last server tick
+/// and the placements since: the drops a blast of the server's own hears while the server is busy read it.
+static SAWMILLS_WITHOUT_BLADE: Mutex<std::collections::BTreeSet<(String, [i32; 3])>> = Mutex::new(std::collections::BTreeSet::new());
+
+/// Sawmill items placed since the server last took the block changes: given to it before those changes, so the
+/// `Placed` event of each finds what its item said (`Server::native_sawmill_placed`).
+static SAWMILLS_PLACED: Mutex<Vec<(String, [i32; 3], bool)>> = Mutex::new(Vec::new());
+
+fn sawmills_placed(server: &mut Server) {
+    for (dim, pos, without) in std::mem::take(&mut *lock(&SAWMILLS_PLACED)) {
+        server.native_sawmill_placed(&dim, pos, without);
+    }
+}
+
+fn d3_trace() -> bool {
+    trace_effects() || std::env::var_os("NTM_TEST_HOOKS").is_some()
+}
+
+/// `place_block`: a player placed `stack` at `pos` (`BlockItem.place`, before the stack shrinks).
+pub(super) fn place_block(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) {
+    if &*stack.item != SAWMILL {
+        return;
+    }
+    let without = sawmill_without_blade(stack);
+    let dim = game.dim.id().to_string();
+    if d3_trace() {
+        eprintln!("ntm d3 placed {SAWMILL} at {pos:?} no_blade={without} item={}", item_snbt(stack));
+    }
+    lock(&SAWMILLS_PLACED).push((dim.clone(), pos, without));
+    let mut copy = lock(&SAWMILLS_WITHOUT_BLADE);
+    if without {
+        copy.insert((dim, pos));
+    } else {
+        copy.remove(&(dim, pos));
+    }
+}
+
+/// The host's copy of the sawmills without their blade, after a server tick.
+fn sawmills_copied(server: &Server) {
+    *lock(&SAWMILLS_WITHOUT_BLADE) = server.native_sawmills_without_blade().into_iter().collect();
+}
+
+/// `loot_drops`: a broken sawmill without its blade drops its item as the variant without it; the loot table rolled
+/// the plain item (survival, creative, explosion decay and the rest stay the engine's).
+pub(super) fn loot_drops(game: &mut crate::game::Game<'_>, block: Option<([i32; 3], horizon_world::registry::BlockStateId)>, drops: &mut [ItemStack]) {
+    let Some((pos, state)) = block else { return };
+    if !drops.iter().any(|d| &*d.item == SAWMILL) {
+        return;
+    }
+    let dim = game.dim.id().to_string();
+    // A placement the server has not taken yet speaks last for its cell. The server's own blast breaking it holds the
+    // server: the host's copy answers then.
+    let placed = lock(&SAWMILLS_PLACED).iter().rev().find(|(d, p, _)| *d == dim && *p == pos).map(|(_, _, w)| *w);
+    let without = placed
+        .or_else(|| match SERVER.try_lock() {
+            Ok(guard) => guard.as_ref().map(|(server, _)| server.native_sawmill_without_blade(&dim, pos)),
+            Err(_) => None,
+        })
+        .unwrap_or_else(|| lock(&SAWMILLS_WITHOUT_BLADE).contains(&(dim.clone(), pos)));
+    let before: Vec<String> = if d3_trace() { drops.iter().map(item_snbt).collect() } else { Vec::new() };
+    if without {
+        for d in drops.iter_mut().filter(|d| &*d.item == SAWMILL) {
+            if let Some(variant) = sawmill_item_without_blade(d.count) {
+                *d = variant;
+            }
+        }
+    }
+    if d3_trace() {
+        let after: Vec<String> = drops.iter().map(item_snbt).collect();
+        eprintln!("ntm d3 drops at {pos:?} state={} without_blade={without} before={before:?} after={after:?}", game.state_string(state));
+    }
 }
 
 /// Forgets the applied ids the storage no longer names, in every chunk kept that holds some.
@@ -1101,6 +1203,7 @@ pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
         server.native_writes_finished();
     }
     arrived(server);
+    sawmills_placed(server);
     for (dim, pos, old, new) in changes {
         // Preserve each break; enrich placement properties only while the
         // recorded new block is still there. Owned role writes were tagged at
@@ -1109,6 +1212,7 @@ pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
         server.native_block_changed(&dim, pos, &old, &now);
     }
     horizon_client::spans::time("ntm_native_tick", || server.native_tick(&mut host, *tick));
+    sawmills_copied(server);
     }
 }
 
@@ -1473,6 +1577,10 @@ impl ServerHost for Host<'_, '_> {
             applied
         }).unwrap_or(false)
     }
+    fn explode(&mut self, dim: &str, at: [f64;3], power: f32, fire: bool, breaks: bool) -> bool {
+        let blast = if breaks { crate::game::native_explosions::NativeBlast::Block } else { crate::game::native_explosions::NativeBlast::Keep };
+        in_place(self.game, dim, |g| g.native_explode(dim, at, power, fire, blast)).unwrap_or(false)
+    }
     fn pile_explode(&mut self, dim: &str, at: [f64;3]) -> bool {
         in_place(self.game, dim, |g| g.native_explode(dim, at, 15.0, true, crate::game::native_explosions::NativeBlast::Block)).unwrap_or(false)
     }
@@ -1545,12 +1653,22 @@ impl ServerHost for Host<'_, '_> {
         use ntm_core::server::{HeldStack,PlayerSlot,PlayerSlots};
         if self.game.native_actor_uuid().as_deref()!=Some(player){return None;}
         let s=crate::game::ntm_items::transfer_snapshot(self.game)?;
-        let held=|i:&Option<ItemStack>|stack(i).zip(i.as_ref()).map(|(stack,i)|HeldStack{stack,encoded:item_snbt(i)});
+        let held=|i:&Option<ItemStack>|stack(i).zip(i.as_ref()).map(|(stack,i)|{
+            // Its components are those of the port's stack alone: a stack given to the player may pile onto it.
+            let plain=item(Some(&stack),None).is_some_and(|p|item_snbt(&p)==item_snbt(i));
+            HeldStack{stack,encoded:item_snbt(i),plain}
+        });
         let hand=match self.game.hand{crate::game::Hand::Main=>PlayerSlot::Inventory(self.game.selected),crate::game::Hand::Off=>PlayerSlot::Offhand};
         Some(PlayerSlots{hand:Some(hand),inventory:s.inventory.iter().map(held).collect(),offhand:held(&s.offhand),carried:held(&s.carried),creative:self.game.creative})
     }
     /// A transfer between the acting player and machines: the player's edited stacks compared by their whole SNBT and
     /// the machines' slots and generations, then both published in one exclusive step (`publish_atomic_with`).
+    /// The copy `loot_drops` reads while the server is busy, kept with the model at once (a blade lost or put back in
+    /// a tick whose own blast then breaks the sawmill).
+    fn sawmill_blade(&mut self,dim:&str,pos:[i32;3],without:bool){
+        let mut copy=lock(&SAWMILLS_WITHOUT_BLADE);
+        if without{copy.insert((dim.to_string(),pos));}else{copy.remove(&(dim.to_string(),pos));}
+    }
     fn commit_player_transfer(&mut self,t:&ntm_core::server::PlayerTransfer,commits:&[ntm_core::server::MachineCommit])->bool{
         use crate::game::native_player_transactions::{NativeDrop,NativeDropMode};
         use ntm_core::server::{PlayerSlot,TransferDrop};
@@ -1843,6 +1961,7 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::welders::ARC => Some(SlotPolicy(arc_welder_slot_policy)),
         ntm_core::welders::SOLDER => Some(SlotPolicy(soldering_slot_policy)),
         ntm_core::rotary_furnace::BLOCK => Some(SlotPolicy(rotary_furnace_slot_policy)),
+        ntm_core::sawmill::BLOCK => Some(SlotPolicy(sawmill_slot_policy)),
         _ => None,
     };
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
@@ -1886,6 +2005,10 @@ fn steel_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &It
 fn iron_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::furnaces::IRON, slots, slot, item, action, origin)
+}
+fn sawmill_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::sawmill::BLOCK, slots, slot, item, action, origin)
 }
 fn brick_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {

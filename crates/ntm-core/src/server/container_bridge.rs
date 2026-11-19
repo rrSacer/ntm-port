@@ -69,6 +69,11 @@ pub trait Slotted {
     fn migrates(&self) -> bool {
         false
     }
+    /// Whether its record (the model's JSON, and the journal's copy of it) keeps its slots. False: they are the block
+    /// entity's alone, and a model the journal restored, which has none, takes them from the block entity.
+    fn slots_recorded(&self) -> bool {
+        true
+    }
     /// What it holds outside its slots (molten metal as scraps), dropped
     /// when it is broken: the engine spills the slots, not this.
     fn held_contents(&self) -> Vec<(String, u32)> {
@@ -91,6 +96,14 @@ pub trait Slotted {
 pub(super) fn held_contents(data: &Data) -> Vec<(String, u32)> {
     let mut d = data.clone();
     slotted(&mut d).map_or_else(Vec::new, |n| n.held_contents())
+}
+
+/// Whether the machine in `data` still holds, in its record, slots its block entity never had (`Slotted::migrates`):
+/// a removal before its first `slots_in` drops them from the model, the engine having none to spill. Meaningful only
+/// before the bridge has seen the machine (see the sawmill's `migrates`): its caller asks `bridge.last` first.
+pub(super) fn migrating(data: &Data) -> bool {
+    let mut d = data.clone();
+    slotted(&mut d).is_some_and(|n| n.migrates())
 }
 
 /// The machines that implement [`Slotted`] (`Layout::Native`).
@@ -133,6 +146,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
         Data::RotaryFurnace(r) => Some(&mut **r),
+        Data::Sawmill(s) => Some(s),
         _ => None,
     }
 }
@@ -178,6 +192,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_soldering_station", Layout::Native),
     ("ntm:machine_rotary_furnace", Layout::Native),
     ("ntm:barrel_steel", Layout::Native),
+    // Onda 2: the sawmill's three slots, open to hoppers (`crate::sawmill`).
+    ("ntm:machine_sawmill", Layout::Native),
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:heater_oilburner", Layout::Native),
     ("ntm:heater_heatex", Layout::Native),
@@ -958,7 +974,14 @@ impl Server {
             let observed = now.clone();
             if r.restored.remove(&key) {
                 // The model came from the journal and the block entity is older: the model's slots are the truth, and
-                // the next step writes them over the block entity's.
+                // the next step writes them over the block entity's. A machine whose record has no slots (the
+                // sawmill) has none to write: the block entity's are its only ones, and it takes them.
+                if let Some(n) = slotted(&mut m.data)
+                    && !n.slots_recorded()
+                {
+                    *n.slots_mut() = now.clone();
+                    n.sync_in();
+                }
                 r.bridge.last.insert(key, observed);
                 continue;
             }

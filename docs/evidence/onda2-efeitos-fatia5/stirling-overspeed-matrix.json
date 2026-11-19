@@ -1,0 +1,766 @@
+{
+  "ok": true,
+  "binary": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/proof-bin-f5/horizon-client",
+  "binary_sha256": "35df97c139dc4603cf56e0b71bcf5f87b1724147d08f838f1fff187dac48932c",
+  "bundle_sha256": "eebe930a4a39dacf367092946374fbeb2f536d9df732bda37bdc6216051bc23f",
+  "points": [
+    {
+      "point": "none",
+      "folder": "/mnt/ssd120/sacer/so/f5/stirling-jy58l__7/point-none",
+      "ok": true,
+      "act_checks": {
+        "setup:the_gear_breaks": {
+          "ok": true,
+          "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":231,\"has_cog\":false,\"overspeed\":0}}}'"
+        },
+        "setup:no_block_broken": {
+          "ok": true,
+          "actual": []
+        }
+      },
+      "died_in_act": false,
+      "act": {
+        "blasts": [
+          {
+            "id": "2208450506251215335.0",
+            "at": [
+              47.5,
+              102.0,
+              9.5
+            ],
+            "power": 5.0,
+            "fire": false,
+            "breaks": false
+          }
+        ],
+        "ok": true
+      },
+      "verify": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 10394
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "again": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 10404
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "ids": [
+        "2208450506251215335.0"
+      ],
+      "each_id_once": true
+    },
+    {
+      "point": "kill",
+      "folder": "/mnt/ssd120/sacer/so/f5/stirling-jy58l__7/point-kill",
+      "ok": true,
+      "act_checks": {
+        "setup:the_gear_breaks": {
+          "ok": true,
+          "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":231,\"has_cog\":false,\"overspeed\":0}}}'"
+        },
+        "setup:no_block_broken": {
+          "ok": true,
+          "actual": []
+        }
+      },
+      "died_in_act": false,
+      "act": {
+        "blasts": [
+          {
+            "id": "12560812041717967142.0",
+            "at": [
+              47.5,
+              102.0,
+              9.5
+            ],
+            "power": 5.0,
+            "fire": false,
+            "breaks": false
+          }
+        ],
+        "ok": true
+      },
+      "verify": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              true,
+              true
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 9758
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "again": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              true,
+              true
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 9790
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "ids": [
+        "12560812041717967142.0"
+      ],
+      "each_id_once": true
+    },
+    {
+      "point": "kv_committed",
+      "folder": "/mnt/ssd120/sacer/so/f5/stirling-jy58l__7/point-kv_committed",
+      "ok": true,
+      "act_checks": {
+        "setup:the_gear_breaks": {
+          "ok": true,
+          "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":227,\"has_cog\":false,\"overspeed\":0}}}'"
+        },
+        "setup:no_block_broken": {
+          "ok": true,
+          "actual": []
+        }
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "act": {
+        "blasts": [
+          {
+            "id": "11609011255933248273.0",
+            "at": [
+              47.5,
+              102.0,
+              9.5
+            ],
+            "power": 5.0,
+            "fire": false,
+            "breaks": false
+          }
+        ],
+        "ok": true
+      },
+      "verify": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              true,
+              true
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 10395
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "again": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              true,
+              true
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 35,
+              "kv_bytes": 10710
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "ids": [
+        "11609011255933248273.0"
+      ],
+      "each_id_once": true
+    },
+    {
+      "point": "save_begin",
+      "folder": "/mnt/ssd120/sacer/so/f5/stirling-jy58l__7/point-save_begin",
+      "ok": true,
+      "act_checks": {
+        "setup:the_gear_breaks": {
+          "ok": true,
+          "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":225,\"has_cog\":false,\"overspeed\":0}}}'"
+        },
+        "setup:no_block_broken": {
+          "ok": true,
+          "actual": []
+        }
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "act": {
+        "blasts": [
+          {
+            "id": "16748133071296827911.0",
+            "at": [
+              47.5,
+              102.0,
+              9.5
+            ],
+            "power": 5.0,
+            "fire": false,
+            "breaks": false
+          }
+        ],
+        "ok": true
+      },
+      "verify": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              true,
+              true
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 37,
+              "kv_bytes": 10620
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "again": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              true,
+              true
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 36,
+              "kv_bytes": 10368
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "ids": [
+        "16748133071296827911.0"
+      ],
+      "each_id_once": true
+    },
+    {
+      "point": "chunks_written",
+      "folder": "/mnt/ssd120/sacer/so/f5/stirling-jy58l__7/point-chunks_written",
+      "ok": true,
+      "act_checks": {
+        "setup:the_gear_breaks": {
+          "ok": true,
+          "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":221,\"has_cog\":false,\"overspeed\":0}}}'"
+        },
+        "setup:no_block_broken": {
+          "ok": true,
+          "actual": []
+        }
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "act": {
+        "blasts": [
+          {
+            "id": "8939263916348419568.0",
+            "at": [
+              47.5,
+              102.0,
+              9.5
+            ],
+            "power": 5.0,
+            "fire": false,
+            "breaks": false
+          }
+        ],
+        "ok": true
+      },
+      "verify": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 36,
+              "kv_bytes": 10332
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "again": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 9792
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "ids": [
+        "8939263916348419568.0"
+      ],
+      "each_id_once": true
+    },
+    {
+      "point": "entities_written",
+      "folder": "/mnt/ssd120/sacer/so/f5/stirling-jy58l__7/point-entities_written",
+      "ok": true,
+      "act_checks": {
+        "setup:the_gear_breaks": {
+          "ok": true,
+          "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":227,\"has_cog\":false,\"overspeed\":0}}}'"
+        },
+        "setup:no_block_broken": {
+          "ok": true,
+          "actual": []
+        }
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "act": {
+        "blasts": [
+          {
+            "id": "12314445349914016932.0",
+            "at": [
+              47.5,
+              102.0,
+              9.5
+            ],
+            "power": 5.0,
+            "fire": false,
+            "breaks": false
+          }
+        ],
+        "ok": true
+      },
+      "verify": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 35,
+              "kv_bytes": 10045
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "again": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 9792
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "ids": [
+        "12314445349914016932.0"
+      ],
+      "each_id_once": true
+    },
+    {
+      "point": "world_saved",
+      "folder": "/mnt/ssd120/sacer/so/f5/stirling-jy58l__7/point-world_saved",
+      "ok": true,
+      "act_checks": {
+        "setup:the_gear_breaks": {
+          "ok": true,
+          "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"rev\":1,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":230,\"has_cog\":false,\"overspeed\":0}}}'"
+        },
+        "setup:no_block_broken": {
+          "ok": true,
+          "actual": []
+        }
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "act": {
+        "blasts": [
+          {
+            "id": "4132862076046590081.0",
+            "at": [
+              47.5,
+              102.0,
+              9.5
+            ],
+            "power": 5.0,
+            "fire": false,
+            "breaks": false
+          }
+        ],
+        "ok": true
+      },
+      "verify": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 35,
+              "kv_bytes": 10701
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "again": {
+        "blasts": 0,
+        "expected": 0,
+        "owed_at_start": 0,
+        "failed_here": false,
+        "area_unchanged": true,
+        "checks": {
+          "setup:a_lost_gear_never_comes_back": {
+            "ok": true,
+            "actual": [
+              false,
+              false
+            ]
+          },
+          "setup:no_block_broken_on_reopen": {
+            "ok": true,
+            "actual": "area changed"
+          },
+          "setup:nothing_left_owed": {
+            "ok": true,
+            "actual": {
+              "chunks": 0,
+              "applied": 0,
+              "pending": 0,
+              "obligations": 0,
+              "migrated": 0,
+              "kv_items": 0,
+              "kv_writes": 34,
+              "kv_bytes": 10404
+            }
+          }
+        },
+        "ok": true,
+        "blast_list": []
+      },
+      "ids": [
+        "4132862076046590081.0"
+      ],
+      "each_id_once": true
+    }
+  ],
+  "prepare": {
+    "setup:cold_engine_with_its_gear": {
+      "ok": true,
+      "actual": "47, 101, 9 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_stirling\",\"facing\":\"north\",\"data\":{\"k\":\"SolarStirling\",\"Stirling\":{\"shape\":\"Iron\",\"power\":0,\"has_cog\":true,\"overspeed\":0}}}'"
+    }
+  }
+}

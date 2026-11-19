@@ -1,0 +1,13 @@
+--- ../test-game/disk_count.py	2026-11-11 18:42:16.197509723 -0300
++++ disk_count.py	2026-11-16 13:23:46.793585258 -0300
+@@ -94,6 +94,10 @@
+         items = sum(_stack(s, prefixes) for s in be.get('Items', []) or [])
+         model = _model(be['ntm'], prefixes) if isinstance(be.get('ntm'), str) else 0
+         total += max(model, items)
++    # Pending ledger outputs are atoms held by this region record, like container stock.
++    owed = {}
++    _owed_items(_ledger(chunk), prefixes, owed)
++    total += sum(owed.values())
+     return total
+ 
+ 

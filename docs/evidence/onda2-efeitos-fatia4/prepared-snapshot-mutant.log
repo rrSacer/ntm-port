@@ -1,0 +1,23 @@
+2026-11-12T22:22:03.251Z === started (pid 3290124, agent cca6526f-e0b2-4414-9309-95c124eab3be, shell: /bin/sh)
+2026-11-12T22:23:46.612Z |
+2026-11-12T22:23:46.612Z | running 1 test
+2026-11-12T22:23:46.612Z | test save::tests::required_source_prepared_snapshot_consumes_marker_but_generation_does_not ... FAILED
+2026-11-12T22:23:46.612Z |
+2026-11-12T22:23:46.612Z | failures:
+2026-11-12T22:23:46.612Z |
+2026-11-12T22:23:46.612Z | failures:
+2026-11-12T22:23:46.612Z |     save::tests::required_source_prepared_snapshot_consumes_marker_but_generation_does_not
+2026-11-12T22:23:46.612Z |
+2026-11-12T22:23:46.612Z | test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2576 filtered out; finished in 0.58s
+2026-11-12T22:23:46.612Z |
+2026-11-12T22:23:46.612Z |    Compiling horizon-client-lib v0.1.0 (/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-writer-barrier/engine/crates/horizon-client-lib)
+2026-11-12T22:23:46.612Z |     Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 42s
+2026-11-12T22:23:46.612Z |      Running unittests ../horizon-client/src/client_lib.rs (/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-writer-barrier/target/debug/deps/horizon_client_lib-e83e71da72197c3e)
+2026-11-12T22:23:46.612Z |
+2026-11-12T22:23:46.612Z | thread 'save::tests::required_source_prepared_snapshot_consumes_marker_but_generation_does_not' (3292142) panicked at crates/horizon-client-lib/../horizon-client/src/save.rs:6908:9:
+2026-11-12T22:23:46.612Z | assertion failed: !save.required_chunks.lock().unwrap().contains(&(0, 0))
+2026-11-12T22:23:46.612Z | note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-11-12T22:23:46.612Z | error: test failed, to rerun pass `-p horizon-client-lib --lib`
+2026-11-12T22:23:46.612Z |
+2026-11-12T22:23:46.612Z | PreparedSnapshotUnprotected: morto por asserção
+2026-11-12T22:23:46.619Z === exited (code 0)

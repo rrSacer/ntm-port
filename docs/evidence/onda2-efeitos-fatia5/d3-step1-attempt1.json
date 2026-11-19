@@ -1,0 +1,88 @@
+{
+  "binary_sha256": "147928bb173bcbaf36a76fa328fb9636afd3ea08e843f18b6cbc623f299e1a30",
+  "bundle_sha256": "eebe930a4a39dacf367092946374fbeb2f536d9df732bda37bdc6216051bc23f",
+  "placed": [
+    "ntm d3 placed ntm:machine_sawmill at [47, 101, 8] no_blade=false item={count:1,id:\"ntm:machine_sawmill\"}",
+    "ntm d3 placed ntm:machine_sawmill at [55, 101, 8] no_blade=true item={components:{\"minecraft:custom_data\":{\"ntm:no_blade\":1b}},count:1,id:\"ntm:machine_sawmill\"}"
+  ],
+  "drops": [
+    "ntm d3 drops at [47, 101, 8] state=ntm:machine_sawmill[facing=north,honey_level=0] probe=Some(false) before=[\"{count:1,id:\\\"ntm:machine_sawmill\\\"}\"] after=[\"{count:1,id:\\\"ntm:machine_sawmill\\\"}\"]",
+    "ntm d3 drops at [55, 101, 8] state=ntm:machine_sawmill[facing=south,honey_level=0] probe=Some(true) before=[\"{count:1,id:\\\"ntm:machine_sawmill\\\"}\"] after=[\"{components:{\\\"minecraft:custom_data\\\":{\\\"ntm:no_blade\\\":1b}},count:1,id:\\\"ntm:machine_sawmill\\\"}\"]"
+  ],
+  "checks": {
+    "setup:plain_broken": {
+      "ok": true,
+      "actual": [
+        47,
+        101,
+        8
+      ]
+    },
+    "setup:plain_drops_one": {
+      "ok": true,
+      "actual": [
+        {
+          "count": 1,
+          "pos": [
+            48.11253298890643,
+            101.0,
+            8.603216171329288
+          ],
+          "no_blade": false,
+          "nbt": "Stirling Sawmill has the following entity data: {count: 1, id: \"ntm:machine_sawmill\"}"
+        }
+      ]
+    },
+    "setup:plain_drop_is_plain": {
+      "ok": true,
+      "actual": [
+        {
+          "count": 1,
+          "pos": [
+            48.11253298890643,
+            101.0,
+            8.603216171329288
+          ],
+          "no_blade": false,
+          "nbt": "Stirling Sawmill has the following entity data: {count: 1, id: \"ntm:machine_sawmill\"}"
+        }
+      ]
+    },
+    "setup:variant_broken": {
+      "ok": true,
+      "actual": [
+        55,
+        101,
+        8
+      ]
+    },
+    "setup:variant_drops_one": {
+      "ok": false,
+      "actual": [
+        {
+          "count": 1,
+          "pos": [
+            56.174483914399445,
+            101.0,
+            8.729914345735608
+          ],
+          "no_blade": true,
+          "nbt": "Stirling Sawmill has the following entity data: {components: {\"minecraft:custom_data\": {\"ntm:no_blade\": 1b}}, count: 1, id: \"ntm:machine_sawmill\"}"
+        },
+        {
+          "count": 1,
+          "pos": [
+            48.11380996763547,
+            101.0,
+            8.602942679927452
+          ],
+          "no_blade": false,
+          "nbt": "Stirling Sawmill has the following entity data: {count: 1, id: \"ntm:machine_sawmill\"}"
+        }
+      ]
+    }
+  },
+  "results": null,
+  "place_hook_reads_the_data": false,
+  "ok": false
+}

@@ -17,6 +17,7 @@ pub mod bomb;
 pub mod client_rad;
 pub mod coker;
 pub mod combustion;
+pub mod sawmill;
 pub mod solar_stirling;
 pub mod crafter;
 pub mod doors_security;

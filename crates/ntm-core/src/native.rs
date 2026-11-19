@@ -48,6 +48,10 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::radioisotopes::RTG {
         return Some(Container {slots:15,faces:std::array::from_fn(|_|(0..15).collect()),inputs:vec![],outputs:vec![],menu:Some("minecraft:generic_9x3")});
     }
+    if block == crate::sawmill::BLOCK {
+        // `getAccessibleSlotsFromSide`: the three slots from every side; no menu.
+        return Some(Container { slots: 3, faces: std::array::from_fn(|_| vec![0, 1, 2]), inputs: vec![0], outputs: vec![1, 2], menu: None });
+    }
     if block == crate::zirnox::BLOCK {
         let rods:Vec<_>=(0..24).collect();
         return Some(Container {slots:28,faces:std::array::from_fn(|_|rods.clone()),inputs:rods.clone(),outputs:rods,menu:Some("minecraft:generic_9x3")});
@@ -168,6 +172,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             (SlotAction::Extract,SlotOrigin::Automation) => crate::radioisotopes::can_extract(block,slot),
         };
     }
+    if block == crate::sawmill::BLOCK {
+        return crate::sawmill::allows(slots, slot, item, action);
+    }
     if let Some(allowed) = crate::welders::allows(block, slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual) {
         return allowed;
     }
@@ -255,6 +262,10 @@ pub fn block_slots(block: &str) -> Vec<SlotFilter> {
         let (co2,water)=(slots[24].quick_move.clone(),slots[25].quick_move.clone());
         slots.extend([SlotFilter {output:true,quick_move:co2,..Default::default()},SlotFilter {output:true,quick_move:water,..Default::default()}]);
         return slots;
+    }
+    if block == crate::sawmill::BLOCK {
+        // No machine file: the input, then the two outputs; what goes in is `slot_allows`'.
+        return vec![SlotFilter::default(), SlotFilter { output: true, ..Default::default() }, SlotFilter { output: true, ..Default::default() }];
     }
     if block == "ntm:pile_device__loader" { return vec![SlotFilter { accept: Some(crate::pile::ROD_NAMES.iter().map(|n| format!("ntm:pile_rod__{n}")).collect()), max: Some(1), ..Default::default() }]; }
     machine_files().get(block).map(|v| file_slots(v.to_string().as_bytes())).unwrap_or_default()

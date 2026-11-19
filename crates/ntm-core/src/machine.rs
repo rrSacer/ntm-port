@@ -84,6 +84,8 @@ pub enum Kind {
     Combustion,
     /// Solar boilers, mirrors and Stirling engines (energy batch 4).
     SolarStirling,
+    /// The sawmill (`crate::sawmill`, D3 of Onda 2).
+    Sawmill,
     Pile,
     Zirnox,
     Radioisotope,
@@ -120,12 +122,34 @@ pub enum Effect {
     Toast(String),
 }
 
+/// Outputs drained after `Logic::tick`, relative to the core in [right, up, forward] axes.
+/// Forward follows the machine's facing (north when absent). Explosions start at [x+0.5,y,z+0.5],
+/// drops at the core cell: [0,1,0] explodes at the Java y+1, without a hidden extra half block.
+#[derive(Clone, Debug, PartialEq)]
+pub enum MachineEffect {
+    Explode {
+        offset: [f64; 3],
+        power: f32,
+        fire: bool,
+        breaks: bool,
+    },
+    Drop {
+        offset: crate::Pos,
+        item: String,
+        count: u32,
+    },
+}
+
 /// What every machine kind implements.
 pub trait Logic {
     /// Once per tick while its chunk is loaded, before the networks move
     /// energy: whether its state changed (the world then needs a save).
     fn tick(&mut self) -> bool {
         false
+    }
+    /// Drains outputs of the last tick. The speculative copy owns them until its model commit is accepted.
+    fn world_effects(&mut self) -> Vec<MachineEffect> {
+        Vec::new()
     }
     fn energy(&mut self) -> Option<&mut dyn EnergyNode> {
         None
@@ -199,6 +223,7 @@ pub enum Data {
     Steam(Box<crate::steam::Steam>),
     Combustion(Box<crate::combustion::Combustion>),
     SolarStirling(Box<crate::solar_stirling::SolarStirling>),
+    Sawmill(crate::sawmill::Sawmill),
     Pile(Box<crate::pile::Pile>),
     Zirnox(Box<crate::zirnox::Zirnox>),
     Radioisotope(Box<crate::radioisotopes::Radioisotope>),
@@ -287,6 +312,7 @@ impl Machine {
             Kind::Rbmk => Data::Rbmk(Box::new(crate::rbmk::persist::RbmkColumn::of(block_id))),
             Kind::Pile => Data::Pile(Box::new(crate::pile::Pile::of(block_id).expect("pile block"))),
             Kind::SolarStirling => Data::SolarStirling(Box::new(crate::solar_stirling::SolarStirling::of(block_id).expect("solar/stirling block"))),
+            Kind::Sawmill => Data::Sawmill(crate::sawmill::Sawmill::default()),
             Kind::Combustion => match crate::combustion::Combustion::of(block_id) {
                 Some(c) => Data::Combustion(Box::new(c)),
                 None => Data::Inert { name: block_id.into() },
@@ -389,6 +415,7 @@ impl Machine {
             Data::Radioisotope(_) => Kind::Radioisotope,
             Data::Pile(_) => Kind::Pile,
             Data::SolarStirling(_) => Kind::SolarStirling,
+            Data::Sawmill(_) => Kind::Sawmill,
             Data::BrickFurnace(_) => Kind::BrickFurnace,
             Data::Furnace(_) => Kind::Furnace,
             Data::Welder(_) => Kind::Welder,
@@ -438,6 +465,7 @@ impl Machine {
             Data::Radioisotope(m) => &**m,
             Data::Pile(m) => &**m,
             Data::SolarStirling(m) => &**m,
+            Data::Sawmill(m) => m,
             Data::BrickFurnace(m) => m,
             Data::Furnace(m) => &**m,
             Data::Welder(m) => &**m,
@@ -487,6 +515,7 @@ impl Machine {
             Data::Radioisotope(m) => &mut **m,
             Data::Pile(m) => &mut **m,
             Data::SolarStirling(m) => &mut **m,
+            Data::Sawmill(m) => m,
             Data::BrickFurnace(m) => m,
             Data::Furnace(m) => &mut **m,
             Data::Welder(m) => &mut **m,
@@ -497,6 +526,37 @@ impl Machine {
 }
 
 impl Logic for String {
+    // Synthetic test consumer only; release builds retain the inert String logic unchanged.
+    #[cfg(test)]
+    fn tick(&mut self) -> bool {
+        if self.as_str() == "__effect_probe_armed" {
+            *self = "__effect_probe_pending".into();
+            true
+        } else {
+            false
+        }
+    }
+    #[cfg(test)]
+    fn world_effects(&mut self) -> Vec<MachineEffect> {
+        if self.as_str() != "__effect_probe_pending" {
+            return vec![];
+        }
+        *self = "__effect_probe_spent".into();
+        vec![
+            MachineEffect::Explode {
+                offset: [0., 1., 0.],
+                power: 5.,
+                fire: false,
+                breaks: false,
+            },
+            MachineEffect::Drop {
+                offset: [1, 1, 0],
+                item: "ntm:sawblade".into(),
+                count: 1,
+            },
+        ]
+    }
+
     fn level(&self, _max: u8) -> u8 {
         0
     }

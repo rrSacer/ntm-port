@@ -217,6 +217,8 @@ def emission_verdict(outcome, control, expected, control_expected, exact=False):
     verdict['storage_clean'] = all(o.get(k) == 0 for o in (outcome, control) for k in KV_ITEMS)
     control_first = total(control, 'first_reopen')
     verdict['same_cut'] = outcome['point'] in ('none', *KILLS) or (cut(outcome) is not None and cut(outcome) == cut(control))
+    # `none` and the kills cut no save: their `same_cut` is true by definition, no evidence of a matched boundary.
+    verdict['same_cut_by_definition'] = outcome['point'] in ('none', *KILLS)
     compare(verdict, outcome, control)
     verdict['criterion'], verdict['criterion_reason'] = criterion(outcome['point'], outcome, control)
     verdict['proof'] = verdict['criterion'] != 'L/D'

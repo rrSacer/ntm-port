@@ -23,6 +23,9 @@ pub trait ServerHost: Kv {
 
     fn block_resistance(&mut self,dim:&str,p:Pos)->Option<f32> {self.get_block(dim,p).map(|b|crate::blast::vanilla::resistance(&b).max(0.))}
 
+    /// Native explosion with explicit Java strength/fire/block flags. Refusal publishes nothing; the ledger retries.
+    fn explode(&mut self, _dim: &str, _at: [f64; 3], _power: f32, _fire: bool, _breaks: bool) -> bool { false }
+
     /// Native explosion (power 12, fire and block destruction) in its own level.
     fn zirnox_explode(&mut self, _dim: &str, _at: [f64;3]) -> bool { false }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String>;
@@ -193,6 +196,9 @@ pub trait ServerHost: Kv {
     fn commit_player_transfer(&mut self, _transfer: &PlayerTransfer, _commits: &[MachineCommit]) -> bool {
         false
     }
+    /// D3: the sawmill at `pos` lost its blade (`without`) or has it back, in the model now: a host that answers the
+    /// drops it hears while the server is busy from a copy updates it at once, not after the tick (the review's P2-1).
+    fn sawmill_blade(&mut self, _dim: &str, _pos: Pos, _without: bool) {}
 }
 
 /// A stack a player holds: what the logic reads of it, and the whole stack (SNBT, every component) the host compares
@@ -201,6 +207,9 @@ pub trait ServerHost: Kv {
 pub struct HeldStack {
     pub stack: container_bridge::Stack,
     pub encoded: String,
+    /// Whether it has no component but those `stack` keeps (its damage and custom data): only then does a stack given
+    /// to the player pile onto it (`ItemStack.areItemStackTagsEqual`, the whole NBT).
+    pub plain: bool,
 }
 
 /// Where a player's stack is: an inventory slot (the engine's index, the hotbar first), the off hand or the cursor.
@@ -241,6 +250,38 @@ impl PlayerSlots {
         let left = held.stack.count.checked_sub(n)?;
         let desired = (left > 0).then(|| container_bridge::Stack { count: left, ..held.stack.clone() });
         Some(SlotEdit { slot, expected: Some(held.encoded.clone()), desired })
+    }
+    /// `InventoryPlayer.addItemStackToInventory` (1.7.10) of each stack in turn: into a stack of the same item, damage
+    /// and data, no other component, that is not full (`storeItemStack`), else the first empty slot (`getFirstEmptyStack`), the hotbar
+    /// first, `max` to a stack. The edits, one per slot touched, and what did not fit.
+    pub fn give(&self, stacks: &[container_bridge::Stack], max: u32) -> (Vec<SlotEdit>, Vec<container_bridge::Stack>) {
+        let mut now: Vec<Option<container_bridge::Stack>> = self.inventory.iter().map(|s| s.as_ref().map(|h| h.stack.clone())).collect();
+        let mut touched = BTreeSet::new();
+        let mut left = Vec::new();
+        for stack in stacks {
+            let mut n = stack.count;
+            while n > 0 {
+                let same = now.iter().position(|s| {
+                    s.as_ref().is_some_and(|s| s.id == stack.id && s.damage == stack.damage && s.custom == stack.custom && s.count < max)
+                });
+                // A stack with other components (a name, enchantments) is not the same stack: never piled onto.
+                let same = same.filter(|&i| self.inventory[i].as_ref().is_none_or(|h| h.plain));
+                let Some(i) = same.or_else(|| now.iter().position(Option::is_none)) else { break };
+                let into = now[i].get_or_insert_with(|| container_bridge::Stack { count: 0, ..stack.clone() });
+                let put = n.min(max - into.count);
+                into.count += put;
+                n -= put;
+                touched.insert(i);
+            }
+            if n > 0 {
+                left.push(container_bridge::Stack { count: n, ..stack.clone() });
+            }
+        }
+        let edits = touched
+            .into_iter()
+            .map(|i| SlotEdit { slot: PlayerSlot::Inventory(i), expected: self.inventory[i].as_ref().map(|h| h.encoded.clone()), desired: now[i].clone() })
+            .collect();
+        (edits, left)
     }
 }
 
@@ -416,6 +457,14 @@ struct Ready {
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
     /// place, taken by their reactor's next accepted step.
     rbmk_ejects: BTreeMap<Key, [f64; 3]>,
+    /// Test hooks only (`Server::native_test_drop`): fuel channels asked to put their rod out as an `Items` effect at a
+    /// cell, taken by their reactor's next accepted step.
+    rbmk_drops: BTreeMap<Key, Pos>,
+    /// D3: cells a sawmill item without its blade was placed at (`native_sawmill_placed`), each bound to the generation
+    /// of the block change that follows it there (None until that change comes) and taken by the machine the `Placed`
+    /// event of that generation creates: a placement the engine undid in the same tick never lends its word to the
+    /// next. Not saved: a save takes the block changes before it captures the chunks.
+    sawmills_without_blade: BTreeMap<Key, Option<u64>>,
     /// The stamps of the world's state as last kept ([`crate::persist::WorldState::stamps`]); None: write it next time.
     kept_rev: Option<[u64; 10]>,
     /// The stamp of the RBMK layers as last kept (`persist::RBMK_KEY`); None: write them next time.
@@ -742,6 +791,7 @@ fn same_look(actual: &str, want: &str) -> bool {
 mod bomb_server;
 mod excavator_server;
 mod oil_server;
+mod sawmill_server;
 mod solar_server;
 pub mod container_bridge;
 mod fluid_server;
@@ -760,6 +810,7 @@ pub use pile_server::PileUse;
 mod zirnox_server;
 mod rbmk_server;
 mod transaction;
+mod machine_effects;
 pub mod obligations;
 mod generation;
 pub use generation::CellGuard;
@@ -767,3 +818,6 @@ pub use transaction::{CommittedEffects,EntitySpawn,Survivor,WorldEffect,Prepared
 
 #[cfg(test)]
 mod generation_tests;
+
+#[cfg(test)]
+mod machine_effects_tests;

@@ -1,0 +1,2648 @@
+{
+  "ok": true,
+  "scenario": "overspeed",
+  "binary": "/mnt/ssd120/sacer/horizon-ntm/.agent-tmp/onda2-efeitos/proof-bin-saw/horizon-client",
+  "binary_sha256": "d0af28543c3c11887e063884e5440b41f1b878e1e8228356a447e761fe4dfde0",
+  "bundle_sha256": "eebe930a4a39dacf367092946374fbeb2f536d9df732bda37bdc6216051bc23f",
+  "points": [
+    {
+      "point": "none",
+      "folder": "/mnt/ssd120/sacer/so/sawcut/sawmill-overspeed-xrn0cnvy/point-none",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "ntm:sawblade": 1
+      },
+      "after_act": {
+        "blades": 1,
+        "inventory": {},
+        "ground": {
+          "ntm:sawblade": 1
+        },
+        "machines": [
+          {
+            "core": [
+              47,
+              101,
+              8
+            ],
+            "has_blade": false,
+            "slots": []
+          }
+        ],
+        "total": 1
+      },
+      "died_in_act": false,
+      "exit": "survived",
+      "disk": {
+        "entities": 1,
+        "blocks": 0,
+        "machines": 0,
+        "owed": 0,
+        "player": 0,
+        "total": 1
+      },
+      "items": {
+        "ntm:sawblade": 1
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            1,
+            0
+          ]
+        ],
+        "entities": [
+          [
+            2,
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "first_reopen": {
+        "blades": 1,
+        "inventory": {},
+        "ground": {
+          "ntm:sawblade": 1
+        },
+        "machines": [
+          {
+            "core": [
+              47,
+              101,
+              8
+            ],
+            "has_blade": false,
+            "slots": []
+          }
+        ],
+        "total": 1
+      },
+      "checks": {
+        "verify": {
+          "setup:no_more_than_twice": {
+            "ok": true,
+            "actual": {
+              "blades": 1,
+              "inventory": {},
+              "ground": {
+                "ntm:sawblade": 1
+              },
+              "machines": [
+                {
+                  "core": [
+                    47,
+                    101,
+                    8
+                  ],
+                  "has_blade": false,
+                  "slots": []
+                }
+              ],
+              "total": 1
+            }
+          }
+        },
+        "again": {
+          "setup:no_more_than_twice": {
+            "ok": true,
+            "actual": {
+              "blades": 1,
+              "inventory": {},
+              "ground": {
+                "ntm:sawblade": 1
+              },
+              "machines": [
+                {
+                  "core": [
+                    47,
+                    101,
+                    8
+                  ],
+                  "has_blade": false,
+                  "slots": []
+                }
+              ],
+              "total": 1
+            }
+          }
+        }
+      },
+      "items_after": {
+        "ntm:sawblade": 1
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "blades": 1,
+        "inventory": {},
+        "ground": {
+          "ntm:sawblade": 1
+        },
+        "machines": [
+          {
+            "core": [
+              47,
+              101,
+              8
+            ],
+            "has_blade": false,
+            "slots": []
+          }
+        ],
+        "total": 1
+      },
+      "items_again": {
+        "ntm:sawblade": 1
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "none",
+        "folder": "/mnt/ssd120/sacer/so/sawcut/sawmill-overspeed-xrn0cnvy/point-none-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "ntm:sawblade": 1
+        },
+        "after_act": {
+          "blades": 1,
+          "inventory": {},
+          "ground": {
+            "ntm:sawblade": 1
+          },
+          "machines": [],
+          "total": 1
+        },
+        "died_in_act": false,
+        "exit": "survived",
+        "disk": {
+          "entities": 1,
+          "blocks": 0,
+          "machines": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 1
+        },
+        "items": {
+          "ntm:sawblade": 1
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              1,
+              0
+            ]
+          ],
+          "entities": [
+            [
+              2,
+              0,
+              0,
+              1
+            ]
+          ]
+        },
+        "first_reopen": {
+          "blades": 1,
+          "inventory": {},
+          "ground": {
+            "ntm:sawblade": 1
+          },
+          "machines": [],
+          "total": 1
+        },
+        "checks": {
+          "verify": {
+            "setup:no_more_than_twice": {
+              "ok": true,
+              "actual": {
+                "blades": 1,
+                "inventory": {},
+                "ground": {
+                  "ntm:sawblade": 1
+                },
+                "machines": [],
+                "total": 1
+              }
+            }
+          },
+          "again": {
+            "setup:no_more_than_twice": {
+              "ok": true,
+              "actual": {
+                "blades": 1,
+                "inventory": {},
+                "ground": {
+                  "ntm:sawblade": 1
+                },
+                "machines": [],
+                "total": 1
+              }
+            }
+          }
+        },
+        "items_after": {
+          "ntm:sawblade": 1
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "blades": 1,
+          "inventory": {},
+          "ground": {
+            "ntm:sawblade": 1
+          },
+          "machines": [],
+          "total": 1
+        },
+        "items_again": {
+          "ntm:sawblade": 1
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 1,
+        "first": 1,
+        "second": 1,
+        "expected": 1,
+        "control_expected": 1,
+        "control_disk": 1,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "compared_with": "none",
+        "control_first": 1,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "ntm:sawblade": 1
+          },
+          "control_base": {
+            "ntm:sawblade": 1
+          },
+          "items_after": {
+            "mine": {
+              "ntm:sawblade": 1
+            },
+            "control": {
+              "ntm:sawblade": 1
+            }
+          },
+          "items_again": {
+            "mine": {
+              "ntm:sawblade": 1
+            },
+            "control": {
+              "ntm:sawblade": 1
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    }
+  ],
+  "prepare": {
+    "ntm": {
+      "scenario": "sawmill-cut-prepare",
+      "ok": false,
+      "steps": [
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 0,
+            "creative": false,
+            "day_time": 1000,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.0,
+            "frames": 0,
+            "generated_chunks": 0,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 0,
+            "mobs": 0,
+            "music": null,
+            "name_tags": null,
+            "objects": [],
+            "offhand": null,
+            "particles": {},
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": null,
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 0,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 0,
+              "driver": "4.6 (Core Profile) Mesa 26.2.7-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.4, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 0,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                0,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 0,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 0,
+              "food": 20,
+              "game_mode": 0,
+              "health": 20.0,
+              "joined": false,
+              "loaded": false,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": false,
+              "player_positions": [],
+              "players": [],
+              "status": "Connecting to the server...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": null,
+            "ticks": 0,
+            "tridents": 0,
+            "uptime_seconds": 3.016759475,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 0,
+            "creative": false,
+            "day_time": 1010,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.28756487369537354,
+            "frames": 1,
+            "generated_chunks": 0,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 0,
+            "mobs": 0,
+            "music": null,
+            "name_tags": null,
+            "objects": [],
+            "offhand": null,
+            "particles": {},
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": null,
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 0,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 0,
+              "driver": "4.6 (Core Profile) Mesa 26.2.7-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.4, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 0,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                0,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 0,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 0,
+              "food": 20,
+              "game_mode": 0,
+              "health": 20.0,
+              "joined": false,
+              "loaded": false,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": false,
+              "player_positions": [],
+              "players": [],
+              "status": "Joining world...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": null,
+            "ticks": 10,
+            "tridents": 0,
+            "uptime_seconds": 3.477545064,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 49,
+            "creative": true,
+            "day_time": 16,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.28756487369537354,
+            "frames": 9,
+            "generated_chunks": 49,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 601,
+            "mobs": 0,
+            "music": null,
+            "name_tags": [],
+            "objects": [],
+            "offhand": null,
+            "particles": {
+              "tinted_leaves": 1
+            },
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": {
+              "food": 20,
+              "health": 20.0,
+              "max_health": null,
+              "on_ground": true,
+              "position": [
+                10.5,
+                73.0,
+                0.5
+              ],
+              "velocity": [
+                0.0,
+                -0.0784000015258789,
+                0.0
+              ]
+            },
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 25165824,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 19,
+              "driver": "4.6 (Core Profile) Mesa 26.2.7-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.4, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 66,
+              "section_draw_calls": 2,
+              "section_draws": 32,
+              "section_vertex_bytes": 3053568,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 3113568,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                3053568,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 49,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 1,
+              "food": 20,
+              "game_mode": 1,
+              "health": 20.0,
+              "joined": true,
+              "loaded": true,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": true,
+              "player_positions": [],
+              "players": [
+                "CrashTest"
+              ],
+              "status": "Loading terrain...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": {
+              "block": "minecraft:short_grass",
+              "pos": [
+                10,
+                74,
+                3
+              ]
+            },
+            "ticks": 25,
+            "tridents": 0,
+            "uptime_seconds": 3.842016626,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "close",
+          "result": {
+            "ok": true
+          }
+        },
+        {
+          "command": "command gamemode creative @s",
+          "result": {
+            "chat": [],
+            "ok": true
+          }
+        },
+        {
+          "command": "close",
+          "result": {
+            "ok": true
+          }
+        },
+        {
+          "command": "command forceload add 30 0 64 16",
+          "result": {
+            "chat": [
+              "Marked 8 chunks in minecraft:overworld from [1, 0] to [4, 1] to be force loaded"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command fill 30 101 0 64 107 16 minecraft:air",
+          "result": {
+            "chat": [
+              "No blocks were filled"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command fill 30 100 0 64 100 16 minecraft:stone",
+          "result": {
+            "chat": [
+              "Successfully filled 595 block(s)"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 40 101 8 minecraft:chest",
+          "result": {
+            "chat": [
+              "Changed the block at 40, 101, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command gamemode creative @s",
+          "result": {
+            "chat": [],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command give @s ntm:machine_sawmill 1",
+          "result": {
+            "chat": [
+              "Gave 1 [Stirling Sawmill] to CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command tp @s 47.5 101 11.5",
+          "result": {
+            "chat": [
+              "Teleported CrashTest to 47.500000, 101.000000, 11.500000"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "place 47 101 8 --item ntm:machine_sawmill",
+          "result": {
+            "block": {
+              "block": "ntm:machine_sawmill",
+              "loaded": true,
+              "pos": [
+                47,
+                101,
+                8
+              ],
+              "state": "ntm:machine_sawmill[facing=south,honey_level=0]"
+            },
+            "block_before": "minecraft:air",
+            "changed": true,
+            "inventory_change": {},
+            "ok": true,
+            "screen": "playing"
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "Removed 1 item(s) from player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "block 44 101 5",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              44,
+              101,
+              5
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 44 101 6",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              44,
+              101,
+              6
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 44 101 7",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              44,
+              101,
+              7
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 44 101 8",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              44,
+              101,
+              8
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 44 101 9",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              44,
+              101,
+              9
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 44 101 10",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              44,
+              101,
+              10
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 44 101 11",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              44,
+              101,
+              11
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 45 101 5",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              45,
+              101,
+              5
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 45 101 6",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              45,
+              101,
+              6
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 45 101 7",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              45,
+              101,
+              7
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 45 101 8",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              45,
+              101,
+              8
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 45 101 9",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              45,
+              101,
+              9
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 45 101 10",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              45,
+              101,
+              10
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 45 101 11",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              45,
+              101,
+              11
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 46 101 5",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              46,
+              101,
+              5
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 46 101 6",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              46,
+              101,
+              6
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 46 101 7",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              46,
+              101,
+              7
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 46 101 8",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              46,
+              101,
+              8
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 46 101 9",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              46,
+              101,
+              9
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 46 101 10",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              46,
+              101,
+              10
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 46 101 11",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              46,
+              101,
+              11
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 47 101 5",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              47,
+              101,
+              5
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 47 101 6",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              47,
+              101,
+              6
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 47 101 7",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              47,
+              101,
+              7
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "block 47 101 8",
+          "result": {
+            "block": "ntm:machine_sawmill",
+            "loaded": true,
+            "pos": [
+              47,
+              101,
+              8
+            ],
+            "state": "ntm:machine_sawmill[facing=north,honey_level=0]"
+          }
+        },
+        {
+          "command": "command setblock 47 100 8 ntm:heater_firebox[facing=south,honey_level=0]",
+          "result": {
+            "chat": [
+              "Changed the block at 47, 100, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 48 100 8 minecraft:hopper[facing=west]",
+          "result": {
+            "chat": [
+              "Changed the block at 48, 100, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command kill @e[type=minecraft:item]",
+          "result": {
+            "chat": [
+              "No entity was found"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command tp @s 47.5 101 12.5",
+          "result": {
+            "chat": [
+              "Teleported CrashTest to 47.500000, 101.000000, 12.500000"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get entity @s Inventory",
+          "result": {
+            "chat": [
+              "CrashTest has the following entity data: []"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "entities 60",
+          "result": {
+            "entities": [],
+            "loaded_chunks": 49,
+            "radius": 60.0,
+            "tracked": {
+              "items": 0,
+              "mobs": 0,
+              "orbs": 0
+            },
+            "type": null
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 Items",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: []"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "block 47 101 8",
+          "result": {
+            "block": "ntm:machine_sawmill",
+            "loaded": true,
+            "pos": [
+              47,
+              101,
+              8
+            ],
+            "state": "ntm:machine_sawmill[facing=north,honey_level=0]"
+          }
+        },
+        {
+          "command": "command data get block 47 101 8 ntm",
+          "result": {
+            "chat": [
+              "47, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_sawmill\",\"facing\":\"north\",\"data\":{\"k\":\"Sawmill\",\"has_blade\":true,\"progress\":0,\"slots\":[null,null,null],\"done\":0}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 47 101 8 ntm",
+          "result": {
+            "chat": [
+              "47, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_sawmill\",\"facing\":\"north\",\"data\":{\"k\":\"Sawmill\",\"has_blade\":true,\"progress\":0,\"slots\":[null,null,null],\"done\":0}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 47 101 8 ntm",
+          "result": {
+            "chat": [
+              "47, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_sawmill\",\"facing\":\"north\",\"data\":{\"k\":\"Sawmill\",\"has_blade\":true,\"progress\":0,\"slots\":[null,null,null],\"done\":0}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "block 55 101 8",
+          "result": {
+            "block": "minecraft:air",
+            "loaded": true,
+            "pos": [
+              55,
+              101,
+              8
+            ],
+            "state": "minecraft:air"
+          }
+        },
+        {
+          "command": "save",
+          "result": {
+            "ok": true
+          }
+        }
+      ],
+      "checks": {
+        "setup:core_where_planned": {
+          "ok": true,
+          "actual": [
+            47,
+            101,
+            8
+          ]
+        }
+      },
+      "base": {
+        "blades": 1,
+        "inventory": {},
+        "ground": {},
+        "machines": [
+          {
+            "core": [
+              47,
+              101,
+              8
+            ],
+            "has_blade": true,
+            "slots": []
+          }
+        ],
+        "total": 1
+      }
+    },
+    "vanilla": {
+      "scenario": "sawmill-cut-prepare",
+      "ok": false,
+      "steps": [
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 0,
+            "creative": false,
+            "day_time": 1000,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.0,
+            "frames": 0,
+            "generated_chunks": 0,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 0,
+            "mobs": 0,
+            "music": null,
+            "name_tags": null,
+            "objects": [],
+            "offhand": null,
+            "particles": {},
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": null,
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 0,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 0,
+              "driver": "4.6 (Core Profile) Mesa 26.2.7-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.4, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 0,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                0,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 0,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 0,
+              "food": 20,
+              "game_mode": 0,
+              "health": 20.0,
+              "joined": false,
+              "loaded": false,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": false,
+              "player_positions": [],
+              "players": [],
+              "status": "Connecting to the server...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": null,
+            "ticks": 0,
+            "tridents": 0,
+            "uptime_seconds": 13.905439566,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 0,
+            "creative": false,
+            "day_time": 1010,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.06815916299819946,
+            "frames": 1,
+            "generated_chunks": 0,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 0,
+            "mobs": 0,
+            "music": null,
+            "name_tags": null,
+            "objects": [],
+            "offhand": null,
+            "particles": {},
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": null,
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 0,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 0,
+              "driver": "4.6 (Core Profile) Mesa 26.2.7-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.4, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 0,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                0,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 0,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 0,
+              "food": 20,
+              "game_mode": 0,
+              "health": 20.0,
+              "joined": false,
+              "loaded": false,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": false,
+              "player_positions": [],
+              "players": [],
+              "status": "Joining world...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": null,
+            "ticks": 10,
+            "tridents": 0,
+            "uptime_seconds": 14.671631379,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 49,
+            "creative": true,
+            "day_time": 21,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.06815916299819946,
+            "frames": 7,
+            "generated_chunks": 49,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 600,
+            "mobs": 0,
+            "music": null,
+            "name_tags": [],
+            "objects": [],
+            "offhand": null,
+            "particles": {
+              "underwater": 43
+            },
+            "pending_chunks": 594,
+            "pending_uploads": 594,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": {
+              "food": 20,
+              "health": 20.0,
+              "max_health": null,
+              "on_ground": true,
+              "position": [
+                -9.5,
+                64.0,
+                0.5
+              ],
+              "velocity": [
+                0.0,
+                -0.0784000015258789,
+                0.0
+              ]
+            },
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 25165824,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 5,
+              "driver": "4.6 (Core Profile) Mesa 26.2.7-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.4, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 5,
+              "section_draw_calls": 2,
+              "section_draws": 9,
+              "section_vertex_bytes": 423360,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 423360,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                423360,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 49,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 1,
+              "food": 20,
+              "game_mode": 1,
+              "health": 20.0,
+              "joined": true,
+              "loaded": true,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": true,
+              "player_positions": [],
+              "players": [
+                "CrashTest"
+              ],
+              "status": "Loading terrain...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": {
+              "block": "minecraft:short_grass",
+              "pos": [
+                -10,
+                65,
+                3
+              ]
+            },
+            "ticks": 25,
+            "tridents": 0,
+            "uptime_seconds": 14.987764063,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 49,
+            "creative": true,
+            "day_time": 32,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.06815916299819946,
+            "frames": 18,
+            "generated_chunks": 49,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 600,
+            "mobs": 0,
+            "music": null,
+            "name_tags": [],
+            "objects": [],
+            "offhand": null,
+            "particles": {
+              "underwater": 85
+            },
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": {
+              "food": 20,
+              "health": 20.0,
+              "max_health": null,
+              "on_ground": true,
+              "position": [
+                -9.5,
+                64.0,
+                0.5
+              ],
+              "velocity": [
+                0.0,
+                -0.0784000015258789,
+                0.0
+              ]
+            },
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 25165824,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 20,
+              "driver": "4.6 (Core Profile) Mesa 26.2.7-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.4, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 63,
+              "section_draw_calls": 2,
+              "section_draws": 36,
+              "section_vertex_bytes": 3041376,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 3041376,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                3041376,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 49,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 1,
+              "food": 20,
+              "game_mode": 1,
+              "health": 20.0,
+              "joined": true,
+              "loaded": true,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": true,
+              "player_positions": [],
+              "players": [
+                "CrashTest"
+              ],
+              "status": "Loading terrain...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": {
+              "block": "minecraft:short_grass",
+              "pos": [
+                -10,
+                65,
+                3
+              ]
+            },
+            "ticks": 36,
+            "tridents": 0,
+            "uptime_seconds": 15.509440134,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "close",
+          "result": {
+            "ok": true
+          }
+        },
+        {
+          "command": "command gamemode creative @s",
+          "result": {
+            "chat": [],
+            "ok": true
+          }
+        },
+        {
+          "command": "close",
+          "result": {
+            "ok": true
+          }
+        },
+        {
+          "command": "command forceload add 30 0 64 16",
+          "result": {
+            "chat": [
+              "Marked 8 chunks in minecraft:overworld from [1, 0] to [4, 1] to be force loaded"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command fill 30 101 0 64 107 16 minecraft:air",
+          "result": {
+            "chat": [
+              "No blocks were filled"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command fill 30 100 0 64 100 16 minecraft:stone",
+          "result": {
+            "chat": [
+              "Successfully filled 595 block(s)"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 40 101 8 minecraft:chest",
+          "result": {
+            "chat": [
+              "Changed the block at 40, 101, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 47 101 8 minecraft:barrel",
+          "result": {
+            "chat": [
+              "Changed the block at 47, 101, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command item replace block 47 101 8 container.0 with ntm:sawblade 1",
+          "result": {
+            "chat": [
+              "Replaced 1 slot(s) at 47, 101, 8 with [Sawblade]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command kill @e[type=minecraft:item]",
+          "result": {
+            "chat": [
+              "No entity was found"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command tp @s 47.5 101 12.5",
+          "result": {
+            "chat": [
+              "Teleported CrashTest to 47.500000, 101.000000, 12.500000"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get entity @s Inventory",
+          "result": {
+            "chat": [
+              "CrashTest has the following entity data: []"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "entities 60",
+          "result": {
+            "entities": [],
+            "loaded_chunks": 49,
+            "radius": 60.0,
+            "tracked": {
+              "items": 0,
+              "mobs": 0,
+              "orbs": 0
+            },
+            "type": null
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 Items",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: []"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 47 101 8 Items",
+          "result": {
+            "chat": [
+              "47, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:sawblade\"}]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 55 101 8 Items",
+          "result": {
+            "chat": [
+              "The target block is not a block entity"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "save",
+          "result": {
+            "ok": true
+          }
+        }
+      ],
+      "checks": {},
+      "base": {
+        "blades": 1,
+        "inventory": {},
+        "ground": {},
+        "machines": [],
+        "total": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "folder": "/mnt/ssd120/sacer/so/r4/res-uj2ehk5t",
+  "rows": [
+    {
+      "player_x": 24.5,
+      "A": {
+        "block": "minecraft:chest",
+        "lid": 0.0,
+        "loaded": true,
+        "pos": [
+          47,
+          102,
+          8
+        ],
+        "state": "minecraft:chest[facing=north,type=single,waterlogged=false]"
+      },
+      "B": {
+        "block": "minecraft:air",
+        "loaded": true,
+        "pos": [
+          49,
+          102,
+          10
+        ],
+        "state": "minecraft:air"
+      },
+      "A_execute_loaded": true,
+      "B_execute_loaded": true
+    },
+    {
+      "player_x": 8.5,
+      "A": {
+        "block": "minecraft:chest",
+        "lid": 0.0,
+        "loaded": true,
+        "pos": [
+          47,
+          102,
+          8
+        ],
+        "state": "minecraft:chest[facing=north,type=single,waterlogged=false]"
+      },
+      "B": {
+        "block": "minecraft:air",
+        "loaded": true,
+        "pos": [
+          49,
+          102,
+          10
+        ],
+        "state": "minecraft:air"
+      },
+      "A_execute_loaded": true,
+      "B_execute_loaded": false
+    },
+    {
+      "player_x": -7.5,
+      "A": {
+        "block": "minecraft:chest",
+        "lid": 0.0,
+        "loaded": true,
+        "pos": [
+          47,
+          102,
+          8
+        ],
+        "state": "minecraft:chest[facing=north,type=single,waterlogged=false]"
+      },
+      "B": {
+        "block": "minecraft:air",
+        "loaded": false,
+        "pos": [
+          49,
+          102,
+          10
+        ],
+        "state": "minecraft:air"
+      },
+      "A_execute_loaded": false,
+      "B_execute_loaded": false
+    }
+  ]
+}

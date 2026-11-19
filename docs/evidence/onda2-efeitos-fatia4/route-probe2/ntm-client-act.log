@@ -1,0 +1,64 @@
+Horizon 0.1.0
+Horizon: content from 1 mod(s) in /mnt/ssd120/sacer/so/p5/more-coupled-break-d0e8oxuz/point-none/.horizon-cache/mod-content/75a4351da3a7aa2b
+Horizon: block sprites: 1895 layers at 128 px (largest 336 px, budget 256 MiB)
+load core tables: 1.46s
+load pack tables: 1.49s
+Horizon: 74 content mod multiblocks
+Horizon: 121 block models (139351 triangles)
+load items: 1.77s
+Horizon: resources loaded in 1.9s; 44545 block states, 5081 items, 67 biomes; 2 worker threads
+Horizon: no sound: audio off: HORIZON_NO_AUDIO is set
+Horizon: control socket /mnt/ssd120/sacer/so/p5/more-coupled-break-d0e8oxuz/point-none/control.sock
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+Horizon renderer: Vulkan has no conformant adapter (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested); asking again for the ones wgpu hides as non-conformant
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+Horizon renderer: trying OpenGL (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested)
+MESA-EGL: warning: DRI3 error: Could not get DRI3 device
+MESA-EGL: warning: Ensure your X server supports DRI3 to get accelerated rendering
+Horizon renderer: OpenGL has no conformant adapter (OpenGL: only a software adapter (llvmpipe (LLVM 23.1.4, 256 bits))); asking again for the ones wgpu hides as non-conformant
+MESA-EGL: warning: DRI3 error: Could not get DRI3 device
+MESA-EGL: warning: Ensure your X server supports DRI3 to get accelerated rendering
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+Horizon renderer: Vulkan has no conformant adapter (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested); asking again for the ones wgpu hides as non-conformant
+MESA: info: vulkan: No DRI3 support detected - required for presentation
+Note: you can probably enable DRI3 in your Xorg config
+Horizon renderer: trying OpenGL (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested)
+MESA-EGL: warning: DRI3 error: Could not get DRI3 device
+MESA-EGL: warning: Ensure your X server supports DRI3 to get accelerated rendering
+Horizon renderer: llvmpipe (LLVM 23.1.4, 256 bits) (Gl, Cpu)
+Horizon renderer: requesting the device (driver 4.6 (Core Profile) Mesa 26.2.7-arch1.1) with features [TEXTURE_FORMAT_16BIT_NORM | TEXTURE_ADAPTER_SPECIFIC_FORMAT_FEATURES | TIMESTAMP_QUERY_INSIDE_ENCODERS | VERTEX_WRITABLE_STORAGE | CLEAR_TEXTURE | SHADER_EARLY_DEPTH_TEST | TIMESTAMP_QUERY | INDIRECT_FIRST_INSTANCE] and the adapter's limits (buffers up to 2147483647 bytes, storage bindings up to 134217728 bytes, 2048 texture layers)
+Horizon renderer: device ready; configuring the surface (1280x720 Bgra8Unorm, Fifo)
+Horizon renderer: the chosen graphics API gave no GPU (No Vulkan or OpenGL graphics driver found: Horizon needs the Vulkan loader (libvulkan.so.1) and a Vulkan driver for your GPU (Mesa's, or NVIDIA's), or OpenGL through EGL (Vulkan: No suitable graphics adapter found; noop not requested, vulkan not compatible with provided surface, metal not requested, dx12 not requested, gl not requested, webgpu not requested; OpenGL: only a software adapter (llvmpipe (LLVM 23.1.4, 256 bits)))); rendering on the CPU, which is slow
+Horizon renderer: HDR output not offered by this display
+Horizon renderer: creating the pipelines
+Horizon renderer: pipelines ready (multi-draw on, occlusion culling off, GPU culling unavailable, GPU timer on)
+Horizon: worldgen data loaded in 331.74062ms
+Horizon: live features ready in 385.084086ms
+ntm native: 227 machine blocks
+Horizon renderer: acquiring the first frame
+Horizon renderer: submitting the first frame
+[14:56:45] [Server thread/INFO]: CrashTest[/127.0.0.1:0] logged in with entity id 1 at (48.5, 100.0, 4.5)
+[14:56:45] [Server thread/INFO]: System chat: CrashTest joined the game
+Horizon renderer: presenting the first frame
+Horizon: first frame after 1682 ms
+[14:56:49] [Server thread/INFO]: System chat: [CrashTest: Teleported CrashTest to 48.500000, 101.000000, 4.500000]
+ntm: batch created owners=127 origins=127 critical=1 tombstones=0
+ntm: effect 13558282896670013542.0 items [48, 102, 13] [("ntm:pile_rod__ra226be", 1)] owners=127 origins=127
+[14:56:55] [Server thread/INFO]: System chat: [CrashTest: Teleported Chicago Pile Ra226Be Neutron source to 52.500000, 100.500000, 12.500000]
+[14:56:58] [Server thread/INFO]: System chat: [CrashTest: Unmarked all force loaded chunks in minecraft:overworld]
+[14:56:58] [Server thread/INFO]: System chat: [CrashTest: Teleported CrashTest to 24.500000, 101.000000, 8.500000]
+[14:57:19] [Server thread/INFO]: System chat: [CrashTest: Teleported CrashTest to 8.500000, 101.000000, 8.500000]
+[14:57:39] [Server thread/INFO]: System chat: [CrashTest: Teleported CrashTest to -7.500000, 101.000000, 8.500000]
+[14:57:40] [Server thread/INFO]: System chat: [CrashTest: Changed the block at 47, 102, 8]
+ntm: batch created owners=127 origins=127 critical=6 tombstones=125
+ntm: effect 138055079121233567.0 blocks 125 owners=127 origins=127
+ntm: effect 138055079121233567.1 items [48, 102, 13] [("ntm:pile_rod__zr", 1)] owners=127 origins=127
+ntm: effect 138055079121233567.2 items [48, 102, 13] [("ntm:pile_rod__ra226be", 1)] owners=127 origins=127
+ntm: effect 138055079121233567.3 items [48, 102, 13] [("ntm:pile_rod__ra226be", 1)] owners=127 origins=127
+ntm: effect 138055079121233567.4 items [48, 102, 13] [("ntm:pile_rod__ra226be", 1)] owners=127 origins=127
+ntm: effect 138055079121233567.5 items [48, 102, 13] [("ntm:pile_rod__ra226be", 1)] owners=127 origins=127
+ntm: storage written at tick 1284: 5281 bytes in 1.6 ms (wait=true)
+ntm: storage written at tick 1286: 5281 bytes in 2.1 ms (wait=true)

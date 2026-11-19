@@ -1,0 +1,52 @@
+--- tools/test-game/run-crash-more.py
++++ temporary-dropper-fixture/run-crash-more.py
+@@ -182,6 +182,15 @@
+     world = More(args, folder, env, scenario)
+     result = {'scenario': scenario, 'point': point, 'folder': str(folder), 'ok': False, 'vanilla_control': control}
+     result['base_items'] = crash_proof.disk_count.items(base, items_of(scenario))
++    if control:
++        source_rows = []
++        for path in (base / 'saves/CrashTest/dimensions/minecraft/overworld/region').glob('r.*.mca'):
++            rx, rz = map(int, path.name.split('.')[1:3])
++            for index, raw in crash_proof.disk_count.raw_records(path):
++                n = crash_proof.disk_count._held('region', crash_proof.disk_count.parse(raw), items_of(scenario))
++                if n: source_rows.append([rx * 32 + index % 32, rz * 32 + index // 32, n])
++        result['base_stock_by_chunk'] = sorted(source_rows)
++        assert result['base_stock_by_chunk'] == [[2, 0, 5], [3, 0, 1]], result['base_stock_by_chunk']
+     try:
+         world.launch(None if point == 'kill' else point)
+         # `kill`: the action asks for no save, and the process dies where it left the world; `kv_committed`: its save
+@@ -346,7 +355,7 @@
+         if controlled:
+             bases[True] = scratch / 'base-vanilla'
+             shutil.copytree(base, bases[True])
+-        for control, where in bases.items():
++        for control, where in sorted(bases.items(), reverse=True):
+             prepare_env = dict(env, NTM_CRASH_VANILLA='1' if control else '0')
+             for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
+                              ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
+@@ -357,13 +366,23 @@
+             world.quit()
+         for point in args.points or DEFAULT_POINTS[args.scenario]:
+             outcomes = {}
+-            for control, where in bases.items():
++            for control, where in sorted(bases.items(), reverse=True):
+                 copy_env = dict(env, NTM_CRASH_VANILLA='1' if control else '0')
+                 folder = point_folder(scratch, point, control)
+                 for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'),
+                                  ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
+                     copy_env[key] = str(folder / sub)
+                 outcomes[control] = play(args, where, scratch, copy_env, args.scenario, point, control)
++                if control:
++                    preflight = outcomes[control]
++                    (scratch / 'vanilla-dropper-preflight.json').write_text(json.dumps(preflight, indent=2) + '\n')
++                    distribution = (preflight.get('written') or {}).get('entities', [])
++                    if not (preflight.get('ok') and (preflight.get('disk') or {}).get('total') == 6
++                            and (preflight.get('first_reopen') or {}).get('total') == 6
++                            and (preflight.get('second_reopen') or {}).get('total') == 6
++                            and len(distribution) == 1 and distribution[0][0:2] == [3, 0]
++                            and distribution[0][-1] == 6):
++                        raise AssertionError('vanilla dropper preflight does not match the required source/destination cut')
+             exact = point in crash_proof.KILLS and args.scenario not in WRITES_IN_ACT
+             # Eager chunk saves wrote files outside a save in a world: not the last save; judged by L and D item by item.
+             eager = exact and crash_proof.wrote_outside_a_save(outcomes[False], outcomes[True])

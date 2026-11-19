@@ -1,0 +1,37 @@
+--- tools/test-game/native_crash_more.py
++++ temporary-dropper-fixture/native_crash_more.py
+@@ -193,7 +193,8 @@
+         g.command('setblock %d %d %d minecraft:redstone_block' % (hx[0], hx[1] - 1, hx[2]))
+         g.command('setblock %d %d %d minecraft:hopper[facing=%s]' % (*hx, facing))
+         g.command('item replace block %d %d %d container.0 with %s 1' % (*hx, INCOMING if full else ROD))
+-        g.command('setblock %d %d %d minecraft:chest' % geometry(cx)['core'])
++        core_state = 'minecraft:dropper[facing=east]' if SCENARIO == 'coupled-break' else 'minecraft:chest'
++        g.command('setblock %d %d %d %s' % (*geometry(cx)['core'], core_state))
+         if full:
+             g.command('item replace block %d %d %d container.0 with %s 4' % (*geometry(cx)['core'], ROD))
+             dropper(g, shooter_at(cx), ROD, 1, shooter_facing())
+@@ -294,7 +295,7 @@
+     time.sleep(2)
+     g.command('forceload remove all')
+     found = None
+-    for px in range(-8, -200, -16):
++    for px in range(24, -200, -16):
+         g.command(f'tp @s {px + .5} 101 8.5')
+         deadline = time.monotonic() + 20
+         while time.monotonic() < deadline and is_loaded(g, member):
+@@ -304,6 +305,15 @@
+             break
+     g.evidence['player_x'] = found
+     g.check('member_chunk_out_core_chunk_in', found is not None and is_loaded(g, core) and not is_loaded(g, member), found)
++    if VANILLA:
++        g.evidence['source_before_release'] = {'at': core, 'stock': held(g, core, ''), 'destination_execute_loaded': is_loaded(g, member), 'destination_resident': g.ctl('block 49 102 10')}
++        g.check('reference_stock_in_source_A', held(g, core, '') == 5, g.evidence['source_before_release'])
++        fire(g, core, 5)
++        g.check('reference_source_paid', held(g, core, '') == 0, held(g, core, ''))
++        outputs = [e for e in g.ctl('entities 150')['entities'] if e.get('kind') == 'item' and e['item']['item'] in (ROD, INCOMING)]
++        g.evidence['reference_outputs_after_release'] = outputs
++        g.check('reference_visible_outputs_in_B', bool(outputs) and all((int(e['pos'][0] // 16), int(e['pos'][2] // 16)) == (3, 0) for e in outputs), outputs)
++        g.evidence['destination_after_release'] = {'execute_loaded': is_loaded(g, member), 'resident': g.ctl('block 49 102 10')}
+     g.command('setblock %d %d %d minecraft:air%s' % (*core, ' destroy' if VANILLA else ''))
+     time.sleep(3)
+     g.evidence['after_break'] = {'ledger': ledger(g), 'core': block(g, core)}

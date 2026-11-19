@@ -44,7 +44,7 @@ Chaves/cadeados são itens inertes. `ItemKeyPin` usa int NBT `pins`; não há c�
 | `furnace_iron` | `FurnaceIron` | Inert (registrado) |
 | `furnace_steel` | `FurnaceSteel` | Inert (registrado) |
 | `furnace_combination` | `FurnaceCombination` | Inert (registrado) |
-| `machine_sawmill` | `MachineSawmill` | Inert (registrado) |
+| `machine_sawmill` | `MachineSawmill` | Ativa na onda 2 (`Kind::Sawmill`; bloco único, sem o multibloco 3×3×2) |
 | `machine_strand_caster` | `MachineStrandCaster` | Inert (registrado) |
 | `machine_fel` | `MachineFEL` | Inert (registrado) |
 | `machine_silex` | `MachineSILEX` | Inert (registrado) |
