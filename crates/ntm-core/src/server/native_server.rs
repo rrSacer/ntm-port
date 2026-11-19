@@ -289,9 +289,10 @@ impl Server {
     /// world opens steps them, and the mod's clock never runs a tick a machine waits for its adoption (RBMK T04: with
     /// the adoption at the block entity's first tick only, a reactor stepped one tick less than the clock at each
     /// opening). A machine already known is left; the obligations of the chunk come first (`native_obligations_loaded`).
-    /// How many it adopted.
+    /// How many it adopted: a machine `native_adopt` handles without adopting (a ghost, whose generation a receipt
+    /// consumed or replaced, or an older generation a pending batch names) is not one.
     pub fn native_chunk_machines_loaded(&mut self, dim: &str, machines: &[(Pos, String)]) -> usize {
-        machines.iter().filter(|(p, json)| !self.native_has(dim, *p) && self.native_adopt(dim, *p, json)).count()
+        machines.iter().filter(|(p, json)| !self.native_has(dim, *p) && self.native_adopt(dim, *p, json) && self.native_has(dim, *p)).count()
     }
 
     pub fn native_adopt(&mut self, dim: &str, pos: Pos, json: &str) -> bool {
