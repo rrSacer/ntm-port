@@ -38,21 +38,23 @@ def rays(g):
     return {'readable': True, 'tick': int(m[1]), 'count': len(events), 'expires': [int(e[2]) for e in events]}
 
 
+def set_rule(g, value):
+    g.command(f'gamerule {VANILLA_RULE} {value}' if t03.VANILLA else f'ntmrbmk dial {NTM_RULE} {value}')
+
+
 def prepare(g):
     t03.prepare(g)
+    # The rule at its old value in the save every cut starts from (vanilla's default is 3, the dial's 5).
+    set_rule(g, OLD)
     g.evidence['rule_prepared'] = rule(g)
+    g.ctl('save')
     g.save()
 
 
 def act(g):
     g.ctl('wait-ready 120')
-    # Back to the old value first (a dial a test before left), then the new one, just before the act and its save.
-    if t03.VANILLA:
-        g.command(f'gamerule {VANILLA_RULE} {OLD}')
-        g.command(f'gamerule {VANILLA_RULE} {NEW}')
-    else:
-        g.command(f'ntmrbmk dial {NTM_RULE} {OLD}')
-        g.command(f'ntmrbmk dial {NTM_RULE} {NEW}')
+    # The new value just before the act and its save: a cut leaves the old one (the last save's) or the new one.
+    set_rule(g, NEW)
     g.evidence['rule_before_save'] = rule(g)
     g.evidence['rays_before_save'] = rays(g)
     t03.act(g)
