@@ -1982,12 +1982,15 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::welders::SOLDER => Some(SlotPolicy(soldering_slot_policy)),
         "ntm:rbmk_storage" => Some(SlotPolicy(rbmk_storage_slot_policy)),
         "ntm:rbmk_outgasser" => Some(SlotPolicy(rbmk_outgasser_slot_policy)),
-        b if ntm_core::rbmk::persist::is_column(b) => Some(SlotPolicy(rbmk_channel_slot_policy)),
+        "ntm:rbmk_heater" => Some(SlotPolicy(rbmk_heater_slot_policy)),
+        b if ntm_core::rbmk::persist::is_channel(b) => Some(SlotPolicy(rbmk_channel_slot_policy)),
         _ => None,
     };
+    // `ContainerRBMKRod.slotClick` checks the hull only for a player not in creative (RBMK T05).
+    let creative_bypass = ntm_core::rbmk::persist::is_channel(block);
     filters.extend(rules.into_iter().map(|f| ModSlotFilter {
         accept: f.accept, reject: f.reject, max: f.max, output: f.output,
-        quick_move: f.quick_move, quick_reverse: f.quick_reverse, policy,
+        quick_move: f.quick_move, quick_reverse: f.quick_reverse, policy, creative_bypass,
     }));
 }
 
@@ -2039,6 +2042,10 @@ fn rbmk_outgasser_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &I
 fn rbmk_channel_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy("ntm:rbmk_rod", slots, slot, item, action, origin)
+}
+fn rbmk_heater_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy("ntm:rbmk_heater", slots, slot, item, action, origin)
 }
 fn machine_slot_policy(block: &str, slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
