@@ -90,9 +90,17 @@ def place(g, p, block):
     """The column `block` placed by the player at `p`, standing south of it (its dummies with it)."""
     g.command('clear @s')
     g.command(f'give @s {block} 1')
-    g.command(f'tp @s {p[0] + .5} {p[1]} {p[2] + 3.5} 180 45')
-    time.sleep(.2)
-    retry(g, f'place {p[0]} {p[1]} {p[2]} --item {block}')
+    # Placed from the south, standing on the floor: each try stands there again (the engine sometimes refuses the
+    # first try for a face it does not yet see from where the player landed).
+    for i in range(10):
+        g.command(f'tp @s {p[0] + .5} {p[1]} {p[2] + 3.5} 180 45')
+        time.sleep(.3 + .2 * i)
+        try:
+            g.ctl(f'place {p[0]} {p[1]} {p[2]} --item {block}')
+            break
+        except RuntimeError:
+            if i == 9:
+                raise
     time.sleep(.3)
 
 
