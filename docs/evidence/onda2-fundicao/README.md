@@ -129,3 +129,13 @@ ficam nos testes de servidor (`redstone_closes_*`), cinco mutantes mortos.
 junto, a escória) são próprias: `ntm_core::server::owned_cells`, com teste (`only_the_cells_born_with_a_machine_are_owned`) e mutante morto.
 Os cenários `slagtap-*` foram reexecutados com o binário depois desta correção (abaixo, mesma tabela). O `mutants-foundry.log` anexa as
 execuções novas: os 5 de redstone, `cave_air`, o do commit recusado só no vazamento (agora morto) e o das células próprias.
+
+## A escavadeira minando um cabo (`run-mining-cable-game.py`, binário `c8782234102c…`)
+
+Uma bateria que dá, cinco `red_cable` e uma bateria que recebe; a `power` da segunda, lida do **modelo do servidor** (`data get block … ntm`),
+sobe (111 622 → 323 204 em 6 s). A escavadeira (bateria criativa e broca de ferro) minera os três cabos do seu alcance (as células viram ar),
+a `power` da bateria que recebe **para de subir** (614 754 → 614 754 em 8 s) e os dois cabos de fora ficam. 8 de 8 verificações
+(`report-mining-cable-qbi0vyhe.json`). **Honestidade**: o mesmo cenário também passa com o binário da rodada intermediária (`dde029c5ca87…`),
+que tinha o escopo largo demais: o cabo fantasma, na prática, é refeito pela rede em poucos segundos, então o cenário não separa o defeito
+antigo; o que o garante é o teste do core (`only_the_cells_born_with_a_machine_are_owned`) e o mutante. O outro lado de `owned_cells`
+(a máquina que nasce junto) é o `slagtap-pour` com este mesmo binário: a escória guarda os 144 e não vira máquina vazia.

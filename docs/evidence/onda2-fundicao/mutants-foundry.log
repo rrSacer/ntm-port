@@ -59,6 +59,7 @@ KILLED       slag tap: it ignores its filter  <- a_tap_that_refuses_the_metal_le
 KILLED       slag tap: the ray reaches 16 blocks  <- the_slag_tap_pours_only_from_behind_what_its_filter_passes_and_with_something_under_it
 KILLED       slag tap: the ray reaches 14 blocks  <- the_slag_tap_pours_only_from_behind_what_its_filter_passes_and_with_something_under_it
 14 of 16 killed
+(superado pela seção de revisão abaixo: o sobrevivente "commit recusado vertido em memória" foi morto por a_pour_refused_alone_...; resta 1 equivalente)
 
 # Rodada 5, revisão: redstone (5), cave_air, commit recusado só o do vazamento, células próprias
 KILLED       redstone: the slag tap ignores it  <- redstone_closes_the_slag_tap_and_a_missing_reading_does_not_close_it_for_good
