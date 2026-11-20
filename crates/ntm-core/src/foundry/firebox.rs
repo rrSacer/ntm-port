@@ -208,13 +208,13 @@ mod tests {
         let t = Tables::ntm();
         let mut f = Firebox::default();
         f.slots[0] = Some(Stack::new("ntm:coal_eternal", 1));
-        assert!(f.step(&t));
+        assert!(f.step(t));
         assert_eq!((f.burn, f.burn_heat), (3_200, 100));
         assert_eq!(f.slots[0], Some(Stack::new("ntm:coal_eternal", 1)), "its own container");
         assert_eq!(f.ash_out, Some((crate::fuel::Ash::Misc, 3_200)));
         // And again, when the burn is over: the same coal burns for ever.
         f.burn = 0;
-        f.step(&t);
+        f.step(t);
         assert_eq!(f.slots[0], Some(Stack::new("ntm:coal_eternal", 1)));
     }
 
