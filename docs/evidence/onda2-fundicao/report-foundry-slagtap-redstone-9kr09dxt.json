@@ -1,13 +1,13 @@
 {
   "ok": true,
   "scenario": "slagtap-redstone",
-  "binary": "/mnt/ssd120/sacer/so/fundicao/bin/horizon-client-r7",
-  "binary_sha256": "dde029c5ca8733f603e3f116a31af7bf03d339c2d9e8c5970bf3a28ea508709d",
+  "binary": "/mnt/ssd120/sacer/so/fundicao/bin/horizon-client-r8",
+  "binary_sha256": "c8782234102c295d287b8e32fb371ded8439842b0b7b7db0f1f97874f937ebe1",
   "bundle_sha256": "59181d49dc8bcbbe4d1cceecf473ec19d96046d26539a1ac88633029919b485f",
   "points": [
     {
       "point": "none",
-      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-redstone-aoc8qgaf/point-none",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-redstone-9kr09dxt/point-none",
       "ok": true,
       "vanilla_control": false,
       "base_items": {
@@ -73,7 +73,7 @@
       "kv_items_again": 0,
       "control": {
         "point": "none",
-        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-redstone-aoc8qgaf/point-none-vanilla",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-redstone-9kr09dxt/point-none-vanilla",
         "ok": true,
         "vanilla_control": true,
         "base_items": {
@@ -396,7 +396,7 @@
             "target": null,
             "ticks": 0,
             "tridents": 0,
-            "uptime_seconds": 3.790824994,
+            "uptime_seconds": 2.117633253,
             "using": null,
             "yaw": 0.0
           }
@@ -413,9 +413,9 @@
               "size": 59999968.0
             },
             "carts": [],
-            "chunks": 8,
+            "chunks": 0,
             "creative": true,
-            "day_time": 6,
+            "day_time": 5,
             "debug": {
               "advanced_tooltips": false,
               "chunk_borders": false,
@@ -446,9 +446,9 @@
               "respawn": null
             },
             "fishing": null,
-            "fps": 0.24865758419036865,
-            "frames": 3,
-            "generated_chunks": 8,
+            "fps": 0.42664834856987,
+            "frames": 2,
+            "generated_chunks": 0,
             "heard": {},
             "held": null,
             "input": {
@@ -498,10 +498,8 @@
             "name_tags": [],
             "objects": [],
             "offhand": null,
-            "particles": {
-              "underwater": 12
-            },
-            "pending_chunks": 20,
+            "particles": {},
+            "pending_chunks": 0,
             "pending_uploads": 0,
             "physical_keys": [],
             "pickups": {},
@@ -510,15 +508,15 @@
               "food": 20,
               "health": 20.0,
               "max_health": null,
-              "on_ground": true,
+              "on_ground": false,
               "position": [
-                -9.5,
-                64.0,
+                -6.5,
+                66.0,
                 0.5
               ],
               "velocity": [
                 0.0,
-                -0.0784000015258789,
+                0.0,
                 0.0
               ]
             },
@@ -569,7 +567,7 @@
             "server": {
               "address": "local",
               "chat": [],
-              "chunks": 8,
+              "chunks": 0,
               "dead_players": [],
               "decode_errors": 0,
               "dimension": "minecraft:overworld",
@@ -579,12 +577,12 @@
               "game_mode": 1,
               "health": 20.0,
               "joined": true,
-              "loaded": true,
+              "loaded": false,
               "lying_players": [],
               "name": "CrashTest",
               "own_body": false,
               "player_equipment": [],
-              "player_model": true,
+              "player_model": false,
               "player_positions": [],
               "players": [
                 "CrashTest"
@@ -619,17 +617,10 @@
               "protos": 0,
               "queued": 0
             },
-            "target": {
-              "block": "minecraft:short_grass",
-              "pos": [
-                -10,
-                65,
-                3
-              ]
-            },
-            "ticks": 15,
+            "target": null,
+            "ticks": 14,
             "tridents": 0,
-            "uptime_seconds": 4.20190178,
+            "uptime_seconds": 2.402786107,
             "using": null,
             "yaw": 0.0
           }
@@ -648,7 +639,7 @@
             "carts": [],
             "chunks": 49,
             "creative": true,
-            "day_time": 14,
+            "day_time": 11,
             "debug": {
               "advanced_tooltips": false,
               "chunk_borders": false,
@@ -679,8 +670,8 @@
               "respawn": null
             },
             "fishing": null,
-            "fps": 0.24865758419036865,
-            "frames": 8,
+            "fps": 0.42664834856987,
+            "frames": 6,
             "generated_chunks": 49,
             "heard": {},
             "held": null,
@@ -725,15 +716,14 @@
               "terrain_distance": 2
             },
             "maps": [],
-            "meshed_sections": 600,
+            "meshed_sections": 0,
             "mobs": 0,
             "music": null,
             "name_tags": [],
             "objects": [],
             "offhand": null,
             "particles": {
-              "tinted_leaves": 1,
-              "underwater": 47
+              "underwater": 9
             },
             "pending_chunks": 0,
             "pending_uploads": 0,
@@ -746,8 +736,8 @@
               "max_health": null,
               "on_ground": true,
               "position": [
-                -9.5,
-                64.0,
+                -6.5,
+                66.0,
                 0.5
               ],
               "velocity": [
@@ -759,11 +749,11 @@
             "projectiles": [],
             "render_distance": 2,
             "renderer": {
-              "arena_bytes": 25165824,
+              "arena_bytes": 0,
               "backend": "Gl",
               "culled_sections": null,
               "device_type": "cpu",
-              "drawn_sections": 20,
+              "drawn_sections": 0,
               "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
               "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
               "gpu_allocated_bytes": null,
@@ -780,19 +770,19 @@
                 true
               ],
               "present_mode": "Immediate",
-              "resident_sections": 63,
-              "section_draw_calls": 2,
-              "section_draws": 36,
-              "section_vertex_bytes": 3041376,
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
               "size": [
                 1280,
                 720
               ],
               "stats_lag": 0,
-              "uploaded_bytes": 3041376,
+              "uploaded_bytes": 0,
               "vendor": "mesa",
               "vertex_bytes_split": [
-                3041376,
+                0,
                 0
               ]
             },
@@ -849,21 +839,14 @@
               "finishing": 0,
               "generating": 0,
               "lighting": 0,
-              "meshing": 0,
+              "meshing": 600,
               "protos": 0,
               "queued": 0
             },
-            "target": {
-              "block": "minecraft:short_grass",
-              "pos": [
-                -10,
-                65,
-                3
-              ]
-            },
-            "ticks": 23,
+            "target": null,
+            "ticks": 20,
             "tridents": 0,
-            "uptime_seconds": 4.714947041,
+            "uptime_seconds": 2.690265039,
             "using": null,
             "yaw": 0.0
           }
@@ -1197,7 +1180,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":4}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"amount\":0,\"last_flow\":0,\"next\":5}}'"
             ],
             "ok": true
           }
@@ -1206,7 +1189,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":2}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":5}}'"
             ],
             "ok": true
           }
@@ -1224,7 +1207,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":1}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":5}}'"
             ],
             "ok": true
           }
@@ -1233,7 +1216,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":4}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":3}}'"
             ],
             "ok": true
           }
@@ -1242,7 +1225,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":2}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":5}}'"
             ],
             "ok": true
           }
@@ -1251,7 +1234,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":56899,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":55999,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1260,7 +1243,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":57799,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":56799,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1269,7 +1252,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":58499,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":57599,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1296,7 +1279,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":1}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":4}}'"
             ],
             "ok": true
           }
@@ -1305,7 +1288,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":3}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":1}}'"
             ],
             "ok": true
           }
@@ -1332,7 +1315,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":55386,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":54593,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1341,7 +1324,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":55001,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":54161,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1359,7 +1342,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":3}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":5}}'"
             ],
             "ok": true
           }
@@ -1368,7 +1351,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":1}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":3}}'"
             ],
             "ok": true
           }
@@ -1406,15 +1389,29 @@
             "entities": [
               {
                 "baby": false,
-                "distance": 22.398327379967817,
+                "distance": 22.280894953452314,
                 "health": 20.0,
                 "hurt_time": 0,
                 "id": 2,
                 "kind": "mob",
                 "pos": [
-                  47.69037670406788,
+                  47.87646484375,
                   80.0,
-                  7.497257458713531
+                  5.512939453125
+                ],
+                "type": "minecraft:skeleton"
+              },
+              {
+                "baby": false,
+                "distance": 24.863064274586566,
+                "health": 20.0,
+                "hurt_time": 0,
+                "id": 3,
+                "kind": "mob",
+                "pos": [
+                  53.25830078125,
+                  80.0,
+                  8.29443359375
                 ],
                 "type": "minecraft:skeleton"
               }
@@ -1423,7 +1420,7 @@
             "radius": 60.0,
             "tracked": {
               "items": 0,
-              "mobs": 1,
+              "mobs": 2,
               "orbs": 0
             },
             "type": null
@@ -1455,7 +1452,7 @@
             "mat": "gold",
             "amount": 144,
             "last_flow": 0,
-            "next": 3
+            "next": 1
           }
         }
       },
@@ -1673,7 +1670,7 @@
             "target": null,
             "ticks": 0,
             "tridents": 0,
-            "uptime_seconds": 2.195945449,
+            "uptime_seconds": 2.161024152,
             "using": null,
             "yaw": 0.0
           }
@@ -1690,7 +1687,7 @@
               "size": 59999968.0
             },
             "carts": [],
-            "chunks": 6,
+            "chunks": 4,
             "creative": true,
             "day_time": 5,
             "debug": {
@@ -1723,9 +1720,9 @@
               "respawn": null
             },
             "fishing": null,
-            "fps": 0.4099196493625641,
+            "fps": 0.41725924611091614,
             "frames": 2,
-            "generated_chunks": 6,
+            "generated_chunks": 4,
             "heard": {},
             "held": null,
             "input": {
@@ -1775,9 +1772,7 @@
             "name_tags": [],
             "objects": [],
             "offhand": null,
-            "particles": {
-              "underwater": 1
-            },
+            "particles": {},
             "pending_chunks": 0,
             "pending_uploads": 0,
             "physical_keys": [],
@@ -1789,9 +1784,9 @@
               "max_health": null,
               "on_ground": true,
               "position": [
-                8.5,
-                72.0,
-                1.5
+                6.5,
+                74.0,
+                9.5
               ],
               "velocity": [
                 0.0,
@@ -1846,7 +1841,7 @@
             "server": {
               "address": "local",
               "chat": [],
-              "chunks": 6,
+              "chunks": 4,
               "dead_players": [],
               "decode_errors": 0,
               "dimension": "minecraft:overworld",
@@ -1897,16 +1892,16 @@
               "queued": 0
             },
             "target": {
-              "block": "minecraft:grass_block",
+              "block": "minecraft:short_grass",
               "pos": [
-                8,
-                73,
-                5
+                6,
+                75,
+                11
               ]
             },
             "ticks": 14,
             "tridents": 0,
-            "uptime_seconds": 2.516905873,
+            "uptime_seconds": 2.475732018,
             "using": null,
             "yaw": 0.0
           }

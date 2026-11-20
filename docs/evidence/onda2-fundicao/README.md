@@ -106,7 +106,7 @@ primeira atingida é ar, uma máquina (excluída antes) ou fora do chunk (exclu�
 Lacunas declaradas: sem o escoamento da escória, cor neutra, sem o vazamento entre chunks, mato/neve/líquido não são substituídos, sem
 fechamento por redstone, sem partícula do jato, sem pick-block (`docs/content-foundry.md`).
 
-## Onde o metal está depois de cada corte (`where-slagtap.json`, binário `dde029c5ca87…`)
+## Onde o metal está depois de cada corte (`where-slagtap.json`, binário `c8782234102c…`)
 
 Versionado a partir das pastas de prova. Canal / escória, em quanta, no mundo reaberto:
 
