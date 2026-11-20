@@ -167,15 +167,16 @@ class Proof:
         self.check('a_mb_of_water_is_100_of_steam', used > 0 and used * 100 == st['output'][1] + dst[1], {'water_used': used, 'boiler': st, 'barrel': dst, 'source': src})
         self.host.evidence['boiler'] = {'tanks': st, 'sink': dst, 'source': src}
 
-    def compressor(self):
+    def open_boiler(self, p):
+        """The guest's screen of the boiler at `p`, from a stone in front of it (no floor at the columns' height); the
+        compressor's place on the screen."""
         g, h = self.guest, self.host
         g.close()
-        # The guest on a stone in front of the boiler (no floor at the columns' height).
-        h.command(f'setblock {B2[0]} {B2[1] - 1} {B2[2] - 3} minecraft:stone')
-        h.command(f'tp {GUEST} {B2[0] + .5} {B2[1]} {B2[2] - 2.5} 0 0')
+        h.command(f'setblock {p[0]} {p[1] - 1} {p[2] - 3} minecraft:stone')
+        h.command(f'tp {GUEST} {p[0] + .5} {p[1]} {p[2] - 2.5} 0 0')
         time.sleep(1.5)
         for _ in range(3):
-            g.ctl(f'interact {B2[0]} {B2[1]} {B2[2]} north')
+            g.ctl(f'interact {p[0]} {p[1]} {p[2]} north')
             deadline = time.monotonic() + 10
             while time.monotonic() < deadline and g.ctl('screen').get('screen') != 'container':
                 time.sleep(.2)
@@ -183,14 +184,29 @@ class Proof:
                 break
         time.sleep(.8)
         w = next(w for w in g.ctl('ui').get('widgets', []) if w.get('id') == 'slot-9')
-        ox, oy = w['bounds'][0] - INVENTORY[0], w['bounds'][1] - INVENTORY[1]
+        return w['bounds'][0] - INVENTORY[0] + COMPRESSOR[0], w['bounds'][1] - INVENTORY[1] + COMPRESSOR[1]
+
+    def compressor(self):
+        g, h = self.guest, self.host
+        at = self.open_boiler(B2)
         before = piped(h, B2).get('output')
-        g.ctl(f'click-at {ox + COMPRESSOR[0]} {oy + COMPRESSOR[1]}')
+        g.ctl(f'click-at {at[0]} {at[1]}')
         after = self.wait(lambda: piped(h, B2).get('output'), lambda o: o and o[0] != 'STEAM', 10)
-        g.ctl(f'click-at {ox + COMPRESSOR[0]} {oy + COMPRESSOR[1]}')
+        g.ctl(f'click-at {at[0]} {at[1]}')
         again = self.wait(lambda: piped(h, B2).get('output'), lambda o: o and o[0] == 'SUPERHOTSTEAM', 10)
         g.close()
         self.check('the_guest_compresses', before == ('STEAM', 0) and after == ('HOTSTEAM', 0) and again == ('SUPERHOTSTEAM', 0), [before, after, again])
+        # The amount (T08 review P3-2): the boiler that boiled, cold again with water in (heat 50 or less lets it), holds
+        # 584 000 mB of steam; one press steps it to hot steam and `setTankType` empties the tank before the `/ 10`:
+        # all of it is lost, the water kept.
+        full = self.wait(lambda: reasim(h, B1), lambda c: c['heat'] is not None and c['heat'] <= 50, 60)
+        before = piped(h, B1)
+        at = self.open_boiler(B1)
+        g.ctl(f'click-at {at[0]} {at[1]}')
+        after = self.wait(lambda: piped(h, B1), lambda s: s.get('output', ('STEAM', 0))[0] != 'STEAM', 10)
+        g.close()
+        self.check('a_press_loses_all_the_steam', full['heat'] <= 50 and before.get('output') == ('STEAM', 584_000)
+                   and after.get('output') == ('HOTSTEAM', 0) and after.get('input') == before.get('input'), [full, before, after])
 
     def loaders(self):
         h = self.host
