@@ -1365,6 +1365,46 @@ mesma última escrita que o vanilla perde), 0 eventos na primeira reabertura (ti
 sem par, S e Q sem fluxo) e um evento em Q (`expiresOn` 1700) na segunda. Regra do dial: 7 e 7 em `kv_committed`, 5 e
 5 em `chunks_written`, os mesmos valores do controle.
 
+## RBMK T05 — acesso ao combustível e política contextual de slots (19/11/2026)
+
+Branch `rbmk-t05` (a partir de `rbmk-t04` @ `845d0681`) e, no motor, `rbmk-t05-engine` (a partir do pin da `main`,
+`2187c3192b`; sem sync com o upstream). O binário das provas sai de `tools/build-native.sh` com
+`HORIZON_NEXT=<worktree do rbmk-t05-engine>` e `NEXT_REV=6e13d4271c`; o pin de `native/ntm/compatibility.json` continua o
+da `main` até o coordenador fundir a branch do motor.
+
+### O que mudou
+
+| Caminho | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Menu do canal em sobrevivência | Todo gesto sobre o slot do canal (clique esquerdo/direito, shift-click, tecla numérica, Q, drag, coleta) é recusado enquanto o casco da barra passa de 200 °C (`<= 200` é frio; NaN não é frio): nada muda no BE, na mão nem no cursor. Canal vazio, ou com outro item, é frio (o slot é um `Slot` vanilla e aceita qualquer item). Regra em `persist::cold_enough_for_manual`, chamada por `native::slot_allows` só para os quatro canais e a origem `Manual` | `ContainerRBMKRod.slotClick:32-48`, `transferStackInSlot:52-76` (checagem em `:61`), `TileEntityRBMKRod.coldEnoughForManual:100-105` |
+| Criativo | A regra não vale: `ModSlotFilter::creative_bypass` (extensão do motor, `6e13d4271c`) pula a `policy` nos gestos de menu de um jogador em criativo, no anfitrião e no hóspede LAN; filtros estáticos continuam e a automação nunca pula | `!player.capabilities.isCreativeMode` nas duas checagens |
+| Mão sobre o bloco | Sem mudança (T01): a barra na mão entra num canal vazio, quente ou fria, uma da pilha com a tag inteira, debitada só em sobrevivência, com `upgradePlug` só no ramo aceito; canal cheio abre o menu, sem som | `RBMKRod.onBlockActivated:82-86` |
+| Automação | Sem mudança (T02): canais e aquecedor não mostram slot a funis/proxies | `TileEntityRBMKSlottedBase.getAccessibleSlotsFromSide` |
+| Aquecedor | Política própria (antes compartilhava a dos canais): não ganha a regra de casco | — |
+| Limiares prontos | `cold_enough_for_autoloader` (`<= 1000`, T12) e `hot_enough_to_melt_on_break` (`>= 1500`, T16), testados nas fronteiras | `coldEnoughForAutoloader:94-99`, `invalidate:108-114` |
+
+### Desvio a decidir
+
+- **Coleta por clique duplo**: no Java o clique duplo num slot do jogador (`slotClick` modo 6, índice ≠ 0) junta pilhas
+  iguais de todos os slots, inclusive o do canal quente, sem passar pela checagem de calor. Aqui a coleta consulta a
+  política (`Manual`) e não tira a barra quente. Reproduzir exigiria a política saber o gesto, uma extensão a mais do
+  motor. Na prática, barras de combustível não empilham, e a coleta só junta itens iguais: o caso só aparece com uma
+  pilha igual no cursor, o que exige outra barra com a mesma tag.
+
+### Validação
+
+Commits: `0ea70f10` (regra e limiares), `fd123d89` (testes), `2a25bf92` (glue), `6511d31d` (docs da política),
+motor `6e13d4271c`. Binário release `a387888669a5402c94d872647e3a6e2fde33aafb268e5b13a5f9b8ccc8e19b80`, pacote
+`ntm.hmod` `ea71442a…` (conteúdo inalterado). Evidências em `/mnt/ssd120/sacer/so/rbmk-t05/evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| U: fronteiras | `the_hull_thresholds_are_javas_comparisons`: 200 e 1 ulp acima, 1000 e 1 ulp acima, 1 ulp abaixo de 1500 e 1500, NaN, ±infinito para as três regras; `an_empty_slot_or_another_item_is_cold`; `a_rod_without_the_key_reads_its_defaults_or_zero` (sem tag: padrões, casco 20; tag sem a chave: 0) |
+| U: ações e origens | `a_channel_menu_follows_its_rods_hull` (4 canais × 5 cascos × retirar/inserir pedra/inserir barra × `Manual`/`Automation`), `the_other_columns_menus_ignore_a_hot_rod` (aquecedor, storage, caldeira, blank), `a_hot_rod_goes_in_by_hand_and_only_the_accepted_branch_sounds` (recusa silenciosa, uma da pilha com a tag, canal cheio segue ao menu); motor: `a_creative_bypass_skips_the_policy_for_a_creative_players_gestures_only` |
+| U: mutações | 11/11 pegas (`mutations-t05.log`): `< 200`; NaN frio; canal vazio quente; `< 1000`; `> 1500`; casco de outro item; regra em toda coluna; regra na automação; sem regra; bypass em todo filtro; bypass na automação |
+| U: suíte | Lib `ntm-core` 769 ok, 6 ignorados, 0 falhas + integração toda ok; `save_model` release 11/11; `keep_world_cost` 0,24–0,25 ms; Clippy `-D warnings` do `ntm-core` (todos os alvos) e da glue: 0; motor: `mod_slot_filters` 3/3 e testes de menu do `horizon-client` 36 ok, 4 ignorados, 0 falhas |
+| J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py`, `evidence/j-run3/`) | **56/56**, dois clientes (anfitrião com o mundo aberto em LAN e um hóspede que entrou por `connect`), cada um em sobrevivência com barra quente (casco 1200) e fria (150): **quente** — clique, clique direito, shift-click, tecla numérica e Q recusados, nada muda no BE, na mão, no cursor nem no chão; **fria** — clique tira a barra inteira (tag igual) e devolve, shift-click sai e volta, tecla numérica troca com a pedra da hotbar e destroca, shift-click com o inventário cheio não move nada, Q joga uma; **vazio** — drag de duas pedras deixa uma no canal; **criativo** — a barra quente sai por clique e por shift-click e volta; **mão** — barra quente e fria entram em canal vazio, uma da pilha, com um `upgradePlug` por inserção (anfitrião ouviu 5, as 5 inserções perto dele; hóspede 2, as suas); canal cheio abre o menu, sem som; **funis** — o de cima não põe a barra no canal vazio, o de baixo não tira do canal frio. O casco fica onde a prova pôs (`dialHeatProvision` 0, core = casco). Rodadas 1 e 2 caíram por motivos da prova, não do mod: cliente sem responder ao `status` por mais de 6 min com carga média 84, e um BE vazio sem `Items`; corrigido no executor e no roteiro |
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
