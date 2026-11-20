@@ -1137,12 +1137,114 @@ impl Server {
 }
 
 /// The slots a bomb's parts take (one each), for tests.
+/// The stacks a group of commits moves between slots (the RBMK storage's queue, a crane setting a rod down): for each
+/// slot that gets a different item than it held (`before[c][i]` → `desired[c][i]`), the slot whose stack, leaving it,
+/// has that very value, each leaving stack given once, in the commits' and slots' order. The host publishes that stack
+/// itself there, every component kept (`ItemStack` moved, as the Java's), not one rebuilt from the bridge's id, count,
+/// damage and custom data. Pairs of (to, from), each a (commit, slot).
+pub fn moved_stacks(before: &[Slots], desired: &[Slots]) -> Vec<((usize, usize), (usize, usize))> {
+    // The same item staying in its slot (its count changed, its data rewritten): the host keeps its own stack there.
+    let stays = |o: &Option<Stack>, n: &Option<Stack>| matches!((o, n), (Some(o), Some(n)) if o.id == n.id && o.damage == n.damage);
+    // A stack leaves a slot that ends empty or with another item.
+    let mut leaving: Vec<(usize, usize)> = Vec::new();
+    for (c, (was, want)) in before.iter().zip(desired).enumerate() {
+        for (i, w) in was.iter().enumerate() {
+            if w.is_some() && !stays(w, want.get(i).unwrap_or(&None)) {
+                leaving.push((c, i));
+            }
+        }
+    }
+    let mut out = Vec::new();
+    for (c, want) in desired.iter().enumerate() {
+        for (i, n) in want.iter().enumerate() {
+            if n.is_none() || stays(before[c].get(i).unwrap_or(&None), n) {
+                continue;
+            }
+            if let Some(k) = leaving.iter().position(|&(lc, li)| &before[lc][li] == n) {
+                out.push(((c, i), leaving.swap_remove(k)));
+            }
+        }
+    }
+    out
+}
+
 pub fn bomb_slots(parts: &[Option<&str>]) -> Slots {
     parts.iter().map(|p| p.map(|id| Stack::new(id, 1))).collect()
 }
 
 #[cfg(test)]
 mod tests {
+
+    /// A stack that moves keeps itself (every component, here a `name` the bridge does not see): the storage's queue
+    /// down a slot, a crane's rod into a column of another commit, two equal stacks each once; a stack staying with a new
+    /// count keeps its own; one stack that two slots want goes to one of them only; a new item nobody gave stays the
+    /// bridge's.
+    #[test]
+    fn a_moved_stack_is_the_one_that_left() {
+        #[derive(Clone, Debug, PartialEq)]
+        struct Full {
+            stack: Stack,
+            name: &'static str,
+        }
+        let rod = |name: &'static str| Full { stack: Stack { custom: Some("{hull:400.0d}".into()), tagged: true, ..Stack::new("ntm:rbmk_fuel_ueu", 1) }, name };
+        let view = |f: &Option<Full>| f.as_ref().map(|f| f.stack.clone());
+        // What the host publishes: a moved stack from its source, else its own when the same item stays, else the
+        // bridge's (no name).
+        let publish = |before: &[Vec<Option<Full>>], desired: &[Slots]| -> Vec<Vec<Option<Full>>> {
+            let views: Vec<Slots> = before.iter().map(|c| c.iter().map(view).collect()).collect();
+            let moves = moved_stacks(&views, desired);
+            desired
+                .iter()
+                .enumerate()
+                .map(|(c, want)| {
+                    want.iter()
+                        .enumerate()
+                        .map(|(i, n)| {
+                            let n = n.clone()?;
+                            if let Some(&(_, (fc, fi))) = moves.iter().find(|(to, _)| *to == (c, i)) {
+                                return before[fc][fi].clone().map(|f| Full { stack: n, ..f });
+                            }
+                            match &before[c][i] {
+                                Some(o) if o.stack.id == n.id && o.stack.damage == n.damage => Some(Full { stack: n, ..o.clone() }),
+                                _ => Some(Full { stack: n, name: "" }),
+                            }
+                        })
+                        .collect()
+                })
+                .collect()
+        };
+        // The storage's queue: slot 11 to 10.
+        let mut store: Vec<Option<Full>> = vec![None; 12];
+        store[11] = Some(rod("Lot 7"));
+        let mut want: Slots = vec![None; 12];
+        want[10] = view(&store[11]);
+        let after = publish(&[store.clone()], &[want]);
+        assert_eq!(after[0][10].as_ref().map(|f| f.name), Some("Lot 7"));
+        // The crane's rod into a channel: two commits.
+        let (crane, channel) = (vec![Some(rod("Lot 8"))], vec![None]);
+        let after = publish(&[crane.clone(), channel], &[vec![None], vec![view(&crane[0])]]);
+        assert_eq!((after[0][0].clone(), after[1][0].as_ref().map(|f| f.name)), (None, Some("Lot 8")));
+        // Two equal stacks moving: each slot gets one of them, none twice.
+        let two = vec![Some(rod("A")), None, Some(rod("B"))];
+        let after = publish(&[two.clone()], &[vec![None, view(&two[0]), view(&two[2])]]);
+        let mut names: Vec<&str> = after[0].iter().flatten().map(|f| f.name).collect();
+        names.sort();
+        assert_eq!(names, vec!["A", "B"]);
+        // One stack two slots want (the second copy is new, made by the logic): one of them gets it, the other the
+        // bridge's.
+        let one = vec![Some(rod("C")), None, None];
+        let after = publish(&[one.clone()], &[vec![None, view(&one[0]), view(&one[0])]]);
+        let mut names: Vec<&str> = after[0].iter().flatten().map(|f| f.name).collect();
+        names.sort();
+        assert_eq!(names, vec!["", "C"]);
+        // A stack staying with a new count keeps its own; an equal one arriving elsewhere takes the one that left, not
+        // the one that stays.
+        let pile = vec![Some(Full { stack: Stack::new("minecraft:coal", 5), name: "Fuel" }), Some(Full { stack: Stack::new("minecraft:coal", 5), name: "Spare" }), None];
+        let after = publish(&[pile], &[vec![Some(Stack::new("minecraft:coal", 4)), None, Some(Stack::new("minecraft:coal", 5))]]);
+        assert_eq!(after[0].iter().map(|f| f.as_ref().map(|f| (f.name, f.stack.count))).collect::<Vec<_>>(), vec![Some(("Fuel", 4)), None, Some(("Spare", 5))]);
+        assert!(moved_stacks(&[vec![None]], &[vec![Some(Stack::new("minecraft:coal", 1))]]).is_empty());
+    }
+
     use super::*;
 
     #[test]
