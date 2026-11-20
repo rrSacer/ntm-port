@@ -1,4 +1,4 @@
-// The save rule of an HBM 1.7.10 text field (GUIRBMKControlAuto.mouseClicked:108-118) over every string of up to four
+// The save rule of an HBM 1.7.10 text field (GUIRBMKControlAuto.mouseClicked:104-118) over every string of up to four
 // characters of an alphabet: commons-lang3 3.3.2 `NumberUtils.isNumber`, then `Double.parseDouble` (which may throw
 // where isNumber passes), `MathHelper.clamp_double` to [0, clamp] and the `(int)` cast. One line per string:
 // <string as \\uXXXX escapes><TAB><isNumber 0/1><TAB><bits of parseDouble, or EXC><TAB><int for clamp 100><TAB><int for 9999>

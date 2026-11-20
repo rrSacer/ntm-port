@@ -1,5 +1,5 @@
 //! The numbers an HBM 1.7.10 screen reads from its text fields (RBMK T06): commons-lang3 3.3.2's
-//! `NumberUtils.isNumber`, `Double.parseDouble` and the save rule of `GUIRBMKControlAuto.mouseClicked:108-118`
+//! `NumberUtils.isNumber`, `Double.parseDouble` and the save rule of `GUIRBMKControlAuto.mouseClicked:104-118`
 //! (`(int) MathHelper.clamp_double(Double.parseDouble(text), 0, clamp)`, `"0"` for text that is not a number). Checked
 //! against the Java over every string of up to four characters of the relevant alphabet
 //! (`tools/screens-oracle/NumberOracle.java`).
@@ -156,7 +156,7 @@ pub fn java_int(v: f64) -> i32 {
     v as i32
 }
 
-/// What saving a field does (`GUIRBMKControlAuto.mouseClicked:108-118`).
+/// What saving a field does (`GUIRBMKControlAuto.mouseClicked:104-118`).
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Saved {
     /// A number: the field shows `value` and the screen sends it.
