@@ -428,19 +428,23 @@ def act(g):
             g.check('one_mold_of_the_stack', held == [1], held)
             # The stream fills the mold (72) and the cast cools for 200 ticks: an ingot in its slot, 72 left in the crucible.
             g.check('the_cast_cooled', wait_for(lambda: held_gold(g, MOLD_AT) == 1, 120), [block_items(g, MOLD_AT)[:200], molten(model(g, CORE))])
+            # The ingot waits in the mold's slot, so nothing more pours (a mold takes metal only with its cast slot empty): the
+            # 72 left stay in the crucible for the shovel. Then the ingot comes out by a click with an empty hand.
             g.command('clear @s')
-            g.command(f'tp @s {MOLD_AT[0] + .5} {MOLD_AT[1] + 2} {MOLD_AT[2] + 2.5}')
-            time.sleep(1)
-            use_machine(g, [MOLD_AT], 'mold_block_with_an_empty_hand', 'up')
-            g.check('the_ingot_came_out', held_gold(g, MOLD_AT) == 0 and 'minecraft:gold_ingot' in inventory_text(g), [block_items(g, MOLD_AT)[:200], inventory_text(g)[:300]])
             g.command('give @s minecraft:iron_shovel 1')
             g.ctl('select minecraft:iron_shovel')
             g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
             time.sleep(1)
+            g.check('72_wait_in_the_crucible', molten(model(g, CORE)) == 72, molten(model(g, CORE)))
             use_machine(g, [(CORE[0], CORE[1] + 1, CORE[2]), CORE], 'crucible_with_a_shovel')
             g.check('the_crucible_is_empty', molten(model(g, CORE)) == 0, molten(model(g, CORE)))
             inv = inventory_text(g)
-            g.check('the_rest_is_one_scrap_of_72', 'ntm:scraps__gold' in inv and stack_quanta(inv) == 144, inv[:600])
+            g.check('the_rest_is_one_scrap_of_72', 'ntm:scraps__gold' in inv and stack_quanta(inv) == 72, inv[:600])
+            g.command('clear @s minecraft:iron_shovel')
+            g.command(f'tp @s {MOLD_AT[0] + .5} {MOLD_AT[1] + 2} {MOLD_AT[2] + 2.5}')
+            time.sleep(1)
+            use_machine(g, [MOLD_AT], 'mold_block_with_an_empty_hand', 'up')
+            g.check('the_ingot_came_out', held_gold(g, MOLD_AT) == 0 and 'minecraft:gold_ingot' in inventory_text(g), [block_items(g, MOLD_AT)[:200], inventory_text(g)[:300]])
         g.evidence['picked'] = inventory_text(g)[:600]
         g.command('gamemode creative @s')
     elif SCENARIO == 'excess':
