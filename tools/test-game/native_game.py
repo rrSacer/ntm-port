@@ -34,6 +34,8 @@ class Game:
                     return status
                 time.sleep(.25)
             raise TimeoutError('player/chunks not ready')
+        if line.startswith('interact ') and not _retry and os.environ.get('NTM_AIM_GUARD', '1') != '0':
+            self.aim_guard(line)
         started=time.monotonic()
         with socket.socket(socket.AF_UNIX) as sock:
             sock.settimeout(360)
@@ -54,6 +56,26 @@ class Game:
         if result.get('error'):
             raise RuntimeError(f'{line}: {result["error"]}')
         return result
+
+    def aim_guard(self, line):
+        """Before `interact X Y Z [FACE]`: the crosshair, aimed as the interact aims it (`look-at block`), must name that
+        block. An entity in front of it (another player standing at this spot, INFRA-G) takes the click instead and no
+        use reaches the block: fail here, saying so, rather than record a use that never happened."""
+        words = line.split()
+        cell = words[1:4]
+        face = words[4:5] if len(words) > 4 and not words[4].startswith('--') else []
+        self.ctl(' '.join(['look-at', 'block', *cell, *face]))
+        target = self.ctl('looking-at')
+        block = target.get('block') or {}
+        if target.get('kind') == 'block' and [str(v) for v in block.get('pos', [])] == cell:
+            return
+        entity = target.get('entity') or {}
+        if target.get('kind') == 'entity':
+            what = (f"{entity.get('type')} id {entity.get('id')} at {entity.get('distance', 0):.2f} blocks "
+                    f"(at {entity.get('pos')}); another player standing at this spot? move them away first")
+        else:
+            what = f"{target.get('kind')} {block.get('block')} at {block.get('pos')}"
+        raise RuntimeError(f'{line}: aim guard: the crosshair is on {what}, not on block {cell}')
 
     @contextmanager
     def defer_evidence(self):
