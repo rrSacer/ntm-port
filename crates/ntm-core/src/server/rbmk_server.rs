@@ -22,14 +22,14 @@
 //! dimension's cache over the save's rules, read as the first column reads them (`rbmk_columns::first_dial`, 3A);
 //! occlusion is Java's `isOpaqueCube` (`rbmk_opaque`); the step's `incrementRad` goes to the world's radiation by
 //! chunk and its `SatelliteRayScan` events to the dimension's kept list (`persist::report_ray`, 4A), both with the
-//! step's commit. Still out of the step: ports and fluids (T08), the outgasser's recipes (T09), control rods' targets
-//! and power (T07), meltdowns (logged once, not run: T16).
+//! step's commit. Still out of the step: ports and fluids (T08), the outgasser's recipes (T09),
+//! meltdowns (logged once, not run: T16).
 use super::*;
 use crate::{
     machine::Data,
     rbmk::{
         persist::{self, Layer, Member, RbmkColumn},
-        reactor::{Column, Effect, Kind as ColumnKind, Reactor},
+        reactor::{AutoFunction, Column, Effect, Kind as ColumnKind, Reactor},
     },
     server::container_bridge::Stack,
 };
@@ -281,6 +281,20 @@ impl Server {
                     rod.has_rod = c.has_rod;
                     rod.fuel = c.slots.first().cloned().flatten().and_then(|s| persist::rod_of(&s.id).map(|t| (t, persist::stack_rod(&s))));
                 }
+                // A control rod as its TE (T07): where it is and goes, the manual rods' start, the ReaSim rods' power
+                // (in memory), the automatic rods' settings (T06). A save from before reads as the fresh TE.
+                if let Some(cc) = col.control_mut() {
+                    let st = c.control.clone().unwrap_or_else(|| persist::ControlState::of(&m.block));
+                    (cc.level, cc.target_level, cc.starting_level, cc.power, cc.has_power) = (st.level, st.target_level, st.starting_level, st.power, st.has_power);
+                    if let Some(a) = &c.auto {
+                        (cc.level_lower, cc.level_upper, cc.heat_lower, cc.heat_upper) = (a.level_lower, a.level_upper, a.heat_lower, a.heat_upper);
+                        cc.function = Some(match a.function {
+                            1 => AutoFunction::QuadUp,
+                            2 => AutoFunction::QuadDown,
+                            _ => AutoFunction::Linear,
+                        });
+                    }
+                }
                 r.add(col);
             }
             r.set_queued(states[i].queue(order));
@@ -365,8 +379,13 @@ impl Server {
             for (j, p) in order.iter().enumerate() {
                 let col = &r.columns[j];
                 let m = self.ready.world.machines.get_mut(&(dim.clone(), [p[0], y, p[1]])).unwrap();
+                let block = m.block.clone();
                 let Data::Rbmk(c) = &mut m.data else { unreachable!() };
                 c.heat = col.heat;
+                if let Some(cc) = col.control() {
+                    let st = c.control.get_or_insert_with(|| persist::ControlState::of(&block));
+                    (st.level, st.target_level, st.starting_level, st.power, st.has_power) = (cc.level, cc.target_level, cc.starting_level, cc.power, cc.has_power);
+                }
                 c.reasim_water = col.reasim_water;
                 c.reasim_steam = col.reasim_steam;
                 if let Some(rod) = col.rod() {
