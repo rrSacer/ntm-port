@@ -156,6 +156,23 @@ pub fn java_int(v: f64) -> i32 {
     v as i32
 }
 
+/// `Math.round` of a double: `floor(x + 0.5)` as a long.
+fn java_round(x: f64) -> i64 {
+    (x + 0.5).floor() as i64
+}
+
+/// `BobMathUtil.getShortNumber`: under 1000 the number itself, else divided by its power of a thousand, rounded to
+/// two decimals (one for -100 and below) and written as Java writes a double (`50.0k`, `1.23M`).
+pub fn short_number(l: i64) -> String {
+    let abs = l.unsigned_abs() as f64;
+    let Some((power, suffix)) = [(18, "E"), (15, "P"), (12, "T"), (9, "G"), (6, "M"), (3, "k")].into_iter().find(|(p, _)| abs >= 10f64.powi(*p)) else {
+        return l.to_string();
+    };
+    let res = l as f64 / 10f64.powi(power);
+    let res = if res <= -100.0 { java_round(res * 10.0) as f64 / 10.0 } else { java_round(res * 100.0) as f64 / 100.0 };
+    format!("{res:?}{suffix}")
+}
+
 /// What saving a field does (`GUIRBMKControlAuto.mouseClicked:104-118`).
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Saved {
@@ -247,6 +264,14 @@ mod tests {
         assert_eq!(parse_double("1e400"), Some(f64::INFINITY));
         assert_eq!(parse_double("inf"), None, "Rust's words are not Java's");
         assert_eq!(parse_double("0x1p3"), None, "hexadecimals read as None (past any RBMK field)");
+    }
+
+    #[test]
+    fn short_numbers_are_bobmathutils() {
+        for (v, s) in [(0, "0"), (999, "999"), (-999, "-999"), (1_000, "1.0k"), (4_999, "5.0k"), (50_000, "50.0k"), (1_234_567, "1.23M"),
+            (-123_456, "-123.5k"), (-99_994, "-99.99k"), (i64::MAX, "9.22E")] {
+            assert_eq!(short_number(v), s, "{v}");
+        }
     }
 
     #[test]

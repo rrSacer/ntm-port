@@ -1,13 +1,36 @@
 //! The RBMK columns as `IControlReceiver`s (T06): what their screens send them (`receiveControl`) and what they show
-//! back (the TE's network pack, `serialize`), over the codec of [`crate::screens::control`]. T06 carries the automatic
-//! control rod's; the other columns' screens come with their tickets (T07 manual control, T08 boiler, T10 console).
+//! back (the TE's network pack, `serialize`), over the codec of [`crate::screens::control`]. T06 carried the automatic
+//! control rod's, T07 the manual rods' and the level, target and power of all five; the other columns' screens come
+//! with their tickets (T08 boiler, T10 console).
 
-use crate::rbmk::persist::{self, AutoControl, RbmkColumn};
+use crate::rbmk::persist::{self, AutoControl, ControlState, RbmkColumn};
 use crate::screens::control::{Fields, Refusal, Value};
 
-/// Whether a column of `block` takes screen commands (T06: the automatic control rods).
+/// Whether a column of `block` takes screen commands (T06: the automatic control rods; T07: the manual ones).
 pub fn takes_commands(block: &str) -> bool {
-    persist::is_auto_control(block)
+    persist::is_control(block)
+}
+
+/// `TileEntityRBMKControlManual.receiveControl`: `level` sets the target (`setTarget`: the target as sent, the start
+/// where the rod is now), `color` toggles a group (`abs(i) % 5`; the group the rod is in takes it out). A negative index
+/// (`abs(Integer.MIN_VALUE)`) throws in the Java after the level was set; here it is refused whole (D2).
+fn receive_manual(block: &str, column: &mut RbmkColumn, fields: &Fields) -> Result<bool, Refusal> {
+    let color = fields.has_key("color").then(|| fields.get_integer("color").wrapping_abs() % 5);
+    if let Some(c) = color.filter(|c| *c < 0) {
+        return Err(Refusal::Invalid(format!("RBMKColor.values()[{c}]")));
+    }
+    let st = column.control.get_or_insert_with(|| ControlState::of(block));
+    let before = st.clone();
+    if fields.has_key("level") {
+        st.target_level = fields.get_double("level");
+        st.starting_level = st.level;
+    }
+    if let Some(c) = color {
+        let c = c as u8;
+        st.color = if st.color == Some(c) { None } else { Some(c) };
+    }
+    let bits = |s: &ControlState| (s.target_level.to_bits(), s.starting_level.to_bits(), s.color);
+    Ok(bits(st) != bits(&before))
 }
 
 /// `TileEntityRBMKControlAuto.receiveControl`: `function` picks the curve (`abs(i) % RBMKColor.values().length`,
@@ -15,6 +38,9 @@ pub fn takes_commands(block: &str) -> bool {
 /// the Java and is refused here, D2); without it the four doubles are set, a missing one to 0. Ok(true) when the
 /// column changed.
 pub fn receive(block: &str, column: &mut RbmkColumn, fields: &Fields) -> Result<bool, Refusal> {
+    if persist::is_manual_control(block) {
+        return receive_manual(block, column, fields);
+    }
     if !persist::is_auto_control(block) {
         return Err(Refusal::Invalid(format!("{block} takes no command")));
     }
@@ -39,25 +65,81 @@ pub fn receive(block: &str, column: &mut RbmkColumn, fields: &Fields) -> Result<
     Ok(changed)
 }
 
-/// What the screen of an automatic control rod reads (`TileEntityRBMKControl.serialize` then
-/// `TileEntityRBMKControlAuto.serialize`): the level and its target (0 until T07 moves the rod), the power and whether
-/// it has some (0, false: the ReaSim's power is T07's), the four settings and the curve.
+/// What a control rod's screen reads (`TileEntityRBMKControl.serialize`: the level, its target, the power and whether
+/// it has enough; then `TileEntityRBMKControlManual.serialize`, the start and the group, -1 for none, or
+/// `TileEntityRBMKControlAuto.serialize`, the four settings and the curve).
 pub fn snapshot(block: &str, column: &RbmkColumn) -> Option<Fields> {
-    if !persist::is_auto_control(block) {
+    if !persist::is_control(block) {
         return None;
     }
-    let a = column.auto.clone().unwrap_or_default();
+    let st = column.control.clone().unwrap_or_else(|| ControlState::of(block));
     let mut f = Fields::default();
-    f.set("level", Value::Double(0.0))
-        .set("targetLevel", Value::Double(0.0))
-        .set("power", Value::Long(0))
-        .set("hasPower", Value::Byte(0))
-        .set("levelLower", Value::Double(a.level_lower))
+    f.set("level", Value::Double(st.level))
+        .set("targetLevel", Value::Double(st.target_level))
+        .set("power", Value::Long(st.power))
+        .set("hasPower", Value::Byte(i8::from(st.has_power)));
+    if persist::is_manual_control(block) {
+        f.set("startingLevel", Value::Double(st.starting_level))
+            .set("color", Value::Int(st.color.map_or(-1, i32::from)));
+        return Some(f);
+    }
+    let a = column.auto.clone().unwrap_or_default();
+    f.set("levelLower", Value::Double(a.level_lower))
         .set("levelUpper", Value::Double(a.level_upper))
         .set("heatLower", Value::Double(a.heat_lower))
         .set("heatUpper", Value::Double(a.heat_upper))
         .set("function", Value::Int(i32::from(a.function)));
     Some(f)
+}
+
+/// `EnumUtil.grabEnumSafely`: `abs(i % n)`, never out of the values.
+fn grab_safely(i: i32, n: i32) -> u8 {
+    (i % n).unsigned_abs() as u8
+}
+
+/// `ICopiable.getSettings` of a control rod (T07): a manual rod's group (none: an empty compound), an automatic rod's
+/// four settings and curve. What a settings tool copies.
+pub fn settings(block: &str, column: &RbmkColumn) -> Option<Fields> {
+    let mut f = Fields::default();
+    if persist::is_manual_control(block) {
+        if let Some(c) = column.control.as_ref().and_then(|c| c.color) {
+            f.set("color", Value::Int(i32::from(c)));
+        }
+        return Some(f);
+    }
+    if !persist::is_auto_control(block) {
+        return None;
+    }
+    let a = column.auto.clone().unwrap_or_default();
+    f.set("levelLower", Value::Double(a.level_lower))
+        .set("levelUpper", Value::Double(a.level_upper))
+        .set("heatLower", Value::Double(a.heat_lower))
+        .set("heatUpper", Value::Double(a.heat_upper))
+        .set("function", Value::Int(i32::from(a.function)));
+    Some(f)
+}
+
+/// `ICopiable.pasteSettings`: a manual rod takes the group (`grabEnumSafely`), or none without one; an automatic rod
+/// takes each setting the compound has. False for a column that has no settings.
+pub fn paste_settings(block: &str, column: &mut RbmkColumn, fields: &Fields) -> bool {
+    if persist::is_manual_control(block) {
+        let st = column.control.get_or_insert_with(|| ControlState::of(block));
+        st.color = fields.has_key("color").then(|| grab_safely(fields.get_integer("color"), 5));
+        return true;
+    }
+    if !persist::is_auto_control(block) {
+        return false;
+    }
+    let a = column.auto.get_or_insert_with(AutoControl::default);
+    for (key, v) in [("levelLower", &mut a.level_lower), ("levelUpper", &mut a.level_upper), ("heatLower", &mut a.heat_lower), ("heatUpper", &mut a.heat_upper)] {
+        if fields.has_key(key) {
+            *v = fields.get_double(key);
+        }
+    }
+    if fields.has_key("function") {
+        a.function = grab_safely(fields.get_integer("function"), 3);
+    }
+    true
 }
 
 /// The settings a snapshot carries (the client's copy of the TE).
@@ -133,11 +215,12 @@ mod tests {
     }
 
     #[test]
-    fn only_the_automatic_rods_take_commands_and_a_save_from_before_reads_the_defaults() {
-        let mut manual = RbmkColumn::of("ntm:rbmk_control");
-        assert_eq!(manual.auto, None);
-        assert!(matches!(receive("ntm:rbmk_control", &mut manual, &Fields::default()), Err(Refusal::Invalid(_))));
-        assert!(snapshot("ntm:rbmk_control", &manual).is_none());
+    fn only_the_control_rods_take_commands_and_a_save_from_before_reads_the_defaults() {
+        let mut blank = RbmkColumn::of("ntm:rbmk_blank");
+        assert_eq!((blank.auto.clone(), blank.control.clone()), (None, None));
+        assert!(matches!(receive("ntm:rbmk_blank", &mut blank, &Fields::default()), Err(Refusal::Invalid(_))));
+        assert!(snapshot("ntm:rbmk_blank", &blank).is_none());
+        assert_eq!(RbmkColumn::of("ntm:rbmk_control").auto, None, "a manual rod has no settings");
         // A column saved before T06 has no `auto`: its screen shows the TE's defaults, and a command sets it.
         let mut old = RbmkColumn::of(AUTO);
         old.auto = None;
@@ -166,5 +249,76 @@ mod tests {
         let keys: Vec<&str> = s.0.keys().map(String::as_str).collect();
         assert_eq!(keys, ["function", "hasPower", "heatLower", "heatUpper", "level", "levelLower", "levelUpper", "power", "targetLevel"]);
         assert_eq!(auto_of(&s), c.auto.unwrap());
+    }
+
+    const MANUAL: &str = "ntm:rbmk_control";
+
+    fn level(v: f64) -> Fields {
+        let mut f = Fields::default();
+        f.set("level", Value::Double(v));
+        f
+    }
+
+    fn color(c: i32) -> Fields {
+        let mut f = Fields::default();
+        f.set("color", Value::Int(c));
+        f
+    }
+
+    #[test]
+    fn a_manual_rod_takes_its_target_and_toggles_its_group() {
+        let mut c = RbmkColumn::of(MANUAL);
+        c.control.as_mut().unwrap().level = 0.4;
+        // `setTarget`: the target as sent (the screen's 1, 0.75 .. 0; anything else stored as is), the start where the rod is.
+        assert_eq!(receive(MANUAL, &mut c, &level(0.25)), Ok(true));
+        let st = c.control.clone().unwrap();
+        assert_eq!((st.target_level, st.starting_level), (0.25, 0.4));
+        receive(MANUAL, &mut c, &level(7.5)).unwrap();
+        assert_eq!(c.control.as_ref().unwrap().target_level, 7.5);
+        // A group: `abs(i) % 5`; the same again takes the rod out of it.
+        for (i, expect) in [(2, Some(2)), (2, None), (-3, Some(3)), (9, Some(4)), (4, None), (5, Some(0))] {
+            receive(MANUAL, &mut c, &color(i)).unwrap();
+            assert_eq!(c.control.as_ref().unwrap().color, expect, "color {i}");
+        }
+        // Both keys: the level, then the group. `abs(Integer.MIN_VALUE)` throws in the Java: refused whole.
+        let before = c.clone();
+        let mut both = level(0.5);
+        both.set("color", Value::Int(i32::MIN));
+        assert!(matches!(receive(MANUAL, &mut c, &both), Err(Refusal::Invalid(_))));
+        assert_eq!(c, before);
+        // The snapshot: the TE's pack, the group -1 for none.
+        let s = snapshot(MANUAL, &c).unwrap();
+        let keys: Vec<&str> = s.0.keys().map(String::as_str).collect();
+        assert_eq!(keys, ["color", "hasPower", "level", "power", "startingLevel", "targetLevel"]);
+        assert_eq!(s.get_integer("color"), 0);
+        c.control.as_mut().unwrap().color = None;
+        assert_eq!(snapshot(MANUAL, &c).unwrap().get_integer("color"), -1);
+    }
+
+    #[test]
+    fn settings_copy_and_paste_as_the_java_does() {
+        let mut from = RbmkColumn::of(MANUAL);
+        receive(MANUAL, &mut from, &color(3)).unwrap();
+        let s = settings(MANUAL, &from).unwrap();
+        let mut to = RbmkColumn::of("ntm:rbmk_control_reasim");
+        assert!(paste_settings("ntm:rbmk_control_reasim", &mut to, &s));
+        assert_eq!(to.control.as_ref().unwrap().color, Some(3));
+        // A rod in no group copies an empty compound, which takes the other rod out of its group.
+        let none = settings(MANUAL, &RbmkColumn::of(MANUAL)).unwrap();
+        assert!(none.0.is_empty());
+        paste_settings("ntm:rbmk_control_reasim", &mut to, &none);
+        assert_eq!(to.control.as_ref().unwrap().color, None);
+        // `grabEnumSafely`: abs(i % n).
+        paste_settings(MANUAL, &mut to, &color(-7));
+        assert_eq!(to.control.as_ref().unwrap().color, Some(2));
+        // An automatic rod: each key it has, the curve by `grabEnumSafely` (3 curves).
+        let mut a = RbmkColumn::of(AUTO);
+        let mut f = Fields::default();
+        f.set("heatUpper", Value::Double(900.0)).set("function", Value::Int(-4));
+        assert!(paste_settings(AUTO, &mut a, &f));
+        let got = a.auto.clone().unwrap();
+        assert_eq!((got.heat_upper, got.level_upper, got.function), (900.0, 0.0, 1));
+        assert_eq!(auto_of(&settings(AUTO, &a).unwrap()), got);
+        assert!(settings("ntm:rbmk_blank", &RbmkColumn::of("ntm:rbmk_blank")).is_none());
     }
 }
