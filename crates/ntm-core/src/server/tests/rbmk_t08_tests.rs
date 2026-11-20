@@ -260,10 +260,9 @@ fn a_loader_moves_the_bottom_port() {
         let mut g = game();
         let at = [0, Y, 0];
         g.place(at, &column("rbmk_boiler"));
-        g.place(loader_at, "ntm:rbmk_loader[facing=north,honey_level=0]");
-        // In the game a loader is a plain block, never a machine (`machine_block`: an inert kind): the ports read the
-        // world's block.
-        g.ready().world.machines.remove(&(OW.to_string(), loader_at));
+        // In the game a loader is a plain block whose changes never reach the server (the glue reports machine blocks
+        // only, `machine_block`: an inert kind is none): the ports read the world's block.
+        g.world.borrow_mut().set(OW, loader_at, "ntm:rbmk_loader");
         let src = [side_duct[0] + 1, side_duct[1], side_duct[2]];
         // A duct at the core's side: never a port.
         let beside = [-2, Y, 0];
@@ -282,7 +281,7 @@ fn a_loader_moves_the_bottom_port() {
         assert_eq!(piped(&mut g, at).input.fill, 3_000, "by the loader at {loader_at:?}");
         assert_eq!(barrel(&mut g, beside).mb, 3_000, "the core's side is closed with the loader at {loader_at:?}");
         // The loader taken away: once the networks are checked again (every 10 ticks), the side duct reaches nothing.
-        g.break_block(loader_at);
+        g.world.borrow_mut().set(OW, loader_at, "minecraft:air");
         g.run(12);
         set_barrel(&mut g, src, |s| {
             s.tank.fill("water", 3_000);
