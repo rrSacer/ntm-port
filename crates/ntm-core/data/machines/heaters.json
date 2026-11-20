@@ -497,6 +497,11 @@
 "heat": 500,
 "ticks": 50
 },
+"ntm:coal_eternal": {
+"container": "ntm:coal_eternal",
+"heat": 500,
+"ticks": 400
+},
 "ntm:coal_infernal": {
 "container": null,
 "heat": 500,

@@ -31119,6 +31119,15 @@
       "resolution": "no matched source registration"
     },
     {
+      "id": "ntm:coal_eternal",
+      "radiation_rad_s": 0,
+      "radiation_millirad_s": 0,
+      "other_hazards": {},
+      "sources": [],
+      "note": "No resolved RADIATION registration for this catalog identity; not a claim of physical safety.",
+      "resolution": "no matched source registration"
+    },
+    {
       "id": "ntm:mold__nugget",
       "radiation_rad_s": 0,
       "radiation_millirad_s": 0,

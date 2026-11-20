@@ -29993,6 +29993,14 @@
       "model_gap": "Neutral colour (the Java tints it by the material); no flow of its own"
     },
     {
+      "id": "coal_eternal",
+      "source_variable": "coal_eternal",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/coal_eternal.png",
+      "max_stack_size": 1
+    },
+    {
       "id": "mold__nugget",
       "source_variable": "mold",
       "source_class": "ItemMold",

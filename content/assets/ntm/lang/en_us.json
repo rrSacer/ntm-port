@@ -3446,5 +3446,6 @@
   "itemGroup.ntm.weapons": "NTM Weapons and Turrets",
   "itemGroup.ntm.consumables": "NTM Consumables and Gear",
   "block.ntm.dummy_zirnox": "Machine (part)",
-  "block.ntm.dummy_zirnox_destroyed": "Machine (part)"
+  "block.ntm.dummy_zirnox_destroyed": "Machine (part)",
+  "item.ntm.coal_eternal": "Eternal Coal"
 }

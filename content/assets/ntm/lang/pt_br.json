@@ -3446,5 +3446,6 @@
   "itemGroup.ntm.weapons": "Armas e Torretas do NTM",
   "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM",
   "block.ntm.dummy_zirnox": "Máquina (parte)",
-  "block.ntm.dummy_zirnox_destroyed": "Máquina (parte)"
+  "block.ntm.dummy_zirnox_destroyed": "Máquina (parte)",
+  "item.ntm.coal_eternal": "Carvão Eterno"
 }

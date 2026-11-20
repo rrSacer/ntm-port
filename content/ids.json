@@ -107479,6 +107479,26 @@
       }
     },
     {
+      "id": "ntm:coal_eternal",
+      "source_variable": "coal_eternal",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/coal_eternal.png",
+      "max_stack_size": 1,
+      "source_registry": "hbm:item.coal_eternal",
+      "names": {
+        "en_us": "Eternal Coal",
+        "pt_br": "Carvão Eterno"
+      },
+      "name_sources": {
+        "en_us": "assets/hbm/lang/en_US.lang:item.coal_eternal.name",
+        "pt_br": "assets/hbm/lang/pt_BR.lang:item.coal_eternal.name"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions"
+    },
+    {
       "id": "ntm:mold__nugget",
       "source_variable": "mold",
       "source_class": "ItemMold",

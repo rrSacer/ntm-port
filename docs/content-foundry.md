@@ -35,7 +35,7 @@ A firebox tem perfil próprio: aceita madeira e recipientes, ao contrário da ta
 
 `fuel_details` registra valor base, categoria, modificadores, chaves OreDict e origem. `container` é nulo ou o item devolvido quando a pilha acaba; lava devolve `minecraft:bucket`. A tabela vanilla é um perfil explícito das identidades legadas da fornalha 1.7.10, validadas no registro 26.3; não se inferem combustíveis pelo nome moderno. Carvão vegetal fica sem categoria Coal e usa 1600 ticks/100 calor; carvão usa 2000/200. As classes vanilla ladder/button não são madeira nesse perfil.
 
-Lacunas em `fuel_gaps`: `book_guide` e `coal_eternal` não estão no catálogo; combustíveis de outros mods/configurações, identidades exclusivamente modernas e subclasses genéricas de bloco NTM com `Material.wood` ainda não verificadas ficam de fora.
+Lacunas em `fuel_gaps`: `book_guide` não está no catálogo (é o livro, que pede a tela do guia); `coal_eternal` entrou na rodada 6 (`ntm:coal_eternal`, pilha 1, `single * 16` = 3200 ticks na fornalha e 400 no forno, e **o seu próprio item como recipiente**: aceso, volta inteiro, queima para sempre; cinza do tipo MISC; a fonte o dá só pelo tijolo esquecido, que não existe no port); combustíveis de outros mods/configurações, identidades exclusivamente modernas e subclasses genéricas de bloco NTM com `Material.wood` ainda não verificadas ficam de fora.
 
 ## IDs e receitas
 

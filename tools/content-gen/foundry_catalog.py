@@ -48,6 +48,11 @@ def build(source):
                    'source_texture': 'src/main/resources/assets/hbm/textures/blocks/' + texture + '.png',
                    'block_properties': {'requires_tool': False, 'hardness': 5.0, 'explosion_resistance': 10.0, 'sounds': 'minecraft:iron_block'},
                    'model_gap': 'Neutral colour (the Java tints it by the material); no flow of its own'})
+    # The eternal coal (`FuelHandler`: single * 16; its own container item, so a firebox never uses it up): obtained from the
+    # forgotten bricks, hidden from the creative tabs in the Java too.
+    name, texture = registration(items, 'coal_eternal', 'item')
+    result.append({'id': name, 'source_variable': 'coal_eternal', 'type': 'item', 'category': 'component',
+                   'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png', 'max_stack_size': 1})
     name, _ = registration(items, 'mold', 'item')
     for mold in molds(source):
         shape = mold['args'][0].removeprefix('MaterialShapes.') if mold['class'] != 'MoldMulti' else mold['name']
