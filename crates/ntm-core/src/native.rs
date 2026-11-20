@@ -183,8 +183,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
         };
     }
     // The RBMK columns' automation (`getAccessibleSlotsFromSide`, `canInsertItem`, `canExtractItem`), through the core
-    // and the proxies of their ports: the storage takes rods and gives anything, the outgasser gives its output (its
-    // input waits for T09's recipes: refused), the fuel channels and the heater show no slot. The hand (T05): a fuel
+    // and the proxies of their ports: the storage takes rods and gives anything, the outgasser takes into its input
+    // only what has a recipe (`isItemValidForSlot`, T09: one whose product the port lacks has none) and gives only its
+    // output (`canExtractItem`), the fuel channels and the heater show no slot. The hand (T05): a fuel
     // channel's menu takes or gives nothing in survival while the rod in it is hotter than 200 °C (`ContainerRBMKRod.
     // slotClick` and `transferStackInSlot`: every gesture on the slot, its vanilla `Slot` taking any item otherwise); a
     // creative player passes (the glue's `creative_bypass`). The other columns' menus are their tickets'.
@@ -196,6 +197,7 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
             || match (block, action) {
                 ("ntm:rbmk_storage", SlotAction::Insert) => crate::rbmk::persist::rod_of(&item.id).is_some(),
                 ("ntm:rbmk_storage", SlotAction::Extract) => true,
+                ("ntm:rbmk_outgasser", SlotAction::Insert) => slot == 0 && crate::rbmk::outgasser::recipe_of_port(&item.id).is_some(),
                 ("ntm:rbmk_outgasser", SlotAction::Extract) => slot == 1,
                 _ => false,
             };
