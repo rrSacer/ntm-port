@@ -12,6 +12,10 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           the pool's 80 and the scrap's 64. The cut `kv_committed` reopens the chunk with the model from the journal
           (the review's P1-1: the mold and the outputs of the block entity must stay). Control: a barrel with an ingot
           and a nugget and the player's 8 nuggets
+  batch   the caster with water: a steel barrel at its first port, filled with a bucket of water through its screen and
+          set to output; the crucible's 2 ingots (144) melt, pour and are cast by the caster (5 water a quantum): 2
+          ingots in its outputs, none in the pool (F4 in game); the act breaks it and picks up what it drops. Control:
+          as `caster`
   caster  a strand caster whose funnel cell a crucible's stream falls on (F1): 2 ingots (144) melt, pour and wait in
           its pool (no water: nothing is cast); the act breaks the caster as a player in survival and picks up its
           drops: its mold and one scrap with all 144. Control: a barrel with the 2 ingots and the mold, broken and
@@ -121,7 +125,7 @@ def machines(g):
 
 
 def places(g):
-    if SCENARIO not in ('caster', 'excess'):
+    if SCENARIO not in ('caster', 'excess', 'batch'):
         return [CORE]
     return [caster_core(g)] + ([] if VANILLA else [tuple(placed(g)['crucible'])])
 
@@ -175,7 +179,7 @@ def prepare(g):
             g.check('the_slots_are_empty', stack_quanta(block_items(g, CORE)) == 0, block_items(g, CORE))
             # Cold from here: nothing changes on its own after the base.
             g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
-    elif SCENARIO in ('caster', 'excess'):
+    elif SCENARIO in ('caster', 'excess', 'batch'):
         place_caster(g)
     g.command('kill @e[type=minecraft:item]')
     g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
@@ -217,6 +221,8 @@ def place_caster(g):
     g.evidence['caster'] = {'core': core, 'facing': facing}
     cell = (core[0], core[1] + 2, core[2])  # the cell over the core is one of the four funnel cells
     g.command('item replace block %d %d %d container.0 with ntm:mold__ingot 1' % core)
+    if SCENARIO == 'batch':
+        water_barrel(g, core, d)
     # The crucible two blocks south of the cell facing north: its waste stream starts two blocks north of it.
     crucible = (cell[0], cell[1] + 1, cell[2] - 2)
     fire = (crucible[0], crucible[1] - 1, crucible[2])
@@ -227,12 +233,57 @@ def place_caster(g):
     time.sleep(2)
     g.command('item replace block %d %d %d container.0 with minecraft:coal 16' % fire)
     g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % crucible)
-    ok = wait_for(lambda: molten(model(g, core)) == 144, 240)
-    g.check('poured_144_into_the_caster', ok, [molten(model(g, core)), molten(model(g, crucible))])
+    if SCENARIO == 'batch':
+        ok = wait_for(lambda: held_gold(g, core) == 2 and molten(model(g, core)) == 0, 300)
+        g.check('cast_two_ingots', ok, [held_gold(g, core), molten(model(g, core)), molten(model(g, crucible)), block_items(g, core)[:300]])
+        m = model(g, core)
+        g.evidence['water_after'] = (m or {}).get('water')
+        g.check('water_was_used', ((m or {}).get('water') or {}).get('mb', 64000) < 64000 and ((m or {}).get('steam') or {}).get('mb', 0) > 0, (m or {}).get('water'))
+    else:
+        ok = wait_for(lambda: molten(model(g, core)) == 144, 240)
+        g.check('poured_144_into_the_caster', ok, [molten(model(g, core)), molten(model(g, crucible))])
     g.check('the_crucible_is_empty', molten(model(g, crucible)) == 0, molten(model(g, crucible)))
     # Cold from here.
     g.command('setblock %d %d %d minecraft:stone' % fire)
     g.command('setblock %d %d %d minecraft:stone' % crucible)
+
+
+def held_gold(g, p):
+    """The gold ingots in the slots of the machine at `p`."""
+    return sum(n for i, n, _ in entries(block_items(g, p)) if i == 'minecraft:gold_ingot')
+
+
+def water_barrel(g, core, d):
+    """A steel barrel at the caster's first port (core + rot - dir, open to rot: `getPorts`), with a bucket of water in
+    through its screen and set to output, as native_redes.py does."""
+    rot = (-d[1], d[0])
+    barrel = (core[0] + 2 * rot[0] - d[0], core[1], core[2] + 2 * rot[1] - d[1])
+    g.command('setblock %d %d %d ntm:barrel_steel[facing=south,honey_level=0]' % barrel)
+    g.command('gamemode creative @s')
+    g.command('clear @s')
+    g.command('give @s minecraft:water_bucket 1')
+    g.command(f'tp @s {barrel[0] + .5} {barrel[1]} {barrel[2] + 3.5}')
+    time.sleep(2)
+    g.close()
+    g.ctl('interact %d %d %d south' % barrel)
+    time.sleep(2)
+    screen = g.ctl('screen')
+    hot = [s['slot'] for s in screen.get('slots', []) if s.get('item') == 'minecraft:water_bucket' and s['slot'] < 36]
+    g.check('the_bucket_is_there', bool(hot), [s for s in screen.get('slots', []) if s.get('item')])
+    g.ctl(f'click-slot {hot[0]}')
+    time.sleep(.4)
+    g.ctl('click-slot 302')
+    time.sleep(1)
+    slot0 = next(w for w in g.ctl('ui').get('widgets', []) if w.get('id') == 'slot-0')['bounds']
+    ox, oy = slot0[0] - 8, slot0[1] - (84 + 58)
+    for _ in range(2):
+        g.ctl(f'click-at {ox + 151 + 9} {oy + 35 + 9}')
+        time.sleep(.8)
+    g.close()
+    time.sleep(3)
+    state = machine_state(g, barrel)
+    g.evidence['barrel'] = {'at': barrel, 'state': state[:300]}
+    g.check('the_barrel_holds_water', '"fluid":"water"' in state.replace(' ', ''), state[:300])
 
 
 def break_it(g, cells, label):
@@ -328,7 +379,7 @@ def act(g):
             g.check('one_exact_scrap_of_64', 'ntm_amount:64' in inventory_text(g).replace(' ', '').replace('"', ''), inventory_text(g)[:400])
         g.evidence['picked'] = inventory_text(g)[:600]
         g.command('gamemode creative @s')
-    elif SCENARIO == 'caster':
+    elif SCENARIO in ('caster', 'batch'):
         core = caster_core(g)
         cells = [(core[0], core[1] + dy, core[2]) for dy in (0, 1, 2)]
         break_it(g, cells if not VANILLA else [OTHER], 'caster')
