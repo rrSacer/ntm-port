@@ -1242,6 +1242,10 @@ mod tests {
         let pile = vec![Some(Full { stack: Stack::new("minecraft:coal", 5), name: "Fuel" }), Some(Full { stack: Stack::new("minecraft:coal", 5), name: "Spare" }), None];
         let after = publish(&[pile], &[vec![Some(Stack::new("minecraft:coal", 4)), None, Some(Stack::new("minecraft:coal", 5))]]);
         assert_eq!(after[0].iter().map(|f| f.as_ref().map(|f| (f.name, f.stack.count))).collect::<Vec<_>>(), vec![Some(("Fuel", 4)), None, Some(("Spare", 5))]);
+        // A slot whose stack stays as it is keeps it, while an equal one leaves another slot (taken out by the logic).
+        let pair = vec![Some(Full { stack: Stack::new("minecraft:coal", 5), name: "Fuel" }), Some(Full { stack: Stack::new("minecraft:coal", 5), name: "Spare" })];
+        let after = publish(&[pair], &[vec![Some(Stack::new("minecraft:coal", 5)), None]]);
+        assert_eq!(after[0][0].as_ref().map(|f| f.name), Some("Fuel"));
         assert!(moved_stacks(&[vec![None]], &[vec![Some(Stack::new("minecraft:coal", 1))]]).is_empty());
     }
 
