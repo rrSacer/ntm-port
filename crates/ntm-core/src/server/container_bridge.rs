@@ -135,6 +135,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Radioisotope(r) => Some(&mut **r),
         Data::Zirnox(z) if !z.destroyed => Some(&mut **z),
         Data::Rbmk(c) => Some(&mut **c),
+        Data::RbmkCrane(c) => Some(&mut **c),
         Data::BrickFurnace(f) => Some(f),
         Data::Furnace(f) => Some(f.slotted()),
         Data::Welder(w) => Some(&mut **w),
@@ -169,6 +170,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:rbmk_storage", Layout::Native),
     ("ntm:rbmk_cooler", Layout::Native),
     ("ntm:rbmk_heater", Layout::Native),
+    // T11: the crane console's one hidden slot, the item it holds.
+    ("ntm:rbmk_crane_console", Layout::Native),
     ("ntm:pile_device__loader", Layout::Native),
     ("ntm:machine_solar_boiler", Layout::Native),
     ("ntm:solar_mirror", Layout::Native),
@@ -1103,6 +1106,7 @@ impl Server {
         match &mut m.data {
             Data::Rbmk(c) => crate::rbmk::screen::apply(&block, c, pending),
             Data::RbmkConsole(c) => crate::rbmk::screen::apply_console(&mut c.state, pending),
+            Data::RbmkCrane(c) => crate::rbmk::crane::apply(c, pending),
             _ => {}
         }
     }

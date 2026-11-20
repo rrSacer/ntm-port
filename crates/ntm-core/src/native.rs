@@ -55,6 +55,9 @@ pub fn size_slots<T: Clone>(block: &str, items: &mut Vec<Option<T>>) {
 /// the others' come from their machine files.
 pub fn container(block: &str) -> Option<Container> {
     use crate::machine::furnace_slot::*;
+    if block == crate::rbmk::crane::BLOCK {
+        return Some(Container { slots: 1, faces: Default::default(), inputs: vec![], outputs: vec![], menu: None });
+    }
     if block == crate::radioisotopes::RTG {
         return Some(Container {slots:15,faces:std::array::from_fn(|_|(0..15).collect()),inputs:vec![],outputs:vec![],menu:Some("minecraft:generic_9x3")});
     }
@@ -263,6 +266,10 @@ pub fn block_slots(block: &str) -> Vec<SlotFilter> {
         let (co2,water)=(slots[24].quick_move.clone(),slots[25].quick_move.clone());
         slots.extend([SlotFilter {output:true,quick_move:co2,..Default::default()},SlotFilter {output:true,quick_move:water,..Default::default()}]);
         return slots;
+    }
+    // The RBMK crane console (T11): the item it holds, in one slot no menu shows and no automation reaches.
+    if block == crate::rbmk::crane::BLOCK {
+        return vec![SlotFilter::default()];
     }
     if block == "ntm:pile_device__loader" { return vec![SlotFilter { accept: Some(crate::pile::ROD_NAMES.iter().map(|n| format!("ntm:pile_rod__{n}")).collect()), max: Some(1), ..Default::default() }]; }
     machine_files().get(block).map(|v| file_slots(v.to_string().as_bytes())).unwrap_or_default()

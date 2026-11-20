@@ -22,7 +22,7 @@ use crate::{
 use serde::{Deserialize, Serialize};
 
 /// A double kept by its bits (`f64::to_bits`): lossless, NaN and -0.0 included.
-mod bits {
+pub(crate) mod bits {
     use serde::{Deserialize, Deserializer, Serializer};
     pub fn serialize<S: Serializer>(v: &f64, s: S) -> Result<S::Ok, S::Error> {
         s.serialize_u64(v.to_bits())

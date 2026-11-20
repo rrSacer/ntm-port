@@ -1319,7 +1319,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:rbmk_crane_console",
-        kind: Kind::Inert,
+        kind: Kind::RbmkCrane,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
