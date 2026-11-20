@@ -166,3 +166,9 @@ sucessivos sobre a mesma coluna ou uma escória posta por comando (nasce vazia).
 
 Uma fornalha com um `ntm:coal_eternal` no slot 0: o calor sobe (31 300 → 62 000 → 92 800 em 30 s) e o carvão continua no slot, pilha de 1
 (`report-eternal-coal.json`).
+
+### O controle negativo r11 (a linha removida)
+
+`horizon-client-r11` (sha256 `95e1a1dc77d5…`, `ntm.hmod` `a6aaaad5f752…`) é o `horizon-client-r10` (`2843f67d16b7…`) com **uma linha tirada** de
+`ntm_core::server::owned_cells`: `.filter(|c| c.initial.is_some())` (patch em `negative-control-r11.patch`). Com ele o cenário da
+escavadeira falha em `the_server_drops_the_mined_cable_at_once` (o servidor ainda tem o cabo minerado).

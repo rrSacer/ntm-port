@@ -1,0 +1,6 @@
+--- a/crates/ntm-core/src/server.rs
++++ b/crates/ntm-core/src/server.rs
+@@ owned_cells (the negative control r11 removes this line)
+         .flat_map(|c| &c.cells)
+-        .filter(|c| c.initial.is_some())
+         .map(|c| (c.guard.dim.clone(), c.guard.pos, blockstate::id_of(&c.desired).to_string()))
