@@ -59,7 +59,10 @@ impl Server {
         // Into the slag it hit, if it is the same material.
         let mut left = q;
         let mut into = None;
+        // The slag it hit must be a standing, loaded machine of the current model, as the source is.
+        let standing = |k: &Key, m: &Machine| r.loaded.get(k) == Some(&true) && !r.broken.contains_key(k) && self.model_current(k, m);
         if same_chunk(&hit.cell)
+            && r.world.machines.get(&hit.cell).is_some_and(|m| standing(&hit.cell, m))
             && let Some((key, after, rest)) = fill_into(&r.world.machines, &hit.cell, &mat, left)
         {
             left = rest;

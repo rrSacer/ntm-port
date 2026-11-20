@@ -96,9 +96,11 @@ gravação pedida em seguida** (o vazamento corre contra ela), cortes estritos, 
   **288** (144 duplicados): são os mesmos números do controle vanilla (`control_lost` 144, −144), o resíduo da ordem em que o arquivo do
   jogador é gravado depois dos chunks (o mesmo de `scrap`, `hand` e `clicks`, rodadas 3 e 4). Não vêm do vazamento (a escória já existia).
 
-Mutantes: `mutants-foundry.log`, os 16 da escória e da bica, **14 mortos**. Os dois que sobrevivem são equivalentes: (1) "um commit recusado
-é vertido em memória mesmo assim": o servidor refaz o modelo a partir do bloco entity no mesmo tique (nada observável sobrou nem pelo
-registro lembrado, pela sucata caída ou pelo bloco); (2) "toda célula de cima é ar": a definição do raio já garante que a célula de cima da
+Mutantes: `mutants-foundry.log`, os 16 da escória e da bica, **14 mortos**. Dos dois que sobreviviam, (1) "um commit recusado
+é vertido em memória mesmo assim" **não é equivalente** (revisão): o teste antigo usava `refuse_commits`, que recusa tudo, inclusive o commit
+de uma máquina só do `native_save`; na vida real a recusa pode atingir só o vazamento (o jogador põe um bloco na célula de cima no mesmo tique)
+e o `native_save` publicaria a origem reduzida sozinha. O teste novo `a_pour_refused_alone_...` recusa só os commits com células ou de várias
+máquinas (`refuse_structured`) e o mutante morre. Resta um equivalente: (2) "toda célula de cima é ar": a definição do raio já garante que a célula de cima da
 primeira atingida é ar, uma máquina (excluída antes) ou fora do chunk (excluída antes).
 
 Lacunas declaradas: sem o escoamento da escória, cor neutra, sem o vazamento entre chunks, mato/neve/líquido não são substituídos, sem

@@ -90,7 +90,10 @@ pub(super) fn pour_core(m: &Machines, cell: &Key) -> Option<Key> {
 /// (a machine, a cell of one, or anything that isn't air).
 pub(super) fn below(m: &Machines, host: &mut impl ServerHost, dim: &str, from: Pos, fall: i32) -> Option<Hit> {
     let cell = (0..=fall).map(|k| (dim.to_string(), [from[0], from[1] - k, from[2]])).find(|p| {
-        m.contains_key(p) || host.get_block(&p.0, p.1).is_none_or(|b| blockstate::id_of(&b) != "minecraft:air")
+        // The ray passes air of every kind (`cave_air` under ground); plants, torches and liquids are hits here (the Java
+        // passes the first two and replaces what it hits: `docs/content-foundry.md`).
+        m.contains_key(p)
+            || host.get_block(&p.0, p.1).is_none_or(|b| !matches!(blockstate::id_of(&b), "minecraft:air" | "minecraft:cave_air" | "minecraft:void_air"))
     })?;
     let key = if m.contains_key(&cell) { cell.clone() } else { pour_core(m, &cell).unwrap_or_else(|| cell.clone()) };
     Some(Hit { key, cell })

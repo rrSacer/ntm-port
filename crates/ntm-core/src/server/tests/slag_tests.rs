@@ -119,6 +119,38 @@ fn a_refused_commit_pours_nothing_and_the_source_keeps_its_metal() {
     assert_eq!(slag_at(&mut g, FIRST).unwrap().melt.amount, 100);
 }
 
+/// A refusal that reaches only the pour (the cell above taken by a player in the same tick, a pending change) and not the
+/// server's own single-machine commits: the source keeps 100 in memory and in its record, and no slag is born. Were the
+/// reduced source kept in memory, the next ordinary commit would publish it alone and the metal would be gone.
+#[test]
+fn a_pour_refused_alone_leaves_the_source_whole_in_memory_and_in_its_record() {
+    let mut g = pour_setup("iron", 100);
+    g.world.borrow_mut().refuse_structured = true;
+    let key = (OW.to_string(), SRC);
+    for tick in 0..60 {
+        g.run(1);
+        assert_eq!(channel(&mut g).amount, 100, "tick {tick}");
+        assert_eq!(recorded(&g), 100, "tick {tick}: the record");
+        assert_eq!(g.server.ready.native_saved.get(&key), g.world.borrow().saved.get(&key), "tick {tick}");
+        assert!(!g.server.ready.world.machines.contains_key(&(OW.to_string(), FIRST)), "tick {tick}");
+    }
+    assert!(g.world.borrow().dropped.is_empty());
+    g.world.borrow_mut().refuse_structured = false;
+    g.run(10);
+    assert_eq!((channel(&mut g).amount, held(&mut g), recorded(&g)), (0, 100, 100));
+}
+
+/// The ray passes every kind of air: `cave_air` between the tap and the floor is not a hit.
+#[test]
+fn the_ray_passes_cave_air() {
+    let mut g = pour_setup("iron", 100);
+    for y in 62..70 {
+        g.place([0, y, 4], "minecraft:cave_air");
+    }
+    g.run(40);
+    assert_eq!(slag_at(&mut g, FIRST).unwrap().melt.amount, 100, "on the floor, not on the cave air");
+}
+
 #[test]
 fn what_the_block_hit_does_not_take_goes_into_a_new_block_above_it() {
     // The same material, nearly full: it takes what it can, the rest goes above (`transfer`, then `above`).

@@ -1650,6 +1650,10 @@ impl ServerHost for Host<'_, '_> {
         self.commit_machines(std::slice::from_ref(c))
     }
     fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {
+        // The cells a commit writes (a slag tap's new block) installed their model synchronously: the block change they
+        // cause is the server's own, not a placement that would start another machine there.
+        let own=commits.iter().flat_map(|c|&c.cells).map(|c|(c.guard.dim.clone(),c.guard.pos,ntm_core::blockstate::id_of(&c.desired).into())).collect();
+        let _scope=OwnedBlockScope::new(own);
         self.publish_atomic(commits,&[],&consumed_contents(commits),false)
     }
     /// The acting player's stacks (`native_actor_uuid`), each with its whole SNBT, as a transfer compares them.

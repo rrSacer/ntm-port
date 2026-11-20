@@ -68,6 +68,8 @@ struct World {
     kv_fails: bool,
     /// The host cannot read the redstone (`redstone_many` answers none), the chunks being loaded.
     no_redstone: bool,
+    /// Commits that write cells or touch several machines (a pour) are refused; the single-machine ones pass.
+    refuse_structured: bool,
 }
 
 impl World {
@@ -102,6 +104,7 @@ impl World {
             no_entities: false,
             kv_fails: false,
             no_redstone: false,
+            refuse_structured: false,
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -232,7 +235,7 @@ impl ServerHost for SHost {
     }
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
         let mut w=self.world.borrow_mut();
-        if w.refuse_commits{return false;}
+        if w.refuse_commits||(w.refuse_structured&&(cs.len()>1||cs.iter().any(|c|!c.cells.is_empty()))){return false;}
         if cs.iter().flat_map(|c|&c.cells).any(|c|!w.loaded(&c.guard.dim,c.guard.pos)||w.get(&c.guard.dim,c.guard.pos)!=c.expected.state){return false;}
         if cs.iter().any(|c|!w.loaded(&c.dim,c.pos)||w.engine.get(&(c.dim.clone(),c.pos)).map(|e|e.0.clone()).unwrap_or_default()!=c.expected){return false;}
         for c in cs {for cell in &c.cells{w.set(&cell.guard.dim,cell.guard.pos,&cell.desired);if blockstate::id_of(&cell.expected.state)!=blockstate::id_of(&cell.desired){w.engine.remove(&cell.guard.key());w.saved.remove(&cell.guard.key());

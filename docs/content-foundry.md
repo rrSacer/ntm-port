@@ -145,7 +145,7 @@ Lacunas declaradas desta primeira versão (visuais, de poluição ou fora do esc
 0. **O vazamento não atravessa chunks** (acima).
 1. **O escoamento da escória** (`updateTick`: para baixo, sobre a escória de baixo, para os lados) não existe: a escória fica onde cai. É a fatia seguinte.
 2. **Cor neutra**: o Java pinta a textura pelo material (`colorMultiplier`); aqui o bloco usa `slag.png` sem tinta.
-3. **Blocos substituíveis** (mato, neve, líquidos): o Java ignora os de colisão nula no raio e substitui o atingido se for substituível; aqui só o ar (e `cave_air`/`void_air`) é uma célula livre: a escória pousa em cima de qualquer outro bloco.
+3. **Blocos substituíveis** (mato, flor, tocha, neve, água): o Java atravessa os de colisão nula no raio (mato, flor, tocha) e substitui o atingido se for substituível (mato, neve, água); aqui só o ar (`air`, `cave_air`, `void_air`) é livre, o resto é um acerto e a escória pousa **em cima** (o Java a poria no lugar do mato).
 4. A **partícula do jato** (`AuxParticlePacketNT`) e o **pick-block** (sucata do conteúdo) não existem.
 5. Uma escória posta por comando (`/setblock`) nasce vazia (`layer=0`, forma vazia); o Java a removeria no primeiro tique.
 6. A bica não tem modelo próprio (cubo orientado, como as outras saídas antes do visual).
