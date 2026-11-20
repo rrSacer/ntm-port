@@ -1451,6 +1451,9 @@ usa só o que o motor já oferece (`net_from_client`/`native_net_send_to_server`
 - **Número de sequência gasto antes do D2**: `Sessions::accept` toma o número do comando antes de o servidor testar se o
   `receiveControl` o recusaria (índice de curva ou grupo inválido, D2). Um comando recusado assim gasta o seu número;
   é inofensivo, porque o cliente sempre manda o próximo com um número maior.
+- **Comando no último tick**: um comando aceito no último tick antes de o servidor parar espera uma transação que não
+  vem e se perde (a fila fica só em memória); no Java ele já teria sido aplicado ao chegar e iria no save. É o custo da
+  decisão "aplicar no começo do tick seguinte"; a janela é de um tick.
 - **D6 (spike)**: os snapshots tipados por mensagem de mod estão confirmados por este ticket; o estado das pelotas por
   `custom_data` tem caminho no motor para o desenho (`item_model_property`, modelos condicionais avaliados pelo mod, e
   `custom_model_data`), para o T14.
