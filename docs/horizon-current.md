@@ -1383,13 +1383,13 @@ da `main` até o coordenador fundir a branch do motor.
 | Aquecedor | Política própria (antes compartilhava a dos canais): não ganha a regra de casco | — |
 | Limiares prontos | `cold_enough_for_autoloader` (`<= 1000`, T12) e `hot_enough_to_melt_on_break` (`>= 1500`, T16), testados nas fronteiras | `coldEnoughForAutoloader:94-99`, `invalidate:108-114` |
 
-### Desvio a decidir
+### Desvio registrado (decisão A do coordenador, 19/11/2026)
 
 - **Coleta por clique duplo**: no Java o clique duplo num slot do jogador (`slotClick` modo 6, índice ≠ 0) junta pilhas
   iguais de todos os slots, inclusive o do canal quente, sem passar pela checagem de calor. Aqui a coleta consulta a
   política (`Manual`) e não tira a barra quente. Reproduzir exigiria a política saber o gesto, uma extensão a mais do
   motor. Na prática, barras de combustível não empilham, e a coleta só junta itens iguais: o caso só aparece com uma
-  pilha igual no cursor, o que exige outra barra com a mesma tag.
+  pilha igual no cursor, o que exige outra barra com a mesma tag. Decisão A: manter assim, sem estender o motor.
 
 ### Validação
 
