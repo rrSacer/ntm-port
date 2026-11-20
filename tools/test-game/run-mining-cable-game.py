@@ -39,6 +39,13 @@ def power(g, p):
     return int(found.group(1)) if found else None
 
 
+def server_has_cable(g, p):
+    """`ntmtest cable`: the server's own set of cables (NTM_TEST_HOOKS=1), not the world's block."""
+    text = ' '.join(g.command('ntmtest cable %d %d %d' % tuple(p)).get('chat', []))
+    found = re.search(r'cable=(\d)', text)
+    return None if found is None else found.group(1) == '1'
+
+
 def play(g):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
@@ -77,6 +84,19 @@ def play(g):
     g.close()
     deadline = time.monotonic() + 180
     mined = lambda: [c for c in cables if state(g, c).startswith('minecraft:air')]
+    # The first cable that turns to air, and at once what the server's network says of it: a broken cable is a block change
+    # the server hears of in the next tick (a sweep that finds a missing one takes 20 to 40 ticks, a second or two). A mining step
+    # that marked its cells as its own would leave it there until then.
+    first = None
+    while time.monotonic() < deadline and first is None:
+        gone = mined()
+        if gone:
+            first = gone[0]
+            held = server_has_cable(g, first)
+            g.evidence['server_holds_the_mined_cable'] = held
+            g.check('the_server_drops_the_mined_cable_at_once', held is False, held)
+        else:
+            time.sleep(.05)
     while time.monotonic() < deadline and len(mined()) < 3:
         time.sleep(.5)
     gone = mined()
@@ -108,7 +128,7 @@ def main():
     print(folder, flush=True)
     env = os.environ.copy()
     env.update(HORIZON_NO_AUDIO='1', HORIZON_LAUNCHER_NO_SELF_UPDATE='1', HORIZON_NO_UPDATE_CHECK='1', WAYLAND_DISPLAY='')
-    env.pop('NTM_TEST_HOOKS', None)
+    env['NTM_TEST_HOOKS'] = '1'
     for key, sub in [('HORIZON_HOME', 'home'), ('HORIZON_LAUNCHER_HOME', 'launcher'), ('XDG_DATA_HOME', 'data'), ('XDG_CONFIG_HOME', 'config')]:
         env[key] = str(folder / sub)
     (folder / 'options.txt').write_text('soundCategory_master:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
@@ -128,7 +148,7 @@ def main():
         world.quit()
         evidence = json.loads((folder / 'native-mining-cable.json').read_text())
         report['checks'] = evidence.get('checks')
-        report['evidence'] = {k: evidence.get(k) for k in ('core', 'power_connected', 'mined', 'power_after')}
+        report['evidence'] = {k: evidence.get(k) for k in ('core', 'power_connected', 'mined', 'power_after', 'server_holds_the_mined_cable')}
         report['ok'] = code == 0
     finally:
         if getattr(world, 'client', None) is not None and world.client.poll() is None:

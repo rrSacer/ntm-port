@@ -84,6 +84,8 @@ TAP_AT = (CORE[0], CORE[1], CORE[2] + 3)
 SLAG_AT = (CORE[0], 98, CORE[2] + 3)
 # The slag cells a spread reaches: the pit's free sides of the slag (the north one is the wall).
 SPREAD_AT = [(SLAG_AT[0] - 1, SLAG_AT[1], SLAG_AT[2]), (SLAG_AT[0] + 1, SLAG_AT[1], SLAG_AT[2]), (SLAG_AT[0], SLAG_AT[1], SLAG_AT[2] + 1)]
+# `slagtap-flow`: the west side of the pit has a hole one block deep (stone at y 96): the slag spread there falls into it (a structural commit: the cell above it goes to air).
+FALL_AT = (SLAG_AT[0] - 1, SLAG_AT[1] - 1, SLAG_AT[2])
 # `clicks`: the mold block under the crucible's waste stream (two blocks south of its core).
 MOLD_AT = (CORE[0], CORE[1] - 1, CORE[2] + 2)
 
@@ -169,7 +171,7 @@ def machines(g):
 
 def places(g):
     if SLAGTAP:
-        return [CORE, CHANNEL_AT, SLAG_AT, *SPREAD_AT]
+        return [CORE, CHANNEL_AT, SLAG_AT, *SPREAD_AT, FALL_AT]
     if SCENARIO == 'clicks':
         return [CORE, MOLD_AT]
     if SCENARIO not in ('caster', 'excess', 'batch', 'hand'):
@@ -264,6 +266,9 @@ def slagtap_world(g):
     # area's floor is one block thick, with nothing but the world's own ground under it).
     g.command('fill %d %d %d %d %d %d minecraft:stone' % (SLAG_AT[0] - 2, SLAG_AT[1] - 1, SLAG_AT[2] - 1, SLAG_AT[0] + 2, CORE[1] - 1, pit_end + 1))
     g.command('fill %d %d %d %d %d %d minecraft:air' % (SLAG_AT[0] - 1, SLAG_AT[1], SLAG_AT[2], SLAG_AT[0] + 1, CORE[1] - 1, pit_end))
+    if FLOW:
+        g.command('setblock %d %d %d minecraft:air' % FALL_AT)
+        g.command('setblock %d %d %d minecraft:stone' % (FALL_AT[0], FALL_AT[1] - 1, FALL_AT[2]))
     if VANILLA:
         g.command('setblock %d %d %d minecraft:barrel' % CHANNEL_AT)
         g.command('setblock %d %d %d minecraft:barrel' % SLAG_AT)
@@ -288,7 +293,7 @@ def slagtap_world(g):
 
 def slag_total(g):
     """The metal of the slag cells of the pit (the pour's cell and the sides a spread reaches), from the server's models."""
-    return sum(molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT))
+    return sum(molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT, FALL_AT))
 
 
 def put_tap(g, wait=True):
@@ -563,9 +568,11 @@ def act(g):
                 total = 72 * INGOTS
                 ok = wait_for(lambda: slag_total(g) == total and molten(model(g, CHANNEL_AT)) == 0, 120)
                 g.check('the_slag_cells_hold_all', ok, [slag_total(g), molten(model(g, CHANNEL_AT))])
-                spread = [molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT)]
+                # The west side's slag falls into the hole one tick after it is made (a spread cell is scheduled, and falls whole).
+                time.sleep(3)
+                spread = [molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT, FALL_AT)]
                 g.evidence['spread'] = spread
-                g.check('it_spread_to_the_three_free_sides', spread == [total - 3 * (total // 6), *[total // 6] * 3], spread)
+                g.check('it_spread_and_the_west_side_fell', spread == [total - 3 * (total // 6), 0, total // 6, total // 6, total // 6], spread)
             else:
                 ok = wait_for(lambda: molten(model(g, SLAG_AT)) == 144, 120)
                 g.check('the_slag_holds_144', ok, [molten(model(g, SLAG_AT)), molten(model(g, CHANNEL_AT)), server_block(g, SLAG_AT)])
@@ -701,7 +708,7 @@ def verify(g, again=False):
         # Where the metal is after the reopen: the channel (the world kept the base), or the slag block (the pour).
         g.evidence['where' + ('_again' if again else '')] = {
             'channel': molten(model(g, CHANNEL_AT)), 'slag': slag_total(g), 'slag_block': server_block(g, SLAG_AT),
-            'cells': [molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT)]}
+            'cells': [molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT, FALL_AT)]}
     # Counted only: the verdict is the runner's, against the base and the vanilla control.
     g.evidence['counted' + ('_again' if again else '')] = now
     g.ctl('save')

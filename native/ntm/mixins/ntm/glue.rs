@@ -425,6 +425,12 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
         return true;
     }
+    // `ntmtest cable <x> <y> <z>`: whether the server's network still holds a cable at the cell (its own set, not the world's block).
+    if w.first()==Some(&"cable") && let (Some(x),Some(y),Some(z))=(n(1),n(2),n(3)){
+        let held=server.native_test_cable(&dim,[x as i32,y as i32,z as i32]);
+        host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok=true cable={}",u8::from(held))));
+        return true;
+    }
     let at=match (n(1),n(2),n(3)){(Some(x),Some(y),Some(z))=>Some([x as i32,y as i32,z as i32]),_=>None};
     let result:Result<(),&str>=match (w.first().copied(),at){
         (Some("eject"),Some(p))=>match (n(4),n(5),n(6)){(Some(x),Some(y),Some(z))=>if server.native_test_eject(&dim,p,[x,y,z]){Ok(())}else{Err("no rod to put out")},_=>Err("usage")},

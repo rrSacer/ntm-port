@@ -287,6 +287,11 @@ impl Server {
         self.ready().is_some_and(|r| r.world.machines.contains_key(&(dim.to_string(), pos)))
     }
 
+    /// Test hook (`NTM_TEST_HOOKS=1`): whether the server's network holds a cable at `pos` (the set the topology is built from).
+    pub fn native_test_cable(&mut self, dim: &str, pos: Pos) -> bool {
+        self.ready().is_some_and(|r| r.world.cables.contains(&(dim.to_string(), pos)))
+    }
+
     pub fn native_adopt(&mut self, dim: &str, pos: Pos, json: &str) -> bool {
         let Some(r) = self.ready() else { return false };
         let key = (dim.to_string(), pos);
