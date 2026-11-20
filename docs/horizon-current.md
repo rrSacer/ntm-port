@@ -1632,6 +1632,25 @@ com a tela aberta, barra/dicas/partícula para o T19) aceitos; o `canConnect` do
 | P3-3 pontos sem revisão a fundo | O som do respiro (`c7fc0035`) e o menu da caldeira (`66bae438`, `4f7eb382`) não foram lidos a fundo pela revisão: ficam como sem revisão independente, cobertos só pelos testes e pela J deste ticket | — |
 | Corte C com fluido em movimento | `run-rbmk-t08-c-proof.py` + `native_rbmk_t08_c.py`: 16 000 mB de criogel saindo de um barril no chunk (1, 0), passando por um resfriador no chunk (2, 0) e voltando a um barril no (1, 0); o jogo morto em `kill`, `kv_committed`, `region_record:1`, `chunks_written` e `world_saved` com o fluido em movimento (no save: 6 300–6 800 na fonte, 4 000 no resfriador, 5 200–5 700 no destino). Nas duas reaberturas, a fonte, os dois tanques do resfriador e o destino, lidos de uma vez (`ntmtest fluids`, `b00d69e2`), somam **16 000 mB em todos os pontos**: nada perdido nem criado. `kill` e `region_record:1` voltam ao save anterior (16 000 na fonte); `kv_committed`, `chunks_written` e `world_saved` voltam ao estado do save e seguem. Controle vanilla no mesmo corte: 64 pedras levadas por funis pela mesma divisa, 64/64 em todos os pontos. O limite geral (redes de fluido fora das transações) não apareceu: o save grava o estado de um tick, e os tanques de cada lado da divisa são do mesmo tick. Binário `b9582404…`, pacote `0f9c0154…`; `evidence/c-run3/` (`kill`, `kv_committed`) e `evidence/c-run4/` (os outros três). As rodadas 1–2 e o `world_saved` da 3 caíram pelo roteiro (funil que puxa de cima; contagem vanilla em movimento; leitura depois do corte) | `b00d69e2`, `052ae523` |
 
+## RBMK T09 — extrator de gases (outgasser) por fluxo (em andamento, 20/11/2026)
+
+Branch `rbmk-t05` (continua sobre o T08), motor sem mudança. A física já roda no passo desde o T04 (oráculo:
+`outgasser_recipes`, limiares `> 10000`), mas sem mundo: os slots não são lidos ("o outgasser que não processa"), o
+progresso e o tanque de gás não são gravados, o gás não sai pelas portas, a automação recusa a entrada e a tela não lê
+nada.
+
+### Plano
+
+| # | Parte | O quê | Fonte Java |
+| --- | --- | --- | --- |
+| N1 | Itens das receitas | As 19 receitas `OutgasserRecipes.registerDefaults` (oráculo do T00) ligadas aos ids do port: entradas por OreDict pelos nomes do item do port (`oredict::names`, na ordem do OreDict), entradas por item e saídas por um mapa Java (item, meta) → id do port conferido contra o `ids.json` (a meta pela ordem do enum Java, como `oil_tar` meta 2 = `EnumTarType.COAL` → `ntm:oil_tar__coal`); um item sem par vira recusa nomeada, não um item inventado | `OutgasserRecipes`, `ItemEnums` |
+| N2 | Estado | `progress` (pelos bits) e o tanque `gas` (tipo, quantidade, máximo 64 000) gravados como o `writeToNBT`; os dois slots são os do motor (entrada 0, saída 1) e entram no passo e voltam com o commit, os dados de stack preservados | `readFromNBT/writeToNBT`, `TileEntityRBMKSlottedBase` |
+| N3 | Gás nas portas | O extrator é nó da rede do tipo do seu tanque (só oferece), pelas mesmas portas da coluna com loader do T08 | `ModulePortManFluidAdaptive.setOutputTanks(gas)` |
+| N4 | Automação | Funil insere só no slot 0 e só itens com receita (`isItemValidForSlot`), retira só do 1 (`canExtractItem`); a mão segue a regra do T05 | `isItemValidForSlot`, `canExtractItem`, `getAccessibleSlotsFromSide` |
+| S | Tela | Barra de progresso e medidor de gás do `horizon_screen/rbmk_outgasser.json` com os valores do servidor | `GUIRBMKOutgasser` |
+| U | Provas | Oráculo do T04 (já cobre `>` em 10000, perda do excedente, rápido/lento, reset, `fusionOnly`, saída cheia); unidade das ligações de item, do estado, da porta e da automação; mutantes | — |
+| J/C | Em jogo | Insumo posto por funil, irradiado por uma barra no reator, sólido retirado por funil e gás por cano até um barril; reabertura; corte com o processamento em andamento: exatamente um consumo e as saídas de uma receita por processamento, nada refeito depois da queda | — |
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
