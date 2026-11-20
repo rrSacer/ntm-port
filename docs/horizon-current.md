@@ -1745,10 +1745,18 @@ mundo, se não couber, vai para o T19.
   `en_US.lang` (com os códigos de cor) e os fluidos o nome do port (`fluid::label`).
 - **Relógio do AZ-5**: os 3 s são do cliente (`System.currentTimeMillis`), por tela aberta, como no Java; outra tela ou
   outro jogador não esperam.
-- **Hóspede de LAN e célula de dummy** (achado da prova J, do motor): o uso de um hóspede numa célula de dummy do
-  console não abre menu nenhum (nem rejeição registrada); no núcleo abre. O anfitrião abre pelo dummy. Não foi
-  investigado no motor (congelado); a prova registra a tentativa (`guest_through_the_dummy`: falso nas duas
-  aberturas) e abre pelo núcleo. Provavelmente vale para todo multibloco do NTM aberto por um hóspede.
+- **Hóspede de LAN e célula de dummy** (limite de multibloco, ticket **INFRA-G**, prioridade média, decisão do
+  coordenador): o uso de um hóspede numa célula de dummy do console não abre menu nenhum, sem rejeição registrada; pelo
+  núcleo abre; o anfitrião abre pelo dummy. Provavelmente vale para todo multibloco do NTM. Evidência: a prova J
+  registra a tentativa (`guest_through_the_dummy`: falso nas duas aberturas) e abre pelo núcleo. A investigar no motor
+  (congelado até a decisão): o caminho do clique do hóspede até o menu do dummy, comparado com o do anfitrião — o
+  `UseItemOn` que o cliente do hóspede manda (posição, face, cursor no contorno do multibloco); no anfitrião,
+  `lan_actions` (`may_reach_block`, a checagem do cursor com o `multiblock_outline`, se a rejeição é só um
+  `HostEvent::Warn` que não chega ao log) e depois `as_guest` → `use_item` → `use_hand` → `machine_cell_core` →
+  `mod_menu_at(core)` → `open_menu`.
+
+Decisões do coordenador na entrega (20/11/2026): o achado do hóspede vira o INFRA-G; os demais limites (render e textos
+das telas para o T19, `craneIndicator`, textos em inglês, relógio do AZ-5 por tela aberta) aceitos.
 
 ### Validação
 
