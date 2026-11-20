@@ -1546,6 +1546,26 @@ A revisão independente aprovou o T07 (sem P1/P2) e apontou três P3, um commit 
 | (b) energia fora do passo | Registrado em "Desvios e decisões": a checagem de 5000 lê o buffer do tick anterior | `b6825301` |
 | (c) mutante equivalente | O teto do `give` fica (é o `transferPower` do Java: o excedente volta) e ganhou o teste direto `a_reasim_rods_buffer_stops_at_its_maximum`, que pega a mutação "sem teto" | `e44b53a7` |
 
+## RBMK T08 — caldeira, aquecedor, resfriador e fluido ReaSim (em andamento, 20/11/2026)
+
+Branch `rbmk-t05` (continua sobre o T07), motor sem mudança. A física das três colunas já roda no passo desde o T04
+(oráculo `run_flux.py`), mas com os tanques secos: o save não os guarda, nenhuma rede chega a eles e o estado em memória
+(atraso do respiro, temporizador do resfriador) volta ao do TE novo a cada tick.
+
+### Plano
+
+| # | Parte | O quê | Fonte Java |
+| --- | --- | --- | --- |
+| N1 | Paridade | `FluidTank.setTankType` esvazia o tanque quando o tipo muda. O stub do oráculo não fazia isso, e o port copiou o erro: o compressor da caldeira esvazia o vapor (o `/10` e o `*1000` agem sobre 0), o aquecedor esvazia o tanque quente quando o tipo produzido muda, e os dois tanques ao virarem `NONE`. Stub corrigido com o corpo real, fixture regerada, núcleo corrigido | `FluidTank.setTankType:62-68`, `cyceCompressor`, `TileEntityRBMKHeater.updateEntity` |
+| N2 | Estado | Tanques gravados como o `writeToNBT` (caldeira `feed`/`steam`, aquecedor `feed`/`steam`, resfriador `t0`/`t1`); só em memória o que o Java não grava: `ventDelay`, consumo e saída da caldeira, o temporizador do resfriador e o seu cache 5×5 (por posição e geração: uma coluna trocada dentro dos 60 ticks não é resfriada, como o TE morto do Java) | `readFromNBT/writeToNBT` das três, `neighborCache` |
+| N3 | Nós de rede | Cada coluna é nó das redes dos seus dois tipos (entrada e saída); entrada e saída ReaSim (`rbmk_steam_inlet`, água 32 000; `rbmk_steam_outlet`, vapor superaquecido 32 000) são máquinas com porta em volta e passam água/vapor às colunas ao lado com `dialReasimBoilers` | `ModulePortManFluidAdaptive`, `TileEntityRBMKInlet/Outlet` |
+| N4 | Portas | As portas da coluna por `column_ports` (sem loader, loader a 1, loader a 2) num grupo de passagem: os canos no topo e embaixo (ou em volta do loader) são uma rede só para cada tipo, como o `PortDef.combine` com um nó de várias posições | `TilePort`, `getPortsNoLoader/CloseLoader/ClassicLoader` |
+| S1 | Servidor | Tanques e estado em memória entram no passo e voltam com o commit; o identificador do aquecedor vem do slot; o respiro da caldeira (`Effect::SteamVent`) toca `hbm:block.steamEngineOperate` e solta a partícula `rbmksteam` | `updateEntity` das três |
+| S2 | Comandos e telas | O compressor como comando de sessão (T06, `compression`); snapshots dos tanques para as telas da caldeira e do aquecedor | `TileEntityRBMKBoiler.receiveControl`, `GUIRBMKBoiler`, `GUIRBMKHeater` |
+| G | Glue e conteúdo | Telas com os medidores e o botão do compressor; loader, entrada e saída como blocos com portas | `GUIRBMKBoiler`, `GUIRBMKHeater` |
+| U | Provas | Oráculo regerado (cenários novos: compressor com vapor, troca de tipo do aquecedor, `NONE`), unidade de portas e passagem, mutantes | — |
+| J/C | Em jogo | Circuito de água e vapor pela caldeira (sem loader, loader a 1 e a 2), criogel pelo resfriador, refrigerante pelo aquecedor, entrada e saída ReaSim; água consumida, vapor entregue e ventado e criogel devolvido contados antes/depois, e depois de uma reabertura | — |
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
