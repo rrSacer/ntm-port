@@ -1546,7 +1546,7 @@ A revisão independente aprovou o T07 (sem P1/P2) e apontou três P3, um commit 
 | (b) energia fora do passo | Registrado em "Desvios e decisões": a checagem de 5000 lê o buffer do tick anterior | `b6825301` |
 | (c) mutante equivalente | O teto do `give` fica (é o `transferPower` do Java: o excedente volta) e ganhou o teste direto `a_reasim_rods_buffer_stops_at_its_maximum`, que pega a mutação "sem teto" | `e44b53a7` |
 
-## RBMK T08 — caldeira, aquecedor, resfriador e fluido ReaSim (em andamento, 20/11/2026)
+## RBMK T08 — caldeira, aquecedor, resfriador e fluido ReaSim (20/11/2026)
 
 Branch `rbmk-t05` (continua sobre o T07), motor sem mudança. A física das três colunas já roda no passo desde o T04
 (oráculo `run_flux.py`), mas com os tanques secos: o save não os guarda, nenhuma rede chega a eles e o estado em memória
@@ -1561,10 +1561,60 @@ Branch `rbmk-t05` (continua sobre o T07), motor sem mudança. A física das trê
 | N3 | Nós de rede | Cada coluna é nó das redes dos seus dois tipos (entrada e saída); entrada e saída ReaSim (`rbmk_steam_inlet`, água 32 000; `rbmk_steam_outlet`, vapor superaquecido 32 000) são máquinas com porta em volta e passam água/vapor às colunas ao lado com `dialReasimBoilers` | `ModulePortManFluidAdaptive`, `TileEntityRBMKInlet/Outlet` |
 | N4 | Portas | As portas da coluna por `column_ports` (sem loader, loader a 1, loader a 2) num grupo de passagem: os canos no topo e embaixo (ou em volta do loader) são uma rede só para cada tipo, como o `PortDef.combine` com um nó de várias posições | `TilePort`, `getPortsNoLoader/CloseLoader/ClassicLoader` |
 | S1 | Servidor | Tanques e estado em memória entram no passo e voltam com o commit; o identificador do aquecedor vem do slot; o respiro da caldeira (`Effect::SteamVent`) toca `hbm:block.steamEngineOperate` e solta a partícula `rbmksteam` | `updateEntity` das três |
-| S2 | Comandos e telas | O compressor como comando de sessão (T06, `compression`); snapshots dos tanques para as telas da caldeira e do aquecedor | `TileEntityRBMKBoiler.receiveControl`, `GUIRBMKBoiler`, `GUIRBMKHeater` |
+| S2 | Comandos e telas | O compressor como o botão 0 do menu (as telas do conteúdo já o declaravam; cada clique na sua vez compõe como os pacotes do Java); os valores dos tanques para as telas da caldeira e do aquecedor | `TileEntityRBMKBoiler.receiveControl`, `GUIRBMKBoiler`, `GUIRBMKHeater` |
 | G | Glue e conteúdo | Telas com os medidores e o botão do compressor; loader, entrada e saída como blocos com portas | `GUIRBMKBoiler`, `GUIRBMKHeater` |
 | U | Provas | Oráculo regerado (cenários novos: compressor com vapor, troca de tipo do aquecedor, `NONE`), unidade de portas e passagem, mutantes | — |
 | J/C | Em jogo | Circuito de água e vapor pela caldeira (sem loader, loader a 1 e a 2), criogel pelo resfriador, refrigerante pelo aquecedor, entrada e saída ReaSim; água consumida, vapor entregue e ventado e criogel devolvido contados antes/depois, e depois de uma reabertura | — |
+
+### O que mudou
+
+| Parte | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Tanques (N1) | `FluidTank.setTankType` esvazia o tanque quando o tipo muda: o compressor perde todo o vapor, o aquecedor esvazia o tanque quente quando o tipo produzido muda e os dois tanques ao virarem `NONE`. O stub do oráculo tinha o mesmo erro; corrigido com o corpo real e a fixture regerada (só os cenários do compressor e do aquecedor mudaram) | `FluidTank.setTankType:62-68` |
+| Estado (N2) | `PipedState` na coluna: os dois tanques como o `writeToNBT` (tipo, quantidade, máximo); só em memória o atraso do respiro, o consumo e a saída da caldeira, o temporizador do resfriador e o seu cache 5×5 (por célula e registro). O identificador no slot do aquecedor tipa a entrada. Um resfriador liga ao seu reator as colunas do seu 5×5, encostadas ou não | `readFromNBT/writeToNBT`, `neighborCache`, `feed.setType(0, slots)` |
+| Respiro (S1) | A caldeira cheia toca `hbm:block.steamEngineOperate` (volume 2, tom 1 + rand·0,25) no canto do núcleo, `getColumnHeight` acima, com o commit do passo | `TileEntityRBMKBoiler.updateEntity` |
+| Redes (N3) | Caldeira, aquecedor e resfriador são nós das redes dos tipos dos seus dois tanques: recebem no de entrada o que cabe e oferecem todo o de saída | `IFluidStandardTransceiverMK2`, `ModulePortManFluidAdaptive` |
+| Portas (N4) | As portas Java (sem loader: topo e base; loader a 1: a célula do loader, aberta em volta; loader a 2: base e loader), com a altura do dial; um grupo de passagem: os canos em qualquer porta são uma rede só para cada tipo. O loader é lido do mundo (bloco simples, sem máquina) | `getPortsNoLoader/CloseLoader/ClassicLoader`, `TilePort`, `PortDef.combine` |
+| Entrada/saída ReaSim (N3) | `rbmk_steam_inlet` (água, 32 000) e `rbmk_steam_outlet` (vapor superaquecido, 32 000) viraram máquinas com porta em toda face; com `dialReasimBoilers`, depois das redes, enchem a água ReaSim das colunas dos lados (qualquer célula, `findCore`) até 16 000 ou tiram o vapor delas | `TileEntityRBMKInlet/Outlet.updateEntity` |
+| Telas (S2) | Caldeira: tanques, grau do vapor (0..3) e o botão 0 do compressor (cada clique na sua vez); aquecedor: tanques e cores. A caldeira (sem slot) ganhou menu, senão a tela não abria | `GUIRBMKBoiler`, `GUIRBMKHeater`, `ContainerRBMKGeneric` |
+| Ponte | Uma entidade de bloco lida de volta do save com menos slots que a máquina (itens até o último guardado) completa o resto vazio: um barril com o recipiente vazio no slot 3 derrubava o servidor ao reabrir (achado da prova J) | — |
+| Gancho | `ntmtest heat x y z calor` (só com `NTM_TEST_HOOKS=1`): o próximo passo da coluna começa nesse calor | — |
+
+### Desvios e decisões para o coordenador
+
+- **Fluido fora do passo** (como a energia do T07): as redes e a entrada/saída ReaSim mexem nos tanques fora do passo do
+  reator; a coluna anda com o que o tick anterior deixou. No Java, rede e `updateEntity` correm na ordem dos TEs.
+- **Rede refeita a cada 10 ticks** (limite geral da rede do port): um loader posto ou tirado muda as portas na checagem
+  seguinte; no Java o `TilePort` refaz no mesmo tick.
+- **Altura das portas pelo dial** (`getColumnHeight`, como o Java lê), não pela altura da coluna em pé (D5): uma coluna
+  de outra altura tem a porta de cima onde o dial diz. Mesmo critério da tampa no T02.
+- **Passagem só entre canos**: dois canos em portas diferentes viram uma rede; uma máquina encostada numa porta (barril
+  no topo) faz par só com a coluna, não entra na rede dos canos.
+- **`canConnect` do loader** (por cima só fluidos aquecíveis; nos lados os resfriáveis e o perfluorometano): aqui
+  qualquer cano tipado ao lado do loader liga. Decidir se entra (é a regra do cano, não da coluna).
+- **Compressor pelo botão do menu**: precisa da tela aberta; o Java aceita o pacote de qualquer jogador a menos de 20
+  blocos (`hasPermission`).
+- **Barra de vapor e dicas da caldeira**: a barra é proporcional (o Java soma 1 duas vezes, diferença de 1 px) e as
+  dicas dizem "Water"/"Steam" fixos (o Java mostra o nome do fluido); a partícula `rbmksteam` do respiro. T19.
+- **Queda (C após crash)**: não rodada; a prova reabre depois de um save normal. As redes de fluido do port mexem fora
+  das transações (limite geral, não do T08).
+
+### Validação
+
+Commits: `c5a7e4e6` (N1: tanque retipado esvazia), `6b4ef2dd` (N2: tanques e estado), `c7fc0035` (respiro),
+`8f187624` (N3/N4: redes e portas), `849ddd68` (entrada e saída ReaSim), `4f7eb382` (compressor e telas),
+`3898731a` (gancho `ntmtest heat`), `c0deb028` (Clippy), `66bae438` (correção: menu da caldeira), `50df5ca2` e
+`687e3777` (correção: loader lido do mundo), `92a29f18` (correção da ponte: slots lidos de volta), `c5ee1d85` (executor),
+`19fbdb4b` (roteiro J). Evidências em `/mnt/ssd120/sacer/so/rbmk-t08/evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| U: oráculo Java | Stub de `FluidTank.setTankType` corrigido com o corpo real; `run_flux.py` regerado (JDK 25.0.5.1): só `boiler_compressor`, `heater_coolant`, `heater_every_heatable` mudam e entra `heater_retype`; os demais 40 cenários idênticos bit a bit. `rbmk_flux_parity` e `rbmk_oracle_parity` verdes |
+| U: unidade | Caldeira ferve e grava os tanques, atraso do respiro em memória e um som só por respiro; resfriador no 5×5 (coluna sem encostar, cache por registro, coluna posta ou trocada depois da leitura); identificador do aquecedor; save anterior ao T08; portas sem loader, loader a 1 e a 2 (lido do mundo), passagem entre canos; entrada e saída ReaSim (dial, teto 16 000, a partir de um dummy, redes, save); compressor (cada clique um grau, o vapor perdido, quente e com água nada, outro botão nada) e telas; menu da caldeira; gancho de calor; barril lido de volta com menos slots |
+| U: suíte (`92a29f18`) | `ntm-core` debug 938 ok, 6 ignorados, 0 falhas; `save_model` release 11/11; `keep_world_cost` 0,17–0,18 ms; Clippy `-D warnings` do `ntm-core` (todos os alvos) e da glue (stage do binário `d`): 0 |
+| U: mutações | 35/37 pegas, 2 equivalentes (`mutations-*.log`): o cache por registro (uma coluna trocada sempre perde um passo, e o cache perde a célula nele; mantido como defesa) e o padrão de tanques de um save antigo (o `Column::new` já dá os mesmos; o código redundante saiu) |
+| J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py --script native_rbmk_t08.py --reopen`, `evidence/j-run6/`) | **12/12 e 1/1 na reabertura**. Caldeira sem loader: 10 000 de água pela base, 6 000 ficam no barril; aquecida, 6 000 mB de água viram 600 000 mB de vapor (584 000 no tanque, 16 000 no barril pelo topo). O hóspede aperta o compressor duas vezes: STEAM → HOTSTEAM → SUPERHOTSTEAM, o vapor perdido. Loader a 1 e a 2: 10 000 pela célula do loader. Resfriador: a coluna a duas casas vai de 900 a 20; 16 000 mB de criogel frio saem usados pelo topo (soma 16 000). Aquecedor: 2 664 mB de refrigerante quente pelo topo (soma 16 000). ReaSim: a entrada ao lado do dummy enche a água da coluna (16 000); fervida, o vapor sai pela saída (15 981 no barril, 19 na coluna, soma 16 000). Em repouso antes do save; reaberto, todos os tanques e barris iguais. Binário `7b38f01a…`, pacote `0f9c0154…` (o do T07; o conteúdo não mudou). As rodadas 1–5 caíram por: o roteiro (piso para o hóspede; fase que parava as outras), o menu da caldeira (defeito, `66bae438`), o loader procurado entre as máquinas (defeito, `50df5ca2`), a espera do executor (`c5ee1d85`) e o servidor que caía ao reabrir um barril (defeito da ponte, `92a29f18`) |
+
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
