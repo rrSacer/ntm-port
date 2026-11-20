@@ -2366,11 +2366,14 @@ pub(super) fn menu_extra_data(game: &crate::game::Game<'_>, player: u128, block:
     if !ntm_core::rbmk::screen::takes_commands(block) {
         return;
     }
-    let Some((dim, _)) = player_place(game, player) else { return };
+    // The menu opens in the level the player acts in (`native_server_players` does not list them while their menu
+    // opens: the hub is out).
+    let dim = game.dim.id().to_string();
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return };
-    if let Some(bytes) = server.native_screen_open(&horizon_protocol::crypto::uuid_string(player), &dim, pos) {
-        *data = Some(bytes);
+    match server.native_screen_open(&horizon_protocol::crypto::uuid_string(player), &dim, pos) {
+        Some(bytes) => *data = Some(bytes),
+        None => eprintln!("ntm screen: no session for {block} at {pos:?} in {dim}"),
     }
 }
 
