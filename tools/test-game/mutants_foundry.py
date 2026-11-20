@@ -38,12 +38,12 @@ MUTANTS = [
     ('stack: every output stacks to 64', SC, '    .copied()\n    .unwrap_or(64)', '    .copied()\n    .map(|_| 64)\n    .unwrap_or(64)', 'an_output_that'),
     ('stack: the cast deposits up to 64', SC, 'remaining.min(stack_limit(&out_id).saturating_sub(s.count))', 'remaining.min(64u32.saturating_sub(s.count))', 'an_output_that'),
     ('rotary claims its record keeps the slots', RF, '    fn slots_recorded(&self) -> bool {\n        false', '    fn slots_recorded(&self) -> bool {\n        true', 'say_their_records'),
-    ('hand: a shovel takes only the whole ingots of the pool', 'crates/ntm-core/src/server/foundry_hand.rs', 'scrap::stack(&mat, next.melt.amount)', 'scrap::stack(&mat, next.melt.amount / 72 * 72)', 'a_shovel_takes'),
-    ('hand: a shovel leaves the pool', 'crates/ntm-core/src/server/foundry_hand.rs', '            next.melt = Default::default();\n', '', 'a_shovel_takes'),
-    ('hand: a mold goes in even into a taken slot', 'crates/ntm-core/src/server/foundry_hand.rs', 'let (mold_in, scoop) = (mold && next.slots[slot::MOLD].is_none(), shovel && c.melt.amount > 0);', 'let (mold_in, scoop) = (mold, shovel && c.melt.amount > 0);', 'a_mold_in_hand'),
+    ('hand: a shovel takes only the whole ingots of the pool', 'crates/ntm-core/src/server/foundry_hand.rs', 'scrap::stack(m, melt.amount)', 'scrap::stack(m, melt.amount / 72 * 72)', 'a_shovel_takes'),
+    ('hand: a shovel leaves the pool', 'crates/ntm-core/src/server/foundry_hand.rs', '    *melt = Default::default();\n', '', 'a_shovel_takes'),
+    ('hand: a mold goes in even into a taken slot', 'crates/ntm-core/src/server/foundry_hand.rs', 'if mold && c.slots[slot::MOLD].is_none() {', 'if mold {', 'a_mold_in_hand'),
     ('hand: the whole stack of molds goes in, not one', 'crates/ntm-core/src/server/foundry_hand.rs', 'Some(Stack { count: 1, ..h.stack.clone() })', 'Some(h.stack.clone())', 'a_mold_in_hand'),
-    ('hand: a shovel with an empty pool opens the screen', 'crates/ntm-core/src/server/foundry_hand.rs', '            return shovel;', '            return false;', 'a_shovel_takes'),
-    ('hand: the scrap that does not fit is lost', 'crates/ntm-core/src/server/foundry_hand.rs', "drops = left.into_iter().map(|s| (s, TransferDrop::Thrown)).collect();", 'drops = left.into_iter().map(|_| (Stack::new("x", 0), TransferDrop::Thrown)).filter(|_| false).collect();', 'does_not_fit'),
+    ('hand: a shovel with an empty pool opens the screen', 'crates/ntm-core/src/server/foundry_hand.rs', 'taken = false;\n                    if shovel {\n                        return true;', 'taken = false;\n                    if shovel {\n                        return false;', 'a_shovel_takes'),
+    ('hand: the scrap that does not fit is lost', 'crates/ntm-core/src/server/foundry_hand.rs', 'u.drops.extend(left.into_iter().map(|s| (s, TransferDrop::Thrown)));', 'let _ = left;', 'does_not_fit'),
     ('hand: any item ending in _shovel is a shovel', 'crates/ntm-core/src/server/foundry_hand.rs', '    .contains(item)\n        || item.strip_prefix("minecraft:")', '    .contains(item)\n        || item.ends_with("_shovel")\n        || item.strip_prefix("minecraft:")', 'the_shovels_come'),
     ('hand: the off hand acts too', 'crates/ntm-core/src/server/foundry_hand.rs', 'if matches!(hand.hand, Some(PlayerSlot::Offhand)) {\n            return false;\n        }', '', 'only_the_main_hand'),
     ('hand: a mold of any size goes into a mold block', 'crates/ntm-core/src/server/foundry_hand.rs', 'mo.size == c.size', 'true', 'a_basin_takes'),
@@ -55,12 +55,14 @@ MUTANTS = [
 ]
 
 
-def main(log):
+def main(log, only=()):
     env = dict(os.environ, QUEUE='cargo', SKIP_UPSTREAM_CHECK='1')
     env.setdefault('CARGO_BUILD_JOBS', '6')
     out = open(log, 'w')
     killed = 0
     for name, path, old, new, flt in MUTANTS:
+        if only and not any(o in name for o in only):
+            continue
         src = open(path).read()
         if old not in src:
             line = f'NOT-APPLIED  {name}'
@@ -83,10 +85,10 @@ def main(log):
         print(line, flush=True)
         out.write(line + '\n')
         out.flush()
-    summary = f'{killed} of {len(MUTANTS)} killed'
+    summary = f'{killed} of {len([m for m in MUTANTS if not only or any(o in m[0] for o in only)])} killed'
     print(summary)
     out.write(summary + '\n')
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2:])
