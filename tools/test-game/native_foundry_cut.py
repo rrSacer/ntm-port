@@ -40,6 +40,11 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           its capacity and spreads (`updateTick`) to the three free sides of the pit, 432 each: three steps (the pour, the spread, the
           new cells' own turn) racing the save. At every cut the 2592 are in the tank, or in the slag cells, never both and never
           neither. Control: a barrel with the 36 ingots whose ingots move by command to a barrel in the pit
+  burner-load  a wood burner (a tank of 16 000 mB, woodoil) and a barrel with 6 full canisters of woodoil (1000 mB each); the act moves
+          the canisters into the burner's container slot by command and goes straight to the save: the burner takes one a tick into its
+          tank (the empty one into its output slot): wherever the process dies, the 6000 mB are in the barrel, in the slot, in the tank
+          or in the empties' worth of it, never twice and never lost (its tank goes in the block entity with its slots). Control: two
+          barrels, the canisters moved by command
   slagtap-redstone  the pour's chain with a block of redstone beside the tap: the tap is closed and the channel keeps its 144; the
           block taken away, the tap opens and the 144 pour into the slag (the signal comes from the real world; the inversion is
           tested in the server's tests: its button is in the old screen). Run at the point `none`
@@ -72,6 +77,11 @@ SLAGTAP = SCENARIO.startswith('slagtap')
 BORDER = SCENARIO == 'slagtap-border'
 FLOW = SCENARIO == 'slagtap-flow'
 INGOTS = 36 if FLOW else 2
+BURNER = SCENARIO == 'burner-load'
+BURNER_AT = (40, 101, 8)
+SOURCE_AT = (42, 101, 8)
+CANISTER = 'ntm:canister_full__woodoil'
+CANISTERS = 6
 # The slag tap's chain stands one chunk south in the border variant: its channel at z 15, the tap and the slag at z 16.
 CORE = (40, 101, 13 if BORDER else 8)
 # The player stands north of the crucible in the slag tap's scenarios (the pit is south of it), south of it in the others.
@@ -189,7 +199,21 @@ def caster_core(g):
     return tuple(placed(g)['core'])
 
 
+def oil(g):
+    """The oil (mB) the burner scenario holds: full canisters in the barrel and the burner's slots (1000 each), and the burner's tank."""
+    slots = sum(n for i, n, _ in entries(block_items(g, SOURCE_AT)) if i == CANISTER) * 1000
+    tank = 0
+    if VANILLA:
+        slots += sum(n for i, n, _ in entries(block_items(g, BURNER_AT)) if i == CANISTER) * 1000
+    elif server_block(g, BURNER_AT) == 'ntm:machine_wood_burner':
+        slots += sum(n for i, n, _ in entries(block_items(g, BURNER_AT)) if i == CANISTER) * 1000
+        tank = ((model(g, BURNER_AT) or {}).get('tank') or {}).get('mb', 0)
+    return {'molten': tank, 'slots': slots, 'inventory': 0, 'ground': 0, 'total': tank + slots}
+
+
 def count(g):
+    if BURNER:
+        return oil(g)
     mol, slots = machines(g)
     inv = stack_quanta(inventory_text(g))
     ground = loose(g)
@@ -245,6 +269,8 @@ def prepare(g):
             g.check('nothing_pours_without_a_mold', molten(model(g, MOLD_AT)) == 0, model(g, MOLD_AT))
             g.command('item replace block %d %d %d container.0 with minecraft:air' % (CORE[0], CORE[1] - 1, CORE[2]))
             g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
+    elif BURNER:
+        burner_world(g)
     elif SLAGTAP:
         slagtap_world(g)
     elif SCENARIO in ('caster', 'excess', 'batch', 'hand'):
@@ -289,6 +315,18 @@ def slagtap_world(g):
     g.check('nothing_pours_without_a_tap', molten(model(g, CHANNEL_AT)) == 72 * INGOTS, model(g, CHANNEL_AT))
     if SCENARIO == 'slagtap-break':
         put_tap(g)
+
+
+def burner_world(g):
+    """A wood burner (solid mode, nothing burns) and a barrel with the canisters; the control's burner is a second barrel."""
+    g.command('setblock %d %d %d minecraft:barrel' % SOURCE_AT)
+    if VANILLA:
+        g.command('setblock %d %d %d minecraft:barrel' % BURNER_AT)
+    else:
+        g.command('setblock %d %d %d ntm:machine_wood_burner[facing=north,honey_level=0]' % BURNER_AT)
+    time.sleep(2)
+    g.command('item replace block %d %d %d container.0 with %s %d' % (*SOURCE_AT, CANISTER, CANISTERS))
+    g.check('the_barrel_holds_the_canisters', oil(g)['slots'] == 1000 * CANISTERS, oil(g))
 
 
 def slag_total(g):
@@ -535,6 +573,21 @@ def act(g):
             g.check('the_ingot_came_out', held_gold(g, MOLD_AT) == 0 and 'minecraft:gold_ingot' in inventory_text(g), [block_items(g, MOLD_AT)[:200], inventory_text(g)[:300]])
         g.evidence['picked'] = inventory_text(g)[:600]
         g.command('gamemode creative @s')
+    elif BURNER:
+        g.command('item replace block %d %d %d container.0 with minecraft:air' % SOURCE_AT)
+        if VANILLA:
+            g.command('item replace block %d %d %d container.0 with %s %d' % (*BURNER_AT, CANISTER, CANISTERS))
+        else:
+            g.command('item replace block %d %d %d container.3 with %s %d' % (*BURNER_AT, CANISTER, CANISTERS))
+            if not NO_SAVE:
+                try:
+                    g.ctl('save')
+                except Exception as error:
+                    g.evidence['died_in_the_early_save'] = repr(error)[:200]
+                    g.save()
+                    return
+            ok = wait_for(lambda: oil(g)['molten'] == 1000 * CANISTERS, 60)
+            g.check('the_tank_holds_all', ok, oil(g))
     elif SLAGTAP and SCENARIO != 'slagtap-break':
         if VANILLA:
             g.command('item replace block %d %d %d container.1 with minecraft:air' % CHANNEL_AT)
@@ -704,6 +757,8 @@ def verify(g, again=False):
         items = block_items(g, caster_core(g))
         g.evidence['caster_items'] = items[:400]
         g.check('the_mold_survives', 'ntm:mold__' in items, items[:400])
+    if BURNER and not VANILLA:
+        g.evidence['where' + ('_again' if again else '')] = {'tank': oil(g)['molten'], 'canisters': oil(g)['slots'] // 1000}
     if SLAGTAP and not VANILLA:
         # Where the metal is after the reopen: the channel (the world kept the base), or the slag block (the pour).
         g.evidence['where' + ('_again' if again else '')] = {

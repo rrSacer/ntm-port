@@ -43,6 +43,7 @@ SCENARIOS = {
     # The slag tap: a channel's 144 poured into a slag block (racing the save), a tap at a chunk border (pours nothing), the slag broken.
     'slagtap-pour': (('metal_quanta',), 144, [*STRICT, 'players_saved']),
     'slagtap-border': (('metal_quanta',), 144, [*STRICT, 'players_saved']),
+    'burner-load': (('metal_quanta',), 6000, [*STRICT, 'players_saved']),
     'slagtap-flow': (('metal_quanta',), 2592, [*STRICT, 'players_saved']),
     'slagtap-redstone': (('metal_quanta',), 144, ['none']),
     'slagtap-break': (('metal_quanta',), 144, [*STRICT, 'players_saved']),

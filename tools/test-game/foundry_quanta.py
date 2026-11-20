@@ -11,6 +11,7 @@ The same rules as `disk_count.py` (a machine whose model lists its slots counts 
 """
 import gzip
 import json
+import os
 from pathlib import Path
 
 import disk_count as dc
@@ -212,6 +213,15 @@ def _players(world):
         name = f'{h[:8]}-{h[8:12]}-{h[12:16]}-{h[16:20]}-{h[20:]}.dat'
         files = [f for f in files if f.name == name] or files
     return [dc.parse(gzip.decompress(f.read_bytes())) for f in files]
+
+
+# The wood burner's scenario counts oil, not metal: a full canister of woodoil is 1000 mB, and so is what a tank holds.
+if os.environ.get('NTM_FOUNDRY_SCENARIO', '').startswith('burner'):
+    WEIGHT = {'ntm:canister_full__woodoil': 1000}
+    SCRAP = 'ntm:none'
+
+    def _molten(v):
+        return v['mb'] if v.get('fluid') == 'woodoil' and isinstance(v.get('mb'), int) else 0
 
 
 if __name__ == '__main__':
