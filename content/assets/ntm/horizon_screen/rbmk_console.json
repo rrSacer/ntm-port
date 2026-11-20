@@ -1,0 +1,10 @@
+{
+  "texture": "ntm:textures/gui/reactors/gui_rbmk_console.png",
+  "size": [
+    244,
+    172
+  ],
+  "title": false,
+  "inventory_label": false,
+  "inventory": false
+}

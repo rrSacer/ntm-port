@@ -639,6 +639,8 @@
   "assets/ntm/textures/models/rbmk/rbmk_heater.png",
   "assets/ntm/horizon_model/rbmk_heater.json",
   "data/ntm/horizon_machine/rbmk_console.json",
+  "assets/ntm/textures/gui/reactors/gui_rbmk_console.png",
+  "assets/ntm/horizon_screen/rbmk_console.json",
   "assets/ntm/models/rbmk/rbmk_console.obj",
   "assets/ntm/textures/models/rbmk/rbmk_console.png",
   "assets/ntm/horizon_model/rbmk_console.json",

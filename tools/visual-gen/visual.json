@@ -30314,7 +30314,7 @@
       }
     },
     "ntm:rbmk_console": {
-      "source": "RBMKConsole {3,0,0,0,2,2} offset 1 and fillSpace's {0,0,0,1,2,2}; RenderRBMKConsole (rbmk_console, case 2: 90, then 0.5 along x); its 15x15 column grid and six screens' texts, and GUIRBMKConsole, come in a second pass",
+      "source": "RBMKConsole {3,0,0,0,2,2} offset 1 and fillSpace's {0,0,0,1,2,2}; RenderRBMKConsole (rbmk_console, case 2: 90, then 0.5 along x); GUIRBMKConsole (a GuiScreen: no title, no inventory; its map, screens, selection, flux graph and AZ-5 are the glue's: native/ntm/mixins/ntm/console_screen.rs, RBMK T10); its 15x15 column grid and six screens' texts in the world come in a second pass",
       "machine": {
         "slots": [],
         "inventory": [
@@ -30350,6 +30350,17 @@
             }
           ]
         }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/reactors/gui_rbmk_console.png",
+        "texture_from": "textures/gui/reactors/gui_rbmk_console.png",
+        "size": [
+          244,
+          172
+        ],
+        "title": false,
+        "inventory_label": false,
+        "inventory": false
       },
       "model": {
         "obj": "ntm:models/rbmk/rbmk_console.obj",
