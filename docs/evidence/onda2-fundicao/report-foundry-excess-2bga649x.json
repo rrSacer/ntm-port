@@ -1,183 +1,169 @@
 {
  "ok": true,
- "scenario": "scrap",
- "binary": "/home/sacer/.cache/ntm-targets/onda2-fundicao-native/release/horizon-client",
- "binary_sha256": "757b39c2ad084688e97885d1542fbebbaf31ff0979ddfa623c81e7ffb9e9ae75",
+ "scenario": "excess",
+ "binary": "/mnt/ssd120/sacer/so/fundicao-native-target/release/horizon-client",
+ "binary_sha256": "447544abf8d6c1af64ee2621e30d2e5ed68b024d08b9091894ac68e97d2c09e7",
  "bundle_sha256": "6a380ecbafe7b6214a2281697601d08e89007100bddfcd01a654d1059655bbd3",
  "points": [
   {
-   "point": "world_saved",
+   "point": "save_begin",
    "ok": true,
    "vanilla_control": false,
    "base_items": {
-    "metal_quanta": 96
+    "metal_quanta": 144
    },
    "after_act": {
-    "molten": 0,
-    "slots": 96,
-    "inventory": 0,
+    "molten": 80,
+    "slots": 0,
+    "inventory": 64,
     "ground": 0,
-    "total": 96
+    "total": 144
    },
    "died_in_act": false,
    "exit": -6,
    "killed_at_the_point": true,
    "disk": {
     "entities": 0,
-    "blocks": 96,
-    "molten": 0,
+    "blocks": 0,
+    "molten": 144,
     "owed": 0,
     "player": 0,
-    "total": 96
+    "total": 144
    },
    "items": {
-    "metal_quanta": 96
+    "metal_quanta": 144
    },
    "kv_items": 0,
    "written": {
-    "region": [
-     [
-      2,
-      0,
-      96,
-      96
-     ]
-    ],
+    "region": [],
     "entities": []
    },
    "first_reopen": {
-    "molten": 0,
-    "slots": 96,
+    "molten": 144,
+    "slots": 0,
     "inventory": 0,
     "ground": 0,
-    "total": 96
+    "total": 144
    },
    "checks": {
     "verify": {},
     "again": {}
    },
    "items_after": {
-    "metal_quanta": 96
+    "metal_quanta": 144
    },
    "kv_items_after": 0,
    "second_reopen": {
-    "molten": 0,
-    "slots": 96,
+    "molten": 144,
+    "slots": 0,
     "inventory": 0,
     "ground": 0,
-    "total": 96
+    "total": 144
    },
    "items_again": {
-    "metal_quanta": 96
+    "metal_quanta": 144
    },
    "kv_items_again": 0,
    "control": {
-    "point": "world_saved",
+    "point": "save_begin",
     "ok": true,
     "vanilla_control": true,
     "base_items": {
-     "metal_quanta": 96
+     "metal_quanta": 144
     },
     "after_act": {
      "molten": 0,
-     "slots": 96,
-     "inventory": 0,
+     "slots": 80,
+     "inventory": 64,
      "ground": 0,
-     "total": 96
+     "total": 144
     },
     "died_in_act": false,
     "exit": -6,
     "killed_at_the_point": true,
     "disk": {
      "entities": 0,
-     "blocks": 96,
+     "blocks": 144,
      "molten": 0,
      "owed": 0,
      "player": 0,
-     "total": 96
+     "total": 144
     },
     "items": {
-     "metal_quanta": 96
+     "metal_quanta": 144
     },
     "kv_items": 0,
     "written": {
-     "region": [
-      [
-       2,
-       0,
-       96,
-       96
-      ]
-     ],
+     "region": [],
      "entities": []
     },
     "first_reopen": {
      "molten": 0,
-     "slots": 96,
+     "slots": 144,
      "inventory": 0,
      "ground": 0,
-     "total": 96
+     "total": 144
     },
     "checks": {
      "verify": {},
      "again": {}
     },
     "items_after": {
-     "metal_quanta": 96
+     "metal_quanta": 144
     },
     "kv_items_after": 0,
     "second_reopen": {
      "molten": 0,
-     "slots": 96,
+     "slots": 144,
      "inventory": 0,
      "ground": 0,
-     "total": 96
+     "total": 144
     },
     "items_again": {
-     "metal_quanta": 96
+     "metal_quanta": 144
     },
     "kv_items_again": 0
    },
    "verdict": {
-    "disk": 96,
-    "first": 96,
-    "second": 96,
-    "expected": 96,
-    "control_expected": 96,
-    "control_disk": 96,
+    "disk": 144,
+    "first": 144,
+    "second": 144,
+    "expected": 144,
+    "control_expected": 144,
+    "control_disk": 144,
     "parts_ok": true,
     "as_the_files": true,
     "as_the_files_items": true,
     "storage_clean": true,
     "same_cut": true,
     "same_cut_by_definition": false,
-    "compared_with": "world_saved",
-    "control_first": 96,
+    "compared_with": "save_begin",
+    "control_first": 144,
     "no_duplicate": true,
     "lost": 0,
     "control_lost": 0,
     "no_worse_than_vanilla": true,
     "items": {
      "base": {
-      "metal_quanta": 96
+      "metal_quanta": 144
      },
      "control_base": {
-      "metal_quanta": 96
+      "metal_quanta": 144
      },
      "items_after": {
       "mine": {
-       "metal_quanta": 96
+       "metal_quanta": 144
       },
       "control": {
-       "metal_quanta": 96
+       "metal_quanta": 144
       }
      },
      "items_again": {
       "mine": {
-       "metal_quanta": 96
+       "metal_quanta": 144
       },
       "control": {
-       "metal_quanta": 96
+       "metal_quanta": 144
       }
      }
     },
@@ -189,32 +175,32 @@
    }
   },
   {
-   "point": "players_saved",
+   "point": "chunks_written",
    "ok": true,
    "vanilla_control": false,
    "base_items": {
-    "metal_quanta": 96
+    "metal_quanta": 144
    },
    "after_act": {
-    "molten": 0,
-    "slots": 96,
-    "inventory": 0,
+    "molten": 80,
+    "slots": 0,
+    "inventory": 64,
     "ground": 0,
-    "total": 96
+    "total": 144
    },
    "died_in_act": false,
    "exit": -6,
    "killed_at_the_point": true,
    "disk": {
     "entities": 0,
-    "blocks": 96,
-    "molten": 0,
+    "blocks": 0,
+    "molten": 80,
     "owed": 0,
     "player": 0,
-    "total": 96
+    "total": 80
    },
    "items": {
-    "metal_quanta": 96
+    "metal_quanta": 80
    },
    "kv_items": 0,
    "written": {
@@ -222,65 +208,65 @@
      [
       2,
       0,
-      96,
-      96
+      144,
+      80
      ]
     ],
     "entities": []
    },
    "first_reopen": {
-    "molten": 0,
-    "slots": 96,
+    "molten": 80,
+    "slots": 0,
     "inventory": 0,
     "ground": 0,
-    "total": 96
+    "total": 80
    },
    "checks": {
     "verify": {},
     "again": {}
    },
    "items_after": {
-    "metal_quanta": 96
+    "metal_quanta": 80
    },
    "kv_items_after": 0,
    "second_reopen": {
-    "molten": 0,
-    "slots": 96,
+    "molten": 80,
+    "slots": 0,
     "inventory": 0,
     "ground": 0,
-    "total": 96
+    "total": 80
    },
    "items_again": {
-    "metal_quanta": 96
+    "metal_quanta": 80
    },
    "kv_items_again": 0,
    "control": {
-    "point": "players_saved",
+    "point": "chunks_written",
     "ok": true,
     "vanilla_control": true,
     "base_items": {
-     "metal_quanta": 96
+     "metal_quanta": 144
     },
     "after_act": {
      "molten": 0,
-     "slots": 96,
-     "inventory": 0,
+     "slots": 80,
+     "inventory": 64,
      "ground": 0,
-     "total": 96
+     "total": 144
     },
     "died_in_act": false,
     "exit": -6,
     "killed_at_the_point": true,
     "disk": {
      "entities": 0,
-     "blocks": 96,
+     "blocks": 80,
      "molten": 0,
      "owed": 0,
      "player": 0,
-     "total": 96
+     "total": 80
     },
     "items": {
-     "metal_quanta": 96
+     "metal_quanta": 80
     },
     "kv_items": 0,
     "written": {
@@ -288,79 +274,262 @@
       [
        2,
        0,
-       96,
-       96
+       144,
+       80
       ]
      ],
      "entities": []
     },
     "first_reopen": {
      "molten": 0,
-     "slots": 96,
+     "slots": 80,
      "inventory": 0,
      "ground": 0,
-     "total": 96
+     "total": 80
     },
     "checks": {
      "verify": {},
      "again": {}
     },
     "items_after": {
-     "metal_quanta": 96
+     "metal_quanta": 80
     },
     "kv_items_after": 0,
     "second_reopen": {
      "molten": 0,
-     "slots": 96,
+     "slots": 80,
      "inventory": 0,
      "ground": 0,
-     "total": 96
+     "total": 80
     },
     "items_again": {
-     "metal_quanta": 96
+     "metal_quanta": 80
     },
     "kv_items_again": 0
    },
    "verdict": {
-    "disk": 96,
-    "first": 96,
-    "second": 96,
-    "expected": 96,
-    "control_expected": 96,
-    "control_disk": 96,
+    "disk": 80,
+    "first": 80,
+    "second": 80,
+    "expected": 144,
+    "control_expected": 144,
+    "control_disk": 80,
     "parts_ok": true,
     "as_the_files": true,
     "as_the_files_items": true,
     "storage_clean": true,
     "same_cut": true,
     "same_cut_by_definition": false,
-    "compared_with": "players_saved",
-    "control_first": 96,
+    "compared_with": "chunks_written",
+    "control_first": 80,
     "no_duplicate": true,
-    "lost": 0,
-    "control_lost": 0,
+    "lost": 64,
+    "control_lost": 64,
     "no_worse_than_vanilla": true,
     "items": {
      "base": {
-      "metal_quanta": 96
+      "metal_quanta": 144
      },
      "control_base": {
-      "metal_quanta": 96
+      "metal_quanta": 144
      },
      "items_after": {
       "mine": {
-       "metal_quanta": 96
+       "metal_quanta": 80
       },
       "control": {
-       "metal_quanta": 96
+       "metal_quanta": 80
       }
      },
      "items_again": {
       "mine": {
-       "metal_quanta": 96
+       "metal_quanta": 80
       },
       "control": {
-       "metal_quanta": 96
+       "metal_quanta": 80
+      }
+     }
+    },
+    "no_duplicate_item": true,
+    "no_worse_item": true,
+    "criterion": "cut",
+    "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+    "proof": true
+   }
+  },
+  {
+   "point": "entities_written",
+   "ok": true,
+   "vanilla_control": false,
+   "base_items": {
+    "metal_quanta": 144
+   },
+   "after_act": {
+    "molten": 80,
+    "slots": 0,
+    "inventory": 64,
+    "ground": 0,
+    "total": 144
+   },
+   "died_in_act": false,
+   "exit": -6,
+   "killed_at_the_point": true,
+   "disk": {
+    "entities": 0,
+    "blocks": 0,
+    "molten": 80,
+    "owed": 0,
+    "player": 0,
+    "total": 80
+   },
+   "items": {
+    "metal_quanta": 80
+   },
+   "kv_items": 0,
+   "written": {
+    "region": [
+     [
+      2,
+      0,
+      144,
+      80
+     ]
+    ],
+    "entities": []
+   },
+   "first_reopen": {
+    "molten": 80,
+    "slots": 0,
+    "inventory": 0,
+    "ground": 0,
+    "total": 80
+   },
+   "checks": {
+    "verify": {},
+    "again": {}
+   },
+   "items_after": {
+    "metal_quanta": 80
+   },
+   "kv_items_after": 0,
+   "second_reopen": {
+    "molten": 80,
+    "slots": 0,
+    "inventory": 0,
+    "ground": 0,
+    "total": 80
+   },
+   "items_again": {
+    "metal_quanta": 80
+   },
+   "kv_items_again": 0,
+   "control": {
+    "point": "entities_written",
+    "ok": true,
+    "vanilla_control": true,
+    "base_items": {
+     "metal_quanta": 144
+    },
+    "after_act": {
+     "molten": 0,
+     "slots": 80,
+     "inventory": 64,
+     "ground": 0,
+     "total": 144
+    },
+    "died_in_act": false,
+    "exit": -6,
+    "killed_at_the_point": true,
+    "disk": {
+     "entities": 0,
+     "blocks": 80,
+     "molten": 0,
+     "owed": 0,
+     "player": 0,
+     "total": 80
+    },
+    "items": {
+     "metal_quanta": 80
+    },
+    "kv_items": 0,
+    "written": {
+     "region": [
+      [
+       2,
+       0,
+       144,
+       80
+      ]
+     ],
+     "entities": []
+    },
+    "first_reopen": {
+     "molten": 0,
+     "slots": 80,
+     "inventory": 0,
+     "ground": 0,
+     "total": 80
+    },
+    "checks": {
+     "verify": {},
+     "again": {}
+    },
+    "items_after": {
+     "metal_quanta": 80
+    },
+    "kv_items_after": 0,
+    "second_reopen": {
+     "molten": 0,
+     "slots": 80,
+     "inventory": 0,
+     "ground": 0,
+     "total": 80
+    },
+    "items_again": {
+     "metal_quanta": 80
+    },
+    "kv_items_again": 0
+   },
+   "verdict": {
+    "disk": 80,
+    "first": 80,
+    "second": 80,
+    "expected": 144,
+    "control_expected": 144,
+    "control_disk": 80,
+    "parts_ok": true,
+    "as_the_files": true,
+    "as_the_files_items": true,
+    "storage_clean": true,
+    "same_cut": true,
+    "same_cut_by_definition": false,
+    "compared_with": "entities_written",
+    "control_first": 80,
+    "no_duplicate": true,
+    "lost": 64,
+    "control_lost": 64,
+    "no_worse_than_vanilla": true,
+    "items": {
+     "base": {
+      "metal_quanta": 144
+     },
+     "control_base": {
+      "metal_quanta": 144
+     },
+     "items_after": {
+      "mine": {
+       "metal_quanta": 80
+      },
+      "control": {
+       "metal_quanta": 80
+      }
+     },
+     "items_again": {
+      "mine": {
+       "metal_quanta": 80
+      },
+      "control": {
+       "metal_quanta": 80
       }
      }
     },
@@ -579,7 +748,7 @@
       "target": null,
       "ticks": 0,
       "tridents": 0,
-      "uptime_seconds": 2.391528008,
+      "uptime_seconds": 3.318949954,
       "using": null,
       "yaw": 0.0
      }
@@ -597,8 +766,8 @@
       },
       "carts": [],
       "chunks": 0,
-      "creative": true,
-      "day_time": 5,
+      "creative": false,
+      "day_time": 1010,
       "debug": {
        "advanced_tooltips": false,
        "chunk_borders": false,
@@ -629,8 +798,8 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 0.38207465410232544,
-      "frames": 2,
+      "fps": 0.2759458124637604,
+      "frames": 1,
       "generated_chunks": 0,
       "heard": {},
       "held": null,
@@ -678,7 +847,7 @@
       "meshed_sections": 0,
       "mobs": 0,
       "music": null,
-      "name_tags": [],
+      "name_tags": null,
       "objects": [],
       "offhand": null,
       "particles": {},
@@ -687,22 +856,7 @@
       "physical_keys": [],
       "pickups": {},
       "pitch": 0.0,
-      "player": {
-       "food": 20,
-       "health": 20.0,
-       "max_health": null,
-       "on_ground": false,
-       "position": [
-        -3.5,
-        70.0,
-        7.5
-       ],
-       "velocity": [
-        0.0,
-        0.0,
-        0.0
-       ]
-      },
+      "player": null,
       "projectiles": [],
       "render_distance": 2,
       "renderer": {
@@ -755,11 +909,11 @@
        "decode_errors": 0,
        "dimension": "minecraft:overworld",
        "entities": {},
-       "entity_id": 1,
+       "entity_id": 0,
        "food": 20,
-       "game_mode": 1,
+       "game_mode": 0,
        "health": 20.0,
-       "joined": true,
+       "joined": false,
        "loaded": false,
        "lying_players": [],
        "name": "CrashTest",
@@ -767,10 +921,8 @@
        "player_equipment": [],
        "player_model": false,
        "player_positions": [],
-       "players": [
-        "CrashTest"
-       ],
-       "status": "Loading terrain...",
+       "players": [],
+       "status": "Joining world...",
        "text_display_vertices": 0,
        "text_displays": 0
       },
@@ -801,9 +953,9 @@
        "queued": 0
       },
       "target": null,
-      "ticks": 14,
+      "ticks": 10,
       "tridents": 0,
-      "uptime_seconds": 2.681291228,
+      "uptime_seconds": 3.623984348,
       "using": null,
       "yaw": 0.0
      }
@@ -853,8 +1005,8 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 0.38207465410232544,
-      "frames": 6,
+      "fps": 0.2759458124637604,
+      "frames": 4,
       "generated_chunks": 49,
       "heard": {},
       "held": null,
@@ -906,8 +1058,8 @@
       "objects": [],
       "offhand": null,
       "particles": {
-       "tinted_leaves": 1,
-       "underwater": 4
+       "tinted_leaves": 2,
+       "underwater": 2
       },
       "pending_chunks": 0,
       "pending_uploads": 0,
@@ -920,9 +1072,9 @@
        "max_health": null,
        "on_ground": true,
        "position": [
-        -3.5,
-        70.0,
-        7.5
+        4.5,
+        73.0,
+        8.5
        ],
        "velocity": [
         0.0,
@@ -1028,16 +1180,16 @@
        "queued": 0
       },
       "target": {
-       "block": "minecraft:grass_block",
+       "block": "minecraft:short_grass",
        "pos": [
-        -4,
-        71,
-        12
+        4,
+        74,
+        10
        ]
       },
       "ticks": 20,
       "tridents": 0,
-      "uptime_seconds": 2.973413194,
+      "uptime_seconds": 3.89429796,
       "using": null,
       "yaw": 0.0
      }
@@ -1107,280 +1259,271 @@
      }
     },
     {
-     "command": "command setblock 40 100 8 ntm:heater_firebox[facing=south,honey_level=0]",
+     "command": "command gamemode creative @s",
+     "result": {
+      "chat": [],
+      "ok": true
+     }
+    },
+    {
+     "command": "command give @s ntm:machine_strand_caster 1",
      "result": {
       "chat": [
-       "Changed the block at 40, 100, 8"
+       "Gave 1 [Strand Caster] to CrashTest"
       ],
       "ok": true
      }
     },
     {
-     "command": "command setblock 40 101 8 ntm:machine_crucible[facing=north,honey_level=0]",
+     "command": "command tp @s 40.5 101 11.5",
      "result": {
       "chat": [
-       "Changed the block at 40, 101, 8"
+       "Teleported CrashTest to 40.500000, 101.000000, 11.500000"
       ],
       "ok": true
      }
     },
     {
-     "command": "command item replace block 40 100 8 container.0 with minecraft:coal 16",
+     "command": "place 40 101 8 --item ntm:machine_strand_caster",
+     "result": {
+      "block": {
+       "block": "ntm:machine_strand_caster",
+       "loaded": true,
+       "pos": [
+        40,
+        101,
+        8
+       ],
+       "state": "ntm:machine_strand_caster[facing=north,honey_level=0]"
+      },
+      "block_before": "minecraft:air",
+      "changed": true,
+      "inventory_change": {},
+      "ok": true,
+      "screen": "playing"
+     }
+    },
+    {
+     "command": "command clear @s",
      "result": {
       "chat": [
-       "Replaced 1 slot(s) at 40, 100, 8 with [Coal]"
+       "Removed 1 item(s) from player CrashTest"
       ],
       "ok": true
      }
     },
     {
-     "command": "command item replace block 40 101 8 container.1 with minecraft:gold_ingot 1",
+     "command": "command data get block 37 101 5 ntm",
      "result": {
       "chat": [
-       "Replaced 1 slot(s) at 40, 101, 8 with [Gold Ingot]"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command item replace block 40 101 8 container.2 with minecraft:gold_nugget 3",
+     "command": "command data get block 37 101 6 ntm",
      "result": {
       "chat": [
-       "Replaced 1 slot(s) at 40, 101, 8 with [Gold Nugget]"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 37 101 7 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":7401,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 37 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":10201,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 37 101 9 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":13101,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 37 101 10 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":17301,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 37 101 11 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":20801,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 38 101 5 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":23601,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 38 101 6 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":26501,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 38 101 7 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":29401,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 38 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":32101,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 38 101 9 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":34801,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 38 101 10 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":37601,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 38 101 11 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":40401,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 39 101 5 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":43301,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 39 101 6 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":46001,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 39 101 7 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":48801,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 39 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":51376,\"progress\":587,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 39 101 9 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":52689,\"progress\":3493,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 39 101 10 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":53410,\"progress\":8414,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 39 101 11 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":53702,\"progress\":13215,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 40 101 5 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,{\"id\":\"minecraft:gold_ingot\",\"count\":1},{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":53851,\"progress\":18308,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 40 101 6 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":53928,\"progress\":3508,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",72]],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 ntm",
+     "command": "command data get block 40 101 7 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":53970,\"progress\":9422,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",72]],\"picking\":false}}'"
-      ],
-      "ok": true
-     }
-    },
-    {
-     "command": "command data get block 40 101 8 ntm",
-     "result": {
-      "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":3},null,null,null,null,null,null,null],\"heat\":53988,\"progress\":15183,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",72]],\"picking\":false}}'"
-      ],
-      "ok": true
-     }
-    },
-    {
-     "command": "command data get block 40 101 8 ntm",
-     "result": {
-      "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":2},null,null,null,null,null,null,null],\"heat\":54000,\"progress\":1000,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",80]],\"picking\":false}}'"
-      ],
-      "ok": true
-     }
-    },
-    {
-     "command": "command data get block 40 101 8 ntm",
-     "result": {
-      "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":2},null,null,null,null,null,null,null],\"heat\":54000,\"progress\":6400,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",80]],\"picking\":false}}'"
-      ],
-      "ok": true
-     }
-    },
-    {
-     "command": "command data get block 40 101 8 ntm",
-     "result": {
-      "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":2},null,null,null,null,null,null,null],\"heat\":54000,\"progress\":12000,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",80]],\"picking\":false}}'"
+       "The target block is not a block entity"
       ],
       "ok": true
      }
@@ -1389,7 +1532,439 @@
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":2},null,null,null,null,null,null,null],\"heat\":54000,\"progress\":17400,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",80]],\"picking\":false}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
       ],
       "ok": true
      }
@@ -1398,7 +1973,7 @@
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":1},null,null,null,null,null,null,null],\"heat\":54000,\"progress\":3200,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",88]],\"picking\":false}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
       "ok": true
      }
@@ -1407,7 +1982,223 @@
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":1},null,null,null,null,null,null,null],\"heat\":54000,\"progress\":8800,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",88]],\"picking\":false}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
       ],
       "ok": true
      }
@@ -1416,7 +2207,52 @@
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,{\"id\":\"minecraft:gold_nugget\",\"count\":1},null,null,null,null,null,null,null],\"heat\":54000,\"progress\":14200,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",88]],\"picking\":false}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command item replace block 40 101 8 container.0 with ntm:mold__ingot 1",
+     "result": {
+      "chat": [
+       "Replaced 1 slot(s) at 40, 101, 8 with [Foundry Mold (Ingot)]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 103 6 ntm:heater_firebox[facing=south,honey_level=0]",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 103, 6"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 104 6 ntm:machine_crucible[facing=north,honey_level=0]",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 104, 6"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command item replace block 40 103 6 container.0 with minecraft:coal 16",
+     "result": {
+      "chat": [
+       "Replaced 1 slot(s) at 40, 103, 6 with [Coal]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command item replace block 40 104 6 container.1 with minecraft:gold_ingot 2",
+     "result": {
+      "chat": [
+       "Replaced 1 slot(s) at 40, 104, 6 with [Gold Ingot]"
       ],
       "ok": true
      }
@@ -1425,7 +2261,7 @@
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":54000,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",96]],\"picking\":false}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
       "ok": true
      }
@@ -1434,34 +2270,214 @@
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":54799,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",96]],\"picking\":false}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 Items",
+     "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "Found no elements matching Items"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
       "ok": true
      }
     },
     {
-     "command": "command data get block 40 101 8 Items",
+     "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "Found no elements matching Items"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
       "ok": true
      }
     },
     {
-     "command": "command setblock 40 100 8 minecraft:stone",
+     "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "Changed the block at 40, 100, 8"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":72,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":72,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":72,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":72,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":144,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":144,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 104 6 ntm",
+     "result": {
+      "chat": [
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":65099,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 104 6 ntm",
+     "result": {
+      "chat": [
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":65899,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 104 6 ntm",
+     "result": {
+      "chat": [
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":66699,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 103 6 minecraft:stone",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 103, 6"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 104 6 minecraft:stone",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 104, 6"
       ],
       "ok": true
      }
@@ -1485,23 +2501,19 @@
      }
     },
     {
-     "command": "block 40 101 8",
+     "command": "command data get block 40 101 8 ntm",
      "result": {
-      "block": "ntm:machine_crucible",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       8
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":144,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
-      "state": "ntm:machine_crucible[facing=north,honey_level=1]"
+      "ok": true
      }
     },
     {
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":54351,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[[\"gold\",96]],\"picking\":false}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":144,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
       "ok": true
      }
@@ -1510,7 +2522,16 @@
      "command": "command data get block 40 101 8 Items",
      "result": {
       "chat": [
-       "Found no elements matching Items"
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 104 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
       ],
       "ok": true
      }
@@ -1527,27 +2548,12 @@
     {
      "command": "entities 60",
      "result": {
-      "entities": [
-       {
-        "baby": false,
-        "distance": 37.62977544445356,
-        "health": 4.0,
-        "hurt_time": 0,
-        "id": 4,
-        "kind": "mob",
-        "pos": [
-         24.5,
-         75.0,
-         34.5
-        ],
-        "type": "minecraft:chicken"
-       }
-      ],
+      "entities": [],
       "loaded_chunks": 49,
       "radius": 60.0,
       "tracked": {
        "items": 0,
-       "mobs": 1,
+       "mobs": 0,
        "orbs": 0
       },
       "type": null
@@ -1561,21 +2567,45 @@
     }
    ],
    "checks": {
-    "setup:melted_96": {
+    "setup:caster_placed": {
      "ok": true,
-     "actual": 96
+     "actual": [
+      40,
+      101,
+      8
+     ]
     },
-    "setup:the_slots_are_empty": {
+    "setup:poured_144_into_the_caster": {
      "ok": true,
-     "actual": "Found no elements matching Items"
+     "actual": [
+      144,
+      0
+     ]
+    },
+    "setup:the_crucible_is_empty": {
+     "ok": true,
+     "actual": 0
     }
    },
+   "caster": {
+    "core": [
+     40,
+     101,
+     8
+    ],
+    "facing": "north"
+   },
+   "crucible": [
+    40,
+    104,
+    6
+   ],
    "base": {
-    "molten": 96,
+    "molten": 144,
     "slots": 0,
     "inventory": 0,
     "ground": 0,
-    "total": 96
+    "total": 144
    }
   },
   "vanilla": {
@@ -1784,7 +2814,7 @@
       "target": null,
       "ticks": 0,
       "tridents": 0,
-      "uptime_seconds": 4.211426943,
+      "uptime_seconds": 5.047855021,
       "using": null,
       "yaw": 0.0
      }
@@ -1834,7 +2864,7 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 0.15037374198436737,
+      "fps": 0.18686933815479279,
       "frames": 1,
       "generated_chunks": 0,
       "heard": {},
@@ -1991,7 +3021,7 @@
       "target": null,
       "ticks": 10,
       "tridents": 0,
-      "uptime_seconds": 6.6501733210000005,
+      "uptime_seconds": 5.351416719,
       "using": null,
       "yaw": 0.0
      }
@@ -2008,9 +3038,9 @@
        "size": 59999968.0
       },
       "carts": [],
-      "chunks": 3,
+      "chunks": 8,
       "creative": true,
-      "day_time": 14,
+      "day_time": 9,
       "debug": {
        "advanced_tooltips": false,
        "chunk_borders": false,
@@ -2041,9 +3071,9 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 0.15037374198436737,
+      "fps": 0.18686933815479279,
       "frames": 3,
-      "generated_chunks": 3,
+      "generated_chunks": 8,
       "heard": {},
       "held": null,
       "input": {
@@ -2093,8 +3123,10 @@
       "name_tags": [],
       "objects": [],
       "offhand": null,
-      "particles": {},
-      "pending_chunks": 48,
+      "particles": {
+       "tinted_leaves": 1
+      },
+      "pending_chunks": 43,
       "pending_uploads": 0,
       "physical_keys": [],
       "pickups": {},
@@ -2105,9 +3137,9 @@
        "max_health": null,
        "on_ground": true,
        "position": [
-        10.5,
-        75.0,
-        8.5
+        1.5,
+        70.0,
+        2.5
        ],
        "velocity": [
         0.0,
@@ -2162,7 +3194,7 @@
       "server": {
        "address": "local",
        "chat": [],
-       "chunks": 3,
+       "chunks": 8,
        "dead_players": [],
        "decode_errors": 0,
        "dimension": "minecraft:overworld",
@@ -2212,10 +3244,17 @@
        "protos": 0,
        "queued": 0
       },
-      "target": null,
-      "ticks": 23,
+      "target": {
+       "block": "minecraft:grass_block",
+       "pos": [
+        1,
+        71,
+        6
+       ]
+      },
+      "ticks": 18,
       "tridents": 0,
-      "uptime_seconds": 6.928225554,
+      "uptime_seconds": 5.620840246,
       "using": null,
       "yaw": 0.0
      }
@@ -2234,7 +3273,7 @@
       "carts": [],
       "chunks": 49,
       "creative": true,
-      "day_time": 38,
+      "day_time": 60,
       "debug": {
        "advanced_tooltips": false,
        "chunk_borders": false,
@@ -2265,8 +3304,8 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 7.998654365539551,
-      "frames": 16,
+      "fps": 10.904736518859863,
+      "frames": 29,
       "generated_chunks": 49,
       "heard": {},
       "held": null,
@@ -2318,8 +3357,8 @@
       "objects": [],
       "offhand": null,
       "particles": {
-       "tinted_leaves": 3,
-       "underwater": 1
+       "tinted_leaves": 1,
+       "underwater": 36
       },
       "pending_chunks": 0,
       "pending_uploads": 0,
@@ -2332,9 +3371,9 @@
        "max_health": null,
        "on_ground": true,
        "position": [
-        10.5,
-        75.0,
-        8.5
+        1.5,
+        70.0,
+        2.5
        ],
        "velocity": [
         0.0,
@@ -2368,17 +3407,17 @@
        "present_mode": "Immediate",
        "resident_sections": 66,
        "section_draw_calls": 2,
-       "section_draws": 26,
-       "section_vertex_bytes": 3053664,
+       "section_draws": 30,
+       "section_vertex_bytes": 3053760,
        "size": [
         1280,
         720
        ],
        "stats_lag": 0,
-       "uploaded_bytes": 3266880,
+       "uploaded_bytes": 3113760,
        "vendor": "mesa",
        "vertex_bytes_split": [
-        3053664,
+        3053760,
         0
        ]
       },
@@ -2439,10 +3478,17 @@
        "protos": 0,
        "queued": 0
       },
-      "target": null,
-      "ticks": 51,
+      "target": {
+       "block": "minecraft:grass_block",
+       "pos": [
+        1,
+        71,
+        6
+       ]
+      },
+      "ticks": 67,
       "tridents": 0,
-      "uptime_seconds": 8.301136454,
+      "uptime_seconds": 7.982533227,
       "using": null,
       "yaw": 0.0
      }
@@ -2521,19 +3567,19 @@
      }
     },
     {
-     "command": "command item replace block 40 101 8 container.1 with minecraft:gold_ingot 1",
+     "command": "command item replace block 40 101 8 container.0 with ntm:mold__ingot 1",
      "result": {
       "chat": [
-       "Replaced 1 slot(s) at 40, 101, 8 with [Gold Ingot]"
+       "Replaced 1 slot(s) at 40, 101, 8 with [Foundry Mold (Ingot)]"
       ],
       "ok": true
      }
     },
     {
-     "command": "command item replace block 40 101 8 container.2 with minecraft:gold_nugget 3",
+     "command": "command item replace block 40 101 8 container.1 with minecraft:gold_ingot 2",
      "result": {
       "chat": [
-       "Replaced 1 slot(s) at 40, 101, 8 with [Gold Nugget]"
+       "Replaced 1 slot(s) at 40, 101, 8 with [Gold Ingot]"
       ],
       "ok": true
      }
@@ -2560,7 +3606,7 @@
      "command": "command data get block 40 101 8 Items",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: [{count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}, {count: 3, Slot: 2b, id: \"minecraft:gold_nugget\"}]"
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
       ],
       "ok": true
      }
@@ -2577,12 +3623,41 @@
     {
      "command": "entities 60",
      "result": {
-      "entities": [],
+      "entities": [
+       {
+        "baby": false,
+        "distance": 24.3768886616963,
+        "health": 16.0,
+        "hurt_time": 0,
+        "id": 2,
+        "kind": "mob",
+        "pos": [
+         52.42333984375,
+         80.0,
+         9.17333984375
+        ],
+        "type": "minecraft:spider"
+       },
+       {
+        "baby": false,
+        "distance": 34.687786577089106,
+        "health": 4.0,
+        "hurt_time": 0,
+        "id": 3,
+        "kind": "mob",
+        "pos": [
+         67.190185546875,
+         79.0,
+         9.877685546875
+        ],
+        "type": "minecraft:chicken"
+       }
+      ],
       "loaded_chunks": 49,
       "radius": 60.0,
       "tracked": {
        "items": 0,
-       "mobs": 0,
+       "mobs": 2,
        "orbs": 0
       },
       "type": null
@@ -2598,10 +3673,10 @@
    "checks": {},
    "base": {
     "molten": 0,
-    "slots": 96,
+    "slots": 144,
     "inventory": 0,
     "ground": 0,
-    "total": 96
+    "total": 144
    }
   }
  }

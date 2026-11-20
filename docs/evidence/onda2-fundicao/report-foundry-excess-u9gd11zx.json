@@ -1,32 +1,33 @@
 {
  "ok": true,
- "scenario": "caster",
- "binary": "/home/sacer/.cache/ntm-targets/onda2-fundicao-native/release/horizon-client",
- "binary_sha256": "757b39c2ad084688e97885d1542fbebbaf31ff0979ddfa623c81e7ffb9e9ae75",
+ "scenario": "excess",
+ "binary": "/mnt/ssd120/sacer/so/fundicao-native-target/release/horizon-client",
+ "binary_sha256": "447544abf8d6c1af64ee2621e30d2e5ed68b024d08b9091894ac68e97d2c09e7",
  "bundle_sha256": "6a380ecbafe7b6214a2281697601d08e89007100bddfcd01a654d1059655bbd3",
  "points": [
   {
-   "point": "none",
+   "point": "world_saved",
    "ok": true,
    "vanilla_control": false,
    "base_items": {
     "metal_quanta": 144
    },
    "after_act": {
-    "molten": 0,
+    "molten": 80,
     "slots": 0,
-    "inventory": 144,
+    "inventory": 64,
     "ground": 0,
     "total": 144
    },
    "died_in_act": false,
-   "exit": "survived",
+   "exit": -6,
+   "killed_at_the_point": true,
    "disk": {
     "entities": 0,
     "blocks": 0,
-    "molten": 0,
+    "molten": 80,
     "owed": 0,
-    "player": 144,
+    "player": 64,
     "total": 144
    },
    "items": {
@@ -39,30 +40,40 @@
       2,
       0,
       144,
-      0
+      80
      ]
     ],
     "entities": []
    },
    "first_reopen": {
-    "molten": 0,
+    "molten": 80,
     "slots": 0,
-    "inventory": 144,
+    "inventory": 64,
     "ground": 0,
     "total": 144
    },
    "checks": {
-    "verify": {},
-    "again": {}
+    "verify": {
+     "setup:the_mold_survives": {
+      "ok": true,
+      "actual": "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__nugget\"}]"
+     }
+    },
+    "again": {
+     "setup:the_mold_survives": {
+      "ok": true,
+      "actual": "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__nugget\"}]"
+     }
+    }
    },
    "items_after": {
     "metal_quanta": 144
    },
    "kv_items_after": 0,
    "second_reopen": {
-    "molten": 0,
+    "molten": 80,
     "slots": 0,
-    "inventory": 144,
+    "inventory": 64,
     "ground": 0,
     "total": 144
    },
@@ -71,7 +82,7 @@
    },
    "kv_items_again": 0,
    "control": {
-    "point": "none",
+    "point": "world_saved",
     "ok": true,
     "vanilla_control": true,
     "base_items": {
@@ -79,19 +90,20 @@
     },
     "after_act": {
      "molten": 0,
-     "slots": 0,
-     "inventory": 144,
+     "slots": 80,
+     "inventory": 64,
      "ground": 0,
      "total": 144
     },
     "died_in_act": false,
-    "exit": "survived",
+    "exit": -6,
+    "killed_at_the_point": true,
     "disk": {
      "entities": 0,
-     "blocks": 0,
+     "blocks": 80,
      "molten": 0,
      "owed": 0,
-     "player": 144,
+     "player": 64,
      "total": 144
     },
     "items": {
@@ -104,15 +116,15 @@
        2,
        0,
        144,
-       0
+       80
       ]
      ],
      "entities": []
     },
     "first_reopen": {
      "molten": 0,
-     "slots": 0,
-     "inventory": 144,
+     "slots": 80,
+     "inventory": 64,
      "ground": 0,
      "total": 144
     },
@@ -126,8 +138,8 @@
     "kv_items_after": 0,
     "second_reopen": {
      "molten": 0,
-     "slots": 0,
-     "inventory": 144,
+     "slots": 80,
+     "inventory": 64,
      "ground": 0,
      "total": 144
     },
@@ -148,8 +160,8 @@
     "as_the_files_items": true,
     "storage_clean": true,
     "same_cut": true,
-    "same_cut_by_definition": true,
-    "compared_with": "none",
+    "same_cut_by_definition": false,
+    "compared_with": "world_saved",
     "control_first": 144,
     "no_duplicate": true,
     "lost": 0,
@@ -187,184 +199,16 @@
    }
   },
   {
-   "point": "kill",
+   "point": "players_saved",
    "ok": true,
    "vanilla_control": false,
    "base_items": {
     "metal_quanta": 144
    },
    "after_act": {
-    "molten": 0,
+    "molten": 80,
     "slots": 0,
-    "inventory": 144,
-    "ground": 0,
-    "total": 144
-   },
-   "died_in_act": false,
-   "exit": -9,
-   "disk": {
-    "entities": 0,
-    "blocks": 0,
-    "molten": 144,
-    "owed": 0,
-    "player": 0,
-    "total": 144
-   },
-   "items": {
-    "metal_quanta": 144
-   },
-   "kv_items": 0,
-   "written": {
-    "region": [],
-    "entities": []
-   },
-   "first_reopen": {
-    "molten": 144,
-    "slots": 0,
-    "inventory": 0,
-    "ground": 0,
-    "total": 144
-   },
-   "checks": {
-    "verify": {},
-    "again": {}
-   },
-   "items_after": {
-    "metal_quanta": 144
-   },
-   "kv_items_after": 0,
-   "second_reopen": {
-    "molten": 144,
-    "slots": 0,
-    "inventory": 0,
-    "ground": 0,
-    "total": 144
-   },
-   "items_again": {
-    "metal_quanta": 144
-   },
-   "kv_items_again": 0,
-   "control": {
-    "point": "kill",
-    "ok": true,
-    "vanilla_control": true,
-    "base_items": {
-     "metal_quanta": 144
-    },
-    "after_act": {
-     "molten": 0,
-     "slots": 0,
-     "inventory": 144,
-     "ground": 0,
-     "total": 144
-    },
-    "died_in_act": false,
-    "exit": -9,
-    "disk": {
-     "entities": 0,
-     "blocks": 144,
-     "molten": 0,
-     "owed": 0,
-     "player": 0,
-     "total": 144
-    },
-    "items": {
-     "metal_quanta": 144
-    },
-    "kv_items": 0,
-    "written": {
-     "region": [],
-     "entities": []
-    },
-    "first_reopen": {
-     "molten": 0,
-     "slots": 144,
-     "inventory": 0,
-     "ground": 0,
-     "total": 144
-    },
-    "checks": {
-     "verify": {},
-     "again": {}
-    },
-    "items_after": {
-     "metal_quanta": 144
-    },
-    "kv_items_after": 0,
-    "second_reopen": {
-     "molten": 0,
-     "slots": 144,
-     "inventory": 0,
-     "ground": 0,
-     "total": 144
-    },
-    "items_again": {
-     "metal_quanta": 144
-    },
-    "kv_items_again": 0
-   },
-   "verdict": {
-    "disk": 144,
-    "first": 144,
-    "second": 144,
-    "expected": 144,
-    "control_expected": 144,
-    "control_disk": 144,
-    "parts_ok": true,
-    "as_the_files": true,
-    "as_the_files_items": true,
-    "storage_clean": true,
-    "same_cut": true,
-    "same_cut_by_definition": true,
-    "compared_with": "kill",
-    "control_first": 144,
-    "no_duplicate": true,
-    "lost": 0,
-    "control_lost": 0,
-    "no_worse_than_vanilla": true,
-    "items": {
-     "base": {
-      "metal_quanta": 144
-     },
-     "control_base": {
-      "metal_quanta": 144
-     },
-     "items_after": {
-      "mine": {
-       "metal_quanta": 144
-      },
-      "control": {
-       "metal_quanta": 144
-      }
-     },
-     "items_again": {
-      "mine": {
-       "metal_quanta": 144
-      },
-      "control": {
-       "metal_quanta": 144
-      }
-     }
-    },
-    "no_duplicate_item": true,
-    "no_worse_item": true,
-    "criterion": "last_save",
-    "criterion_reason": "nothing written outside a save: both worlds are the last save, exactly",
-    "proof": true,
-    "as_the_last_save": true
-   }
-  },
-  {
-   "point": "kv_committed",
-   "ok": true,
-   "vanilla_control": false,
-   "base_items": {
-    "metal_quanta": 144
-   },
-   "after_act": {
-    "molten": 0,
-    "slots": 0,
-    "inventory": 144,
+    "inventory": 64,
     "ground": 0,
     "total": 144
    },
@@ -374,207 +218,55 @@
    "disk": {
     "entities": 0,
     "blocks": 0,
-    "molten": 144,
+    "molten": 80,
     "owed": 0,
-    "player": 144,
-    "total": 288
+    "player": 64,
+    "total": 144
    },
    "items": {
-    "metal_quanta": 288
+    "metal_quanta": 144
    },
    "kv_items": 0,
    "written": {
-    "region": [],
+    "region": [
+     [
+      2,
+      0,
+      144,
+      80
+     ]
+    ],
     "entities": []
    },
    "first_reopen": {
-    "molten": 144,
+    "molten": 80,
     "slots": 0,
-    "inventory": 144,
+    "inventory": 64,
     "ground": 0,
-    "total": 288
+    "total": 144
    },
    "checks": {
-    "verify": {},
-    "again": {}
-   },
-   "items_after": {
-    "metal_quanta": 288
-   },
-   "kv_items_after": 0,
-   "second_reopen": {
-    "molten": 144,
-    "slots": 0,
-    "inventory": 144,
-    "ground": 0,
-    "total": 288
-   },
-   "items_again": {
-    "metal_quanta": 288
-   },
-   "kv_items_again": 0,
-   "control": {
-    "point": "kv_committed",
-    "ok": true,
-    "vanilla_control": true,
-    "base_items": {
-     "metal_quanta": 144
-    },
-    "after_act": {
-     "molten": 0,
-     "slots": 0,
-     "inventory": 144,
-     "ground": 0,
-     "total": 144
-    },
-    "died_in_act": false,
-    "exit": -6,
-    "killed_at_the_point": true,
-    "disk": {
-     "entities": 0,
-     "blocks": 144,
-     "molten": 0,
-     "owed": 0,
-     "player": 144,
-     "total": 288
-    },
-    "items": {
-     "metal_quanta": 288
-    },
-    "kv_items": 0,
-    "written": {
-     "region": [],
-     "entities": []
-    },
-    "first_reopen": {
-     "molten": 0,
-     "slots": 144,
-     "inventory": 144,
-     "ground": 0,
-     "total": 288
-    },
-    "checks": {
-     "verify": {},
-     "again": {}
-    },
-    "items_after": {
-     "metal_quanta": 288
-    },
-    "kv_items_after": 0,
-    "second_reopen": {
-     "molten": 0,
-     "slots": 144,
-     "inventory": 144,
-     "ground": 0,
-     "total": 288
-    },
-    "items_again": {
-     "metal_quanta": 288
-    },
-    "kv_items_again": 0
-   },
-   "verdict": {
-    "disk": 288,
-    "first": 288,
-    "second": 288,
-    "expected": 144,
-    "control_expected": 144,
-    "control_disk": 288,
-    "parts_ok": true,
-    "as_the_files": true,
-    "as_the_files_items": true,
-    "storage_clean": true,
-    "same_cut": true,
-    "same_cut_by_definition": true,
-    "compared_with": "kv_committed",
-    "control_first": 288,
-    "no_duplicate": true,
-    "lost": -144,
-    "control_lost": -144,
-    "no_worse_than_vanilla": true,
-    "items": {
-     "base": {
-      "metal_quanta": 144
-     },
-     "control_base": {
-      "metal_quanta": 144
-     },
-     "items_after": {
-      "mine": {
-       "metal_quanta": 288
-      },
-      "control": {
-       "metal_quanta": 288
-      }
-     },
-     "items_again": {
-      "mine": {
-       "metal_quanta": 288
-      },
-      "control": {
-       "metal_quanta": 288
-      }
+    "verify": {
+     "setup:the_mold_survives": {
+      "ok": true,
+      "actual": "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__nugget\"}]"
      }
     },
-    "no_duplicate_item": true,
-    "no_worse_item": true,
-    "criterion": "last_save",
-    "criterion_reason": "nothing written outside a save: both worlds are the last save, exactly",
-    "proof": true
-   }
-  },
-  {
-   "point": "save_begin",
-   "ok": true,
-   "vanilla_control": false,
-   "base_items": {
-    "metal_quanta": 144
-   },
-   "after_act": {
-    "molten": 0,
-    "slots": 0,
-    "inventory": 144,
-    "ground": 0,
-    "total": 144
-   },
-   "died_in_act": false,
-   "exit": -6,
-   "killed_at_the_point": true,
-   "disk": {
-    "entities": 0,
-    "blocks": 0,
-    "molten": 144,
-    "owed": 0,
-    "player": 0,
-    "total": 144
-   },
-   "items": {
-    "metal_quanta": 144
-   },
-   "kv_items": 0,
-   "written": {
-    "region": [],
-    "entities": []
-   },
-   "first_reopen": {
-    "molten": 144,
-    "slots": 0,
-    "inventory": 0,
-    "ground": 0,
-    "total": 144
-   },
-   "checks": {
-    "verify": {},
-    "again": {}
+    "again": {
+     "setup:the_mold_survives": {
+      "ok": true,
+      "actual": "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__nugget\"}]"
+     }
+    }
    },
    "items_after": {
     "metal_quanta": 144
    },
    "kv_items_after": 0,
    "second_reopen": {
-    "molten": 144,
+    "molten": 80,
     "slots": 0,
-    "inventory": 0,
+    "inventory": 64,
     "ground": 0,
     "total": 144
    },
@@ -583,7 +275,7 @@
    },
    "kv_items_again": 0,
    "control": {
-    "point": "save_begin",
+    "point": "players_saved",
     "ok": true,
     "vanilla_control": true,
     "base_items": {
@@ -591,8 +283,8 @@
     },
     "after_act": {
      "molten": 0,
-     "slots": 0,
-     "inventory": 144,
+     "slots": 80,
+     "inventory": 64,
      "ground": 0,
      "total": 144
     },
@@ -601,10 +293,10 @@
     "killed_at_the_point": true,
     "disk": {
      "entities": 0,
-     "blocks": 144,
+     "blocks": 80,
      "molten": 0,
      "owed": 0,
-     "player": 0,
+     "player": 64,
      "total": 144
     },
     "items": {
@@ -612,13 +304,20 @@
     },
     "kv_items": 0,
     "written": {
-     "region": [],
+     "region": [
+      [
+       2,
+       0,
+       144,
+       80
+      ]
+     ],
      "entities": []
     },
     "first_reopen": {
      "molten": 0,
-     "slots": 144,
-     "inventory": 0,
+     "slots": 80,
+     "inventory": 64,
      "ground": 0,
      "total": 144
     },
@@ -632,8 +331,8 @@
     "kv_items_after": 0,
     "second_reopen": {
      "molten": 0,
-     "slots": 144,
-     "inventory": 0,
+     "slots": 80,
+     "inventory": 64,
      "ground": 0,
      "total": 144
     },
@@ -655,7 +354,7 @@
     "storage_clean": true,
     "same_cut": true,
     "same_cut_by_definition": false,
-    "compared_with": "save_begin",
+    "compared_with": "players_saved",
     "control_first": 144,
     "no_duplicate": true,
     "lost": 0,
@@ -900,7 +599,7 @@
       "target": null,
       "ticks": 0,
       "tridents": 0,
-      "uptime_seconds": 2.76926708,
+      "uptime_seconds": 2.5366583929999997,
       "using": null,
       "yaw": 0.0
      }
@@ -919,7 +618,7 @@
       "carts": [],
       "chunks": 0,
       "creative": false,
-      "day_time": 1010,
+      "day_time": 1015,
       "debug": {
        "advanced_tooltips": false,
        "chunk_borders": false,
@@ -950,8 +649,8 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 0.31746289134025574,
-      "frames": 1,
+      "fps": 0.35829147696495056,
+      "frames": 2,
       "generated_chunks": 0,
       "heard": {},
       "held": null,
@@ -1065,7 +764,7 @@
        "food": 20,
        "game_mode": 0,
        "health": 20.0,
-       "joined": false,
+       "joined": true,
        "loaded": false,
        "lying_players": [],
        "name": "CrashTest",
@@ -1074,7 +773,7 @@
        "player_model": false,
        "player_positions": [],
        "players": [],
-       "status": "Joining world...",
+       "status": "Loading terrain...",
        "text_display_vertices": 0,
        "text_displays": 0
       },
@@ -1105,9 +804,9 @@
        "queued": 0
       },
       "target": null,
-      "ticks": 10,
+      "ticks": 15,
       "tridents": 0,
-      "uptime_seconds": 3.1500487169999998,
+      "uptime_seconds": 2.824500879,
       "using": null,
       "yaw": 0.0
      }
@@ -1124,9 +823,9 @@
        "size": 59999968.0
       },
       "carts": [],
-      "chunks": 49,
+      "chunks": 5,
       "creative": true,
-      "day_time": 18,
+      "day_time": 5,
       "debug": {
        "advanced_tooltips": false,
        "chunk_borders": false,
@@ -1157,8 +856,232 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 0.31746289134025574,
-      "frames": 7,
+      "fps": 0.35829147696495056,
+      "frames": 6,
+      "generated_chunks": 5,
+      "heard": {},
+      "held": null,
+      "input": {
+       "counts": {
+        "agent": 0,
+        "game": 0,
+        "user": 0
+       },
+       "events": 0,
+       "last_origin": null,
+       "last_user_age_s": null,
+       "recording": null,
+       "replay": null,
+       "user_since_agent": 0
+      },
+      "keys": [],
+      "lightning": {
+       "bolts": 0,
+       "flash": 0,
+       "flashes": 0,
+       "struck": 0
+      },
+      "lod": {
+       "active_tiles": 0,
+       "cached_tiles": 0,
+       "detail_target_columns": 0,
+       "distance": 0,
+       "effective_distance": 0,
+       "far_detail": "full",
+       "kept_mb": 0,
+       "kept_tiles": 0,
+       "levels": [],
+       "pending_observations": 0,
+       "refined_samples": 0,
+       "refined_target_columns": 0,
+       "resident_quads": 0,
+       "sampled_target_tiles": 0,
+       "source": "none",
+       "source_attempted": false,
+       "target_tiles": 0,
+       "terrain_distance": 2
+      },
+      "maps": [],
+      "meshed_sections": 0,
+      "mobs": 0,
+      "music": null,
+      "name_tags": [],
+      "objects": [],
+      "offhand": null,
+      "particles": {},
+      "pending_chunks": 43,
+      "pending_uploads": 0,
+      "physical_keys": [],
+      "pickups": {},
+      "pitch": 0.0,
+      "player": {
+       "food": 20,
+       "health": 20.0,
+       "max_health": null,
+       "on_ground": true,
+       "position": [
+        -6.5,
+        75.0,
+        10.5
+       ],
+       "velocity": [
+        0.0,
+        -0.0784000015258789,
+        0.0
+       ]
+      },
+      "projectiles": [],
+      "render_distance": 2,
+      "renderer": {
+       "arena_bytes": 0,
+       "backend": "Gl",
+       "culled_sections": null,
+       "device_type": "cpu",
+       "drawn_sections": 0,
+       "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+       "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+       "gpu_allocated_bytes": null,
+       "gpu_culling": false,
+       "gpu_culling_auto": "watching",
+       "gpu_culling_mode": "off",
+       "gpu_culling_offer": "Unsupported",
+       "gpu_fading": null,
+       "gpu_frame": false,
+       "gpu_occluding": false,
+       "gpu_reserved_bytes": null,
+       "packed_layout": [
+        false,
+        true
+       ],
+       "present_mode": "Immediate",
+       "resident_sections": 0,
+       "section_draw_calls": 0,
+       "section_draws": 0,
+       "section_vertex_bytes": 0,
+       "size": [
+        1280,
+        720
+       ],
+       "stats_lag": 0,
+       "uploaded_bytes": 0,
+       "vendor": "mesa",
+       "vertex_bytes_split": [
+        0,
+        0
+       ]
+      },
+      "riding": null,
+      "rockets": 0,
+      "screen": "playing",
+      "selected": 1,
+      "server": {
+       "address": "local",
+       "chat": [],
+       "chunks": 5,
+       "dead_players": [],
+       "decode_errors": 0,
+       "dimension": "minecraft:overworld",
+       "entities": {},
+       "entity_id": 1,
+       "food": 20,
+       "game_mode": 1,
+       "health": 20.0,
+       "joined": true,
+       "loaded": true,
+       "lying_players": [],
+       "name": "CrashTest",
+       "own_body": false,
+       "player_equipment": [],
+       "player_model": true,
+       "player_positions": [],
+       "players": [
+        "CrashTest"
+       ],
+       "status": "Loading terrain...",
+       "text_display_vertices": 0,
+       "text_displays": 0
+      },
+      "sidebar": null,
+      "sounds": {
+       "channels": 0,
+       "decoded": 0,
+       "decoded_mib": 0,
+       "events": [],
+       "handles": 0,
+       "instances": 0,
+       "playing": 0,
+       "queued": 0,
+       "ticking": 0,
+       "used": [
+        0,
+        0
+       ]
+      },
+      "stopped_sounds": {},
+      "streaming": {
+       "decorating": 0,
+       "finishing": 0,
+       "generating": 0,
+       "lighting": 0,
+       "meshing": 0,
+       "protos": 0,
+       "queued": 0
+      },
+      "target": null,
+      "ticks": 19,
+      "tridents": 0,
+      "uptime_seconds": 3.112571991,
+      "using": null,
+      "yaw": 0.0
+     }
+    },
+    {
+     "command": "status",
+     "result": {
+      "block_entities": 0,
+      "border": {
+       "center": [
+        0.0,
+        0.0
+       ],
+       "size": 59999968.0
+      },
+      "carts": [],
+      "chunks": 49,
+      "creative": true,
+      "day_time": 11,
+      "debug": {
+       "advanced_tooltips": false,
+       "chunk_borders": false,
+       "clipboard": null,
+       "hitboxes": false,
+       "overlay": false,
+       "pause_menu": true,
+       "pause_on_lost_focus": true
+      },
+      "destroying": [],
+      "dimension": "minecraft:overworld",
+      "dirty_light": 0,
+      "display": {
+       "height": 720,
+       "refresh_hz": null,
+       "scale": 1.0,
+       "width": 1280
+      },
+      "fangs_vertices": 0,
+      "fight": {
+       "alive_crystals": 0,
+       "crystal_list": [],
+       "crystals": 0,
+       "dragon": null,
+       "exit_portal": null,
+       "killed": false,
+       "players": false,
+       "respawn": null
+      },
+      "fishing": null,
+      "fps": 0.35829147696495056,
+      "frames": 10,
       "generated_chunks": 49,
       "heard": {},
       "held": null,
@@ -1210,10 +1133,10 @@
       "objects": [],
       "offhand": null,
       "particles": {
-       "underwater": 15
+       "underwater": 4
       },
-      "pending_chunks": 0,
-      "pending_uploads": 0,
+      "pending_chunks": 594,
+      "pending_uploads": 594,
       "physical_keys": [],
       "pickups": {},
       "pitch": 0.0,
@@ -1223,9 +1146,9 @@
        "max_health": null,
        "on_ground": true,
        "position": [
-        2.5,
-        66.0,
-        -6.5
+        -6.5,
+        75.0,
+        10.5
        ],
        "velocity": [
         0.0,
@@ -1240,7 +1163,7 @@
        "backend": "Gl",
        "culled_sections": null,
        "device_type": "cpu",
-       "drawn_sections": 19,
+       "drawn_sections": 3,
        "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
        "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
        "gpu_allocated_bytes": null,
@@ -1257,19 +1180,19 @@
         true
        ],
        "present_mode": "Immediate",
-       "resident_sections": 67,
-       "section_draw_calls": 2,
-       "section_draws": 32,
-       "section_vertex_bytes": 3002016,
+       "resident_sections": 6,
+       "section_draw_calls": 1,
+       "section_draws": 4,
+       "section_vertex_bytes": 434688,
        "size": [
         1280,
         720
        ],
        "stats_lag": 0,
-       "uploaded_bytes": 3002016,
+       "uploaded_bytes": 434688,
        "vendor": "mesa",
        "vertex_bytes_split": [
-        3002016,
+        434688,
         0
        ]
       },
@@ -1330,17 +1253,236 @@
        "protos": 0,
        "queued": 0
       },
-      "target": {
-       "block": "minecraft:short_grass",
-       "pos": [
-        2,
-        67,
-        -5
+      "target": null,
+      "ticks": 25,
+      "tridents": 0,
+      "uptime_seconds": 3.411988693,
+      "using": null,
+      "yaw": 0.0
+     }
+    },
+    {
+     "command": "status",
+     "result": {
+      "block_entities": 0,
+      "border": {
+       "center": [
+        0.0,
+        0.0
+       ],
+       "size": 59999968.0
+      },
+      "carts": [],
+      "chunks": 49,
+      "creative": true,
+      "day_time": 15,
+      "debug": {
+       "advanced_tooltips": false,
+       "chunk_borders": false,
+       "clipboard": null,
+       "hitboxes": false,
+       "overlay": false,
+       "pause_menu": true,
+       "pause_on_lost_focus": true
+      },
+      "destroying": [],
+      "dimension": "minecraft:overworld",
+      "dirty_light": 0,
+      "display": {
+       "height": 720,
+       "refresh_hz": null,
+       "scale": 1.0,
+       "width": 1280
+      },
+      "fangs_vertices": 0,
+      "fight": {
+       "alive_crystals": 0,
+       "crystal_list": [],
+       "crystals": 0,
+       "dragon": null,
+       "exit_portal": null,
+       "killed": false,
+       "players": false,
+       "respawn": null
+      },
+      "fishing": null,
+      "fps": 0.35829147696495056,
+      "frames": 12,
+      "generated_chunks": 49,
+      "heard": {},
+      "held": null,
+      "input": {
+       "counts": {
+        "agent": 0,
+        "game": 0,
+        "user": 0
+       },
+       "events": 0,
+       "last_origin": null,
+       "last_user_age_s": null,
+       "recording": null,
+       "replay": null,
+       "user_since_agent": 0
+      },
+      "keys": [],
+      "lightning": {
+       "bolts": 0,
+       "flash": 0,
+       "flashes": 0,
+       "struck": 0
+      },
+      "lod": {
+       "active_tiles": 0,
+       "cached_tiles": 0,
+       "detail_target_columns": 0,
+       "distance": 0,
+       "effective_distance": 0,
+       "far_detail": "full",
+       "kept_mb": 0,
+       "kept_tiles": 0,
+       "levels": [],
+       "pending_observations": 0,
+       "refined_samples": 0,
+       "refined_target_columns": 0,
+       "resident_quads": 0,
+       "sampled_target_tiles": 0,
+       "source": "none",
+       "source_attempted": false,
+       "target_tiles": 0,
+       "terrain_distance": 2
+      },
+      "maps": [],
+      "meshed_sections": 600,
+      "mobs": 0,
+      "music": null,
+      "name_tags": [],
+      "objects": [],
+      "offhand": null,
+      "particles": {
+       "underwater": 9
+      },
+      "pending_chunks": 0,
+      "pending_uploads": 0,
+      "physical_keys": [],
+      "pickups": {},
+      "pitch": 0.0,
+      "player": {
+       "food": 20,
+       "health": 20.0,
+       "max_health": null,
+       "on_ground": true,
+       "position": [
+        -6.5,
+        75.0,
+        10.5
+       ],
+       "velocity": [
+        0.0,
+        -0.0784000015258789,
+        0.0
        ]
       },
-      "ticks": 27,
+      "projectiles": [],
+      "render_distance": 2,
+      "renderer": {
+       "arena_bytes": 25165824,
+       "backend": "Gl",
+       "culled_sections": null,
+       "device_type": "cpu",
+       "drawn_sections": 17,
+       "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+       "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+       "gpu_allocated_bytes": null,
+       "gpu_culling": false,
+       "gpu_culling_auto": "watching",
+       "gpu_culling_mode": "off",
+       "gpu_culling_offer": "Unsupported",
+       "gpu_fading": null,
+       "gpu_frame": false,
+       "gpu_occluding": false,
+       "gpu_reserved_bytes": null,
+       "packed_layout": [
+        false,
+        true
+       ],
+       "present_mode": "Immediate",
+       "resident_sections": 63,
+       "section_draw_calls": 2,
+       "section_draws": 23,
+       "section_vertex_bytes": 3041376,
+       "size": [
+        1280,
+        720
+       ],
+       "stats_lag": 0,
+       "uploaded_bytes": 3041376,
+       "vendor": "mesa",
+       "vertex_bytes_split": [
+        3041376,
+        0
+       ]
+      },
+      "riding": null,
+      "rockets": 0,
+      "screen": "playing",
+      "selected": 1,
+      "server": {
+       "address": "local",
+       "chat": [],
+       "chunks": 49,
+       "dead_players": [],
+       "decode_errors": 0,
+       "dimension": "minecraft:overworld",
+       "entities": {},
+       "entity_id": 1,
+       "food": 20,
+       "game_mode": 1,
+       "health": 20.0,
+       "joined": true,
+       "loaded": true,
+       "lying_players": [],
+       "name": "CrashTest",
+       "own_body": false,
+       "player_equipment": [],
+       "player_model": true,
+       "player_positions": [],
+       "players": [
+        "CrashTest"
+       ],
+       "status": "Loading terrain...",
+       "text_display_vertices": 0,
+       "text_displays": 0
+      },
+      "sidebar": null,
+      "sounds": {
+       "channels": 0,
+       "decoded": 0,
+       "decoded_mib": 0,
+       "events": [],
+       "handles": 0,
+       "instances": 0,
+       "playing": 0,
+       "queued": 0,
+       "ticking": 0,
+       "used": [
+        0,
+        0
+       ]
+      },
+      "stopped_sounds": {},
+      "streaming": {
+       "decorating": 0,
+       "finishing": 0,
+       "generating": 0,
+       "lighting": 0,
+       "meshing": 0,
+       "protos": 0,
+       "queued": 0
+      },
+      "target": null,
+      "ticks": 29,
       "tridents": 0,
-      "uptime_seconds": 3.9139231690000003,
+      "uptime_seconds": 3.758442841,
       "using": null,
       "yaw": 0.0
      }
@@ -1464,965 +1606,219 @@
      }
     },
     {
-     "command": "block 37 101 5",
+     "command": "command data get block 37 101 5 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       5
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 37 101 6",
+     "command": "command data get block 37 101 6 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       6
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 37 101 7",
+     "command": "command data get block 37 101 7 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       7
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 37 101 8",
+     "command": "command data get block 37 101 8 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       8
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 37 101 9",
+     "command": "command data get block 37 101 9 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       9
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 37 101 10",
+     "command": "command data get block 37 101 10 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       10
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 37 101 11",
+     "command": "command data get block 37 101 11 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       11
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 38 101 5",
+     "command": "command data get block 38 101 5 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       5
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 38 101 6",
+     "command": "command data get block 38 101 6 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       6
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 38 101 7",
+     "command": "command data get block 38 101 7 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       7
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 38 101 8",
+     "command": "command data get block 38 101 8 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       8
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 38 101 9",
+     "command": "command data get block 38 101 9 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       9
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 38 101 10",
+     "command": "command data get block 38 101 10 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       10
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 38 101 11",
+     "command": "command data get block 38 101 11 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       11
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 39 101 5",
+     "command": "command data get block 39 101 5 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       5
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 39 101 6",
+     "command": "command data get block 39 101 6 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       6
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 39 101 7",
+     "command": "command data get block 39 101 7 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       7
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 39 101 8",
+     "command": "command data get block 39 101 8 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       8
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 39 101 9",
+     "command": "command data get block 39 101 9 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       9
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 39 101 10",
+     "command": "command data get block 39 101 10 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       10
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 39 101 11",
+     "command": "command data get block 39 101 11 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       11
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 40 101 5",
+     "command": "command data get block 40 101 5 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       5
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 40 101 6",
+     "command": "command data get block 40 101 6 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       6
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 40 101 7",
+     "command": "command data get block 40 101 7 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       7
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 40 101 8",
-     "result": {
-      "block": "ntm:machine_strand_caster",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       8
-      ],
-      "state": "ntm:machine_strand_caster[facing=north,honey_level=0]"
-     }
-    },
-    {
-     "command": "block 40 101 9",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       9
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 40 101 10",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       10
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 40 101 11",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       11
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 41 101 5",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       5
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 41 101 6",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       6
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 41 101 7",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       7
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 41 101 8",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       8
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 41 101 9",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       9
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 41 101 10",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       10
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 41 101 11",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       11
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 42 101 5",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       5
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 42 101 6",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       6
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 42 101 7",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       7
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 42 101 8",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       8
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 42 101 9",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       9
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 42 101 10",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       10
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 42 101 11",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       11
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 43 101 5",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       5
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 43 101 6",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       6
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 43 101 7",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       7
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 43 101 8",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       8
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 43 101 9",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       9
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 43 101 10",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       10
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 43 101 11",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       11
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 37 101 5",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       5
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 37 101 6",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       6
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 37 101 7",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       7
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 37 101 8",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       8
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 37 101 9",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       9
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 37 101 10",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       10
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 37 101 11",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       37,
-       101,
-       11
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 38 101 5",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       5
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 38 101 6",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       6
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 38 101 7",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       7
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 38 101 8",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       8
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 38 101 9",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       9
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 38 101 10",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       10
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 38 101 11",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       38,
-       101,
-       11
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 39 101 5",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       5
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 39 101 6",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       6
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 39 101 7",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       7
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 39 101 8",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       8
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 39 101 9",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       9
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 39 101 10",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       10
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 39 101 11",
-     "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       39,
-       101,
-       11
-      ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
-     }
-    },
-    {
-     "command": "block 40 101 5",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       5
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 40 101 6",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       6
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 40 101 7",
-     "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       7
-      ],
-      "state": "minecraft:air"
-     }
-    },
-    {
-     "command": "block 40 101 8",
-     "result": {
-      "block": "ntm:machine_strand_caster",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       8
-      ],
-      "state": "ntm:machine_strand_caster[facing=north,honey_level=0]"
+      "ok": true
      }
     },
     {
@@ -2435,328 +1831,678 @@
      }
     },
     {
-     "command": "block 40 101 9",
+     "command": "command data get block 40 101 9 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       9
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 40 101 10",
+     "command": "command data get block 40 101 10 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       10
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 40 101 11",
+     "command": "command data get block 40 101 11 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       11
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 41 101 5",
+     "command": "command data get block 41 101 5 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       5
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 41 101 6",
+     "command": "command data get block 41 101 6 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       6
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 41 101 7",
+     "command": "command data get block 41 101 7 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       7
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 41 101 8",
+     "command": "command data get block 41 101 8 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       8
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 41 101 9",
+     "command": "command data get block 41 101 9 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       9
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 41 101 10",
+     "command": "command data get block 41 101 10 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       10
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 41 101 11",
+     "command": "command data get block 41 101 11 ntm",
      "result": {
-      "block": "ntm:dummy_machine",
-      "loaded": true,
-      "pos": [
-       41,
-       101,
-       11
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:dummy_machine[waterlogged=false]"
+      "ok": true
      }
     },
     {
-     "command": "block 42 101 5",
+     "command": "command data get block 42 101 5 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       5
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 42 101 6",
+     "command": "command data get block 42 101 6 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       6
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 42 101 7",
+     "command": "command data get block 42 101 7 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       7
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 42 101 8",
+     "command": "command data get block 42 101 8 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       8
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 42 101 9",
+     "command": "command data get block 42 101 9 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       9
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 42 101 10",
+     "command": "command data get block 42 101 10 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       10
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 42 101 11",
+     "command": "command data get block 42 101 11 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       42,
-       101,
-       11
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 43 101 5",
+     "command": "command data get block 43 101 5 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       5
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 43 101 6",
+     "command": "command data get block 43 101 6 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       6
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 43 101 7",
+     "command": "command data get block 43 101 7 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       7
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 43 101 8",
+     "command": "command data get block 43 101 8 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       8
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 43 101 9",
+     "command": "command data get block 43 101 9 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       9
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 43 101 10",
+     "command": "command data get block 43 101 10 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       10
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 43 101 11",
+     "command": "command data get block 43 101 11 ntm",
      "result": {
-      "block": "minecraft:air",
-      "loaded": true,
-      "pos": [
-       43,
-       101,
-       11
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:air"
+      "ok": true
      }
     },
     {
-     "command": "block 40 101 8",
+     "command": "command data get block 37 101 5 ntm",
      "result": {
-      "block": "ntm:machine_strand_caster",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       8
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "ntm:machine_strand_caster[facing=north,honey_level=0]"
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
      }
     },
     {
@@ -2925,7 +2671,70 @@
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":72,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
       "ok": true
      }
@@ -2943,7 +2752,16 @@
      "command": "command data get block 40 101 8 ntm",
      "result": {
       "chat": [
-       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":96,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":72,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":72,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
       "ok": true
      }
@@ -2970,7 +2788,7 @@
      "command": "command data get block 40 104 6 ntm",
      "result": {
       "chat": [
-       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":62699,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":56599,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
       ],
       "ok": true
      }
@@ -2979,7 +2797,7 @@
      "command": "command data get block 40 104 6 ntm",
      "result": {
       "chat": [
-       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":63799,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":57399,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
       ],
       "ok": true
      }
@@ -2988,7 +2806,7 @@
      "command": "command data get block 40 104 6 ntm",
      "result": {
       "chat": [
-       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":64499,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":58199,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
       ],
       "ok": true
      }
@@ -3030,16 +2848,12 @@
      }
     },
     {
-     "command": "block 40 101 8",
+     "command": "command data get block 40 101 8 ntm",
      "result": {
-      "block": "ntm:machine_strand_caster",
-      "loaded": true,
-      "pos": [
-       40,
-       101,
-       8
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"mat\":\"gold\",\"amount\":144,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
       ],
-      "state": "ntm:machine_strand_caster[facing=north,honey_level=1]"
+      "ok": true
      }
     },
     {
@@ -3061,16 +2875,12 @@
      }
     },
     {
-     "command": "block 40 104 6",
+     "command": "command data get block 40 104 6 ntm",
      "result": {
-      "block": "minecraft:stone",
-      "loaded": true,
-      "pos": [
-       40,
-       104,
-       6
+      "chat": [
+       "The target block is not a block entity"
       ],
-      "state": "minecraft:stone"
+      "ok": true
      }
     },
     {
@@ -3085,27 +2895,12 @@
     {
      "command": "entities 60",
      "result": {
-      "entities": [
-       {
-        "baby": false,
-        "distance": 38.44175816045058,
-        "health": 4.0,
-        "hurt_time": 0,
-        "id": 5,
-        "kind": "mob",
-        "pos": [
-         68.92048216327557,
-         79.0,
-         -1.1398300602868443
-        ],
-        "type": "minecraft:chicken"
-       }
-      ],
+      "entities": [],
       "loaded_chunks": 49,
       "radius": 60.0,
       "tracked": {
        "items": 0,
-       "mobs": 1,
+       "mobs": 0,
        "orbs": 0
       },
       "type": null
@@ -3366,7 +3161,7 @@
       "target": null,
       "ticks": 0,
       "tridents": 0,
-      "uptime_seconds": 4.644525638,
+      "uptime_seconds": 3.682230278,
       "using": null,
       "yaw": 0.0
      }
@@ -3416,7 +3211,7 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 0.18372169137001038,
+      "fps": 0.23994611203670502,
       "frames": 1,
       "generated_chunks": 0,
       "heard": {},
@@ -3573,7 +3368,7 @@
       "target": null,
       "ticks": 10,
       "tridents": 0,
-      "uptime_seconds": 5.44309925,
+      "uptime_seconds": 4.167681313,
       "using": null,
       "yaw": 0.0
      }
@@ -3590,9 +3385,9 @@
        "size": 59999968.0
       },
       "carts": [],
-      "chunks": 3,
+      "chunks": 49,
       "creative": true,
-      "day_time": 15,
+      "day_time": 16,
       "debug": {
        "advanced_tooltips": false,
        "chunk_borders": false,
@@ -3623,9 +3418,9 @@
        "respawn": null
       },
       "fishing": null,
-      "fps": 0.18372169137001038,
-      "frames": 3,
-      "generated_chunks": 3,
+      "fps": 0.23994611203670502,
+      "frames": 6,
+      "generated_chunks": 49,
       "heard": {},
       "held": null,
       "input": {
@@ -3676,9 +3471,9 @@
       "objects": [],
       "offhand": null,
       "particles": {
-       "underwater": 19
+       "tinted_leaves": 1
       },
-      "pending_chunks": 19,
+      "pending_chunks": 0,
       "pending_uploads": 0,
       "physical_keys": [],
       "pickups": {},
@@ -3689,9 +3484,9 @@
        "max_health": null,
        "on_ground": true,
        "position": [
-        -3.5,
-        65.0,
-        -4.5
+        3.5,
+        73.0,
+        9.5
        ],
        "velocity": [
         0.0,
@@ -3736,240 +3531,6 @@
        "vendor": "mesa",
        "vertex_bytes_split": [
         0,
-        0
-       ]
-      },
-      "riding": null,
-      "rockets": 0,
-      "screen": "playing",
-      "selected": 1,
-      "server": {
-       "address": "local",
-       "chat": [],
-       "chunks": 3,
-       "dead_players": [],
-       "decode_errors": 0,
-       "dimension": "minecraft:overworld",
-       "entities": {},
-       "entity_id": 1,
-       "food": 20,
-       "game_mode": 1,
-       "health": 20.0,
-       "joined": true,
-       "loaded": true,
-       "lying_players": [],
-       "name": "CrashTest",
-       "own_body": false,
-       "player_equipment": [],
-       "player_model": true,
-       "player_positions": [],
-       "players": [
-        "CrashTest"
-       ],
-       "status": "Loading terrain...",
-       "text_display_vertices": 0,
-       "text_displays": 0
-      },
-      "sidebar": null,
-      "sounds": {
-       "channels": 0,
-       "decoded": 0,
-       "decoded_mib": 0,
-       "events": [],
-       "handles": 0,
-       "instances": 0,
-       "playing": 0,
-       "queued": 0,
-       "ticking": 0,
-       "used": [
-        0,
-        0
-       ]
-      },
-      "stopped_sounds": {},
-      "streaming": {
-       "decorating": 0,
-       "finishing": 0,
-       "generating": 0,
-       "lighting": 0,
-       "meshing": 0,
-       "protos": 0,
-       "queued": 0
-      },
-      "target": {
-       "block": "minecraft:grass_block",
-       "pos": [
-        -4,
-        66,
-        0
-       ]
-      },
-      "ticks": 24,
-      "tridents": 0,
-      "uptime_seconds": 5.843497349,
-      "using": null,
-      "yaw": 0.0
-     }
-    },
-    {
-     "command": "status",
-     "result": {
-      "block_entities": 0,
-      "border": {
-       "center": [
-        0.0,
-        0.0
-       ],
-       "size": 59999968.0
-      },
-      "carts": [],
-      "chunks": 49,
-      "creative": true,
-      "day_time": 29,
-      "debug": {
-       "advanced_tooltips": false,
-       "chunk_borders": false,
-       "clipboard": null,
-       "hitboxes": false,
-       "overlay": false,
-       "pause_menu": true,
-       "pause_on_lost_focus": true
-      },
-      "destroying": [],
-      "dimension": "minecraft:overworld",
-      "dirty_light": 0,
-      "display": {
-       "height": 720,
-       "refresh_hz": null,
-       "scale": 1.0,
-       "width": 1280
-      },
-      "fangs_vertices": 0,
-      "fight": {
-       "alive_crystals": 0,
-       "crystal_list": [],
-       "crystals": 0,
-       "dragon": null,
-       "exit_portal": null,
-       "killed": false,
-       "players": false,
-       "respawn": null
-      },
-      "fishing": null,
-      "fps": 0.18372169137001038,
-      "frames": 8,
-      "generated_chunks": 49,
-      "heard": {},
-      "held": null,
-      "input": {
-       "counts": {
-        "agent": 0,
-        "game": 0,
-        "user": 0
-       },
-       "events": 0,
-       "last_origin": null,
-       "last_user_age_s": null,
-       "recording": null,
-       "replay": null,
-       "user_since_agent": 0
-      },
-      "keys": [],
-      "lightning": {
-       "bolts": 0,
-       "flash": 0,
-       "flashes": 0,
-       "struck": 0
-      },
-      "lod": {
-       "active_tiles": 0,
-       "cached_tiles": 0,
-       "detail_target_columns": 0,
-       "distance": 0,
-       "effective_distance": 0,
-       "far_detail": "full",
-       "kept_mb": 0,
-       "kept_tiles": 0,
-       "levels": [],
-       "pending_observations": 0,
-       "refined_samples": 0,
-       "refined_target_columns": 0,
-       "resident_quads": 0,
-       "sampled_target_tiles": 0,
-       "source": "none",
-       "source_attempted": false,
-       "target_tiles": 0,
-       "terrain_distance": 2
-      },
-      "maps": [],
-      "meshed_sections": 216,
-      "mobs": 0,
-      "music": null,
-      "name_tags": [],
-      "objects": [],
-      "offhand": null,
-      "particles": {
-       "tinted_leaves": 2,
-       "underwater": 58
-      },
-      "pending_chunks": 0,
-      "pending_uploads": 0,
-      "physical_keys": [],
-      "pickups": {},
-      "pitch": 0.0,
-      "player": {
-       "food": 20,
-       "health": 20.0,
-       "max_health": null,
-       "on_ground": true,
-       "position": [
-        -3.5,
-        65.0,
-        -4.5
-       ],
-       "velocity": [
-        0.0,
-        -0.0784000015258789,
-        0.0
-       ]
-      },
-      "projectiles": [],
-      "render_distance": 2,
-      "renderer": {
-       "arena_bytes": 25165824,
-       "backend": "Gl",
-       "culled_sections": null,
-       "device_type": "cpu",
-       "drawn_sections": 8,
-       "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
-       "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
-       "gpu_allocated_bytes": null,
-       "gpu_culling": false,
-       "gpu_culling_auto": "watching",
-       "gpu_culling_mode": "off",
-       "gpu_culling_offer": "Unsupported",
-       "gpu_fading": null,
-       "gpu_frame": false,
-       "gpu_occluding": false,
-       "gpu_reserved_bytes": null,
-       "packed_layout": [
-        false,
-        true
-       ],
-       "present_mode": "Immediate",
-       "resident_sections": 23,
-       "section_draw_calls": 2,
-       "section_draws": 13,
-       "section_vertex_bytes": 1051968,
-       "size": [
-        1280,
-        720
-       ],
-       "stats_lag": 0,
-       "uploaded_bytes": 1051968,
-       "vendor": "mesa",
-       "vertex_bytes_split": [
-        1051968,
         0
        ]
       },
@@ -4026,21 +3587,21 @@
        "finishing": 0,
        "generating": 0,
        "lighting": 0,
-       "meshing": 0,
+       "meshing": 600,
        "protos": 0,
        "queued": 0
       },
       "target": {
        "block": "minecraft:grass_block",
        "pos": [
-        -4,
-        66,
-        0
+        3,
+        74,
+        13
        ]
       },
-      "ticks": 37,
+      "ticks": 25,
       "tridents": 0,
-      "uptime_seconds": 6.402884971,
+      "uptime_seconds": 4.494629619,
       "using": null,
       "yaw": 0.0
      }
@@ -4175,27 +3736,12 @@
     {
      "command": "entities 60",
      "result": {
-      "entities": [
-       {
-        "baby": false,
-        "distance": 22.782589636243006,
-        "health": 20.0,
-        "hurt_time": 0,
-        "id": 2,
-        "kind": "mob",
-        "pos": [
-         48.376953125,
-         80.0,
-         8.5
-        ],
-        "type": "minecraft:creeper"
-       }
-      ],
+      "entities": [],
       "loaded_chunks": 49,
       "radius": 60.0,
       "tracked": {
        "items": 0,
-       "mobs": 1,
+       "mobs": 0,
        "orbs": 0
       },
       "type": null
