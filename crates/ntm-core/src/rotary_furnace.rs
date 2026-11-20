@@ -591,6 +591,42 @@ mod tests {
         assert_eq!(f.progress, 0.0);
     }
 
+    /// `canProcess`:337: more than 100 mB of steam used and not yet returned stops it; exactly 100 does not.
+    #[test]
+    fn it_stops_only_above_100_steam_used_and_not_returned() {
+        let mut f = RotaryFurnace { burn_time: 100, ..Default::default() };
+        f.steam.mb = 12_000;
+        let r = &recipes()[0];
+        f.steam_used = 100;
+        assert!(f.can_process(r, 1.0), "100 is allowed");
+        f.steam_used = 101;
+        assert!(!f.can_process(r, 1.0), "101 is not");
+    }
+
+    /// `consumeItems`:339-352: each ingredient takes its own count out of a slot (nine fragments, not one).
+    #[test]
+    fn an_ingredient_takes_its_own_count_out_of_the_slot() {
+        let mut f = RotaryFurnace::default();
+        f.slots[0] = Some(Stack::new("ntm:bedrock_ore_fragment__iron", 20));
+        f.slots[1] = Some(Stack::new("minecraft:coal", 3));
+        let r = recipes().iter().find(|r| r.name == "rotary.2").unwrap();
+        f.consume_items(r);
+        assert_eq!(f.slots[0], Some(Stack::new("ntm:bedrock_ore_fragment__iron", 11)));
+        assert_eq!(f.slots[1], Some(Stack::new("minecraft:coal", 2)));
+    }
+
+    /// `updateEntity`:197: progress grows by `processSpeed / duration` (the fuel's heat modifier), not by one tick's worth.
+    #[test]
+    fn progress_grows_with_the_process_speed() {
+        let mut f = RotaryFurnace::default();
+        f.slots[0] = Some(Stack::new("minecraft:iron_ingot", 4));
+        f.slots[1] = Some(Stack::new("minecraft:coal", 4));
+        f.slots[slot::FUEL] = Some(Stack::new("ntm:solid_fuel", 1)); // heat x1.5
+        f.steam.mb = 12_000;
+        f.step();
+        assert_eq!(f.progress, 1.5 / 100.0);
+    }
+
     #[test]
     fn r8_molten_output_is_lost_on_break() {
         let f = RotaryFurnace { output: Some(("steel".into(), 720)), ..Default::default() };
