@@ -221,9 +221,9 @@ fn the_console_sees_the_fuel_and_its_flux() {
     assert_eq!(*c.flux.last().unwrap(), flux as i32);
     let at = (0..225).find(|&i| console::offset(0, i) == (0, 0)).unwrap() as usize;
     let console::ColumnData::Fuel(Some([enrichment, xenon, hull, core, melting])) = c.scan[at].clone().unwrap().data else { panic!("{:?}", c.scan[at]) };
-    // `isModerated` is only the manual rods': a moderated channel is not said to be.
+    // `TileEntityRBMKRod.isModerated`: the moderated channel is said to be, the plain one not.
     let moderated = (0..225).find(|&i| console::offset(0, i) == (1, 0)).unwrap() as usize;
-    assert!(!c.scan[moderated].as_ref().unwrap().moderated);
+    assert!(c.scan[moderated].as_ref().unwrap().moderated);
     let rod = crate::rbmk::persist::rod_of("ntm:rbmk_fuel_po210be").unwrap();
     assert_eq!(melting, rod.melting_point);
     assert!(enrichment > 0.0 && enrichment <= 1.0 && xenon >= 0.0 && hull >= 20.0 && core >= hull, "{enrichment} {xenon} {hull} {core}");

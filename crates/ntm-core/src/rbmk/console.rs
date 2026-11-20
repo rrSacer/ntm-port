@@ -152,8 +152,9 @@ pub fn view_of(block: &str, col: &persist::RbmkColumn) -> Option<ColumnView> {
         },
         _ => ColumnData::None,
     };
-    // `isModerated`: only `TileEntityRBMKControlManual` answers it, by its block.
-    let moderated = manual && persist::kind_of(block).is_some_and(|(_, m)| m);
+    // `isModerated`: `TileEntityRBMKControlManual` and `TileEntityRBMKRod` (the ReaSim channels are rods) answer it by
+    // their block's `moderated`; the base says no.
+    let moderated = (manual || persist::is_channel(block)) && persist::kind_of(block).is_some_and(|(_, m)| m);
     Some(ColumnView { kind, heat: col.heat, moderated, data })
 }
 
@@ -539,5 +540,13 @@ mod tests {
         push_flux(&mut b, f64::NAN);
         push_flux(&mut b, 1e300);
         assert_eq!(&b[57..], &[12, 0, i32::MAX]);
+    }
+
+    /// `isModerated` as the Java answers it: the moderated manual rod and the two moderated fuel channels; every other
+    /// column (the automatic rods, the moderator itself) no.
+    #[test]
+    fn the_moderated_columns_are_the_javas() {
+        let moderated: Vec<&str> = persist::COLUMNS.iter().copied().filter(|b| view_of(b, &persist::RbmkColumn::of(b)).unwrap().moderated).collect();
+        assert_eq!(moderated, vec!["ntm:rbmk_rod_mod", "ntm:rbmk_rod_reasim_mod", "ntm:rbmk_control_mod"]);
     }
 }
