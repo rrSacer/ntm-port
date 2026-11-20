@@ -44,6 +44,33 @@ pub fn fluid_of_network(string_id: &str) -> Option<&'static str> {
     crate::fluid::get(string_id).filter(|t| t.id != 0).map(|t| t.name.as_str())
 }
 
+/// `TileEntityRBMKBoiler.cyceCompressor`: steps the boiler's steam grade, only when it is cold or dry. `setTankType`
+/// empties the tank before the `/ 10` (or `* 1000`) reads it, so the steam is always lost.
+pub fn compress(heat: f64, feed_fill: i32, steam: &mut Tank) {
+    if heat > 50.0 && feed_fill > 0 {
+        return;
+    }
+    match steam.fluid {
+        "STEAM" => {
+            steam.set_tank_type("HOTSTEAM");
+            steam.fill /= 10;
+        }
+        "HOTSTEAM" => {
+            steam.set_tank_type("SUPERHOTSTEAM");
+            steam.fill /= 10;
+        }
+        "SUPERHOTSTEAM" => {
+            steam.set_tank_type("ULTRAHOTSTEAM");
+            steam.fill /= 10;
+        }
+        "ULTRAHOTSTEAM" => {
+            steam.set_tank_type("STEAM");
+            steam.fill = steam.fill.wrapping_mul(1000).min(steam.max);
+        }
+        _ => {}
+    }
+}
+
 /// `TileEntityRBMKBoiler.getHeatFromSteam`.
 pub fn heat_from_steam(fluid: &str) -> f64 {
     match fluid {

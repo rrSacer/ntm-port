@@ -1175,35 +1175,13 @@ impl Reactor {
         self.base_update(i);
     }
 
-    /// `cyceCompressor`: steps the boiler's steam grade (only when it is cold or dry). `setTankType` empties the tank
-    /// before the `/ 10` (or `* 1000`) reads it, so the steam is always lost.
+    /// `cyceCompressor` (`fluids::compress`).
     pub fn boiler_compress(&mut self, i: usize) {
         let heat = self.columns[i].heat;
         let Data::Boiler(b) = &mut self.columns[i].data else {
             panic!("not a boiler")
         };
-        if heat > 50.0 && b.feed.fill > 0 {
-            return;
-        }
-        match b.steam.fluid {
-            "STEAM" => {
-                b.steam.set_tank_type("HOTSTEAM");
-                b.steam.fill /= 10;
-            }
-            "HOTSTEAM" => {
-                b.steam.set_tank_type("SUPERHOTSTEAM");
-                b.steam.fill /= 10;
-            }
-            "SUPERHOTSTEAM" => {
-                b.steam.set_tank_type("ULTRAHOTSTEAM");
-                b.steam.fill /= 10;
-            }
-            "ULTRAHOTSTEAM" => {
-                b.steam.set_tank_type("STEAM");
-                b.steam.fill = b.steam.fill.wrapping_mul(1000).min(b.steam.max);
-            }
-            _ => {}
-        }
+        fluids::compress(heat, b.feed.fill, &mut b.steam);
     }
 
     fn update_heater(&mut self, i: usize) {

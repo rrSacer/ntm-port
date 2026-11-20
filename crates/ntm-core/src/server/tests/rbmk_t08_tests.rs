@@ -343,3 +343,64 @@ fn the_reasim_inlet_and_outlet_move_water_in_and_steam_out() {
     let mut back = reopen(&g);
     assert_eq!(port(&mut back, outlet).tank, port(&mut g, outlet).tank);
 }
+
+fn press(g: &mut Game, p: Pos, button: u32) {
+    let generation = g.machine(p).generation;
+    assert!(g.server.native_menu_button("p1", OW, p, button, generation));
+}
+
+/// The boiler's compressor (button 0): cold or dry, each press steps the steam one grade and empties its tank
+/// (`setTankType` before the `/ 10`); hot with water in, it does nothing. Two presses in a tick are two steps. The
+/// screen reads the tanks and the grade.
+#[test]
+fn the_boilers_compressor_steps_the_grade_and_loses_the_steam() {
+    let mut g = game();
+    let at = [0, Y, 0];
+    g.place(at, &column("rbmk_boiler"));
+    g.run(2);
+    with(&mut g, at, |c| {
+        c.heat = 20.0;
+        c.piped.as_mut().unwrap().output.fill = 900_000;
+    });
+    let screen = |g: &Game| g.world.borrow().engine[&(OW.to_string(), at)].1.clone();
+    g.run(1);
+    assert_eq!(&screen(&g)[1..6], &[0, 10_000, 900_000, 1_000_000, 0], "feed, steam, grade STEAM");
+    press(&mut g, at, 0);
+    g.run(1);
+    assert_eq!(piped(&mut g, at).output, tank("HOTSTEAM", 0, 1_000_000), "a step up, the steam lost");
+    press(&mut g, at, 0);
+    press(&mut g, at, 0);
+    g.run(1);
+    assert_eq!(piped(&mut g, at).output.fluid, "ULTRAHOTSTEAM", "two presses, two steps");
+    assert_eq!(screen(&g)[5], 3);
+    // The screen has no other button.
+    press(&mut g, at, 1);
+    g.run(1);
+    assert_eq!(piped(&mut g, at).output.fluid, "ULTRAHOTSTEAM", "button 1 is nothing");
+    // Hot and with water: the compressor does nothing.
+    with(&mut g, at, |c| {
+        c.heat = 60.0;
+        c.piped.as_mut().unwrap().input.fill = 10;
+    });
+    press(&mut g, at, 0);
+    g.run(1);
+    assert_eq!(piped(&mut g, at).output.fluid, "ULTRAHOTSTEAM");
+}
+
+/// The heater's screen: both tanks and their fluids' colours.
+#[test]
+fn the_heaters_screen_reads_its_tanks() {
+    let mut g = game();
+    let at = [0, Y, 0];
+    g.place(at, &column("rbmk_heater"));
+    g.run(2);
+    with(&mut g, at, |c| {
+        c.heat = 20.0;
+        let st = c.piped.as_mut().unwrap();
+        (st.input.fill, st.output.fill) = (1_000, 300);
+    });
+    g.run(1);
+    let v = g.world.borrow().engine[&(OW.to_string(), at)].1.clone();
+    let colour = |id: &str| crate::fluid::get(id).unwrap().color as i32;
+    assert_eq!(&v[1..7], &[1_000, 16_000, colour("coolant"), 300, 16_000, colour("coolant_hot")]);
+}

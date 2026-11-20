@@ -347,6 +347,7 @@ impl KeptTank {
 /// initializers): the boiler's `ventDelay`, `consumption` and `output`; the cooler's `timer` and `neighborCache`.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PipedState {
+    pub kind: PipedKind,
     pub input: KeptTank,
     pub output: KeptTank,
     #[serde(skip)]
@@ -363,6 +364,14 @@ pub struct PipedState {
     pub cache: Vec<Option<([i32; 2], u64)>>,
 }
 
+/// Which of the three a piped column is.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum PipedKind {
+    Boiler,
+    Heater,
+    Cooler,
+}
+
 /// The tanks of a fresh boiler, heater or cooler (their constructors: types and maxima), none for the other columns.
 pub fn piped_types(block: &str) -> Option<((&'static str, i32), (&'static str, i32))> {
     match block {
@@ -375,7 +384,13 @@ pub fn piped_types(block: &str) -> Option<((&'static str, i32), (&'static str, i
 
 impl PipedState {
     pub fn of(block: &str) -> Option<Self> {
+        let kind = match block {
+            "ntm:rbmk_boiler" => PipedKind::Boiler,
+            "ntm:rbmk_heater" => PipedKind::Heater,
+            _ => PipedKind::Cooler,
+        };
         piped_types(block).map(|(i, o)| PipedState {
+            kind,
             input: KeptTank::of(i.0, i.1),
             output: KeptTank::of(o.0, o.1),
             vent_delay: 0,
@@ -646,7 +661,35 @@ impl Slotted for RbmkColumn {
         if let (Some(a), Some(f)) = (&self.auto, v.get_mut(2)) {
             *f = i32::from(a.function);
         }
+        // The boiler's and heater's screens (T08, `horizon_screen/rbmk_boiler.json`, `rbmk_heater.json`): the boiler's
+        // feed and steam (fill, max) and its steam grade (0..3, `GUIRBMKBoiler`'s overlay); the heater's two tanks with
+        // their fluids' colours.
+        if let Some(p) = &self.piped {
+            let colour = |t: &KeptTank| network_fluid(&t.fluid).and_then(crate::fluid::get).map_or(0, |f| f.color as i32);
+            let values: Vec<i32> = match p.kind {
+                PipedKind::Boiler => {
+                    let grade = ["STEAM", "HOTSTEAM", "SUPERHOTSTEAM", "ULTRAHOTSTEAM"].iter().position(|g| *g == p.output.fluid).map_or(-1, |g| g as i32);
+                    vec![p.input.fill, p.input.max, p.output.fill, p.output.max, grade]
+                }
+                PipedKind::Heater => vec![p.input.fill, p.input.max, colour(&p.input), p.output.fill, p.output.max, colour(&p.output)],
+                PipedKind::Cooler => Vec::new(),
+            };
+            for (slot, value) in v.iter_mut().skip(1).zip(values) {
+                *slot = value;
+            }
+        }
         v
+    }
+
+    /// The boiler's compressor (`GUIRBMKBoiler`'s button 0, `receiveControl` with `compression`: `cyceCompressor`),
+    /// each press applied in its turn as the Java takes each packet.
+    fn button(&mut self, id: u32) -> bool {
+        if let Some(p) = self.piped.as_mut().filter(|p| p.kind == PipedKind::Boiler && id == 0) {
+            let mut steam = super::fluids::Tank { fluid: super::fluids::java_fluid(&p.output.fluid), fill: p.output.fill, max: p.output.max };
+            super::fluids::compress(self.heat, p.input.fill, &mut steam);
+            p.output = KeptTank { fluid: steam.fluid.to_string(), fill: steam.fill, max: steam.max };
+        }
+        false
     }
 }
 
