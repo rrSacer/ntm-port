@@ -653,4 +653,68 @@ mod tests {
         assert_eq!(back, f);
         assert_eq!(back.slots[output(2, 1)].as_ref().map(|s| s.count), Some(5));
     }
+
+    #[test]
+    fn the_coolant_needs_exactly_a_hundred_and_room_for_a_hundred() {
+        let mut f = ChemFactory::new();
+        f.water.mb = COOLANT_USE;
+        f.lps.mb = COOLANT_CAP - COOLANT_USE;
+        assert!(f.can_cool(), "100 mB of water and room for exactly 100 of spent steam");
+        f.water.mb = COOLANT_USE - 1;
+        assert!(!f.can_cool());
+        f.water.mb = COOLANT_USE;
+        f.lps.mb = COOLANT_CAP - COOLANT_USE + 1;
+        assert!(!f.can_cool());
+    }
+
+    #[test]
+    fn the_last_input_goes_and_leaves_its_slot_empty_and_the_progress_back_at_zero() {
+        let mut f = on("chem.hydrogen");
+        give(&mut f, input(0, 0), "minecraft:coal", 1);
+        f.tin[0].set_type("water");
+        f.tin[0].mb = 8_000;
+        while f.tout[0].mb == 0 {
+            f.step();
+        }
+        assert!(f.slots[input(0, 0)].is_none(), "the slot is empty, not a stack of 0");
+        assert_eq!(f.modules[0].progress, 0.0, "nothing left for another round: the progress is dropped, not carried over");
+    }
+
+    #[test]
+    fn the_item_outputs_stop_at_a_full_stack_and_come_one_by_one_by_position() {
+        let r = recipe("chem.tarsand");
+        let (item, n, _) = &r.items_out[0];
+        let mut f = on("chem.tarsand");
+        give(&mut f, input(0, 0), &r.items_in[0].ids[0], r.items_in[0].n);
+        give(&mut f, input(0, 1), &r.items_in[1].ids[0], r.items_in[1].n);
+        f.slots[output(0, 0)] = Some(Stack::new(item, 64 - n + 1));
+        f.step();
+        assert!(!f.modules[0].did_process, "one over a full stack");
+        f.slots[output(0, 0)] = Some(Stack::new(item, 64 - n));
+        f.step();
+        assert!(f.modules[0].did_process, "exactly a full stack");
+        f.slots[output(0, 0)] = Some(Stack::new("minecraft:dirt", 1));
+        f.step();
+        assert!(!f.modules[0].did_process, "another item in the output slot stops it");
+        assert_eq!(f.slots[output(0, 0)].as_ref().map(|s| s.id.as_str()), Some("minecraft:dirt"), "another item in the output is not touched");
+    }
+
+    #[test]
+    fn it_asks_for_the_power_it_lacks_and_offers_and_demands_what_it_holds() {
+        let mut f = ChemFactory::new();
+        f.power = 400_000;
+        assert_eq!((f.demand(), f.role()), (MIN_POWER - 400_000, Role::Consumer));
+        f.water.mb = 1_000;
+        f.lps.mb = 700;
+        f.tin[0].set_type("lava");
+        f.tout[0].set_type("oil");
+        f.tout[0].mb = 300;
+        assert_eq!(f.fluid_demand("water"), u64::from(COOLANT_CAP - 1_000), "the water tank takes water");
+        assert_eq!(f.fluid_offer("spentsteam"), 700, "the spent steam is on offer");
+        assert_eq!((f.fluid_offer("oil"), f.fluid_demand("lava")), (300, u64::from(TANK_CAP)));
+        f.fluid_give("water", 500);
+        f.fluid_take("spentsteam", 200);
+        assert_eq!((f.water.mb, f.lps.mb), (1_500, 500));
+        assert!(f.fluid_types().contains(&"spentsteam".to_string()));
+    }
 }
