@@ -143,7 +143,7 @@ Lacunas declaradas: o desenho animado do lingotamento
 
 Lacunas declaradas desta primeira versão (visuais, de poluição ou fora do escopo pedido):
 0. **O vazamento não atravessa chunks** (acima).
-1. **O escoamento da escória** (`updateTick`: para baixo, sobre a escória de baixo, para os lados) não existe: a escória fica onde cai. É a fatia seguinte.
+1. **O escoamento da escória** existe dentro de um chunk (abaixo); fora dele e entre reinícios não (ver o fim).
 2. **Cor neutra**: o Java pinta a textura pelo material (`colorMultiplier`); aqui o bloco usa `slag.png` sem tinta.
 3. **Blocos substituíveis** (mato, flor, tocha, neve, água): o Java atravessa os de colisão nula no raio (mato, flor, tocha) e substitui o atingido se for substituível (mato, neve, água); aqui só o ar (`air`, `cave_air`, `void_air`) é livre, o resto é um acerto e a escória pousa **em cima** (o Java a poria no lugar do mato).
 4. A **partícula do jato** (`AuxParticlePacketNT`) e o **pick-block** (sucata do conteúdo) não existem.
@@ -165,4 +165,14 @@ Prova em jogo simples (`slagtap-redstone`, ponto `none`): um bloco de redstone a
 ## Tickets abertos da fundição
 
 - **Vazamento da bica entre chunks**: o diário (`Survivor`) recriar o bloco ausente (`WorldEffect::Blocks` com registro inicial) para a origem e a escória em chunks diferentes sem perda. Hoje a bica não vaza nesse caso (o metal fica na origem). Aceito pelo coordenador como fatia à parte.
-- **Escoamento da escória** (`BlockDynamicSlag.updateTick`: para baixo, sobre a escória de baixo, para os lados), dentro de um chunk.
+
+## O escoamento da escória (`BlockDynamicSlag.updateTick`), dentro de um chunk
+
+Agendado um tique depois de um vazamento (a escória enchida e a nova) ou de um passo de escoamento (`slag_active`, `slag_server::slag_flow`, no começo do tique, antes dos looks das máquinas), cada bloco de escória faz, em **um commit por passo**:
+
+1. **Cai inteira** na célula de baixo se ela é ar: a de baixo nasce com a quantia toda e a de cima vira ar (`commit_structural`: sem quebra, sem sucata). Como no Java, a nova não é reagendada (cai uma célula por agendamento).
+2. Senão, **dá à escória de baixo do mesmo material** o que cabe (`min(10368 − a dela, a minha)`), um `commit_machines` de duas máquinas; a de baixo fica agendada. Se a de cima esvaziou, **fica vazia e é removida no tique seguinte** (um commit de máquina que escrevesse ar sobre ela seria lido como quebra e soltaria sucata: duplicação). Uma escória vazia lida de um mundo reaberto é agendada ao ser adotada.
+3. Senão, de **1/5 da capacidade** (2073) em diante, **espalha** `max(quantia / (n·2), 1)` para cada um dos `n` lados livres (norte, sul, leste, oeste: ar, no mesmo chunk); a de cima perde `n·toSpread`, tudo em um `commit_machines` (a de cima menor e as novas com `initial`); as novas ficam agendadas.
+
+**Nada cruza a divisa de chunk** (um lado em outro chunk não conta como livre; descer é sempre no mesmo chunk). Recusado, nada muda e o passo não é repetido. Fidelidade: o Java conta os lados substituíveis (mato, neve) e aqui só o ar; o agendamento não é gravado (um reinício interrompe um escoamento em curso; o metal fica onde estava).
+Testes: soma exata a cada tick nos modelos e nos registros (queda, doação, esvaziamento, espalhar com 4/2 lados, limiar 2072/2073, divisa de chunk, recusa, quebra da vazia sem sucata de 0, reabertura entre os dois passos pelo registro e pelo diário); 9 mutantes mortos.

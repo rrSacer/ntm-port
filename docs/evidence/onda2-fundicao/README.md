@@ -106,7 +106,7 @@ primeira atingida é ar, uma máquina (excluída antes) ou fora do chunk (exclu�
 Lacunas declaradas: sem o escoamento da escória, cor neutra, sem o vazamento entre chunks, mato/neve/líquido não são substituídos, sem
 fechamento por redstone, sem partícula do jato, sem pick-block (`docs/content-foundry.md`).
 
-## Onde o metal está depois de cada corte (`where-slagtap.json`, binário `c8782234102c…`)
+## Onde o metal está depois de cada corte (`where-slagtap.json`, binário `543892c8b650…`)
 
 Versionado a partir das pastas de prova. Canal / escória, em quanta, no mundo reaberto:
 
@@ -130,7 +130,7 @@ junto, a escória) são próprias: `ntm_core::server::owned_cells`, com teste (`
 Os cenários `slagtap-*` foram reexecutados com o binário depois desta correção (abaixo, mesma tabela). O `mutants-foundry.log` anexa as
 execuções novas: os 5 de redstone, `cave_air`, o do commit recusado só no vazamento (agora morto) e o das células próprias.
 
-## A escavadeira minando um cabo (`run-mining-cable-game.py`, binário `c8782234102c…`)
+## A escavadeira minando um cabo (`run-mining-cable-game.py`, binário `543892c8b650…`)
 
 Uma bateria que dá, cinco `red_cable` e uma bateria que recebe; a `power` da segunda, lida do **modelo do servidor** (`data get block … ntm`),
 sobe (111 622 → 323 204 em 6 s). A escavadeira (bateria criativa e broca de ferro) minera os três cabos do seu alcance (as células viram ar),
@@ -139,3 +139,15 @@ a `power` da bateria que recebe **para de subir** (614 754 → 614 754 em 8 s) e
 que tinha o escopo largo demais: o cabo fantasma, na prática, é refeito pela rede em poucos segundos, então o cenário não separa o defeito
 antigo; o que o garante é o teste do core (`only_the_cells_born_with_a_machine_are_owned`) e o mutante. O outro lado de `owned_cells`
 (a máquina que nasce junto) é o `slagtap-pour` com este mesmo binário: a escória guarda os 144 e não vira máquina vazia.
+
+## O escoamento da escória em jogo (`slagtap-flow`, binário `543892c8b650…`, final)
+
+36 lingotes de ouro (2592 quanta) fundidos pelo cadinho num **tanque** (o primeiro bloco da cadeia); o ato põe a bica e vai direto ao save: os
+2592 vertem num bloco de escória (acima de 1/5 da capacidade) que **espalha** para os três lados livres do fosso (432 cada, 1296 ficam):
+o vazamento, o espalhar e o turno das células novas correm contra o save. **8 de 8 pontos, 2592 em todos, 0 perdido, nenhum duplicado,
+igual ao controle** (barris com os 36 lingotes movidos por comando). Mundo reaberto (`where-slagtap.json`, células = escória do vazamento, as
+três do espalhar): antes do vazamento (`kill`, `save_begin`: 2592 no tanque), depois do vazamento e do espalhar (`none`, `kv_committed`,
+`chunks_written`, `entities_written`, `world_saved`: 1296 / 432 / 432 / 432) e **entre os dois** (`players_saved`: 2592 numa célula só, o
+espalhar ainda não gravado): em todos, o metal exatamente uma vez.
+Os cenários `slagtap-pour/border/break/redstone` e o da escavadeira foram reexecutados com este binário (resultados iguais aos anteriores; cabo
+minerado: a energia da bateria que recebe para de subir, 937 958 → 937 958).

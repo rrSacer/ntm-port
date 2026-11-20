@@ -1,31 +1,31 @@
 {
   "ok": true,
-  "scenario": "slagtap-redstone",
-  "binary": "/mnt/ssd120/sacer/so/fundicao/bin/horizon-client-r8",
-  "binary_sha256": "c8782234102c295d287b8e32fb371ded8439842b0b7b7db0f1f97874f937ebe1",
+  "scenario": "slagtap-break",
+  "binary": "/mnt/ssd120/sacer/so/fundicao/bin/horizon-client-r9",
+  "binary_sha256": "543892c8b650a0ca0667674545fe62fe1d1460f5a265b7de1a21086cfd85100f",
   "bundle_sha256": "59181d49dc8bcbbe4d1cceecf473ec19d96046d26539a1ac88633029919b485f",
   "points": [
     {
       "point": "none",
-      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-redstone-9kr09dxt/point-none",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-none",
       "ok": true,
       "vanilla_control": false,
       "base_items": {
         "metal_quanta": 144
       },
       "after_act": {
-        "molten": 144,
+        "molten": 0,
         "slots": 0,
         "inventory": 0,
-        "ground": 0,
+        "ground": 144,
         "total": 144
       },
       "died_in_act": false,
       "exit": "survived",
       "disk": {
-        "entities": 0,
+        "entities": 144,
         "blocks": 0,
-        "molten": 144,
+        "molten": 0,
         "owed": 0,
         "player": 0,
         "total": 144
@@ -40,9 +40,192 @@
             2,
             0,
             144,
-            144
+            0
           ]
         ],
+        "entities": [
+          [
+            2,
+            0,
+            0,
+            144
+          ]
+        ]
+      },
+      "first_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 144,
+        "total": 144
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 144
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 144,
+        "total": 144
+      },
+      "items_again": {
+        "metal_quanta": 144
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "none",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-none-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 144
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "died_in_act": false,
+        "exit": "survived",
+        "disk": {
+          "entities": 0,
+          "blocks": 0,
+          "molten": 0,
+          "owed": 0,
+          "player": 144,
+          "total": 144
+        },
+        "items": {
+          "metal_quanta": 144
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              144,
+              0
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 144
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "items_again": {
+          "metal_quanta": 144
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 144,
+        "first": 144,
+        "second": 144,
+        "expected": 144,
+        "control_expected": 144,
+        "control_disk": 144,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": true,
+        "compared_with": "none",
+        "control_first": 144,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 144
+          },
+          "control_base": {
+            "metal_quanta": 144
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 144
+            },
+            "control": {
+              "metal_quanta": 144
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 144
+            },
+            "control": {
+              "metal_quanta": 144
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "kill",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-kill",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 144
+      },
+      "after_act": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "died_in_act": false,
+      "exit": -9,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 144,
+        "owed": 0,
+        "player": 0,
+        "total": 144
+      },
+      "items": {
+        "metal_quanta": 144
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [],
         "entities": []
       },
       "first_reopen": {
@@ -72,8 +255,8 @@
       },
       "kv_items_again": 0,
       "control": {
-        "point": "none",
-        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-redstone-9kr09dxt/point-none-vanilla",
+        "point": "kill",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-kill-vanilla",
         "ok": true,
         "vanilla_control": true,
         "base_items": {
@@ -81,13 +264,13 @@
         },
         "after_act": {
           "molten": 0,
-          "slots": 144,
-          "inventory": 0,
+          "slots": 0,
+          "inventory": 144,
           "ground": 0,
           "total": 144
         },
         "died_in_act": false,
-        "exit": "survived",
+        "exit": -9,
         "disk": {
           "entities": 0,
           "blocks": 144,
@@ -101,14 +284,7 @@
         },
         "kv_items": 0,
         "written": {
-          "region": [
-            [
-              2,
-              0,
-              144,
-              144
-            ]
-          ],
+          "region": [],
           "entities": []
         },
         "first_reopen": {
@@ -151,7 +327,1090 @@
         "storage_clean": true,
         "same_cut": true,
         "same_cut_by_definition": true,
-        "compared_with": "none",
+        "compared_with": "kill",
+        "control_first": 144,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 144
+          },
+          "control_base": {
+            "metal_quanta": 144
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 144
+            },
+            "control": {
+              "metal_quanta": 144
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 144
+            },
+            "control": {
+              "metal_quanta": 144
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "last_save",
+        "criterion_reason": "nothing written outside a save: both worlds are the last save, exactly",
+        "proof": true,
+        "as_the_last_save": true
+      }
+    },
+    {
+      "point": "kv_committed",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-kv_committed",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 144
+      },
+      "after_act": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 144,
+        "owed": 0,
+        "player": 144,
+        "total": 288
+      },
+      "items": {
+        "metal_quanta": 288
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 144,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 288
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 288
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 144,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 288
+      },
+      "items_again": {
+        "metal_quanta": 288
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "kv_committed",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-kv_committed-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 144
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 144,
+          "molten": 0,
+          "owed": 0,
+          "player": 144,
+          "total": 288
+        },
+        "items": {
+          "metal_quanta": 288
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 144,
+          "inventory": 144,
+          "ground": 0,
+          "total": 288
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 288
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 144,
+          "inventory": 144,
+          "ground": 0,
+          "total": 288
+        },
+        "items_again": {
+          "metal_quanta": 288
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 288,
+        "first": 288,
+        "second": 288,
+        "expected": 144,
+        "control_expected": 144,
+        "control_disk": 288,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": true,
+        "compared_with": "kv_committed",
+        "control_first": 288,
+        "no_duplicate": true,
+        "lost": -144,
+        "control_lost": -144,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 144
+          },
+          "control_base": {
+            "metal_quanta": 144
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 288
+            },
+            "control": {
+              "metal_quanta": 288
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 288
+            },
+            "control": {
+              "metal_quanta": 288
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "last_save",
+        "criterion_reason": "nothing written outside a save: both worlds are the last save, exactly",
+        "proof": true
+      }
+    },
+    {
+      "point": "save_begin",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-save_begin",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 144
+      },
+      "after_act": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 144,
+        "owed": 0,
+        "player": 0,
+        "total": 144
+      },
+      "items": {
+        "metal_quanta": 144
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 144,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 144
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 144
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 144,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 144
+      },
+      "items_again": {
+        "metal_quanta": 144
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "save_begin",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-save_begin-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 144
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 144,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 144
+        },
+        "items": {
+          "metal_quanta": 144
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 144,
+          "inventory": 0,
+          "ground": 0,
+          "total": 144
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 144
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 144,
+          "inventory": 0,
+          "ground": 0,
+          "total": 144
+        },
+        "items_again": {
+          "metal_quanta": 144
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 144,
+        "first": 144,
+        "second": 144,
+        "expected": 144,
+        "control_expected": 144,
+        "control_disk": 144,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "save_begin",
+        "control_first": 144,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 144
+          },
+          "control_base": {
+            "metal_quanta": 144
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 144
+            },
+            "control": {
+              "metal_quanta": 144
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 144
+            },
+            "control": {
+              "metal_quanta": 144
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "chunks_written",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-chunks_written",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 144
+      },
+      "after_act": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 0,
+        "owed": 0,
+        "player": 0,
+        "total": 0
+      },
+      "items": {
+        "metal_quanta": 0
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            144,
+            0
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 0
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 0
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 0
+      },
+      "items_again": {
+        "metal_quanta": 0
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "chunks_written",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-chunks_written-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 144
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 0,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 0
+        },
+        "items": {
+          "metal_quanta": 0
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              144,
+              0
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 0,
+          "ground": 0,
+          "total": 0
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 0
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 0,
+          "ground": 0,
+          "total": 0
+        },
+        "items_again": {
+          "metal_quanta": 0
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 0,
+        "first": 0,
+        "second": 0,
+        "expected": 144,
+        "control_expected": 144,
+        "control_disk": 0,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "chunks_written",
+        "control_first": 0,
+        "no_duplicate": true,
+        "lost": 144,
+        "control_lost": 144,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 144
+          },
+          "control_base": {
+            "metal_quanta": 144
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 0
+            },
+            "control": {
+              "metal_quanta": 0
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 0
+            },
+            "control": {
+              "metal_quanta": 0
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "entities_written",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-entities_written",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 144
+      },
+      "after_act": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 0,
+        "owed": 0,
+        "player": 0,
+        "total": 0
+      },
+      "items": {
+        "metal_quanta": 0
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            144,
+            0
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 0
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 0
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 0
+      },
+      "items_again": {
+        "metal_quanta": 0
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "entities_written",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-entities_written-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 144
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 0,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 0
+        },
+        "items": {
+          "metal_quanta": 0
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              144,
+              0
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 0,
+          "ground": 0,
+          "total": 0
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 0
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 0,
+          "ground": 0,
+          "total": 0
+        },
+        "items_again": {
+          "metal_quanta": 0
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 0,
+        "first": 0,
+        "second": 0,
+        "expected": 144,
+        "control_expected": 144,
+        "control_disk": 0,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "entities_written",
+        "control_first": 0,
+        "no_duplicate": true,
+        "lost": 144,
+        "control_lost": 144,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 144
+          },
+          "control_base": {
+            "metal_quanta": 144
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 0
+            },
+            "control": {
+              "metal_quanta": 0
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 0
+            },
+            "control": {
+              "metal_quanta": 0
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "world_saved",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-world_saved",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 144
+      },
+      "after_act": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 0,
+        "owed": 0,
+        "player": 144,
+        "total": 144
+      },
+      "items": {
+        "metal_quanta": 144
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            144,
+            0
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 144
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "items_again": {
+        "metal_quanta": 144
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "world_saved",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-world_saved-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 144
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 0,
+          "molten": 0,
+          "owed": 0,
+          "player": 144,
+          "total": 144
+        },
+        "items": {
+          "metal_quanta": 144
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              144,
+              0
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 144
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "items_again": {
+          "metal_quanta": 144
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 144,
+        "first": 144,
+        "second": 144,
+        "expected": 144,
+        "control_expected": 144,
+        "control_disk": 144,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "world_saved",
+        "control_first": 144,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 144
+          },
+          "control_base": {
+            "metal_quanta": 144
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 144
+            },
+            "control": {
+              "metal_quanta": 144
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 144
+            },
+            "control": {
+              "metal_quanta": 144
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "players_saved",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-players_saved",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 144
+      },
+      "after_act": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 0,
+        "owed": 0,
+        "player": 144,
+        "total": 144
+      },
+      "items": {
+        "metal_quanta": 144
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            144,
+            0
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 144
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 0,
+        "slots": 0,
+        "inventory": 144,
+        "ground": 0,
+        "total": 144
+      },
+      "items_again": {
+        "metal_quanta": 144
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "players_saved",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-slagtap-break-0f12471q/point-players_saved-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 144
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 0,
+          "molten": 0,
+          "owed": 0,
+          "player": 144,
+          "total": 144
+        },
+        "items": {
+          "metal_quanta": 144
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              144,
+              0
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 144
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 0,
+          "inventory": 144,
+          "ground": 0,
+          "total": 144
+        },
+        "items_again": {
+          "metal_quanta": 144
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 144,
+        "first": 144,
+        "second": 144,
+        "expected": 144,
+        "control_expected": 144,
+        "control_disk": 144,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "players_saved",
         "control_first": 144,
         "no_duplicate": true,
         "lost": 0,
@@ -396,7 +1655,7 @@
             "target": null,
             "ticks": 0,
             "tridents": 0,
-            "uptime_seconds": 2.117633253,
+            "uptime_seconds": 2.121548836,
             "using": null,
             "yaw": 0.0
           }
@@ -413,7 +1672,7 @@
               "size": 59999968.0
             },
             "carts": [],
-            "chunks": 0,
+            "chunks": 4,
             "creative": true,
             "day_time": 5,
             "debug": {
@@ -446,9 +1705,9 @@
               "respawn": null
             },
             "fishing": null,
-            "fps": 0.42664834856987,
+            "fps": 0.42250317335128784,
             "frames": 2,
-            "generated_chunks": 0,
+            "generated_chunks": 4,
             "heard": {},
             "held": null,
             "input": {
@@ -508,237 +1767,11 @@
               "food": 20,
               "health": 20.0,
               "max_health": null,
-              "on_ground": false,
-              "position": [
-                -6.5,
-                66.0,
-                0.5
-              ],
-              "velocity": [
-                0.0,
-                0.0,
-                0.0
-              ]
-            },
-            "projectiles": [],
-            "render_distance": 2,
-            "renderer": {
-              "arena_bytes": 0,
-              "backend": "Gl",
-              "culled_sections": null,
-              "device_type": "cpu",
-              "drawn_sections": 0,
-              "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
-              "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
-              "gpu_allocated_bytes": null,
-              "gpu_culling": false,
-              "gpu_culling_auto": "watching",
-              "gpu_culling_mode": "off",
-              "gpu_culling_offer": "Unsupported",
-              "gpu_fading": null,
-              "gpu_frame": false,
-              "gpu_occluding": false,
-              "gpu_reserved_bytes": null,
-              "packed_layout": [
-                false,
-                true
-              ],
-              "present_mode": "Immediate",
-              "resident_sections": 0,
-              "section_draw_calls": 0,
-              "section_draws": 0,
-              "section_vertex_bytes": 0,
-              "size": [
-                1280,
-                720
-              ],
-              "stats_lag": 0,
-              "uploaded_bytes": 0,
-              "vendor": "mesa",
-              "vertex_bytes_split": [
-                0,
-                0
-              ]
-            },
-            "riding": null,
-            "rockets": 0,
-            "screen": "playing",
-            "selected": 1,
-            "server": {
-              "address": "local",
-              "chat": [],
-              "chunks": 0,
-              "dead_players": [],
-              "decode_errors": 0,
-              "dimension": "minecraft:overworld",
-              "entities": {},
-              "entity_id": 1,
-              "food": 20,
-              "game_mode": 1,
-              "health": 20.0,
-              "joined": true,
-              "loaded": false,
-              "lying_players": [],
-              "name": "CrashTest",
-              "own_body": false,
-              "player_equipment": [],
-              "player_model": false,
-              "player_positions": [],
-              "players": [
-                "CrashTest"
-              ],
-              "status": "Loading terrain...",
-              "text_display_vertices": 0,
-              "text_displays": 0
-            },
-            "sidebar": null,
-            "sounds": {
-              "channels": 0,
-              "decoded": 0,
-              "decoded_mib": 0,
-              "events": [],
-              "handles": 0,
-              "instances": 0,
-              "playing": 0,
-              "queued": 0,
-              "ticking": 0,
-              "used": [
-                0,
-                0
-              ]
-            },
-            "stopped_sounds": {},
-            "streaming": {
-              "decorating": 0,
-              "finishing": 0,
-              "generating": 0,
-              "lighting": 0,
-              "meshing": 0,
-              "protos": 0,
-              "queued": 0
-            },
-            "target": null,
-            "ticks": 14,
-            "tridents": 0,
-            "uptime_seconds": 2.402786107,
-            "using": null,
-            "yaw": 0.0
-          }
-        },
-        {
-          "command": "status",
-          "result": {
-            "block_entities": 0,
-            "border": {
-              "center": [
-                0.0,
-                0.0
-              ],
-              "size": 59999968.0
-            },
-            "carts": [],
-            "chunks": 49,
-            "creative": true,
-            "day_time": 11,
-            "debug": {
-              "advanced_tooltips": false,
-              "chunk_borders": false,
-              "clipboard": null,
-              "hitboxes": false,
-              "overlay": false,
-              "pause_menu": true,
-              "pause_on_lost_focus": true
-            },
-            "destroying": [],
-            "dimension": "minecraft:overworld",
-            "dirty_light": 0,
-            "display": {
-              "height": 720,
-              "refresh_hz": null,
-              "scale": 1.0,
-              "width": 1280
-            },
-            "fangs_vertices": 0,
-            "fight": {
-              "alive_crystals": 0,
-              "crystal_list": [],
-              "crystals": 0,
-              "dragon": null,
-              "exit_portal": null,
-              "killed": false,
-              "players": false,
-              "respawn": null
-            },
-            "fishing": null,
-            "fps": 0.42664834856987,
-            "frames": 6,
-            "generated_chunks": 49,
-            "heard": {},
-            "held": null,
-            "input": {
-              "counts": {
-                "agent": 0,
-                "game": 0,
-                "user": 0
-              },
-              "events": 0,
-              "last_origin": null,
-              "last_user_age_s": null,
-              "recording": null,
-              "replay": null,
-              "user_since_agent": 0
-            },
-            "keys": [],
-            "lightning": {
-              "bolts": 0,
-              "flash": 0,
-              "flashes": 0,
-              "struck": 0
-            },
-            "lod": {
-              "active_tiles": 0,
-              "cached_tiles": 0,
-              "detail_target_columns": 0,
-              "distance": 0,
-              "effective_distance": 0,
-              "far_detail": "full",
-              "kept_mb": 0,
-              "kept_tiles": 0,
-              "levels": [],
-              "pending_observations": 0,
-              "refined_samples": 0,
-              "refined_target_columns": 0,
-              "resident_quads": 0,
-              "sampled_target_tiles": 0,
-              "source": "none",
-              "source_attempted": false,
-              "target_tiles": 0,
-              "terrain_distance": 2
-            },
-            "maps": [],
-            "meshed_sections": 0,
-            "mobs": 0,
-            "music": null,
-            "name_tags": [],
-            "objects": [],
-            "offhand": null,
-            "particles": {
-              "underwater": 9
-            },
-            "pending_chunks": 0,
-            "pending_uploads": 0,
-            "physical_keys": [],
-            "pickups": {},
-            "pitch": 0.0,
-            "player": {
-              "food": 20,
-              "health": 20.0,
-              "max_health": null,
               "on_ground": true,
               "position": [
-                -6.5,
-                66.0,
-                0.5
+                7.5,
+                77.0,
+                5.5
               ],
               "velocity": [
                 0.0,
@@ -793,7 +1826,7 @@
             "server": {
               "address": "local",
               "chat": [],
-              "chunks": 49,
+              "chunks": 4,
               "dead_players": [],
               "decode_errors": 0,
               "dimension": "minecraft:overworld",
@@ -839,14 +1872,14 @@
               "finishing": 0,
               "generating": 0,
               "lighting": 0,
-              "meshing": 600,
+              "meshing": 0,
               "protos": 0,
               "queued": 0
             },
             "target": null,
-            "ticks": 20,
+            "ticks": 14,
             "tridents": 0,
-            "uptime_seconds": 2.690265039,
+            "uptime_seconds": 2.441133567,
             "using": null,
             "yaw": 0.0
           }
@@ -1189,15 +2222,6 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":5}}'"
-            ],
-            "ok": true
-          }
-        },
-        {
-          "command": "command data get block 40 101 10 ntm",
-          "result": {
-            "chat": [
               "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":3}}'"
             ],
             "ok": true
@@ -1207,7 +2231,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":5}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":1}}'"
             ],
             "ok": true
           }
@@ -1216,7 +2240,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":3}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":72,\"last_flow\":0,\"next\":4}}'"
             ],
             "ok": true
           }
@@ -1225,7 +2249,16 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":5}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":2}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 10 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":4}}'"
             ],
             "ok": true
           }
@@ -1234,7 +2267,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":55999,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":56099,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1243,7 +2276,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":56799,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":56899,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1279,7 +2312,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":4}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":5}}'"
             ],
             "ok": true
           }
@@ -1288,7 +2321,88 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":1}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":2}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 40 101 11 ntm:foundry_slagtap[facing=south,honey_level=0]",
+          "result": {
+            "chat": [
+              "Changed the block at 40, 101, 11"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 11 ntm",
+          "result": {
+            "chat": [
+              "40, 98, 11 has the following block data: '{\"generation\":0,\"block\":\"ntm:slag\",\"data\":{\"k\":\"Slag\",\"mat\":\"gold\",\"amount\":144}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 11 ntm",
+          "result": {
+            "chat": [
+              "40, 98, 11 has the following block data: '{\"generation\":0,\"block\":\"ntm:slag\",\"data\":{\"k\":\"Slag\",\"mat\":\"gold\",\"amount\":144}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 10 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"amount\":0,\"last_flow\":0,\"next\":5}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 11 ntm",
+          "result": {
+            "chat": [
+              "40, 98, 11 has the following block data: '{\"generation\":0,\"block\":\"ntm:slag\",\"data\":{\"k\":\"Slag\",\"mat\":\"gold\",\"amount\":144}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 10 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"amount\":0,\"last_flow\":0,\"next\":5}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 10 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"amount\":0,\"last_flow\":0,\"next\":5}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 11 ntm",
+          "result": {
+            "chat": [
+              "40, 98, 11 has the following block data: '{\"generation\":0,\"block\":\"ntm:slag\",\"data\":{\"k\":\"Slag\",\"mat\":\"gold\",\"amount\":144}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 11 ntm",
+          "result": {
+            "chat": [
+              "40, 98, 11 has the following block data: '{\"generation\":0,\"block\":\"ntm:slag\",\"data\":{\"k\":\"Slag\",\"mat\":\"gold\",\"amount\":144}}'"
             ],
             "ok": true
           }
@@ -1315,7 +2429,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":54593,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":50583,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1324,7 +2438,7 @@
           "command": "command data get block 40 101 8 ntm",
           "result": {
             "chat": [
-              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":54161,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":50233,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
             ],
             "ok": true
           }
@@ -1342,7 +2456,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":5}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"amount\":0,\"last_flow\":0,\"next\":5}}'"
             ],
             "ok": true
           }
@@ -1351,7 +2465,7 @@
           "command": "command data get block 40 101 10 ntm",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"mat\":\"gold\",\"amount\":144,\"last_flow\":0,\"next\":3}}'"
+              "40, 101, 10 has the following block data: '{\"generation\":2,\"block\":\"ntm:foundry_channel\",\"facing\":\"north\",\"data\":{\"k\":\"Channel\",\"amount\":0,\"last_flow\":0,\"next\":5}}'"
             ],
             "ok": true
           }
@@ -1367,6 +2481,51 @@
         },
         {
           "command": "command data get block 40 98 11 ntm",
+          "result": {
+            "chat": [
+              "40, 98, 11 has the following block data: '{\"generation\":0,\"block\":\"ntm:slag\",\"data\":{\"k\":\"Slag\",\"mat\":\"gold\",\"amount\":144}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 11 ntm",
+          "result": {
+            "chat": [
+              "40, 98, 11 has the following block data: '{\"generation\":0,\"block\":\"ntm:slag\",\"data\":{\"k\":\"Slag\",\"mat\":\"gold\",\"amount\":144}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 11 Items",
+          "result": {
+            "chat": [
+              "Found no elements matching Items"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 39 98 11 ntm",
+          "result": {
+            "chat": [
+              "The target block is not a block entity"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 41 98 11 ntm",
+          "result": {
+            "chat": [
+              "The target block is not a block entity"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 12 ntm",
           "result": {
             "chat": [
               "The target block is not a block entity"
@@ -1389,38 +2548,80 @@
             "entities": [
               {
                 "baby": false,
-                "distance": 22.280894953452314,
+                "distance": 22.42950839718882,
+                "health": 16.0,
+                "hurt_time": 0,
+                "id": 9,
+                "kind": "mob",
+                "pos": [
+                  39.564697265625,
+                  79.0,
+                  8.76708984375
+                ],
+                "type": "minecraft:spider"
+              },
+              {
+                "baby": false,
+                "distance": 22.75269000425182,
+                "health": 20.0,
+                "hurt_time": 0,
+                "id": 7,
+                "kind": "mob",
+                "pos": [
+                  49.19970703125,
+                  80.0,
+                  5.5
+                ],
+                "type": "minecraft:creeper"
+              },
+              {
+                "baby": false,
+                "distance": 23.65682698104277,
+                "health": 20.0,
+                "hurt_time": 0,
+                "id": 8,
+                "kind": "mob",
+                "pos": [
+                  51.293701171875,
+                  80.0,
+                  5.96337890625
+                ],
+                "type": "minecraft:creeper"
+              },
+              {
+                "baby": false,
+                "distance": 23.97399478968568,
+                "health": 20.0,
+                "hurt_time": 0,
+                "id": 6,
+                "kind": "mob",
+                "pos": [
+                  51.67057291319361,
+                  80.0,
+                  7.495117187507276
+                ],
+                "type": "minecraft:zombie"
+              },
+              {
+                "baby": false,
+                "distance": 25.614266865732432,
                 "health": 20.0,
                 "hurt_time": 0,
                 "id": 2,
                 "kind": "mob",
                 "pos": [
-                  47.87646484375,
-                  80.0,
-                  5.512939453125
+                  56.44580078125,
+                  81.0,
+                  5.849853515625
                 ],
-                "type": "minecraft:skeleton"
-              },
-              {
-                "baby": false,
-                "distance": 24.863064274586566,
-                "health": 20.0,
-                "hurt_time": 0,
-                "id": 3,
-                "kind": "mob",
-                "pos": [
-                  53.25830078125,
-                  80.0,
-                  8.29443359375
-                ],
-                "type": "minecraft:skeleton"
+                "type": "minecraft:creeper"
               }
             ],
             "loaded_chunks": 49,
             "radius": 60.0,
             "tracked": {
               "items": 0,
-              "mobs": 2,
+              "mobs": 5,
               "orbs": 0
             },
             "type": null
@@ -1434,7 +2635,7 @@
         }
       ],
       "checks": {
-        "setup:the_channel_holds_144": {
+        "setup:the_channel_holds_all": {
           "ok": true,
           "actual": [
             144,
@@ -1452,8 +2653,29 @@
             "mat": "gold",
             "amount": 144,
             "last_flow": 0,
-            "next": 1
+            "next": 2
           }
+        },
+        "setup:the_slag_holds_144": {
+          "ok": true,
+          "actual": [
+            144,
+            0,
+            "ntm:slag"
+          ]
+        },
+        "setup:the_channel_is_empty": {
+          "ok": true,
+          "actual": {
+            "k": "Channel",
+            "amount": 0,
+            "last_flow": 0,
+            "next": 5
+          }
+        },
+        "setup:it_is_a_slag_block": {
+          "ok": true,
+          "actual": "ntm:slag"
         }
       },
       "base": {
@@ -1670,7 +2892,7 @@
             "target": null,
             "ticks": 0,
             "tridents": 0,
-            "uptime_seconds": 2.161024152,
+            "uptime_seconds": 2.840003126,
             "using": null,
             "yaw": 0.0
           }
@@ -1687,7 +2909,7 @@
               "size": 59999968.0
             },
             "carts": [],
-            "chunks": 4,
+            "chunks": 1,
             "creative": true,
             "day_time": 5,
             "debug": {
@@ -1720,9 +2942,9 @@
               "respawn": null
             },
             "fishing": null,
-            "fps": 0.41725924611091614,
+            "fps": 0.32543471455574036,
             "frames": 2,
-            "generated_chunks": 4,
+            "generated_chunks": 1,
             "heard": {},
             "held": null,
             "input": {
@@ -1784,9 +3006,9 @@
               "max_health": null,
               "on_ground": true,
               "position": [
-                6.5,
-                74.0,
-                9.5
+                8.5,
+                73.0,
+                4.5
               ],
               "velocity": [
                 0.0,
@@ -1841,7 +3063,7 @@
             "server": {
               "address": "local",
               "chat": [],
-              "chunks": 4,
+              "chunks": 1,
               "dead_players": [],
               "decode_errors": 0,
               "dimension": "minecraft:overworld",
@@ -1892,16 +3114,16 @@
               "queued": 0
             },
             "target": {
-              "block": "minecraft:short_grass",
+              "block": "minecraft:grass_block",
               "pos": [
-                6,
-                75,
-                11
+                8,
+                74,
+                8
               ]
             },
             "ticks": 14,
             "tridents": 0,
-            "uptime_seconds": 2.475732018,
+            "uptime_seconds": 3.145179191,
             "using": null,
             "yaw": 0.0
           }
@@ -2007,10 +3229,10 @@
           }
         },
         {
-          "command": "command item replace block 40 101 10 container.1 with minecraft:gold_ingot 2",
+          "command": "command item replace block 40 98 11 container.1 with minecraft:gold_ingot 2",
           "result": {
             "chat": [
-              "Replaced 1 slot(s) at 40, 101, 10 with [Gold Ingot]"
+              "Replaced 1 slot(s) at 40, 98, 11 with [Gold Ingot]"
             ],
             "ok": true
           }
@@ -2046,7 +3268,7 @@
           "command": "command data get block 40 101 10 Items",
           "result": {
             "chat": [
-              "40, 101, 10 has the following block data: [{count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+              "40, 101, 10 has the following block data: []"
             ],
             "ok": true
           }
@@ -2055,7 +3277,34 @@
           "command": "command data get block 40 98 11 Items",
           "result": {
             "chat": [
-              "40, 98, 11 has the following block data: []"
+              "40, 98, 11 has the following block data: [{count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 39 98 11 Items",
+          "result": {
+            "chat": [
+              "The target block is not a block entity"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 41 98 11 Items",
+          "result": {
+            "chat": [
+              "The target block is not a block entity"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 98 12 Items",
+          "result": {
+            "chat": [
+              "The target block is not a block entity"
             ],
             "ok": true
           }

@@ -1,5 +1,5 @@
 {
-  "binary_sha256": "c8782234102c295d287b8e32fb371ded8439842b0b7b7db0f1f97874f937ebe1",
+  "binary_sha256": "543892c8b650a0ca0667674545fe62fe1d1460f5a265b7de1a21086cfd85100f",
   "bundle_sha256": "59181d49dc8bcbbe4d1cceecf473ec19d96046d26539a1ac88633029919b485f",
   "checks": {
     "setup:machine_excavator_real_core_placed": {
@@ -13,8 +13,8 @@
     "setup:the_network_carries_power": {
       "ok": true,
       "actual": [
-        111622,
-        323204
+        133280,
+        398174
       ]
     },
     "setup:excavator_menu_open": {
@@ -4255,8 +4255,8 @@
     "setup:the_network_lost_the_link": {
       "ok": true,
       "actual": [
-        614754,
-        614754
+        937958,
+        937958
       ]
     },
     "setup:the_other_cables_stand": {
@@ -4282,8 +4282,8 @@
       11
     ],
     "power_connected": [
-      111622,
-      323204
+      133280,
+      398174
     ],
     "mined": [
       [
@@ -4303,8 +4303,8 @@
       ]
     ],
     "power_after": [
-      614754,
-      614754
+      937958,
+      937958
     ]
   },
   "ok": true

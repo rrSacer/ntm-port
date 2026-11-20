@@ -35,6 +35,11 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           and the 144 stay in the channel at every cut (the metal is never moved across two chunks' records)
   slagtap-break   the pour done in the prepare; the act breaks the slag block as a player in survival and picks up what it drops:
           one scrap with all 144 (D4). Control: as `slagtap-pour`, the ingots taken by command
+  slagtap-flow    the pour's chain with 36 gold ingots (2592 quanta) melted by the crucible into a TANK (the chain's first block) under its
+          waste stream; the act puts the tap and goes on to the save: the tank's 2592 pour into one slag block, which is over a fifth of
+          its capacity and spreads (`updateTick`) to the three free sides of the pit, 432 each: three steps (the pour, the spread, the
+          new cells' own turn) racing the save. At every cut the 2592 are in the tank, or in the slag cells, never both and never
+          neither. Control: a barrel with the 36 ingots whose ingots move by command to a barrel in the pit
   slagtap-redstone  the pour's chain with a block of redstone beside the tap: the tap is closed and the channel keeps its 144; the
           block taken away, the tap opens and the 144 pour into the slag (the signal comes from the real world; the inversion is
           tested in the server's tests: its button is in the old screen). Run at the point `none`
@@ -65,6 +70,8 @@ WEIGHT = {'minecraft:gold_ingot': 72, 'minecraft:gold_nugget': 8, 'minecraft:gol
 # it) and the player stands; both in chunk (2, 0) and within 6 blocks of x=40, z=8.
 SLAGTAP = SCENARIO.startswith('slagtap')
 BORDER = SCENARIO == 'slagtap-border'
+FLOW = SCENARIO == 'slagtap-flow'
+INGOTS = 36 if FLOW else 2
 # The slag tap's chain stands one chunk south in the border variant: its channel at z 15, the tap and the slag at z 16.
 CORE = (40, 101, 13 if BORDER else 8)
 # The player stands north of the crucible in the slag tap's scenarios (the pit is south of it), south of it in the others.
@@ -75,6 +82,8 @@ OTHER = CORE
 CHANNEL_AT = (CORE[0], CORE[1], CORE[2] + 2)
 TAP_AT = (CORE[0], CORE[1], CORE[2] + 3)
 SLAG_AT = (CORE[0], 98, CORE[2] + 3)
+# The slag cells a spread reaches: the pit's free sides of the slag (the north one is the wall).
+SPREAD_AT = [(SLAG_AT[0] - 1, SLAG_AT[1], SLAG_AT[2]), (SLAG_AT[0] + 1, SLAG_AT[1], SLAG_AT[2]), (SLAG_AT[0], SLAG_AT[1], SLAG_AT[2] + 1)]
 # `clicks`: the mold block under the crucible's waste stream (two blocks south of its core).
 MOLD_AT = (CORE[0], CORE[1] - 1, CORE[2] + 2)
 
@@ -152,7 +161,7 @@ def machines(g):
     for p in places(g):
         if VANILLA:
             slots += stack_quanta(block_items(g, p))
-        elif server_block(g, p) in ('ntm:machine_crucible', CASTER, 'ntm:foundry_mold', 'ntm:foundry_channel', 'ntm:slag'):
+        elif server_block(g, p) in ('ntm:machine_crucible', CASTER, 'ntm:foundry_mold', 'ntm:foundry_channel', 'ntm:foundry_tank', 'ntm:slag'):
             mol += molten(model(g, p))
             slots += stack_quanta(block_items(g, p))
     return mol, slots
@@ -160,7 +169,7 @@ def machines(g):
 
 def places(g):
     if SLAGTAP:
-        return [CORE, CHANNEL_AT, SLAG_AT]
+        return [CORE, CHANNEL_AT, SLAG_AT, *SPREAD_AT]
     if SCENARIO == 'clicks':
         return [CORE, MOLD_AT]
     if SCENARIO not in ('caster', 'excess', 'batch', 'hand'):
@@ -259,22 +268,27 @@ def slagtap_world(g):
         g.command('setblock %d %d %d minecraft:barrel' % CHANNEL_AT)
         g.command('setblock %d %d %d minecraft:barrel' % SLAG_AT)
         # The break's control starts where the pour ends: the ingots in the pit's barrel.
-        g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % (SLAG_AT if SCENARIO == 'slagtap-break' else CHANNEL_AT))
+        g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot %d' % (*(SLAG_AT if SCENARIO == 'slagtap-break' else CHANNEL_AT), INGOTS))
         return
     g.command('setblock %d %d %d %s[facing=south,honey_level=0]' % (CORE[0], CORE[1] - 1, CORE[2], FIREBOX))
     g.command('setblock %d %d %d %s[facing=north,honey_level=0]' % (*CORE, CRUCIBLE))
-    g.command('setblock %d %d %d ntm:foundry_channel[facing=north,honey_level=0]' % CHANNEL_AT)
+    g.command('setblock %d %d %d %s[facing=north,honey_level=0]' % (*CHANNEL_AT, 'ntm:foundry_tank' if FLOW else 'ntm:foundry_channel'))
     time.sleep(2)
     g.command('item replace block %d %d %d container.0 with minecraft:coal 16' % (CORE[0], CORE[1] - 1, CORE[2]))
-    g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % CORE)
-    ok = wait_for(lambda: molten(model(g, CHANNEL_AT)) == 144, 300)
-    g.check('the_channel_holds_144', ok, [molten(model(g, CHANNEL_AT)), molten(model(g, CORE))])
+    g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot %d' % (*CORE, INGOTS))
+    ok = wait_for(lambda: molten(model(g, CHANNEL_AT)) == 72 * INGOTS, 1500 if FLOW else 300)
+    g.check('the_channel_holds_all', ok, [molten(model(g, CHANNEL_AT)), molten(model(g, CORE))])
     g.check('the_crucible_is_empty', molten(model(g, CORE)) == 0, molten(model(g, CORE)))
     g.command('item replace block %d %d %d container.0 with minecraft:air' % (CORE[0], CORE[1] - 1, CORE[2]))
     g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
-    g.check('nothing_pours_without_a_tap', molten(model(g, CHANNEL_AT)) == 144, model(g, CHANNEL_AT))
+    g.check('nothing_pours_without_a_tap', molten(model(g, CHANNEL_AT)) == 72 * INGOTS, model(g, CHANNEL_AT))
     if SCENARIO == 'slagtap-break':
         put_tap(g)
+
+
+def slag_total(g):
+    """The metal of the slag cells of the pit (the pour's cell and the sides a spread reaches), from the server's models."""
+    return sum(molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT))
 
 
 def put_tap(g, wait=True):
@@ -519,7 +533,7 @@ def act(g):
     elif SLAGTAP and SCENARIO != 'slagtap-break':
         if VANILLA:
             g.command('item replace block %d %d %d container.1 with minecraft:air' % CHANNEL_AT)
-            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % SLAG_AT)
+            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot %d' % (*SLAG_AT, INGOTS))
         elif SCENARIO == 'slagtap-redstone':
             # A block of redstone beside the tap closes it (`isClosed`): the channel keeps its 144; taken away, the tap opens and pours.
             beside = (TAP_AT[0] + 1, TAP_AT[1], TAP_AT[2])
@@ -545,6 +559,13 @@ def act(g):
                 time.sleep(15)
                 g.check('the_border_tap_pours_nothing', server_block(g, SLAG_AT) == '' and molten(model(g, CHANNEL_AT)) == 144,
                         [server_block(g, SLAG_AT), molten(model(g, CHANNEL_AT))])
+            elif FLOW:
+                total = 72 * INGOTS
+                ok = wait_for(lambda: slag_total(g) == total and molten(model(g, CHANNEL_AT)) == 0, 120)
+                g.check('the_slag_cells_hold_all', ok, [slag_total(g), molten(model(g, CHANNEL_AT))])
+                spread = [molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT)]
+                g.evidence['spread'] = spread
+                g.check('it_spread_to_the_three_free_sides', spread == [total - 3 * (total // 6), *[total // 6] * 3], spread)
             else:
                 ok = wait_for(lambda: molten(model(g, SLAG_AT)) == 144, 120)
                 g.check('the_slag_holds_144', ok, [molten(model(g, SLAG_AT)), molten(model(g, CHANNEL_AT)), server_block(g, SLAG_AT)])
@@ -679,7 +700,8 @@ def verify(g, again=False):
     if SLAGTAP and not VANILLA:
         # Where the metal is after the reopen: the channel (the world kept the base), or the slag block (the pour).
         g.evidence['where' + ('_again' if again else '')] = {
-            'channel': molten(model(g, CHANNEL_AT)), 'slag': molten(model(g, SLAG_AT)), 'slag_block': server_block(g, SLAG_AT)}
+            'channel': molten(model(g, CHANNEL_AT)), 'slag': slag_total(g), 'slag_block': server_block(g, SLAG_AT),
+            'cells': [molten(model(g, p)) for p in (SLAG_AT, *SPREAD_AT)]}
     # Counted only: the verdict is the runner's, against the base and the vanilla control.
     g.evidence['counted' + ('_again' if again else '')] = now
     g.ctl('save')
