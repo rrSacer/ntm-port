@@ -513,7 +513,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_chemical_factory",
-        kind: Kind::Inert,
+        kind: Kind::ChemFactory,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

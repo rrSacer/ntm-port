@@ -76,6 +76,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::microwave::BLOCK {
         return Some(crate::microwave::container());
     }
+    if block == crate::chemfactory::BLOCK {
+        return Some(crate::chemfactory::container());
+    }
     if block == crate::exposure::BLOCK {
         return Some(crate::exposure::container());
     }
@@ -213,6 +216,16 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         // `ContainerMicrowave`: plain `Slot`s at 0 and 2 and a `SlotCraftingOutput` at 1; what a hopper may do is `slot_allows`.
         let mut rules = vec![SlotFilter::default(); crate::microwave::SLOTS];
         rules[crate::microwave::OUTPUT].output = true;
+        return rules;
+    }
+    if block == crate::chemfactory::BLOCK {
+        // `ContainerMachineChemicalFactory`: the outputs are `SlotCraftingOutput`s, the rest plain slots.
+        let mut rules = vec![SlotFilter::default(); crate::chemfactory::SLOTS];
+        for i in 0..crate::chemfactory::MODULES {
+            for k in 0..3 {
+                rules[crate::chemfactory::output(i, k)].output = true;
+            }
+        }
         return rules;
     }
     if block == crate::radiolysis::BLOCK {

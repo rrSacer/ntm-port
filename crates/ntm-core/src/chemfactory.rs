@@ -23,7 +23,7 @@ use crate::{
     energy_network::charge_te_from_items,
     fluid::{FluidNode, Tank},
     machine::Logic,
-    server::container_bridge::{Slots, Stack},
+    server::container_bridge::{Slots, Slotted, Stack},
     view::{self, ViewModel},
 };
 use serde::{Deserialize, Serialize};
@@ -400,6 +400,26 @@ impl FluidNode for ChemFactory {
             mb -= u64::from(t.drain(mb.min(u64::from(u32::MAX)) as u32));
         }
     }
+}
+
+impl Slotted for ChemFactory {
+    fn slots_mut(&mut self) -> &mut Slots {
+        self.fit();
+        &mut self.slots
+    }
+    /// The screen comes with its own change.
+    fn screen_data(&self) -> Vec<i32> {
+        Vec::new()
+    }
+}
+
+/// `getAccessibleSlotsFromSide`: every side reaches the twenty-four item slots of the modules (the inputs and the outputs).
+pub fn container() -> crate::native::Container {
+    let inputs: Vec<usize> = (0..MODULES).flat_map(|i| (0..3).map(move |k| input(i, k))).collect();
+    let outputs: Vec<usize> = (0..MODULES).flat_map(|i| (0..3).map(move |k| output(i, k))).collect();
+    let mut all: Vec<usize> = inputs.iter().chain(&outputs).copied().collect();
+    all.sort_unstable();
+    crate::native::Container { slots: SLOTS, faces: std::array::from_fn(|_| all.clone()), inputs, outputs, menu: Some("minecraft:generic_9x4") }
 }
 
 impl Logic for ChemFactory {

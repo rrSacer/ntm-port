@@ -122,6 +122,8 @@ pub enum Kind {
     Drain,
     /// The microwave (`crate::microwave`).
     Microwave,
+    /// The chemical factory (`crate::chemfactory`).
+    ChemFactory,
     /// The chimneys, both bodies (`crate::chimney`).
     Chimney,
     /// The power switch and the redstone power switch (`crate::cable_switch`).
@@ -246,6 +248,7 @@ pub enum Data {
     Storage(Box<crate::storage::Storage>),
     Drain(crate::drain::Drain),
     Microwave(Box<crate::microwave::Microwave>),
+    ChemFactory(Box<crate::chemfactory::ChemFactory>),
     Chimney(crate::chimney::Chimney),
     CableSwitch(crate::cable_switch::CableSwitch),
     Wire(crate::wire::Wire),
@@ -375,6 +378,7 @@ impl Machine {
             ))),
             Kind::Drain => Data::Drain(Default::default()),
             Kind::Microwave => Data::Microwave(Box::default()),
+            Kind::ChemFactory => Data::ChemFactory(Box::default()),
             Kind::Chimney => Data::Chimney(crate::chimney::Chimney::new(crate::chimney::Body::of(block_id).unwrap_or_default())),
             Kind::Storage => Data::Storage(Box::new(crate::storage::Storage::new(
                 crate::storage::Body::of(block_id).unwrap_or_default(),
@@ -470,6 +474,7 @@ impl Machine {
             Data::Storage(_) => Kind::Storage,
             Data::Drain(_) => Kind::Drain,
             Data::Microwave(_) => Kind::Microwave,
+            Data::ChemFactory(_) => Kind::ChemFactory,
             Data::Chimney(_) => Kind::Chimney,
             Data::CableSwitch(_) => Kind::CableSwitch,
             Data::Wire(_) => Kind::Wire,
@@ -535,6 +540,7 @@ impl Machine {
             Data::Storage(m) => &**m,
             Data::Drain(m) => m,
             Data::Microwave(m) => &**m,
+            Data::ChemFactory(m) => &**m,
             Data::Chimney(m) => m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
@@ -600,6 +606,7 @@ impl Machine {
             Data::Storage(m) => &mut **m,
             Data::Drain(m) => m,
             Data::Microwave(m) => &mut **m,
+            Data::ChemFactory(m) => &mut **m,
             Data::Chimney(m) => m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
