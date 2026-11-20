@@ -226,7 +226,15 @@ class Proof:
         g.ctl('key key.keyboard.enter down')
         time.sleep(.3)
         g.ctl('key key.keyboard.enter up')
-        time.sleep(3.5)
+        time.sleep(.3)
+        # The engine's LAN guest client opens the chat on Enter (`remote_key`: T, / and Enter), which the load key is
+        # by HBM's default: the press loads the crane, and the arrows after it would go to the chat. Closed here, and
+        # recorded (T11 doc).
+        screen = g.ctl('screen').get('screen')
+        self.host.evidence.setdefault('enter_opens', []).append({'who': name, 'screen': screen})
+        if screen != 'playing':
+            g.close()
+        time.sleep(3.2)
 
     def held(self):
         return items(self.host, self.core)
