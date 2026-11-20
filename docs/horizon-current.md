@@ -1634,7 +1634,7 @@ com a tela aberta, barra/dicas/partícula para o T19) aceitos; o `canConnect` do
 | P3-3 pontos sem revisão a fundo | O som do respiro (`c7fc0035`) e o menu da caldeira (`66bae438`, `4f7eb382`) não foram lidos a fundo pela revisão: ficam como sem revisão independente, cobertos só pelos testes e pela J deste ticket | — |
 | Corte C com fluido em movimento | `run-rbmk-t08-c-proof.py` + `native_rbmk_t08_c.py`: 16 000 mB de criogel saindo de um barril no chunk (1, 0), passando por um resfriador no chunk (2, 0) e voltando a um barril no (1, 0); o jogo morto em `kill`, `kv_committed`, `region_record:1`, `chunks_written` e `world_saved` com o fluido em movimento (no save: 6 300–6 800 na fonte, 4 000 no resfriador, 5 200–5 700 no destino). Nas duas reaberturas, a fonte, os dois tanques do resfriador e o destino, lidos de uma vez (`ntmtest fluids`, `b00d69e2`), somam **16 000 mB em todos os pontos**: nos 5 cortes nada se perdeu, mas nenhum caiu entre os registros dos dois chunks: `kill`, `kv_committed` e `region_record:1` voltam inteiros ao save anterior (16 000 na fonte); `chunks_written` e `world_saved`, ao novo. Controle vanilla no mesmo corte: 64 pedras levadas por funis pela mesma divisa, 64/64 em todos os pontos. **Limite geral PROVADO** na varredura seguinte (`evidence/c-run5/`): nos cortes `region_record:2` e `region_record:3`, que caem entre os registros dos dois chunks, a reabertura soma **20 000 mB**: a fonte (chunk (1, 0)) volta do save anterior com os 16 000 inteiros e o resfriador (chunk (2, 0)) do save novo com os 4 000 que já tinha recebido, que passam a existir duas vezes (`region_record:4` volta ao save novo inteiro). Causa: as redes de fluido mexem nas máquinas fora das transações, e o save grava os chunks em registros separados; vale para qualquer máquina do port ligada por cano entre dois chunks (o gás do extrator do T09 incluído). Aceito temporariamente como limite declarado (decisão do coordenador, levada ao usuário), com o ticket de infraestrutura "Rede de fluido e save atômicos entre chunks" no plano, prioridade alta. A comparação com o vanilla na emenda dele fica na linha abaixo. Binário `b9582404…`, pacote `0f9c0154…`; `evidence/c-run3/` (`kill`, `kv_committed`) e `evidence/c-run4/` (os outros três). As rodadas 1–2 e o `world_saved` da 3 caíram pelo roteiro (funil que puxa de cima; contagem vanilla em movimento; leitura depois do corte) | `b00d69e2`, `052ae523` |
 
-## RBMK T09 — extrator de gases (outgasser) por fluxo (em andamento, 20/11/2026)
+## RBMK T09 — extrator de gases (outgasser) por fluxo (20/11/2026)
 
 Branch `rbmk-t05` (continua sobre o T08), motor sem mudança. A física já roda no passo desde o T04 (oráculo:
 `outgasser_recipes`, limiares `> 10000`), mas sem mundo: os slots não são lidos ("o outgasser que não processa"), o
@@ -1652,6 +1652,29 @@ nada.
 | S | Tela | Barra de progresso e medidor de gás do `horizon_screen/rbmk_outgasser.json` com os valores do servidor | `GUIRBMKOutgasser` |
 | U | Provas | Oráculo do T04 (já cobre `>` em 10000, perda do excedente, rápido/lento, reset, `fusionOnly`, saída cheia); unidade das ligações de item, do estado, da porta e da automação; mutantes | — |
 | J/C | Em jogo | Insumo posto por funil, irradiado por uma barra no reator, sólido retirado por funil e gás por cano até um barril; reabertura; corte com o processamento em andamento: exatamente um consumo e as saídas de uma receita por processamento, nada refeito depois da queda | — |
+
+### O que mudou
+
+| Parte | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Itens (N1) | `outgasser::PORT_ITEMS`: os 13 itens Java que as receitas nomeiam ↔ ids do port (a meta do `oil_tar` pelo `EnumTarType`: 2 `ntm:oil_tar__coal`, 4 `ntm:oil_tar__wax`; os vanilla do 1.7.10; o ensopado brilhante empilha 1, `ItemSoup`); as entradas por OreDict pelos nomes do item do port (`oredict::names`). O cogumelo brilhante (`ModBlocks.mush`) não está no conteúdo: as duas receitas de cogumelo não rodam (`outgasser::MISSING`, decisão do coordenador; ticket T09-M), e um teste avisa quando o bloco entrar no `ids.json` | `OutgasserRecipes.registerDefaults`, `ItemEnums` |
+| Estado (N2) | `persist::OutgasserState`: `progress` pelos bits e o tanque `gas` (tipo, quantidade, 64 000) gravados; os dois slots são os do motor: entram no passo nos termos das receitas e voltam como os itens do port (a pilha da entrada, menor; a da saída, maior, ou o item do produto num slot vazio) | `readFromNBT/writeToNBT`, `canProcess`, `process` |
+| Gás (N3) | O extrator oferece o gás na rede do tipo do seu tanque, pelas portas da coluna com loader (as do T08, `persist::has_column_ports`) | `setOutputTanks(gas)` |
+| Automação (N4) | Funil põe só no slot 0 e só o que tem receita; retira só do 1 | `isItemValidForSlot`, `canExtractItem` |
+| Tela (S) | A seta `(int)(progress * 13 / 10000)` de 13 pixels e o gás (quantidade, máximo) no `horizon_screen/rbmk_outgasser.json` | `GUIRBMKOutgasser` |
+| Gancho | `ntmtest fluids` lê também o gás e os slots do extrator, na mesma leitura | — |
+
+### Desvios e limites
+
+- **Cogumelos sem receita** até o T09-M (o produto, `ModBlocks.mush`, não existe no port): o funil não os põe e o
+  progresso fica em 0; no Java viram cogumelo brilhante.
+- **Sólido só pela tela**: o inventário da coluna fica só na célula de cima (como no Java e no T02), e um funil só puxa
+  do bloco acima dele: nada retira o sólido por automação comum; o jogador tira pela tela.
+- **Gás pela rede**: o mesmo limite geral provado no T08 (corte entre os registros de dois chunks ligados por cano
+  pode duplicar ou perder fluido; ticket INFRA-F no plano).
+- **Ordem do OreDict**: o `getOutput` do Java percorre os nomes do item na ordem de registro do OreDict; aqui na ordem
+  dos nomes do port. Só diferiria para um item com dois nomes de receitas diferentes (nenhum entre os do port hoje).
+
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
