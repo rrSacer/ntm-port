@@ -19,7 +19,7 @@ from native_game import Game
 
 HOST, GUEST = 'Host', 'Guest'
 Y = 101
-PLACE = (40, Y, 4)
+PLACE = (40, Y, 4)  # the console's front cell (its core is one further south): what a player clicks
 TARGET = (40, Y, 14)
 RODS = {'manual': (40, Y, 14), 'moderated': (41, Y, 14), 'reasim': (42, Y, 14), 'auto': (43, Y, 14)}
 BLOCKS = {'manual': 'rbmk_control', 'moderated': 'rbmk_control_mod', 'reasim': 'rbmk_control_reasim', 'auto': 'rbmk_control_auto'}
@@ -129,9 +129,9 @@ class Proof:
         self.host.command(f'clear {name}')
         if carry:
             self.host.command(f'give {name} {carry}')
-        self.host.command(f'tp {name} {self.core[0] + .5} {self.core[1]} {self.core[2] - 2.5} 0 0')
+        self.host.command(f'tp {name} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
         time.sleep(.6)
-        g.ctl(f'interact {self.core[0]} {self.core[1]} {self.core[2]} north')
+        g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
         deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
             if g.ctl('screen').get('screen') == 'container':
@@ -176,11 +176,11 @@ class Proof:
         self.check('the_tool_keeps_the_column', kept is not None and [int(v) for v in kept.groups()] == list(TARGET), held[-300:])
         g = self.host
         g.close()
-        g.command(f'tp {HOST} {self.core[0] + .5} {self.core[1]} {self.core[2] - 2.5} 0 0')
+        g.command(f'tp {HOST} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
         time.sleep(.6)
         g.ctl('key shift down')
         time.sleep(.3)
-        g.ctl(f'interact {self.core[0]} {self.core[1]} {self.core[2]} north')
+        g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
         time.sleep(.5)
         g.ctl('key shift up')
         s = self.wait(lambda: console(self.host, self.core), lambda s: s['target'] == list(TARGET))
@@ -259,7 +259,7 @@ class Proof:
         g.close()
 
     def turn(self):
-        self.sneak_use(HOST, self.core, 'ntm:screwdriver')
+        self.sneak_use(HOST, PLACE, 'ntm:screwdriver')
         s = self.wait(lambda: console(self.host, self.core), lambda s: s['rotation'] == 1)
         self.check('the_screwdriver_turns_the_console', s['rotation'] == 1, s)
 
