@@ -71,6 +71,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::keyforge::BLOCK {
         return Some(crate::keyforge::container());
     }
+    if block == crate::cabinet::BLOCK {
+        return Some(crate::cabinet::container());
+    }
     if block == crate::autocrafter::BLOCK {
         return Some(crate::autocrafter::container());
     }
@@ -354,6 +357,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::keyforge::BLOCK {
         return crate::keyforge::allows(slot, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::cabinet::BLOCK {
+        return crate::cabinet::allows(slot, origin == SlotOrigin::Manual);
     }
     if block == crate::annihilator::BLOCK {
         return crate::annihilator::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
@@ -702,6 +708,26 @@ mod tests {
         assert_eq!(container(F).map(|c| (c.slots, c.menu)), Some((3, Some("minecraft:furnace"))));
         assert_eq!(container("ntm:machine_press").map(|c| c.slots), Some(4));
         assert!(container("minecraft:stone").is_none() && machine_block("ntm:machine_press"));
+    }
+
+    /// The filing cabinet through the engine's rules: eight slots of its machine file, none open to a hopper, every one
+    /// to a hand, in either direction (`isItemValidForSlot`, `canInsertItem` and `canExtractItem` are false).
+    #[test]
+    fn the_filing_cabinet_is_a_hands_only_container_of_eight() {
+        use crate::server::container_bridge::Stack;
+        let b = crate::cabinet::BLOCK;
+        assert!(machine_block(b));
+        let c = container(b).expect("a container");
+        assert_eq!((c.slots, c.menu), (8, Some("minecraft:generic_9x3")));
+        assert_eq!(slot_filters(b).len(), 8);
+        let item = Stack::new("minecraft:paper", 1);
+        for slot in 0..8 {
+            for action in [SlotAction::Insert, SlotAction::Extract] {
+                assert!(slot_allows(b, &[], slot, &item, action, SlotOrigin::Manual), "a hand, {slot}, {action:?}");
+                assert!(!slot_allows(b, &[], slot, &item, action, SlotOrigin::Automation), "a hopper, {slot}, {action:?}");
+            }
+        }
+        assert!(!slot_allows(b, &[], 8, &item, SlotAction::Insert, SlotOrigin::Manual));
     }
 
     /// `getComparatorPower`: empty is 0, else `floor(fraction * 15) + 1`, full 15.

@@ -273,7 +273,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:filing_cabinet",
-        kind: Kind::Inert,
+        kind: Kind::Cabinet,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,

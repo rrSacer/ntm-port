@@ -1,0 +1,16 @@
+{
+  "texture": "ntm:textures/gui/storage/gui_file_cabinet.png",
+  "size": [
+    176,
+    170
+  ],
+  "title": [
+    88,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    74
+  ]
+}

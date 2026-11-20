@@ -98,6 +98,8 @@ pub enum Kind {
     BrickFurnace,
     /// The locksmith table (`crate::keyforge`).
     KeyForge,
+    /// The filing cabinet (`crate::cabinet`).
+    Cabinet,
     /// The funnel that compresses items (`crate::funnel`).
     Funnel,
     /// The automatic crafting table (`crate::autocrafter`).
@@ -279,6 +281,7 @@ pub enum Data {
     Rbmk(Box<crate::rbmk::persist::RbmkColumn>),
     BrickFurnace(crate::furnace_brick::BrickFurnace),
     KeyForge(crate::keyforge::KeyForge),
+    Cabinet(crate::cabinet::Cabinet),
     Funnel(crate::funnel::Funnel),
     Autocrafter(Box<crate::autocrafter::Autocrafter>),
     Radiolysis(Box<crate::radiolysis::Radiolysis>),
@@ -405,6 +408,7 @@ impl Machine {
             }),
             Kind::BrickFurnace => Data::BrickFurnace(Default::default()),
             Kind::KeyForge => Data::KeyForge(Default::default()),
+            Kind::Cabinet => Data::Cabinet(Default::default()),
             Kind::Funnel => Data::Funnel(Default::default()),
             Kind::Autocrafter => Data::Autocrafter(Box::new(crate::autocrafter::Autocrafter::new())),
             Kind::Radiolysis => Data::Radiolysis(Default::default()),
@@ -515,6 +519,7 @@ impl Machine {
             Data::Sawmill(_) => Kind::Sawmill,
             Data::BrickFurnace(_) => Kind::BrickFurnace,
             Data::KeyForge(_) => Kind::KeyForge,
+            Data::Cabinet(_) => Kind::Cabinet,
             Data::Funnel(_) => Kind::Funnel,
             Data::Autocrafter(_) => Kind::Autocrafter,
             Data::Radiolysis(_) => Kind::Radiolysis,
@@ -586,6 +591,7 @@ impl Machine {
             Data::Sawmill(m) => m,
             Data::BrickFurnace(m) => m,
             Data::KeyForge(m) => m,
+            Data::Cabinet(m) => m,
             Data::Funnel(m) => m,
             Data::Autocrafter(m) => &**m,
             Data::Radiolysis(m) => &**m,
@@ -657,6 +663,7 @@ impl Machine {
             Data::Sawmill(m) => m,
             Data::BrickFurnace(m) => m,
             Data::KeyForge(m) => m,
+            Data::Cabinet(m) => m,
             Data::Funnel(m) => m,
             Data::Autocrafter(m) => &mut **m,
             Data::Radiolysis(m) => &mut **m,

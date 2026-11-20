@@ -39,7 +39,7 @@ Chaves/cadeados são itens inertes. `ItemKeyPin` usa int NBT `pins`; não há c�
 | `obj_tester` | `TestObjTester` | Inert (registrado) |
 | `deco_emitter` | `BlockEmitter` | Inert (registrado) |
 | `part_emitter` | `PartEmitter` | Inert (registrado) |
-| `filing_cabinet` | `BlockDecoContainer` | Inert (registrado) |
+| `filing_cabinet` | `BlockDecoContainer` | Arquivo de 8 lugares, sem trava (`docs/content-cabinet.md`) |
 | `machine_ashpit` | `MachineAshpit` | Inert (registrado) |
 | `furnace_iron` | `FurnaceIron` | Inert (registrado) |
 | `furnace_steel` | `FurnaceSteel` | Inert (registrado) |

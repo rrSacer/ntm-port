@@ -316,6 +316,28 @@ fn the_locksmith_table_copies_and_randomizes_pins_through_the_bridge() {
     assert_eq!(pins(slots(&g)[1].as_ref().unwrap()), 7);
 }
 
+/// The filing cabinet through the bridge: what a hand puts in its eight slots is the block entity's alone and stays exactly
+/// as it is, however many ticks run, an item with data included (the machine reads none of it, and writes nothing back).
+#[test]
+fn the_filing_cabinet_keeps_what_is_put_in_it_untouched() {
+    let mut g = game();
+    engine_block(&mut g, "ntm:filing_cabinet[facing=north,honey_level=0]", 8);
+    let mut named = Stack::new("minecraft:paper", 64);
+    named.custom = Some("{note:\"a\"}".into());
+    put(&mut g, 0, Some(named.clone()));
+    put(&mut g, 7, Some(Stack::new("ntm:key", 1)));
+    put(&mut g, 3, Some(Stack::new("minecraft:diamond", 3)));
+    let before = slots(&g);
+    g.run(40);
+    assert_eq!(slots(&g), before, "nothing moves, nothing is added, nothing is lost");
+    assert_eq!(slots(&g)[0].as_ref(), Some(&named));
+    // A slot emptied by a hand stays empty, and the ones it did not touch stay.
+    put(&mut g, 3, None);
+    g.run(10);
+    let s = slots(&g);
+    assert!(s[3].is_none() && s[0].is_some() && s[7].is_some(), "{s:?}");
+}
+
 /// The funnel through the bridge: nine items of a column become the result in the bottom row, and the button cycles
 /// the mode (the screen's value).
 #[test]

@@ -56,6 +56,7 @@ pub mod funnel;
 pub mod gascent;
 pub mod hash;
 pub mod heater;
+pub mod cabinet;
 pub mod keyforge;
 pub mod kv;
 pub mod consumables;

@@ -37529,7 +37529,41 @@
     },
     "ntm:filing_cabinet": {
       "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerFileCabinet, GUIFileCabinet 176x170 (storage/gui_file_cabinet.png): eight Slots, two rows of four (53 + 18j, 18 + 36i), the title centred, the inventory label at 74; TileEntityFileCabinet: no automation (isItemValidForSlot, canInsertItem, canExtractItem false); the lock (TileEntityLockableBase), the drawers' animation (RenderFileCabinet) and the crate sounds wait; the block stays the K3 static cube",
+      "machine": {
+        "slots": [
+          {"x": 53, "y": 18},
+          {"x": 71, "y": 18},
+          {"x": 89, "y": 18},
+          {"x": 107, "y": 18},
+          {"x": 53, "y": 54},
+          {"x": 71, "y": 54},
+          {"x": 89, "y": 54},
+          {"x": 107, "y": 54}
+        ],
+        "inventory": [
+          8,
+          88
+        ],
+        "data": 0
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/storage/gui_file_cabinet.png",
+        "texture_from": "textures/gui/storage/gui_file_cabinet.png",
+        "size": [
+          176,
+          170
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          74
+        ]
+      }
     },
     "ntm:machine_ashpit": {
       "source": "MachineAshpit {0,0,1,1,1,1} offset 1, ContainerAshpit (five SlotTakeOnly at 44 + 18i, 27; nothing goes in, TileEntityMachineBase.isItemValidForSlot), GUIAshpit 176x168 (gui_ashpit.png), RenderAshpit (heater_oven's model with ashpit.png; case 2: 180, then -90; the Door slides 0.75 along z by doorAngle / 135 while a player has it open; InnerBurning while isFull, at its own light)",

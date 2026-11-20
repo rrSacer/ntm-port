@@ -154,6 +154,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Rbmk(c) => Some(&mut **c),
         Data::BrickFurnace(f) => Some(f),
         Data::KeyForge(f) => Some(f),
+        Data::Cabinet(c) => Some(c),
         Data::Funnel(f) => Some(f),
         Data::Autocrafter(a) => Some(&mut **a),
         Data::Radiolysis(r) => Some(&mut **r),
@@ -234,6 +235,8 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_fluidtank", Layout::Native),
     ("ntm:machine_orbus", Layout::Native),
     ("ntm:machine_keyforge", Layout::Native),
+    // The filing cabinet: eight slots a hand reaches (`crate::cabinet`).
+    ("ntm:filing_cabinet", Layout::Native),
     ("ntm:machine_funnel", Layout::Native),
     // ContainerAutocrafter: 0-8 the template, 9 its result, 10-18 the inputs, 19 the output, 20 the battery.
     ("ntm:machine_autocrafter", Layout::Native),
@@ -1476,6 +1479,25 @@ mod tests {
         let now = totals([Some(Stack::new("a", 1)), Some(Stack::new("b", 2))].iter());
         apply_delta(&mut list, &last, &now);
         assert_eq!(list, vec![("a".to_string(), 7), ("b".to_string(), 2)]);
+    }
+
+    /// A block in `SLOTTED` whose registry entry builds a machine with no slots would have the engine's slots written over
+    /// with nothing (`machine_output` of a machine that is not `Slotted`): a block listed here and still `Inert` in the
+    /// registry (a second entry, an old one, wins) loses every item put in it.
+    #[test]
+    fn every_slotted_block_builds_a_slotted_machine() {
+        let mut wrong = Vec::new();
+        for (block, layout) in SLOTTED {
+            if !matches!(layout, Layout::Native) {
+                continue;
+            }
+            let Some(spec) = crate::registry::spec(block) else { continue };
+            let mut m = crate::machine::Machine::new(spec.kind, block, Some("north".into()));
+            if slotted(&mut m.data).is_none() {
+                wrong.push(format!("{block}: kind {:?} builds a machine that is not Slotted", spec.kind));
+            }
+        }
+        assert!(wrong.is_empty(), "{}", wrong.join("\n"));
     }
 
     /// The P2 of the Onda 2 integration's review: the restore takes the block entity's slots for every machine whose record

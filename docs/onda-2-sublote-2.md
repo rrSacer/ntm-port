@@ -17,7 +17,7 @@ poluição, mundo), lidas por varredura e **a confirmar máquina a máquina** na
 
 | O quê | Por quê |
 | --- | --- |
-| 5 blocos de teste e decoração: `event_tester`, `obj_tester`, `deco_emitter`, `part_emitter`, `filing_cabinet` | Não são máquinas industriais; sem operação a provar. |
+| 4 blocos de teste e decoração: `event_tester`, `obj_tester`, `deco_emitter`, `part_emitter` | Não são máquinas industriais; sem operação a provar. (O `filing_cabinet` saiu daqui: guarda itens, `docs/content-cabinet.md`.) |
 | 16 portas e escotilhas K3 (mais `fan` e `decon`): `vault_door`, `blast_door`, `sliding_blast_door`, `fire_door`, `transition_seal`, `silo_hatch`, `silo_hatch_large`, `secure_access_door`, `large_vehicle_door`, `qe_containment`, `qe_sliding_door`, `round_airlock_door`, `sliding_seal_door`, `water_door`, `cargo_door`, `seal_hatch` (e `fan`, `decon`; `machine_transformer` e os pilones também não são deste sublote) | São a família das portas (`BlockDoorGeneric`, `BlastDoor`, `BlockHatch`) e dos ventiladores; têm frente própria (`front-doors`) e não têm receita nem GUI de máquina. `machine_transformer` e os pilones nem aparecem no backlog. |
 
 ## Grupo A: as cinco que o sublote 1 deixou, travadas por infraestrutura
