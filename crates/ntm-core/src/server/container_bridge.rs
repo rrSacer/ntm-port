@@ -1478,6 +1478,48 @@ mod tests {
         assert_eq!(list, vec![("a".to_string(), 7), ("b".to_string(), 2)]);
     }
 
+    /// The engine trims the empty slots at the end of a block entity when it loads one (`decode_mod_block_entity`), so a
+    /// machine whose items are in its first slots comes back from a reopened world with fewer slots than its container has,
+    /// and the bridge gives it those. No machine may index past them: each one is stepped with every shorter list.
+    #[test]
+    fn no_slotted_machine_panics_on_the_slots_a_loaded_world_gives_back() {
+        let mut panicked = Vec::new();
+        for (block, layout) in SLOTTED {
+            if !matches!(layout, Layout::Native) {
+                continue;
+            }
+            let Some(spec) = crate::registry::spec(block) else { continue };
+            let full = crate::native::container(block).map_or(0, |c| c.slots);
+            // A trimmed list ends with an item: at least one slot, and short of the container's count.
+            for len in 1..full {
+                let mut m = crate::machine::Machine::new(spec.kind, block, Some("north".into()));
+                if slotted(&mut m.data).is_none() {
+                    continue;
+                }
+                let mut slots: Slots = vec![None; len];
+                if let Some(last) = slots.last_mut() {
+                    *last = Some(Stack::new("minecraft:stick", 1));
+                }
+                let ok = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    let n = slotted(&mut m.data).expect("checked");
+                    *n.slots_mut() = slots;
+                    n.sync_in();
+                    let _ = n.screen_data();
+                    let _ = n.save_state();
+                    n.sync_out();
+                    for _ in 0..3 {
+                        m.logic_mut().tick();
+                    }
+                }));
+                if ok.is_err() {
+                    panicked.push(format!("{block} with {len} of {full} slots"));
+                    break;
+                }
+            }
+        }
+        assert!(panicked.is_empty(), "{} machines panic:\n{}", panicked.len(), panicked.join("\n"));
+    }
+
     /// The P2 of the Onda 2 integration's review: the restore takes the block entity's slots for every machine whose record
     /// has none, so each machine's `slots_recorded` must say what its own JSON does (the old default, true, left every
     /// `#[serde(skip)]` machine with empty slots written over its block entity's).
