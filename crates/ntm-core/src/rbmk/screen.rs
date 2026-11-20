@@ -116,6 +116,10 @@ pub enum Pending {
     Groups([Option<u8>; 6]),
     Compress(u8),
     Screens([u8; 6], [Option<Vec<i32>>; 6]),
+    /// A console's new target (the RBMK tool's `setTarget`): the last one wins.
+    Link([i32; 3]),
+    /// A console's quarter turns (the screwdriver's `rotate`), composed mod 4.
+    Rotate(u8),
 }
 
 fn group_index(g: Option<u8>) -> usize {
@@ -171,6 +175,14 @@ pub fn coalesce(queue: &mut Vec<Pending>, next: Pending) {
             }
             None => queue.push(Pending::Screens(toggles, columns)),
         },
+        Pending::Link(at) => {
+            queue.retain(|p| !matches!(p, Pending::Link(_)));
+            queue.push(Pending::Link(at));
+        }
+        Pending::Rotate(n) => match queue.iter_mut().find_map(|p| if let Pending::Rotate(m) = p { Some(m) } else { None }) {
+            Some(m) => *m = (*m + n) % 4,
+            None => queue.push(Pending::Rotate(n % 4)),
+        },
     }
 }
 
@@ -182,16 +194,25 @@ pub fn console_pending(before: &crate::rbmk::console::ConsoleState, after: &crat
     (toggles.iter().any(|t| *t != 0) || columns.iter().any(Option::is_some)).then_some(Pending::Screens(toggles, columns))
 }
 
-/// A console's waiting screens applied in its transaction.
+/// A console's waiting screens, target or turns applied in its transaction.
 pub fn apply_console(console: &mut crate::rbmk::console::ConsoleState, pending: &Pending) {
-    if let Pending::Screens(toggles, columns) = pending {
-        for i in 0..6 {
-            let s = &mut console.screens[i];
-            s.kind = (s.kind + toggles[i]) % crate::rbmk::console::SCREEN_TYPES;
-            if let Some(c) = &columns[i] {
-                s.columns = c.clone();
+    match pending {
+        Pending::Screens(toggles, columns) => {
+            for i in 0..6 {
+                let s = &mut console.screens[i];
+                s.kind = (s.kind + toggles[i]) % crate::rbmk::console::SCREEN_TYPES;
+                if let Some(c) = &columns[i] {
+                    s.columns = c.clone();
+                }
             }
         }
+        Pending::Link(at) => console.target = *at,
+        Pending::Rotate(n) => {
+            for _ in 0..*n {
+                crate::rbmk::console::rotate(console);
+            }
+        }
+        _ => {}
     }
 }
 
@@ -211,7 +232,7 @@ pub fn apply(block: &str, column: &mut RbmkColumn, pending: &Pending) {
                 column.button(0);
             }
         }
-        Pending::Screens(..) => {}
+        Pending::Screens(..) | Pending::Link(_) | Pending::Rotate(_) => {}
     }
 }
 

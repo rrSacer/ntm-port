@@ -60,21 +60,27 @@ impl Server {
             return Err(Refusal::Invalid(format!("{} takes no command", m.block)));
         }
         // Into the column's queue: one of each kind (T06 review P3(a)), what the commands in order would do.
-        let mut queue: Vec<crate::rbmk::screen::Pending> = Vec::new();
+        for p in crate::rbmk::screen::pending_of(&m.block, &cmd.fields) {
+            self.queue_pending(&key, p);
+        }
+        Ok(())
+    }
+
+    /// `p` into the queue of the machine at `key`, composed with what waits there, guarded by its generation now.
+    fn queue_pending(&mut self, key: &Key, p: crate::rbmk::screen::Pending) {
+        let Some(target) = self.ready.world.machines.get(key) else { return };
+        let guard = generation::CellGuard::machine(key, target);
+        let mut queue = Vec::new();
         self.ready.pending_commands.retain(|g| {
-            if g.value.0 == key {
+            if g.value.0 == *key {
                 queue.push(g.value.1.clone());
                 false
             } else {
                 true
             }
         });
-        for p in crate::rbmk::screen::pending_of(&m.block, &cmd.fields) {
-            crate::rbmk::screen::coalesce(&mut queue, p);
-        }
-        let guard = generation::CellGuard::machine(&key, &m);
+        crate::rbmk::screen::coalesce(&mut queue, p);
         self.ready.pending_commands.extend(queue.into_iter().map(|p| generation::Guarded { guard: guard.clone(), value: (key.clone(), p) }));
-        Ok(())
     }
 
     /// A console's command (T10, `TileEntityRBMKConsole.receiveControl`): refused whole on what the Java would throw on
@@ -114,21 +120,31 @@ impl Server {
             waiting.push((ck, p));
         }
         for (k, p) in waiting {
-            let Some(target) = self.ready.world.machines.get(&k).cloned() else { continue };
-            let mut queue: Vec<Pending> = Vec::new();
-            self.ready.pending_commands.retain(|g| {
-                if g.value.0 == k {
-                    queue.push(g.value.1.clone());
-                    false
-                } else {
-                    true
-                }
-            });
-            crate::rbmk::screen::coalesce(&mut queue, p);
-            let guard = generation::CellGuard::machine(&k, &target);
-            self.ready.pending_commands.extend(queue.into_iter().map(|p| generation::Guarded { guard: guard.clone(), value: (k.clone(), p) }));
+            self.queue_pending(&k, p);
         }
         Ok(())
+    }
+
+    /// The RBMK tool used on a console with a column linked (`ItemRBMKTool.onItemUse` → `setTarget`): the console's new
+    /// target waits for its next transaction. False when `core` is no console.
+    pub fn native_rbmk_console_link(&mut self, dim: &str, core: Pos, target: Pos) -> bool {
+        self.console_edit(dim, core, crate::rbmk::screen::Pending::Link(target))
+    }
+
+    /// A screwdriver on a console (`RBMKConsole.onScrew` → `rotate`): a quarter turn of its window at its next
+    /// transaction. False when `core` is no console.
+    pub fn native_rbmk_console_rotate(&mut self, dim: &str, core: Pos) -> bool {
+        self.console_edit(dim, core, crate::rbmk::screen::Pending::Rotate(1))
+    }
+
+    fn console_edit(&mut self, dim: &str, core: Pos, p: crate::rbmk::screen::Pending) -> bool {
+        let key = (dim.to_string(), core);
+        let Some(m) = self.ready.world.machines.get(&key) else { return false };
+        if !matches!(m.data, Data::RbmkConsole(_)) || !self.model_current(&key, m) || self.ready.broken.contains_key(&key) {
+            return false;
+        }
+        self.queue_pending(&key, p);
+        true
     }
 
     /// The player left: their session ends.
