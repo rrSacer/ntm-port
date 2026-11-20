@@ -1238,7 +1238,7 @@ mod tests {
         store[11] = Some(rod("Lot 7"));
         let mut want: Slots = vec![None; 12];
         want[10] = view(&store[11]);
-        let after = publish(&[store.clone()], &[want]);
+        let after = publish(std::slice::from_ref(&store), &[want]);
         assert_eq!(after[0][10].as_ref().map(|f| f.name), Some("Lot 7"));
         // The crane's rod into a channel: two commits.
         let (crane, channel) = (vec![Some(rod("Lot 8"))], vec![None]);
@@ -1246,14 +1246,14 @@ mod tests {
         assert_eq!((after[0][0].clone(), after[1][0].as_ref().map(|f| f.name)), (None, Some("Lot 8")));
         // Two equal stacks moving: each slot gets one of them, none twice.
         let two = vec![Some(rod("A")), None, Some(rod("B"))];
-        let after = publish(&[two.clone()], &[vec![None, view(&two[0]), view(&two[2])]]);
+        let after = publish(std::slice::from_ref(&two), &[vec![None, view(&two[0]), view(&two[2])]]);
         let mut names: Vec<&str> = after[0].iter().flatten().map(|f| f.name).collect();
         names.sort();
         assert_eq!(names, vec!["A", "B"]);
         // One stack two slots want (the second copy is new, made by the logic): one of them gets it, the other the
         // bridge's.
         let one = vec![Some(rod("C")), None, None];
-        let after = publish(&[one.clone()], &[vec![None, view(&one[0]), view(&one[0])]]);
+        let after = publish(std::slice::from_ref(&one), &[vec![None, view(&one[0]), view(&one[0])]]);
         let mut names: Vec<&str> = after[0].iter().flatten().map(|f| f.name).collect();
         names.sort();
         assert_eq!(names, vec!["", "C"]);
@@ -1270,7 +1270,7 @@ mod tests {
         // Part of a stack into an empty slot (`splitStack` copies its tag): the part has the stack's components; a
         // stack whose count did not go down gives none.
         let five = vec![Some(Full { stack: Stack::new("minecraft:coal", 5), name: "Fuel" }), None];
-        let after = publish(&[five.clone()], &[vec![Some(Stack::new("minecraft:coal", 3)), Some(Stack::new("minecraft:coal", 2))]]);
+        let after = publish(std::slice::from_ref(&five), &[vec![Some(Stack::new("minecraft:coal", 3)), Some(Stack::new("minecraft:coal", 2))]]);
         assert_eq!(after[0].iter().map(|f| f.as_ref().map(|f| (f.name, f.stack.count))).collect::<Vec<_>>(), vec![Some(("Fuel", 3)), Some(("Fuel", 2))]);
         let after = publish(&[five], &[vec![Some(Stack::new("minecraft:coal", 5)), Some(Stack::new("minecraft:coal", 2))]]);
         assert_eq!(after[0][1].as_ref().map(|f| f.name), Some(""), "nothing went out of the first: the second is new");
