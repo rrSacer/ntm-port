@@ -1478,6 +1478,17 @@ impl Host<'_, '_> {
         // A transfer's player side: compared whole and published by the engine, or refused with nothing changed. The
         // machines' side passed every check above and nothing below can fail, so both land in this callback or neither.
         if let Some(player)=player && !player(self.game){return false;}
+        // The stacks that leave their slots in these commits (a storage's queue moving a rod down, a crane setting
+        // one down): a stack that arrives in another slot is the very one that left, every component kept
+        // (`ItemStack` moved, not rebuilt from the bridge's id, count and custom data).
+        let mut leaving:Vec<(Stack,ItemStack)>=Vec::new();
+        for c in commits {
+            let gone=self.entity(&c.dim,c.pos,|e|e.items.iter().zip(&c.desired).filter_map(|(cell,want)|{
+                let was=stack(cell)?;
+                (want.as_ref()!=Some(&was)).then(||(was,cell.clone().expect("a stack")))
+            }).collect::<Vec<_>>()).unwrap_or_default();
+            leaving.extend(gone);
+        }
         let mut notify=Vec::new();
         let mut signals=Vec::new();
         for (c,synced) in commits.iter().zip(prepared) {
@@ -1493,7 +1504,13 @@ impl Host<'_, '_> {
                     // A copy of a player's stack keeps its every component (`ItemStack.copy()`).
                     let template=templates.iter().find(|t|t.0==c.dim&&t.1==c.pos&&t.2==i).map(|t|t.3.clone());
                     let old=cell.take();
-                    *cell=item(new.as_ref(),template.or(old));
+                    // A different item arriving: the stack that left with its value, if one did.
+                    let moved=match (new,&old) {
+                        (Some(n),Some(o)) if *o.item==n.id&&o.damage==n.damage=>None,
+                        (Some(n),_)=>leaving.iter().position(|(was,_)|was==n).map(|k|leaving.swap_remove(k).1),
+                        _=>None,
+                    };
+                    *cell=item(new.as_ref(),template.or(moved).or(old));
                 }
                 e.data=c.data.clone();
                 e.nbt.insert(JavaString::from(DATA),Tag::IntArray(c.data.clone()));

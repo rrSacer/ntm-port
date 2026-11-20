@@ -121,13 +121,13 @@ def prepare(g):
     if os.environ.get('NTM_T11_PROBE') == '1':
         # Diagnosis: an arrow held a second at the console; where the player and the crane are before and after.
         stand(g, core, facing)
-        probe = {'before': [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data')]}
+        probe = {'before': [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data'), items(g, core)]}
         g.ctl('key key.keyboard.left down')
         time.sleep(1)
-        probe['held'] = [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data')]
+        probe['held'] = [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data'), items(g, core)]
         g.ctl('key key.keyboard.left up')
         time.sleep(.5)
-        probe['after'] = [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data')]
+        probe['after'] = [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data'), items(g, core)]
         g.evidence['probe'] = probe
         g.save()
     g.command('tp @s 24.5 101 1.5 0 0')
