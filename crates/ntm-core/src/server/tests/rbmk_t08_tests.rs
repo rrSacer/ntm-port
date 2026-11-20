@@ -261,6 +261,9 @@ fn a_loader_moves_the_bottom_port() {
         let at = [0, Y, 0];
         g.place(at, &column("rbmk_boiler"));
         g.place(loader_at, "ntm:rbmk_loader[facing=north,honey_level=0]");
+        // In the game a loader is a plain block, never a machine (`machine_block`: an inert kind): the ports read the
+        // world's block.
+        g.ready().world.machines.remove(&(OW.to_string(), loader_at));
         let src = [side_duct[0] + 1, side_duct[1], side_duct[2]];
         // A duct at the core's side: never a port.
         let beside = [-2, Y, 0];

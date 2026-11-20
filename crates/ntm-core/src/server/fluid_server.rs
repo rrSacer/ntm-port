@@ -39,12 +39,12 @@ struct Rebuild {
 pub const REBUILD_CELLS_PER_TICK: usize = 600;
 
 impl Server {
-    pub(super) fn fluids_tick(&mut self) {
+    pub(super) fn fluids_tick(&mut self, host: &mut impl ServerHost) {
         // The networks are checked for changes every 10 ticks (a duct put
         // down or retyped joins within half a second); between checks the
         // cached ones move fluid.
         if self.tick.is_multiple_of(10) || self.fluidnet.sig == 0 && self.fluidnet.pending.is_none() {
-            self.fluid_shape();
+            self.fluid_shape(host);
         }
         self.fluid_rebuild_step();
         let r = &mut self.ready;
@@ -69,10 +69,22 @@ impl Server {
     /// What shapes the networks (loaded ducts and their type, loaded fluid
     /// machines and the types they hold), hashed without building strings;
     /// the networks are rebuilt when it changed.
-    fn fluid_shape(&mut self) {
-        // RBMK columns' ports (T08): where the loaders stand, and each dimension's `getColumnHeight` (the dial, as the
-        // Java's `getPorts*` read it, not the column's own height: D5).
-        let loaders: BTreeSet<Key> = self.ready.world.machines.iter().filter(|(_, m)| m.block == crate::rbmk::persist::LOADER).map(|(k, _)| k.clone()).collect();
+    fn fluid_shape(&mut self, host: &mut impl ServerHost) {
+        // RBMK columns' ports (T08): where the loaders stand (`worldObj.getBlock` under the core: a loader is a plain
+        // block, no machine; a cell not loaded is no loader until it is), and each dimension's `getColumnHeight` (the
+        // dial, as the Java's `getPorts*` read it, not the column's own height: D5).
+        let mut loaders: BTreeSet<Key> = BTreeSet::new();
+        for (k, m) in &self.ready.world.machines {
+            if crate::rbmk::persist::piped_types(&m.block).is_none() || self.ready.loaded.get(k) != Some(&true) {
+                continue;
+            }
+            for dy in [1, 2] {
+                let at = [k.1[0], k.1[1] - dy, k.1[2]];
+                if host.get_block(&k.0, at).is_some_and(|b| blockstate::id_of(&b) == crate::rbmk::persist::LOADER) {
+                    loaders.insert((k.0.clone(), at));
+                }
+            }
+        }
         let piped_dims: BTreeSet<String> = self.ready.world.machines.iter().filter(|(_, m)| crate::rbmk::persist::piped_types(&m.block).is_some()).map(|(k, _)| k.0.clone()).collect();
         let heights: BTreeMap<String, i32> = piped_dims.into_iter().map(|d| {
             let h = self.rbmk_dials_peek(&d, "KEY_COLUMN_HEIGHT").column_height;
