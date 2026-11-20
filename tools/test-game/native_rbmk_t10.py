@@ -294,8 +294,33 @@ class Proof:
         kept = self.count(GUEST, 'minecraft:cobblestone')
         self.check('the_screen_copies_no_inventory', kept == 7, kept)
 
+    def auto_curve(self):
+        """The automatic rod's own screen (T07's): a curve whose target at 20 °C is 0.6, for AZ-5 to leave alone."""
+        g = self.guest
+        g.close()
+        p = RODS['auto']
+        self.host.command(f'tp {GUEST} {p[0] + .5} {Y} {p[2] - 2.5} 0 0')
+        time.sleep(.6)
+        g.ctl(f'interact {p[0]} {p[1]} {p[2]} north')
+        time.sleep(1.5)
+        w = next(w for w in g.ctl('ui').get('widgets', []) if w.get('id') == 'slot-9')
+        ox, oy = w['bounds'][0] - 8, w['bounds'][1] - 104
+        for i, text in enumerate(['10', '60', '500', '100']):
+            g.ctl(f'click-at {ox + 32} {oy + 29 + 11 * i}')
+            time.sleep(.4)
+            g.ctl('key key.keyboard.end tap')
+            for _ in range(5):
+                g.ctl('key backspace tap')
+            g.ctl(f'type {text}')
+        g.ctl(f'click-at {ox + 40} {oy + 75}')
+        time.sleep(.6)
+        g.close()
+        s = self.wait(lambda: rod(self.host, p), lambda s: s.get('target_level') == 0.6)
+        self.check('the_automatic_rod_has_a_target', s.get('target_level') == 0.6, s)
+
     def az5(self):
         """The rods out (100 % saved above); then AZ-5 from the guest: the lid, the button."""
+        self.auto_curve()
         s = self.wait(lambda: rod(self.host, RODS['moderated']), lambda s: s.get('level', 0) >= 0.2, 120)
         g = self.open(GUEST)
         auto_before = rod(self.host, RODS['auto'])
@@ -309,7 +334,7 @@ class Proof:
         # The start is where each was then (between the reading before and the press).
         starts = all(got[k].get('target_level') == 0.0 and got[k].get('starting_level', -1) >= before[k].get('level', 0) - 0.03 for k in MANUAL)
         self.check('az5_drops_the_three_manual_rods', starts, [before, got, s])
-        self.check('az5_leaves_the_automatic_rod', auto.get('target_level') == auto_before.get('target_level'), [auto_before, auto])
+        self.check('az5_leaves_the_automatic_rod', auto.get('target_level') == auto_before.get('target_level') == 0.6, [auto_before, auto])
         time.sleep(2)
         later = rod(self.host, RODS['manual'])
         self.check('the_manual_rod_goes_down', later.get('level', 1) < got['manual'].get('level', 0) or later.get('level') == 0.0, [got['manual'], later])
