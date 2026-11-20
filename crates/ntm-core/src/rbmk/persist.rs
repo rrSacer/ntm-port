@@ -372,8 +372,11 @@ pub enum PipedKind {
     Cooler,
 }
 
+/// A tank as a constructor makes it: its type and maximum.
+pub type TankDef = (&'static str, i32);
+
 /// The tanks of a fresh boiler, heater or cooler (their constructors: types and maxima), none for the other columns.
-pub fn piped_types(block: &str) -> Option<((&'static str, i32), (&'static str, i32))> {
+pub fn piped_types(block: &str) -> Option<(TankDef, TankDef)> {
     match block {
         "ntm:rbmk_boiler" => Some((("WATER", 10_000), ("STEAM", 1_000_000))),
         "ntm:rbmk_heater" => Some((("COOLANT", 16_000), ("COOLANT_HOT", 16_000))),
