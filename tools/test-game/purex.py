@@ -18,7 +18,7 @@ from pathlib import Path
 
 game = Path(sys.argv[1])
 steps = sys.argv[2:] or ['pwr', 'trocar']
-CTL = ['/home/sacer/Workspace/horizon-visual/target/release/horizon-ctl', '--socket', str(game / 'control.sock')]
+CTL = ['/home/sacer/Projects/horizon-ntm/horizon-visual/target/release/horizon-ctl', '--socket', str(game / 'control.sock')]
 ev_path = game / 'purex-evidence.json'
 evidence = json.loads(ev_path.read_text()) if ev_path.exists() else {}
 import os

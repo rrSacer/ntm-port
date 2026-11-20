@@ -8,7 +8,7 @@ TITANIUM_TETRACHLORIDE declara 156 explicitamente e o extrator confere).
 import json, re, sys
 from pathlib import Path
 
-src = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/sacer/Workspace/ntm-src')
+src = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/sacer/Projects/horizon-ntm/ntm-src')
 java = src / 'src/main/java/com/hbm/inventory/fluid/Fluids.java'
 out = Path(__file__).resolve().parents[2] / 'crates/ntm-core/data/fluids.json'
 

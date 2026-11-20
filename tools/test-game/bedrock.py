@@ -103,7 +103,7 @@ from pathlib import Path
 
 game = Path(sys.argv[1])
 steps = [a for a in sys.argv[2:] if not a.startswith('sem-')] or ['escavar', 'slop', 'centrifugar', 'craftar']
-CTL = ['/home/sacer/Workspace/horizon-visual/target/release/horizon-ctl', '--socket', str(game / 'control.sock')]
+CTL = ['/home/sacer/Projects/horizon-ntm/horizon-visual/target/release/horizon-ctl', '--socket', str(game / 'control.sock')]
 ev_path = game / 'bedrock-evidence.json'
 evidence = json.loads(ev_path.read_text()) if ev_path.exists() else {}
 # The deposit's chunk: x 2912..2927, z −1888..−1873. The excavator's core
