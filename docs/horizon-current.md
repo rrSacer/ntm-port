@@ -1745,23 +1745,14 @@ mundo, se não couber, vai para o T19.
   `en_US.lang` (com os códigos de cor) e os fluidos o nome do port (`fluid::label`).
 - **Relógio do AZ-5**: os 3 s são do cliente (`System.currentTimeMillis`), por tela aberta, como no Java; outra tela ou
   outro jogador não esperam.
-- **Hóspede de LAN e célula de dummy** (limite de multibloco, ticket **INFRA-G**, prioridade média, decisão do
-  coordenador): o uso de um hóspede numa célula de dummy do console não abre menu nenhum, sem rejeição registrada; pelo
-  núcleo abre; o anfitrião abre pelo dummy. Provavelmente vale para todo multibloco do NTM. Evidência: a prova J
-  registra a tentativa (`guest_through_the_dummy`: falso nas duas aberturas) e abre pelo núcleo. A investigar no motor
-  (congelado até a decisão): o caminho do clique do hóspede até o menu do dummy, comparado com o do anfitrião — o
-  `UseItemOn` que o cliente do hóspede manda (posição, face, cursor no contorno do multibloco); no anfitrião,
-  `lan_actions` (`may_reach_block`, a checagem do cursor com o `multiblock_outline`, se a rejeição é só um
-  `HostEvent::Warn` que não chega ao log) e depois `as_guest` → `use_item` → `use_hand` → `machine_cell_core` →
-  `mod_menu_at(core)` → `open_menu`.
+- **Hóspede de LAN e célula de dummy: falso alarme** (o INFRA-G foi fechado). As primeiras provas J punham o anfitrião
+  no ponto da frente e depois o hóspede no mesmo ponto: o olho do hóspede ficava dentro da caixa do anfitrião, a mira
+  pegava o jogador (entidade, distância 0) e o cliente não mandava o uso do bloco. Com o anfitrião afastado, o hóspede
+  abre pelo dummy (console, eletrolisador, montagem, planta química). Ver `docs/horizon-current.md`, seção INFRA-G, da
+  branch `infra-g` (`30143e18`, `39b3aa18`). Os roteiros J do T07, T10 e T11 agora afastam o outro jogador antes de
+  usar um ponto.
 
-  Checagem da revisão do T10 (P3-1, `tools/test-game/native_infra_g.py`, `evidence/infra-g/rbmk-t05-urvkmi9s/`):
-  em quatro multiblocos (console do RBMK, eletrolisador, máquina de montagem, planta química), o anfitrião abre pela
-  célula da frente (um dummy) e o hóspede não abre em nenhum; o hóspede só abre o console pelo núcleo, porque os
-  núcleos dos outros três ficam cercados de dummies (nenhuma face visível): **nesses, um hóspede de LAN não abre o
-  menu de jeito nenhum**. O limite é de todo multibloco do NTM, não do console.
-
-Decisões do coordenador na entrega (20/11/2026): o achado do hóspede vira o INFRA-G; os demais limites (render e textos
+Decisões do coordenador na entrega (20/11/2026): os limites (render e textos
 das telas para o T19, `craneIndicator`, textos em inglês, relógio do AZ-5 por tela aberta) aceitos.
 
 ### Validação
@@ -1779,9 +1770,9 @@ chave de fenda), `ddec8b04` (glue: a tela), `447417d4` (glue: a sessão da tela 
 | U: mutações | Servidor 8/8 (`mutations-console-server.log`; a cadência de 10 ticks sobreviveu na primeira rodada, o teste passou a olhar o tick da varredura), tela 16/16 (`mutations-console-gui.log`), ligação/empacotamento/vista/fluxo 10/10 (`mutations-console-2.log`; o canal moderado dito moderado sobreviveu, o teste do fluxo ganhou um canal moderado), núcleo puro 9/9 (`mutations-console.log`) |
 | J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py --script native_rbmk_t10.py --reopen`, `evidence/j/rbmk-t05-v73ljwdh/`) | **17/17 e 1/1 na reabertura**. O anfitrião põe o console à mão; agachado, a ferramenta guarda a coluna (`posX/Y/Z` 40/101/14) e o console toma o alvo. O anfitrião abre a tela pelo dummy. O hóspede, pela tela: "selecionar todas" e 100 → as três manuais (não a automática); duas colunas no mapa e 25; grupo verde com o botão direito; a tela 1 em temperatura com as duas colunas (112, 113); a caldeira escolhida vai a HOTSTEAM; 7 pedregulhos no inventário, 7 depois. A automática ganha 0,6 pela tela dela; AZ-5 (tampa, depois o botão): as três manuais a 0 a partir de onde estavam, a automática fica em 0,6, a manual desce. A chave de fenda gira o console (rotação 1). Reaberto: alvo, rotação, tela e alvos das barras como gravados. Capturas da tela em `guest/console-*.png`. Binário `7b4e9c49…`, pacote `4578ba4f…` (com a tela do console) |
 
-As rodadas 1–8 caíram por: o roteiro (o núcleo atrás do dummy; a sessão de teclado do campo), o hóspede que não abre
-pelo dummy (acima) e um defeito: a tela do console abria sem sessão nem snapshot (`menu_extra_data` só servia as
-barras), desenhava só a textura e não mandava nada (`447417d4`).
+As rodadas 1–8 caíram por: o roteiro (o núcleo atrás do dummy; a sessão de teclado do campo; o anfitrião parado no
+ponto do hóspede, o falso alarme acima) e um defeito: a tela do console abria sem sessão nem snapshot
+(`menu_extra_data` só servia as barras), desenhava só a textura e não mandava nada (`447417d4`).
 
 ## RBMK T11 — storage e guindaste (planejado, 20/11/2026)
 
