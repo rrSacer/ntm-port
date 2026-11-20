@@ -311,7 +311,7 @@ fn bare_caster(g: &mut Game) {
     put_machine(g, CASTER, &format!("{BLOCK}[facing=north,honey_level=0]"), slot::COUNT);
 }
 fn use_caster(g: &mut Game) -> bool {
-    g.server.native_caster_use(&mut g.sh, OW, CASTER, CASTER, "p1")
+    g.server.native_foundry_use(&mut g.sh, OW, CASTER, CASTER, "p1")
 }
 
 #[test]
@@ -386,5 +386,10 @@ fn only_a_mold_or_a_shovel_is_a_use_of_the_caster() {
     hands(&mut g, vec![None, None]);
     assert!(!use_caster(&mut g), "an empty hand opens the screen");
     assert_eq!(caster_model(&mut g).melt.amount, 10);
-    assert!(crate::server::caster_server::is_shovel("ntm:titanium_shovel") && !crate::server::caster_server::is_shovel("minecraft:iron_sword"));
+    assert!(crate::server::foundry_hand::is_shovel("ntm:titanium_shovel") && !crate::server::foundry_hand::is_shovel("minecraft:iron_sword"));
+    // The off hand does not act (the Java reads only the held item).
+    let off = HeldStack { encoded: "off".into(), stack: Stack::new("minecraft:iron_shovel", 1), plain: true };
+    g.world.borrow_mut().hands = Some(PlayerSlots { hand: Some(PlayerSlot::Offhand), inventory: vec![None, None], offhand: Some(off), ..Default::default() });
+    assert!(!use_caster(&mut g));
+    assert_eq!(caster_model(&mut g).melt.amount, 10);
 }

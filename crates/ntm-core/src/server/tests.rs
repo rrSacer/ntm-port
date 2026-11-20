@@ -709,6 +709,7 @@ mod blastfurnace_tests;
 mod foundry_tests;
 mod rotary_furnace_tests;
 mod strand_caster_tests;
+mod foundry_hand_tests;
 mod slot_items_tests;
 mod rbmk_tests;
 mod anvil_tests;
