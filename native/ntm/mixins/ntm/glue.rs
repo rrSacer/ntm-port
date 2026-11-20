@@ -1188,14 +1188,20 @@ fn arrived(server: &mut Server) {
 
 /// The machine block entities of `chunk` (all of the dimension when none) and the block each one's cell holds now. An
 /// entity over a cell that holds no machine block is the anomaly the log is for (vanilla's `LevelChunk` drops it as
-/// "Tried to load a block entity ... but failed"); with `NTM_TRACE_EFFECTS` every machine entity is told, as a trace.
-fn orphan_scan(game: &mut crate::game::Game<'_>, dim: &str, chunk: Option<[i32; 2]>, why: &str) {
+/// "Tried to load a block entity ... but failed"): that one is always logged, the scan of a loaded chunk being cheap (its
+/// machine entities only, without waking any); with `NTM_TRACE_EFFECTS` every machine entity is told, and the saves scan the
+/// whole dimension.
+fn orphan_scan(game: &crate::game::Game<'_>, dim: &str, chunk: Option<[i32; 2]>, why: &str) {
+    // `mods_near` lists the mod block entities by chunk (a radius of 0 at a chunk's middle is that chunk alone, an infinite one is
+    // all of them) and, unlike `iter_mut`, does not wake the sleeping block entities.
+    let (x, z, radius) = match chunk {
+        Some(c) => (f64::from(c[0] * 16 + 8), f64::from(c[1] * 16 + 8), 0.0),
+        None => (0.0, 0.0, f64::INFINITY),
+    };
+    let positions: Vec<(i32, i32, i32)> = game.world.block_entities.mods_near(x, z, radius).copied().collect();
     let mut found: Vec<([i32; 3], String, String)> = Vec::new();
-    for (pos, entity) in game.world.block_entities.iter_mut() {
-        if chunk.is_some_and(|c| pos.0 >> 4 != c[0] || pos.2 >> 4 != c[1]) {
-            continue;
-        }
-        let horizon_client::containers::BlockEntity::Mod(m) = entity else { continue };
+    for pos in positions {
+        let Some(horizon_client::containers::BlockEntity::Mod(m)) = game.world.block_entities.get(&pos) else { continue };
         if !is_machine(&m.id) {
             continue;
         }
