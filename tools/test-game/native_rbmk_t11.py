@@ -26,6 +26,10 @@ STORE = (42, Y, 14)
 # Where a player waits while the other works (out of the console's area and of every aim).
 PARK = (34.5, Y, 1.5)
 BLANK = (40, Y, 16)
+# A second storage, away from the crane's way: a stack with every component going down its queue.
+PROBE = (48, Y, 14)
+FULL = ('ntm:rbmk_fuel_ueu[custom_name=\'"Probe"\',lore=[\'"Line one"\',\'"Line two"\'],enchantments={levels:{"minecraft:unbreaking":3}},'
+        'damage=7,custom_data={hull:20.0d,core:20.0d,xenon:1.25d,yield:250000.0d,mark:"x"}]')
 ROD = 'ntm:rbmk_fuel_ueu[custom_data={hull:1200.0d,core:1300.0d,xenon:2.5d,yield:500000.0d},custom_name=\'"Lot 7"\']'
 
 
@@ -139,7 +143,7 @@ class Proof:
             g.close()
         # By hand: each column with its dummies up to its top, the cell the crane looks at (`setblock` places the core
         # alone, and the crane would see air there, as in the Java).
-        for p, id_ in ((BLANK, 'rbmk_blank'), (STORE, 'rbmk_storage'), (CHANNEL, 'rbmk_rod')):
+        for p, id_ in ((PROBE, 'rbmk_storage'), (BLANK, 'rbmk_blank'), (STORE, 'rbmk_storage'), (CHANNEL, 'rbmk_rod')):
             h.command(f'give {HOST} ntm:{id_} 1')
             h.command(f'tp {HOST} {p[0] + .5} {Y} {p[2] - 2.5} 0 0')
             time.sleep(.6)
@@ -290,8 +294,22 @@ class Proof:
         drops = ' '.join(self.host.command(f'data get entity @e[type=item,limit=1,sort=nearest,x={self.core[0]},y={self.core[1]},z={self.core[2]}] Item').get('chat', []))
         self.check('the_broken_console_drops_the_rod_whole', lot7(drops), drops)
 
+    def components(self):
+        """A stack with a name, lore, an enchantment, damage and custom data put in the probe storage's slot 9: two
+        passes of the queue later it is two slots down, every component as it was (bit for bit, the slot aside)."""
+        h = self.host
+        h.command(f'item replace block {PROBE[0]} {PROBE[1]} {PROBE[2]} container.9 with {FULL}')
+        time.sleep(.5)
+        before = re.sub(r'Slot: \d+b', 'Slot', items(h, PROBE))
+        moved = self.wait(lambda: items(h, PROBE), lambda t: 'Slot: 7b' in t, 10)
+        after = re.sub(r'Slot: \d+b', 'Slot', moved)
+        self.check('every_component_goes_down_the_queue', 'Slot: 7b' in moved and before == after and 'Probe' in before and 'Line two' in before
+                   and 'unbreaking' in before and 'damage' in before and 'mark' in before, {'before': before, 'after': moved})
+
     def run(self):
         self.setup()
+        self.host.evidence['phase'] = 'components'
+        self.components()
         self.host.evidence['phase'] = 'link'
         self.link()
         self.host.evidence['phase'] = 'carry'
