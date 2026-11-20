@@ -1192,6 +1192,8 @@ fn arrived(server: &mut Server) {
 /// machine entities only, without waking any); with `NTM_TRACE_EFFECTS` every machine entity is told, and the saves scan the
 /// whole dimension.
 fn orphan_scan(game: &crate::game::Game<'_>, dim: &str, chunk: Option<[i32; 2]>, why: &str) {
+    // (`mods_near` walks the engine's index of the chunks that have mod block entities, so a load costs a pass over that index, not O(1): the
+    // engine has no direct access to one chunk's.)
     // `mods_near` lists the mod block entities by chunk (a radius of 0 at a chunk's middle is that chunk alone, an infinite one is
     // all of them) and, unlike `iter_mut`, does not wake the sleeping block entities.
     let (x, z, radius) = match chunk {
