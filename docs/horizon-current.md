@@ -1842,6 +1842,11 @@ Consequência para as provas: um roteiro de hóspede deve tirar o anfitrião do 
 hóspede em outro ponto). A abertura pelo núcleo e o registro `guest_through_the_dummy` do `native_rbmk_t10.py` deixam de
 ser necessários; as provas de hóspede das ondas anteriores que abriram multiblocos pelo núcleo continuam válidas.
 
+**A branch de traços `infra-g-dbg` (`6b80f690c8`) não deve ser mesclada** (nem no pin, nem em outra branch do motor):
+ela só serve para repetir a medição. Os traços são `eprintln!` ligados por `HORIZON_TRACE_INFRA_G`, que consultam a
+variável de ambiente a cada clique, em caminhos quentes (`use_hand`, `remote_use_item_on`, o `UseItemOn` de
+`lan_actions`), e um deles chama `pick` de novo só para imprimir; não há correção nela, e o motor fica como está.
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
