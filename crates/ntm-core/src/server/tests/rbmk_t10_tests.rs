@@ -226,3 +226,20 @@ fn the_console_sees_the_fuel_and_its_flux() {
     assert_eq!(melting, rod.melting_point);
     assert!(enrichment > 0.0 && enrichment <= 1.0 && xenon >= 0.0 && hull >= 20.0 && core >= hull, "{enrichment} {xenon} {hull} {core}");
 }
+
+/// C: opening the console's screen (twice, as two players do) changes no machine and no hand; only the next tick moves
+/// the reactor.
+#[test]
+fn opening_the_console_moves_nothing() {
+    let mut g = game();
+    reactor(&mut g);
+    link(&mut g, TARGET, 0);
+    g.run(11);
+    let machines = g.ready().world.machines.clone();
+    let hands = g.world.borrow().hands.clone();
+    assert!(g.server.native_screen_open("p1", OW, CONSOLE).is_some());
+    assert!(g.server.native_screen_open("p2", OW, CONSOLE).is_some());
+    assert_eq!(g.ready().world.machines, machines, "no machine stepped or changed");
+    assert_eq!(g.world.borrow().hands, hands);
+    assert!(g.ready().pending_commands.is_empty(), "nothing waits");
+}
