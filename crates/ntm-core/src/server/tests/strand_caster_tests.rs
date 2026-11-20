@@ -3,7 +3,6 @@
 //! excess through the ledger (F5) and of a broken machine (D4), and its fluids.
 use super::*;
 use crate::fluidbox::Mode;
-use crate::rotary_furnace::POUR;
 use crate::server::container_bridge::{Slots, Stack};
 use crate::strand_caster::{BLOCK, StrandCaster, slot};
 
@@ -69,7 +68,7 @@ fn a_rotary_jet_on_a_funnel_cell_fills_the_caster_and_it_casts_the_batch() {
     caster(&mut g, "ntm:mold__ingot");
     rotary(&mut g, 720);
     g.run(1);
-    assert_eq!(rotary_output(&mut g), 720 - POUR, "it pours 72 a tick");
+    assert_eq!(rotary_output(&mut g), 720 - 72, "it pours 72 a tick");
     for _ in 0..40 {
         g.run(1);
         let (furnace, pool, ingots) = (rotary_output(&mut g), caster_model(&mut g).melt.amount, outputs(&g));

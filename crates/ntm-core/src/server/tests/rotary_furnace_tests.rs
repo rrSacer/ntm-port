@@ -5,7 +5,7 @@
 //! mandatory R8 (molten `output` lost on break).
 use super::*;
 use crate::fluidbox::Mode;
-use crate::rotary_furnace::{BLOCK, POUR, RotaryFurnace, slot};
+use crate::rotary_furnace::{BLOCK, RotaryFurnace, slot};
 use crate::server::container_bridge::{Slots, Stack, world_cell};
 
 const CORE: Pos = [0, 70, 0];
@@ -164,7 +164,7 @@ fn facing_east_pours_north_into_basin_and_casts_block() {
     }
     g.run(1);
     let first_poured = 648 - furnace(&mut g, CORE).output.map_or(0, |o| o.1);
-    assert_eq!(first_poured, POUR, "taxa de vazamento deve ser {POUR} quanta/tick");
+    assert_eq!(first_poured, 72, "taxa de vazamento deve ser 72 quanta/tick (INGOT.q(1))");
 
     g.run(230);
     assert_eq!(furnace(&mut g, CORE).output, None);
