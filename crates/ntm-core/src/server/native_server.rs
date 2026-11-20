@@ -150,6 +150,9 @@ impl Server {
         let mut frozen=BTreeMap::new();
         for k in &self.ready.frozen{if let Some(m)=self.ready.world.machines.remove(k){frozen.insert(k.clone(),m);}}
         if !frozen.is_empty(){self.ready.topo_dirty=true;}
+        // The slag scheduled last tick flows (`scheduleBlockUpdate(.., 1)`) before the machines' looks are written, so that a
+        // block that went is not drawn again by a look queued for it; the pours of this tick schedule it for the next.
+        self.slag_flow(host);
         self.heat_tick();
         phases.mark("heat");
         self.solar_tick(host);
@@ -333,6 +336,10 @@ impl Server {
         }
         if r.world.generations.get(&key)!=Some(&m.generation){r.world.generations.insert(key.clone(),m.generation);}
         for cell in container_bridge::energy_port_cells(&m.block,pos,m.facing.as_deref()) { r.native_scan.push_back((dim.to_string(),cell)); }
+        // A slag the world was saved with empty (the step that emptied it ran, its removal did not) goes on the next tick.
+        if matches!(&m.data, crate::machine::Data::Slag(s) if s.melt.amount == 0) {
+            r.slag_active.insert(key.clone());
+        }
         r.world.machines.insert(key.clone(), m);
         r.seen.insert(key.clone());
         r.topo_dirty = true;

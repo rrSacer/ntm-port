@@ -36,13 +36,22 @@ fn pour_setup(mat: &str, q: u32) -> Game {
     g
 }
 
-/// The slag block at `at`, with `q` quanta of `mat`, in the world and in the model.
+/// The slag block at `at`, with `q` quanta of `mat`, in the world and in the model, not scheduled to flow.
 fn put_slag(g: &mut Game, at: Pos, mat: &str, q: u32) {
-    put(g, at, "ntm:slag[layer=8]");
+    g.place(at, "ntm:slag[layer=8]");
+    g.world.borrow_mut().engine.insert((OW.to_string(), at), (Vec::new(), Vec::new()));
+    g.run(2);
     edit(g, at, |d| {
         let Data::Slag(s) = d else { panic!() };
         *s = Slag::of(mat, q);
     });
+}
+
+/// Stone at the four sides of `at`: nothing of a slag there can spread.
+fn walls(g: &mut Game, at: Pos) {
+    for (dx, dz) in [(0, -1), (0, 1), (1, 0), (-1, 0)] {
+        g.place([at[0] + dx, at[1], at[2] + dz], "minecraft:stone");
+    }
 }
 
 fn slag_at(g: &mut Game, at: Pos) -> Option<Slag> {
@@ -155,6 +164,8 @@ fn the_ray_passes_cave_air() {
 fn what_the_block_hit_does_not_take_goes_into_a_new_block_above_it() {
     // The same material, nearly full: it takes what it can, the rest goes above (`transfer`, then `above`).
     let mut g = pour_setup("iron", 100);
+    walls(&mut g, FIRST);
+    walls(&mut g, SECOND);
     put_slag(&mut g, FIRST, "iron", SLAG_CAP - 30);
     g.run(40);
     assert_eq!(slag_at(&mut g, FIRST).unwrap().melt.amount, SLAG_CAP);
@@ -167,7 +178,9 @@ fn what_the_block_hit_does_not_take_goes_into_a_new_block_above_it() {
 #[test]
 fn what_no_block_can_take_stays_in_the_source() {
     let mut g = pour_setup("iron", 144);
-    // The slag right under the tap (y 69), nearly full: the cell above it is the tap itself.
+    // The slag right under the tap (y 69), nearly full: the cell above it is the tap itself; stone under it and around it.
+    g.place([0, 68, 4], "minecraft:stone");
+    walls(&mut g, [0, 69, 4]);
     put_slag(&mut g, [0, 69, 4], "iron", SLAG_CAP - 68);
     g.run(40);
     assert_eq!(slag_at(&mut g, [0, 69, 4]).unwrap().melt.amount, SLAG_CAP);
@@ -445,4 +458,268 @@ fn redstone_closes_the_outlet_too() {
     assert_eq!(back, o);
     Slotted::load_state(&mut o, &[0, 1]);
     assert!(o.invert && !o.invert_redstone);
+}
+
+// ---------------------------------------------------------------------------- the slag's own flow (`updateTick`)
+
+const FLOOR: Pos = [0, 60, 4];
+
+/// A stone floor under `at`'s column at y 60, a 3x3 around the column.
+fn floor_under(g: &mut Game, at: Pos) {
+    for dx in -2..=2 {
+        for dz in -2..=2 {
+            g.place([at[0] + dx, 60, at[2] + dz], "minecraft:stone");
+        }
+    }
+}
+
+fn schedule(g: &mut Game, at: Pos) {
+    g.ready().slag_active.insert((OW.to_string(), at));
+}
+
+fn slag_cells(g: &mut Game) -> Vec<(Pos, u32)> {
+    g.ready().world.machines.iter().filter_map(|(k, m)| if let Data::Slag(s) = &m.data { Some((k.1, s.melt.amount)) } else { None }).collect()
+}
+
+/// The sum of the models and of the records, after every tick, until `ticks` have passed.
+fn conserved_for(g: &mut Game, total: u32, ticks: usize) {
+    for tick in 0..ticks {
+        g.run(1);
+        assert_eq!(held(g), total, "tick {tick}: the models");
+        assert_eq!(recorded(g), total, "tick {tick}: the records");
+    }
+}
+
+/// `updateTick`, down: a slag over air moves whole into the air cell (no drop), one block, and is not scheduled again.
+#[test]
+fn a_slag_over_air_falls_whole_into_the_cell_below_and_the_one_above_is_gone() {
+    let mut g = game();
+    floor_under(&mut g, FLOOR);
+    put_slag(&mut g, [0, 65, 4], "iron", 1_000);
+    schedule(&mut g, [0, 65, 4]);
+    conserved_for(&mut g, 1_000, 20);
+    assert_eq!(slag_cells(&mut g), vec![([0, 64, 4], 1_000)]);
+    assert_eq!(g.world.borrow().get(OW, [0, 65, 4]), "minecraft:air");
+    assert!(g.world.borrow().get(OW, [0, 64, 4]).starts_with("ntm:slag"));
+    assert!(g.world.borrow().dropped.is_empty(), "a flow is no break: nothing is dropped");
+}
+
+/// Down onto the slag of the same material, up to its capacity; the one above keeps the rest and, when emptied, is
+/// removed on the next tick (the metal is never in both and never in neither, in the models or the records).
+#[test]
+fn a_slag_gives_the_slag_below_what_it_can_take_and_an_emptied_one_goes_next_tick() {
+    let mut g = game();
+    floor_under(&mut g, FLOOR);
+    walls(&mut g, [0, 61, 4]);
+    walls(&mut g, [0, 62, 4]);
+    put_slag(&mut g, [0, 61, 4], "iron", 2_000);
+    put_slag(&mut g, [0, 62, 4], "iron", 1_000);
+    schedule(&mut g, [0, 62, 4]);
+    g.run(1);
+    // Step one: the upper is empty and still there, the lower has it all.
+    assert_eq!(slag_cells(&mut g), vec![([0, 61, 4], 3_000), ([0, 62, 4], 0)]);
+    assert_eq!((held(&mut g), recorded(&g)), (3_000, 3_000));
+    g.run(1);
+    // Step two: the empty one is gone, with no scrap of 0.
+    assert_eq!(slag_cells(&mut g), vec![([0, 61, 4], 3_000)]);
+    assert_eq!(g.world.borrow().get(OW, [0, 62, 4]), "minecraft:air");
+    assert!(g.world.borrow().dropped.is_empty(), "{:?}", g.world.borrow().dropped);
+    // Over a nearly full one: it takes what fits and the upper keeps the rest.
+    let mut g = game();
+    floor_under(&mut g, FLOOR);
+    walls(&mut g, [0, 61, 4]);
+    walls(&mut g, [0, 62, 4]);
+    put_slag(&mut g, [0, 61, 4], "iron", SLAG_CAP - 100);
+    put_slag(&mut g, [0, 62, 4], "iron", 1_000);
+    schedule(&mut g, [0, 62, 4]);
+    conserved_for(&mut g, SLAG_CAP + 900, 6);
+    assert_eq!(slag_cells(&mut g), vec![([0, 61, 4], SLAG_CAP), ([0, 62, 4], 900)]);
+    // Another material below takes nothing.
+    let mut g = game();
+    floor_under(&mut g, FLOOR);
+    walls(&mut g, [0, 61, 4]);
+    walls(&mut g, [0, 62, 4]);
+    put_slag(&mut g, [0, 61, 4], "copper", 1_000);
+    put_slag(&mut g, [0, 62, 4], "iron", 1_000);
+    schedule(&mut g, [0, 62, 4]);
+    conserved_for(&mut g, 2_000, 6);
+    assert_eq!(slag_cells(&mut g), vec![([0, 61, 4], 1_000), ([0, 62, 4], 1_000)]);
+}
+
+/// Sideways: from a fifth of the capacity (2073), `toSpread = max(amount / (count * 2), 1)` to each free side, north, south,
+/// east, west; the sum is exact at every tick. A slag below the threshold stays. (At x 5: x -1 is another chunk.)
+#[test]
+fn a_slag_of_a_fifth_of_the_capacity_spreads_to_its_free_sides_and_the_sum_is_exact() {
+    const P: Pos = [5, 61, 4];
+    let mut g = game();
+    floor_under(&mut g, [5, 60, 4]);
+    put_slag(&mut g, P, "iron", 10_000);
+    schedule(&mut g, P);
+    conserved_for(&mut g, 10_000, 1);
+    let cells = slag_cells(&mut g);
+    // 10000 / (4 * 2) = 1250 to each of four sides; 5000 stays.
+    assert_eq!(cells.len(), 5, "{cells:?}");
+    assert_eq!(cells.iter().find(|c| c.0 == P).unwrap().1, 5_000);
+    assert!(cells.iter().filter(|c| c.0 != P).all(|c| c.1 == 1_250), "{cells:?}");
+    // The new ones are scheduled: 1250 is under the threshold, they stay. Everything holds on for ever.
+    conserved_for(&mut g, 10_000, 30);
+    assert_eq!(slag_cells(&mut g).len(), 5);
+    // Two free sides only (walls on two): 4000 / (2 * 2) = 1000 each.
+    let mut g = game();
+    floor_under(&mut g, [5, 60, 4]);
+    g.place([6, 61, 4], "minecraft:stone");
+    g.place([4, 61, 4], "minecraft:stone");
+    put_slag(&mut g, P, "iron", 4_000);
+    schedule(&mut g, P);
+    conserved_for(&mut g, 4_000, 5);
+    let mut cells = slag_cells(&mut g);
+    cells.sort();
+    assert_eq!(cells, vec![([5, 61, 3], 1_000), (P, 2_000), ([5, 61, 5], 1_000)]);
+    // The threshold: 2072 stays, 2073 spreads (2073 / 8 = 259 to each side).
+    for (amount, parts) in [(2_072, 1), (2_073, 5)] {
+        let mut g = game();
+        floor_under(&mut g, [5, 60, 4]);
+        put_slag(&mut g, P, "iron", amount);
+        schedule(&mut g, P);
+        conserved_for(&mut g, amount, 3);
+        assert_eq!(slag_cells(&mut g).len(), parts, "{amount}");
+    }
+    // A full block spreads and what it spreads is scheduled in turn: the sum holds on.
+    let mut g = game();
+    floor_under(&mut g, [5, 60, 4]);
+    put_slag(&mut g, P, "iron", SLAG_CAP);
+    schedule(&mut g, P);
+    conserved_for(&mut g, SLAG_CAP, 40);
+}
+
+/// Nothing crosses the border of the chunk: the east side of x 15 is chunk 1.
+#[test]
+fn a_slag_at_the_edge_of_a_chunk_does_not_spread_into_the_next() {
+    let mut g = game();
+    for dx in -2..=2 {
+        for dz in -2..=2 {
+            g.place([15 + dx, 60, 4 + dz], "minecraft:stone");
+        }
+    }
+    put_slag(&mut g, [15, 61, 4], "iron", 6_000);
+    schedule(&mut g, [15, 61, 4]);
+    conserved_for(&mut g, 6_000, 10);
+    let cells = slag_cells(&mut g);
+    // Three sides: 6000 / (3 * 2) = 1000 each; nothing at x 16.
+    assert!(cells.iter().all(|c| c.0[0] <= 15), "{cells:?}");
+    assert_eq!(cells.iter().find(|c| c.0 == [15, 61, 4]).unwrap().1, 3_000);
+    assert_eq!(g.world.borrow().get(OW, [16, 61, 4]), "minecraft:air");
+}
+
+/// A refused step changes nothing, in memory, in the records or in the world, whichever kind of commit it is.
+#[test]
+fn a_refused_flow_step_changes_nothing() {
+    for case in 0..3 {
+        let mut g = game();
+        floor_under(&mut g, FLOOR);
+        let (at, amount) = match case {
+            0 => ([0, 65, 4], 1_000),
+            1 => ([0, 61, 4], 10_000),
+            _ => ([0, 61, 4], 1_000),
+        };
+        if case == 2 {
+            walls(&mut g, at);
+            put_slag(&mut g, [0, 62, 4], "iron", 500);
+            walls(&mut g, [0, 62, 4]);
+        }
+        put_slag(&mut g, at, "iron", amount);
+        let before = slag_cells(&mut g);
+        let total = held(&mut g);
+        g.world.borrow_mut().refuse_structured = true;
+        schedule(&mut g, if case == 2 { [0, 62, 4] } else { at });
+        for tick in 0..5 {
+            g.run(1);
+            assert_eq!(slag_cells(&mut g), before, "case {case} tick {tick}");
+            assert_eq!((held(&mut g), recorded(&g)), (total, total));
+        }
+        assert!(g.world.borrow().dropped.is_empty());
+    }
+}
+
+/// Breaking an empty slag (the step-one leftover) drops nothing, not a scrap of 0.
+#[test]
+fn breaking_an_empty_slag_drops_no_scrap() {
+    let mut g = game();
+    floor_under(&mut g, FLOOR);
+    put_slag(&mut g, FIRST, "iron", 0);
+    g.world.borrow_mut().dropped.clear();
+    g.world.borrow_mut().set(OW, FIRST, "minecraft:air");
+    g.break_block(FIRST);
+    g.run(40);
+    assert!(g.world.borrow().dropped.is_empty(), "{:?}", g.world.borrow().dropped);
+}
+
+/// A world reopened between the two steps (the chunk with the upper slag empty and the lower full), from the records and
+/// from the journal: the metal is the lower's and the empty one goes after the reopening.
+#[test]
+fn a_world_reopened_between_the_two_steps_has_the_metal_once_and_the_empty_slag_goes() {
+    let mut g = game();
+    floor_under(&mut g, FLOOR);
+    walls(&mut g, [0, 61, 4]);
+    walls(&mut g, [0, 62, 4]);
+    put_slag(&mut g, [0, 61, 4], "iron", 2_000);
+    put_slag(&mut g, [0, 62, 4], "iron", 1_000);
+    schedule(&mut g, [0, 62, 4]);
+    g.run(1);
+    assert_eq!(slag_cells(&mut g), vec![([0, 61, 4], 3_000), ([0, 62, 4], 0)]);
+    // From the records.
+    let world = Rc::new(RefCell::new(g.world.borrow().clone()));
+    let mut reopened = Game::new(world);
+    reopened.run(2);
+    assert_eq!(slag_cells(&mut reopened), vec![([0, 61, 4], 3_000)], "the empty one is gone");
+    assert_eq!(held(&mut reopened), 3_000);
+    assert!(reopened.world.borrow().dropped.is_empty());
+    // From the journal: the chunk's records are those from before the step (2000 and 1000), the journal's those after.
+    let keys = [(OW.to_string(), [0, 61, 4]), (OW.to_string(), [0, 62, 4])];
+    for (k, old) in keys.iter().zip([2_000, 1_000]) {
+        let mut older = g.server.ready.world.machines[k].clone();
+        let newer = older.clone();
+        let Data::Slag(s) = &mut older.data else { panic!() };
+        *s = Slag::of("iron", old);
+        let mut newer = newer;
+        newer.rev = older.rev + 1;
+        let json = serde_json::to_string(&newer).unwrap();
+        g.server.ready.world.survivors.insert(k.clone(), Survivor { dim: OW.into(), pos: k.1, generation: newer.generation, rev: newer.rev, json });
+        g.world.borrow_mut().saved.insert(k.clone(), serde_json::to_string(&older).unwrap());
+    }
+    let earlier = g.server.ready.world.kept_as_an_earlier_version(0);
+    let world = Rc::new(RefCell::new(g.world.borrow().clone()));
+    world.borrow_mut().kv.set(crate::persist::KEY, &earlier).unwrap();
+    let mut reopened = Game::new(world);
+    assert!(keys.iter().all(|k| reopened.server.ready.restored.contains(k)), "restored from the journal");
+    reopened.run(2);
+    assert_eq!(slag_cells(&mut reopened), vec![([0, 61, 4], 3_000)]);
+    assert_eq!(held(&mut reopened), 3_000);
+}
+
+/// A tank's pour onto the floor makes a slag of 2592, above a fifth of the capacity: the pour and the spreading after it keep
+/// the sum exact at every tick, in the models and in the records.
+#[test]
+fn a_pour_that_makes_a_heavy_slag_goes_on_spreading_with_the_sum_exact() {
+    let mut g = game();
+    g.place(GROUND, "minecraft:stone");
+    g.place([0, 60, 5], "minecraft:stone");
+    for (dx, dz) in [(1, 0), (-1, 0), (0, -1)] {
+        g.place([dx, 61, 4 + dz], "minecraft:stone");
+    }
+    put(&mut g, [0, 70, 3], "ntm:foundry_tank[facing=north,honey_level=0]");
+    put(&mut g, TAP, "ntm:foundry_slagtap[facing=south,honey_level=0]");
+    edit(&mut g, [0, 70, 3], |d| {
+        let Data::FoundryTank(t) = d else { panic!() };
+        t.melt = Melt { mat: Some("iron".into()), amount: 2_592 };
+    });
+    for tick in 0..60 {
+        g.run(1);
+        assert_eq!(held(&mut g), 2_592, "tick {tick}: the models");
+        assert_eq!(recorded(&g), 2_592, "tick {tick}: the records");
+    }
+    // 2592 / (1 free side * 2) = 1296 spread to the south, 1296 stay.
+    let mut cells = slag_cells(&mut g);
+    cells.sort();
+    assert_eq!(cells, vec![([0, 61, 4], 1_296), ([0, 61, 5], 1_296)]);
 }

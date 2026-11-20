@@ -462,6 +462,8 @@ struct Ready {
     loaded: BTreeMap<Key, bool>,
     sound_marks: BTreeMap<Key, crate::sounds::Mark>,
     frozen: BTreeSet<Key>,
+    /// The slag blocks scheduled to flow on the next tick (`scheduleBlockUpdate(..., 1)`); not kept: a restart ends a flow.
+    slag_active: BTreeSet<Key>,
     facts_pending:bool,
     facts_dirty:bool,
     /// Machines whose state came from the journal, not from a block entity of an older chunk: their slots are the

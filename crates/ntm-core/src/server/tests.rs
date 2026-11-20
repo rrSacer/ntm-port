@@ -162,11 +162,23 @@ impl ServerHost for SHost {
             self.world.borrow().radiation_factor
         }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
-            if !drops.is_empty(){return false;}
+            if !drops.is_empty()||self.world.borrow().refuse_commits||self.world.borrow().refuse_structured{return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
             let dims:BTreeSet<_>=cells.iter().map(|c|c.guard.dim.clone()).collect();
             if dims.len()>1{return false;}
             let Some(dim)=dims.first()else{return true};
+            if cells.iter().any(|c|c.initial.is_some()||blockstate::id_of(&c.desired)=="minecraft:air"&&self.world.borrow().engine.contains_key(&c.guard.key())){
+                // Made at once, with the block entities that go and come (the host's publication is one step).
+                let mut w=self.world.borrow_mut();
+                for c in cells{
+                    w.set(&c.guard.dim,c.guard.pos,&c.desired);
+                    if blockstate::id_of(&c.expected.state)!=blockstate::id_of(&c.desired){
+                        w.engine.remove(&c.guard.key());w.saved.remove(&c.guard.key());
+                        if let Some(i)=&c.initial{w.engine.insert(c.guard.key(),(Vec::new(),i.data.clone()));w.saved.insert(c.guard.key(),i.json.clone());}
+                    }
+                }
+                return true;
+            }
             let blocks:Vec<_>=cells.iter().map(|c|(c.guard.pos,c.desired.clone())).collect();
             self.set_machine_blocks(dim,&blocks,owners).is_ok()
         }
