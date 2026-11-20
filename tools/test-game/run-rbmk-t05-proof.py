@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""T05 proof (`rbmk-plano` T05): two clients, a host with the world open to LAN and a guest that joins it, play the
-fuel channel's gestures (native_rbmk_t05.py) with hot and cold rods, in survival and in creative.
+"""T05 and T06 proofs (`rbmk-plano`): two clients, a host with the world open to LAN (commands allowed, the guest's
+test hooks need them) and a guest that joins it, play a scenario: T05's fuel channel gestures with hot and cold rods
+(native_rbmk_t05.py, the default), or T06's control rod screen (`--script native_rbmk_t06.py`).
 
 Each client goes through agent-run on its own (one game place each). The binary and the resources come from the
 environment, so that agent-run around this runner does not take a game place for it:
@@ -101,6 +102,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--scratch-root', type=Path, required=True)
     parser.add_argument('--bundle', type=Path, required=True)
+    parser.add_argument('--script', default='native_rbmk_t05.py')
     args = parser.parse_args()
     binary, resources = Path(os.environ['NTM_T05_BINARY']).resolve(), Path(os.environ['NTM_T05_RESOURCES']).resolve()
     scratch = Path(tempfile.mkdtemp(prefix='rbmk-t05-', dir=args.scratch_root))
@@ -126,7 +128,7 @@ def main():
         # A loaded machine (llvmpipe, other agents' games) can keep a client from answering for minutes: wait on it.
         wait(host.game, 'status', lambda v: v.get('player') is not None and v.get('pending_chunks') == 0
              and v.get('server', {}).get('loaded') is not False, 2400, 'host world')
-        host.game.ctl('lan open')
+        host.game.ctl('lan open 0 commands')
         port = wait(host.game, 'lan status', lambda v: v.get('open') and v.get('port'), 60, 'lan open')['port']
         guest = Client(scratch / 'guest', env, binary, resources, args.bundle.resolve(), 'Guest')
         clients.append(guest)
@@ -134,9 +136,9 @@ def main():
         guest.game.ctl(f'connect 127.0.0.1:{port} Guest')
         wait(host.game, 'lan status', lambda v: any(g['name'] == 'Guest' and g.get('placed') for g in v['guests']), 300, 'guest placed')
         wait(guest.game, 'status', lambda v: v['server']['joined'] and v['player'] is not None, 300, 'guest joined')
-        played = subprocess.run([sys.executable, str(HERE / 'native_rbmk_t05.py'), str(host.folder), str(guest.folder)],
+        played = subprocess.run([sys.executable, str(HERE / args.script), str(host.folder), str(guest.folder)],
                                 cwd=scratch, env=env, timeout=3600).returncode
-        evidence = host.folder / 'native-rbmk-t05-host.json'
+        evidence = host.folder / f"native-{args.script.removeprefix('native_').removesuffix('.py').replace('_', '-')}-host.json"
         report['evidence'] = json.loads(evidence.read_text()) if evidence.exists() else None
         report['ok'] = played == 0
     except Exception as error:
