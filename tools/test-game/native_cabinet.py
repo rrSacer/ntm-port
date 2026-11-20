@@ -18,7 +18,7 @@ from native_game import Game
 X, Z = 40, 8
 CABINET = (X, 100, Z)
 SAVED = 'cabinet-saved.json'
-SWORD = "minecraft:diamond_sword[minecraft:custom_name='\"Dossier\"',minecraft:enchantments={levels:{\"minecraft:sharpness\":3}}]"
+SWORD = "minecraft:diamond_sword[minecraft:custom_name='\"Dossier\"',minecraft:enchantments={\"minecraft:sharpness\":3}]"
 FILL = [('minecraft:paper', 64), ('minecraft:diamond_sword', 1), ('minecraft:gold_ingot', 17), ('ntm:key', 1),
         ('minecraft:coal', 5), ('minecraft:glass', 33), ('minecraft:stick', 2), ('minecraft:bread', 9)]
 
