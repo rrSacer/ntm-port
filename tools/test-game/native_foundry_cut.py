@@ -16,6 +16,11 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           set to output; the crucible's 2 ingots (144) melt, pour and are cast by the caster (5 water a quantum): 2
           ingots in its outputs, none in the pool (F4 in game); the act breaks it and picks up what it drops. Control:
           as `caster`
+  clicks  the foundry's blocks by hand: a crucible with 144 quanta (2 gold ingots) whose stream falls on a mold block with no
+          mold (nothing pours); as a player in survival the act clicks the mold block with a mold in hand (it goes in, one of
+          the stack), waits for the stream to fill it and the cast to cool (an ingot in its slot), clicks it with an empty hand
+          (the ingot comes out) and clicks the crucible with a shovel (its 72 left come as one scrap). Control: a barrel with
+          the 2 ingots, which the player takes by command
   hand    the caster by hand (`MachineStrandCaster.onBlockActivated`): the pool of 144 and, as a player in survival, the
           mold taken out by command (there is no screwdriver) and put back by a click with a mold in hand (one of the
           stack, into slot 0), then a click with a shovel: the whole pool as one exact scrap in the inventory. Control: a
@@ -47,6 +52,8 @@ WEIGHT = {'minecraft:gold_ingot': 72, 'minecraft:gold_nugget': 8, 'minecraft:gol
 # it) and the player stands; both in chunk (2, 0) and within 6 blocks of x=40, z=8.
 CORE = (40, 101, 8)
 OTHER = CORE
+# `clicks`: the mold block under the crucible's waste stream (two blocks south of its core).
+MOLD_AT = (CORE[0], CORE[1] - 1, CORE[2] + 2)
 
 
 def quanta_of(item, tail):
@@ -122,13 +129,15 @@ def machines(g):
     for p in places(g):
         if VANILLA:
             slots += stack_quanta(block_items(g, p))
-        elif server_block(g, p) in ('ntm:machine_crucible', CASTER):
+        elif server_block(g, p) in ('ntm:machine_crucible', CASTER, 'ntm:foundry_mold'):
             mol += molten(model(g, p))
             slots += stack_quanta(block_items(g, p))
     return mol, slots
 
 
 def places(g):
+    if SCENARIO == 'clicks':
+        return [CORE, MOLD_AT]
     if SCENARIO not in ('caster', 'excess', 'batch', 'hand'):
         return [CORE]
     return [caster_core(g)] + ([] if VANILLA else [tuple(placed(g)['crucible'])])
@@ -182,6 +191,23 @@ def prepare(g):
             g.check('melted_96', ok, molten(model(g, CORE)))
             g.check('the_slots_are_empty', stack_quanta(block_items(g, CORE)) == 0, block_items(g, CORE))
             # Cold from here: nothing changes on its own after the base.
+            g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
+    elif SCENARIO == 'clicks':
+        if VANILLA:
+            g.command('setblock %d %d %d minecraft:barrel' % CORE)
+            g.command('setblock %d %d %d minecraft:barrel' % MOLD_AT)
+            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % CORE)
+        else:
+            g.command('setblock %d %d %d %s[facing=south,honey_level=0]' % (CORE[0], CORE[1] - 1, CORE[2], FIREBOX))
+            g.command('setblock %d %d %d %s[facing=north,honey_level=0]' % (*CORE, CRUCIBLE))
+            g.command('setblock %d %d %d ntm:foundry_mold[facing=north,honey_level=0]' % MOLD_AT)
+            time.sleep(2)
+            g.command('item replace block %d %d %d container.0 with minecraft:coal 16' % (CORE[0], CORE[1] - 1, CORE[2]))
+            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % CORE)
+            ok = wait_for(lambda: molten(model(g, CORE)) == 144, 240)
+            g.check('melted_144', ok, molten(model(g, CORE)))
+            g.check('nothing_pours_without_a_mold', molten(model(g, MOLD_AT)) == 0, model(g, MOLD_AT))
+            g.command('item replace block %d %d %d container.0 with minecraft:air' % (CORE[0], CORE[1] - 1, CORE[2]))
             g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
     elif SCENARIO in ('caster', 'excess', 'batch', 'hand'):
         place_caster(g)
@@ -384,6 +410,37 @@ def act(g):
             g.command('setblock %d %d %d %s[facing=north,honey_level=0]' % (*CORE, CRUCIBLE))
             time.sleep(2)
             put_back(g, SCRAP)
+    elif SCENARIO == 'clicks':
+        if VANILLA:
+            g.command('item replace block %d %d %d container.1 with minecraft:air' % CORE)
+            g.command('give @s minecraft:gold_ingot 2')
+        else:
+            g.command('clear @s')
+            g.command('gamemode survival @s')
+            g.command('give @s ntm:mold__ingot 2')
+            g.command(f'tp @s {MOLD_AT[0] + .5} {MOLD_AT[1] + 1} {MOLD_AT[2] + 3.5}')
+            time.sleep(1)
+            g.ctl('select ntm:mold__ingot')
+            use_machine(g, [MOLD_AT], 'mold_block_with_a_mold')
+            g.check('the_mold_went_in', 'ntm:mold__ingot' in block_items(g, MOLD_AT), block_items(g, MOLD_AT)[:200])
+            held = [n for i, n, _ in entries(inventory_text(g)) if i == 'ntm:mold__ingot']
+            g.check('one_mold_of_the_stack', held == [1], held)
+            # The stream fills the mold (72) and the cast cools for 200 ticks: an ingot in its slot, 72 left in the crucible.
+            g.check('the_cast_cooled', wait_for(lambda: held_gold(g, MOLD_AT) == 1, 120), [block_items(g, MOLD_AT)[:200], molten(model(g, CORE))])
+            g.command('clear @s')
+            g.ctl('select minecraft:air') if False else None
+            use_machine(g, [MOLD_AT], 'mold_block_with_an_empty_hand')
+            g.check('the_ingot_came_out', held_gold(g, MOLD_AT) == 0 and 'minecraft:gold_ingot' in inventory_text(g), [block_items(g, MOLD_AT)[:200], inventory_text(g)[:300]])
+            g.command('give @s minecraft:iron_shovel 1')
+            g.ctl('select minecraft:iron_shovel')
+            g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
+            time.sleep(1)
+            use_machine(g, [(CORE[0], CORE[1] + 1, CORE[2]), CORE], 'crucible_with_a_shovel')
+            g.check('the_crucible_is_empty', molten(model(g, CORE)) == 0, molten(model(g, CORE)))
+            inv = inventory_text(g)
+            g.check('the_rest_is_one_scrap_of_72', 'ntm:scraps__gold' in inv and stack_quanta(inv) == 144, inv[:600])
+        g.evidence['picked'] = inventory_text(g)[:600]
+        g.command('gamemode creative @s')
     elif SCENARIO == 'excess':
         core = caster_core(g)
         if VANILLA:

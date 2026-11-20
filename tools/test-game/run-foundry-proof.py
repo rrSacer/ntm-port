@@ -36,6 +36,8 @@ SCENARIOS = {
     'scrap': (('metal_quanta',), 96, [*STRICT, 'players_saved']),
     # 144 quanta poured by a crucible's stream into the caster's pool, then the one scrap its break drops.
     'caster': (('metal_quanta',), 144, [*STRICT, 'players_saved']),
+    # The foundry's blocks by hand: a mold into a mold block, its cast out, a shovel on the crucible.
+    'clicks': (('metal_quanta',), 144, [*STRICT, 'players_saved']),
     # The caster by hand: a mold put in, a shovel takes the pool of 144 as one scrap.
     'hand': (('metal_quanta',), 144, [*STRICT, 'players_saved']),
     # The caster with water: two ingots cast from the pool of 144, then the break.
