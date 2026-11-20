@@ -7,6 +7,7 @@ com os nomes pt_BR do content/ids.json para a tela.
 Uso: python3 tools/machine-gen/build.py
 """
 import json
+import os
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
@@ -255,6 +256,27 @@ if (root / 'content/machine-recipes/foundry.json').exists() and (root / 'content
     p = root / 'crates/ntm-core/data/machines/mold_stack_limits.json'
     p.write_text(json.dumps({'source': 'content/ids.json, the outputs of content/machine-recipes/foundry.json', 'limits': limits}, ensure_ascii=False, indent=0) + '\n')
     print(f"mold_stack_limits: {len(limits)} saídas de molde com pilha diferente de 64 → {p.relative_to(root)}")
+
+# As ferramentas do NTM com a classe "shovel" (`ItemTool.getToolClasses(...).contains("shovel")`, que a pá do lingotamento e dos
+# blocos de fundição lê): as `ItemToolAbility` de tipo SHOVEL e as de MINER (`setHarvestLevel("shovel", ...)`) que o conteúdo tem.
+# As do vanilla entram pela regra `minecraft:*_shovel`.
+ntm_src = Path(os.environ.get('NTM_SRC', root.parent / 'ntm-src'))
+mod_items = ntm_src / 'src/main/java/com/hbm/items/ModItems.java'
+if (root / 'content/ids.json').exists() and not mod_items.exists():
+    mod_items = Path('/mnt/ssd120/sacer/horizon-ntm/ntm-src/src/main/java/com/hbm/items/ModItems.java')
+if (root / 'content/ids.json').exists() and mod_items.exists():
+    import re
+    lines = mod_items.read_text().split('\n')
+    shovels = []
+    for e in json.loads((root / 'content/ids.json').read_text())['entries']:
+        if e.get('type') == 'item' and e.get('source_class', '').startswith('ItemToolAbility'):
+            at = int(e['source_location'].split(':')[-1])
+            kind = re.search(r'EnumToolType\.(\w+)', ' '.join(lines[at - 1:at + 3]))
+            if kind and kind.group(1) in ('SHOVEL', 'MINER'):
+                shovels.append(e['id'])
+    p = root / 'crates/ntm-core/data/tool_shovels.json'
+    p.write_text(json.dumps({'source': 'ModItems.java ItemToolAbility SHOVEL and MINER, the items content/ids.json has', 'shovels': sorted(shovels)}, indent=0) + '\n')
+    print(f"tool_shovels: {len(shovels)} ferramentas com a classe shovel → {p.relative_to(root)}")
 
 # A prensa fica fora de machines/: as duas prensas do M1 a leem de data/.
 if (root / 'content/machine-recipes/press.json').exists():
