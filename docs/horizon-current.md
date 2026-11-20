@@ -1842,6 +1842,14 @@ Consequência para as provas: um roteiro de hóspede deve tirar o anfitrião do 
 hóspede em outro ponto). A abertura pelo núcleo e o registro `guest_through_the_dummy` do `native_rbmk_t10.py` deixam de
 ser necessários; as provas de hóspede das ondas anteriores que abriram multiblocos pelo núcleo continuam válidas.
 
+Guarda da mira (P3-1 da revisão): no driver comum (`native_game.py`, `Game.ctl`), todo `interact X Y Z [FACE]` antes
+mira com `look-at block` (o mesmo `aim_block` do `interact`) e pede `looking-at`; se a mira não está naquele bloco (uma
+entidade na frente, como o anfitrião no ponto do hóspede, ou outro bloco), falha antes do clique, dizendo o quê está na
+mira. `NTM_AIM_GUARD=0` a desliga. Testes: `test_native_game_aim_guard.py` 5/5 (socket de controle falso); o mutante sem
+a chamada da guarda dá 4 falhas. Em jogo (binário `7b4e9c49…`, `evidence/aim-guard-release-7b4e9c49/`): nos quatro casos
+do anfitrião no ponto do hóspede o `interact` não sai e o erro diz `aim guard: the crosshair is on minecraft:player id 1
+at 0.00 blocks …; another player standing at this spot? move them away first`; os demais usos abrem como antes.
+
 **A branch de traços `infra-g-dbg` (`6b80f690c8`) não deve ser mesclada** (nem no pin, nem em outra branch do motor):
 ela só serve para repetir a medição. Os traços são `eprintln!` ligados por `HORIZON_TRACE_INFRA_G`, que consultam a
 variável de ambiente a cada clique, em caminhos quentes (`use_hand`, `remote_use_item_on`, o `UseItemOn` de
