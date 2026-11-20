@@ -92,6 +92,70 @@ pub fn snapshot(block: &str, column: &RbmkColumn) -> Option<Fields> {
     Some(f)
 }
 
+/// What a taken command does to a column, as the queue keeps it until the column's transaction (T06 review P3(a)): the
+/// last value of each kind the command sets outright (a manual rod's target, an automatic rod's settings or curve), and
+/// a manual rod's group toggles composed into one map of the group before to the group after (index 0 none, 1..=5 the
+/// five), which is what any number of `color` presses in a row does. A column's queue holds at most one of each.
+#[derive(Clone, Debug, PartialEq)]
+pub enum Pending {
+    Set(&'static str, Fields),
+    Groups([Option<u8>; 6]),
+}
+
+fn group_index(g: Option<u8>) -> usize {
+    g.map_or(0, |g| usize::from(g) + 1)
+}
+
+/// The toggles of a command, one `Pending` per kind it sets (a command may set a manual rod's target and group).
+pub fn pending_of(block: &str, fields: &Fields) -> Vec<Pending> {
+    let mut out = Vec::new();
+    if persist::is_manual_control(block) {
+        if fields.has_key("level") {
+            let mut f = Fields::default();
+            f.set("level", Value::Double(fields.get_double("level")));
+            out.push(Pending::Set("level", f));
+        }
+        if fields.has_key("color") {
+            let c = (fields.get_integer("color").wrapping_abs() % 5).clamp(0, 4) as u8;
+            let toggle = |x: Option<u8>| if x == Some(c) { None } else { Some(c) };
+            out.push(Pending::Groups(std::array::from_fn(|i| toggle(if i == 0 { None } else { Some(i as u8 - 1) }))));
+        }
+    } else if fields.has_key("function") {
+        out.push(Pending::Set("function", fields.clone()));
+    } else {
+        out.push(Pending::Set("settings", fields.clone()));
+    }
+    out
+}
+
+/// `next` into a column's queue: a value of a kind already there replaces it (the Java would set both, the later
+/// last); group toggles compose with those waiting.
+pub fn coalesce(queue: &mut Vec<Pending>, next: Pending) {
+    match next {
+        Pending::Set(kind, f) => {
+            queue.retain(|p| !matches!(p, Pending::Set(k, _) if *k == kind));
+            queue.push(Pending::Set(kind, f));
+        }
+        Pending::Groups(after) => match queue.iter_mut().find_map(|p| if let Pending::Groups(m) = p { Some(m) } else { None }) {
+            Some(before) => *before = std::array::from_fn(|i| after[group_index(before[i])]),
+            None => queue.push(Pending::Groups(after)),
+        },
+    }
+}
+
+/// A waiting command applied to the column, in its transaction.
+pub fn apply(block: &str, column: &mut RbmkColumn, pending: &Pending) {
+    match pending {
+        Pending::Set(_, f) => {
+            let _ = receive(block, column, f);
+        }
+        Pending::Groups(map) => {
+            let st = column.control.get_or_insert_with(|| ControlState::of(block));
+            st.color = map[group_index(st.color)];
+        }
+    }
+}
+
 /// `EnumUtil.grabEnumSafely`: `abs(i % n)`, never out of the values.
 fn grab_safely(i: i32, n: i32) -> u8 {
     (i % n).unsigned_abs() as u8
@@ -320,5 +384,52 @@ mod tests {
         assert_eq!((got.heat_upper, got.level_upper, got.function), (900.0, 0.0, 1));
         assert_eq!(auto_of(&settings(AUTO, &a).unwrap()), got);
         assert!(settings("ntm:rbmk_blank", &RbmkColumn::of("ntm:rbmk_blank")).is_none());
+    }
+
+    #[test]
+    fn a_queue_keeps_one_of_each_kind_and_does_what_the_commands_in_order_do() {
+        // Every sequence of up to four commands of a manual rod (levels and groups), from every group: the composed
+        // queue leaves the rod as the commands one after the other do, and holds at most one entry of each kind.
+        let commands: Vec<Fields> = [level(0.25), level(0.75), color(0), color(1), color(4)].into_iter().collect();
+        let mut seqs: Vec<Vec<usize>> = vec![vec![]];
+        for _ in 0..4 {
+            seqs = seqs.iter().flat_map(|s| (0..commands.len()).map(move |i| [s.clone(), vec![i]].concat())).collect();
+            for seq in &seqs {
+                for start in [None, Some(0), Some(1), Some(4)] {
+                    let mut fresh = RbmkColumn::of(MANUAL);
+                    fresh.control.as_mut().unwrap().color = start;
+                    let mut one_by_one = fresh.clone();
+                    for &i in seq {
+                        receive(MANUAL, &mut one_by_one, &commands[i]).unwrap();
+                    }
+                    let mut queue = Vec::new();
+                    for &i in seq {
+                        for p in pending_of(MANUAL, &commands[i]) {
+                            coalesce(&mut queue, p);
+                        }
+                    }
+                    assert!(queue.len() <= 2, "{seq:?}: {queue:?}");
+                    let mut queued = fresh.clone();
+                    for p in &queue {
+                        apply(MANUAL, &mut queued, p);
+                    }
+                    assert_eq!(queued, one_by_one, "{seq:?} from {start:?}");
+                }
+            }
+        }
+        // An automatic rod: the last settings and the last curve.
+        let mut queue = Vec::new();
+        let mut a = Fields::default();
+        a.set("levelUpper", Value::Double(1.0));
+        let mut b = Fields::default();
+        b.set("levelUpper", Value::Double(2.0));
+        let mut f = Fields::default();
+        f.set("function", Value::Int(1));
+        for x in [&a, &f, &b, &f] {
+            for p in pending_of(AUTO, x) {
+                coalesce(&mut queue, p);
+            }
+        }
+        assert_eq!(queue, vec![Pending::Set("settings", b), Pending::Set("function", f)]);
     }
 }

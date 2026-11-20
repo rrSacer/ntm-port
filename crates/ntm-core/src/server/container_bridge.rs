@@ -1096,12 +1096,12 @@ impl Server {
 
     /// A screen command (T06): the RBMK column's `receiveControl`. A command the column refuses now (its generation
     /// held, so it cannot) changes nothing.
-    pub(super) fn machine_command(&mut self, key: &Key, fields: &crate::screens::control::Fields) {
+    pub(super) fn machine_command(&mut self, key: &Key, pending: &crate::rbmk::screen::Pending) {
         let Some(r) = self.ready() else { return };
         let Some(m) = r.world.machines.get_mut(key) else { return };
         let block = m.block.clone();
         if let Data::Rbmk(c) = &mut m.data {
-            let _ = crate::rbmk::screen::receive(&block, c, fields);
+            crate::rbmk::screen::apply(&block, c, pending);
         }
     }
 

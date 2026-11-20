@@ -178,3 +178,30 @@ fn a_screen_without_a_machine_slot_has_a_menu() {
     assert_eq!(crate::native::container("ntm:rbmk_control").map(|c| c.slots), Some(0));
     assert!(crate::native::container("ntm:rbmk_blank").is_none());
 }
+
+#[test]
+fn a_flood_of_commands_waits_as_one_of_each_kind() {
+    // A manual rod: a thousand commands in one tick, levels and group toggles; the queue holds one target and one map
+    // of the groups, and the tick leaves the rod as the commands one after the other would (T06 review P3(a)).
+    let mut g = game();
+    g.place(AT, &column("rbmk_control"));
+    g.run(2);
+    let grant = Grant::decode(&g.server.native_screen_open("p1", OW, AT).unwrap()).unwrap();
+    let mut expect = RbmkColumn::of("ntm:rbmk_control");
+    for seq in 1..=1000u32 {
+        let mut f = Fields::default();
+        if seq % 3 == 0 {
+            f.set("level", Value::Double(f64::from(seq % 5) * 0.25));
+        } else {
+            f.set("color", Value::Int((seq % 7) as i32));
+        }
+        crate::rbmk::screen::receive("ntm:rbmk_control", &mut expect, &f).unwrap();
+        assert_eq!(g.server.native_screen_command("p1", OW, NEAR, &cmd(&grant, seq, f)), Ok(()));
+    }
+    assert!(g.ready().pending_commands.len() <= 2, "{:?}", g.ready().pending_commands.len());
+    g.run(1);
+    let Data::Rbmk(c) = g.ready().world.machines[&(OW.to_string(), AT)].data.clone() else { panic!() };
+    let (got, want) = (c.control.unwrap(), expect.control.unwrap());
+    assert_eq!((got.target_level, got.color), (want.target_level, want.color));
+    assert!(g.ready().pending_commands.is_empty());
+}

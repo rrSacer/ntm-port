@@ -404,8 +404,9 @@ struct Ready {
     ghosts:Vec<(Key,generation::CellGuard)>,
     broken:BTreeMap<Key,String>,
     pending_buttons:Vec<generation::Guarded<(String,String,Pos,u32)>>,
-    /// Screen commands taken (`Server::native_screen_command`, T06): the machine and the fields, guarded by its generation.
-    pending_commands:Vec<generation::Guarded<(Key,crate::screens::control::Fields)>>,
+    /// Screen commands taken (`Server::native_screen_command`, T06), guarded by their machine's generation: at most one of
+    /// each kind a machine (`rbmk::screen::coalesce`), so a flood of commands within a tick holds no more.
+    pending_commands:Vec<generation::Guarded<(Key,crate::rbmk::screen::Pending)>>,
     detonations:BTreeMap<Key,generation::Guarded<(String,container_bridge::Slots)>>,
     native_item_claims:BTreeMap<String,(u64,String,Option<Pos>)>,
     /// The state last written or seen, per machine.

@@ -55,7 +55,21 @@ impl Server {
         } else {
             return Err(Refusal::Invalid(format!("{} takes no command", m.block)));
         }
-        self.ready.pending_commands.push(generation::Guarded { guard: generation::CellGuard::machine(&key, &m), value: (key, cmd.fields) });
+        // Into the column's queue: one of each kind (T06 review P3(a)), what the commands in order would do.
+        let mut queue: Vec<crate::rbmk::screen::Pending> = Vec::new();
+        self.ready.pending_commands.retain(|g| {
+            if g.value.0 == key {
+                queue.push(g.value.1.clone());
+                false
+            } else {
+                true
+            }
+        });
+        for p in crate::rbmk::screen::pending_of(&m.block, &cmd.fields) {
+            crate::rbmk::screen::coalesce(&mut queue, p);
+        }
+        let guard = generation::CellGuard::machine(&key, &m);
+        self.ready.pending_commands.extend(queue.into_iter().map(|p| generation::Guarded { guard: guard.clone(), value: (key.clone(), p) }));
         Ok(())
     }
 
