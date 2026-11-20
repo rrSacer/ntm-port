@@ -154,8 +154,7 @@ e fica só como registro do erro.
 **Ticket de baixa prioridade (motor).** O motor não descarta uma entidade de bloco sem bloco dono como o vanilla (`LevelChunk`: "Tried to load a block entity ... but failed"; não existe em `decode_chunk`). Nenhum caminho que a produza foi achado; o glue só **registra**
 (`orphan_scan`: sempre que houver uma entidade de bloco de máquina sobre uma célula sem bloco de máquina, no carregamento do chunk) e não toma ação.
 
-**Auditoria dos roteiros que afirmam ausência lendo o cliente.** As leituras de "é ar" em sessão (quebras em sobrevivência de cabo/chave, compressor, fio, extrator, torres) são feitas com o jogador teleportado ao lado do bloco, logo com o chunk no cliente, e depois de uma leitura positiva da
-mesma célula; as leituras depois de reabrir (ralo, micro-ondas, chaminés) exigem **presença**, que o cliente sem o chunk não consegue dar, então não passam em vazio. A única afirmação de ausência depois de reabrir estava nas sondas do achado, já refeitas olhando de perto.
+**Auditoria dos roteiros que afirmam ausência lendo o cliente.** As leituras de "é ar" em sessão (quebras em sobrevivência de cabo/chave, compressor, fio, extrator, torres) são feitas com o jogador teleportado ao lado do bloco e quebrando-o (`tp` e `break` a poucos blocos, lidos nos scripts), logo com o chunk no cliente; as leituras depois de reabrir (ralo, micro-ondas, chaminés) exigem **presença**, que o cliente sem o chunk não consegue dar, então não passam em vazio. A única afirmação de ausência depois de reabrir estava nas sondas do achado, já refeitas olhando de perto.
 
 ### Lacunas nominais
 
