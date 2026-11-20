@@ -25,6 +25,16 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           mold taken out by command (there is no screwdriver) and put back by a click with a mold in hand (one of the
           stack, into slot 0), then a click with a shovel: the whole pool as one exact scrap in the inventory. Control: a
           barrel with the 2 ingots, which the player takes by command
+  slagtap-pour    a crucible's 144 quanta (2 gold ingots) melted into a channel under its waste stream, a stone pit three
+          blocks deep behind the channel; the act puts the slag tap (facing south, fed from the channel) by command and goes on
+          straight to the save, so the pour (the channel's loss, the slag block and its record, one commit) races the save and
+          its cuts: wherever the process dies, the 144 are in the channel or in the slag block, never in both and never in
+          neither. Control: a barrel with the 2 ingots whose ingots move by command to a barrel in the pit
+  slagtap-border  the same with the channel on one side of a chunk border and the slag tap and the pit on the other (z 15 | 16): a
+          pour would leave the channel's chunk, whose record is the only one the world writes atomically, so the tap pours nothing
+          and the 144 stay in the channel at every cut (the metal is never moved across two chunks' records)
+  slagtap-break   the pour done in the prepare; the act breaks the slag block as a player in survival and picks up what it drops:
+          one scrap with all 144 (D4). Control: as `slagtap-pour`, the ingots taken by command
   caster  a strand caster whose funnel cell a crucible's stream falls on (F1): 2 ingots (144) melt, pour and wait in
           its pool (no water: nothing is cast); the act breaks the caster as a player in survival and picks up its
           drops: its mold and one scrap with all 144. Control: a barrel with the 2 ingots and the mold, broken and
@@ -50,8 +60,18 @@ SCRAP = 'ntm:scraps__gold'
 WEIGHT = {'minecraft:gold_ingot': 72, 'minecraft:gold_nugget': 8, 'minecraft:gold_block': 648}
 # `scrap`: the crucible's core (or the control's barrel); `caster`: where the caster is placed (its core is searched near
 # it) and the player stands; both in chunk (2, 0) and within 6 blocks of x=40, z=8.
-CORE = (40, 101, 8)
+SLAGTAP = SCENARIO.startswith('slagtap')
+BORDER = SCENARIO == 'slagtap-border'
+# The slag tap's chain stands one chunk south in the border variant: its channel at z 15, the tap and the slag at z 16.
+CORE = (40, 101, 13 if BORDER else 8)
+# The player stands north of the crucible in the slag tap's scenarios (the pit is south of it), south of it in the others.
+PZ = -3.5 if SLAGTAP else 4.5
 OTHER = CORE
+# The slag tap's chain: the channel under the crucible's waste stream, the tap behind which it stands (facing south), the pit the
+# pour lands in (stone at y 97, the slag block at y 98).
+CHANNEL_AT = (CORE[0], CORE[1], CORE[2] + 2)
+TAP_AT = (CORE[0], CORE[1], CORE[2] + 3)
+SLAG_AT = (CORE[0], 98, CORE[2] + 3)
 # `clicks`: the mold block under the crucible's waste stream (two blocks south of its core).
 MOLD_AT = (CORE[0], CORE[1] - 1, CORE[2] + 2)
 
@@ -129,13 +149,15 @@ def machines(g):
     for p in places(g):
         if VANILLA:
             slots += stack_quanta(block_items(g, p))
-        elif server_block(g, p) in ('ntm:machine_crucible', CASTER, 'ntm:foundry_mold'):
+        elif server_block(g, p) in ('ntm:machine_crucible', CASTER, 'ntm:foundry_mold', 'ntm:foundry_channel', 'ntm:slag'):
             mol += molten(model(g, p))
             slots += stack_quanta(block_items(g, p))
     return mol, slots
 
 
 def places(g):
+    if SLAGTAP:
+        return [CORE, CHANNEL_AT, SLAG_AT]
     if SCENARIO == 'clicks':
         return [CORE, MOLD_AT]
     if SCENARIO not in ('caster', 'excess', 'batch', 'hand'):
@@ -209,14 +231,55 @@ def prepare(g):
             g.check('nothing_pours_without_a_mold', molten(model(g, MOLD_AT)) == 0, model(g, MOLD_AT))
             g.command('item replace block %d %d %d container.0 with minecraft:air' % (CORE[0], CORE[1] - 1, CORE[2]))
             g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
+    elif SLAGTAP:
+        slagtap_world(g)
     elif SCENARIO in ('caster', 'excess', 'batch', 'hand'):
         place_caster(g)
     g.command('kill @e[type=minecraft:item]')
-    g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
+    g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + PZ}')
     time.sleep(2)
     base = count(g)
     g.evidence['base'] = base
     g.ctl('save')
+
+
+def slagtap_world(g):
+    """The chain up to the tap: a crucible whose waste stream falls on a channel (the channel fills to its 144), cold after; a
+    pit behind it, down to stone at y 97 (and, for the break, a corridor south for the player). In `slagtap-break` the tap is
+    placed here and the slag is made; in the others the act places it."""
+    pit_end = SLAG_AT[2] + (0 if BORDER else 3)
+    g.command('fill %d %d %d %d %d %d minecraft:air' % (SLAG_AT[0], SLAG_AT[1], SLAG_AT[2], SLAG_AT[0], CORE[1] - 1, pit_end))
+    g.command('fill %d %d %d %d %d %d minecraft:stone' % (SLAG_AT[0], SLAG_AT[1] - 1, SLAG_AT[2], SLAG_AT[0], SLAG_AT[1] - 1, pit_end))
+    if VANILLA:
+        g.command('setblock %d %d %d minecraft:barrel' % CHANNEL_AT)
+        g.command('setblock %d %d %d minecraft:barrel' % SLAG_AT)
+        g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % CHANNEL_AT)
+        return
+    g.command('setblock %d %d %d %s[facing=south,honey_level=0]' % (CORE[0], CORE[1] - 1, CORE[2], FIREBOX))
+    g.command('setblock %d %d %d %s[facing=north,honey_level=0]' % (*CORE, CRUCIBLE))
+    g.command('setblock %d %d %d ntm:foundry_channel[facing=north,honey_level=0]' % CHANNEL_AT)
+    time.sleep(2)
+    g.command('item replace block %d %d %d container.0 with minecraft:coal 16' % (CORE[0], CORE[1] - 1, CORE[2]))
+    g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % CORE)
+    ok = wait_for(lambda: molten(model(g, CHANNEL_AT)) == 144, 300)
+    g.check('the_channel_holds_144', ok, [molten(model(g, CHANNEL_AT)), molten(model(g, CORE))])
+    g.check('the_crucible_is_empty', molten(model(g, CORE)) == 0, molten(model(g, CORE)))
+    g.command('item replace block %d %d %d container.0 with minecraft:air' % (CORE[0], CORE[1] - 1, CORE[2]))
+    g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
+    g.check('nothing_pours_without_a_tap', molten(model(g, CHANNEL_AT)) == 144, model(g, CHANNEL_AT))
+    if SCENARIO == 'slagtap-break':
+        put_tap(g)
+
+
+def put_tap(g, wait=True):
+    """The slag tap behind the channel, facing south; the pour follows. Waited for: the slag holds all 144 and the channel none."""
+    g.command('setblock %d %d %d ntm:foundry_slagtap[facing=south,honey_level=0]' % TAP_AT)
+    if not wait:
+        return
+    ok = wait_for(lambda: molten(model(g, SLAG_AT)) == 144, 120)
+    g.check('the_slag_holds_144', ok, [molten(model(g, SLAG_AT)), molten(model(g, CHANNEL_AT)), server_block(g, SLAG_AT)])
+    g.check('the_channel_is_empty', molten(model(g, CHANNEL_AT)) == 0, model(g, CHANNEL_AT))
+    g.check('it_is_a_slag_block', server_block(g, SLAG_AT) == 'ntm:slag', server_block(g, SLAG_AT))
 
 
 def place_caster(g):
@@ -387,7 +450,7 @@ def put_back(g, item):
 
 def act(g):
     g.ctl('wait-ready 120')
-    g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
+    g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + PZ}')
     time.sleep(2)
     before = count(g)
     g.evidence['before'] = before
@@ -433,7 +496,7 @@ def act(g):
             g.command('clear @s')
             g.command('give @s minecraft:iron_shovel 1')
             g.ctl('select minecraft:iron_shovel')
-            g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
+            g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + PZ}')
             time.sleep(1)
             g.check('72_wait_in_the_crucible', molten(model(g, CORE)) == 72, molten(model(g, CORE)))
             use_machine(g, [(CORE[0], CORE[1] + 1, CORE[2]), CORE], 'crucible_with_a_shovel')
@@ -445,6 +508,43 @@ def act(g):
             time.sleep(1)
             use_machine(g, [MOLD_AT], 'mold_block_with_an_empty_hand', 'up')
             g.check('the_ingot_came_out', held_gold(g, MOLD_AT) == 0 and 'minecraft:gold_ingot' in inventory_text(g), [block_items(g, MOLD_AT)[:200], inventory_text(g)[:300]])
+        g.evidence['picked'] = inventory_text(g)[:600]
+        g.command('gamemode creative @s')
+    elif SLAGTAP and SCENARIO != 'slagtap-break':
+        if VANILLA:
+            g.command('item replace block %d %d %d container.1 with minecraft:air' % CHANNEL_AT)
+            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % SLAG_AT)
+        else:
+            # The tap, and straight to the save: the pour is one game step racing it, whichever side of the cut it falls on.
+            put_tap(g, wait=False)
+            try:
+                g.ctl('save')
+            except Exception as error:
+                g.evidence['early_save_error'] = repr(error)[:200]
+            if BORDER:
+                time.sleep(15)
+                g.check('the_border_tap_pours_nothing', server_block(g, SLAG_AT) == '' and molten(model(g, CHANNEL_AT)) == 144,
+                        [server_block(g, SLAG_AT), molten(model(g, CHANNEL_AT))])
+            else:
+                ok = wait_for(lambda: molten(model(g, SLAG_AT)) == 144, 120)
+                g.check('the_slag_holds_144', ok, [molten(model(g, SLAG_AT)), molten(model(g, CHANNEL_AT)), server_block(g, SLAG_AT)])
+                g.check('the_channel_is_empty', molten(model(g, CHANNEL_AT)) == 0, model(g, CHANNEL_AT))
+    elif SCENARIO == 'slagtap-break':
+        if VANILLA:
+            g.command('item replace block %d %d %d container.1 with minecraft:air' % SLAG_AT)
+            g.command('give @s minecraft:gold_ingot 2')
+        else:
+            g.command('clear @s')
+            g.command('gamemode survival @s')
+            g.command('give @s minecraft:diamond_pickaxe 1')
+            g.ctl('select minecraft:diamond_pickaxe')
+            g.command(f'tp @s {SLAG_AT[0] + .5} {SLAG_AT[1]} {SLAG_AT[2] + 2.5}')
+            time.sleep(1)
+            break_it(g, [SLAG_AT], 'slag')
+            pick_up_all(g)
+            inv = inventory_text(g)
+            g.check('one_exact_scrap_of_144', stack_quanta(inv) == 144 and 'ntm_amount:144' in inv.replace(' ', '').replace('"', ''), inv[:400])
+            g.check('the_slag_is_gone', server_block(g, SLAG_AT) == '', server_block(g, SLAG_AT))
         g.evidence['picked'] = inventory_text(g)[:600]
         g.command('gamemode creative @s')
     elif SCENARIO == 'excess':
@@ -511,7 +611,7 @@ def act(g):
         g.command('gamemode creative @s')
     for z in (CORE[2] - 6, CORE[2] + 6):
         g.command(f'setblock 37 100 {z} minecraft:cobblestone')
-    g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
+    g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + PZ}')
     time.sleep(1.5)
     after = count(g)
     g.evidence['after_act'] = after
@@ -546,7 +646,7 @@ def act(g):
 def verify(g, again=False):
     g.ctl('wait-ready 120')
     g.command('gamemode creative @s')
-    g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
+    g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + PZ}')
     time.sleep(6)
     now = count(g)
     if SCENARIO == 'excess' and not VANILLA:

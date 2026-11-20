@@ -100,11 +100,19 @@ fn a_channel_pours_through_a_slag_tap_into_a_new_slag_block_and_no_tick_has_a_qu
 fn a_refused_commit_pours_nothing_and_the_source_keeps_its_metal() {
     let mut g = pour_setup("iron", 100);
     g.world.borrow_mut().refuse_commits = true;
-    g.run(40);
+    for tick in 0..40 {
+        g.run(1);
+        assert_eq!(channel(&mut g).amount, 100, "tick {tick}: the source keeps its metal");
+        assert!(!g.server.ready.world.machines.contains_key(&(OW.to_string(), FIRST)), "tick {tick}: no slag in memory");
+        let key = (OW.to_string(), SRC);
+        assert_eq!(g.server.ready.native_saved.get(&key), g.world.borrow().saved.get(&key), "tick {tick}: the server remembers what the host holds");
+    }
     assert_eq!(channel(&mut g).amount, 100);
     assert_eq!(g.world.borrow().get(OW, FIRST), "minecraft:air");
     assert!(slag_at(&mut g, FIRST).is_none());
     assert!(!g.server.ready.world.machines.contains_key(&(OW.to_string(), FIRST)));
+    assert!(g.world.borrow().dropped.is_empty(), "nothing is dropped for a pour that did not happen: {:?}", g.world.borrow().dropped);
+    assert_eq!(held(&mut g), 100);
     g.world.borrow_mut().refuse_commits = false;
     g.run(40);
     assert_eq!((channel(&mut g).amount, held(&mut g)), (0, 100));
@@ -207,6 +215,18 @@ fn a_pour_that_would_leave_the_sources_chunk_pours_nothing() {
     assert_eq!(c.melt.amount, 100, "the metal stays");
     assert_eq!(g.world.borrow().get(OW, [0, 61, 16]), "minecraft:air");
     assert_eq!((held(&mut g), recorded(&g)), (100, 100), "nothing was lost or made");
+    // The slag it would fill is in the next chunk too: it takes nothing, the new block above it neither.
+    g.place([0, 61, 16], "ntm:slag[layer=8]");
+    g.world.borrow_mut().engine.insert((OW.to_string(), [0, 61, 16]), (Vec::new(), Vec::new()));
+    g.run(2);
+    edit(&mut g, [0, 61, 16], |d| {
+        let Data::Slag(s) = d else { panic!() };
+        *s = Slag::of("iron", 1_000);
+    });
+    g.run(60);
+    assert_eq!(slag_at(&mut g, [0, 61, 16]).unwrap().melt.amount, 1_000);
+    assert_eq!(g.world.borrow().get(OW, [0, 62, 16]), "minecraft:air");
+    assert_eq!(held(&mut g), 1_100);
     // The same tap with the channel at z 14 and the tap at z 15: the pour is all in chunk 0.
     let mut g = game();
     g.place([0, 60, 15], "minecraft:stone");
@@ -218,6 +238,49 @@ fn a_pour_that_would_leave_the_sources_chunk_pours_nothing() {
     });
     g.run(60);
     assert_eq!(slag_at(&mut g, [0, 61, 15]).unwrap().melt.amount, 100);
+}
+
+/// A tap that does not take the metal (its filter, or the channel at its side) leaves it to the channel's next neighbour,
+/// as `canAcceptPartialFlow` answering false does; one that takes it ends the channel's turn. The neighbours are tried in
+/// an order that depends on the position, so the rig is put at eight places: at some the tap comes first.
+#[test]
+fn a_tap_that_refuses_the_metal_leaves_it_to_the_next_neighbour() {
+    for dx in 0..8 {
+        let at = |p: Pos| [p[0] + dx, p[1], p[2]];
+        let (src, tank) = (at(SRC), at([0, 70, 2]));
+        let rig = |tap: Pos, filter: Option<&str>| {
+            let mut g = game();
+            g.place(at(GROUND), "minecraft:stone");
+            g.place([tap[0], 60, tap[2]], "minecraft:stone");
+            put(&mut g, src, "ntm:foundry_channel[facing=north,honey_level=0]");
+            put(&mut g, tap, "ntm:foundry_slagtap[facing=south,honey_level=0]");
+            put(&mut g, tank, "ntm:foundry_tank[facing=north,honey_level=0]");
+            edit(&mut g, src, |d| {
+                let Data::Channel(c) = d else { panic!() };
+                c.melt = Melt { mat: Some("iron".into()), amount: 100 };
+            });
+            edit(&mut g, tap, |d| {
+                let Data::Slagtap(o) = d else { panic!() };
+                o.filter = filter.map(Into::into);
+            });
+            // The channel's first turn comes five ticks after it is filled: a tap that took the metal would have ended it, to try
+            // again five ticks later.
+            g.run(6);
+            g
+        };
+        let amounts = |g: &mut Game| match (g.machine(tank).data, g.machine(src).data) {
+            (Data::FoundryTank(t), Data::Channel(c)) => (t.melt.amount, c.melt.amount),
+            other => panic!("{other:?}"),
+        };
+        // Filtered out: the tank takes it all.
+        let mut g = rig(at(TAP), Some("steel"));
+        assert_eq!(amounts(&mut g), (100, 0), "dx {dx}: filtered out");
+        assert!(slag_at(&mut g, at(FIRST)).is_none());
+        // The channel at the side of the tap: not behind it, the tank takes it all.
+        let side = at([1, 70, 3]);
+        let mut g = rig(side, None);
+        assert_eq!(amounts(&mut g), (100, 0), "dx {dx}: from the side");
+    }
 }
 
 /// D4: the slag broken gives every quantum as one exact scrap.
