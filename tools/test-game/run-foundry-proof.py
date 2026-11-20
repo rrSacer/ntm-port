@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The foundry's molten metal and scraps (Onda 2, D4 and the strand caster): its scenarios (native_foundry_cut.py) killed at
 the boundaries of the save that follows the act, both worlds, the mod's and the vanilla control (barrels where the
-machines stand), reopened twice and counted in quanta of iron (`foundry_quanta.py`): the metal wherever it is (molten in a
+machines stand), reopened twice and counted in quanta of gold (`foundry_quanta.py`): the metal wherever it is (molten in a
 crucible or a pool, an ingot, a nugget, or a scrap with its exact `ntm_amount`). The verdicts are run-crash-proof.py's.
 
   python3 tools/test-game/run-foundry-proof.py --scenario scrap|caster --binary B --resources R --bundle H
@@ -26,16 +26,16 @@ spec = importlib.util.spec_from_file_location('run_crash_proof', HERE / 'run-cra
 rcp = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(rcp)
 
-ITEMS = ('iron_quanta',)
+ITEMS = ('metal_quanta',)
 DIMS = ('overworld',)
 TOTAL = 96
 SCRIPT = 'native_foundry_cut.py'
 STRICT = ['none', 'kill', 'kv_committed', 'save_begin', 'chunks_written', 'entities_written', 'world_saved']
 SCENARIOS = {
     # 96 quanta (an ingot and three nuggets): in a crucible, then the one scrap its break drops, then the scrap in a slot.
-    'scrap': (('iron_quanta',), 96, [*STRICT, 'players_saved']),
+    'scrap': (('metal_quanta',), 96, [*STRICT, 'players_saved']),
     # 144 quanta poured by a crucible's stream into the caster's pool, then the one scrap its break drops.
-    'caster': (('iron_quanta',), 144, [*STRICT, 'players_saved']),
+    'caster': (('metal_quanta',), 144, [*STRICT, 'players_saved']),
 }
 POINTS = STRICT
 
@@ -52,8 +52,8 @@ def evidence(folder, mode):
 
 
 def quanta_items(folder):
-    """The atoms as `rcp`'s item-by-item rules read them: one kind, the quanta of iron."""
-    return {'iron_quanta': fq.count(folder)['total']}
+    """The atoms as `rcp`'s item-by-item rules read them: one kind, the quanta of gold."""
+    return {'metal_quanta': fq.count(folder)['total']}
 
 
 def no_worse_than_a_copy(outcome):

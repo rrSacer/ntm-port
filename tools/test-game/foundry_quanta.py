@@ -2,7 +2,7 @@
 """What the files of a test world hold of one metal, in quanta (the foundry's unit: an ingot is 72), read before it is
 reopened (no game running). The counterpart of `disk_count.py` for the foundry's proofs (Onda 2, D4).
 
-The atoms of iron: `minecraft:iron_ingot` 72, `minecraft:iron_nugget` 8, `minecraft:iron_block` 648, an `ntm:scraps__iron`
+The atoms of gold: `minecraft:gold_ingot` 72, `minecraft:gold_nugget` 8, `minecraft:gold_block` 648, an `ntm:scraps__gold`
 with the amount its `minecraft:custom_data` `ntm_amount` carries (72 without it), and the molten metal of the machines'
 models: a pool (`mat`/`amount`: channels, tanks, molds, basins, the caster), a crucible's `recipe_stack` and
 `waste_stack`, an arc furnace's `liquids`, a rotary furnace's `output`. Where: item entities, block entities' slots,
@@ -15,8 +15,8 @@ from pathlib import Path
 
 import disk_count as dc
 
-METAL = 'iron'
-WEIGHT = {'minecraft:iron_ingot': 72, 'minecraft:iron_nugget': 8, 'minecraft:iron_block': 648}
+METAL = 'gold'
+WEIGHT = {'minecraft:gold_ingot': 72, 'minecraft:gold_nugget': 8, 'minecraft:gold_block': 648}
 SCRAP = 'ntm:scraps__' + METAL
 
 

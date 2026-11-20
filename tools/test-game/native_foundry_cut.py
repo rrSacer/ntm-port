@@ -2,9 +2,9 @@
 """The foundry's cut scenarios (Onda 2, D4 and the strand caster), on a disposable world; the runner,
 run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks one:
 
-  scrap   a crucible on a hot firebox that melted an iron ingot and 3 nuggets (96 quanta, a pool no ingot count
+  scrap   a crucible on a hot firebox that melted an gold ingot and 3 nuggets (96 quanta, a pool no ingot count
           holds); the act breaks it as a player in survival, picks up what it drops (one scrap with all 96:
-          `ntm:scraps__iron` with `ntm_amount:96`, D4) and puts that scrap into a crucible slot again, by the screen.
+          `ntm:scraps__gold` with `ntm_amount:96`, D4) and puts that scrap into a crucible slot again, by the screen.
           Whatever time passes after, the 96 are the crucible's slot or its melted pool. Control: a barrel with the
           ingot and the 3 nuggets, broken, picked up and put back by the screen
   caster  a strand caster whose funnel cell a crucible's stream falls on (F1): 2 ingots (144) melt, pour and wait in
@@ -12,7 +12,7 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           drops: its mold and one scrap with all 144. Control: a barrel with the 2 ingots and the mold, broken and
           picked up
 
-The atoms counted are the quanta of iron (`foundry_quanta.py` on disk, by the same rule): ingots 72, nuggets 8, a scrap
+The atoms counted are the quanta of gold (`foundry_quanta.py` on disk, by the same rule): ingots 72, nuggets 8, a scrap
 its `ntm_amount` (72 without it), and the molten metal of the models (a crucible's stacks, a pool).
 """
 import json
@@ -28,8 +28,8 @@ VANILLA = os.environ.get('NTM_CRASH_VANILLA') == '1'
 NO_SAVE = os.environ.get('NTM_CRASH_NO_SAVE') == '1'
 PAUSE_SAVE = os.environ.get('NTM_CRASH_PAUSE_SAVE') == '1'
 CRUCIBLE, FIREBOX, CASTER = 'ntm:machine_crucible', 'ntm:heater_firebox', 'ntm:machine_strand_caster'
-SCRAP = 'ntm:scraps__iron'
-WEIGHT = {'minecraft:iron_ingot': 72, 'minecraft:iron_nugget': 8, 'minecraft:iron_block': 648}
+SCRAP = 'ntm:scraps__gold'
+WEIGHT = {'minecraft:gold_ingot': 72, 'minecraft:gold_nugget': 8, 'minecraft:gold_block': 648}
 # `scrap`: the crucible's core (or the control's barrel); `caster`: where the caster is placed (its core is searched near
 # it) and the player stands; both in chunk (2, 0) and within 6 blocks of x=40, z=8.
 CORE = (40, 101, 8)
@@ -71,18 +71,20 @@ def model(g, core):
     text = machine_state(g, core)
     found = re.search(r'\{.*\}', text)
     try:
-        return json.loads(found.group(0)) if found else None
+        whole = json.loads(found.group(0)) if found else None
     except ValueError:
         return None
+    # The block entity's string: {generation, block, facing, data: the model}.
+    return whole.get('data', whole) if isinstance(whole, dict) else None
 
 
 def molten(m):
-    """The molten iron of a model: a pool (`mat`, `amount`) or a crucible's stacks."""
+    """The molten gold of a model: a pool (`mat`, `amount`) or a crucible's stacks."""
     if not isinstance(m, dict):
         return 0
-    total = int(m['amount']) if m.get('mat') == 'iron' and isinstance(m.get('amount'), int) else 0
+    total = int(m['amount']) if m.get('mat') == 'gold' and isinstance(m.get('amount'), int) else 0
     for key in ('recipe_stack', 'waste_stack'):
-        total += sum(int(q) for mat, q in m.get(key, []) or [] if mat == 'iron')
+        total += sum(int(q) for mat, q in m.get(key, []) or [] if mat == 'gold')
     return total
 
 
@@ -147,15 +149,15 @@ def prepare(g):
     if SCENARIO == 'scrap':
         if VANILLA:
             g.command('setblock %d %d %d minecraft:barrel' % CORE)
-            g.command('item replace block %d %d %d container.1 with minecraft:iron_ingot 1' % CORE)
-            g.command('item replace block %d %d %d container.2 with minecraft:iron_nugget 3' % CORE)
+            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 1' % CORE)
+            g.command('item replace block %d %d %d container.2 with minecraft:gold_nugget 3' % CORE)
         else:
             g.command('setblock %d %d %d %s[facing=south,honey_level=0]' % (CORE[0], CORE[1] - 1, CORE[2], FIREBOX))
             g.command('setblock %d %d %d %s[facing=north,honey_level=0]' % (*CORE, CRUCIBLE))
             time.sleep(2)
             g.command('item replace block %d %d %d container.0 with minecraft:coal 16' % (CORE[0], CORE[1] - 1, CORE[2]))
-            g.command('item replace block %d %d %d container.1 with minecraft:iron_ingot 1' % CORE)
-            g.command('item replace block %d %d %d container.2 with minecraft:iron_nugget 3' % CORE)
+            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 1' % CORE)
+            g.command('item replace block %d %d %d container.2 with minecraft:gold_nugget 3' % CORE)
             ok = wait_for(lambda: molten(model(g, CORE)) == 96, 180)
             g.check('melted_96', ok, molten(model(g, CORE)))
             g.check('the_slots_are_empty', stack_quanta(block_items(g, CORE)) == 0, block_items(g, CORE))
@@ -176,7 +178,7 @@ def place_caster(g):
     if VANILLA:
         g.command('setblock %d %d %d minecraft:barrel' % OTHER)
         g.command('item replace block %d %d %d container.0 with ntm:mold__ingot 1' % OTHER)
-        g.command('item replace block %d %d %d container.1 with minecraft:iron_ingot 2' % OTHER)
+        g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % OTHER)
         return
     g.command('gamemode creative @s')
     g.command(f'give @s {CASTER} 1')
@@ -213,7 +215,7 @@ def place_caster(g):
     (g.folder / 'caster-core.json').write_text(json.dumps({'core': core, 'crucible': crucible}))
     time.sleep(2)
     g.command('item replace block %d %d %d container.0 with minecraft:coal 16' % fire)
-    g.command('item replace block %d %d %d container.1 with minecraft:iron_ingot 2' % crucible)
+    g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % crucible)
     ok = wait_for(lambda: molten(model(g, core)) == 144, 240)
     g.check('poured_144_into_the_caster', ok, [molten(model(g, core)), molten(model(g, crucible))])
     g.check('the_crucible_is_empty', molten(model(g, crucible)) == 0, molten(model(g, crucible)))
@@ -282,10 +284,10 @@ def act(g):
             g.command('gamemode creative @s')
             g.command('setblock %d %d %d minecraft:barrel' % CORE)
             time.sleep(1)
-            g.command('item replace block %d %d %d container.1 with minecraft:iron_ingot 1' % CORE)
-            g.command('item replace block %d %d %d container.2 with minecraft:iron_nugget 3' % CORE)
-            g.command('clear @s minecraft:iron_ingot')
-            g.command('clear @s minecraft:iron_nugget')
+            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 1' % CORE)
+            g.command('item replace block %d %d %d container.2 with minecraft:gold_nugget 3' % CORE)
+            g.command('clear @s minecraft:gold_ingot')
+            g.command('clear @s minecraft:gold_nugget')
         else:
             g.check('one_exact_scrap', stack_quanta(inv) == 96 and 'ntm_amount:96' in inv.replace(' ', '').replace('"', ''), inv[:400])
             g.command('gamemode creative @s')
