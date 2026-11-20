@@ -1777,6 +1777,30 @@ As rodadas 1–8 caíram por: o roteiro (o núcleo atrás do dummy; a sessão de
 pelo dummy (acima) e um defeito: a tela do console abria sem sessão nem snapshot (`menu_extra_data` só servia as
 barras), desenhava só a textura e não mandava nada (`447417d4`).
 
+## RBMK T11 — storage e guindaste (planejado, 20/11/2026)
+
+Branch `rbmk-t05` (continua sobre o T10), motor sem mudança prevista. O storage (`rbmk_storage`) já é coluna de 12 slots
+(T02), sem a fila; o console do guindaste (`rbmk_crane_console`) é conteúdo inerte (`Kind::Inert`), sem tela no Java.
+
+### Plano
+
+| # | Parte | O quê | Fonte Java |
+| --- | --- | --- | --- |
+| S | Storage | A cada `worldTime % 10 == 0`, uma passagem ascendente que puxa cada sucessor para a lacuna anterior (sem compactar tudo), na transação da coluna; automação em todos os slots, só barras (`isItemValidForSlot`); o carregamento entra no 11, a descarga sai do 0 | `TileEntityRBMKStorage`, `ContainerRBMKStorage` |
+| L | Carregáveis | `IRBMKLoadable` do canal (`slots[0]` vazio/cheio) e do storage; o guindaste não impõe os limites térmicos da mão | `TileEntityRBMKRod.canLoad/load/canUnload/provideNext/unload` |
+| G | Guindaste (máquina) | Estado salvo: `crane`, `craneRotationOffset`, centro, quatro vãos, altura, `posFront`/`posLeft` e o item `held`; em memória (como no Java): `progress`, `goesDown`, inclinações. Ligação pela `rbmk_tool` (centro no topo da coluna + 1, vãos por `findRoomExtent` até 16 no plano `centerY + 6`, altura 7); chave de fenda gira a ponte 90° (só visual) | `TileEntityCraneConsole`, `RBMKCraneConsole.onScrew`, `ItemRBMKTool` |
+| M | Movimento | Por tick: o primeiro jogador na área do console (caixa diante dele, 2 de altura) com as teclas CRANE_UP/DOWN/LEFT/RIGHT anda 0,05 e prende nos vãos; CRANE_LOAD desce; nada anda enquanto desce/sobe; a descida e a subida a 0,04 por tick; no fundo, a coluna sob `floor(pos + 0,5)` (núcleo) carrega ou descarrega se puder | `updateEntity`, `getColumnAtPos`, `canTargetInteract` |
+| T | Transferência | O stack entre o guindaste e a coluna numa só publicação dos dois blocos (custódia durável dos dois lados, gerações conferidas); nada pela metade num corte | — (D4, regras de transação) |
+| K | Teclas | Do cliente ao servidor numa mensagem a cada mudança (o `KeybindPacket` do HBM), guardadas por jogador e limpas na saída | `HbmKeybinds`, `HbmPlayerProps.getKeyPressed` |
+| R | Render | A ponte, o guincho, a barra suspensa, a inclinação do joystick | `RenderCraneConsole` |
+| U/J/C | Provas | U: posição e arredondamento em toda rotação do console, vãos com bloqueio, compactação de uma passagem, alvo ausente ou trocado no fundo da descida; J: levar uma barra quente de um canal ao storage e de volta com os dados preservados, quebrar o console e o alvo no meio e reabrir; C: total de barras (mão, canal, storage, guindaste) constante, sem duplicar nem perder num corte durante a transferência | — |
+
+Decisões pedidas ao coordenador: (1) teclas fixas nas padrões do HBM (setas e Enter) pelo gancho `key` do motor, sem
+tela de remapeamento (o `KeyBinding` do Java é remapeável); (2) a custódia do `held` num slot oculto do console do
+guindaste (sem menu nem automação), movido junto com o slot da coluna; ao quebrar o console, o Java perde o item (o TE
+não é inventário): no port ele cairia no chão ou seguiria o Java?; (3) o render da ponte (R) e o `craneIndicator` nas
+colunas no T19, como o render do console.
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
