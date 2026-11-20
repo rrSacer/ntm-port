@@ -201,36 +201,33 @@ class Proof:
         return (math.floor(c[0] - d[0] * pf - left[0] * pl + .5), math.floor(c[2] - d[1] * pf - left[1] * pl + .5))
 
     def drive(self, name, target):
-        """Holds the arrow keys until the hook is over `target`'s cell, then lets them go."""
+        """The arrow keys held until the hook is over `target`: where it must stand (`getColumnAtPos` solved for
+        `posFront` and `posLeft`), each axis in turn, read as it goes (0.05 a tick)."""
         g = self.players[name]
-        for _ in range(2):
-            for key in ('up', 'down', 'left', 'right'):
-                s = crane(self.host, self.core)
-                at = self.cell(s)
-                if at == (target[0], target[2]):
-                    return s
+        d = {'north': (0, -1), 'south': (0, 1), 'east': (1, 0), 'west': (-1, 0)}[self.facing]
+        left = (d[1], -d[0])
+        s = crane(self.host, self.core)
+        dx, dz = target[0] - s['center'][0], target[2] - s['center'][2]
+        want = {'pos_front': -(dx * d[0] + dz * d[1]), 'pos_left': -(dx * left[0] + dz * left[1])}
+        for axis, (more, less) in (('pos_front', ('up', 'down')), ('pos_left', ('left', 'right'))):
+            for _ in range(3):
+                now = bits(crane(self.host, self.core)[axis])
+                if abs(now - want[axis]) < .15:
+                    break
+                key = more if want[axis] > now else less
                 g.ctl(f'key key.keyboard.{key} down')
-                time.sleep(1)
-                data = ' '.join(self.host.command(f'data get block {self.core[0]} {self.core[1]} {self.core[2]} data').get('chat', []))
-                self.host.evidence.setdefault('drive', []).append({'key': key, 'target': target, 'crane': crane(self.host, self.core),
-                                                                    'server': ' '.join(self.host.command('ntmtest crane').get('chat', [])),
-                                                                    'screen': g.ctl('screen').get('screen'),
-                                                                    'data': data[-60:], 'guest_at': g.ctl('status').get('player', {}).get('position')})
-                deadline = time.monotonic() + 12
-                best = None
+                deadline = time.monotonic() + 20
                 while time.monotonic() < deadline:
-                    s = crane(self.host, self.core)
-                    at = self.cell(s)
-                    dist = abs(at[0] - target[0]) + abs(at[1] - target[2])
-                    if best is not None and dist > best:
+                    now = bits(crane(self.host, self.core)[axis])
+                    if (now >= want[axis] - .1) if key == more else (now <= want[axis] + .1):
                         break
-                    best = dist if best is None else min(best, dist)
-                    if dist == 0:
-                        break
-                    time.sleep(.15)
+                    time.sleep(.05)
                 g.ctl(f'key key.keyboard.{key} up')
-                time.sleep(.4)
-        return crane(self.host, self.core)
+                time.sleep(.5)
+        s = crane(self.host, self.core)
+        self.host.evidence.setdefault('drive', []).append({'target': target, 'want': want, 'at': [bits(s['pos_front']), bits(s['pos_left'])],
+                                                            'server': ' '.join(self.host.command('ntmtest crane').get('chat', []))[-160:]})
+        return s
 
     def load(self, name):
         g = self.players[name]
