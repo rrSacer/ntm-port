@@ -45,7 +45,7 @@ fn the_other_columns_menus_ignore_a_hot_rod() {
 }
 
 fn hold(g: &mut Game, stack: Stack, creative: bool) {
-    let held = HeldStack { encoded: format!("{stack:?}"), stack };
+    let held = HeldStack { encoded: format!("{stack:?}"), stack, plain: true };
     g.world.borrow_mut().hands = Some(PlayerSlots { hand: Some(PlayerSlot::Inventory(0)), inventory: vec![Some(held), None], creative, ..Default::default() });
 }
 
