@@ -21,6 +21,8 @@ HOST, GUEST = 'Host', 'Guest'
 Y = 101
 PLACE = (40, Y, 4)  # the console's front cell (its core is one further south): what a player clicks
 TARGET = (40, Y, 14)
+# Where a player waits while the other works (away from every cell either uses).
+PARK = (34.5, Y, 1.5)
 RODS = {'manual': (40, Y, 14), 'moderated': (41, Y, 14), 'reasim': (42, Y, 14), 'auto': (43, Y, 14)}
 BLOCKS = {'manual': 'rbmk_control', 'moderated': 'rbmk_control_mod', 'reasim': 'rbmk_control_reasim', 'auto': 'rbmk_control_auto'}
 BOILER = (40, Y, 15)
@@ -111,6 +113,7 @@ class Proof:
     def sneak_use(self, name, p, item, face='north'):
         g = self.players[name]
         g.close()
+        self.park(name)
         self.host.command(f'clear {name}')
         self.host.command(f'give {name} {item} 1')
         self.host.command(f'tp {name} {p[0] + .5} {p[1]} {p[2] - 2.5} 0 0')
@@ -123,62 +126,33 @@ class Proof:
         g.ctl('key shift up')
         time.sleep(.5)
 
+    def park(self, name):
+        """The other player out of the way: a player standing where the next one goes takes that one's aim (the guest's
+        use hits the host, kind entity, and no use of the block is sent)."""
+        other = GUEST if name == HOST else HOST
+        self.players[other].close()
+        self.host.command(f'tp {other} {PARK[0]} {PARK[1]} {PARK[2]} 0 0')
+        time.sleep(.4)
+
     def open(self, name, carry=None):
         g = self.players[name]
         g.close()
+        self.park(name)
         self.host.command(f'clear {name}')
         if carry:
             # In the main inventory, out of the hotbar: the hand stays empty.
             self.host.command(f'item replace entity {name} container.20 with {carry}')
-        if name == HOST:
-            # The front cell, a dummy: its core's screen.
-            self.host.command(f'tp {name} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
-            time.sleep(.6)
-            g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
-        else:
-            # The front cell first; a LAN guest's use of a dummy cell has opened nothing (recorded in the T10 doc): then
-            # the core itself, from behind.
-            self.host.command(f'tp {name} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
-            time.sleep(.6)
-            g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
-            time.sleep(2)
-            through = g.ctl('screen').get('screen') == 'container'
-            self.host.evidence.setdefault('guest_through_the_dummy', []).append(through)
-            if not through:
-                self.host.command(f'tp {name} {self.core[0] + .5} {Y} {self.core[2] + 3.5} 180 0')
-                time.sleep(.6)
-                g.ctl(f'interact {self.core[0]} {self.core[1]} {self.core[2]} south')
+        # The front cell, a dummy: its core's screen.
+        self.host.command(f'tp {name} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
+        time.sleep(.6)
+        g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
         deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
             if g.ctl('screen').get('screen') == 'container':
                 time.sleep(1.5)
                 return g
             time.sleep(.2)
-        self.host.evidence.setdefault('not_opened', []).append({'who': name, 'screen': g.ctl('screen'), 'ui': g.ctl('ui').get('screen')})
-        self.diagnose(name)
-        self.host.save()
         raise AssertionError(f'{name}: the console did not open')
-
-    def diagnose(self, name):
-        """Which uses open a screen for `name`: the console's core from the south, a top cell, a rod's core (T07's)."""
-        g = self.players[name]
-        tries = [('core_south', self.core, (self.core[0] + .5, self.core[2] + 3.5, 180), 'south'),
-                 ('top_cell', (PLACE[0], Y + 2, PLACE[2]), (PLACE[0] + .5, PLACE[2] - 2.5, 0), 'north'),
-                 ('rod_core', RODS['auto'], (RODS['auto'][0] + .5, RODS['auto'][2] - 2.5, 0), 'north')]
-        out = {}
-        for label, cell, (x, z, yaw), face in tries:
-            g.close()
-            time.sleep(.5)
-            self.host.command(f'tp {name} {x} {Y} {z} {yaw} 0')
-            time.sleep(.8)
-            try:
-                r = g.ctl(f'interact {cell[0]} {cell[1]} {cell[2]} {face}')
-            except RuntimeError as error:
-                r = {'error': str(error)}
-            time.sleep(2)
-            out[label] = {'interact': {k: r.get(k) for k in ('ok', 'error', 'block')} if isinstance(r, dict) else str(r), 'screen': g.ctl('screen').get('screen')}
-        self.host.evidence['diagnose'] = out
-        g.close()
 
     def setup(self):
         h = self.host
@@ -298,6 +272,7 @@ class Proof:
         """The automatic rod's own screen (T07's): a curve whose target at 20 °C is 0.6, for AZ-5 to leave alone."""
         g = self.guest
         g.close()
+        self.park(GUEST)
         p = RODS['auto']
         self.host.command(f'tp {GUEST} {p[0] + .5} {Y} {p[2] - 2.5} 0 0')
         time.sleep(.6)

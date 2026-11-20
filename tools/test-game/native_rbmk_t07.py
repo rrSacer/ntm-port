@@ -89,6 +89,11 @@ class Proof:
     def open(self, name, p):
         g = self.players[name]
         g.close()
+        # The other player out of the way: one standing where this one goes takes this one's aim.
+        other = GUEST if name == HOST else HOST
+        if self.players.get(other) is not None:
+            self.players[other].close()
+            self.host.command(f'tp {other} 37.5 {Y} 3.5 0 0')
         self.host.command(f'tp {name} {p[0] + .5} {p[1]} {p[2] - 2.5} 0 0')
         time.sleep(.6)
         g.ctl(f'interact {p[0]} {p[1]} {p[2]} north')
