@@ -21165,7 +21165,18 @@
           8,
           104
         ],
-        "data": 9
+        "data": 11,
+        "synced": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       },
       "screen": {
         "texture": "ntm:textures/gui/generators/gui_wood_burner_alt.png",

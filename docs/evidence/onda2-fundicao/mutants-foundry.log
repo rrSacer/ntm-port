@@ -89,3 +89,17 @@ KILLED       flow: a reopened empty slag is not scheduled  <- a_world_reopened_b
 # Rodada 6: o carvão eterno
 KILLED       fuel: the eternal coal has no container (it is used up)  <- the_eternal_coal_is_given_back_when_lit
 1 of 1 killed
+
+# Rodada 6: o queimador a lenha (liquidBurn)
+KILLED       burner: the liquid gives twice the HE  <- the_wood_burner_burns_its_tank_in_liquid_mode
+KILLED       burner: the liquid takes 1 mB a tick  <- the_wood_burner_burns_its_tank_in_liquid_mode
+KILLED       burner: the liquid burns when off  <- the_wood_burner_burns_its_tank_in_liquid_mode
+KILLED       burner: the liquid burns with the buffer full  <- the_wood_burner_burns_its_tank_in_liquid_mode
+KILLED       burner: the liquid mode goes on to burn the solid fuel too  <- the_wood_burner_burns_its_tank_in_liquid_mode
+KILLED       burner: the identifier does not type the tank  <- the_wood_burner_takes_its_type_and_its_containers_from_its_slots
+KILLED       burner: the containers are not loaded  <- the_wood_burner_takes_its_type_and_its_containers_from_its_slots
+KILLED       burner: the tank's mB is not in the block entity  <- the_wood_burners_tank_goes_through_the_block_entity
+KILLED       burner: the switch button does nothing  <- the_wood_burner_takes_its_type_and_its_containers_from_its_slots
+KILLED       burner: the fluid takes the burner from any side  <- a_duct_at_the_back_fills_the_tank_and_one_at_the_side_does_not
+KILLED       burner: woodoil burns at the wrong heat  <- the_flammable_heat_is_the_contents
+11 of 11 killed

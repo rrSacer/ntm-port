@@ -740,6 +740,98 @@ mod screens {
         assert_eq!((w.ash_coal, w.slots[1].clone()), (0, Some(Stack::new("ntm:powder_ash__coal", 8))));
     }
 
+    /// `liquidBurn` (`updateEntity:127-142`): 2 mB a tick of a flammable tank give `heat * mB / 2000` HE, only while it is on and
+    /// not full; the solid fuel and the ash are left alone; a fluid without `FT_Flammable` gives nothing.
+    #[test]
+    fn the_wood_burner_burns_its_tank_in_liquid_mode() {
+        let mut w = WoodBurner { liquid_burn: true, ..WoodBurner::default() };
+        w.tank.fill("woodoil", 5);
+        w.slots[0] = Some(Stack::new("minecraft:coal", 2));
+        w.sync_in();
+        w.tick();
+        // woodoil is 110 000 TU a bucket: 110 000 * 2 / 2000 = 110 HE a tick, 2 mB out.
+        assert_eq!((w.power, w.tank.mb, w.burn, w.slots[0].as_ref().map(|s| s.count)), (110, 3, 0, Some(2)), "the fuel is not touched");
+        w.tick();
+        w.tick();
+        // The last mB: 110 000 * 1 / 2000 = 55.
+        assert_eq!((w.power, w.tank.mb), (110 + 110 + 55, 0));
+        w.tick();
+        assert_eq!(w.power, 275, "an empty tank gives nothing");
+        // Off, or full: nothing is burnt.
+        let mut w = WoodBurner { liquid_burn: true, on: false, ..WoodBurner::default() };
+        w.tank.fill("woodoil", 100);
+        w.tick();
+        assert_eq!((w.power, w.tank.mb), (0, 100));
+        w.on = true;
+        w.power = WoodBurner::MAX;
+        w.tick();
+        assert_eq!(w.tank.mb, 100, "full of power: it does not burn");
+        // The cap.
+        w.power = WoodBurner::MAX - 20;
+        w.tick();
+        assert_eq!((w.power, w.tank.mb), (WoodBurner::MAX, 98));
+        // Water is not flammable.
+        let mut w = WoodBurner { liquid_burn: true, ..WoodBurner::default() };
+        w.tank.set_type("water");
+        w.tank.fill("water", 100);
+        w.tick();
+        assert_eq!((w.power, w.tank.mb), (0, 100));
+        // And in solid mode the tank is left alone.
+        let mut w = WoodBurner::default();
+        w.tank.fill("woodoil", 100);
+        w.tick();
+        assert_eq!((w.power, w.tank.mb), (0, 100));
+    }
+
+    /// `tank.setType(2, slots)` and `tank.loadTank(3, 4, slots)`: an identifier types the tank (the content goes), a full container of
+    /// its type is poured in and the empty one comes out; the screen's button 1 switches the fuel.
+    #[test]
+    fn the_wood_burner_takes_its_type_and_its_containers_from_its_slots() {
+        let mut w = WoodBurner::default();
+        w.tank.fill("woodoil", 500);
+        let full = crate::fluid::all_full_containers().into_iter().find(|c| c.ends_with("woodoil")).expect("a woodoil container");
+        w.slots[3] = Some(Stack::new(&full, 2));
+        w.tick();
+        assert_eq!(w.tank.mb, 500 + crate::fluid::contents(&full).unwrap().mb);
+        assert_eq!(w.slots[3], Some(Stack::new(&full, 1)));
+        assert!(w.slots[4].is_some(), "the empty container is out");
+        // An identifier of another type: the content goes with the old type.
+        let mut w = WoodBurner::default();
+        w.tank.fill("woodoil", 500);
+        w.slots[2] = Some(Stack { custom: Some("{ntm_fluid:\"diesel\"}".into()), ..Stack::new("ntm:fluid_identifier_multi", 1) });
+        w.tick();
+        assert_eq!((w.tank.fluid.as_str(), w.tank.mb), ("diesel", 0));
+        assert!(!w.liquid_burn);
+        w.button(1);
+        assert!(w.liquid_burn);
+        assert_eq!(w.screen_data()[5], 1);
+    }
+
+    /// The tank goes with the slots in the block entity (id, mB) and an old record, without it, leaves it as it is.
+    #[test]
+    fn the_wood_burners_tank_goes_through_the_block_entity() {
+        let mut w = WoodBurner::default();
+        w.tank.fill("woodoil", 1_234);
+        let state = w.save_state();
+        let mut back = WoodBurner::default();
+        back.load_state(&state);
+        assert_eq!(back.tank, w.tank);
+        let mut old = WoodBurner::default();
+        old.tank.fill("woodoil", 77);
+        old.load_state(&[]);
+        assert_eq!(old.tank.mb, 77);
+        // An untyped tank (id 0) has no fluid.
+        let mut e = WoodBurner::default();
+        e.tank.set_type("");
+        let mut back = WoodBurner::default();
+        back.tank.fill("woodoil", 9);
+        back.load_state(&e.save_state());
+        assert_eq!((back.tank.fluid.as_str(), back.tank.mb), ("", 0));
+        let json = serde_json::to_string(&w).unwrap();
+        let from_old: WoodBurner = serde_json::from_str(&json.replace(&format!(",\"tank\":{}", serde_json::to_string(&w.tank).unwrap()), "").replace("\"liquid_burn\":false,", "")).unwrap();
+        assert_eq!((from_old.tank.fluid.as_str(), from_old.tank.mb, from_old.liquid_burn), ("woodoil", 0, false), "a record from before the tank");
+    }
+
     /// The barrel: a full tank in slot 2 pours, its empty one out at 3; an
     /// empty one in slot 4 fills, out at 5.
     #[test]

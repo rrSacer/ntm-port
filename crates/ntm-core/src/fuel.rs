@@ -336,6 +336,19 @@ pub fn fuels() -> Vec<String> {
 }
 
 /// `getContainerItem` of a fuel that has used up its last item.
+/// `FT_Flammable.getHeatEnergy` of `fluid` (TU a bucket; `data/machines/flammable.json`, from the content's `fluid_traits.json`).
+pub fn flammable_heat(fluid: &str) -> Option<u64> {
+    use std::{collections::HashMap, sync::OnceLock};
+    #[derive(serde::Deserialize)]
+    struct File {
+        heat: HashMap<String, u64>,
+    }
+    static T: OnceLock<HashMap<String, u64>> = OnceLock::new();
+    T.get_or_init(|| serde_json::from_str::<File>(include_str!("../data/machines/flammable.json")).expect("flammable.json").heat)
+        .get(fluid)
+        .copied()
+}
+
 pub fn container_item(item: &str) -> Option<&'static str> {
     (item == "minecraft:lava_bucket").then_some("minecraft:bucket")
 }
@@ -380,6 +393,19 @@ pub fn ash(item: &str) -> Ash {
 
 #[cfg(test)]
 mod tests {
+    /// `data/machines/flammable.json` is the content's `fluid_traits.json` `flammable` list.
+    #[test]
+    fn the_flammable_heat_is_the_contents() {
+        let content: serde_json::Value = serde_json::from_str(include_str!("../../../content/fluid_traits.json")).unwrap();
+        let list = content["flammable"].as_array().unwrap();
+        assert!(list.len() > 50);
+        for e in list {
+            assert_eq!(flammable_heat(e["fluid"].as_str().unwrap()), e["heat_tu_per_bucket"].as_u64(), "{e}");
+        }
+        assert_eq!(flammable_heat("woodoil"), Some(110_000));
+        assert_eq!(flammable_heat("water"), None);
+    }
+
     use super::*;
 
     #[test]
