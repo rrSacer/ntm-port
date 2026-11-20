@@ -310,6 +310,31 @@ pub struct RbmkColumn {
     /// How many values its screen reads ([`screen_len`]); 0 in a save from before T02 (a fuel channel's 7, else 1).
     #[serde(default, skip_serializing_if = "is_zero")]
     pub screen: u8,
+    /// An automatic control rod's settings (`TileEntityRBMKControlAuto`, T06): none for the other columns, and in a
+    /// save from before T06, where they read as the TE's defaults.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auto: Option<AutoControl>,
+}
+
+/// `TileEntityRBMKControlAuto`'s settings, set from its screen (`receiveControl`): the levels at the heat bounds and
+/// the curve between them. Doubles by their bits. T07 moves the rod by them.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct AutoControl {
+    #[serde(with = "bits")]
+    pub level_lower: f64,
+    #[serde(with = "bits")]
+    pub level_upper: f64,
+    #[serde(with = "bits")]
+    pub heat_lower: f64,
+    #[serde(with = "bits")]
+    pub heat_upper: f64,
+    /// `RBMKFunction`'s ordinal: 0 `LINEAR` (the default), 1 `QUAD_UP`, 2 `QUAD_DOWN`.
+    pub function: u8,
+}
+
+/// The columns whose block entity is a `TileEntityRBMKControlAuto` (`RBMKControlAuto`).
+pub fn is_auto_control(block: &str) -> bool {
+    matches!(block, "ntm:rbmk_control_auto" | "ntm:rbmk_control_reasim_auto")
 }
 
 fn is_no_lid(l: &Lid) -> bool {
@@ -335,6 +360,7 @@ impl RbmkColumn {
             slots: vec![None; slot_count(block)],
             lid: Lid::None,
             screen: screen_len(block) as u8,
+            auto: is_auto_control(block).then(AutoControl::default),
         }
     }
 
@@ -372,6 +398,10 @@ impl Slotted for RbmkColumn {
             Lid::Standard => 1,
             Lid::Glass => 2,
         };
+        // An automatic control rod's curve, the value its screen's overlays read (T06).
+        if let (Some(a), Some(f)) = (&self.auto, v.get_mut(2)) {
+            *f = i32::from(a.function);
+        }
         v
     }
 }

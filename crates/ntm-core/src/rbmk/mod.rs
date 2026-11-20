@@ -18,6 +18,7 @@ pub mod outgasser;
 pub mod persist;
 pub mod reactor;
 pub mod rods;
+pub mod screen;
 pub mod tooltip;
 mod rods_data;
 mod tables_data;
