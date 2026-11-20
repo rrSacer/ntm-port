@@ -661,6 +661,19 @@ bindings = [
   { name = "data", ty = "&mut Option<Vec<u8>>", value = "&mut *data" },
 ]
 
+# The RBMK crane's keys (T11): the client sends the five it holds at each change.
+[[injection]]
+id = "crane-keys"
+hook = "key"
+hook_version = 1
+kind = "HEAD"
+helper = "crane_keys.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "key", ty = "&str", value = "key" },
+  { name = "pressed", ty = "bool", value = "pressed" },
+]
+
 [[injection]]
 id = "screen-command"
 hook = "net_from_client"

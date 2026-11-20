@@ -308,6 +308,7 @@ fn rbmk_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3])
     let item = &*stack.item;
     let screw = matches!(item, "ntm:screwdriver" | "ntm:screwdriver_desh");
     if item == "ntm:rbmk_tool" || screw && rbmk_console_core(game, pos).is_some() { return rbmk_console_item(game, stack, pos); }
+    if screw && rbmk_crane_core(game, pos).is_some() { return rbmk_console_item(game, stack, pos); }
     if !screw && ntm_core::rbmk::persist::Lid::of_item(item).is_none() { return false; }
     let core = game.machine_cell_core(pos);
     if !game.native_loaded_block(game.dim.id(), core).is_some_and(|b| ntm_core::rbmk::persist::is_column(ntm_core::blockstate::id_of(&b))) { return false; }
@@ -318,6 +319,11 @@ fn rbmk_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3])
     let mut host = Host { game, buttons: Vec::new() };
     reconcile(server, &mut host);
     if screw { server.native_rbmk_screw(&mut host, &dim, core, item) } else { server.native_rbmk_lid(&mut host, &dim, pos, core, &player) }
+}
+
+fn rbmk_crane_core(game: &mut crate::game::Game<'_>, pos: [i32; 3]) -> Option<[i32; 3]> {
+    let core = game.machine_cell_core(pos);
+    game.native_loaded_block(game.dim.id(), core).is_some_and(|b| ntm_core::blockstate::id_of(&b) == ntm_core::rbmk::crane::BLOCK).then_some(core)
 }
 
 fn rbmk_console_core(game: &mut crate::game::Game<'_>, pos: [i32; 3]) -> Option<[i32; 3]> {
@@ -347,17 +353,26 @@ fn rbmk_console_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [
         tell(game, "item.ntm.rbmk_tool.linked", "Position set!");
         return true;
     }
-    if block.as_deref() != Some(ntm_core::rbmk::screen::CONSOLE) { return false; }
+    let crane = block.as_deref() == Some(ntm_core::rbmk::crane::BLOCK);
+    if block.as_deref() != Some(ntm_core::rbmk::screen::CONSOLE) && !crane { return false; }
     let mut guard = lock(&SERVER);
     let Some((server, _)) = guard.as_mut() else { return false };
     if &*stack.item == "ntm:rbmk_tool" {
         // `stack.hasTagCompound()`: a tool that never linked a column does nothing to the console.
         let Some(Tag::Compound(data)) = stack.data().and_then(|d| d.other("minecraft:custom_data")) else { return false };
         let target = ["posX", "posY", "posZ"].map(|key| match data.get(&JavaString::from(key)) { Some(Tag::Int(n)) => *n, _ => 0 });
-        if server.native_rbmk_console_link(&dim, core, target) { tell(game, "item.ntm.rbmk_tool.set", "RBMK linked!"); }
+        // The crane console's link (T11): its spans measured in the world now.
+        let linked = if crane {
+            let mut host = Host { game: &mut *game, buttons: Vec::new() };
+            server.native_rbmk_crane_link(&mut host, &dim, core, target)
+        } else {
+            server.native_rbmk_console_link(&dim, core, target)
+        };
+        if linked { tell(game, "item.ntm.rbmk_tool.set", "RBMK linked!"); }
         return true;
     }
-    if server.native_rbmk_console_rotate(&dim, core) { game.damage_held_tool(); }
+    let turned = if crane { server.native_rbmk_crane_rotate(&dim, core) } else { server.native_rbmk_console_rotate(&dim, core) };
+    if turned { game.damage_held_tool(); }
     true
 }
 
@@ -1704,6 +1719,16 @@ impl ServerHost for Host<'_, '_> {
     fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {
         self.publish_atomic(commits,&[],&consumed_contents(commits),false)
     }
+    /// A group commit with stacks moving between the machines' slots (the RBMK crane, T11): each moved stack published
+    /// as the very stack that left (every component), through the templates of `publish_atomic_with`.
+    fn commit_machines_moving(&mut self, commits: &[ntm_core::server::MachineCommit], moves: &[ntm_core::server::SlotMove]) -> bool {
+        let mut templates = Vec::new();
+        for m in moves {
+            let Some(Some(stack)) = self.entity(&m.dim, m.from.0, |e| e.items.get(m.from.1).cloned().flatten()) else { return false };
+            templates.push((m.dim.clone(), m.to.0, m.to.1, stack));
+        }
+        self.publish_atomic_with(commits, &[], &consumed_contents(commits), false, None, &templates)
+    }
     /// The acting player's stacks (`native_actor_uuid`), each with its whole SNBT, as a transfer compares them.
     fn player_slots(&mut self,player:&str)->Option<ntm_core::server::PlayerSlots>{
         use ntm_core::server::{HeldStack,PlayerSlot,PlayerSlots};
@@ -2433,6 +2458,36 @@ pub(super) fn item_dose(id:&str)->Option<ntm_core::radiation::Dose> {lock(&SERVE
 /// The mod channels of the screens' commands and snapshots (`ntm_core::screens::control`).
 pub(super) const SCREEN_COMMAND: &str = "ntm:screen_command";
 pub(super) const SCREEN_SNAPSHOT: &str = "ntm:screen_snapshot";
+/// The RBMK crane keys a client holds (T11): one byte, `rbmk::crane::Keys::bits`.
+pub(super) const CRANE_KEYS: &str = "ntm:crane_keys";
+
+static CRANE_HELD: Mutex<u8> = Mutex::new(0);
+
+/// A key on the client (`native_key`): the crane's five (`HbmKeybinds` defaults: the arrows and Enter, not remapped,
+/// T11 decision 1) to the server when what is held changes. A key goes down only while playing (the Java's
+/// `KeyInputEvent` is not fired under a screen); one let go always counts, so none stays held.
+pub(super) fn crane_key(game: &mut crate::game::Game<'_>, key: &str, pressed: bool) {
+    let bit = match key {
+        "key.keyboard.up" => 1,
+        "key.keyboard.down" => 2,
+        "key.keyboard.left" => 4,
+        "key.keyboard.right" => 8,
+        "key.keyboard.enter" => 16,
+        _ => return,
+    };
+    if pressed && !game.native_playing() {
+        return;
+    }
+    let mut held = lock(&CRANE_HELD);
+    let now = if pressed { *held | bit } else { *held & !bit };
+    if now == *held {
+        return;
+    }
+    *held = now;
+    if let Err(error) = game.native_net_send_to_server(CRANE_KEYS, &[now]) {
+        eprintln!("ntm crane keys: {error}");
+    }
+}
 
 /// Test hooks only: the last command each player's client sent that the server took, and the last refusal.
 static LAST_COMMAND: Mutex<Option<(String, Vec<u8>)>> = Mutex::new(None);
@@ -2461,6 +2516,12 @@ pub(super) fn menu_extra_data(game: &crate::game::Game<'_>, player: u128, block:
 
 /// A command from a player's client (`native_net_from_client`): taken for the next tick, or refused whole.
 pub(super) fn net_from_client(game: &crate::game::Game<'_>, player: u128, channel: &str, data: &[u8]) {
+    if channel == CRANE_KEYS {
+        if let ([bits], Some((server, _))) = (data, lock(&SERVER).as_mut()) {
+            server.native_crane_keys(&horizon_protocol::crypto::uuid_string(player), *bits);
+        }
+        return;
+    }
     if channel != SCREEN_COMMAND {
         return;
     }
