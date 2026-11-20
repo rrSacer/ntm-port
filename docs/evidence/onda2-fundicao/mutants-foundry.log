@@ -73,3 +73,19 @@ KILLED       slag: the ray stops at cave air  <- the_ray_passes_cave_air
 2 of 2 killed
 KILLED       own: every cell of a commit is the server's own (a mined cable stays a ghost)  <- only_the_cells_born_with_a_machine_are_owned
 1 of 1 killed
+
+# Rodada 6: o escoamento da escória (9 mutantes)
+KILLED       flow: a slag over air does not fall  <- a_slag_over_air_falls_whole_into_the_cell_below_and_the_one_above_is_gone
+KILLED       flow: a falling slag leaves half behind  <- a_slag_over_air_falls_whole_into_the_cell_below_and_the_one_above_is_gone
+KILLED       flow: the slag below takes more than its capacity  <- a_slag_gives_the_slag_below_what_it_can_take_and_an_emptied_one_goes_next_tick
+KILLED       flow: the slag below may be another material  <- a_slag_gives_the_slag_below_what_it_can_take_and_an_emptied_one_goes_next_tick, another_material_below_takes_nothing_and_the_pour_sits_on_top_of_it
+KILLED       flow: the emptied upper is not scheduled to go  <- a_slag_gives_the_slag_below_what_it_can_take_and_an_emptied_one_goes_next_tick
+KILLED       flow: the threshold is a quarter, not a fifth  <- a_slag_of_a_fifth_of_the_capacity_spreads_to_its_free_sides_and_the_sum_is_exact
+KILLED       flow: the spread ignores the count  <- a_pour_that_makes_a_heavy_slag_goes_on_spreading_with_the_sum_exact, a_slag_at_the_edge_of_a_chunk_does_not_spread_into_the_next, a_slag_of_a_fifth_of
+KILLED       flow: the spread crosses the chunk border  <- a_slag_at_the_edge_of_a_chunk_does_not_spread_into_the_next
+KILLED       flow: a reopened empty slag is not scheduled  <- a_world_reopened_between_the_two_steps_has_the_metal_once_and_the_empty_slag_goes
+9 of 9 killed
+
+# Rodada 6: o carvão eterno
+KILLED       fuel: the eternal coal has no container (it is used up)  <- the_eternal_coal_is_given_back_when_lit
+1 of 1 killed
