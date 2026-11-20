@@ -1755,6 +1755,12 @@ mundo, se não couber, vai para o T19.
   `HostEvent::Warn` que não chega ao log) e depois `as_guest` → `use_item` → `use_hand` → `machine_cell_core` →
   `mod_menu_at(core)` → `open_menu`.
 
+  Checagem da revisão do T10 (P3-1, `tools/test-game/native_infra_g.py`, `evidence/infra-g/rbmk-t05-urvkmi9s/`):
+  em quatro multiblocos (console do RBMK, eletrolisador, máquina de montagem, planta química), o anfitrião abre pela
+  célula da frente (um dummy) e o hóspede não abre em nenhum; o hóspede só abre o console pelo núcleo, porque os
+  núcleos dos outros três ficam cercados de dummies (nenhuma face visível): **nesses, um hóspede de LAN não abre o
+  menu de jeito nenhum**. O limite é de todo multibloco do NTM, não do console.
+
 Decisões do coordenador na entrega (20/11/2026): o achado do hóspede vira o INFRA-G; os demais limites (render e textos
 das telas para o T19, `craneIndicator`, textos em inglês, relógio do AZ-5 por tela aberta) aceitos.
 
