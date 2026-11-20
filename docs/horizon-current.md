@@ -1506,8 +1506,8 @@ movia as barras (validado contra o oráculo no T1); o T07 liga o estado, as tela
 - **Energia não gravada** (como o Java): uma barra ReaSim reaberta começa sem energia. A alternativa (gravar, uma
   correção de durabilidade) muda o comportamento visível de quem fecha o mundo com a barra andando.
 - **Ferramenta de cópia** (`ItemSettingsTool`, `settings_tool`): não existe no port. As funções de copiar e colar das
-  barras estão prontas e testadas; o item (que serve a várias máquinas) fica para uma decisão: entrar agora, num ticket
-  próprio, ou depois.
+  barras estão prontas e testadas. Decisão do coordenador (20/11/2026): ticket próprio (T07-F no plano), depois do T07
+  aprovado.
 - **Prioridade da rede**: as barras são `ConnectionPriority.LOW` no Java; a rede do port não tem prioridades (limite já
   registrado da rede). Quando a rede de energia em jogo ganhar prioridades, as duas ReaSim (`ControlState` como
   `EnergyNode`) precisam declarar LOW.
@@ -1528,8 +1528,23 @@ snapshots reais, copiar configurações), `64ab45a9` (testes), `e18aa0dd` (glue:
 | --- | --- |
 | U: unidade | Manual na velocidade do Java até o alvo e parada nele; surto ao descer; ReaSim só anda com energia e paga 5000 por tick em que anda, parada não paga; automática segue a curva sobre o calor da coluna (faixas iguais e invertidas); barra em 0 corta o fluxo e fora deixa passar; coluna anterior ao T07 lê como barra nova; grupo alternado, copiar e colar como o Java; `getShortNumber` |
 | U: suíte (`29a8c13c`) | `ntm-core` debug 924 ok, 6 ignorados, 0 falhas; `save_model` release 11/11; `keep_world_cost` 0,17–0,19 ms; Clippy `-D warnings` do `ntm-core` e da glue: 0 |
-| U: mutações | 10/11 pegas, 1 equivalente (`evidence/mutations-t07.log`): sem teto no buffer da barra, nada muda, porque a rede nunca entrega mais do que a barra pede (`demand` já é `max − power`) |
+| U: mutações | 10/11 pegas, 1 equivalente (`evidence/mutations-t07.log`): sem teto no buffer da barra, nada muda, porque a rede nunca entrega mais do que a barra pede (`demand` já é `max − power`). Depois da revisão, um teste direto do `give` (P3 c) pega também esse |
 | J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py --script native_rbmk_t07.py --reopen`, `evidence/j-run5/`) | **23/23 e 1/1 na reabertura**. Pelas telas: manual (anfitrião) e moderada, ReaSim (hóspede) tomam o alvo, andam e alternam o grupo; automática e ReaSim automática tiram o alvo da curva (0,6) e andam. Energia sem célula criativa: as duas ReaSim alimentadas por uma bateria com 1 000 000 HE pela face de baixo chegam aos alvos; paradas não gastam (bateria 1 000 000, buffers 50 000); uma barra andando de 0,578 a 0,501 tira 139 944 HE da bateria (28 ticks a 5000, 0,00277 por tick); de volta ao alvo não gasta (545 000 constante); com a bateria em 0 a barra para (0,170 com alvo 0). Fluxo: barra em 0 zera o que vem atrás; em 1 deixa passar. Reaberto: manual 0,5, moderada 1, automáticas 0,6 e a ReaSim parada em 0,170 com alvo 0 (energia não gravada). Binário `d02db588…`, pacote `0f9c0154…`. As rodadas 2–4 caíram pelo roteiro: leitura atrasada da bateria (o gancho `ntmtest power` lê o servidor), a célula criativa no slot da bateria, e o orçamento da bateria (descer de 0,75 a 0 custa mais do que ela tinha; agora volta a 0,5 e a falta de energia virou a verificação final) |
+
+### Decisões do coordenador (20/11/2026)
+
+Energia das ReaSim não gravada, como no Java: aceito. Ferramenta de cópia: ticket próprio depois do T07 aprovado.
+Prioridade LOW da rede: limite registrado, aceito. AZ-5 no T10 e RTTY/OpenComputers no T13 e D7: aceitos.
+
+### P3 da revisão do T07 (20/11/2026)
+
+A revisão independente aprovou o T07 (sem P1/P2) e apontou três P3, um commit cada:
+
+| Item | Como fica | Commit |
+| --- | --- | --- |
+| (a) prioridade LOW | Registrado em "Desvios e decisões": as ReaSim declaram LOW quando a rede tiver prioridades | `add05e65` |
+| (b) energia fora do passo | Registrado em "Desvios e decisões": a checagem de 5000 lê o buffer do tick anterior | `b6825301` |
+| (c) mutante equivalente | O teto do `give` fica (é o `transferPower` do Java: o excedente volta) e ganhou o teste direto `a_reasim_rods_buffer_stops_at_its_maximum`, que pega a mutação "sem teto" | `e44b53a7` |
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
