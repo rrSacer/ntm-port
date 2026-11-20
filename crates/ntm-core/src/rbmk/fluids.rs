@@ -28,6 +28,22 @@ impl Tank {
     }
 }
 
+/// The `Fluids` name `name` as the reactor keeps it (the fluid table's), `NONE` for a name the table does not have
+/// (`Fluids.fromName` falls back to NONE).
+pub fn java_fluid(name: &str) -> &'static str {
+    crate::fluid::types().iter().find(|t| t.name == name).map_or("NONE", |t| t.name.as_str())
+}
+
+/// The fluid network's name (`string_id`) of the `Fluids` name `name`, none for NONE (an untyped tank).
+pub fn network_fluid(name: &str) -> Option<&'static str> {
+    crate::fluid::types().iter().find(|t| t.name == name && t.id != 0).map(|t| t.string_id.as_str())
+}
+
+/// The `Fluids` name of the network's `string_id`.
+pub fn fluid_of_network(string_id: &str) -> Option<&'static str> {
+    crate::fluid::get(string_id).filter(|t| t.id != 0).map(|t| t.name.as_str())
+}
+
 /// `TileEntityRBMKBoiler.getHeatFromSteam`.
 pub fn heat_from_steam(fluid: &str) -> f64 {
     match fluid {

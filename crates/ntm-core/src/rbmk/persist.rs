@@ -318,6 +318,69 @@ pub struct RbmkColumn {
     /// T07, where it reads as the TE's defaults.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub control: Option<ControlState>,
+    /// The boiler's, heater's and cooler's tanks (T08): none for the other columns, and in a save from before T08,
+    /// where they read as the TE's (empty, of its types).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub piped: Option<PipedState>,
+}
+
+/// A `FluidTank` as its `writeToNBT` keeps it: the type (`Fluids` name, `NONE` for none) and the fill. Its maximum is
+/// the column's (the constructor's).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct KeptTank {
+    pub fluid: String,
+    pub fill: i32,
+}
+
+impl KeptTank {
+    fn of(fluid: &str) -> Self {
+        KeptTank { fluid: fluid.to_string(), fill: 0 }
+    }
+}
+
+/// The two tanks of a boiler (`feed`, `steam`), heater (`feed`, `steam`) or cooler (`t0` cold, `t1` hot) as their
+/// `writeToNBT` saves them, and what the Java keeps in memory only (a reopened column starts from the field
+/// initializers): the boiler's `ventDelay`, `consumption` and `output`; the cooler's `timer` and `neighborCache`.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PipedState {
+    pub input: KeptTank,
+    pub output: KeptTank,
+    #[serde(skip)]
+    pub vent_delay: i32,
+    #[serde(skip)]
+    pub consumption: i32,
+    #[serde(skip)]
+    pub produced: i32,
+    #[serde(skip)]
+    pub timer: i32,
+    /// The cooler's 5×5 cache as of its last refresh: each cell's column and its registration (`Member::seq`), so a
+    /// column replaced since is not the cached one (Java keeps the old, dead TE, whose cooling changes nothing).
+    #[serde(skip)]
+    pub cache: Vec<Option<([i32; 2], u64)>>,
+}
+
+/// The tanks' types of a fresh boiler, heater or cooler (their constructors), none for the other columns.
+pub fn piped_types(block: &str) -> Option<(&'static str, &'static str)> {
+    match block {
+        "ntm:rbmk_boiler" => Some(("WATER", "STEAM")),
+        "ntm:rbmk_heater" => Some(("COOLANT", "COOLANT_HOT")),
+        "ntm:rbmk_cooler" => Some(("PERFLUOROMETHYL_COLD", "PERFLUOROMETHYL")),
+        _ => None,
+    }
+}
+
+impl PipedState {
+    pub fn of(block: &str) -> Option<Self> {
+        piped_types(block).map(|(i, o)| PipedState {
+            input: KeptTank::of(i),
+            output: KeptTank::of(o),
+            vent_delay: 0,
+            consumption: 0,
+            produced: 0,
+            timer: 0,
+            cache: Vec::new(),
+        })
+    }
 }
 
 /// `TileEntityRBMKControl`'s state, and the manual rods' (`TileEntityRBMKControlManual`): what the Java saves (`level`,
@@ -434,6 +497,7 @@ impl RbmkColumn {
             screen: screen_len(block) as u8,
             auto: is_auto_control(block).then(AutoControl::default),
             control: is_control(block).then(|| ControlState::of(block)),
+            piped: PipedState::of(block),
         }
     }
 

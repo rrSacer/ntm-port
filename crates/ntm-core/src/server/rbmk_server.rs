@@ -28,8 +28,9 @@ use super::*;
 use crate::{
     machine::Data,
     rbmk::{
+        fluids::{self, Tank},
         persist::{self, Layer, Member, RbmkColumn},
-        reactor::{AutoFunction, Column, Effect, Kind as ColumnKind, Reactor},
+        reactor::{AutoFunction, Column, Data as ReactorData, Effect, Kind as ColumnKind, Reactor},
     },
     server::container_bridge::Stack,
 };
@@ -107,6 +108,15 @@ impl<F: FnMut(Cell, &str) -> Absent> Graph<'_, F> {
             for o in &offsets {
                 let n = add(o, -1);
                 if self.node(n) == Some(k) {
+                    out.push(n);
+                }
+            }
+        }
+        // A cooler cools the columns of its 5×5 (`neighborCache`, T08), linked or not, and they are its.
+        for dx in -2..=2 {
+            for dz in -2..=2 {
+                let n = [c[0] + dx, c[1] + dz];
+                if n != c && self.node(n).is_some_and(|k| kind == ColumnKind::Cooler || k == ColumnKind::Cooler) {
                     out.push(n);
                 }
             }
@@ -295,7 +305,43 @@ impl Server {
                         });
                     }
                 }
+                // A boiler, heater or cooler as its TE (T08): its tanks, and what the Java keeps in memory only. A save
+                // from before has none and reads as the fresh TE (`Column::new`'s).
+                if let Some(st) = &c.piped {
+                    let tank = |k: &persist::KeptTank, max: i32| Tank { fluid: fluids::java_fluid(&k.fluid), fill: k.fill, max };
+                    match &mut col.data {
+                        ReactorData::Boiler(b) => {
+                            (b.feed, b.steam) = (tank(&st.input, b.feed.max), tank(&st.output, b.steam.max));
+                            (b.vent_delay, b.consumption, b.output) = (st.vent_delay, st.consumption, st.produced);
+                        }
+                        ReactorData::Heater(h) => (h.feed, h.steam) = (tank(&st.input, h.feed.max), tank(&st.output, h.steam.max)),
+                        ReactorData::Cooler(k) => {
+                            (k.cold, k.hot) = (tank(&st.input, k.cold.max), tank(&st.output, k.hot.max));
+                            k.timer = st.timer;
+                        }
+                        _ => {}
+                    }
+                }
                 r.add(col);
+            }
+            // The heaters' fluid identifiers (`feed.setType(0, slots)`): a stack that is one types the feed, one naming
+            // no fluid as NONE.
+            // The coolers' caches (T08): each cached cell's column, if it is still the one cached (the same
+            // registration); a cell left empty, or holding a column put there since, is not cooled until the refresh.
+            for (j, p) in order.iter().enumerate() {
+                let m = &self.ready.world.machines[&(dim.clone(), [p[0], y, p[1]])];
+                let Data::Rbmk(c) = &m.data else { unreachable!() };
+                if m.block == "ntm:rbmk_heater"
+                    && let Some(kind) = c.slots.first().cloned().flatten().as_ref().and_then(crate::combustion::identifier_type)
+                {
+                    r.identifiers.insert(j, crate::rbmk::fluids::fluid_of_network(&kind).unwrap_or("NONE"));
+                }
+                let Some(st) = &c.piped else { continue };
+                if let ReactorData::Cooler(k) = &mut r.columns[j].data {
+                    for (slot, cached) in k.neighbors.iter_mut().zip(&st.cache) {
+                        *slot = cached.and_then(|(cell, seq)| order.iter().position(|o| *o == cell).filter(|_| layer.members.get(&cell).is_some_and(|mb| mb.seq == seq)));
+                    }
+                }
             }
             r.set_queued(states[i].queue(order));
             // Test hooks: a rod asked out leaves its channel as an item entity, in this step's own commit.
@@ -388,6 +434,25 @@ impl Server {
                 }
                 c.reasim_water = col.reasim_water;
                 c.reasim_steam = col.reasim_steam;
+                let kept = |t: &Tank| persist::KeptTank { fluid: t.fluid.to_string(), fill: t.fill };
+                match &col.data {
+                    ReactorData::Boiler(b) => {
+                        let st = c.piped.get_or_insert_with(|| persist::PipedState::of(&block).expect("a boiler"));
+                        (st.input, st.output) = (kept(&b.feed), kept(&b.steam));
+                        (st.vent_delay, st.consumption, st.produced) = (b.vent_delay, b.consumption, b.output);
+                    }
+                    ReactorData::Heater(h) => {
+                        let st = c.piped.get_or_insert_with(|| persist::PipedState::of(&block).expect("a heater"));
+                        (st.input, st.output) = (kept(&h.feed), kept(&h.steam));
+                    }
+                    ReactorData::Cooler(k) => {
+                        let st = c.piped.get_or_insert_with(|| persist::PipedState::of(&block).expect("a cooler"));
+                        (st.input, st.output) = (kept(&k.cold), kept(&k.hot));
+                        st.timer = k.timer;
+                        st.cache = k.neighbors.iter().map(|n| n.map(|n| (order[n], layer.members[&order[n]].seq))).collect();
+                    }
+                    _ => {}
+                }
                 if let Some(rod) = col.rod() {
                     c.flux_quantity = rod.flux_quantity;
                     c.flux_fast_ratio = rod.flux_fast_ratio;
