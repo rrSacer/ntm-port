@@ -216,3 +216,17 @@ fn a_broken_crane_console_drops_what_it_holds() {
     let dropped = g.world.borrow().dropped.clone();
     assert!(dropped.iter().any(|d| d.contains("ntm:rbmk_fuel_ueu 1")), "{dropped:?}");
 }
+
+/// One arrival, one transfer: the transfer takes the arrival, so a second pass without a step in between (a tick in
+/// which the crane did not step) does not set the rod back where it came from.
+#[test]
+fn an_arrival_moves_the_rod_once() {
+    let mut g = game();
+    reactor(&mut g);
+    if let Data::RbmkCrane(c) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), CRANE)).unwrap().data {
+        c.arrived = true;
+    }
+    g.server.rbmk_crane_transfer(&mut g.sh);
+    g.server.rbmk_crane_transfer(&mut g.sh);
+    assert!(lot7(&held(&mut g)) && slot(&mut g, CHANNEL, 0).is_none(), "{:?}", held(&mut g));
+}
