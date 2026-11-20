@@ -72,6 +72,12 @@ pub trait ServerHost: Kv {
     fn commit_machines(&mut self, commits: &[MachineCommit]) -> bool {
         commits.is_empty() || commits.len() == 1 && self.commit_machine(&commits[0])
     }
+    /// A coupled group in which stacks move between the machines' slots (the RBMK crane and a column, T11): as
+    /// [`ServerHost::commit_machines`], and each moved stack arrives whole (every component of the stack that left,
+    /// as Java's `ItemStack.copy()`). Unsupported hosts refuse: nothing moves.
+    fn commit_machines_moving(&mut self, _commits: &[MachineCommit], _moves: &[SlotMove]) -> bool {
+        false
+    }
     /// Full BE snapshot and lossless item NBT for cells consumed by a machine.
     fn cell_snapshot(&mut self, dim:&str, pos:Pos)->Option<CellSnapshot>{
         self.get_block(dim,pos).map(|state|CellSnapshot{state,entity:None,items:Vec::new()})
@@ -211,6 +217,14 @@ pub trait ServerHost: Kv {
     }
     /// The height RBMK columns are placed with from now on (`dialColumnHeight`, 2..16 cells): standing ones keep theirs.
     fn set_column_height(&mut self, _height: i32) {}
+}
+
+/// A stack moved between two machines' slots in one group commit: from (dimension, cell, slot) to (cell, slot).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct SlotMove {
+    pub dim: String,
+    pub from: (Pos, usize),
+    pub to: (Pos, usize),
 }
 
 /// A stack a player holds: what the logic reads of it, and the whole stack (SNBT, every component) the host compares
@@ -518,6 +532,8 @@ pub struct Server {
     /// a screen does not outlive the server.
     screens: crate::screens::control::Sessions,
     screen_sent: BTreeMap<String, crate::screens::control::Snapshot>,
+    /// The RBMK crane keys each player's client holds (T11, `HbmPlayerProps.keysPressed`). In memory only.
+    crane_keys: BTreeMap<String, crate::rbmk::crane::Keys>,
 }
 
 impl Server {
@@ -811,6 +827,7 @@ pub use pile_server::PileUse;
 
 mod zirnox_server;
 mod rbmk_server;
+mod crane_server;
 mod screen_server;
 pub mod rbmk_columns;
 mod transaction;

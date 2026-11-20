@@ -101,6 +101,7 @@ impl Server {
             nonce: obligations::draw_nonce(),
             screens: Default::default(),
             screen_sent: BTreeMap::new(),
+            crane_keys: BTreeMap::new(),
         };
         server.rbmk_start(host);
         server
@@ -141,6 +142,8 @@ impl Server {
         phases.mark("cables");
         self.native_redstone(host);
         phases.mark("redstone");
+        // The cranes' keys and lamps before they step (T11).
+        self.rbmk_crane_input(host);
         self.local_steps(host);
         phases.mark("local_steps");
         self.flush_machine_effects(host);
@@ -161,6 +164,7 @@ impl Server {
         self.rbmk_world_tick(host);
         self.rbmk_console_scan();
         self.simulate(host);
+        self.rbmk_crane_transfer(host);
         // The RBMK's incrementRad of the steps accepted (TileEntityRBMKRod:153, RBMKNeutronHandler:305,417,421).
         self.apply_chunk_rad_pending();
         self.rbmk_flush_dumps(host);

@@ -118,8 +118,11 @@ pub enum Pending {
     Screens([u8; 6], [Option<Vec<i32>>; 6]),
     /// A console's new target (the RBMK tool's `setTarget`): the last one wins.
     Link([i32; 3]),
-    /// A console's quarter turns (the screwdriver's `rotate`), composed mod 4.
+    /// A console's quarter turns (the screwdriver's `rotate`; a crane console's `cycleCraneRotation`), composed mod 4.
     Rotate(u8),
+    /// A crane console's link (the RBMK tool's `setTarget`, T11): the column's core and the spans found then (forwards,
+    /// right, back, left). The last one wins.
+    CraneLink([i32; 3], [i32; 4]),
 }
 
 fn group_index(g: Option<u8>) -> usize {
@@ -179,6 +182,10 @@ pub fn coalesce(queue: &mut Vec<Pending>, next: Pending) {
             queue.retain(|p| !matches!(p, Pending::Link(_)));
             queue.push(Pending::Link(at));
         }
+        Pending::CraneLink(..) => {
+            queue.retain(|p| !matches!(p, Pending::CraneLink(..)));
+            queue.push(next);
+        }
         Pending::Rotate(n) => match queue.iter_mut().find_map(|p| if let Pending::Rotate(m) = p { Some(m) } else { None }) {
             Some(m) => *m = (*m + n) % 4,
             None => queue.push(Pending::Rotate(n % 4)),
@@ -232,7 +239,7 @@ pub fn apply(block: &str, column: &mut RbmkColumn, pending: &Pending) {
                 column.button(0);
             }
         }
-        Pending::Screens(..) | Pending::Link(_) | Pending::Rotate(_) => {}
+        Pending::Screens(..) | Pending::Link(_) | Pending::Rotate(_) | Pending::CraneLink(..) => {}
     }
 }
 

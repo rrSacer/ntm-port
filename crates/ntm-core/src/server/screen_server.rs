@@ -67,7 +67,7 @@ impl Server {
     }
 
     /// `p` into the queue of the machine at `key`, composed with what waits there, guarded by its generation now.
-    fn queue_pending(&mut self, key: &Key, p: crate::rbmk::screen::Pending) {
+    pub(super) fn queue_pending(&mut self, key: &Key, p: crate::rbmk::screen::Pending) {
         let Some(target) = self.ready.world.machines.get(key) else { return };
         let guard = generation::CellGuard::machine(key, target);
         let mut queue = Vec::new();
@@ -151,6 +151,8 @@ impl Server {
     pub fn native_screen_left(&mut self, player: &str) {
         self.screens.close(player);
         self.screen_sent.remove(player);
+        // And the crane keys their client held (T11).
+        self.crane_keys.remove(player);
     }
 
     /// The snapshots to send now: each open session's machine, where it changed since the player was last told (its

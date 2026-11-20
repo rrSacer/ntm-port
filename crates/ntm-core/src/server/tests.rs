@@ -280,6 +280,10 @@ impl ServerHost for SHost {
         for c in cs {w.engine.insert((c.dim.clone(),c.pos),(c.desired.clone(),c.data.clone()));w.saved.insert((c.dim.clone(),c.pos),c.json.clone());}true
     }
 
+    fn commit_machines_moving(&mut self, cs: &[MachineCommit], _moves: &[SlotMove]) -> bool {
+        // The test's stacks are the bridge's whole: a move is the commits' slots.
+        self.commit_machines(cs)
+    }
     fn solar_sample(&mut self, dim: &str, p: Pos) -> Option<(i32,i32,bool)> { self.world.borrow().sun.get(&(dim.into(),p)).copied() }
     fn get_block(&mut self, dim: &str, p: Pos) -> Option<String> {
         self.reads += 1;

@@ -575,7 +575,7 @@ impl Server {
 
     /// `RBMKBase.findCore` from a cell of a column: the core, the cell itself or the first column block under its run
     /// of dummies. None: no column there, or a cell on the way not loaded.
-    fn rbmk_core_of(host: &mut impl ServerHost, dim: &str, p: Pos) -> Option<Pos> {
+    pub(super) fn rbmk_core_of(host: &mut impl ServerHost, dim: &str, p: Pos) -> Option<Pos> {
         for dy in 0..=persist::DUMMY_REACH {
             let at = [p[0], p[1] - dy, p[2]];
             let b = host.get_block(dim, at)?;

@@ -111,7 +111,7 @@ pub fn first_dial(block: &str, fuelled: bool) -> &'static str {
 }
 
 /// The key of the columns' height (`getColumnHeight`, `RBMKBase.getDimensions` as a column is placed).
-const HEIGHT_KEY: &str = "KEY_COLUMN_HEIGHT";
+pub(super) const HEIGHT_KEY: &str = "KEY_COLUMN_HEIGHT";
 
 impl Server {
     /// The dials as `RBMKDials.getGameRule(world, name)` reads them in `dim` (T04, 3A): the dimension's cache, or, the
