@@ -1263,14 +1263,18 @@ impl Host<'_, '_> {
         // block's container when it uses them", `decode_mod_block_entity`): sized to the machine's slots here, before
         // any reader (`machine_slots`) or commit compares them, or a channel saved empty refused every rod after a
         // reopen and a barrel read slot 4 out of four (RBMK T08 review P3-1).
-        let f = |m: &mut ModBlockEntity| {
+        let size = |m: &mut ModBlockEntity| {
             let id = m.id.clone();
             ntm_core::native::size_slots(&id, &mut m.items);
-            f(m)
         };
         let target = dim_of(dim)?;
         if target == self.game.dim {
-            return self.game.native_with_mod_block_entity(pos, f);
+            // In the level in play the engine compares the items around the whole call: a first use after a load (the
+            // only one that sizes) counts once as a change of its contents (one `container_changed`; no item moves).
+            return self.game.native_with_mod_block_entity(pos, |m| {
+                size(m);
+                f(m)
+            });
         }
         let key = (pos[0], pos[1], pos[2]);
         let world = self.game.levels.parked_world_mut(target)?;
@@ -1280,6 +1284,8 @@ impl Host<'_, '_> {
         if m.id.is_empty() {
             return None;
         }
+        // Sized before the comparison: a first read is no move of its contents (T08 review P3-2).
+        size(m);
         let before = m.items.clone();
         let out = f(m);
         let moved = m.items != before;
