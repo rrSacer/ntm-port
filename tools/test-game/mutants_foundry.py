@@ -38,6 +38,12 @@ MUTANTS = [
     ('stack: every output stacks to 64', SC, '    .copied()\n    .unwrap_or(64)', '    .copied()\n    .map(|_| 64)\n    .unwrap_or(64)', 'an_output_that'),
     ('stack: the cast deposits up to 64', SC, 'remaining.min(stack_limit(&out_id).saturating_sub(s.count))', 'remaining.min(64u32.saturating_sub(s.count))', 'an_output_that'),
     ('rotary claims its record keeps the slots', RF, '    fn slots_recorded(&self) -> bool {\n        false', '    fn slots_recorded(&self) -> bool {\n        true', 'say_their_records'),
+    ('hand: a shovel takes only the whole ingots of the pool', 'crates/ntm-core/src/server/caster_server.rs', 'scrap::stack(&mat, next.melt.amount)', 'scrap::stack(&mat, next.melt.amount / 72 * 72)', 'a_shovel_takes'),
+    ('hand: a shovel leaves the pool', 'crates/ntm-core/src/server/caster_server.rs', '            next.melt = Default::default();\n', '', 'a_shovel_takes'),
+    ('hand: a mold goes in even into a taken slot', 'crates/ntm-core/src/server/caster_server.rs', 'let (mold_in, scoop) = (mold && next.slots[slot::MOLD].is_none(), shovel && c.melt.amount > 0);', 'let (mold_in, scoop) = (mold, shovel && c.melt.amount > 0);', 'a_mold_in_hand'),
+    ('hand: the whole stack of molds goes in, not one', 'crates/ntm-core/src/server/caster_server.rs', 'Some(Stack { count: 1, ..h.stack.clone() })', 'Some(h.stack.clone())', 'a_mold_in_hand'),
+    ('hand: a shovel with an empty pool opens the screen', 'crates/ntm-core/src/server/caster_server.rs', '            return shovel;', '            return false;', 'a_shovel_takes'),
+    ('hand: the scrap that does not fit is lost', 'crates/ntm-core/src/server/caster_server.rs', "drops = left.into_iter().map(|s| (s, TransferDrop::Thrown)).collect();", 'drops = left.into_iter().map(|_| (Stack::new("x", 0), TransferDrop::Thrown)).filter(|_| false).collect();', 'does_not_fit'),
     ('rotary progress ignores the process speed', RF, 'self.progress += process_speed / r.duration.max(1) as f32;', 'self.progress += 1.0 / r.duration.max(1) as f32;', 'rotary'),
 ]
 

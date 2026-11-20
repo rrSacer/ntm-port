@@ -256,6 +256,10 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     if !sneaking && server.native_sawmill_use(&mut host, &dim, pos, core, &player) {
         return true;
     }
+    // The strand caster by hand, not sneaking (MachineStrandCaster.onBlockActivated): a mold into it, a shovel takes its pool.
+    if !sneaking && server.native_caster_use(&mut host, &dim, pos, core, &player) {
+        return true;
+    }
     let game = host.game;
     if let Some(held) = game.held().cloned() {
         if &*held.item == "ntm:mirror_tool" {

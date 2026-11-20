@@ -4,6 +4,7 @@
 use super::*;
 use crate::fluidbox::Mode;
 use crate::server::container_bridge::{Slots, Stack};
+use crate::foundry::flow::Melt;
 use crate::strand_caster::{BLOCK, StrandCaster, slot};
 
 const ROTARY: Pos = [0, 70, 0];
@@ -295,4 +296,95 @@ fn a_duct_reaches_a_caster_port_only_from_the_connection_side() {
     f(&mut g, [2, 68, 2], [3, 68, 2]); // from the east, the connection of that port
     g.run(30);
     assert!(caster_model(&mut g).water.mb > 0, "the connection side reaches it");
+}
+
+// ---- by hand (MachineStrandCaster.onBlockActivated) ----
+
+fn hands(g: &mut Game, inventory: Vec<Option<Stack>>) {
+    let inventory = inventory.into_iter().map(|s| s.map(|stack| HeldStack { encoded: format!("{stack:?}"), stack, plain: true })).collect();
+    g.world.borrow_mut().hands = Some(PlayerSlots { hand: Some(PlayerSlot::Inventory(0)), inventory, ..Default::default() });
+}
+fn inventory(g: &Game) -> Vec<Option<Stack>> {
+    g.world.borrow().hands.as_ref().unwrap().inventory.iter().map(|s| s.as_ref().map(|h| h.stack.clone())).collect()
+}
+fn bare_caster(g: &mut Game) {
+    put_machine(g, CASTER, &format!("{BLOCK}[facing=north,honey_level=0]"), slot::COUNT);
+}
+fn use_caster(g: &mut Game) -> bool {
+    g.server.native_caster_use(&mut g.sh, OW, CASTER, CASTER, "p1")
+}
+
+#[test]
+fn a_mold_in_hand_goes_into_the_empty_mold_slot_in_one_transfer() {
+    let mut g = game();
+    bare_caster(&mut g);
+    let named = Stack { custom: Some("{named:1b}".into()), ..Stack::new("ntm:mold__ingot", 3) };
+    hands(&mut g, vec![Some(named.clone()), None]);
+    // Refused: nothing moves.
+    g.world.borrow_mut().refuse_commits = true;
+    assert!(use_caster(&mut g));
+    assert_eq!(engine_slots(&g)[slot::MOLD], None);
+    assert_eq!(inventory(&g)[0], Some(named.clone()));
+    g.world.borrow_mut().refuse_commits = false;
+    assert!(use_caster(&mut g));
+    let one = Stack { count: 1, ..named.clone() };
+    assert_eq!(engine_slots(&g)[slot::MOLD], Some(one.clone()), "one, with its data (a copy of the stack)");
+    assert_eq!(caster_model(&mut g).slots[slot::MOLD], Some(one));
+    assert_eq!(inventory(&g)[0], Some(Stack { count: 2, ..named.clone() }));
+    // The slot taken, the click goes on (the screen opens).
+    assert!(!use_caster(&mut g));
+    assert_eq!(inventory(&g)[0].as_ref().map(|s| s.count), Some(2));
+}
+
+#[test]
+fn a_shovel_takes_the_whole_pool_as_one_exact_scrap() {
+    let mut g = game();
+    bare_caster(&mut g);
+    edit_caster(&mut g, |c| {
+        c.melt = Melt { mat: Some("steel".into()), amount: 100 };
+        c.last_progress = u64::MAX / 2;
+    });
+    hands(&mut g, vec![Some(Stack::new("minecraft:iron_shovel", 1)), None]);
+    g.world.borrow_mut().refuse_commits = true;
+    assert!(use_caster(&mut g));
+    assert_eq!(caster_model(&mut g).melt.amount, 100, "refused: the pool stays");
+    assert_eq!(inventory(&g)[1], None);
+    g.world.borrow_mut().refuse_commits = false;
+    assert!(use_caster(&mut g));
+    assert_eq!(caster_model(&mut g).melt, Melt::default());
+    let scrap = crate::foundry::scrap::stack("steel", 100);
+    assert_eq!(inventory(&g)[1], Some(scrap), "one scrap with every quantum");
+    assert!(g.world.borrow().dropped.is_empty());
+    // An empty pool: the shovel's click is taken and nothing happens (the Java returns true).
+    assert!(use_caster(&mut g));
+    assert_eq!(inventory(&g)[1].as_ref().map(|s| s.count), Some(1));
+}
+
+#[test]
+fn a_scrap_that_does_not_fit_in_the_inventory_is_thrown_once() {
+    let mut g = game();
+    bare_caster(&mut g);
+    edit_caster(&mut g, |c| {
+        c.melt = Melt { mat: Some("steel".into()), amount: 30 };
+        c.last_progress = u64::MAX / 2;
+    });
+    hands(&mut g, vec![Some(Stack::new("minecraft:wooden_shovel", 1))]);
+    assert!(use_caster(&mut g));
+    assert_eq!(caster_model(&mut g).melt.amount, 0);
+    let dropped = g.world.borrow().dropped.clone();
+    assert_eq!(dropped.len(), 1, "{dropped:?}");
+    assert_eq!(dropped[0], "player ntm:scraps__steel 1 {ntm_amount:30}");
+}
+
+#[test]
+fn only_a_mold_or_a_shovel_is_a_use_of_the_caster() {
+    let mut g = game();
+    bare_caster(&mut g);
+    edit_caster(&mut g, |c| c.melt = Melt { mat: Some("steel".into()), amount: 10 });
+    hands(&mut g, vec![Some(Stack::new("minecraft:stick", 1)), None]);
+    assert!(!use_caster(&mut g));
+    hands(&mut g, vec![None, None]);
+    assert!(!use_caster(&mut g), "an empty hand opens the screen");
+    assert_eq!(caster_model(&mut g).melt.amount, 10);
+    assert!(crate::server::caster_server::is_shovel("ntm:titanium_shovel") && !crate::server::caster_server::is_shovel("minecraft:iron_sword"));
 }

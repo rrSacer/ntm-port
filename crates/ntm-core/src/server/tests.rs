@@ -224,7 +224,7 @@ impl ServerHost for SHost {
         let mut w=self.world.borrow_mut();
         w.hands=Some(hands);
         w.copied.extend(copied);
-        for (d,_) in &t.drops{w.dropped.push(format!("player {} {}",d.id,d.count));}
+        for (d,_) in &t.drops{w.dropped.push(format!("player {} {}{}",d.id,d.count,d.custom.as_deref().map_or(String::new(),|c|format!(" {c}"))));}
         true
     }
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{

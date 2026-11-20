@@ -792,6 +792,7 @@ mod bomb_server;
 mod excavator_server;
 mod oil_server;
 mod sawmill_server;
+mod caster_server;
 mod solar_server;
 pub mod container_bridge;
 mod fluid_server;
