@@ -1509,7 +1509,8 @@ movia as barras (validado contra o oráculo no T1); o T07 liga o estado, as tela
   barras estão prontas e testadas; o item (que serve a várias máquinas) fica para uma decisão: entrar agora, num ticket
   próprio, ou depois.
 - **Prioridade da rede**: as barras são `ConnectionPriority.LOW` no Java; a rede do port não tem prioridades (limite já
-  registrado da rede).
+  registrado da rede). Quando a rede de energia em jogo ganhar prioridades, as duas ReaSim (`ControlState` como
+  `EnergyNode`) precisam declarar LOW.
 - **AZ-5**: é um comando do console (T10); o T07 cobre o surto da barra que desce para 0.
 - **Comandos de rádio (RTTY)** e OpenComputers das barras: T13 e exclusão D7.
 
