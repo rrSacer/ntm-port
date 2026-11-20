@@ -136,11 +136,18 @@ class Proof:
             time.sleep(.6)
             g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
         else:
-            # A LAN guest's use of a dummy cell opens nothing (the engine's, recorded in the T10 doc): the core itself,
-            # from behind.
-            self.host.command(f'tp {name} {self.core[0] + .5} {Y} {self.core[2] + 3.5} 180 0')
+            # The front cell first; a LAN guest's use of a dummy cell has opened nothing (recorded in the T10 doc): then
+            # the core itself, from behind.
+            self.host.command(f'tp {name} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
             time.sleep(.6)
-            g.ctl(f'interact {self.core[0]} {self.core[1]} {self.core[2]} south')
+            g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
+            time.sleep(2)
+            through = g.ctl('screen').get('screen') == 'container'
+            self.host.evidence.setdefault('guest_through_the_dummy', []).append(through)
+            if not through:
+                self.host.command(f'tp {name} {self.core[0] + .5} {Y} {self.core[2] + 3.5} 180 0')
+                time.sleep(.6)
+                g.ctl(f'interact {self.core[0]} {self.core[1]} {self.core[2]} south')
         deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
             if g.ctl('screen').get('screen') == 'container':
@@ -232,12 +239,21 @@ class Proof:
             self.check('the_host_opens_the_console', False, str(e))
         self.host.close()
 
+    def shot(self, g, name):
+        try:
+            g.ctl(f'screenshot {g.folder / (name + ".png")}')
+            time.sleep(1)
+        except RuntimeError:
+            pass
+
     def commands(self):
         # C: the guest carries 7 cobblestone through the screen; the console has no slot, and none is copied.
         g = self.open(GUEST, 'minecraft:cobblestone 7')
+        self.shot(g, 'console-opened')
         # All the manual rods to 100: "select all control rods", the field, the save.
         self.click(g, ALL)
         self.click(g, FIELD)
+        self.shot(g, 'console-field')
         g.ctl('key key.keyboard.end tap')
         for _ in range(4):
             g.ctl('key backspace tap')
