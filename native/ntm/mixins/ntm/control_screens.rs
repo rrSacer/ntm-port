@@ -58,8 +58,13 @@ struct Open {
 
 static OPEN: Mutex<Option<Open>> = Mutex::new(None);
 
+/// The rods' screens and the console's (T10, `console_screen.rs`).
 pub(super) fn takes_commands(block: &str) -> bool {
-    ntm_core::rbmk::screen::takes_commands(block)
+    ntm_core::rbmk::screen::takes_commands(block) || block == ntm_core::rbmk::screen::CONSOLE
+}
+
+fn console(block: &str) -> bool {
+    block == ntm_core::rbmk::screen::CONSOLE
 }
 
 /// The session of the screen showing now (its extra data), started again when it is another screen's.
@@ -98,10 +103,11 @@ fn with_open<R>(game: &crate::game::Game<'_>, block: &str, f: impl FnOnce(&mut O
 }
 
 /// A snapshot from the server (`native_net_from_server`): the open screen's, kept.
-pub(super) fn receive(_game: &mut crate::game::Game<'_>, channel: &str, data: &[u8]) {
+pub(super) fn receive(game: &mut crate::game::Game<'_>, channel: &str, data: &[u8]) {
     if channel != crate::game::ntm_glue::SCREEN_SNAPSHOT {
         return;
     }
+    crate::game::ntm_console_screen::receive(game, data);
     let Ok(s) = Snapshot::decode(data) else { return };
     if let Some(open) = lock(&OPEN).as_mut().filter(|o| o.session == s.session && o.pos == s.pos) {
         open.shown = s.fields;
@@ -113,6 +119,9 @@ pub(super) fn receive(_game: &mut crate::game::Game<'_>, channel: &str, data: &[
 /// (`GuiTextField.drawTextBox` without a background: the text with its shadow, the selection, and the blinking cursor,
 /// `cursorCounter / 6 % 2`: six ticks on, six off).
 pub(super) fn draw(game: &crate::game::Game<'_>, block: &str, batch: &mut HudBatch, origin: [f32; 2]) {
+    if console(block) {
+        return crate::game::ntm_console_screen::draw(game, batch, origin);
+    }
     if !takes_commands(block) {
         return;
     }
@@ -141,28 +150,34 @@ pub(super) fn draw(game: &crate::game::Game<'_>, block: &str, batch: &mut HudBat
             let v = if open.shown.get_boolean("hasPower") { 16.0 } else { 0.0 };
             part(batch, [layout.light_u, v, 16.0, 16.0], layout.light);
         }
-        let ticks = open.since.elapsed().as_millis() / 50;
         for (f, rect) in open.fields.iter().zip(FIELDS) {
-            let [x, y] = [origin[0] + rect[0] as f32, origin[1] + rect[1] as f32];
-            let text = f.text();
-            let units: Vec<u16> = text.encode_utf16().collect();
-            let width = |n: usize| game.native_text_width(&String::from_utf16_lossy(&units[..n.min(units.len())]));
-            let (a, b) = (f.cursor().min(f.selection_end()), f.cursor().max(f.selection_end()));
-            if f.focused && a != b {
-                game.native_fill(batch, [x + width(a), y - 1.0, width(b) - width(a), 10.0], 0x800000FF);
-            }
-            game.native_text(batch, &text, [x, y], 0xFFFFFF, true);
-            if f.focused && ticks / 6 % 2 == 0 {
-                let cx = x + width(f.cursor());
-                // A bar inside the text or in a full field, an underscore after it.
-                if f.cursor() < f.len() || f.len() >= f.max() {
-                    game.native_fill(batch, [cx, y - 1.0, 1.0, 10.0], 0xFFD0D0D0);
-                } else {
-                    game.native_text(batch, "_", [cx, y], 0xFFFFFF, true);
-                }
-            }
+            draw_field(game, batch, origin, f, rect, 0xFFFFFF, open.since);
         }
     });
+}
+
+/// `GuiTextField.drawTextBox` without a background: the text in `color` with its shadow, the selection, and the
+/// blinking cursor (`cursorCounter / 6 % 2`: six ticks on, six off) since `since`.
+pub(super) fn draw_field(game: &crate::game::Game<'_>, batch: &mut HudBatch, origin: [f32; 2], f: &TextField, rect: [i32; 4], color: u32, since: std::time::Instant) {
+    let ticks = since.elapsed().as_millis() / 50;
+    let [x, y] = [origin[0] + rect[0] as f32, origin[1] + rect[1] as f32];
+    let text = f.text();
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let width = |n: usize| game.native_text_width(&String::from_utf16_lossy(&units[..n.min(units.len())]));
+    let (a, b) = (f.cursor().min(f.selection_end()), f.cursor().max(f.selection_end()));
+    if f.focused && a != b {
+        game.native_fill(batch, [x + width(a), y - 1.0, width(b) - width(a), 10.0], 0x800000FF);
+    }
+    game.native_text(batch, &text, [x, y], color, true);
+    if f.focused && (ticks / 6).is_multiple_of(2) {
+        let cx = x + width(f.cursor());
+        // A bar inside the text or in a full field, an underscore after it.
+        if f.cursor() < f.len() || f.len() >= f.max() {
+            game.native_fill(batch, [cx, y - 1.0, 1.0, 10.0], 0xFFD0D0D0);
+        } else {
+            game.native_text(batch, "_", [cx, y], color, true);
+        }
+    }
 }
 
 fn inside(rect: [i32; 4], x: i32, y: i32) -> bool {
@@ -172,6 +187,9 @@ fn inside(rect: [i32; 4], x: i32, y: i32) -> bool {
 
 /// `GUIRBMKControl.drawScreen`'s and `GUIRBMKControlAuto.drawScreen`'s hover texts.
 pub(super) fn tooltip(game: &crate::game::Game<'_>, block: &str, at: [f32; 2], lines: &mut Vec<String>) -> bool {
+    if console(block) {
+        return crate::game::ntm_console_screen::tooltip(game, at, lines);
+    }
     if !takes_commands(block) {
         return false;
     }
@@ -217,7 +235,7 @@ pub(super) fn tooltip(game: &crate::game::Game<'_>, block: &str, at: [f32; 2], l
 }
 
 /// The clipboard of the game, as the fields read it.
-struct GameClipboard<'a>(&'a mut horizon_client::clipboard::SystemClipboard);
+pub(super) struct GameClipboard<'a>(pub(super) &'a mut horizon_client::clipboard::SystemClipboard);
 
 impl field::Clipboard for GameClipboard<'_> {
     fn get(&mut self) -> String {
@@ -230,8 +248,13 @@ impl field::Clipboard for GameClipboard<'_> {
 
 /// A command of the open session, to the server.
 fn send(game: &mut crate::game::Game<'_>, open: &mut Open, fields: Fields) {
-    open.seq += 1;
-    let cmd = Command { session: open.session, generation: open.generation, pos: open.pos, seq: open.seq, fields };
+    send_command(game, open.session, open.generation, open.pos, &mut open.seq, fields);
+}
+
+/// A command of session `session` (its `seq`-th), to the server.
+pub(super) fn send_command(game: &mut crate::game::Game<'_>, session: u64, generation: u64, pos: [i32; 3], seq: &mut u32, fields: Fields) {
+    *seq += 1;
+    let cmd = Command { session, generation, pos, seq: *seq, fields };
     match cmd.encode() {
         Ok(bytes) => {
             if let Err(error) = game.native_net_send_to_server(crate::game::ntm_glue::SCREEN_COMMAND, &bytes) {
@@ -267,6 +290,9 @@ fn save(game: &mut crate::game::Game<'_>, open: &mut Open) {
 /// A press, a key or typed text on the screen: the fields', the save's and the curves'. True when the screen took it.
 pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, event: &crate::game::native_hooks::NativeScreenEvent) -> bool {
     use crate::game::native_hooks::NativeScreenEvent as E;
+    if console(block) {
+        return crate::game::ntm_console_screen::event(game, event);
+    }
     if !takes_commands(block) {
         return false;
     }
@@ -319,6 +345,17 @@ pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, event: &crate
                 }
             }
         }
+        E::Key { .. } | E::Text(_) => taken = field_keys(game, &mut open.fields, event),
+        E::Wheel { .. } => {}
+    }
+    taken
+}
+
+/// `keyTyped` for the fields: a key or typed text, the first field that takes it ends it. True when one did.
+pub(super) fn field_keys(game: &mut crate::game::Game<'_>, fields: &mut [TextField], event: &crate::game::native_hooks::NativeScreenEvent) -> bool {
+    use crate::game::native_hooks::NativeScreenEvent as E;
+    let mut taken = false;
+    match event {
         E::Key { key, text, ctrl, shift, .. } => {
             let code = match key.as_str() {
                 "key.keyboard.backspace" => Key::Backspace,
@@ -347,7 +384,7 @@ pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, event: &crate
             let mut board = GameClipboard(&mut game.clipboard);
             // `keyTyped`: the first field that takes the key ends it.
             for c in units {
-                for f in open.fields.iter_mut() {
+                for f in fields.iter_mut() {
                     if f.key_typed(c, code, *ctrl, *shift, &mut board) {
                         taken = true;
                         break;
@@ -359,7 +396,7 @@ pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, event: &crate
             let mut board = GameClipboard(&mut game.clipboard);
             for c in text.encode_utf16() {
                 let code = if c == 8 { Key::Backspace } else { Key::Other };
-                for f in open.fields.iter_mut() {
+                for f in fields.iter_mut() {
                     if f.key_typed(c, code, false, false, &mut board) {
                         taken = true;
                         break;
@@ -367,12 +404,12 @@ pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, event: &crate
                 }
             }
         }
-        E::Wheel { .. } => {}
+        _ => {}
     }
     taken
 }
 
 /// `FontRenderer.trimStringToWidth`: how many of `units` fit in `width` pixels.
-fn fit(game: &crate::game::Game<'_>, units: &[u16], width: i32) -> usize {
+pub(super) fn fit(game: &crate::game::Game<'_>, units: &[u16], width: i32) -> usize {
     (0..=units.len()).take_while(|n| game.native_text_width(&String::from_utf16_lossy(&units[..*n])) <= width as f32).last().unwrap_or(0)
 }

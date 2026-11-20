@@ -70,7 +70,7 @@ fn machine_screen(game: &crate::game::Game<'_>, block: &str, name: &str) -> Opti
         inventory_y: layout.inventory[1],
         own_labels: true,
         own_background: true,
-        hide_inventory: false,
+        hide_inventory: def.hide_inventory,
     })
 }
 

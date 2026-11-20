@@ -639,6 +639,14 @@ file = "crates/horizon-client/src/game.rs"
 name = "ntm_control_screens"
 source = "control_screens.rs"
 
+# The RBMK console's screen (T10): its map, screens, selection, AZ-5 and flux graph over its texture
+# (ntm_core::rbmk::console_gui).
+[[module]]
+id = "console-screen"
+file = "crates/horizon-client/src/game.rs"
+name = "ntm_console_screen"
+source = "console_screen.rs"
+
 [[injection]]
 id = "menu-extra-data"
 hook = "menu_extra_data"
