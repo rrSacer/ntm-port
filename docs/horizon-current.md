@@ -1448,6 +1448,9 @@ usa só o que o motor já oferece (`net_from_client`/`native_net_send_to_server`
   Aqui o comando precisa da sessão atual (critério de aceite do plano: "rejeitar comando de sessão antiga"). O cliente
   só manda com a tela aberta, então a diferença só aparece para um cliente modificado.
 - **Momento**: até o começo do tick seguinte, em vez de entre ticks.
+- **Número de sequência gasto antes do D2**: `Sessions::accept` toma o número do comando antes de o servidor testar se o
+  `receiveControl` o recusaria (índice de curva ou grupo inválido, D2). Um comando recusado assim gasta o seu número;
+  é inofensivo, porque o cliente sempre manda o próximo com um número maior.
 - **D6 (spike)**: os snapshots tipados por mensagem de mod estão confirmados por este ticket; o estado das pelotas por
   `custom_data` tem caminho no motor para o desenho (`item_model_property`, modelos condicionais avaliados pelo mod, e
   `custom_model_data`), para o T14.
