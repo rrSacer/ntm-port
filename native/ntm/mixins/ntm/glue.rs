@@ -455,6 +455,13 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok=true power={}",got.map_or("none".into(),|v|v.to_string()))));
         return true;
     }
+    // `ntmtest fluids <x> <y> <z> [<x> <y> <z> ...]` (RBMK T08's cut): the tanks of those machines, read in one go.
+    if w.first()==Some(&"fluids"){
+        let cells:Vec<[i32;3]>=w[1..].chunks(3).filter_map(|c|match c{[x,y,z]=>Some([x.parse().ok()?,y.parse().ok()?,z.parse().ok()?]),_=>None}).collect();
+        let reply=format!("ntmtest ok=true fluids={}",server.native_test_fluids(&dim,&cells));
+        host.game.native_feedback(horizon_client::text::Text::literal(reply));
+        return true;
+    }
     // `ntmtest heat <x> <y> <z> <heat>` (RBMK T08): the column's reactor's next step starts it at that heat.
     if w.first()==Some(&"heat") && let (Some(x),Some(y),Some(z),Some(h))=(n(1),n(2),n(3),n(4)){
         let ok=server.native_test_heat(&dim,[x as i32,y as i32,z as i32],h);

@@ -430,3 +430,21 @@ fn the_boilers_screen_has_a_menu() {
     assert_eq!((c.slots, c.inputs.len(), c.outputs.len()), (0, 0, 0));
     assert!(crate::native::container("ntm:rbmk_cooler").is_none(), "the cooler has no screen");
 }
+
+/// The cut's hook (`ntmtest fluids`): each machine's tanks in one reading.
+#[test]
+fn the_fluids_hook_reads_every_tank_at_once() {
+    let mut g = game();
+    let (b, c) = ([0, Y, 0], [3, Y, 0]);
+    g.place(b, "ntm:barrel_steel[facing=north,honey_level=0]");
+    g.place(c, &column("rbmk_cooler"));
+    g.run(2);
+    set_barrel(&mut g, b, |s| {
+        s.tank.fill("perfluoromethyl_cold", 700);
+    });
+    with(&mut g, c, |k| k.piped.as_mut().unwrap().output.fill = 50);
+    assert_eq!(
+        g.server.native_test_fluids(OW, &[b, c, [9, Y, 9]]),
+        format!("0,{Y},0=perfluoromethyl_cold:700;3,{Y},0=PERFLUOROMETHYL_COLD:0+PERFLUOROMETHYL:50;9,{Y},9=none")
+    );
+}
