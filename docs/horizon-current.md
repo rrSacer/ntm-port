@@ -1697,7 +1697,7 @@ roteiro J), `cb2d4b97` (roteiro C). Evidências em `/mnt/ssd120/sacer/so/rbmk-t0
 | C: corte com o processamento em andamento (`run-rbmk-t08-c-proof.py --script native_rbmk_t09_c.py`, `evidence/c-run1/`) | Extrator com 4 piches no chunk (2, 0), gás por cano a um barril no (1, 0), a barra posta no ato; no save, 2 piches e 200 mB. Em `kill`, `kv_committed`, `region_record:1`, `:2`, `:3`, `chunks_written` e `world_saved`, as duas reaberturas somam **400** (piche a 100): os cinco primeiros voltam ao save anterior (4 piches), os dois últimos ao novo (2 e 200, e o processamento segue até 0 e 400). Cada processamento gastou um piche e fez o óleo de uma receita, e nada foi refeito depois da queda. Nenhum corte deste mundo caiu na emenda dos dois chunks: o gás que atravessa a divisa segue no limite geral (INFRA-F). Revisão do T09 (P3-2): varredura `region_record:4..8` (`evidence/c-run2/`): 4, 5, 6 e 8 voltam inteiros ao save anterior (400); o 7 não chegou ao corte (o roteiro morreu antes do save). Neste mundo nenhum `region_record:1..8` caiu na emenda: o caso de perda do T09 (o chunk do extrator novo, o do barril antigo: −100 mB por piche processado) **não foi provado** em jogo; fica a análise e a classe de falha provada no T08 |
 
 
-## RBMK T10 — console 15×15, AZ-5 e parada de emergência (planejado, 20/11/2026)
+## RBMK T10 — console 15×15, AZ-5 e parada de emergência (entregue para revisão, 20/11/2026)
 
 Branch `rbmk-t05` (continua sobre o T09), motor sem mudança prevista. O console (`rbmk_console`) e a ferramenta de
 ligação (`rbmk_tool`) já existem como conteúdo inerte; os sons `block.shutdown` e `block.rbmk_az5_cover` estão no pacote;
@@ -1716,6 +1716,58 @@ não há tela do console no conteúdo.
 | U/J/C | Provas | U: os 225 índices nas quatro rotações, agregações vazias e de tipos misturados, a amostragem de 10 ticks, AZ-5 só nas manuais; J: ligar, abrir, selecionar, mudar nível e grupo, AZ-5 pelo hóspede descendo as manuais e não as automáticas, reabrir; C: comandos só mudam alvos elegíveis, abrir a tela não avança física nem copia inventário | — |
 
 Decisões que o T10 pode pedir ao coordenador: a tela do console (não há JSON de conteúdo; desenho próprio na glue, como as telas das barras do T06/T07) e o render das telas no mundo (T19 se não couber).
+
+Decisões do coordenador (20/11/2026): T10 pelo núcleo (ligação pela `rbmk_tool`, varredura 15×15 a cada 10 ticks,
+AZ-5 só nas três manuais, 3 s entre apertos); a tela do console desenhada na glue, aceita; o render das telas no
+mundo, se não couber, vai para o T19.
+
+### O que mudou
+
+| Parte | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Console (máquina) | `Kind::RbmkConsole`, `Data::RbmkConsole(console::Console)`: alvo, rotação e as seis telas gravados (`writeToNBT`); a última varredura e o histórico de fluxo só em memória, como no Java (`columns` e `fluxBuffer` não são gravados) | `TileEntityRBMKConsole` |
+| Ligação (L) | Agachado, a `rbmk_tool` numa coluna grava `posX/Y/Z` do núcleo no `custom_data` do stack e diz `.linked`; no console, com o stack marcado, o alvo entra na fila do console e vale no próximo tick dele (`.set`). Agachado, a chave de fenda gira a janela um quarto (`rotate`) e gasta a ferramenta. As mensagens usam `translate_with_fallback` (o conteúdo não tem as chaves `.linked`/`.set`: sai o inglês do Java) | `ItemRBMKTool.onItemUse`, `setTarget`, `RBMKConsole.onScrew`, `rotate` |
+| Varredura (V) | A cada 10 ticks do mundo (antes do passo das colunas, como o `updateEntity` lê o que o tick anterior deixou), as 225 células em volta do alvo, giradas pela rotação: tipo (`getConsoleType`), calor e o `getNBTForConsole` de cada classe (barra: nível e, na manual, grupo; canal: enriquecimento, xenônio, calor do casco e do núcleo, ponto de fusão; caldeira e aquecedor: tanques e tipos; extrator: gás e progresso), `moderated` só nas manuais moderadas; o fluxo é a soma do `lastFluxQuantity` dos canais, `(int)`, no histórico de 60 | `rescan`, `getNBTForConsole`, `isModerated` |
+| Snapshot (D6) | A tela recebe a varredura num único `IntArray` (`console::pack`: um cabeçalho por célula e os dados da classe, doubles exatos em duas metades), o histórico e as telas. O limite de chaves do codec subiu de 64 para 512: os comandos do console levam uma chave por coluna escolhida (`sel_j`, `sJ`; o AZ-5 de um reator cheio leva até 225) | `serialize` |
+| Comandos (A/C) | `receive` no núcleo: `level` com `sel_` (clamp 0..1, NaN passa como no `clamp_double`), `toggle`, `id` com `sN`, `assignColor` (`grabEnumSafely`) e `compressor` com `cols`. Cada efeito espera na fila da coluna, guardado pela geração dela: nível e grupo só nas três manuais (`TileEntityRBMKControlManual`), compressor só na caldeira; célula vazia, de outro tipo ou descarregada fica intocada. O console só guarda suas telas | `receiveControl` |
+| Tela (T) | `console_gui` no núcleo (o mapa, as dicas, os cliques: seleção, "selecionar todas as barras", grupos com botão esquerdo e direito, nível pelo campo com a regra do T06, compressor, telas, a tampa do AZ-5 e os 3 s entre apertos, os sons `gui.button.press` por tom, `rbmk_az5_cover` tom 0,5, `shutdown`), a glue (`console_screen.rs`) só desenha e toca. A textura entra no conteúdo (`horizon_screen/rbmk_console.json`, sem título nem inventário: `"inventory": false`, novo no formato) | `GUIRBMKConsole` |
+
+### Desvios e limites
+
+- **Render no mundo (R) e textos das seis telas** (`RenderRBMKConsole`, `prepareScreenInfo`): vão para o T19, como
+  decidido. A tela de interface mostra o tipo de cada tela, que é o que o Java desenha nela; o texto agregado só
+  aparece no modelo do mundo.
+- **Indicador do guindaste** (`craneIndicator`): o console do Java o lê, mas só o console do guindaste o usa; não há
+  guindaste no port, e ele não é varrido.
+- **Gráfico de fluxo**: as linhas GL de 2 pixels de tela viram quads de 1 pixel de interface (o mesmo na escala 2). Os
+  números do gráfico saem em meia escala, sem sombra, como no Java.
+- **Textos em inglês**: as chaves `rbmk.*` do Java não estão nas traduções do conteúdo; as dicas usam o texto do
+  `en_US.lang` (com os códigos de cor) e os fluidos o nome do port (`fluid::label`).
+- **Relógio do AZ-5**: os 3 s são do cliente (`System.currentTimeMillis`), por tela aberta, como no Java; outra tela ou
+  outro jogador não esperam.
+- **Hóspede de LAN e célula de dummy** (achado da prova J, do motor): o uso de um hóspede numa célula de dummy do
+  console não abre menu nenhum (nem rejeição registrada); no núcleo abre. O anfitrião abre pelo dummy. Não foi
+  investigado no motor (congelado); a prova registra a tentativa (`guest_through_the_dummy`: falso nas duas
+  aberturas) e abre pelo núcleo. Provavelmente vale para todo multibloco do NTM aberto por um hóspede.
+
+### Validação
+
+Commits: `06ac2d4a` (janela, rotação e comandos, puros), `bd92ac4d` (máquina e varredura), `30db767b` (comandos pelas
+filas), `f09cfc82` (ferramenta e chave de fenda no núcleo), `0ff3e42d` (varredura empacotada, 512 chaves), `3c2a2523`
+(lógica da tela), `dcb858bb` (conteúdo: a tela), `1731ea86` e `ac621e35` (testes), `bd0398ba` (glue: ferramenta e
+chave de fenda), `ddec8b04` (glue: a tela), `447417d4` (glue: a sessão da tela do console, achado da prova J),
+`e9282aae`…`dfdced89` (roteiro J). Evidências em `/mnt/ssd120/sacer/so/rbmk-t10/evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| U: unidade | Os 225 índices nas quatro rotações; `receive` (nível com clamp e NaN, telas, grupo, compressor, recusa inteira fora da janela); a varredura a cada 10 ticks e girada; AZ-5 e nível só nas manuais, grupo pleno, compressor só na caldeira; ligação e giro pela fila (cinco giros = um); o canal com barra e o fluxo (soma de `lastFluxQuantity`, `(int)`); empacotamento exato de todo tipo (NaN, −0); um reator cheio cabe no snapshot e um AZ-5 de 225 barras num comando; a tela (partes de cada célula, textos, cliques, tampa e 3 s, gráfico); C: abrir a tela não muda máquina nem mão |
+| U: suíte | `ntm-core` debug 971 ok (853 da biblioteca + 118 de integração), 6 ignorados, 0 falhas (`evidence/suite-all.log`); `save_model` release 11/11; `keep_world_cost` 0,165 / 0,180 / 0,179 ms por tick (0, 5 000 e 50 000 gerações); Clippy `-D warnings` do `ntm-core` e da glue (binário `7b4e9c49`): 0 |
+| U: mutações | Servidor 8/8 (`mutations-console-server.log`; a cadência de 10 ticks sobreviveu na primeira rodada, o teste passou a olhar o tick da varredura), tela 16/16 (`mutations-console-gui.log`), ligação/empacotamento/vista/fluxo 10/10 (`mutations-console-2.log`; o canal moderado dito moderado sobreviveu, o teste do fluxo ganhou um canal moderado), núcleo puro 9/9 (`mutations-console.log`) |
+| J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py --script native_rbmk_t10.py --reopen`, `evidence/j/rbmk-t05-v73ljwdh/`) | **17/17 e 1/1 na reabertura**. O anfitrião põe o console à mão; agachado, a ferramenta guarda a coluna (`posX/Y/Z` 40/101/14) e o console toma o alvo. O anfitrião abre a tela pelo dummy. O hóspede, pela tela: "selecionar todas" e 100 → as três manuais (não a automática); duas colunas no mapa e 25; grupo verde com o botão direito; a tela 1 em temperatura com as duas colunas (112, 113); a caldeira escolhida vai a HOTSTEAM; 7 pedregulhos no inventário, 7 depois. A automática ganha 0,6 pela tela dela; AZ-5 (tampa, depois o botão): as três manuais a 0 a partir de onde estavam, a automática fica em 0,6, a manual desce. A chave de fenda gira o console (rotação 1). Reaberto: alvo, rotação, tela e alvos das barras como gravados. Capturas da tela em `guest/console-*.png`. Binário `7b4e9c49…`, pacote `4578ba4f…` (com a tela do console) |
+
+As rodadas 1–8 caíram por: o roteiro (o núcleo atrás do dummy; a sessão de teclado do campo), o hóspede que não abre
+pelo dummy (acima) e um defeito: a tela do console abria sem sessão nem snapshot (`menu_extra_data` só servia as
+barras), desenhava só a textura e não mandava nada (`447417d4`).
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
