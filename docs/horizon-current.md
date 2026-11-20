@@ -1474,6 +1474,17 @@ para o hóspede). Evidências em `/mnt/ssd120/sacer/so/rbmk-t06/evidence/`.
 | U: mutações | 16/16 pegas (`evidence/mutations-t06.log` em `rbmk-t05`) |
 | J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py --script native_rbmk_t06.py`, `evidence/j-run5/`) | **24/24**: cada jogador digita e salva os quatro campos (75, 20, 1500, 300 guardados), a regra do Java (`12345` vira 100 no limite de 3 caracteres e teto, `abc` vira 0, `9.9` vira 9), `1L` não manda nada, a curva escolhida, repetição recusada (`Repeated`), campos reabertos do servidor (salvar sem digitar mantém), sessão velha recusada (`OldSession`) sem mudança, coluna trocada nova e o comando da antiga recusado (`Generation`). Binário `0ef9ea6f…` (com as correções e o T07; os caminhos do T06 são os mesmos), pacote `0f9c0154…`. As rodadas 1–4 caíram pelo roteiro (`lan open` sem porta) e pelos dois defeitos corrigidos acima (a tela sem menu; a sessão que não abria), e por um gancho de teste cuja resposta não volta ao hóspede |
 
+### P3 da revisão do T06 (20/11/2026)
+
+A revisão independente aprovou o T06 (sem P1/P2) e apontou quatro P3, um commit cada:
+
+| Item | Como fica | Commit |
+| --- | --- | --- |
+| (a) teto da fila | A fila guarda, por coluna, um de cada tipo: o último alvo, ajustes ou curva (valores postos de vez), e os toques de grupo da barra manual compostos num mapa do grupo antes para o grupo depois (o grupo é um alternador: guardar só o último toque erraria, porque dois toques iguais seguidos se anulam no Java). Teste exaustivo: toda sequência de até quatro comandos, de cada grupo inicial, igual aos comandos um a um; mil comandos num tick deixam no máximo duas entradas. Mutantes 3/3 (`evidence/mutations-t06-p3a.log`) | `f1073087` |
+| (b) número gasto antes do D2 | Registrado em "Desvios" | `c7e07dfc` |
+| (c) comando no último tick | Registrado em "Desvios" | `c190450d` |
+| (d) prova J | Recusa por distância: o comando da sessão atual, reenviado com o número seguinte (`ntmtest screen next`) por um jogador a 25 blocos, é recusado (`TooFar`) sem mudar nada, no anfitrião e no hóspede. Persistência: uma coluna ajustada pelo anfitrião volta com os ajustes depois que o mundo é fechado e aberto de novo (`--reopen` do executor). `evidence/j-run6/`: **29/29 e 1/1 na reabertura** (binário `bin-d`) | `29a8c13c`, `f6d77fc0` |
+
 ## RBMK T07 — barras de controle manual, automática e energizada (20/11/2026)
 
 Branch `rbmk-t05` (continua sobre o T06), motor `rbmk-t05-engine` @ `6e13d4271c` sem mudança nova. O núcleo do passo já
