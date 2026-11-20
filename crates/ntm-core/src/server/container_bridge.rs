@@ -1154,14 +1154,34 @@ pub fn moved_stacks(before: &[Slots], desired: &[Slots]) -> Vec<((usize, usize),
             }
         }
     }
+    // What each slot gave: its count less what stays of the same item there (a split gives part of it).
+    let mut budget: BTreeMap<(usize, usize), u32> = BTreeMap::new();
+    for (c, (was, want)) in before.iter().zip(desired).enumerate() {
+        for (i, w) in was.iter().enumerate() {
+            let Some(w) = w else { continue };
+            let left = want.get(i).cloned().flatten().filter(|d| d.id == w.id && d.damage == w.damage).map_or(0, |d| d.count);
+            if left < w.count {
+                budget.insert((c, i), w.count - left);
+            }
+        }
+    }
     let mut out = Vec::new();
     for (c, want) in desired.iter().enumerate() {
         for (i, n) in want.iter().enumerate() {
             if n.is_none() || stays(before[c].get(i).unwrap_or(&None), n) {
                 continue;
             }
-            if let Some(k) = leaving.iter().position(|&(lc, li)| &before[lc][li] == n) {
-                out.push(((c, i), leaving.swap_remove(k)));
+            let n = n.as_ref().expect("an arrival");
+            if let Some(k) = leaving.iter().position(|&(lc, li)| before[lc][li].as_ref() == Some(n)) {
+                let from = leaving.swap_remove(k);
+                budget.remove(&from);
+                out.push(((c, i), from));
+            } else if let Some((&from, gave)) = budget.iter_mut().find(|((fc, fi), gave)| {
+                before[*fc][*fi].as_ref().is_some_and(|w| w.id == n.id && w.damage == n.damage && w.custom == n.custom) && **gave >= n.count
+            }) {
+                // Part of a stack (`splitStack`, which copies the stack's tag): its components, its new count.
+                *gave -= n.count;
+                out.push(((c, i), from));
             }
         }
     }
@@ -1247,6 +1267,13 @@ mod tests {
         let after = publish(&[pair], &[vec![Some(Stack::new("minecraft:coal", 5)), None]]);
         assert_eq!(after[0][0].as_ref().map(|f| f.name), Some("Fuel"));
         assert!(moved_stacks(&[vec![None]], &[vec![Some(Stack::new("minecraft:coal", 1))]]).is_empty());
+        // Part of a stack into an empty slot (`splitStack` copies its tag): the part has the stack's components; a
+        // stack whose count did not go down gives none.
+        let five = vec![Some(Full { stack: Stack::new("minecraft:coal", 5), name: "Fuel" }), None];
+        let after = publish(&[five.clone()], &[vec![Some(Stack::new("minecraft:coal", 3)), Some(Stack::new("minecraft:coal", 2))]]);
+        assert_eq!(after[0].iter().map(|f| f.as_ref().map(|f| (f.name, f.stack.count))).collect::<Vec<_>>(), vec![Some(("Fuel", 3)), Some(("Fuel", 2))]);
+        let after = publish(&[five], &[vec![Some(Stack::new("minecraft:coal", 5)), Some(Stack::new("minecraft:coal", 2))]]);
+        assert_eq!(after[0][1].as_ref().map(|f| f.name), Some(""), "nothing went out of the first: the second is new");
     }
 
     use super::*;
