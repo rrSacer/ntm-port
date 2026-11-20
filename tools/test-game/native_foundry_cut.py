@@ -16,6 +16,10 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           set to output; the crucible's 2 ingots (144) melt, pour and are cast by the caster (5 water a quantum): 2
           ingots in its outputs, none in the pool (F4 in game); the act breaks it and picks up what it drops. Control:
           as `caster`
+  hand    the caster by hand (`MachineStrandCaster.onBlockActivated`): the pool of 144 and, as a player in survival, the
+          mold taken out by command (there is no screwdriver) and put back by a click with a mold in hand (one of the
+          stack, into slot 0), then a click with a shovel: the whole pool as one exact scrap in the inventory. Control: a
+          barrel with the 2 ingots, which the player takes by command
   caster  a strand caster whose funnel cell a crucible's stream falls on (F1): 2 ingots (144) melt, pour and wait in
           its pool (no water: nothing is cast); the act breaks the caster as a player in survival and picks up its
           drops: its mold and one scrap with all 144. Control: a barrel with the 2 ingots and the mold, broken and
@@ -125,7 +129,7 @@ def machines(g):
 
 
 def places(g):
-    if SCENARIO not in ('caster', 'excess', 'batch'):
+    if SCENARIO not in ('caster', 'excess', 'batch', 'hand'):
         return [CORE]
     return [caster_core(g)] + ([] if VANILLA else [tuple(placed(g)['crucible'])])
 
@@ -179,7 +183,7 @@ def prepare(g):
             g.check('the_slots_are_empty', stack_quanta(block_items(g, CORE)) == 0, block_items(g, CORE))
             # Cold from here: nothing changes on its own after the base.
             g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
-    elif SCENARIO in ('caster', 'excess', 'batch'):
+    elif SCENARIO in ('caster', 'excess', 'batch', 'hand'):
         place_caster(g)
     g.command('kill @e[type=minecraft:item]')
     g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
@@ -310,6 +314,23 @@ def break_it(g, cells, label):
     time.sleep(1.5)
 
 
+def use_machine(g, cells, label):
+    """A right click on the first of `cells` that the player can reach; a multiblock's other cells hide the core's faces, so
+    the dummy in the way is clicked (it is the same machine)."""
+    queue = list(cells)
+    while queue:
+        cell = queue.pop(0)
+        try:
+            g.ctl('interact %d %d %d south' % cell)
+            time.sleep(1.5)
+            return cell
+        except RuntimeError as error:
+            blocker = re.search(r'ntm:dummy_machine at \[(-?\d+), (-?\d+), (-?\d+)\] is in the way', str(error))
+            if blocker:
+                queue.append(tuple(int(v) for v in blocker.groups()))
+    g.check('used_' + label, False, cells)
+
+
 def pick_up_all(g, required=True):
     drops = [e['pos'] for e in g.ctl('entities 20')['entities'] if e.get('kind') == 'item']
     if required:
@@ -377,6 +398,33 @@ def act(g):
             # A player near the machine may have picked the scrap up already: the inventory is what is checked.
             pick_up_all(g, required=False)
             g.check('one_exact_scrap_of_64', 'ntm_amount:64' in inventory_text(g).replace(' ', '').replace('"', ''), inventory_text(g)[:400])
+        g.evidence['picked'] = inventory_text(g)[:600]
+        g.command('gamemode creative @s')
+    elif SCENARIO == 'hand':
+        core = caster_core(g)
+        if VANILLA:
+            g.command('item replace block %d %d %d container.1 with minecraft:air' % tuple(core))
+            g.command('give @s minecraft:gold_ingot 2')
+        else:
+            g.command('item replace block %d %d %d container.0 with minecraft:air' % tuple(core))
+            time.sleep(1)
+            g.check('the_mold_is_out', 'ntm:mold__' not in block_items(g, core), block_items(g, core)[:200])
+            g.command('clear @s')
+            g.command('give @s ntm:mold__ingot 2')
+            g.command('gamemode survival @s')
+            g.command(f'tp @s {core[0] + .5} {core[1]} {core[2] + 4.5}')
+            time.sleep(1)
+            g.ctl('select ntm:mold__ingot')
+            use_machine(g, [(core[0], core[1] + 1, core[2]), core], 'caster_with_a_mold')
+            g.check('the_mold_went_in', 'ntm:mold__ingot' in block_items(g, core), block_items(g, core)[:200])
+            held = [n for i, n, _ in entries(inventory_text(g)) if i == 'ntm:mold__ingot']
+            g.check('one_mold_of_the_stack', held == [1], held)
+            g.command('give @s minecraft:iron_shovel 1')
+            g.ctl('select minecraft:iron_shovel')
+            use_machine(g, [(core[0], core[1] + 1, core[2]), core], 'caster_with_a_shovel')
+            g.check('the_pool_is_empty', molten(model(g, core)) == 0, molten(model(g, core)))
+            inv = inventory_text(g)
+            g.check('one_exact_scrap_of_144', 'ntm_amount:144' in inv.replace(' ', '').replace('"', '') and stack_quanta(inv) == 144, inv[:500])
         g.evidence['picked'] = inventory_text(g)[:600]
         g.command('gamemode creative @s')
     elif SCENARIO in ('caster', 'batch'):

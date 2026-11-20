@@ -1,0 +1,7149 @@
+{
+ "ok": true,
+ "scenario": "batch",
+ "binary": "/mnt/ssd120/sacer/so/fundicao-native-target/release/horizon-client",
+ "binary_sha256": "3fb561ff3b546b401a094f7ae7821e4fc0c983c55d63b3cd73512b7e7fea475d",
+ "bundle_sha256": "6a380ecbafe7b6214a2281697601d08e89007100bddfcd01a654d1059655bbd3",
+ "points": [
+  {
+   "point": "none",
+   "ok": true,
+   "vanilla_control": false,
+   "base_items": {
+    "metal_quanta": 144
+   },
+   "after_act": {
+    "molten": 0,
+    "slots": 0,
+    "inventory": 144,
+    "ground": 0,
+    "total": 144
+   },
+   "died_in_act": false,
+   "exit": "survived",
+   "disk": {
+    "entities": 0,
+    "blocks": 0,
+    "molten": 0,
+    "owed": 0,
+    "player": 144,
+    "total": 144
+   },
+   "items": {
+    "metal_quanta": 144
+   },
+   "kv_items": 0,
+   "written": {
+    "region": [
+     [
+      2,
+      0,
+      144,
+      0
+     ]
+    ],
+    "entities": []
+   },
+   "first_reopen": {
+    "molten": 0,
+    "slots": 0,
+    "inventory": 144,
+    "ground": 0,
+    "total": 144
+   },
+   "checks": {
+    "verify": {},
+    "again": {}
+   },
+   "items_after": {
+    "metal_quanta": 144
+   },
+   "kv_items_after": 0,
+   "second_reopen": {
+    "molten": 0,
+    "slots": 0,
+    "inventory": 144,
+    "ground": 0,
+    "total": 144
+   },
+   "items_again": {
+    "metal_quanta": 144
+   },
+   "kv_items_again": 0,
+   "control": {
+    "point": "none",
+    "ok": true,
+    "vanilla_control": true,
+    "base_items": {
+     "metal_quanta": 144
+    },
+    "after_act": {
+     "molten": 0,
+     "slots": 0,
+     "inventory": 144,
+     "ground": 0,
+     "total": 144
+    },
+    "died_in_act": false,
+    "exit": "survived",
+    "disk": {
+     "entities": 0,
+     "blocks": 0,
+     "molten": 0,
+     "owed": 0,
+     "player": 144,
+     "total": 144
+    },
+    "items": {
+     "metal_quanta": 144
+    },
+    "kv_items": 0,
+    "written": {
+     "region": [
+      [
+       2,
+       0,
+       144,
+       0
+      ]
+     ],
+     "entities": []
+    },
+    "first_reopen": {
+     "molten": 0,
+     "slots": 0,
+     "inventory": 144,
+     "ground": 0,
+     "total": 144
+    },
+    "checks": {
+     "verify": {},
+     "again": {}
+    },
+    "items_after": {
+     "metal_quanta": 144
+    },
+    "kv_items_after": 0,
+    "second_reopen": {
+     "molten": 0,
+     "slots": 0,
+     "inventory": 144,
+     "ground": 0,
+     "total": 144
+    },
+    "items_again": {
+     "metal_quanta": 144
+    },
+    "kv_items_again": 0
+   },
+   "verdict": {
+    "disk": 144,
+    "first": 144,
+    "second": 144,
+    "expected": 144,
+    "control_expected": 144,
+    "control_disk": 144,
+    "parts_ok": true,
+    "as_the_files": true,
+    "as_the_files_items": true,
+    "storage_clean": true,
+    "same_cut": true,
+    "same_cut_by_definition": true,
+    "compared_with": "none",
+    "control_first": 144,
+    "no_duplicate": true,
+    "lost": 0,
+    "control_lost": 0,
+    "no_worse_than_vanilla": true,
+    "items": {
+     "base": {
+      "metal_quanta": 144
+     },
+     "control_base": {
+      "metal_quanta": 144
+     },
+     "items_after": {
+      "mine": {
+       "metal_quanta": 144
+      },
+      "control": {
+       "metal_quanta": 144
+      }
+     },
+     "items_again": {
+      "mine": {
+       "metal_quanta": 144
+      },
+      "control": {
+       "metal_quanta": 144
+      }
+     }
+    },
+    "no_duplicate_item": true,
+    "no_worse_item": true,
+    "criterion": "cut",
+    "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+    "proof": true
+   }
+  },
+  {
+   "point": "kill",
+   "ok": true,
+   "vanilla_control": false,
+   "base_items": {
+    "metal_quanta": 144
+   },
+   "after_act": {
+    "molten": 0,
+    "slots": 0,
+    "inventory": 144,
+    "ground": 0,
+    "total": 144
+   },
+   "died_in_act": false,
+   "exit": -9,
+   "disk": {
+    "entities": 0,
+    "blocks": 144,
+    "molten": 0,
+    "owed": 0,
+    "player": 0,
+    "total": 144
+   },
+   "items": {
+    "metal_quanta": 144
+   },
+   "kv_items": 0,
+   "written": {
+    "region": [],
+    "entities": []
+   },
+   "first_reopen": {
+    "molten": 0,
+    "slots": 144,
+    "inventory": 0,
+    "ground": 0,
+    "total": 144
+   },
+   "checks": {
+    "verify": {},
+    "again": {}
+   },
+   "items_after": {
+    "metal_quanta": 144
+   },
+   "kv_items_after": 0,
+   "second_reopen": {
+    "molten": 0,
+    "slots": 144,
+    "inventory": 0,
+    "ground": 0,
+    "total": 144
+   },
+   "items_again": {
+    "metal_quanta": 144
+   },
+   "kv_items_again": 0,
+   "control": {
+    "point": "kill",
+    "ok": true,
+    "vanilla_control": true,
+    "base_items": {
+     "metal_quanta": 144
+    },
+    "after_act": {
+     "molten": 0,
+     "slots": 0,
+     "inventory": 144,
+     "ground": 0,
+     "total": 144
+    },
+    "died_in_act": false,
+    "exit": -9,
+    "disk": {
+     "entities": 0,
+     "blocks": 144,
+     "molten": 0,
+     "owed": 0,
+     "player": 0,
+     "total": 144
+    },
+    "items": {
+     "metal_quanta": 144
+    },
+    "kv_items": 0,
+    "written": {
+     "region": [],
+     "entities": []
+    },
+    "first_reopen": {
+     "molten": 0,
+     "slots": 144,
+     "inventory": 0,
+     "ground": 0,
+     "total": 144
+    },
+    "checks": {
+     "verify": {},
+     "again": {}
+    },
+    "items_after": {
+     "metal_quanta": 144
+    },
+    "kv_items_after": 0,
+    "second_reopen": {
+     "molten": 0,
+     "slots": 144,
+     "inventory": 0,
+     "ground": 0,
+     "total": 144
+    },
+    "items_again": {
+     "metal_quanta": 144
+    },
+    "kv_items_again": 0
+   },
+   "verdict": {
+    "disk": 144,
+    "first": 144,
+    "second": 144,
+    "expected": 144,
+    "control_expected": 144,
+    "control_disk": 144,
+    "parts_ok": true,
+    "as_the_files": true,
+    "as_the_files_items": true,
+    "storage_clean": true,
+    "same_cut": true,
+    "same_cut_by_definition": true,
+    "compared_with": "kill",
+    "control_first": 144,
+    "no_duplicate": true,
+    "lost": 0,
+    "control_lost": 0,
+    "no_worse_than_vanilla": true,
+    "items": {
+     "base": {
+      "metal_quanta": 144
+     },
+     "control_base": {
+      "metal_quanta": 144
+     },
+     "items_after": {
+      "mine": {
+       "metal_quanta": 144
+      },
+      "control": {
+       "metal_quanta": 144
+      }
+     },
+     "items_again": {
+      "mine": {
+       "metal_quanta": 144
+      },
+      "control": {
+       "metal_quanta": 144
+      }
+     }
+    },
+    "no_duplicate_item": true,
+    "no_worse_item": true,
+    "criterion": "last_save",
+    "criterion_reason": "nothing written outside a save: both worlds are the last save, exactly",
+    "proof": true,
+    "as_the_last_save": true
+   }
+  },
+  {
+   "point": "kv_committed",
+   "ok": true,
+   "vanilla_control": false,
+   "base_items": {
+    "metal_quanta": 144
+   },
+   "after_act": {
+    "molten": 0,
+    "slots": 0,
+    "inventory": 144,
+    "ground": 0,
+    "total": 144
+   },
+   "died_in_act": false,
+   "exit": -6,
+   "killed_at_the_point": true,
+   "disk": {
+    "entities": 0,
+    "blocks": 144,
+    "molten": 0,
+    "owed": 0,
+    "player": 144,
+    "total": 288
+   },
+   "items": {
+    "metal_quanta": 288
+   },
+   "kv_items": 0,
+   "written": {
+    "region": [],
+    "entities": []
+   },
+   "first_reopen": {
+    "molten": 0,
+    "slots": 144,
+    "inventory": 144,
+    "ground": 0,
+    "total": 288
+   },
+   "checks": {
+    "verify": {},
+    "again": {}
+   },
+   "items_after": {
+    "metal_quanta": 288
+   },
+   "kv_items_after": 0,
+   "second_reopen": {
+    "molten": 0,
+    "slots": 144,
+    "inventory": 144,
+    "ground": 0,
+    "total": 288
+   },
+   "items_again": {
+    "metal_quanta": 288
+   },
+   "kv_items_again": 0,
+   "control": {
+    "point": "kv_committed",
+    "ok": true,
+    "vanilla_control": true,
+    "base_items": {
+     "metal_quanta": 144
+    },
+    "after_act": {
+     "molten": 0,
+     "slots": 0,
+     "inventory": 144,
+     "ground": 0,
+     "total": 144
+    },
+    "died_in_act": false,
+    "exit": -6,
+    "killed_at_the_point": true,
+    "disk": {
+     "entities": 0,
+     "blocks": 144,
+     "molten": 0,
+     "owed": 0,
+     "player": 144,
+     "total": 288
+    },
+    "items": {
+     "metal_quanta": 288
+    },
+    "kv_items": 0,
+    "written": {
+     "region": [],
+     "entities": []
+    },
+    "first_reopen": {
+     "molten": 0,
+     "slots": 144,
+     "inventory": 144,
+     "ground": 0,
+     "total": 288
+    },
+    "checks": {
+     "verify": {},
+     "again": {}
+    },
+    "items_after": {
+     "metal_quanta": 288
+    },
+    "kv_items_after": 0,
+    "second_reopen": {
+     "molten": 0,
+     "slots": 144,
+     "inventory": 144,
+     "ground": 0,
+     "total": 288
+    },
+    "items_again": {
+     "metal_quanta": 288
+    },
+    "kv_items_again": 0
+   },
+   "verdict": {
+    "disk": 288,
+    "first": 288,
+    "second": 288,
+    "expected": 144,
+    "control_expected": 144,
+    "control_disk": 288,
+    "parts_ok": true,
+    "as_the_files": true,
+    "as_the_files_items": true,
+    "storage_clean": true,
+    "same_cut": true,
+    "same_cut_by_definition": true,
+    "compared_with": "kv_committed",
+    "control_first": 288,
+    "no_duplicate": true,
+    "lost": -144,
+    "control_lost": -144,
+    "no_worse_than_vanilla": true,
+    "items": {
+     "base": {
+      "metal_quanta": 144
+     },
+     "control_base": {
+      "metal_quanta": 144
+     },
+     "items_after": {
+      "mine": {
+       "metal_quanta": 288
+      },
+      "control": {
+       "metal_quanta": 288
+      }
+     },
+     "items_again": {
+      "mine": {
+       "metal_quanta": 288
+      },
+      "control": {
+       "metal_quanta": 288
+      }
+     }
+    },
+    "no_duplicate_item": true,
+    "no_worse_item": true,
+    "criterion": "last_save",
+    "criterion_reason": "nothing written outside a save: both worlds are the last save, exactly",
+    "proof": true
+   }
+  },
+  {
+   "point": "save_begin",
+   "ok": true,
+   "vanilla_control": false,
+   "base_items": {
+    "metal_quanta": 144
+   },
+   "after_act": {
+    "molten": 0,
+    "slots": 0,
+    "inventory": 144,
+    "ground": 0,
+    "total": 144
+   },
+   "died_in_act": false,
+   "exit": -6,
+   "killed_at_the_point": true,
+   "disk": {
+    "entities": 0,
+    "blocks": 144,
+    "molten": 0,
+    "owed": 0,
+    "player": 0,
+    "total": 144
+   },
+   "items": {
+    "metal_quanta": 144
+   },
+   "kv_items": 0,
+   "written": {
+    "region": [],
+    "entities": []
+   },
+   "first_reopen": {
+    "molten": 0,
+    "slots": 144,
+    "inventory": 0,
+    "ground": 0,
+    "total": 144
+   },
+   "checks": {
+    "verify": {},
+    "again": {}
+   },
+   "items_after": {
+    "metal_quanta": 144
+   },
+   "kv_items_after": 0,
+   "second_reopen": {
+    "molten": 0,
+    "slots": 144,
+    "inventory": 0,
+    "ground": 0,
+    "total": 144
+   },
+   "items_again": {
+    "metal_quanta": 144
+   },
+   "kv_items_again": 0,
+   "control": {
+    "point": "save_begin",
+    "ok": true,
+    "vanilla_control": true,
+    "base_items": {
+     "metal_quanta": 144
+    },
+    "after_act": {
+     "molten": 0,
+     "slots": 0,
+     "inventory": 144,
+     "ground": 0,
+     "total": 144
+    },
+    "died_in_act": false,
+    "exit": -6,
+    "killed_at_the_point": true,
+    "disk": {
+     "entities": 0,
+     "blocks": 144,
+     "molten": 0,
+     "owed": 0,
+     "player": 0,
+     "total": 144
+    },
+    "items": {
+     "metal_quanta": 144
+    },
+    "kv_items": 0,
+    "written": {
+     "region": [],
+     "entities": []
+    },
+    "first_reopen": {
+     "molten": 0,
+     "slots": 144,
+     "inventory": 0,
+     "ground": 0,
+     "total": 144
+    },
+    "checks": {
+     "verify": {},
+     "again": {}
+    },
+    "items_after": {
+     "metal_quanta": 144
+    },
+    "kv_items_after": 0,
+    "second_reopen": {
+     "molten": 0,
+     "slots": 144,
+     "inventory": 0,
+     "ground": 0,
+     "total": 144
+    },
+    "items_again": {
+     "metal_quanta": 144
+    },
+    "kv_items_again": 0
+   },
+   "verdict": {
+    "disk": 144,
+    "first": 144,
+    "second": 144,
+    "expected": 144,
+    "control_expected": 144,
+    "control_disk": 144,
+    "parts_ok": true,
+    "as_the_files": true,
+    "as_the_files_items": true,
+    "storage_clean": true,
+    "same_cut": true,
+    "same_cut_by_definition": false,
+    "compared_with": "save_begin",
+    "control_first": 144,
+    "no_duplicate": true,
+    "lost": 0,
+    "control_lost": 0,
+    "no_worse_than_vanilla": true,
+    "items": {
+     "base": {
+      "metal_quanta": 144
+     },
+     "control_base": {
+      "metal_quanta": 144
+     },
+     "items_after": {
+      "mine": {
+       "metal_quanta": 144
+      },
+      "control": {
+       "metal_quanta": 144
+      }
+     },
+     "items_again": {
+      "mine": {
+       "metal_quanta": 144
+      },
+      "control": {
+       "metal_quanta": 144
+      }
+     }
+    },
+    "no_duplicate_item": true,
+    "no_worse_item": true,
+    "criterion": "cut",
+    "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+    "proof": true
+   }
+  }
+ ],
+ "prepare": {
+  "ntm": {
+   "scenario": "foundry-cut-prepare",
+   "ok": false,
+   "steps": [
+    {
+     "command": "status",
+     "result": {
+      "block_entities": 0,
+      "border": {
+       "center": [
+        0.0,
+        0.0
+       ],
+       "size": 59999968.0
+      },
+      "carts": [],
+      "chunks": 0,
+      "creative": false,
+      "day_time": 1000,
+      "debug": {
+       "advanced_tooltips": false,
+       "chunk_borders": false,
+       "clipboard": null,
+       "hitboxes": false,
+       "overlay": false,
+       "pause_menu": true,
+       "pause_on_lost_focus": true
+      },
+      "destroying": [],
+      "dimension": "minecraft:overworld",
+      "dirty_light": 0,
+      "display": {
+       "height": 720,
+       "refresh_hz": null,
+       "scale": 1.0,
+       "width": 1280
+      },
+      "fangs_vertices": 0,
+      "fight": {
+       "alive_crystals": 0,
+       "crystal_list": [],
+       "crystals": 0,
+       "dragon": null,
+       "exit_portal": null,
+       "killed": false,
+       "players": false,
+       "respawn": null
+      },
+      "fishing": null,
+      "fps": 0.0,
+      "frames": 0,
+      "generated_chunks": 0,
+      "heard": {},
+      "held": null,
+      "input": {
+       "counts": {
+        "agent": 0,
+        "game": 0,
+        "user": 0
+       },
+       "events": 0,
+       "last_origin": null,
+       "last_user_age_s": null,
+       "recording": null,
+       "replay": null,
+       "user_since_agent": 0
+      },
+      "keys": [],
+      "lightning": {
+       "bolts": 0,
+       "flash": 0,
+       "flashes": 0,
+       "struck": 0
+      },
+      "lod": {
+       "active_tiles": 0,
+       "cached_tiles": 0,
+       "detail_target_columns": 0,
+       "distance": 0,
+       "effective_distance": 0,
+       "far_detail": "full",
+       "kept_mb": 0,
+       "kept_tiles": 0,
+       "levels": [],
+       "pending_observations": 0,
+       "refined_samples": 0,
+       "refined_target_columns": 0,
+       "resident_quads": 0,
+       "sampled_target_tiles": 0,
+       "source": "none",
+       "source_attempted": false,
+       "target_tiles": 0,
+       "terrain_distance": 2
+      },
+      "maps": [],
+      "meshed_sections": 0,
+      "mobs": 0,
+      "music": null,
+      "name_tags": null,
+      "objects": [],
+      "offhand": null,
+      "particles": {},
+      "pending_chunks": 0,
+      "pending_uploads": 0,
+      "physical_keys": [],
+      "pickups": {},
+      "pitch": 0.0,
+      "player": null,
+      "projectiles": [],
+      "render_distance": 2,
+      "renderer": {
+       "arena_bytes": 0,
+       "backend": "Gl",
+       "culled_sections": null,
+       "device_type": "cpu",
+       "drawn_sections": 0,
+       "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+       "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+       "gpu_allocated_bytes": null,
+       "gpu_culling": false,
+       "gpu_culling_auto": "watching",
+       "gpu_culling_mode": "off",
+       "gpu_culling_offer": "Unsupported",
+       "gpu_fading": null,
+       "gpu_frame": false,
+       "gpu_occluding": false,
+       "gpu_reserved_bytes": null,
+       "packed_layout": [
+        false,
+        true
+       ],
+       "present_mode": "Immediate",
+       "resident_sections": 0,
+       "section_draw_calls": 0,
+       "section_draws": 0,
+       "section_vertex_bytes": 0,
+       "size": [
+        1280,
+        720
+       ],
+       "stats_lag": 0,
+       "uploaded_bytes": 0,
+       "vendor": "mesa",
+       "vertex_bytes_split": [
+        0,
+        0
+       ]
+      },
+      "riding": null,
+      "rockets": 0,
+      "screen": "playing",
+      "selected": 1,
+      "server": {
+       "address": "local",
+       "chat": [],
+       "chunks": 0,
+       "dead_players": [],
+       "decode_errors": 0,
+       "dimension": "minecraft:overworld",
+       "entities": {},
+       "entity_id": 0,
+       "food": 20,
+       "game_mode": 0,
+       "health": 20.0,
+       "joined": false,
+       "loaded": false,
+       "lying_players": [],
+       "name": "CrashTest",
+       "own_body": false,
+       "player_equipment": [],
+       "player_model": false,
+       "player_positions": [],
+       "players": [],
+       "status": "Connecting to the server...",
+       "text_display_vertices": 0,
+       "text_displays": 0
+      },
+      "sidebar": null,
+      "sounds": {
+       "channels": 0,
+       "decoded": 0,
+       "decoded_mib": 0,
+       "events": [],
+       "handles": 0,
+       "instances": 0,
+       "playing": 0,
+       "queued": 0,
+       "ticking": 0,
+       "used": [
+        0,
+        0
+       ]
+      },
+      "stopped_sounds": {},
+      "streaming": {
+       "decorating": 0,
+       "finishing": 0,
+       "generating": 0,
+       "lighting": 0,
+       "meshing": 0,
+       "protos": 0,
+       "queued": 0
+      },
+      "target": null,
+      "ticks": 0,
+      "tridents": 0,
+      "uptime_seconds": 3.663955807,
+      "using": null,
+      "yaw": 0.0
+     }
+    },
+    {
+     "command": "status",
+     "result": {
+      "block_entities": 0,
+      "border": {
+       "center": [
+        0.0,
+        0.0
+       ],
+       "size": 59999968.0
+      },
+      "carts": [],
+      "chunks": 4,
+      "creative": true,
+      "day_time": 5,
+      "debug": {
+       "advanced_tooltips": false,
+       "chunk_borders": false,
+       "clipboard": null,
+       "hitboxes": false,
+       "overlay": false,
+       "pause_menu": true,
+       "pause_on_lost_focus": true
+      },
+      "destroying": [],
+      "dimension": "minecraft:overworld",
+      "dirty_light": 0,
+      "display": {
+       "height": 720,
+       "refresh_hz": null,
+       "scale": 1.0,
+       "width": 1280
+      },
+      "fangs_vertices": 0,
+      "fight": {
+       "alive_crystals": 0,
+       "crystal_list": [],
+       "crystals": 0,
+       "dragon": null,
+       "exit_portal": null,
+       "killed": false,
+       "players": false,
+       "respawn": null
+      },
+      "fishing": null,
+      "fps": 0.2571364641189575,
+      "frames": 2,
+      "generated_chunks": 4,
+      "heard": {},
+      "held": null,
+      "input": {
+       "counts": {
+        "agent": 0,
+        "game": 0,
+        "user": 0
+       },
+       "events": 0,
+       "last_origin": null,
+       "last_user_age_s": null,
+       "recording": null,
+       "replay": null,
+       "user_since_agent": 0
+      },
+      "keys": [],
+      "lightning": {
+       "bolts": 0,
+       "flash": 0,
+       "flashes": 0,
+       "struck": 0
+      },
+      "lod": {
+       "active_tiles": 0,
+       "cached_tiles": 0,
+       "detail_target_columns": 0,
+       "distance": 0,
+       "effective_distance": 0,
+       "far_detail": "full",
+       "kept_mb": 0,
+       "kept_tiles": 0,
+       "levels": [],
+       "pending_observations": 0,
+       "refined_samples": 0,
+       "refined_target_columns": 0,
+       "resident_quads": 0,
+       "sampled_target_tiles": 0,
+       "source": "none",
+       "source_attempted": false,
+       "target_tiles": 0,
+       "terrain_distance": 2
+      },
+      "maps": [],
+      "meshed_sections": 0,
+      "mobs": 0,
+      "music": null,
+      "name_tags": [],
+      "objects": [],
+      "offhand": null,
+      "particles": {},
+      "pending_chunks": 0,
+      "pending_uploads": 0,
+      "physical_keys": [],
+      "pickups": {},
+      "pitch": 0.0,
+      "player": {
+       "food": 20,
+       "health": 20.0,
+       "max_health": null,
+       "on_ground": true,
+       "position": [
+        -5.5,
+        75.0,
+        10.5
+       ],
+       "velocity": [
+        0.0,
+        -0.0784000015258789,
+        0.0
+       ]
+      },
+      "projectiles": [],
+      "render_distance": 2,
+      "renderer": {
+       "arena_bytes": 0,
+       "backend": "Gl",
+       "culled_sections": null,
+       "device_type": "cpu",
+       "drawn_sections": 0,
+       "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+       "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+       "gpu_allocated_bytes": null,
+       "gpu_culling": false,
+       "gpu_culling_auto": "watching",
+       "gpu_culling_mode": "off",
+       "gpu_culling_offer": "Unsupported",
+       "gpu_fading": null,
+       "gpu_frame": false,
+       "gpu_occluding": false,
+       "gpu_reserved_bytes": null,
+       "packed_layout": [
+        false,
+        true
+       ],
+       "present_mode": "Immediate",
+       "resident_sections": 0,
+       "section_draw_calls": 0,
+       "section_draws": 0,
+       "section_vertex_bytes": 0,
+       "size": [
+        1280,
+        720
+       ],
+       "stats_lag": 0,
+       "uploaded_bytes": 0,
+       "vendor": "mesa",
+       "vertex_bytes_split": [
+        0,
+        0
+       ]
+      },
+      "riding": null,
+      "rockets": 0,
+      "screen": "playing",
+      "selected": 1,
+      "server": {
+       "address": "local",
+       "chat": [],
+       "chunks": 4,
+       "dead_players": [],
+       "decode_errors": 0,
+       "dimension": "minecraft:overworld",
+       "entities": {},
+       "entity_id": 1,
+       "food": 20,
+       "game_mode": 1,
+       "health": 20.0,
+       "joined": true,
+       "loaded": true,
+       "lying_players": [],
+       "name": "CrashTest",
+       "own_body": false,
+       "player_equipment": [],
+       "player_model": true,
+       "player_positions": [],
+       "players": [
+        "CrashTest"
+       ],
+       "status": "Loading terrain...",
+       "text_display_vertices": 0,
+       "text_displays": 0
+      },
+      "sidebar": null,
+      "sounds": {
+       "channels": 0,
+       "decoded": 0,
+       "decoded_mib": 0,
+       "events": [],
+       "handles": 0,
+       "instances": 0,
+       "playing": 0,
+       "queued": 0,
+       "ticking": 0,
+       "used": [
+        0,
+        0
+       ]
+      },
+      "stopped_sounds": {},
+      "streaming": {
+       "decorating": 0,
+       "finishing": 0,
+       "generating": 0,
+       "lighting": 0,
+       "meshing": 0,
+       "protos": 0,
+       "queued": 0
+      },
+      "target": null,
+      "ticks": 14,
+      "tridents": 0,
+      "uptime_seconds": 3.960643637,
+      "using": null,
+      "yaw": 0.0
+     }
+    },
+    {
+     "command": "close",
+     "result": {
+      "ok": true
+     }
+    },
+    {
+     "command": "command gamemode creative @s",
+     "result": {
+      "chat": [],
+      "ok": true
+     }
+    },
+    {
+     "command": "close",
+     "result": {
+      "ok": true
+     }
+    },
+    {
+     "command": "command forceload add 30 0 64 16",
+     "result": {
+      "chat": [
+       "Marked 8 chunks in minecraft:overworld from [1, 0] to [4, 1] to be force loaded"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command fill 30 101 0 64 107 16 minecraft:air",
+     "result": {
+      "chat": [
+       "No blocks were filled"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command fill 30 100 0 64 100 16 minecraft:stone",
+     "result": {
+      "chat": [
+       "Successfully filled 595 block(s)"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command clear @s",
+     "result": {
+      "chat": [
+       "No items were found on player CrashTest"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command clear @s",
+     "result": {
+      "chat": [
+       "No items were found on player CrashTest"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command gamemode creative @s",
+     "result": {
+      "chat": [],
+      "ok": true
+     }
+    },
+    {
+     "command": "command give @s ntm:machine_strand_caster 1",
+     "result": {
+      "chat": [
+       "Gave 1 [Strand Caster] to CrashTest"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command tp @s 40.5 101 11.5",
+     "result": {
+      "chat": [
+       "Teleported CrashTest to 40.500000, 101.000000, 11.500000"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "place 40 101 8 --item ntm:machine_strand_caster",
+     "result": {
+      "block": {
+       "block": "ntm:machine_strand_caster",
+       "loaded": true,
+       "pos": [
+        40,
+        101,
+        8
+       ],
+       "state": "ntm:machine_strand_caster[facing=north,honey_level=0]"
+      },
+      "block_before": "minecraft:air",
+      "changed": true,
+      "inventory_change": {},
+      "ok": true,
+      "screen": "playing"
+     }
+    },
+    {
+     "command": "command clear @s",
+     "result": {
+      "chat": [
+       "Removed 1 item(s) from player CrashTest"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 37 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 38 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 39 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 41 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 5 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 7 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 8 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 9 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 10 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 43 101 11 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":0,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":0,\"cap\":64000},\"last_progress\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command item replace block 40 101 8 container.0 with ntm:mold__ingot 1",
+     "result": {
+      "chat": [
+       "Replaced 1 slot(s) at 40, 101, 8 with [Foundry Mold (Ingot)]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 42 101 9 ntm:barrel_steel[facing=south,honey_level=0]",
+     "result": {
+      "chat": [
+       "Changed the block at 42, 101, 9"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command gamemode creative @s",
+     "result": {
+      "chat": [],
+      "ok": true
+     }
+    },
+    {
+     "command": "command clear @s",
+     "result": {
+      "chat": [
+       "No items were found on player CrashTest"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command give @s minecraft:water_bucket 1",
+     "result": {
+      "chat": [
+       "Gave 1 [Water Bucket] to CrashTest"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command tp @s 42.5 101 12.5",
+     "result": {
+      "chat": [
+       "Teleported CrashTest to 42.500000, 101.000000, 12.500000"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "close",
+     "result": {
+      "ok": true
+     }
+    },
+    {
+     "command": "interact 42 101 9 south",
+     "result": {
+      "block": {
+       "block": "ntm:barrel_steel",
+       "loaded": true,
+       "pos": [
+        42,
+        101,
+        9
+       ],
+       "state": "ntm:barrel_steel[facing=south,honey_level=0]"
+      },
+      "block_before": "ntm:barrel_steel[facing=south,honey_level=0]",
+      "changed": false,
+      "inventory_change": {},
+      "ok": true,
+      "screen": "container"
+     }
+    },
+    {
+     "command": "screen",
+     "result": {
+      "buttons": [
+       {
+        "enabled": false,
+        "h": 20.0,
+        "label": "Previous Page",
+        "w": 20.0,
+        "x": 472.0,
+        "y": 6.0
+       },
+       {
+        "enabled": true,
+        "h": 20.0,
+        "label": "Next Page",
+        "w": 20.0,
+        "x": 614.0,
+        "y": 6.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Stone",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Granite",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Granite",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Diorite",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Diorite",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Andesite",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Andesite",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cobbled Deepslate",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 29.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Deepslate",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Calcite",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Tuff",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Tuff Slab",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Tuff Stairs",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Tuff Wall",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Chiseled Tuff",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Tuff",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Tuff Slab",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 47.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Tuff Stairs",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Tuff Wall",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Tuff Bricks",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Tuff Brick Slab",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Tuff Brick Stairs",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Tuff Brick Wall",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Chiseled Tuff Bricks",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sulfur",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Potent Sulfur",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 65.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sulfur Slab",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sulfur Stairs",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sulfur Wall",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Sulfur",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Sulfur Slab",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Sulfur Stairs",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Sulfur Wall",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sulfur Bricks",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sulfur Brick Slab",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 83.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sulfur Brick Stairs",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sulfur Brick Wall",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Chiseled Sulfur",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cinnabar",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cinnabar Slab",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cinnabar Stairs",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cinnabar Wall",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Cinnabar",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Cinnabar Slab",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 101.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Cinnabar Stairs",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Polished Cinnabar Wall",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cinnabar Bricks",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cinnabar Brick Slab",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cinnabar Brick Stairs",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cinnabar Brick Wall",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Chiseled Cinnabar",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Dripstone Block",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Grass Block",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 119.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Dirt",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Coarse Dirt",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Podzol",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Rooted Dirt",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Mud",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Crimson Nylium",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Warped Nylium",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cobblestone",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Oak Planks",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 137.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Spruce Planks",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Birch Planks",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Jungle Planks",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Acacia Planks",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cherry Planks",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Dark Oak Planks",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Pale Oak Planks",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Mangrove Planks",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Poplar Planks",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 155.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Bamboo Planks",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Crimson Planks",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Warped Planks",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Bamboo Mosaic",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Oak Sapling",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Spruce Sapling",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Birch Sapling",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Jungle Sapling",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Acacia Sapling",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 173.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cherry Sapling",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Dark Oak Sapling",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Pale Oak Sapling",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Mangrove Propagule",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Poplar Sapling",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Bedrock",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Sand",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Suspicious Sand",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Suspicious Gravel",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 191.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Red Sand",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Gravel",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Coal Ore",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate Coal Ore",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Iron Ore",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate Iron Ore",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Copper Ore",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate Copper Ore",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Gold Ore",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 209.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate Gold Ore",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Redstone Ore",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate Redstone Ore",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Emerald Ore",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate Emerald Ore",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Lapis Lazuli Ore",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate Lapis Lazuli Ore",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Diamond Ore",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Deepslate Diamond Ore",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 227.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Nether Gold Ore",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Nether Quartz Ore",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Ancient Debris",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Coal",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Raw Iron",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Raw Copper",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Raw Gold",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Heavy Core",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Amethyst",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 245.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Budding Amethyst",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Iron",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Copper",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Exposed Copper",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Weathered Copper",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Oxidized Copper",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Block of Copper",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Exposed Copper",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Weathered Copper",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 263.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Oxidized Copper",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Gold",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Diamond",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Block of Netherite",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Chiseled Copper",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Exposed Chiseled Copper",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Weathered Chiseled Copper",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Oxidized Chiseled Copper",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Chiseled Copper",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 281.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Exposed Chiseled Copper",
+        "w": 16.0,
+        "x": 473.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Weathered Chiseled Copper",
+        "w": 16.0,
+        "x": 491.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Oxidized Chiseled Copper",
+        "w": 16.0,
+        "x": 509.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Cut Copper",
+        "w": 16.0,
+        "x": 527.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Exposed Cut Copper",
+        "w": 16.0,
+        "x": 545.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Weathered Cut Copper",
+        "w": 16.0,
+        "x": 563.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Oxidized Cut Copper",
+        "w": 16.0,
+        "x": 581.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Cut Copper",
+        "w": 16.0,
+        "x": 599.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 16.0,
+        "label": "Waxed Exposed Cut Copper",
+        "w": 16.0,
+        "x": 617.0,
+        "y": 299.0
+       },
+       {
+        "enabled": true,
+        "h": 20.0,
+        "label": "Options",
+        "w": 20.0,
+        "x": 614.0,
+        "y": 334.0
+       }
+      ],
+      "carried": null,
+      "container": [
+       -2147483648,
+       0,
+       0
+      ],
+      "craft_size": 2,
+      "screen": "container",
+      "slot_ids": "0-8 hotbar, 9-35 inventory, 100+ crafting grid (row-major), 200 crafting result, 300+ container, 500-503 armor, 504 offhand, 600+ station",
+      "slots": [
+       {
+        "count": 1,
+        "item": "minecraft:water_bucket",
+        "slot": 0
+       },
+       {
+        "item": null,
+        "slot": 1
+       },
+       {
+        "item": null,
+        "slot": 2
+       },
+       {
+        "item": null,
+        "slot": 3
+       },
+       {
+        "item": null,
+        "slot": 4
+       },
+       {
+        "item": null,
+        "slot": 5
+       },
+       {
+        "item": null,
+        "slot": 6
+       },
+       {
+        "item": null,
+        "slot": 7
+       },
+       {
+        "item": null,
+        "slot": 8
+       },
+       {
+        "item": null,
+        "slot": 9
+       },
+       {
+        "item": null,
+        "slot": 10
+       },
+       {
+        "item": null,
+        "slot": 11
+       },
+       {
+        "item": null,
+        "slot": 12
+       },
+       {
+        "item": null,
+        "slot": 13
+       },
+       {
+        "item": null,
+        "slot": 14
+       },
+       {
+        "item": null,
+        "slot": 15
+       },
+       {
+        "item": null,
+        "slot": 16
+       },
+       {
+        "item": null,
+        "slot": 17
+       },
+       {
+        "item": null,
+        "slot": 18
+       },
+       {
+        "item": null,
+        "slot": 19
+       },
+       {
+        "item": null,
+        "slot": 20
+       },
+       {
+        "item": null,
+        "slot": 21
+       },
+       {
+        "item": null,
+        "slot": 22
+       },
+       {
+        "item": null,
+        "slot": 23
+       },
+       {
+        "item": null,
+        "slot": 24
+       },
+       {
+        "item": null,
+        "slot": 25
+       },
+       {
+        "item": null,
+        "slot": 26
+       },
+       {
+        "item": null,
+        "slot": 27
+       },
+       {
+        "item": null,
+        "slot": 28
+       },
+       {
+        "item": null,
+        "slot": 29
+       },
+       {
+        "item": null,
+        "slot": 30
+       },
+       {
+        "item": null,
+        "slot": 31
+       },
+       {
+        "item": null,
+        "slot": 32
+       },
+       {
+        "item": null,
+        "slot": 33
+       },
+       {
+        "item": null,
+        "slot": 34
+       },
+       {
+        "item": null,
+        "slot": 35
+       },
+       {
+        "item": null,
+        "slot": 300
+       },
+       {
+        "item": null,
+        "slot": 301
+       },
+       {
+        "item": null,
+        "slot": 302
+       },
+       {
+        "item": null,
+        "slot": 303
+       },
+       {
+        "item": null,
+        "slot": 304
+       },
+       {
+        "item": null,
+        "slot": 305
+       }
+      ],
+      "station": null,
+      "title": [
+       {
+        "bold": false,
+        "color": null,
+        "italic": false,
+        "text": "Steel Barrel"
+       }
+      ]
+     }
+    },
+    {
+     "command": "click-slot 0",
+     "result": {
+      "ok": true
+     }
+    },
+    {
+     "command": "click-slot 302",
+     "result": {
+      "ok": true
+     }
+    },
+    {
+     "command": "ui",
+     "result": {
+      "frame": 1883,
+      "gui_size": [
+       640.0,
+       360.0
+      ],
+      "screen": "container",
+      "widgets": [
+       {
+        "bounds": [
+         472.0,
+         6.0,
+         20.0,
+         20.0
+        ],
+        "enabled": false,
+        "id": "previous-page",
+        "kind": "button",
+        "label": "Previous Page"
+       },
+       {
+        "bounds": [
+         614.0,
+         6.0,
+         20.0,
+         20.0
+        ],
+        "enabled": true,
+        "id": "next-page",
+        "kind": "button",
+        "label": "Next Page"
+       },
+       {
+        "bounds": [
+         473.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "stone",
+        "kind": "button",
+        "label": "Stone"
+       },
+       {
+        "bounds": [
+         491.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "granite",
+        "kind": "button",
+        "label": "Granite"
+       },
+       {
+        "bounds": [
+         509.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-granite",
+        "kind": "button",
+        "label": "Polished Granite"
+       },
+       {
+        "bounds": [
+         527.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "diorite",
+        "kind": "button",
+        "label": "Diorite"
+       },
+       {
+        "bounds": [
+         545.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-diorite",
+        "kind": "button",
+        "label": "Polished Diorite"
+       },
+       {
+        "bounds": [
+         563.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "andesite",
+        "kind": "button",
+        "label": "Andesite"
+       },
+       {
+        "bounds": [
+         581.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-andesite",
+        "kind": "button",
+        "label": "Polished Andesite"
+       },
+       {
+        "bounds": [
+         599.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate",
+        "kind": "button",
+        "label": "Deepslate"
+       },
+       {
+        "bounds": [
+         617.0,
+         29.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cobbled-deepslate",
+        "kind": "button",
+        "label": "Cobbled Deepslate"
+       },
+       {
+        "bounds": [
+         473.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-deepslate",
+        "kind": "button",
+        "label": "Polished Deepslate"
+       },
+       {
+        "bounds": [
+         491.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "calcite",
+        "kind": "button",
+        "label": "Calcite"
+       },
+       {
+        "bounds": [
+         509.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "tuff",
+        "kind": "button",
+        "label": "Tuff"
+       },
+       {
+        "bounds": [
+         527.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "tuff-slab",
+        "kind": "button",
+        "label": "Tuff Slab"
+       },
+       {
+        "bounds": [
+         545.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "tuff-stairs",
+        "kind": "button",
+        "label": "Tuff Stairs"
+       },
+       {
+        "bounds": [
+         563.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "tuff-wall",
+        "kind": "button",
+        "label": "Tuff Wall"
+       },
+       {
+        "bounds": [
+         581.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "chiseled-tuff",
+        "kind": "button",
+        "label": "Chiseled Tuff"
+       },
+       {
+        "bounds": [
+         599.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-tuff",
+        "kind": "button",
+        "label": "Polished Tuff"
+       },
+       {
+        "bounds": [
+         617.0,
+         47.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-tuff-slab",
+        "kind": "button",
+        "label": "Polished Tuff Slab"
+       },
+       {
+        "bounds": [
+         473.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-tuff-stairs",
+        "kind": "button",
+        "label": "Polished Tuff Stairs"
+       },
+       {
+        "bounds": [
+         491.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-tuff-wall",
+        "kind": "button",
+        "label": "Polished Tuff Wall"
+       },
+       {
+        "bounds": [
+         509.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "tuff-bricks",
+        "kind": "button",
+        "label": "Tuff Bricks"
+       },
+       {
+        "bounds": [
+         527.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "tuff-brick-slab",
+        "kind": "button",
+        "label": "Tuff Brick Slab"
+       },
+       {
+        "bounds": [
+         545.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "tuff-brick-stairs",
+        "kind": "button",
+        "label": "Tuff Brick Stairs"
+       },
+       {
+        "bounds": [
+         563.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "tuff-brick-wall",
+        "kind": "button",
+        "label": "Tuff Brick Wall"
+       },
+       {
+        "bounds": [
+         581.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "chiseled-tuff-bricks",
+        "kind": "button",
+        "label": "Chiseled Tuff Bricks"
+       },
+       {
+        "bounds": [
+         599.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sulfur",
+        "kind": "button",
+        "label": "Sulfur"
+       },
+       {
+        "bounds": [
+         617.0,
+         65.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "potent-sulfur",
+        "kind": "button",
+        "label": "Potent Sulfur"
+       },
+       {
+        "bounds": [
+         473.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sulfur-slab",
+        "kind": "button",
+        "label": "Sulfur Slab"
+       },
+       {
+        "bounds": [
+         491.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sulfur-stairs",
+        "kind": "button",
+        "label": "Sulfur Stairs"
+       },
+       {
+        "bounds": [
+         509.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sulfur-wall",
+        "kind": "button",
+        "label": "Sulfur Wall"
+       },
+       {
+        "bounds": [
+         527.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-sulfur",
+        "kind": "button",
+        "label": "Polished Sulfur"
+       },
+       {
+        "bounds": [
+         545.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-sulfur-slab",
+        "kind": "button",
+        "label": "Polished Sulfur Slab"
+       },
+       {
+        "bounds": [
+         563.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-sulfur-stairs",
+        "kind": "button",
+        "label": "Polished Sulfur Stairs"
+       },
+       {
+        "bounds": [
+         581.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-sulfur-wall",
+        "kind": "button",
+        "label": "Polished Sulfur Wall"
+       },
+       {
+        "bounds": [
+         599.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sulfur-bricks",
+        "kind": "button",
+        "label": "Sulfur Bricks"
+       },
+       {
+        "bounds": [
+         617.0,
+         83.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sulfur-brick-slab",
+        "kind": "button",
+        "label": "Sulfur Brick Slab"
+       },
+       {
+        "bounds": [
+         473.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sulfur-brick-stairs",
+        "kind": "button",
+        "label": "Sulfur Brick Stairs"
+       },
+       {
+        "bounds": [
+         491.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sulfur-brick-wall",
+        "kind": "button",
+        "label": "Sulfur Brick Wall"
+       },
+       {
+        "bounds": [
+         509.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "chiseled-sulfur",
+        "kind": "button",
+        "label": "Chiseled Sulfur"
+       },
+       {
+        "bounds": [
+         527.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cinnabar",
+        "kind": "button",
+        "label": "Cinnabar"
+       },
+       {
+        "bounds": [
+         545.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cinnabar-slab",
+        "kind": "button",
+        "label": "Cinnabar Slab"
+       },
+       {
+        "bounds": [
+         563.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cinnabar-stairs",
+        "kind": "button",
+        "label": "Cinnabar Stairs"
+       },
+       {
+        "bounds": [
+         581.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cinnabar-wall",
+        "kind": "button",
+        "label": "Cinnabar Wall"
+       },
+       {
+        "bounds": [
+         599.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-cinnabar",
+        "kind": "button",
+        "label": "Polished Cinnabar"
+       },
+       {
+        "bounds": [
+         617.0,
+         101.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-cinnabar-slab",
+        "kind": "button",
+        "label": "Polished Cinnabar Slab"
+       },
+       {
+        "bounds": [
+         473.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-cinnabar-stairs",
+        "kind": "button",
+        "label": "Polished Cinnabar Stairs"
+       },
+       {
+        "bounds": [
+         491.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "polished-cinnabar-wall",
+        "kind": "button",
+        "label": "Polished Cinnabar Wall"
+       },
+       {
+        "bounds": [
+         509.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cinnabar-bricks",
+        "kind": "button",
+        "label": "Cinnabar Bricks"
+       },
+       {
+        "bounds": [
+         527.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cinnabar-brick-slab",
+        "kind": "button",
+        "label": "Cinnabar Brick Slab"
+       },
+       {
+        "bounds": [
+         545.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cinnabar-brick-stairs",
+        "kind": "button",
+        "label": "Cinnabar Brick Stairs"
+       },
+       {
+        "bounds": [
+         563.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cinnabar-brick-wall",
+        "kind": "button",
+        "label": "Cinnabar Brick Wall"
+       },
+       {
+        "bounds": [
+         581.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "chiseled-cinnabar",
+        "kind": "button",
+        "label": "Chiseled Cinnabar"
+       },
+       {
+        "bounds": [
+         599.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "dripstone-block",
+        "kind": "button",
+        "label": "Dripstone Block"
+       },
+       {
+        "bounds": [
+         617.0,
+         119.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "grass-block",
+        "kind": "button",
+        "label": "Grass Block"
+       },
+       {
+        "bounds": [
+         473.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "dirt",
+        "kind": "button",
+        "label": "Dirt"
+       },
+       {
+        "bounds": [
+         491.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "coarse-dirt",
+        "kind": "button",
+        "label": "Coarse Dirt"
+       },
+       {
+        "bounds": [
+         509.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "podzol",
+        "kind": "button",
+        "label": "Podzol"
+       },
+       {
+        "bounds": [
+         527.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "rooted-dirt",
+        "kind": "button",
+        "label": "Rooted Dirt"
+       },
+       {
+        "bounds": [
+         545.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "mud",
+        "kind": "button",
+        "label": "Mud"
+       },
+       {
+        "bounds": [
+         563.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "crimson-nylium",
+        "kind": "button",
+        "label": "Crimson Nylium"
+       },
+       {
+        "bounds": [
+         581.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "warped-nylium",
+        "kind": "button",
+        "label": "Warped Nylium"
+       },
+       {
+        "bounds": [
+         599.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cobblestone",
+        "kind": "button",
+        "label": "Cobblestone"
+       },
+       {
+        "bounds": [
+         617.0,
+         137.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "oak-planks",
+        "kind": "button",
+        "label": "Oak Planks"
+       },
+       {
+        "bounds": [
+         473.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "spruce-planks",
+        "kind": "button",
+        "label": "Spruce Planks"
+       },
+       {
+        "bounds": [
+         491.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "birch-planks",
+        "kind": "button",
+        "label": "Birch Planks"
+       },
+       {
+        "bounds": [
+         509.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "jungle-planks",
+        "kind": "button",
+        "label": "Jungle Planks"
+       },
+       {
+        "bounds": [
+         527.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "acacia-planks",
+        "kind": "button",
+        "label": "Acacia Planks"
+       },
+       {
+        "bounds": [
+         545.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cherry-planks",
+        "kind": "button",
+        "label": "Cherry Planks"
+       },
+       {
+        "bounds": [
+         563.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "dark-oak-planks",
+        "kind": "button",
+        "label": "Dark Oak Planks"
+       },
+       {
+        "bounds": [
+         581.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "pale-oak-planks",
+        "kind": "button",
+        "label": "Pale Oak Planks"
+       },
+       {
+        "bounds": [
+         599.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "mangrove-planks",
+        "kind": "button",
+        "label": "Mangrove Planks"
+       },
+       {
+        "bounds": [
+         617.0,
+         155.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "poplar-planks",
+        "kind": "button",
+        "label": "Poplar Planks"
+       },
+       {
+        "bounds": [
+         473.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "bamboo-planks",
+        "kind": "button",
+        "label": "Bamboo Planks"
+       },
+       {
+        "bounds": [
+         491.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "crimson-planks",
+        "kind": "button",
+        "label": "Crimson Planks"
+       },
+       {
+        "bounds": [
+         509.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "warped-planks",
+        "kind": "button",
+        "label": "Warped Planks"
+       },
+       {
+        "bounds": [
+         527.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "bamboo-mosaic",
+        "kind": "button",
+        "label": "Bamboo Mosaic"
+       },
+       {
+        "bounds": [
+         545.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "oak-sapling",
+        "kind": "button",
+        "label": "Oak Sapling"
+       },
+       {
+        "bounds": [
+         563.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "spruce-sapling",
+        "kind": "button",
+        "label": "Spruce Sapling"
+       },
+       {
+        "bounds": [
+         581.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "birch-sapling",
+        "kind": "button",
+        "label": "Birch Sapling"
+       },
+       {
+        "bounds": [
+         599.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "jungle-sapling",
+        "kind": "button",
+        "label": "Jungle Sapling"
+       },
+       {
+        "bounds": [
+         617.0,
+         173.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "acacia-sapling",
+        "kind": "button",
+        "label": "Acacia Sapling"
+       },
+       {
+        "bounds": [
+         473.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cherry-sapling",
+        "kind": "button",
+        "label": "Cherry Sapling"
+       },
+       {
+        "bounds": [
+         491.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "dark-oak-sapling",
+        "kind": "button",
+        "label": "Dark Oak Sapling"
+       },
+       {
+        "bounds": [
+         509.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "pale-oak-sapling",
+        "kind": "button",
+        "label": "Pale Oak Sapling"
+       },
+       {
+        "bounds": [
+         527.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "mangrove-propagule",
+        "kind": "button",
+        "label": "Mangrove Propagule"
+       },
+       {
+        "bounds": [
+         545.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "poplar-sapling",
+        "kind": "button",
+        "label": "Poplar Sapling"
+       },
+       {
+        "bounds": [
+         563.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "bedrock",
+        "kind": "button",
+        "label": "Bedrock"
+       },
+       {
+        "bounds": [
+         581.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "sand",
+        "kind": "button",
+        "label": "Sand"
+       },
+       {
+        "bounds": [
+         599.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "suspicious-sand",
+        "kind": "button",
+        "label": "Suspicious Sand"
+       },
+       {
+        "bounds": [
+         617.0,
+         191.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "suspicious-gravel",
+        "kind": "button",
+        "label": "Suspicious Gravel"
+       },
+       {
+        "bounds": [
+         473.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "red-sand",
+        "kind": "button",
+        "label": "Red Sand"
+       },
+       {
+        "bounds": [
+         491.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "gravel",
+        "kind": "button",
+        "label": "Gravel"
+       },
+       {
+        "bounds": [
+         509.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "coal-ore",
+        "kind": "button",
+        "label": "Coal Ore"
+       },
+       {
+        "bounds": [
+         527.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate-coal-ore",
+        "kind": "button",
+        "label": "Deepslate Coal Ore"
+       },
+       {
+        "bounds": [
+         545.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "iron-ore",
+        "kind": "button",
+        "label": "Iron Ore"
+       },
+       {
+        "bounds": [
+         563.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate-iron-ore",
+        "kind": "button",
+        "label": "Deepslate Iron Ore"
+       },
+       {
+        "bounds": [
+         581.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "copper-ore",
+        "kind": "button",
+        "label": "Copper Ore"
+       },
+       {
+        "bounds": [
+         599.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate-copper-ore",
+        "kind": "button",
+        "label": "Deepslate Copper Ore"
+       },
+       {
+        "bounds": [
+         617.0,
+         209.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "gold-ore",
+        "kind": "button",
+        "label": "Gold Ore"
+       },
+       {
+        "bounds": [
+         473.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate-gold-ore",
+        "kind": "button",
+        "label": "Deepslate Gold Ore"
+       },
+       {
+        "bounds": [
+         491.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "redstone-ore",
+        "kind": "button",
+        "label": "Redstone Ore"
+       },
+       {
+        "bounds": [
+         509.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate-redstone-ore",
+        "kind": "button",
+        "label": "Deepslate Redstone Ore"
+       },
+       {
+        "bounds": [
+         527.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "emerald-ore",
+        "kind": "button",
+        "label": "Emerald Ore"
+       },
+       {
+        "bounds": [
+         545.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate-emerald-ore",
+        "kind": "button",
+        "label": "Deepslate Emerald Ore"
+       },
+       {
+        "bounds": [
+         563.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "lapis-lazuli-ore",
+        "kind": "button",
+        "label": "Lapis Lazuli Ore"
+       },
+       {
+        "bounds": [
+         581.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate-lapis-lazuli-ore",
+        "kind": "button",
+        "label": "Deepslate Lapis Lazuli Ore"
+       },
+       {
+        "bounds": [
+         599.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "diamond-ore",
+        "kind": "button",
+        "label": "Diamond Ore"
+       },
+       {
+        "bounds": [
+         617.0,
+         227.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "deepslate-diamond-ore",
+        "kind": "button",
+        "label": "Deepslate Diamond Ore"
+       },
+       {
+        "bounds": [
+         473.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "nether-gold-ore",
+        "kind": "button",
+        "label": "Nether Gold Ore"
+       },
+       {
+        "bounds": [
+         491.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "nether-quartz-ore",
+        "kind": "button",
+        "label": "Nether Quartz Ore"
+       },
+       {
+        "bounds": [
+         509.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "ancient-debris",
+        "kind": "button",
+        "label": "Ancient Debris"
+       },
+       {
+        "bounds": [
+         527.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-coal",
+        "kind": "button",
+        "label": "Block of Coal"
+       },
+       {
+        "bounds": [
+         545.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-raw-iron",
+        "kind": "button",
+        "label": "Block of Raw Iron"
+       },
+       {
+        "bounds": [
+         563.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-raw-copper",
+        "kind": "button",
+        "label": "Block of Raw Copper"
+       },
+       {
+        "bounds": [
+         581.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-raw-gold",
+        "kind": "button",
+        "label": "Block of Raw Gold"
+       },
+       {
+        "bounds": [
+         599.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "heavy-core",
+        "kind": "button",
+        "label": "Heavy Core"
+       },
+       {
+        "bounds": [
+         617.0,
+         245.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-amethyst",
+        "kind": "button",
+        "label": "Block of Amethyst"
+       },
+       {
+        "bounds": [
+         473.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "budding-amethyst",
+        "kind": "button",
+        "label": "Budding Amethyst"
+       },
+       {
+        "bounds": [
+         491.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-iron",
+        "kind": "button",
+        "label": "Block of Iron"
+       },
+       {
+        "bounds": [
+         509.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-copper",
+        "kind": "button",
+        "label": "Block of Copper"
+       },
+       {
+        "bounds": [
+         527.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "exposed-copper",
+        "kind": "button",
+        "label": "Exposed Copper"
+       },
+       {
+        "bounds": [
+         545.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "weathered-copper",
+        "kind": "button",
+        "label": "Weathered Copper"
+       },
+       {
+        "bounds": [
+         563.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "oxidized-copper",
+        "kind": "button",
+        "label": "Oxidized Copper"
+       },
+       {
+        "bounds": [
+         581.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-block-of-copper",
+        "kind": "button",
+        "label": "Waxed Block of Copper"
+       },
+       {
+        "bounds": [
+         599.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-exposed-copper",
+        "kind": "button",
+        "label": "Waxed Exposed Copper"
+       },
+       {
+        "bounds": [
+         617.0,
+         263.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-weathered-copper",
+        "kind": "button",
+        "label": "Waxed Weathered Copper"
+       },
+       {
+        "bounds": [
+         473.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-oxidized-copper",
+        "kind": "button",
+        "label": "Waxed Oxidized Copper"
+       },
+       {
+        "bounds": [
+         491.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-gold",
+        "kind": "button",
+        "label": "Block of Gold"
+       },
+       {
+        "bounds": [
+         509.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-diamond",
+        "kind": "button",
+        "label": "Block of Diamond"
+       },
+       {
+        "bounds": [
+         527.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "block-of-netherite",
+        "kind": "button",
+        "label": "Block of Netherite"
+       },
+       {
+        "bounds": [
+         545.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "chiseled-copper",
+        "kind": "button",
+        "label": "Chiseled Copper"
+       },
+       {
+        "bounds": [
+         563.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "exposed-chiseled-copper",
+        "kind": "button",
+        "label": "Exposed Chiseled Copper"
+       },
+       {
+        "bounds": [
+         581.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "weathered-chiseled-copper",
+        "kind": "button",
+        "label": "Weathered Chiseled Copper"
+       },
+       {
+        "bounds": [
+         599.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "oxidized-chiseled-copper",
+        "kind": "button",
+        "label": "Oxidized Chiseled Copper"
+       },
+       {
+        "bounds": [
+         617.0,
+         281.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-chiseled-copper",
+        "kind": "button",
+        "label": "Waxed Chiseled Copper"
+       },
+       {
+        "bounds": [
+         473.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-exposed-chiseled-copper",
+        "kind": "button",
+        "label": "Waxed Exposed Chiseled Copper"
+       },
+       {
+        "bounds": [
+         491.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-weathered-chiseled-copper",
+        "kind": "button",
+        "label": "Waxed Weathered Chiseled Copper"
+       },
+       {
+        "bounds": [
+         509.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-oxidized-chiseled-copper",
+        "kind": "button",
+        "label": "Waxed Oxidized Chiseled Copper"
+       },
+       {
+        "bounds": [
+         527.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "cut-copper",
+        "kind": "button",
+        "label": "Cut Copper"
+       },
+       {
+        "bounds": [
+         545.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "exposed-cut-copper",
+        "kind": "button",
+        "label": "Exposed Cut Copper"
+       },
+       {
+        "bounds": [
+         563.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "weathered-cut-copper",
+        "kind": "button",
+        "label": "Weathered Cut Copper"
+       },
+       {
+        "bounds": [
+         581.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "oxidized-cut-copper",
+        "kind": "button",
+        "label": "Oxidized Cut Copper"
+       },
+       {
+        "bounds": [
+         599.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-cut-copper",
+        "kind": "button",
+        "label": "Waxed Cut Copper"
+       },
+       {
+        "bounds": [
+         617.0,
+         299.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "waxed-exposed-cut-copper",
+        "kind": "button",
+        "label": "Waxed Exposed Cut Copper"
+       },
+       {
+        "bounds": [
+         614.0,
+         334.0,
+         20.0,
+         20.0
+        ],
+        "enabled": true,
+        "id": "options",
+        "kind": "button",
+        "label": "Options"
+       },
+       {
+        "bounds": [
+         472.0,
+         334.0,
+         142.0,
+         20.0
+        ],
+        "enabled": true,
+        "id": "field-0",
+        "kind": "field"
+       },
+       {
+        "bounds": [
+         240.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-0",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         258.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-1",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         276.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-2",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         294.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-3",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         312.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-4",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         330.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-5",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         348.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-6",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         366.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-7",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         384.0,
+         239.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-8",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         240.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-9",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         258.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-10",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         276.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-11",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         294.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-12",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         312.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-13",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         330.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-14",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         348.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-15",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         366.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-16",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         384.0,
+         181.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-17",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         240.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-18",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         258.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-19",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         276.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-20",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         294.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-21",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         312.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-22",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         330.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-23",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         348.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-24",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         366.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-25",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         384.0,
+         199.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-26",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         240.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-27",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         258.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-28",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         276.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-29",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         294.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-30",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         312.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-31",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         330.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-32",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         348.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-33",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         366.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-34",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         384.0,
+         217.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-35",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         240.0,
+         114.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-300",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         240.0,
+         150.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-301",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         267.0,
+         114.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-302",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         267.0,
+         150.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-303",
+        "kind": "slot",
+        "stack": {
+         "count": 1,
+         "item": "minecraft:bucket"
+        }
+       },
+       {
+        "bounds": [
+         357.0,
+         114.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-304",
+        "kind": "slot",
+        "stack": null
+       },
+       {
+        "bounds": [
+         357.0,
+         150.0,
+         16.0,
+         16.0
+        ],
+        "enabled": true,
+        "id": "slot-305",
+        "kind": "slot",
+        "stack": null
+       }
+      ]
+     }
+    },
+    {
+     "command": "click-at 392.0 141.0",
+     "result": {
+      "ok": true,
+      "screen": "container"
+     }
+    },
+    {
+     "command": "click-at 392.0 141.0",
+     "result": {
+      "ok": true,
+      "screen": "container"
+     }
+    },
+    {
+     "command": "close",
+     "result": {
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 42 101 9 ntm",
+     "result": {
+      "chat": [
+       "42, 101, 9 has the following block data: '{\"generation\":2,\"block\":\"ntm:barrel_steel\",\"facing\":\"south\",\"data\":{\"k\":\"FluidStore\",\"tank\":{\"fluid\":\"water\",\"mb\":0,\"cap\":16000},\"mode\":\"Output\",\"rate_floor\":0}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 103 6 ntm:heater_firebox[facing=south,honey_level=0]",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 103, 6"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 104 6 ntm:machine_crucible[facing=north,honey_level=0]",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 104, 6"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command item replace block 40 103 6 container.0 with minecraft:coal 16",
+     "result": {
+      "chat": [
+       "Replaced 1 slot(s) at 40, 103, 6 with [Coal]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command item replace block 40 104 6 container.1 with minecraft:gold_ingot 2",
+     "result": {
+      "chat": [
+       "Replaced 1 slot(s) at 40, 104, 6 with [Gold Ingot]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 1, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":280,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":720,\"cap\":64000},\"last_progress\":3937}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":280,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":720,\"cap\":64000},\"last_progress\":3937}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 104 6 ntm",
+     "result": {
+      "chat": [
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":69699,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":280,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":720,\"cap\":64000},\"last_progress\":3937}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 104 6 ntm",
+     "result": {
+      "chat": [
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":71899,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 104 6 ntm",
+     "result": {
+      "chat": [
+       "40, 104, 6 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_crucible\",\"facing\":\"north\",\"data\":{\"k\":\"Crucible\",\"slots\":[null,null,null,null,null,null,null,null,null,null],\"heat\":72699,\"progress\":0,\"recipe\":null,\"recipe_stack\":[],\"waste_stack\":[],\"picking\":false}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 103 6 minecraft:stone",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 103, 6"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 104 6 minecraft:stone",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 104, 6"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command kill @e[type=minecraft:item]",
+     "result": {
+      "chat": [
+       "No entity was found"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command tp @s 40.5 101 12.5",
+     "result": {
+      "chat": [
+       "Teleported CrashTest to 40.500000, 101.000000, 12.500000"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":280,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":720,\"cap\":64000},\"last_progress\":3937}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 ntm",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_strand_caster\",\"facing\":\"north\",\"data\":{\"k\":\"StrandCaster\",\"amount\":0,\"water\":{\"fluid\":\"water\",\"mb\":280,\"cap\":64000},\"steam\":{\"fluid\":\"spentsteam\",\"mb\":720,\"cap\":64000},\"last_progress\":3937}}'"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 104 6 ntm",
+     "result": {
+      "chat": [
+       "The target block is not a block entity"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get entity @s Inventory",
+     "result": {
+      "chat": [
+       "CrashTest has the following entity data: []"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "entities 60",
+     "result": {
+      "entities": [
+       {
+        "baby": false,
+        "distance": 22.59661261591068,
+        "health": 20.0,
+        "hurt_time": 0,
+        "id": 2,
+        "kind": "mob",
+        "pos": [
+         43.459249575666036,
+         79.0,
+         8.275104301588726
+        ],
+        "type": "minecraft:skeleton"
+       },
+       {
+        "baby": false,
+        "distance": 35.816523341148326,
+        "health": 10.0,
+        "hurt_time": 0,
+        "id": 8,
+        "kind": "mob",
+        "pos": [
+         68.75507699993754,
+         79.0,
+         13.18845332058393
+        ],
+        "type": "minecraft:cow"
+       },
+       {
+        "baby": false,
+        "distance": 40.261273766125164,
+        "health": 10.0,
+        "hurt_time": 0,
+        "id": 7,
+        "kind": "mob",
+        "pos": [
+         68.5856329245416,
+         76.0,
+         26.893310546875
+        ],
+        "type": "minecraft:pig"
+       }
+      ],
+      "loaded_chunks": 49,
+      "radius": 60.0,
+      "tracked": {
+       "items": 0,
+       "mobs": 3,
+       "orbs": 0
+      },
+      "type": null
+     }
+    },
+    {
+     "command": "save",
+     "result": {
+      "ok": true
+     }
+    }
+   ],
+   "checks": {
+    "setup:caster_placed": {
+     "ok": true,
+     "actual": [
+      40,
+      101,
+      8
+     ]
+    },
+    "setup:the_bucket_is_there": {
+     "ok": true,
+     "actual": [
+      {
+       "count": 1,
+       "item": "minecraft:water_bucket",
+       "slot": 0
+      }
+     ]
+    },
+    "setup:the_barrel_holds_water": {
+     "ok": true,
+     "actual": "42, 101, 9 has the following block data: '{\"generation\":2,\"block\":\"ntm:barrel_steel\",\"facing\":\"south\",\"data\":{\"k\":\"FluidStore\",\"tank\":{\"fluid\":\"water\",\"mb\":0,\"cap\":16000},\"mode\":\"Output\",\"rate_floor\":0}}'"
+    },
+    "setup:cast_two_ingots": {
+     "ok": true,
+     "actual": [
+      2,
+      0,
+      0,
+      "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+     ]
+    },
+    "setup:water_was_used": {
+     "ok": true,
+     "actual": {
+      "fluid": "water",
+      "mb": 280,
+      "cap": 64000
+     }
+    },
+    "setup:the_crucible_is_empty": {
+     "ok": true,
+     "actual": 0
+    }
+   },
+   "caster": {
+    "core": [
+     40,
+     101,
+     8
+    ],
+    "facing": "north"
+   },
+   "barrel": {
+    "at": [
+     42,
+     101,
+     9
+    ],
+    "state": "42, 101, 9 has the following block data: '{\"generation\":2,\"block\":\"ntm:barrel_steel\",\"facing\":\"south\",\"data\":{\"k\":\"FluidStore\",\"tank\":{\"fluid\":\"water\",\"mb\":0,\"cap\":16000},\"mode\":\"Output\",\"rate_floor\":0}}'"
+   },
+   "crucible": [
+    40,
+    104,
+    6
+   ],
+   "water_after": {
+    "fluid": "water",
+    "mb": 280,
+    "cap": 64000
+   },
+   "base": {
+    "molten": 0,
+    "slots": 144,
+    "inventory": 0,
+    "ground": 0,
+    "total": 144
+   }
+  },
+  "vanilla": {
+   "scenario": "foundry-cut-prepare",
+   "ok": false,
+   "steps": [
+    {
+     "command": "status",
+     "result": {
+      "block_entities": 0,
+      "border": {
+       "center": [
+        0.0,
+        0.0
+       ],
+       "size": 59999968.0
+      },
+      "carts": [],
+      "chunks": 0,
+      "creative": false,
+      "day_time": 1000,
+      "debug": {
+       "advanced_tooltips": false,
+       "chunk_borders": false,
+       "clipboard": null,
+       "hitboxes": false,
+       "overlay": false,
+       "pause_menu": true,
+       "pause_on_lost_focus": true
+      },
+      "destroying": [],
+      "dimension": "minecraft:overworld",
+      "dirty_light": 0,
+      "display": {
+       "height": 720,
+       "refresh_hz": null,
+       "scale": 1.0,
+       "width": 1280
+      },
+      "fangs_vertices": 0,
+      "fight": {
+       "alive_crystals": 0,
+       "crystal_list": [],
+       "crystals": 0,
+       "dragon": null,
+       "exit_portal": null,
+       "killed": false,
+       "players": false,
+       "respawn": null
+      },
+      "fishing": null,
+      "fps": 0.0,
+      "frames": 0,
+      "generated_chunks": 0,
+      "heard": {},
+      "held": null,
+      "input": {
+       "counts": {
+        "agent": 0,
+        "game": 0,
+        "user": 0
+       },
+       "events": 0,
+       "last_origin": null,
+       "last_user_age_s": null,
+       "recording": null,
+       "replay": null,
+       "user_since_agent": 0
+      },
+      "keys": [],
+      "lightning": {
+       "bolts": 0,
+       "flash": 0,
+       "flashes": 0,
+       "struck": 0
+      },
+      "lod": {
+       "active_tiles": 0,
+       "cached_tiles": 0,
+       "detail_target_columns": 0,
+       "distance": 0,
+       "effective_distance": 0,
+       "far_detail": "full",
+       "kept_mb": 0,
+       "kept_tiles": 0,
+       "levels": [],
+       "pending_observations": 0,
+       "refined_samples": 0,
+       "refined_target_columns": 0,
+       "resident_quads": 0,
+       "sampled_target_tiles": 0,
+       "source": "none",
+       "source_attempted": false,
+       "target_tiles": 0,
+       "terrain_distance": 2
+      },
+      "maps": [],
+      "meshed_sections": 0,
+      "mobs": 0,
+      "music": null,
+      "name_tags": null,
+      "objects": [],
+      "offhand": null,
+      "particles": {},
+      "pending_chunks": 0,
+      "pending_uploads": 0,
+      "physical_keys": [],
+      "pickups": {},
+      "pitch": 0.0,
+      "player": null,
+      "projectiles": [],
+      "render_distance": 2,
+      "renderer": {
+       "arena_bytes": 0,
+       "backend": "Gl",
+       "culled_sections": null,
+       "device_type": "cpu",
+       "drawn_sections": 0,
+       "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+       "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+       "gpu_allocated_bytes": null,
+       "gpu_culling": false,
+       "gpu_culling_auto": "watching",
+       "gpu_culling_mode": "off",
+       "gpu_culling_offer": "Unsupported",
+       "gpu_fading": null,
+       "gpu_frame": false,
+       "gpu_occluding": false,
+       "gpu_reserved_bytes": null,
+       "packed_layout": [
+        false,
+        true
+       ],
+       "present_mode": "Immediate",
+       "resident_sections": 0,
+       "section_draw_calls": 0,
+       "section_draws": 0,
+       "section_vertex_bytes": 0,
+       "size": [
+        1280,
+        720
+       ],
+       "stats_lag": 0,
+       "uploaded_bytes": 0,
+       "vendor": "mesa",
+       "vertex_bytes_split": [
+        0,
+        0
+       ]
+      },
+      "riding": null,
+      "rockets": 0,
+      "screen": "playing",
+      "selected": 1,
+      "server": {
+       "address": "local",
+       "chat": [],
+       "chunks": 0,
+       "dead_players": [],
+       "decode_errors": 0,
+       "dimension": "minecraft:overworld",
+       "entities": {},
+       "entity_id": 0,
+       "food": 20,
+       "game_mode": 0,
+       "health": 20.0,
+       "joined": false,
+       "loaded": false,
+       "lying_players": [],
+       "name": "CrashTest",
+       "own_body": false,
+       "player_equipment": [],
+       "player_model": false,
+       "player_positions": [],
+       "players": [],
+       "status": "Connecting to the server...",
+       "text_display_vertices": 0,
+       "text_displays": 0
+      },
+      "sidebar": null,
+      "sounds": {
+       "channels": 0,
+       "decoded": 0,
+       "decoded_mib": 0,
+       "events": [],
+       "handles": 0,
+       "instances": 0,
+       "playing": 0,
+       "queued": 0,
+       "ticking": 0,
+       "used": [
+        0,
+        0
+       ]
+      },
+      "stopped_sounds": {},
+      "streaming": {
+       "decorating": 0,
+       "finishing": 0,
+       "generating": 0,
+       "lighting": 0,
+       "meshing": 0,
+       "protos": 0,
+       "queued": 0
+      },
+      "target": null,
+      "ticks": 0,
+      "tridents": 0,
+      "uptime_seconds": 1.9540153,
+      "using": null,
+      "yaw": 0.0
+     }
+    },
+    {
+     "command": "status",
+     "result": {
+      "block_entities": 0,
+      "border": {
+       "center": [
+        0.0,
+        0.0
+       ],
+       "size": 59999968.0
+      },
+      "carts": [],
+      "chunks": 2,
+      "creative": true,
+      "day_time": 5,
+      "debug": {
+       "advanced_tooltips": false,
+       "chunk_borders": false,
+       "clipboard": null,
+       "hitboxes": false,
+       "overlay": false,
+       "pause_menu": true,
+       "pause_on_lost_focus": true
+      },
+      "destroying": [],
+      "dimension": "minecraft:overworld",
+      "dirty_light": 0,
+      "display": {
+       "height": 720,
+       "refresh_hz": null,
+       "scale": 1.0,
+       "width": 1280
+      },
+      "fangs_vertices": 0,
+      "fight": {
+       "alive_crystals": 0,
+       "crystal_list": [],
+       "crystals": 0,
+       "dragon": null,
+       "exit_portal": null,
+       "killed": false,
+       "players": false,
+       "respawn": null
+      },
+      "fishing": null,
+      "fps": 0.4586865305900574,
+      "frames": 2,
+      "generated_chunks": 2,
+      "heard": {},
+      "held": null,
+      "input": {
+       "counts": {
+        "agent": 0,
+        "game": 0,
+        "user": 0
+       },
+       "events": 0,
+       "last_origin": null,
+       "last_user_age_s": null,
+       "recording": null,
+       "replay": null,
+       "user_since_agent": 0
+      },
+      "keys": [],
+      "lightning": {
+       "bolts": 0,
+       "flash": 0,
+       "flashes": 0,
+       "struck": 0
+      },
+      "lod": {
+       "active_tiles": 0,
+       "cached_tiles": 0,
+       "detail_target_columns": 0,
+       "distance": 0,
+       "effective_distance": 0,
+       "far_detail": "full",
+       "kept_mb": 0,
+       "kept_tiles": 0,
+       "levels": [],
+       "pending_observations": 0,
+       "refined_samples": 0,
+       "refined_target_columns": 0,
+       "resident_quads": 0,
+       "sampled_target_tiles": 0,
+       "source": "none",
+       "source_attempted": false,
+       "target_tiles": 0,
+       "terrain_distance": 2
+      },
+      "maps": [],
+      "meshed_sections": 0,
+      "mobs": 0,
+      "music": null,
+      "name_tags": [],
+      "objects": [],
+      "offhand": null,
+      "particles": {},
+      "pending_chunks": 0,
+      "pending_uploads": 0,
+      "physical_keys": [],
+      "pickups": {},
+      "pitch": 0.0,
+      "player": {
+       "food": 20,
+       "health": 20.0,
+       "max_health": null,
+       "on_ground": true,
+       "position": [
+        5.5,
+        79.0,
+        5.5
+       ],
+       "velocity": [
+        0.0,
+        -0.0784000015258789,
+        0.0
+       ]
+      },
+      "projectiles": [],
+      "render_distance": 2,
+      "renderer": {
+       "arena_bytes": 0,
+       "backend": "Gl",
+       "culled_sections": null,
+       "device_type": "cpu",
+       "drawn_sections": 0,
+       "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+       "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+       "gpu_allocated_bytes": null,
+       "gpu_culling": false,
+       "gpu_culling_auto": "watching",
+       "gpu_culling_mode": "off",
+       "gpu_culling_offer": "Unsupported",
+       "gpu_fading": null,
+       "gpu_frame": false,
+       "gpu_occluding": false,
+       "gpu_reserved_bytes": null,
+       "packed_layout": [
+        false,
+        true
+       ],
+       "present_mode": "Immediate",
+       "resident_sections": 0,
+       "section_draw_calls": 0,
+       "section_draws": 0,
+       "section_vertex_bytes": 0,
+       "size": [
+        1280,
+        720
+       ],
+       "stats_lag": 0,
+       "uploaded_bytes": 0,
+       "vendor": "mesa",
+       "vertex_bytes_split": [
+        0,
+        0
+       ]
+      },
+      "riding": null,
+      "rockets": 0,
+      "screen": "playing",
+      "selected": 1,
+      "server": {
+       "address": "local",
+       "chat": [],
+       "chunks": 2,
+       "dead_players": [],
+       "decode_errors": 0,
+       "dimension": "minecraft:overworld",
+       "entities": {},
+       "entity_id": 1,
+       "food": 20,
+       "game_mode": 1,
+       "health": 20.0,
+       "joined": true,
+       "loaded": true,
+       "lying_players": [],
+       "name": "CrashTest",
+       "own_body": false,
+       "player_equipment": [],
+       "player_model": true,
+       "player_positions": [],
+       "players": [
+        "CrashTest"
+       ],
+       "status": "Loading terrain...",
+       "text_display_vertices": 0,
+       "text_displays": 0
+      },
+      "sidebar": null,
+      "sounds": {
+       "channels": 0,
+       "decoded": 0,
+       "decoded_mib": 0,
+       "events": [],
+       "handles": 0,
+       "instances": 0,
+       "playing": 0,
+       "queued": 0,
+       "ticking": 0,
+       "used": [
+        0,
+        0
+       ]
+      },
+      "stopped_sounds": {},
+      "streaming": {
+       "decorating": 0,
+       "finishing": 0,
+       "generating": 0,
+       "lighting": 0,
+       "meshing": 0,
+       "protos": 0,
+       "queued": 0
+      },
+      "target": null,
+      "ticks": 14,
+      "tridents": 0,
+      "uptime_seconds": 2.245719764,
+      "using": null,
+      "yaw": 0.0
+     }
+    },
+    {
+     "command": "close",
+     "result": {
+      "ok": true
+     }
+    },
+    {
+     "command": "command gamemode creative @s",
+     "result": {
+      "chat": [],
+      "ok": true
+     }
+    },
+    {
+     "command": "close",
+     "result": {
+      "ok": true
+     }
+    },
+    {
+     "command": "command forceload add 30 0 64 16",
+     "result": {
+      "chat": [
+       "Marked 8 chunks in minecraft:overworld from [1, 0] to [4, 1] to be force loaded"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command fill 30 101 0 64 107 16 minecraft:air",
+     "result": {
+      "chat": [
+       "No blocks were filled"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command fill 30 100 0 64 100 16 minecraft:stone",
+     "result": {
+      "chat": [
+       "Successfully filled 595 block(s)"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command clear @s",
+     "result": {
+      "chat": [
+       "No items were found on player CrashTest"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command clear @s",
+     "result": {
+      "chat": [
+       "No items were found on player CrashTest"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command setblock 40 101 8 minecraft:barrel",
+     "result": {
+      "chat": [
+       "Changed the block at 40, 101, 8"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command item replace block 40 101 8 container.0 with ntm:mold__ingot 1",
+     "result": {
+      "chat": [
+       "Replaced 1 slot(s) at 40, 101, 8 with [Foundry Mold (Ingot)]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command item replace block 40 101 8 container.1 with minecraft:gold_ingot 2",
+     "result": {
+      "chat": [
+       "Replaced 1 slot(s) at 40, 101, 8 with [Gold Ingot]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command kill @e[type=minecraft:item]",
+     "result": {
+      "chat": [
+       "No entity was found"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command tp @s 40.5 101 12.5",
+     "result": {
+      "chat": [
+       "Teleported CrashTest to 40.500000, 101.000000, 12.500000"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get block 40 101 8 Items",
+     "result": {
+      "chat": [
+       "40, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:mold__ingot\"}, {count: 2, Slot: 1b, id: \"minecraft:gold_ingot\"}]"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "command data get entity @s Inventory",
+     "result": {
+      "chat": [
+       "CrashTest has the following entity data: []"
+      ],
+      "ok": true
+     }
+    },
+    {
+     "command": "entities 60",
+     "result": {
+      "entities": [],
+      "loaded_chunks": 49,
+      "radius": 60.0,
+      "tracked": {
+       "items": 0,
+       "mobs": 0,
+       "orbs": 0
+      },
+      "type": null
+     }
+    },
+    {
+     "command": "save",
+     "result": {
+      "ok": true
+     }
+    }
+   ],
+   "checks": {},
+   "base": {
+    "molten": 0,
+    "slots": 144,
+    "inventory": 0,
+    "ground": 0,
+    "total": 144
+   }
+  }
+ }
+}
