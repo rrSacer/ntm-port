@@ -1511,6 +1511,9 @@ movia as barras (validado contra o oráculo no T1); o T07 liga o estado, as tela
 - **Prioridade da rede**: as barras são `ConnectionPriority.LOW` no Java; a rede do port não tem prioridades (limite já
   registrado da rede). Quando a rede de energia em jogo ganhar prioridades, as duas ReaSim (`ControlState` como
   `EnergyNode`) precisam declarar LOW.
+- **Energia fora do passo**: a rede entrega a energia às barras fora do passo do reator, então a checagem de 5000 do
+  passo usa o buffer como o tick anterior o deixou. No Java a rede (`transferPower`) e o `updateEntity` da barra correm
+  na ordem dos TEs do mesmo tick; com o buffer exatamente abaixo de 5000 a barra pode andar um tick depois do Java.
 - **AZ-5**: é um comando do console (T10); o T07 cobre o surto da barra que desce para 0.
 - **Comandos de rádio (RTTY)** e OpenComputers das barras: T13 e exclusão D7.
 
