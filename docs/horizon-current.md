@@ -1774,7 +1774,7 @@ As rodadas 1–8 caíram por: o roteiro (o núcleo atrás do dummy; a sessão de
 ponto do hóspede, o falso alarme acima) e um defeito: a tela do console abria sem sessão nem snapshot
 (`menu_extra_data` só servia as barras), desenhava só a textura e não mandava nada (`447417d4`).
 
-## RBMK T11 — storage e guindaste (planejado, 20/11/2026)
+## RBMK T11 — storage e guindaste (em andamento, 20/11/2026)
 
 Branch `rbmk-t05` (continua sobre o T10), motor sem mudança prevista. O storage (`rbmk_storage`) já é coluna de 12 slots
 (T02), sem a fila; o console do guindaste (`rbmk_crane_console`) é conteúdo inerte (`Kind::Inert`), sem tela no Java.
@@ -1801,6 +1801,62 @@ escavadeira e explosão. (3) Render da ponte, do guincho, da barra suspensa e do
 no T19; as provas leem o estado do servidor. (4) `progress`/`goesDown` não gravados, como no Java: uma descida pela
 metade volta ao alto sem transferir; teste de corte durante a descida com o item suspenso: o item fica na coluna ou
 suspenso, nunca nos dois nem em nenhum, em todos os pontos de corte.
+
+### O que mudou
+
+| Parte | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Storage (S) | A fila: a cada 10 ticks uma passagem ascendente, na publicação da própria coluna (`crane::storage_pass`) | `TileEntityRBMKStorage.updateEntity` |
+| Carregáveis (L) | `crane::loadable_slots`: canais (os quatro, ReaSim inclusive) carregam e descarregam o slot 0; o storage carrega no 11 e descarrega do 0; as outras colunas não são carregáveis. Sem limite térmico | `IRBMKLoadable` |
+| Guindaste (G) | `Kind::RbmkCrane`, `Data::RbmkCrane(crane::Crane)`: o estado do `writeToNBT` gravado; o item suspenso num slot oculto (sem menu: `Container.menu` nenhum; sem faces para funil); em memória `progress`, `goesDown`, inclinações. A ferramenta mede os vãos no mundo no uso e a ligação entra pela fila do console (`Pending::CraneLink`); a chave de fenda gira a ponte (`Pending::Rotate`) | `TileEntityCraneConsole`, `RBMKCraneConsole.onScrew`, `ItemRBMKTool` |
+| Movimento (M) | Antes dos passos das máquinas, cada guindaste lê as teclas do primeiro jogador na área do console (caixa do Java, interseção estrita); no passo, a descida e a subida a 0,04, a travessia a 0,05 presa nos vãos, nada anda com o gancho fora do alto; os valores do modelo (medidores, lâmpadas) pelo `Slotted::screen_data` | `updateEntity`, `getColumnAtPos`, `RenderCraneConsole` |
+| Transferência (T) | Depois dos passos, um gancho no fundo carrega ou descarrega a coluna do núcleo sob ele: os dois slots numa só publicação (`ServerHost::commit_machines_moving`; a glue publica a pilha que saiu, com todos os componentes, pelos modelos do `publish_atomic_with`), ou nada | `canTargetInteract`, `load`, `provideNext`, `unload` |
+| Teclas (K) | O cliente manda as cinco teclas (setas e Enter) a cada mudança (`ntm:crane_keys`, um byte); o servidor as guarda por jogador e as esquece na saída. Uma tecla desce só jogando (sem tela), uma solta conta sempre | `HbmKeybinds`, `KeybindPacket`, `HbmPlayerProps` |
+| Gancho | `ntmtest crane`: as teclas guardadas, os jogadores e cada guindaste (entrada, gancho, lugar, alvo) | — |
+
+### Desvios e limites
+
+- **Item suspenso ao quebrar o console**: cai inteiro no chão (o Java o perde: o TE não é inventário). Desvio
+  intencional (decisão 2): as regras do port proíbem perda.
+- **Teclas fixas** (setas e Enter, as padrões do HBM), sem remapeamento (decisão 1; remapeamento no T19).
+- **Enter abre o chat** (motor, ticket **INFRA-H**, prioridade baixa): o cliente do motor abre o chat com Enter pelo
+  caminho `remote_key` (`game/remote.rs:9822`, T, / e Enter; commit `ed7e28101a`, "Join vanilla servers"), por onde
+  passam os dois clientes das provas, o anfitrião também (checagem em jogo: Enter no mundo, longe do guindaste, deu chat
+  nos dois, `enter_in_world`); o caminho local (`play_keys.rs`) só abre com T e /. O carregar do guindaste é Enter no
+  HBM: depois de carregar, Esc fecha o chat (limite declarado); sem fechar, as setas vão para o chat e o servidor não
+  recebe tecla (visto pelo `ntmtest crane`: chaves vazias, entrada 0, tela `chat`). A divergência com o vanilla (o chat
+  só pelas teclas de chat e de comando em `handleKeybinds`) vem do conhecimento do código do 1.21, não foi verificada
+  num cliente vanilla real.
+- **Render** da ponte, do guincho, da barra suspensa e do joystick e o `craneIndicator` das colunas: T19 (decisão 3).
+- **Descida pela metade não gravada** (`progress`/`goesDown`, como o Java): reaberto, o gancho está em cima e o item
+  onde estava; a transferência só acontece no fundo, inteira (decisão 4; corte C abaixo).
+- **Primeiro jogador na área**: o Java pega o primeiro da lista de entidades do mundo; aqui o primeiro da lista de
+  jogadores do servidor.
+- **Fase dos 10 ticks** do storage: a do relógio do port (`world.ticks`), como a varredura do console.
+
+### Achado de classe: a pilha movida entre slots perdia os componentes
+
+Visto na J do T11 (a barra "Lot 7" chegava ao storage e perdia o nome descendo a fila): a glue publicava cada slot de
+um commit com `item(novo, antigo)`, que só mantém os componentes da pilha que já estava naquele slot; uma pilha movida
+para um slot vazio ou de outro item era refeita do valor da ponte (id, quantidade, dano, `custom_data`), sem nome,
+lore, encantamentos e o resto. O Java move o próprio `ItemStack` (e `splitStack` copia a tag).
+
+Correção (`5bf31a8e`, `098a1f32`, `06b08b44`, testes `28e38572`, `b70c3ee9`): `container_bridge::moved_stacks`
+(núcleo) diz, num grupo de commits, de que slot vem cada pilha que chega a um slot com outro item: a pilha inteira
+que saiu com aquele valor (cada uma uma vez, inclusive entre commits, como o guindaste), ou uma parte de uma pilha do
+mesmo item e dados cujo número caiu (até o que ela deu); a glue publica a própria `ItemStack` de lá, com a quantidade
+nova. Vale para toda máquina que move pilha entre os seus slots no mesmo commit.
+
+Varredura dos outros lugares que fazem pilha só com id e quantidade (fora do meu ramo, para direcionar):
+
+| Lugar | O que acontece |
+| --- | --- |
+| `crates/ntm-core/src/crafter.rs:251-253` (`items`, `out`) e `server/container_bridge.rs:865` (`lay_out`, usado em `:1051`, `:1054`) | O crafter (montadoras e afins) guarda entradas e saídas como `(id, quantidade)` e as dispõe de volta nos slots: um insumo com nome ou encantamento perde-os ao ser absorvido |
+| `held_contents`/`contents` de `electrolyser.rs:233`, `arc_furnace.rs:326`, `pile.rs:661`, `foundry/cast.rs:137,149`, `foundry/crucible.rs:331,353`, `foundry/firebox.rs:128`, `foundry/flow.rs:172,184,207,225`, `server/container_bridge.rs:80,97` | O que a máquina guarda fora dos slots, como `(id, quantidade)`; ao quebrar, cai por `ServerHost::drop_items` |
+| `native/ntm/mixins/ntm/glue.rs:1606`, `:1610` (`drop_items`) | Faz `ItemStack::new(id, n)`: o que vem das linhas acima cai sem componentes (o dano é do lugar de origem, que já não os tinha) |
+
+Não há outro caminho de publicação de slot de máquina: todos passam por `publish_atomic` (máquinas, grupos, a
+transferência com jogador e a do guindaste).
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
