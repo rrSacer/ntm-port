@@ -25,11 +25,18 @@ KILLED       port: the rotary steam ports face the front  <- the_directed_ports_
 KILLED       stack: every output stacks to 64  <- an_output_that_does_not_stack_fills_one_slot_each
 KILLED       stack: the cast deposits up to 64  <- an_output_that_does_not_stack_fills_one_slot_each
 KILLED       rotary claims its record keeps the slots  <- the_rotary_furnace_and_the_caster_say_their_records_keep_no_slots
-KILLED       hand: a shovel takes only the whole ingots of the pool  <- a_shovel_takes_the_whole_pool_as_one_exact_scrap
-KILLED       hand: a shovel leaves the pool  <- a_shovel_takes_the_whole_pool_as_one_exact_scrap
+KILLED       rotary progress ignores the process speed  <- progress_grows_with_the_process_speed
+KILLED       hand: a shovel takes only the whole ingots of the pool  <- a_shovel_takes_a_channels_metal_as_one_exact_scrap_and_the_click_is_taken_even_when_empty, a_shovel_takes_a_tanks_metal_the_same_way, a_shovel_takes_t
+KILLED       hand: a shovel leaves the pool  <- a_shovel_takes_a_channels_metal_as_one_exact_scrap_and_the_click_is_taken_even_when_empty, a_shovel_takes_the_whole_pool_as_one_exact_scrap
 KILLED       hand: a mold goes in even into a taken slot  <- a_mold_in_hand_goes_into_the_empty_mold_slot_in_one_transfer
 KILLED       hand: the whole stack of molds goes in, not one  <- a_mold_in_hand_goes_into_the_empty_mold_slot_in_one_transfer
 KILLED       hand: a shovel with an empty pool opens the screen  <- a_shovel_takes_the_whole_pool_as_one_exact_scrap
 KILLED       hand: the scrap that does not fit is lost  <- a_scrap_that_does_not_fit_in_the_inventory_is_thrown_once
-KILLED       rotary progress ignores the process speed  <- progress_grows_with_the_process_speed
-34 of 34 killed
+KILLED       hand: any item ending in _shovel is a shovel  <- the_shovels_come_from_the_content
+KILLED       hand: the off hand acts too  <- only_the_main_hand_acts
+KILLED       hand: a mold of any size goes into a mold block  <- a_basin_takes_a_large_mold_only
+KILLED       hand: the cast stays in the mold block  <- a_mold_blocks_click_takes_the_cast_first_then_the_mold_of_its_size_then_the_shovel
+KILLED       hand: the crucible takes only the waste  <- a_shovel_takes_each_stack_of_a_crucible_as_its_own_exact_scrap
+KILLED       hand: the crucible keeps its stacks  <- a_shovel_takes_each_stack_of_a_crucible_as_its_own_exact_scrap
+KILLED       hand: an empty channel opens the screen with a shovel  <- a_shovel_takes_a_channels_metal_as_one_exact_scrap_and_the_click_is_taken_even_when_empty
+41 of 41 killed
