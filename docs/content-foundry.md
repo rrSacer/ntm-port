@@ -127,3 +127,18 @@ Lacunas declaradas: o desenho animado do lingotamento
 | D4: o poço arredondado ao quebrar | `a_broken_block_gives_back_every_quantum` |
 | D4: o cadinho ignora a quantidade da sucata | `a_scrap_melts_into_its_own_amount` |
 | R8: o fundido do rotativo vira sucata | `r8_molten_output_is_lost_on_break` (unidade e servidor) |
+
+## A bica (`foundry_slagtap`): o que ela exige e a decisão pendente
+
+`TileEntityFoundrySlagtap` é uma saída (`TileEntityFoundryOutlet`) que, em vez de vazar num aceitador, **cria o bloco de escória** `ModBlocks.slag` (`BlockDynamicSlag`, com `TileEntitySlag`: material e quantidade, no máximo `BLOCK.q(16)` = 10 368) no primeiro bloco atingido por um raio de 15 blocos para baixo: se o bloco é substituível, no lugar dele; se já é escória do mesmo material, soma; o que sobra vai uma célula acima (`slagtap.flow`, linhas 36-111). O bloco de escória tem altura pela quantidade (`setBlockBoundsBasedOnState`), cor pelo material, escoa para baixo e para os lados por tiques agendados (`updateTick`), e solta uma sucata exata ao ser quebrado (`getDrops`, D4).
+
+O que isso pede ao port, e por que não é "mais um aceitador":
+1. **Um bloco novo com estado** (`ntm:slag`, material e quantidade), com forma variável, cor por material e o escoamento por tiques: conteúdo e visual novos (a escória não está no catálogo; `ntm:block_slag` é o bloco de metal).
+2. **A criação do bloco é uma escrita no mundo acoplada ao canal que cedeu o metal.** O fluxo da fundição (`foundry_tick`) muda modelos em memória, sem o commit atômico das máquinas com `Deferred`. Para uma saída que *cria blocos*, uma gravação rasgada deixa o metal duplicado (o bloco de escória gravado e o canal ainda cheio) ou perdido (o canal gravado vazio e o bloco ausente). Isso pede um commit acoplado (`commit_machines` com `CellWrite.initial`, que já cria um bloco com o modelo inicial junto da máquina) incluindo o canal ou tanque de origem, ou seja, trazer o fluxo da fundição ao `Deferred`.
+
+Opções (a decidir; **não implementei nada**, porque a segunda metade é o tipo de decisão que o `REGRAS-FRENTES-ONDAS.md` manda perguntar):
+- **A.** A bica sem bloco de escória: o metal que ela recebe segue o `safe = true` das outras saídas (não verte e nada se perde). Barato, mas a bica continua inútil: não é paridade.
+- **B (recomendada).** O bloco `ntm:slag` como bloco de máquina de nível único (forma por 8 camadas de neve, cor neutra declarada como lacuna), o vazamento da bica dentro de um commit acoplado com o canal de origem (`CellWrite.initial`), sem o escoamento lateral na primeira versão (a escória fica onde cai, o escoamento é a fatia seguinte), com cortes `slagtap-pour` contra o controle vanilla. Custa: o conteúdo do bloco, o fluxo da fundição no `Deferred` para esse caminho e as provas de corte.
+- **C.** B completa, com o escoamento por tiques agendados e a cor por material: pede também uma extensão visual do motor.
+
+As outras duas lacunas da lista são **visuais ou de poluição**: a "conexão canal/tanque" (`FoundryChannel.canConnectTo`) só muda a forma e os braços desenhados do canal, e a "porta firebox" é a porta de fumaça (`TilePortShapes.assembler`, `moduleSmokePorts`) da fornalha, que depende de um sistema de poluição que o port não tem.
