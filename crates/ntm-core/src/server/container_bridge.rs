@@ -1274,6 +1274,14 @@ mod tests {
         assert_eq!(after[0].iter().map(|f| f.as_ref().map(|f| (f.name, f.stack.count))).collect::<Vec<_>>(), vec![Some(("Fuel", 3)), Some(("Fuel", 2))]);
         let after = publish(&[five], &[vec![Some(Stack::new("minecraft:coal", 5)), Some(Stack::new("minecraft:coal", 2))]]);
         assert_eq!(after[0][1].as_ref().map(|f| f.name), Some(""), "nothing went out of the first: the second is new");
+        // A stack gives no more than it lost (4 of 5: two parts of 2, then a new one); a part with other custom data
+        // is not a part of it.
+        let coal = |n: u32, custom: &str| Stack { custom: Some(custom.into()), ..Stack::new("minecraft:coal", n) };
+        let pile = vec![Some(Full { stack: coal(5, "{a}"), name: "Fuel" }), None, None, None];
+        let after = publish(std::slice::from_ref(&pile), &[vec![Some(coal(1, "{a}")), Some(coal(2, "{a}")), Some(coal(2, "{a}")), Some(coal(1, "{a}"))]]);
+        assert_eq!(after[0].iter().map(|f| f.as_ref().map(|f| f.name)).collect::<Vec<_>>(), vec![Some("Fuel"), Some("Fuel"), Some("Fuel"), Some("")]);
+        let after = publish(&[pile], &[vec![Some(coal(3, "{a}")), Some(coal(2, "{b}")), None, None]]);
+        assert_eq!(after[0][1].as_ref().map(|f| f.name), Some(""));
     }
 
     use super::*;
