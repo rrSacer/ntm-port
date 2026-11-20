@@ -123,6 +123,27 @@ mod tests {
         assert!(!known.contains("ntm:mush"), "the glowing mushroom came in: take it off MISSING");
     }
 
+    /// The stack limits the recipes' products use are the content's (`max_stack_size` in `ids.json`, 64 when it says
+    /// none), but for the content's known gap: the glowing stew is an `ItemSoup` (`setMaxStackSize(1)`) and the content
+    /// lets it pile to 64. The outgasser keeps the Java's 1; the test fails when the content is fixed or another limit
+    /// parts from it.
+    #[test]
+    fn stack_limits_are_the_contents_but_its_known_gap() {
+        const CONTENT_GAP: [(&str, i64); 1] = [("ntm:glowing_stew", 64)];
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../content/ids.json");
+        let Ok(text) = std::fs::read_to_string(path) else { return };
+        let ids: serde_json::Value = serde_json::from_str(&text).unwrap();
+        let limit = |id: &str| {
+            ids["entries"].as_array().unwrap().iter().find(|e| e["id"] == id).and_then(|e| e["max_stack_size"].as_i64()).unwrap_or(64)
+        };
+        for (_, _, id, n) in PORT_ITEMS.iter().filter(|e| e.2.starts_with("ntm:")) {
+            match CONTENT_GAP.iter().find(|g| g.0 == *id) {
+                Some((_, content)) => assert_eq!((limit(id), *n), (*content, 1), "{id}: the content's gap changed"),
+                None => assert_eq!(limit(id), i64::from(*n), "{id}"),
+            }
+        }
+    }
+
     /// `getOutput` walks an item's OreDict names in the OreDict's order, here in the port's: the same for every port item
     /// that has at most one name a recipe asks for, which is every one of them.
     #[test]
