@@ -1,0 +1,135 @@
+{
+ "pour": {
+  "none": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  },
+  "kill": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "kv_committed": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  },
+  "save_begin": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "chunks_written": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  },
+  "entities_written": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  },
+  "world_saved": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  },
+  "players_saved": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  }
+ },
+ "border": {
+  "none": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "kill": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "kv_committed": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "save_begin": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "chunks_written": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "entities_written": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "world_saved": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "players_saved": {
+   "channel": 144,
+   "slag": 0,
+   "slag_block": ""
+  }
+ },
+ "break": {
+  "none": {
+   "channel": 0,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "kill": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  },
+  "kv_committed": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  },
+  "save_begin": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  },
+  "chunks_written": {
+   "channel": 0,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "entities_written": {
+   "channel": 0,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "world_saved": {
+   "channel": 0,
+   "slag": 0,
+   "slag_block": ""
+  },
+  "players_saved": {
+   "channel": 0,
+   "slag": 0,
+   "slag_block": ""
+  }
+ },
+ "redstone": {
+  "none": {
+   "channel": 0,
+   "slag": 144,
+   "slag_block": "ntm:slag"
+  }
+ }
+}

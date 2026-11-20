@@ -73,7 +73,7 @@ carga da máquina, sem nada a ver com o código):
 Os cenários scrap, caster, excess e batch da revisão 3 não foram repetidos com este binário (o que mudou nele é só o gancho de mão).
 Mutantes: `mutants-foundry.log`, 41 de 41 mortos.
 
-## Revisão 5: a bica (`ntm:foundry_slagtap`) e a escória (`ntm:slag`) (binário `6d8c54fb1780…`, `ntm.hmod` `59181d49dcc8…`, HEAD `6ce9aace`)
+## Revisão 5: a bica (`ntm:foundry_slagtap`) e a escória (`ntm:slag`) (rodada reexecutada com o binário final `dde029c5ca87…`, `ntm.hmod` `59181d49dcc8…`; o `commit_machines` agora marca as células como próprias)
 
 Commits: `80ba2f30` (a bica, a escória, o commit único, testes de servidor, conteúdo) e `6ce9aace` (mutantes, roteamento, roteiros de jogo).
 O vazamento é **um commit só** (`commit_machines` com o registro menor da origem, o maior da escória atingida e o bloco novo com o
@@ -105,3 +105,19 @@ primeira atingida é ar, uma máquina (excluída antes) ou fora do chunk (exclu�
 
 Lacunas declaradas: sem o escoamento da escória, cor neutra, sem o vazamento entre chunks, mato/neve/líquido não são substituídos, sem
 fechamento por redstone, sem partícula do jato, sem pick-block (`docs/content-foundry.md`).
+
+## Onde o metal está depois de cada corte (`where-slagtap.json`, binário `dde029c5ca87…`)
+
+Versionado a partir das pastas de prova. Canal / escória, em quanta, no mundo reaberto:
+
+| cenário | none | kill | kv_committed | save_begin | chunks_written | entities_written | world_saved | players_saved |
+|---|---|---|---|---|---|---|---|---|
+| slagtap-pour | 0 / 144 | 144 / 0 | 0 / 144 | 144 / 0 | 0 / 144 | 0 / 144 | 0 / 144 | 0 / 144 |
+| slagtap-border | 144 / 0 | 144 / 0 | 144 / 0 | 144 / 0 | 144 / 0 | 144 / 0 | 144 / 0 | 144 / 0 |
+| slagtap-break | 0 / 0 (sucata no inventário) | 0 / 144 | 0 / 144 (+ inventário: 288) | 0 / 144 | 0 / 0 (0 no total, vanilla) | 0 / 0 (idem) | 0 / 0 (inventário) | 0 / 0 (inventário) |
+
+## Fechamento por redstone (`slagtap-redstone`, ponto `none`, mesmo binário)
+
+Um bloco de redstone ao lado da bica a fecha: depois de 15 s o canal guarda os 144 e não há bloco de escória; tirado o bloco, a bica abre e os 144
+vão para a escória (`ntm:slag`); 144 no mundo reaberto duas vezes, igual ao controle. A inversão (`invert_redstone`) e a leitura ausente
+ficam nos testes de servidor (`redstone_closes_*`), cinco mutantes mortos.
