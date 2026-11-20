@@ -71,6 +71,12 @@ do motor); a mão continua inserindo sem olhar o calor (`RBMKRod.onBlockActivate
 (`cold_enough_for_autoloader`, `<= 1000`, T12) e da fusão na quebra (`hot_enough_to_melt_on_break`, `>= 1500`, T16)
 ficam prontos e testados. Ver `docs/horizon-current.md`, seção "RBMK T05".
 
+**T06 e T07** ligaram as telas das barras de controle: um canal de comandos versionado com sessão por tela
+(`screens::control`, sobre as mensagens de mod do motor, sem mudança de motor), o `GuiTextField` e a regra de salvar do
+1.7.10 (`screens::field`, `screens::number`, iguais ao Java em 111 151 cadeias), e as cinco barras no passo como os seus
+TEs (`persist::ControlState`: nível, alvo, partida e grupo pelos bits; a energia das ReaSim, recebida da rede por baixo,
+só em memória, como o Java). Ver `docs/horizon-current.md`, seções "RBMK T06" e "RBMK T07".
+
 0. Quebra de bloco: `Reactor::remove`; o `rbmk_storage` entra como `Kind::Storage`; `Inlet`/`Outlet` não participam do calor.
 1. ~~Registrar os demais blocos `Inert` `rbmk_*` como `Kind`~~ (T02: adotados; T04: no passo; a física própria deles com portas, receitas e alvos é T07/T08/T09/T11).
 2. ~~Chamar `Reactor::step` uma vez por tick~~ (T01); ~~ler `rad`, `effects`; `obstacles` com a opacidade HBM~~ (T04); `meltdowns` (T16).

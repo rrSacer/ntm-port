@@ -1454,7 +1454,51 @@ usa só o que o motor já oferece (`net_from_client`/`native_net_send_to_server`
 
 ### Validação
 
-J_T06_PENDING
+Commits: `fe52ebc2` (campo e regra de salvar), `3d3703b4` (codec e sessões), `14c78949` (ajustes do controle
+automático), `0ce5925b` (servidor), `5785bf07` (testes), `7c510699` (glue), `2a8cce09` (conteúdo), `55c5f567` (linhas
+citadas), `77cc9129` (correção: tela sem slot de máquina sem menu), `49e9455c` (roteiro J), `4495c11f` (correção: a
+sessão não abria, `native_server_players` não lista o jogador enquanto o menu dele abre), `63235245` (gancho de teste
+para o hóspede). Evidências em `/mnt/ssd120/sacer/so/rbmk-t06/evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| U: oráculo Java | `NumberOracle.java` (commons-lang3 3.3.2 do 1.7.10, JDK 21) sobre as 111 151 cadeias de até 4 caracteres de `018.-+eExXdDfFlLa `: `isNumber`, os bits do `parseDouble` e o salvar com teto 100 e 9999 iguais em todas; 312 passam no `isNumber` e quebram o `parseDouble` |
+| U: unidade | Campo (cota de `writeText` com o defeito da seleção invertida, palavras, área de transferência, filtro, clique, unidades UTF-16), codec (ida e volta pelos bits de NaN/−0/±∞/extremos, toda mensagem cortada recusada, bytes sobrando, versão, tag, chave repetida, UTF-8, limites), sessões (sessão atual, lugar, geração, repetição, alcance 20 e dimensão), getters do `NBTTagCompound`, `receiveControl` do automático (índices 3/4/MIN recusados), servidor (aplicado no tick seguinte, recusa sem mudar nada, comando de coluna trocada descartado, snapshot só quando muda, save anterior) |
+| U: suíte (árvore limpa em `6eb5941c`) | `ntm-core` debug 913 ok, 6 ignorados, 0 falhas; `save_model` release 11/11; `keep_world_cost` 0,16–0,19 ms; Clippy `-D warnings` do `ntm-core`: 0. Clippy da glue: 0, rodado sobre o stage já com o T07 (T06 + T07 juntos) |
+| U: mutações | 16/16 pegas (`evidence/mutations-t06.log` em `rbmk-t05`) |
+| J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py --script native_rbmk_t06.py`, `evidence/j-run5/`) | **24/24**: cada jogador digita e salva os quatro campos (75, 20, 1500, 300 guardados), a regra do Java (`12345` vira 100 no limite de 3 caracteres e teto, `abc` vira 0, `9.9` vira 9), `1L` não manda nada, a curva escolhida, repetição recusada (`Repeated`), campos reabertos do servidor (salvar sem digitar mantém), sessão velha recusada (`OldSession`) sem mudança, coluna trocada nova e o comando da antiga recusado (`Generation`). Binário `0ef9ea6f…` (com as correções e o T07; os caminhos do T06 são os mesmos), pacote `0f9c0154…`. As rodadas 1–4 caíram pelo roteiro (`lan open` sem porta) e pelos dois defeitos corrigidos acima (a tela sem menu; a sessão que não abria), e por um gancho de teste cuja resposta não volta ao hóspede |
+
+## RBMK T07 — barras de controle manual, automática e energizada (20/11/2026)
+
+Branch `rbmk-t05` (continua sobre o T06), motor `rbmk-t05-engine` @ `6e13d4271c` sem mudança nova. O núcleo do passo já
+movia as barras (validado contra o oráculo no T1); o T07 liga o estado, as telas e a energia.
+
+### O que mudou
+
+| Parte | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Estado | `ControlState` na coluna das cinco barras: `level` e `targetLevel` (e o `startingLevel` e o grupo da manual), pelos bits, como o `writeToNBT` grava; a energia das ReaSim só em memória, porque o Java não grava `power` (uma barra reaberta começa vazia). Save anterior lê como o TE novo | `TileEntityRBMKControl.readFromNBT/writeToNBT:128-142`, `TileEntityRBMKControlManual:92-115` |
+| Passo | Cada barra entra no passo como o seu TE (nível, alvo, partida, energia, as faixas e a curva da automática) e volta com o commit: `speed * dialControlSpeed` por tick até o alvo, o surto da manual ao descer, a curva da automática sobre o calor da coluna, nível 0 encerrando o fluxo | `TileEntityRBMKControl.updateEntity:76-109`, `TileEntityRBMKControlManual.getMult:52-62`, `TileEntityRBMKControlAuto.updateEntity:40-79` |
+| Energia | As ReaSim (`rbmk_control_reasim`, `rbmk_control_reasim_auto`) recebem da rede pela face de baixo (`Ports::Down`), até 50 000; andam só com 5000 ou mais e pagam 5000 por tick em que andaram | `isPowered`, `canConnect` (DOWN), `consumption`, `maxPower` |
+| Tela da manual | Cinco níveis (1 − 0,25k) e cinco grupos, cada um um comando da sessão (T06): `level` vira o alvo (a partida onde a barra está), `color` alterna o grupo (`abs % 5`; o mesmo de novo tira). Barra de nível desenhada com `(int)(56 * (1 - level))`, grupo, luz de energia e dicas (nível em %, energia com `getShortNumber`) do snapshot | `GUIRBMKControl`, `TileEntityRBMKControlManual.receiveControl:70-90` |
+| Telas | As cinco mostram nível, alvo e energia reais; a automática ganhou a barra de nível, a curva e a luz desenhadas do snapshot. O JSON das telas ficou só com a textura, o título e os rótulos | `GUIRBMKControlAuto.drawGuiContainerBackgroundLayer` |
+| Copiar configurações | `rbmk::screen::settings`/`paste_settings`: o grupo da manual (sem grupo: composto vazio, que tira o grupo da outra) e as faixas e a curva da automática (`grabEnumSafely`) | `ICopiable.getSettings/pasteSettings` das duas |
+
+### Desvios e decisões para o coordenador
+
+- **Energia não gravada** (como o Java): uma barra ReaSim reaberta começa sem energia. A alternativa (gravar, uma
+  correção de durabilidade) muda o comportamento visível de quem fecha o mundo com a barra andando.
+- **Ferramenta de cópia** (`ItemSettingsTool`, `settings_tool`): não existe no port. As funções de copiar e colar das
+  barras estão prontas e testadas; o item (que serve a várias máquinas) fica para uma decisão: entrar agora, num ticket
+  próprio, ou depois.
+- **Prioridade da rede**: as barras são `ConnectionPriority.LOW` no Java; a rede do port não tem prioridades (limite já
+  registrado da rede).
+- **AZ-5**: é um comando do console (T10); o T07 cobre o surto da barra que desce para 0.
+- **Comandos de rádio (RTTY)** e OpenComputers das barras: T13 e exclusão D7.
+
+### Validação
+
+J_T07_PENDING
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
