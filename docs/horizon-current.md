@@ -1811,6 +1811,37 @@ no T19; as provas leem o estado do servidor. (4) `progress`/`goesDown` não grav
 metade volta ao alto sem transferir; teste de corte durante a descida com o item suspenso: o item fica na coluna ou
 suspenso, nunca nos dois nem em nenhum, em todos os pontos de corte.
 
+## INFRA-G — hóspede de LAN e células de dummy (resolvido sem mudar o motor, 20/11/2026)
+
+Achado do T10 (desvios, "Hóspede de LAN e célula de dummy"): nas provas, o hóspede não abria multibloco nenhum pela
+célula de dummy. **Não é limite do motor nem da glue: é a montagem das provas.** O anfitrião era teleportado ao ponto
+da frente, usava a máquina e ficava ali; o hóspede era teleportado ao **mesmo ponto**, com o olho dentro do corpo do
+anfitrião. Como no vanilla (`ProjectileUtil.getEntityHitResult`: uma caixa que contém o olho é acertada a distância 0), a
+mira do hóspede pegava o jogador anfitrião e não o bloco. `Minecraft.startUseItem` usa então a entidade (o jogador
+passa) e o item, sem tentar o bloco atrás, e o cliente nem envia `UseItemOn`. Pelo núcleo o hóspede ficava em outro
+lugar, por isso abria.
+
+Caminho medido (traços temporários na branch do motor `infra-g-dbg`, sem efeito fora da investigação): no cliente do
+anfitrião (que também passa por `lan_actions` como conexão 1), `UseItemOn` → `may_reach_block` → cursor dentro →
+`use_hand` → `machine_cell_core` (o núcleo) → `mod_menu_at` → `open_menu`. No cliente do hóspede, o clique no dummy da
+frente **não chega** a `remote_use_item_on`: `remote_use_targets_entity` é verdadeiro. Afastado o anfitrião, o hóspede
+segue exatamente o caminho do anfitrião e abre.
+
+| Prova (`run-rbmk-t05-proof.py --script native_infra_g2.py`) | Resultado |
+| --- | --- |
+| J: binário release do T10 **sem mudança** (`7b4e9c49…`, pacote `4578ba4f…`), anfitrião afastado | O hóspede abre o console, o eletrolisador, a máquina de montagem e a planta química pelo dummy da frente e por um dummy do lado leste; o eletrolisador também pelo dummy do topo (nos outros três o roteiro não acha face visível do topo, limite da mira do roteiro). O anfitrião abre pela frente como antes |
+| Controle: o anfitrião de volta ao ponto do hóspede | Nas quatro, nada abre; `looking-at` do hóspede: `kind: entity`, o jogador anfitrião a distância 0,0 (no caso normal, `kind: block`, o dummy) |
+| C: recurso | Nenhum uso muda o inventário do hóspede (`inventory_change` vazio); as 7 pedras do início continuam 7 |
+| Reprodução | O roteiro do T10 (`native_infra_g.py`) repete o achado com o mesmo motor: o cliente do hóspede não envia `UseItemOn` no dummy |
+
+Evidências em `/mnt/ssd120/sacer/so/infra-g/evidence/` (`final-release-7b4e9c49/`, `traced-host-aside/`,
+`traced-repro-t10-setup/`). Não há correção no motor, então não há teste de unidade nem mutante de motor: o controle com o
+anfitrião no ponto do hóspede é o caso negativo que mostra que a prova pega a falha.
+
+Consequência para as provas: um roteiro de hóspede deve tirar o anfitrião do ponto onde o hóspede vai ficar (ou pôr o
+hóspede em outro ponto). A abertura pelo núcleo e o registro `guest_through_the_dummy` do `native_rbmk_t10.py` deixam de
+ser necessários; as provas de hóspede das ondas anteriores que abriram multiblocos pelo núcleo continuam válidas.
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
