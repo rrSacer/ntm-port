@@ -145,6 +145,8 @@ pub(super) fn draw(game: &crate::game::Game<'_>, block: &str, data: &[i32], batc
         let label = game.translate("container.inventory", "Inventory");
         game.native_text(batch, &label, [ox + x, oy + y], 0x404040, false);
     }
+    // A screen that sends its block commands draws its text fields over (RBMK T06).
+    crate::game::ntm_control_screens::draw(game, block, batch, origin);
 }
 
 /// A press on the screen: a button's id (its shift id while shift is held),
@@ -164,6 +166,9 @@ pub(super) fn click(game: &crate::game::Game<'_>, block: &str, at: [f32; 2], but
 pub(super) fn tooltip(game: &crate::game::Game<'_>, block: &str, data: &[i32], at: [f32; 2], lines: &mut Vec<String>) {
     if let Some(open) = lock(&LIST).as_ref().filter(|open| open.block == block) {
         selector_tooltip(game, open, at, lines);
+        return;
+    }
+    if crate::game::ntm_control_screens::tooltip(game, block, at, lines) {
         return;
     }
     if let Some(found) = current(game, block).and_then(|def| def.tooltip(at[0], at[1], data)) {
@@ -189,6 +194,9 @@ static LIST: Mutex<Option<Selector>> = Mutex::new(None);
 /// a machine with a recipe list). True when this took the event.
 pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, data: &[i32], event: &crate::game::native_hooks::NativeScreenEvent) -> bool {
     use crate::game::native_hooks::NativeScreenEvent as E;
+    if crate::game::ntm_control_screens::takes_commands(block) {
+        return crate::game::ntm_control_screens::event(game, block, event);
+    }
     let mut guard = lock(&LIST);
     let Some(open) = guard.as_mut().filter(|open| open.block == block) else {
         drop(guard);

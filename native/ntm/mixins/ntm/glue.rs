@@ -437,6 +437,12 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok={ok}")));
         return true;
     }
+    // `ntmtest screen replay|refusal` (RBMK T06): the screen commands' checks, as a stale client would meet them.
+    if w.first()==Some(&"screen"){
+        let reply=format!("ntmtest ok=true {}",screen_test_hook(server,&me,&dim,player.position,w.get(1).copied().unwrap_or("")));
+        host.game.native_feedback(horizon_client::text::Text::literal(reply));
+        return true;
+    }
     if w.first()==Some(&"rays"){
         let reply=format!("ntmtest ok=true {}",server.native_test_rays(&dim));
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
@@ -1175,6 +1181,7 @@ pub(super) fn server_tick(game: &mut crate::game::Game<'_>) {
         server.native_block_changed(&dim, pos, &old, &now);
     }
     horizon_client::spans::time("ntm_native_tick", || server.native_tick(&mut host, *tick));
+    send_screen_snapshots(host.game, server);
     }
 }
 
@@ -2338,3 +2345,82 @@ mod world_commit_tests {
 
 /// Legacy migration seed; all subsequent native dose lives in the player file.
 pub(super) fn item_dose(id:&str)->Option<ntm_core::radiation::Dose> {lock(&SERVER).as_ref().map(|(s,_)|s.player_dose(id))}
+
+// ------------------------------------------------------------ screen commands (RBMK T06)
+
+/// The mod channels of the screens' commands and snapshots (`ntm_core::screens::control`).
+pub(super) const SCREEN_COMMAND: &str = "ntm:screen_command";
+pub(super) const SCREEN_SNAPSHOT: &str = "ntm:screen_snapshot";
+
+/// Test hooks only: the last command each player's client sent that the server took, and the last refusal.
+static LAST_COMMAND: Mutex<Option<(String, Vec<u8>)>> = Mutex::new(None);
+static LAST_REFUSAL: Mutex<Option<String>> = Mutex::new(None);
+
+fn player_place(game: &crate::game::Game<'_>, player: u128) -> Option<(String, [f64; 3])> {
+    game.native_server_players().into_iter().find(|p| p.uuid == player).map(|p| (p.dimension, p.position))
+}
+
+/// A player opens a block's menu (`native_menu_extra_data`): a column that takes commands gives its screen a session
+/// and its first snapshot.
+pub(super) fn menu_extra_data(game: &crate::game::Game<'_>, player: u128, block: &str, pos: [i32; 3], data: &mut Option<Vec<u8>>) {
+    if !ntm_core::rbmk::screen::takes_commands(block) {
+        return;
+    }
+    let Some((dim, _)) = player_place(game, player) else { return };
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return };
+    if let Some(bytes) = server.native_screen_open(&horizon_protocol::crypto::uuid_string(player), &dim, pos) {
+        *data = Some(bytes);
+    }
+}
+
+/// A command from a player's client (`native_net_from_client`): taken for the next tick, or refused whole.
+pub(super) fn net_from_client(game: &crate::game::Game<'_>, player: u128, channel: &str, data: &[u8]) {
+    if channel != SCREEN_COMMAND {
+        return;
+    }
+    let Some((dim, at)) = player_place(game, player) else { return };
+    let id = horizon_protocol::crypto::uuid_string(player);
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return };
+    match server.native_screen_command(&id, &dim, at, data) {
+        Ok(()) => *lock(&LAST_COMMAND) = Some((id, data.to_vec())),
+        Err(why) => {
+            eprintln!("ntm screen command refused: {why:?}");
+            *lock(&LAST_REFUSAL) = Some(format!("{why:?}"));
+        }
+    }
+}
+
+/// A player left: their screen session ends.
+pub(super) fn player_logged_out(player: u128) {
+    if let Some((server, _)) = lock(&SERVER).as_mut() {
+        server.native_screen_left(&horizon_protocol::crypto::uuid_string(player));
+    }
+}
+
+/// The open screens' snapshots that changed this tick, to their players.
+fn send_screen_snapshots(game: &mut crate::game::Game<'_>, server: &mut Server) {
+    for (player, bytes) in server.native_screen_snapshots() {
+        if let Ok(uuid) = u128::from_str_radix(&player.replace('-', ""), 16)
+            && let Err(error) = game.native_net_send_to_player(uuid, SCREEN_SNAPSHOT, &bytes)
+        {
+            eprintln!("ntm screen snapshot: {error}");
+        }
+    }
+}
+
+/// `ntmtest screen replay|refusal`: the acting player's last taken command sent again through the same checks (its
+/// refusal, or `ok`), or the last refusal of any command.
+fn screen_test_hook(server: &mut Server, me: &str, dim: &str, at: [f64; 3], what: &str) -> String {
+    match what {
+        "replay" => match lock(&LAST_COMMAND).clone().filter(|(p, _)| p == me) {
+            None => "screen=none".to_string(),
+            Some((_, data)) => match server.native_screen_command(me, dim, at, &data) {
+                Ok(()) => "screen=taken".to_string(),
+                Err(why) => format!("screen=refused:{why:?}"),
+            },
+        },
+        _ => format!("screen=last:{}", lock(&LAST_REFUSAL).clone().unwrap_or_default()),
+    }
+}

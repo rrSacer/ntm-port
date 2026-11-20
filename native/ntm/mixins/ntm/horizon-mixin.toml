@@ -630,3 +630,48 @@ bindings = [
   { name = "channel", ty = "&str", value = "channel" },
   { name = "data", ty = "&[u8]", value = "data" },
 ]
+
+# The screens' commands (RBMK T06): a session per opened screen, its commands from
+# the client, its snapshots back (ntm_core::screens::control).
+[[module]]
+id = "control-screens"
+file = "crates/horizon-client/src/game.rs"
+name = "ntm_control_screens"
+source = "control_screens.rs"
+
+[[injection]]
+id = "menu-extra-data"
+hook = "menu_extra_data"
+hook_version = 1
+kind = "HEAD"
+helper = "menu_extra.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "player", ty = "u128", value = "player" },
+  { name = "block", ty = "&str", value = "block" },
+  { name = "pos", ty = "[i32; 3]", value = "pos" },
+  { name = "data", ty = "&mut Option<Vec<u8>>", value = "&mut *data" },
+]
+
+[[injection]]
+id = "screen-command"
+hook = "net_from_client"
+hook_version = 1
+kind = "HEAD"
+helper = "screen_command.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "player", ty = "u128", value = "player" },
+  { name = "channel", ty = "&str", value = "channel" },
+  { name = "data", ty = "&[u8]", value = "data" },
+]
+
+[[injection]]
+id = "player-left"
+hook = "player_logged_out"
+hook_version = 1
+kind = "HEAD"
+helper = "player_left.rs"
+bindings = [
+  { name = "player", ty = "u128", value = "player" },
+]
