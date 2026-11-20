@@ -160,6 +160,7 @@ fn slotted(data: &mut Data) -> Option<&mut dyn Slotted> {
         Data::Intake(i) => Some(i),
         Data::Compressor(c) => Some(&mut **c),
         Data::Storage(s) => Some(&mut **s),
+        Data::Microwave(m) => Some(&mut **m),
         _ => None,
     }
 }
@@ -236,6 +237,7 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:machine_compressor_compact", Layout::Native),
     ("ntm:machine_battery_socket", Layout::Native),
     ("ntm:machine_battery_redd", Layout::Native),
+    ("ntm:machine_microwave", Layout::Native),
     ("ntm:machine_crucible", Layout::Native),
     ("ntm:foundry_mold", Layout::Native),
     ("ntm:foundry_basin", Layout::Native),
@@ -501,6 +503,9 @@ pub const FLUID_PROXIES: &[(&str, &[[i32; 3]])] = &[
     // MachineCyclotron.getAllPorts: three on each side of the 5x5 footprint, at (-x, -z) of the NTM's.
     // MachineAnnihilator.getPorts: front port and the two side ports near it.
     ("ntm:machine_annihilator", &[[-1, 0, -3], [1, 0, -3], [0, 0, -4]]),
+    // MachineChimney*.getAllPorts: the four cells beside the core on its layer (the flare shape, symmetric).
+    ("ntm:chimney_brick", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
+    ("ntm:chimney_industrial", &[[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1]]),
     // MachineSILEX.getAllPorts (`{±1, 1, 0}`, the makeExtra combo proxies: inventory and fluid) and TileEntitySILEX.getPorts:
     // the two cells beside the middle of its second layer (symmetric, so the mirroring does not move them).
     ("ntm:machine_silex", &[[1, 1, 0], [-1, 1, 0]]),

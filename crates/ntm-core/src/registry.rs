@@ -385,10 +385,11 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_microwave",
-        kind: Kind::Inert,
+        kind: Kind::Microwave,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        // `TilePortShapes.around`: one port, every face.
+        ports: Ports::AllRound,
     },
     BlockSpec {
         id: "ntm:machine_teleporter",
@@ -434,14 +435,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:chimney_brick",
-        kind: Kind::Inert,
+        kind: Kind::Chimney,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:chimney_industrial",
-        kind: Kind::Inert,
+        kind: Kind::Chimney,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1789,6 +1790,8 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
         Kind::Compressor => vec![Vec::new()],
         // `getPorts`: the core's front and its two sides.
         Kind::Drain => vec![crate::drain::Drain::faces(facing)],
+        // The core takes nothing: the chimneys' fluid ports are the four cells beside it.
+        Kind::Chimney => vec![Vec::new()],
         // The heaters' ports are on their sides (`getPorts`): the boiler on
         // top never pours into them.
         Kind::Heater => vec![

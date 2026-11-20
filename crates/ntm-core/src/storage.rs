@@ -80,12 +80,12 @@ pub fn charge_of(stack: &Stack) -> Option<i64> {
     fields.get("charge")?.trim_end_matches(['l', 'L']).parse().ok()
 }
 
-fn item_slot(stack: &Option<Stack>) -> Option<ItemSlot> {
+pub(crate) fn item_slot(stack: &Option<Stack>) -> Option<ItemSlot> {
     stack.as_ref().map(|s| ItemSlot::new(slot_item(&s.id), charge_of(s)))
 }
 
 /// What the energy code did to the stack's tag goes back into the stack.
-fn write_back(stack: &mut Option<Stack>, slot: Option<&ItemSlot>) {
+pub(crate) fn write_back(stack: &mut Option<Stack>, slot: Option<&ItemSlot>) {
     let (Some(stack), Some(slot)) = (stack.as_mut(), slot) else { return };
     if let Some(charge) = slot.tag()
         && charge_of(stack) != Some(charge)

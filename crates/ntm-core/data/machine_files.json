@@ -1126,6 +1126,22 @@
 ],
 "synced": []
 },
+"ntm:chimney_brick": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
+"ntm:chimney_industrial": {
+"inventory": [
+8,
+84
+],
+"slots": [],
+"synced": []
+},
 "ntm:foundry_basin": {
 "inventory": [
 8,
@@ -4726,6 +4742,28 @@
 84
 ],
 "slots": [],
+"synced": []
+},
+"ntm:machine_microwave": {
+"inventory": [
+8,
+84
+],
+"slots": [
+{
+"x": 80,
+"y": 35
+},
+{
+"output": true,
+"x": 140,
+"y": 35
+},
+{
+"x": 8,
+"y": 53
+}
+],
 "synced": []
 },
 "ntm:machine_mixer": {

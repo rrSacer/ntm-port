@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/chimney_brick.obj",
+  "texture": "ntm:textures/models/machines/chimney_brick.png",
+  "rotation": 0,
+  "radius": 14.0
+}

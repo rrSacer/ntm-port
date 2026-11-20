@@ -80,6 +80,9 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::radiolysis::BLOCK {
         return Some(crate::radiolysis::container());
     }
+    if block == crate::microwave::BLOCK {
+        return Some(crate::microwave::container());
+    }
     if block == crate::exposure::BLOCK {
         return Some(crate::exposure::container());
     }
@@ -235,6 +238,12 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         }
         return rules;
     }
+    if block == crate::microwave::BLOCK {
+        // `ContainerMicrowave`: plain `Slot`s at 0 and 2 and a `SlotCraftingOutput` at 1; what a hopper may do is `slot_allows`.
+        let mut rules = vec![SlotFilter::default(); crate::microwave::SLOTS];
+        rules[crate::microwave::OUTPUT].output = true;
+        return rules;
+    }
     if block == crate::radiolysis::BLOCK {
         // `ContainerRadiolysis`: the fluid identifier's and the sterilized item's out slots are `SlotTakeOnly`s.
         let mut rules = vec![SlotFilter::default(); crate::radiolysis::SLOTS];
@@ -325,6 +334,9 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::fel::BLOCK {
         return crate::fel::allows(slot, origin == SlotOrigin::Manual);
+    }
+    if block == crate::microwave::BLOCK {
+        return crate::microwave::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
     }
     if block == crate::radiolysis::BLOCK {
         return crate::radiolysis::allows(slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);

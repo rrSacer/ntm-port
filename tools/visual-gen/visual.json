@@ -39527,7 +39527,273 @@
       "auto": false
     },
     "ntm:machine_microwave": {
-      "source": "Single cell with no logic yet (Inert): HBM's renderer model, taken by the extractor (extracted.json)"
+      "source": "MachineMicrowave (one rotatable block), ContainerMicrowave, GUIMicrowave 176x168 (processing/gui_microwave.png): input (80,35), output (140,35, take only), battery (8,53); the power bar (8,17) 16x34, the progress (104,34) 22x16, the speed bar (62,26) 4x34; buttons (43,25) faster and (43,43) slower; RenderMicrowave (case 2: 0, translate y -0.785 then -0.5 0 0.65, the plate turns at speed x 100 deg/s about (0.575, 0, -0.45) while it cooks)",
+      "machine": {
+        "slots": [
+          {
+            "x": 80,
+            "y": 35
+          },
+          {
+            "x": 140,
+            "y": 35,
+            "output": true
+          },
+          {
+            "x": 8,
+            "y": 53
+          }
+        ],
+        "inventory": [
+          8,
+          84
+        ],
+        "data": 10
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_microwave.png",
+        "texture_from": "textures/gui/processing/gui_microwave.png",
+        "size": [
+          176,
+          168
+        ],
+        "title": [
+          88,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          74
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              8,
+              17,
+              16,
+              34
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 2,
+            "max": 3,
+            "rect": [
+              104,
+              34,
+              22,
+              16
+            ],
+            "uv": [
+              192,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 4,
+            "max": 5,
+            "rect": [
+              62,
+              26,
+              4,
+              34
+            ],
+            "uv": [
+              214,
+              0
+            ],
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              8,
+              17,
+              16,
+              34
+            ],
+            "lines": [
+              "{6:si} / {7:si} HE"
+            ]
+          }
+        ],
+        "buttons": [
+          {
+            "id": 0,
+            "rect": [
+              43,
+              25,
+              18,
+              18
+            ],
+            "lines": [
+              "Faster"
+            ]
+          },
+          {
+            "id": 1,
+            "rect": [
+              43,
+              43,
+              18,
+              18
+            ],
+            "lines": [
+              "Slower"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/microwave.obj",
+        "obj_from": "models/machines/microwave.obj",
+        "texture": "ntm:textures/models/machines/microwave.png",
+        "texture_from": "textures/models/machines/microwave.png",
+        "rotation": 0,
+        "translate": [
+          -0.5,
+          -0.785,
+          0.65
+        ],
+        "radius": 2.0,
+        "bones": {
+          "plate_Cylinder": {
+            "pivot": [
+              0.575,
+              0,
+              -0.45
+            ]
+          }
+        },
+        "loop_animation": [
+          {
+            "name": "animation.microwave.plate1",
+            "length": 3.6,
+            "bones": {
+              "plate_Cylinder": {
+                "turn": [
+                  0,
+                  360,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.microwave.plate2",
+            "length": 1.8,
+            "bones": {
+              "plate_Cylinder": {
+                "turn": [
+                  0,
+                  360,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.microwave.plate3",
+            "length": 1.2,
+            "bones": {
+              "plate_Cylinder": {
+                "turn": [
+                  0,
+                  360,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.microwave.plate4",
+            "length": 0.9,
+            "bones": {
+              "plate_Cylinder": {
+                "turn": [
+                  0,
+                  360,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "name": "animation.microwave.plate5",
+            "length": 0.72,
+            "bones": {
+              "plate_Cylinder": {
+                "turn": [
+                  0,
+                  360,
+                  0
+                ]
+              }
+            }
+          }
+        ],
+        "play": [
+          {
+            "animation": "animation.microwave.plate1",
+            "values": [
+              {
+                "value": 9,
+                "min": 1,
+                "max": 1
+              }
+            ]
+          },
+          {
+            "animation": "animation.microwave.plate2",
+            "values": [
+              {
+                "value": 9,
+                "min": 2,
+                "max": 2
+              }
+            ]
+          },
+          {
+            "animation": "animation.microwave.plate3",
+            "values": [
+              {
+                "value": 9,
+                "min": 3,
+                "max": 3
+              }
+            ]
+          },
+          {
+            "animation": "animation.microwave.plate4",
+            "values": [
+              {
+                "value": 9,
+                "min": 4,
+                "max": 4
+              }
+            ]
+          },
+          {
+            "animation": "animation.microwave.plate5",
+            "values": [
+              {
+                "value": 9,
+                "min": 5,
+                "max": 5
+              }
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_teleporter": {
       "auto": false,
@@ -39871,12 +40137,68 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:chimney_brick": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineChimneyBrick {12,0,1,1,1,1} offset 1, TileEntityChimneyBrick (no screen: a smoke sink); RenderChimneyBrick turns the model a fixed 180 degrees whatever the facing, which a model that turns with the block cannot say (the shaft is square, so only its marks could show it); the smoke column of the client is not drawn",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            12,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/chimney_brick.obj",
+        "obj_from": "models/machines/chimney_brick.obj",
+        "texture": "ntm:textures/models/machines/chimney_brick.png",
+        "texture_from": "textures/models/machines/chimney_brick.png",
+        "rotation": 0,
+        "radius": 14.0
+      }
     },
     "ntm:chimney_industrial": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineChimneyIndustrial {22,0,1,1,1,1} offset 1, TileEntityChimneyIndustrial (no screen: a smoke sink); RenderChimneyIndustrial turns the model a fixed 180 degrees whatever the facing, which a model that turns with the block cannot say (the shaft is square, so only its marks could show it); the smoke column of the client is not drawn",
+      "machine": {
+        "slots": [],
+        "inventory": [
+          8,
+          84
+        ],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            -1
+          ],
+          "max": [
+            1,
+            22,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/chimney_industrial.obj",
+        "obj_from": "models/machines/chimney_industrial.obj",
+        "texture": "ntm:textures/models/machines/chimney_industrial.png",
+        "texture_from": "textures/models/machines/chimney_industrial.png",
+        "rotation": 0,
+        "radius": 24.0
+      }
     },
     "ntm:machine_autosaw": {
       "auto": false,

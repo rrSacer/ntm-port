@@ -124,6 +124,10 @@ pub enum Kind {
     Storage,
     /// The drain (`crate::drain`).
     Drain,
+    /// The microwave (`crate::microwave`).
+    Microwave,
+    /// The chimneys, both bodies (`crate::chimney`).
+    Chimney,
     /// The power switch and the redstone power switch (`crate::cable_switch`).
     CableSwitch,
     /// The wire endpoints: connectors and pylons (`crate::wire`).
@@ -269,6 +273,8 @@ pub enum Data {
     Compressor(Box<crate::compressor::Compressor>),
     Storage(Box<crate::storage::Storage>),
     Drain(crate::drain::Drain),
+    Microwave(Box<crate::microwave::Microwave>),
+    Chimney(crate::chimney::Chimney),
     CableSwitch(crate::cable_switch::CableSwitch),
     Wire(crate::wire::Wire),
     Inert { name: String },
@@ -398,6 +404,8 @@ impl Machine {
                 crate::compressor::Shape::of(block_id).unwrap_or_default(),
             ))),
             Kind::Drain => Data::Drain(Default::default()),
+            Kind::Microwave => Data::Microwave(Box::default()),
+            Kind::Chimney => Data::Chimney(crate::chimney::Chimney::new(crate::chimney::Body::of(block_id).unwrap_or_default())),
             Kind::Storage => Data::Storage(Box::new(crate::storage::Storage::new(
                 crate::storage::Body::of(block_id).unwrap_or_default(),
             ))),
@@ -493,6 +501,8 @@ impl Machine {
             Data::Compressor(_) => Kind::Compressor,
             Data::Storage(_) => Kind::Storage,
             Data::Drain(_) => Kind::Drain,
+            Data::Microwave(_) => Kind::Microwave,
+            Data::Chimney(_) => Kind::Chimney,
             Data::CableSwitch(_) => Kind::CableSwitch,
             Data::Wire(_) => Kind::Wire,
             Data::Inert { .. } => Kind::Inert,
@@ -558,6 +568,8 @@ impl Machine {
             Data::Compressor(m) => &**m,
             Data::Storage(m) => &**m,
             Data::Drain(m) => m,
+            Data::Microwave(m) => &**m,
+            Data::Chimney(m) => m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
             Data::Inert { name } => name,
@@ -623,6 +635,8 @@ impl Machine {
             Data::Compressor(m) => &mut **m,
             Data::Storage(m) => &mut **m,
             Data::Drain(m) => m,
+            Data::Microwave(m) => &mut **m,
+            Data::Chimney(m) => m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
             Data::Inert { name } => name,
