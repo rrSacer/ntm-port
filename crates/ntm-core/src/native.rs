@@ -40,6 +40,16 @@ pub fn machine_block(block: &str) -> bool {
     registry::spec(block).is_some_and(|s| s.kind != crate::machine::Kind::Inert)
 }
 
+/// A machine's block entity items sized to its slots (`block_slots`): the engine reads a saved entity's items back
+/// only up to the last one kept (`decode_mod_block_entity`: "the game sizes them to the block's container when it uses
+/// them"), so the glue sizes them before any reader or commit uses them (RBMK T08 review P3-1).
+pub fn size_slots<T: Clone>(block: &str, items: &mut Vec<Option<T>>) {
+    let n = block_slots(block).len();
+    if items.len() < n {
+        items.resize(n, None);
+    }
+}
+
 /// Block `block`'s container: the electric furnace's is a vanilla
 /// furnace's (input from above, battery from the sides, result from below);
 /// the others' come from their machine files.

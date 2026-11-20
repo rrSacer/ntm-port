@@ -448,3 +448,29 @@ fn the_fluids_hook_reads_every_tank_at_once() {
         format!("0,{Y},0=perfluoromethyl_cold:700;3,{Y},0=PERFLUOROMETHYL_COLD:0+PERFLUOROMETHYL:50;9,{Y},9=none")
     );
 }
+
+/// T08 review P3-1: a fuel channel whose block entity comes back from the save with no slot (saved empty: the engine
+/// keeps its items up to the last one, none) still takes a rod by hand; every reader of the machine's slots gets as
+/// many as the machine has (`ServerHost::machine_slots`), not only the bridge.
+#[test]
+fn a_channel_read_back_with_no_slot_still_takes_a_rod_by_hand() {
+    let mut g = game();
+    let at = [0, Y, 0];
+    g.place(at, &column("rbmk_rod"));
+    g.run(2);
+    let key = (OW.to_string(), at);
+    let mut world = g.world.borrow().clone();
+    world.engine.get_mut(&key).unwrap().0.clear();
+    let mut back = Game::new(Rc::new(RefCell::new(world)));
+    back.run(2);
+    assert_eq!(back.sh.machine_slots(OW, at), Some(vec![None]), "padded to the channel's one slot");
+    let stack = Stack::new("ntm:rbmk_fuel_ueu", 1);
+    back.world.borrow_mut().hands = Some(PlayerSlots {
+        hand: Some(PlayerSlot::Inventory(0)),
+        inventory: vec![Some(HeldStack { encoded: format!("{stack:?}"), stack }), None],
+        creative: false,
+        ..Default::default()
+    });
+    assert!(back.server.native_rbmk_use(&mut back.sh, OW, [at[0], at[1] + 2, at[2]], at, "p1"), "the rod goes in");
+    assert_eq!(back.world.borrow().engine[&key].0[0].as_ref().map(|s| s.id.as_str()), Some("ntm:rbmk_fuel_ueu"));
+}

@@ -1259,6 +1259,15 @@ impl Host<'_, '_> {
     /// world directly, without switching levels (nothing is opened either:
     /// a level that is not open has no machines to reach).
     fn entity<R>(&mut self, dim: &str, pos: [i32; 3], f: impl FnOnce(&mut ModBlockEntity) -> R) -> Option<R> {
+        // The engine reads a saved block entity's items back up to the last one kept ("the game sizes them to the
+        // block's container when it uses them", `decode_mod_block_entity`): sized to the machine's slots here, before
+        // any reader (`machine_slots`) or commit compares them, or a channel saved empty refused every rod after a
+        // reopen and a barrel read slot 4 out of four (RBMK T08 review P3-1).
+        let f = |m: &mut ModBlockEntity| {
+            let id = m.id.clone();
+            ntm_core::native::size_slots(&id, &mut m.items);
+            f(m)
+        };
         let target = dim_of(dim)?;
         if target == self.game.dim {
             return self.game.native_with_mod_block_entity(pos, f);

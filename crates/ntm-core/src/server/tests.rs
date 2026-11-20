@@ -123,6 +123,14 @@ impl World {
             }
         }
     }
+    /// A block entity's items sized to its machine's slots, as the glue's `entity` does before any use (the engine
+    /// keeps a saved entity's items only up to the last one).
+    fn sized(&mut self, dim: &str, p: Pos) {
+        let block = self.get(dim, p);
+        if let Some(e) = self.engine.get_mut(&(dim.to_string(), p)) {
+            crate::native::size_slots(blockstate::id_of(&block), &mut e.0);
+        }
+    }
     fn loaded(&self, dim: &str, p: Pos) -> bool {
         !self.unloaded.contains(&(dim.to_string(), p[0] >> 4, p[2] >> 4))
     }
@@ -264,6 +272,7 @@ impl ServerHost for SHost {
     }
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
         let mut w=self.world.borrow_mut();
+        for c in cs {w.sized(&c.dim,c.pos);}
         if w.refuse_commits{return false;}
         if cs.iter().flat_map(|c|&c.cells).any(|c|!w.loaded(&c.guard.dim,c.guard.pos)||w.get(&c.guard.dim,c.guard.pos)!=c.expected.state){return false;}
         if cs.iter().any(|c|!w.loaded(&c.dim,c.pos)||w.engine.get(&(c.dim.clone(),c.pos)).map(|e|e.0.clone()).unwrap_or_default()!=c.expected){return false;}
@@ -295,7 +304,10 @@ impl ServerHost for SHost {
     fn log(&mut self, text: &str) {
         eprintln!("[server] {text}");
     }
+    /// As the glue reads a block entity: its items sized to the machine's slots first (an engine keeps a saved entity's
+    /// items only up to the last one).
     fn machine_slots(&mut self, dim: &str, p: Pos) -> Option<container_bridge::Slots> {
+        self.world.borrow_mut().sized(dim, p);
         self.world.borrow().engine.get(&(dim.to_string(), p)).map(|e| e.0.clone())
     }
     fn machine_buttons(&mut self) -> Vec<(String, String, Pos, u32)> {
