@@ -35,7 +35,7 @@ def wait(game, line, predicate, timeout, what):
             last = game.ctl(line)
             if predicate(last):
                 return last
-        except (OSError, RuntimeError, KeyError, TypeError):
+        except (OSError, RuntimeError, KeyError, TypeError, AttributeError):
             pass
         time.sleep(.5)
     raise TimeoutError(f'{what}: {last}')
