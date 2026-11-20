@@ -81,7 +81,11 @@ def prepare(g):
     g.command(f'fill 22 {Y - 1} 0 44 {Y - 1} 24 minecraft:stone')
     g.command('clear @s')
     g.command('gamemode creative @s')
-    g.command(f'setblock {CHANNEL[0]} {CHANNEL[1]} {CHANNEL[2]} ntm:rbmk_rod[facing=north,honey_level=0]')
+    # By hand: the column with its dummies up to its top, the cell the crane looks at (`setblock` places the core alone).
+    g.command('give @s ntm:rbmk_rod 1')
+    g.command(f'tp @s {CHANNEL[0] + .5} {Y} {CHANNEL[2] - 2.5} 0 0')
+    time.sleep(.6)
+    g.ctl(f'place {CHANNEL[0]} {CHANNEL[1]} {CHANNEL[2]} --item ntm:rbmk_rod')
     time.sleep(1.5)
     g.command(f'item replace block {CHANNEL[0]} {CHANNEL[1]} {CHANNEL[2]} container.0 with {ROD}')
     g.command('give @s ntm:rbmk_crane_console 1')
@@ -105,9 +109,14 @@ def prepare(g):
         g.ctl('key shift up')
         time.sleep(.5)
     g.command('clear @s')
+    g.evidence['linked'] = (machine(g, core) or {}).get('data')
     # The crane takes the rod (over the channel at its centre: no travel).
     stand(g, core, facing)
+    g.evidence['standing'] = g.ctl('status').get('player', {}).get('position')
     enter(g)
+    # The console's model values ([4] the loading lamp, [5] the target lamp) while it goes down.
+    g.evidence['lamps'] = [re.search(r'data: \[I; ([^\]]*)\]', ' '.join(g.command(f'data get block {core[0]} {core[1]} {core[2]} data').get('chat', []))) for _ in range(6)]
+    g.evidence['lamps'] = [m[1] if m else None for m in g.evidence['lamps']]
     time.sleep(4)
     g.command('tp @s 24.5 101 1.5 0 0')
     time.sleep(2)

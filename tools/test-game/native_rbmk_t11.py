@@ -126,9 +126,16 @@ class Proof:
         for name in (HOST, GUEST):
             h.command(f'gamemode creative {name}')
             h.command(f'effect give {name} minecraft:resistance 1200 4 true')
-        for p, id_ in ((CHANNEL, 'rbmk_rod'), (STORE, 'rbmk_storage'), (BLANK, 'rbmk_blank')):
-            h.command(f'setblock {p[0]} {p[1]} {p[2]} {column(id_)}')
-        time.sleep(2)
+        # By hand: each column with its dummies up to its top, the cell the crane looks at (`setblock` places the core
+        # alone, and the crane would see air there, as in the Java).
+        for p, id_ in ((BLANK, 'rbmk_blank'), (STORE, 'rbmk_storage'), (CHANNEL, 'rbmk_rod')):
+            h.command(f'give {HOST} ntm:{id_} 1')
+            h.command(f'tp {HOST} {p[0] + .5} {Y} {p[2] - 2.5} 0 0')
+            time.sleep(.6)
+            h.ctl(f'place {p[0]} {p[1]} {p[2]} --item ntm:{id_}')
+            time.sleep(.8)
+        h.command(f'clear {HOST}')
+        time.sleep(1)
         h.command(f'item replace block {CHANNEL[0]} {CHANNEL[1]} {CHANNEL[2]} container.0 with {ROD}')
         # The console, placed by hand from the south, facing it.
         h.command(f'give {HOST} ntm:rbmk_crane_console 1')
