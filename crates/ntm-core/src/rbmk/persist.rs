@@ -5,11 +5,9 @@
 //! columns' commit and set back with it when that is refused. Doubles go by their bits: a save and a reopening give
 //! the very same numbers, NaN included.
 //!
-//! **Provisional (T01, approved D-b):** only the columns the minimal step needs are wired (fuel channels, ReaSim
-//! channels, blank, moderator, reflector, absorber), at the default height and dials, without lids, ports, menus,
-//! radiation, meltdowns or occlusion other than "any block is opaque". T02 (height, lids, ports), T03 (the rod
-//! stack's codec, tooltips, hazards), T04 (scheduler, occlusion, radiation, dials) and T05 (slots by context) replace
-//! what is marked here.
+//! T02 (height, lids, ports), T03 (the rod stack's codec) and T04 (every column in the step, Java's opacity, the
+//! dials by dimension, the satellite events) replaced T01's provisional wiring; still not kept here: a control rod's
+//! level and target and power (T07), the fluid tanks (T08), the outgasser's progress (T09).
 
 use crate::{
     machine::Logic,
@@ -37,20 +35,202 @@ mod bits {
 /// The schema of [`RbmkColumn`] and [`Layer`]: a save of another schema is not read as this one.
 pub const SCHEMA: u32 = 2;
 
-/// The column kind of an RBMK block and whether it is moderated (`RBMKRod(true)`). None: not a column the
-/// provisional step runs (it stays inert).
+/// The column kind of an RBMK block and whether it is moderated (`RBMKRod(true)`, `RBMKControl(true)`:
+/// `ModBlocks:2113-2130`). None: not a column.
+///
+/// T04: all eighteen step, each as its tile entity is a node of the streams and a neighbour of `moveHeat`
+/// (`RBMKNeutronHandler.getNodes`, `TileEntityRBMKBase.moveHeat`). What the save does not hold yet steps as Java's
+/// fresh tile entity: a control rod at level and target 0 (it stops a stream: T07 moves it), dry boiler, heater and
+/// cooler tanks (T08 fills them), an outgasser that never processes (T09 feeds it, its slots are not read here).
 pub fn kind_of(block: &str) -> Option<(Kind, bool)> {
     Some(match block {
         "ntm:rbmk_rod" => (Kind::Rod, false),
         "ntm:rbmk_rod_mod" => (Kind::Rod, true),
         "ntm:rbmk_rod_reasim" => (Kind::RodReaSim, false),
         "ntm:rbmk_rod_reasim_mod" => (Kind::RodReaSim, true),
+        "ntm:rbmk_control" => (Kind::Control, false),
+        "ntm:rbmk_control_mod" => (Kind::Control, true),
+        "ntm:rbmk_control_auto" => (Kind::ControlAuto, false),
+        "ntm:rbmk_control_reasim" => (Kind::ControlReaSim, false),
+        "ntm:rbmk_control_reasim_auto" => (Kind::ControlReaSimAuto, false),
         "ntm:rbmk_blank" => (Kind::Blank, false),
+        "ntm:rbmk_boiler" => (Kind::Boiler, false),
         "ntm:rbmk_moderator" => (Kind::Moderator, false),
         "ntm:rbmk_reflector" => (Kind::Reflector, false),
         "ntm:rbmk_absorber" => (Kind::Absorber, false),
+        "ntm:rbmk_outgasser" => (Kind::Outgasser, false),
+        "ntm:rbmk_storage" => (Kind::Storage, false),
+        "ntm:rbmk_cooler" => (Kind::Cooler, false),
+        "ntm:rbmk_heater" => (Kind::Heater, false),
         _ => return None,
     })
+}
+
+/// `Block.isOpaqueCube` of an RBMK-family block as the pin overrides it, the one thing `RBMKNeutronStream.getHits`
+/// asks of a block (`RBMKNeutronHandler:400-414`). None: not one of them (the engine's facts answer).
+///
+/// - `RBMKBase:58` true for every column; `RBMKRod:33` false for the four fuel channels (`RBMKRodReaSim` extends it);
+/// - `BlockDummyable:358` false: console, crane console and autoloader; `RBMKMiniPanelBase:42` false: the nine panels;
+/// - `RBMKDebris:21` false: the four `pribris` (the others extend it);
+/// - the loader (`BlockGeneric`) and the steam inlet and outlet (`BlockContainer`) keep `Block`'s true.
+///
+/// A column's dummy is, in Java, the column's own block: the server reads its core below it ([`DUMMY_REACH`]).
+pub fn java_opaque(block: &str) -> Option<bool> {
+    Some(match block {
+        "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod" => false,
+        b if is_column(b) => true,
+        "ntm:rbmk_console" | "ntm:rbmk_crane_console" | "ntm:rbmk_autoloader" => false,
+        "ntm:rbmk_display_blank" | "ntm:rbmk_display" | "ntm:rbmk_key_pad" | "ntm:rbmk_gauge" | "ntm:rbmk_numitron" | "ntm:rbmk_graph" | "ntm:rbmk_lever"
+        | "ntm:rbmk_indicator" | "ntm:rbmk_terminal" => false,
+        "ntm:pribris" | "ntm:pribris_burning" | "ntm:pribris_radiating" | "ntm:pribris_digamma" => false,
+        "ntm:rbmk_loader" | "ntm:rbmk_steam_inlet" | "ntm:rbmk_steam_outlet" => true,
+        _ => return None,
+    })
+}
+
+/// How far down a column's dummy looks for its core (a column is at most 16 cells: the core and 15 dummies).
+pub const DUMMY_REACH: i32 = 15;
+
+/// The eighteen RBMK columns (`RBMKBase`): engine columns 2..16 cells high on `ntm:dummy_rbmk` (T02), each with its
+/// block entity. Only those of [`kind_of`] step yet; the others keep their lid and their slots.
+pub const COLUMNS: [&str; 18] = [
+    "ntm:rbmk_rod",
+    "ntm:rbmk_rod_mod",
+    "ntm:rbmk_rod_reasim",
+    "ntm:rbmk_rod_reasim_mod",
+    "ntm:rbmk_control",
+    "ntm:rbmk_control_mod",
+    "ntm:rbmk_control_auto",
+    "ntm:rbmk_control_reasim",
+    "ntm:rbmk_control_reasim_auto",
+    "ntm:rbmk_blank",
+    "ntm:rbmk_boiler",
+    "ntm:rbmk_reflector",
+    "ntm:rbmk_absorber",
+    "ntm:rbmk_moderator",
+    "ntm:rbmk_outgasser",
+    "ntm:rbmk_storage",
+    "ntm:rbmk_cooler",
+    "ntm:rbmk_heater",
+];
+
+/// The block every cell of a column but its core holds.
+pub const DUMMY: &str = "ntm:dummy_rbmk";
+
+pub fn is_column(block: &str) -> bool {
+    COLUMNS.contains(&block)
+}
+
+/// `RBMKBase.hasOwnLid`: the control rods, whose lid is theirs and never comes off (`isLidRemovable` false).
+pub fn has_own_lid(block: &str) -> bool {
+    matches!(
+        block,
+        "ntm:rbmk_control" | "ntm:rbmk_control_auto" | "ntm:rbmk_control_mod" | "ntm:rbmk_control_reasim" | "ntm:rbmk_control_reasim_auto"
+    )
+}
+
+/// The slots of a column's block entity (`TileEntityRBMKSlottedBase`'s size, the machine file's slots).
+pub fn slot_count(block: &str) -> usize {
+    match block {
+        "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod" | "ntm:rbmk_heater" => 1,
+        "ntm:rbmk_outgasser" => 2,
+        "ntm:rbmk_storage" => 12,
+        _ => 0,
+    }
+}
+
+/// The values a column's model and screen read (the machine file's `data`).
+pub fn screen_len(block: &str) -> usize {
+    match block {
+        "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod" | "ntm:rbmk_heater" => 7,
+        "ntm:rbmk_control" | "ntm:rbmk_control_mod" | "ntm:rbmk_control_reasim" | "ntm:rbmk_boiler" => 6,
+        "ntm:rbmk_control_auto" | "ntm:rbmk_control_reasim_auto" => 9,
+        "ntm:rbmk_outgasser" => 5,
+        _ => 1,
+    }
+}
+
+/// A column's lid (`RBMKBase.metaToLid`: the core's metadata in Java).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Lid {
+    /// `DIR_NO_LID`: as every column is placed (`getDirModified`).
+    #[default]
+    None,
+    /// `rbmk_lid`, `DIR_NORMAL_LID`.
+    Standard,
+    /// `rbmk_lid_glass`, `DIR_GLASS_LID`.
+    Glass,
+}
+
+impl Lid {
+    /// The lid item `item` is, if one.
+    pub fn of_item(item: &str) -> Option<Lid> {
+        match item {
+            "ntm:rbmk_lid" => Some(Lid::Standard),
+            "ntm:rbmk_lid_glass" => Some(Lid::Glass),
+            _ => None,
+        }
+    }
+    /// The item this lid drops as.
+    pub fn item(self) -> Option<&'static str> {
+        match self {
+            Lid::None => None,
+            Lid::Standard => Some("ntm:rbmk_lid"),
+            Lid::Glass => Some("ntm:rbmk_lid_glass"),
+        }
+    }
+}
+
+/// The six directions in `ForgeDirection.VALID_DIRECTIONS`' order: down, up, north, south, west, east.
+pub const VALID_DIRECTIONS: [[i32; 3]; 6] = [[0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1], [-1, 0, 0], [1, 0, 0]];
+
+/// A fluid port (`TilePort.PortDef.make`): the cell it sits in, and each cell it connects to with the direction from
+/// the port (`DirPos`).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct PortDef {
+    pub at: [i32; 3],
+    pub connections: Vec<([i32; 3], [i32; 3])>,
+}
+
+impl PortDef {
+    pub fn make(at: [i32; 3], dirs: &[[i32; 3]]) -> Self {
+        PortDef { at, connections: dirs.iter().map(|d| ([at[0] + d[0], at[1] + d[1], at[2] + d[2]], *d)).collect() }
+    }
+}
+
+/// Where an `rbmk_loader` stands under a piped column (the boiler, heater, cooler and outgasser `updateEntity`): two
+/// cells below wins over one (`ClassicLoader` is asked first).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum LoaderShape {
+    None,
+    Close,
+    Classic,
+}
+
+impl LoaderShape {
+    pub fn of(loader_one_below: bool, loader_two_below: bool) -> Self {
+        if loader_two_below {
+            LoaderShape::Classic
+        } else if loader_one_below {
+            LoaderShape::Close
+        } else {
+            LoaderShape::None
+        }
+    }
+}
+
+/// A piped column's fluid ports (`TileEntityRBMKBase.getPortsNoLoader`, `getPortsCloseLoader`,
+/// `getPortsClassicLoader`), its core at `core` and `column_height` its `getColumnHeight` (cells above the core). Java
+/// builds each shape once per block entity, with the dial as it read then, and keeps it (T08 decides what height it
+/// passes; the column's own is the world's).
+pub fn column_ports(core: [i32; 3], column_height: i32, shape: LoaderShape) -> Vec<PortDef> {
+    let [x, y, z] = core;
+    let top = PortDef::make([x, y + column_height, z], &[[0, 1, 0]]);
+    match shape {
+        LoaderShape::None => vec![top, PortDef::make(core, &[[0, -1, 0]])],
+        LoaderShape::Close => vec![top, PortDef::make([x, y - 1, z], &VALID_DIRECTIONS)],
+        LoaderShape::Classic => vec![top, PortDef::make(core, &[[0, -1, 0]]), PortDef::make([x, y - 2, z], &VALID_DIRECTIONS)],
+    }
 }
 
 /// The fuel rod an item is (`ItemRBMKRod`): `ntm:rbmk_fuel_<name>`, the Java variable of `hep` being `hep239`.
@@ -75,6 +255,18 @@ pub fn rod_stack(custom: Option<&str>) -> RodStack {
         v => v.parse::<f64>().ok(),
     });
     RodStack { has_tag: true, yield_: read("yield"), xenon: read("xenon"), core: read("core"), hull: read("hull"), ..RodStack::bare() }
+}
+
+/// The rod's tag of a whole stack (T03): the 1.7.10 stack has its `stackTagCompound` when it holds any data that one
+/// held (`Stack::tagged`), its keys in `minecraft:custom_data`; without one, `ItemRBMKRod.setNBTDefaults` on first use.
+/// A rod with a name, lore, enchantments or a repair cost and no key yet has a tag with none: its yield reads 0
+/// (`getDouble`), a dead rod, as in Java.
+pub fn stack_rod(s: &Stack) -> RodStack {
+    match (&s.custom, s.tagged) {
+        (Some(custom), _) => rod_stack(Some(custom)),
+        (None, true) => RodStack { has_tag: true, ..RodStack::bare() },
+        (None, false) => RodStack::bare(),
+    }
 }
 
 /// `custom` with the rod's tag written over its four keys, every other field kept. None: no tag to write (the stack
@@ -112,11 +304,24 @@ pub struct RbmkColumn {
     pub has_rod: bool,
     /// The engine's slots: the fuel channel's one slot, none for the others.
     pub slots: Slots,
+    /// Its lid (T02); none in a save from before.
+    #[serde(default, skip_serializing_if = "is_no_lid")]
+    pub lid: Lid,
+    /// How many values its screen reads ([`screen_len`]); 0 in a save from before T02 (a fuel channel's 7, else 1).
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub screen: u8,
+}
+
+fn is_no_lid(l: &Lid) -> bool {
+    *l == Lid::None
+}
+
+fn is_zero(n: &u8) -> bool {
+    *n == 0
 }
 
 impl RbmkColumn {
     pub fn of(block: &str) -> Self {
-        let rods = kind_of(block).is_some_and(|(k, _)| matches!(k, Kind::Rod | Kind::RodReaSim));
         RbmkColumn {
             schema: SCHEMA,
             heat: 0.0,
@@ -127,8 +332,15 @@ impl RbmkColumn {
             last_flux_quantity: 0.0,
             last_flux_ratio: 0.0,
             has_rod: false,
-            slots: if rods { vec![None] } else { Vec::new() },
+            slots: vec![None; slot_count(block)],
+            lid: Lid::None,
+            screen: screen_len(block) as u8,
         }
+    }
+
+    /// `TileEntityRBMKBase.hasLid` of a column of `block`: a control rod's own lid always, else the lid put on it.
+    pub fn has_lid(&self, block: &str) -> bool {
+        has_own_lid(block) || self.lid != Lid::None
     }
 }
 
@@ -149,9 +361,22 @@ impl Slotted for RbmkColumn {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
-    /// The models' values (`docs/visual-fiel.md`): still neutral, as before T01 (T19 lights them).
+    /// The models' values (`docs/visual-fiel.md`): the first is the lid the model shows (`lid_cover` at 1,
+    /// `lid_glass` at 2, as `RBMKBase.renderLid` from the core's metadata; a control rod's own is in its model); the
+    /// others still neutral (T19 lights them).
     fn screen_data(&self) -> Vec<i32> {
-        vec![0; if self.slots.is_empty() { 1 } else { 7 }]
+        let n = match self.screen {
+            0 if self.slots.is_empty() => 1,
+            0 => 7,
+            n => usize::from(n),
+        };
+        let mut v = vec![0; n];
+        v[0] = match self.lid {
+            Lid::None => 0,
+            Lid::Standard => 1,
+            Lid::Glass => 2,
+        };
+        v
     }
 }
 
@@ -320,6 +545,54 @@ pub fn ray_offsets(kind: Kind, range: i32) -> Vec<[i32; 2]> {
     crate::rbmk::reactor::Reactor::ray_cells(kind, 0, 0, range).into_iter().map(|(x, z)| [x, z]).collect()
 }
 
+/// `RayEvent.INFO_NUCLEAR`: what a fuel channel that took flux reports.
+pub const INFO_NUCLEAR: &str = "NEUTRON_EMISSION";
+
+/// One `SatelliteRayScan.RayEvent` (T04, decision 4A): what happened where, until when. The Java keeps them in a
+/// static `LinkedHashMap<DimPos, RayEvent>` in memory only; here they are kept with the world (the coordinator's 4A),
+/// ready for the satellites' front (`CMD_SURVEY` reads a dimension's within 250 blocks).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RayEvent {
+    pub pos: [i32; 3],
+    pub info: String,
+    /// `getTotalWorldTime() + lifetime` as reported.
+    pub expires_on: i64,
+}
+
+/// `SatelliteRayScan.reportEvent(world, x, y, z, info, lifetime)` in `dim`: the `LinkedHashMap.put` of its `DimPos`,
+/// which replaces the event of the same place where it stands in the order, or adds it at the end.
+pub fn report_ray(rays: &mut std::collections::BTreeMap<String, Vec<RayEvent>>, dim: &str, pos: [i32; 3], info: &str, now: i64, lifetime: i32) {
+    let event = RayEvent { pos, info: info.to_string(), expires_on: now + i64::from(lifetime) };
+    let list = rays.entry(dim.to_string()).or_default();
+    match list.iter_mut().find(|e| e.pos == pos) {
+        Some(e) => *e = event,
+        None => list.push(event),
+    }
+}
+
+/// `SatelliteRayScan.updateSystem(world)` of `dim` at world time `now` (`ModEventHandler.worldTick:661`, when
+/// `getTotalWorldTime() % 20 == 10`): its events with `now > expiresOn` go. Whether it removes any.
+pub fn expire_rays(rays: &std::collections::BTreeMap<String, Vec<RayEvent>>, dim: &str, now: i64) -> bool {
+    rays.get(dim).is_some_and(|l| l.iter().any(|e| e.expired(now)))
+}
+
+impl RayEvent {
+    /// `world.getTotalWorldTime() > entry.getValue().expiresOn`.
+    pub fn expired(&self, now: i64) -> bool {
+        now > self.expires_on
+    }
+}
+
+/// The removal [`expire_rays`] finds.
+pub fn drop_expired_rays(rays: &mut std::collections::BTreeMap<String, Vec<RayEvent>>, dim: &str, now: i64) {
+    if let Some(l) = rays.get_mut(dim) {
+        l.retain(|e| !e.expired(now));
+        if l.is_empty() {
+            rays.remove(dim);
+        }
+    }
+}
+
 /// The stack a fuel channel's slot shows for a rod tag: `stack` with the tag written in its data.
 pub fn rod_in_slot(stack: &Stack, s: &RodStack) -> Stack {
     Stack { custom: with_rod_stack(stack.custom.as_deref(), s), ..stack.clone() }
@@ -404,6 +677,50 @@ mod tests {
         assert_eq!(settle(&n, std::iter::once(&lone), "d", 1).1[0], CompState::fresh("d", 1, [5, 5]));
     }
 
+    /// `reportEvent` is a `LinkedHashMap.put` by place (a second report replaces the first where it stands); `updateSystem`
+    /// removes an event only once the time is strictly past it, one dimension at a time.
+    #[test]
+    fn ray_events_replace_in_place_and_expire_strictly_after() {
+        let mut rays = std::collections::BTreeMap::new();
+        report_ray(&mut rays, "o", [1, 2, 3], INFO_NUCLEAR, 200, 300);
+        report_ray(&mut rays, "o", [4, 5, 6], INFO_NUCLEAR, 200, 300);
+        report_ray(&mut rays, "n", [1, 2, 3], INFO_NUCLEAR, 0, 300);
+        report_ray(&mut rays, "o", [1, 2, 3], "RADIO_WAVES", 400, 300);
+        let o = &rays["o"];
+        assert_eq!(o.iter().map(|e| (e.pos, e.info.as_str(), e.expires_on)).collect::<Vec<_>>(), vec![([1, 2, 3], "RADIO_WAVES", 700), ([4, 5, 6], INFO_NUCLEAR, 500)]);
+        assert!(!expire_rays(&rays, "o", 500), "not past 500 at 500");
+        drop_expired_rays(&mut rays, "o", 500);
+        assert_eq!(rays["o"].len(), 2, "nothing goes at 500");
+        assert!(expire_rays(&rays, "o", 501));
+        drop_expired_rays(&mut rays, "o", 501);
+        assert_eq!(rays["o"].len(), 1);
+        assert_eq!(rays["n"].len(), 1, "another dimension is not touched");
+        drop_expired_rays(&mut rays, "o", 701);
+        assert!(!rays.contains_key("o"));
+    }
+
+    /// `ItemRBMKRod.getDouble` over the whole stack: no 1.7.10 tag, the defaults on first use; any data that made one
+    /// (a name, lore, enchantments, a repair cost) and no key, a yield of 0 (the renamed rod's bug, kept).
+    #[test]
+    fn a_stack_with_a_tag_but_no_key_reads_a_dead_rod_as_java() {
+        let rod = rod_of("ntm:rbmk_fuel_ueu").unwrap();
+        let plain = Stack::new("ntm:rbmk_fuel_ueu", 1);
+        let mut fresh = stack_rod(&plain);
+        assert!(!fresh.has_tag);
+        assert_eq!((fresh.yield_(rod), fresh.core_heat(rod), fresh.hull_heat(rod), fresh.poison(rod)), (rod.yield_, 20.0, 20.0, 0.0));
+        let renamed = Stack { tagged: true, ..plain.clone() };
+        let mut dead = stack_rod(&renamed);
+        assert!(dead.has_tag);
+        assert_eq!((dead.yield_(rod), dead.core_heat(rod), dead.hull_heat(rod), dead.enrichment(rod)), (0.0, 0.0, 0.0, 0.0));
+        // Its first write adds the keys to that tag, as `setDouble` does (the others still read 0).
+        dead.set_hull_heat(rod, 30.0);
+        let custom = with_rod_stack(None, &dead).unwrap();
+        assert_eq!(rod_stack(Some(&custom)), RodStack { has_tag: true, hull: Some(30.0), ..RodStack::bare() });
+        // A crafted rod (`onCreated`) carries the defaults: renamed then, it keeps them.
+        let crafted = Stack { custom: with_rod_stack(None, &RodStack::fresh(rod)), tagged: true, ..plain };
+        assert_eq!(stack_rod(&crafted).yield_, Some(rod.yield_));
+    }
+
     #[test]
     fn the_rod_tag_round_trips_through_the_stack_data_keeping_foreign_fields() {
         let rod = rod_of("ntm:rbmk_fuel_ueu").unwrap();
@@ -438,5 +755,33 @@ mod tests {
         assert!(with_rod_stack(None, &RodStack { has_tag: true, core: Some(f64::INFINITY), ..RodStack::bare() }).unwrap().contains("core:Infinityd"));
         // A word that is not a double is not one.
         assert_eq!(rod_stack(Some("{yield:\"5.0d\",core:infd}")).yield_, None);
+    }
+}
+
+#[cfg(test)]
+mod port_tests {
+    use super::*;
+
+    /// `getPorts*` of a column at (10, 64, -3), 4 high (`getColumnHeight` 3) and 16 high (15), as the Java builds them.
+    #[test]
+    fn the_piped_columns_ports_are_javas() {
+        let core = [10, 64, -3];
+        assert_eq!(LoaderShape::of(false, false), LoaderShape::None);
+        assert_eq!(LoaderShape::of(true, false), LoaderShape::Close);
+        assert_eq!(LoaderShape::of(true, true), LoaderShape::Classic, "two below is asked first");
+        assert_eq!(LoaderShape::of(false, true), LoaderShape::Classic);
+        let none = column_ports(core, 3, LoaderShape::None);
+        assert_eq!(none, vec![
+            PortDef { at: [10, 67, -3], connections: vec![([10, 68, -3], [0, 1, 0])] },
+            PortDef { at: [10, 64, -3], connections: vec![([10, 63, -3], [0, -1, 0])] },
+        ]);
+        let close = column_ports(core, 15, LoaderShape::Close);
+        assert_eq!(close[0], PortDef { at: [10, 79, -3], connections: vec![([10, 80, -3], [0, 1, 0])] });
+        assert_eq!(close[1].at, [10, 63, -3]);
+        assert_eq!(close[1].connections.iter().map(|c| c.0).collect::<Vec<_>>(), vec![[10, 62, -3], [10, 64, -3], [10, 63, -4], [10, 63, -2], [9, 63, -3], [11, 63, -3]]);
+        let classic = column_ports(core, 1, LoaderShape::Classic);
+        assert_eq!(classic.iter().map(|p| p.at).collect::<Vec<_>>(), vec![[10, 65, -3], [10, 64, -3], [10, 62, -3]]);
+        assert_eq!(classic[2].connections.len(), 6);
+        assert_eq!(classic[2].connections[1], ([10, 63, -3], [0, 1, 0]));
     }
 }

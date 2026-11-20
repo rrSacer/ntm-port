@@ -18,7 +18,11 @@
       0
     ],
     "offset": 0,
-    "dummy": "ntm:dummy_machine"
+    "dummy": "ntm:dummy_rbmk",
+    "column": {
+      "min": 2,
+      "max": 16
+    }
   },
   "synced": [
     1,

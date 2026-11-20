@@ -210,14 +210,28 @@ class ExecutableRbmkOracle(unittest.TestCase):
         remaining = iter(e['id'] for e in entries)
         for old in before:
             self.assertIn(old['id'], remaining, old['id'])
+        # The eighteen RBMK columns gained their RBMKBase strength in T02 (block_properties hardness and
+        # explosion_resistance, checked in test_rbmk_strength): those two keys are the only thing allowed to differ.
         rbmk = {r['id'] if ':' in r['id'] else 'ntm:' + r['id'] for r in rbmk_catalog.build(SOURCE)}
+        columns = {'ntm:' + v for v in rbmk_catalog.COLUMNS}
+        strength = ('hardness', 'explosion_resistance')
+        def same(entry):
+            if entry['id'] in columns and 'block_properties' in entry:
+                props = {k: v for k, v in entry['block_properties'].items() if k not in strength}
+                entry = {k: v for k, v in entry.items() if k != 'block_properties'}
+                return {**entry, 'block_properties': props} if props else entry
+            return entry
         now = {e['id']: e for e in entries}
         kept = [old for old in before if old['id'] in rbmk]
         self.assertEqual(len(kept), 105)
         for old in kept:
-            self.assertEqual(old, now[old['id']], old['id'])
-        before_bytes = subprocess.check_output(['git', 'show', '81a210d4:tools/content-gen/rbmk_catalog.py'], cwd=ROOT)
-        self.assertEqual(before_bytes, (ROOT / 'tools/content-gen/rbmk_catalog.py').read_bytes())
+            self.assertEqual(same(old), same(now[old['id']]), old['id'])
+        # rbmk_catalog.py only grew (T02 column strength, T03 tooltip keys): every T00 line is still there, in order.
+        before_lines = subprocess.check_output(['git', 'show', '81a210d4:tools/content-gen/rbmk_catalog.py'], cwd=ROOT,
+                                               text=True).splitlines()
+        now_lines = iter((ROOT / 'tools/content-gen/rbmk_catalog.py').read_text().splitlines())
+        for line in before_lines:
+            self.assertIn(line, now_lines, line)
         for rod in self.exported['rods']:
             entry = next(r for r in entries if r['id'] == rod['item'])
             self.assertEqual(entry['max_stack_size'], rod['max_stack_size'])

@@ -485,6 +485,11 @@
      "overflow": "lost"
     },
     {
+     "item": "ntm:screwdriver",
+     "count": 1,
+     "overflow": "lost"
+    },
+    {
      "item": "ntm:machine_excavator",
      "count": 1,
      "overflow": "lost"
@@ -517,7 +522,6 @@
    ],
    "unported": [
     "ModItems.battery_potato x1",
-    "ModItems.screwdriver x1",
     "ModBlocks.red_wire_coated x16",
     "ModBlocks.machine_converter_he_rf x1",
     "ModBlocks.machine_converter_rf_he x1"

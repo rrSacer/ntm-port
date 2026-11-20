@@ -24592,7 +24592,12 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16,
+            "ports": "top"
+          }
         },
         "synced": [
           0,
@@ -25384,7 +25389,12 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16,
+            "ports": "top"
+          }
         },
         "synced": [
           0,
@@ -26176,7 +26186,12 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16,
+            "ports": "top"
+          }
         },
         "synced": [
           0,
@@ -26968,7 +26983,12 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16,
+            "ports": "top"
+          }
         },
         "synced": [
           0,
@@ -27755,7 +27775,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           1,
@@ -28415,7 +28439,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           1,
@@ -29075,7 +29103,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           1
@@ -29625,7 +29657,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           1,
@@ -30285,7 +30321,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           1
@@ -30835,7 +30875,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           0
@@ -31010,7 +31054,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           0
@@ -31423,7 +31471,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           0
@@ -31598,7 +31650,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           0
@@ -31773,7 +31829,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           0
@@ -31958,7 +32018,12 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16,
+            "ports": "top"
+          }
         },
         "synced": [
           0
@@ -32244,7 +32309,12 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16,
+            "ports": "all"
+          }
         },
         "synced": [
           0
@@ -32436,7 +32506,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           0
@@ -32616,7 +32690,11 @@
             0
           ],
           "offset": 0,
-          "dummy": "ntm:dummy_machine"
+          "dummy": "ntm:dummy_rbmk",
+          "column": {
+            "min": 2,
+            "max": 16
+          }
         },
         "synced": [
           0
@@ -42562,6 +42640,10 @@
     "ntm:dummy_zirnox_destroyed": {
       "hardness": 100.0,
       "explosion_resistance": 480.0
+    },
+    "ntm:dummy_rbmk": {
+      "hardness": 3.0,
+      "explosion_resistance": 18.0
     }
   }
 }

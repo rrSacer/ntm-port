@@ -9,12 +9,15 @@
 //! `docs/rbmk-core.md` for the list of gaps and of what is left to wire.
 
 pub mod dials;
+pub mod dump;
 pub mod fluids;
+pub mod hazards;
 pub mod jmath;
 pub mod jrandom;
 pub mod outgasser;
 pub mod persist;
 pub mod reactor;
 pub mod rods;
+pub mod tooltip;
 mod rods_data;
 mod tables_data;

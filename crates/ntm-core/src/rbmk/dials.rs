@@ -161,10 +161,15 @@ pub fn key(name: &str) -> &'static Key {
 }
 
 /// The world's string game rules (`GameRules`): a missing rule reads as `""`.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, PartialEq, serde::Serialize, serde::Deserialize)]
+#[serde(transparent)]
 pub struct GameRules(BTreeMap<String, String>);
 
 impl GameRules {
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
     pub fn set(&mut self, rule: &str, value: &str) {
         self.0.insert(rule.to_string(), value.to_string());
     }
@@ -352,45 +357,102 @@ impl Dials {
     }
 }
 
-/// The world's dial state: raw rules plus the cache `createDials`/`refresh`
-/// maintain (`None` before the first one).
+/// The caches of `RBMKDials.gameRules`, one per `World`, by dimension (T04, decision 3A). The rules themselves are
+/// the save's: in 1.7.10 a dimension's `World.getGameRules()` is the overworld's (`DerivedWorldInfo`), so every
+/// dimension reads and writes the same rules, while each `World` keeps its own cache, built by `refresh(world)`.
+/// The caches live in memory only, as Java's static map: the server's start makes the overworld's (`createDials`),
+/// any other dimension's is made by its first read.
 #[derive(Clone, Debug, Default)]
 pub struct DialState {
-    pub rules: GameRules,
-    cache: Option<Dials>,
+    caches: BTreeMap<String, Dials>,
     pub config_528_reasim: bool,
 }
 
 impl DialState {
-    pub fn refresh(&mut self) {
-        self.cache = Some(Dials::refresh(&self.rules, self.config_528_reasim));
+    /// `refresh(world)`: that world's cache from the rules as they are now; the other worlds keep theirs.
+    pub fn refresh(&mut self, rules: &GameRules, dim: &str) {
+        self.caches.insert(dim.to_string(), Dials::refresh(rules, self.config_528_reasim));
     }
 
-    /// `createDials(world, force)`: the cache is rebuilt from the rules
-    /// *before* the defaults are written, so after a reset the old values
-    /// stay until the next `refresh` (kept: D2).
-    pub fn create(&mut self, force: bool) {
-        self.cache = None;
-        self.refresh();
-        if !self.rules.boolean(KEYS[0].rule) || force {
+    /// `createDials(world, force)`: every world's cache is emptied (`gameRules.put(key, new ArrayList<>())`), this
+    /// world's is rebuilt from the rules *before* the defaults are written, so after a reset it keeps the old values
+    /// until the next `refresh` (kept: D2).
+    pub fn create(&mut self, rules: &mut GameRules, dim: &str, force: bool) {
+        self.caches.clear();
+        self.refresh(rules, dim);
+        if !rules.boolean(KEYS[0].rule) || force {
             for key in &KEYS {
-                self.rules.set(key.rule, &key.default.java_string());
+                rules.set(key.rule, &key.default.java_string());
             }
         }
     }
 
-    /// `getGameRule`: a missing cache writes the default of the asked dial and
-    /// refreshes (the Java `isIteration` retry).
-    pub fn get(&mut self, name: &str) -> &Dials {
-        if self.cache.is_none() {
+    /// `getGameRule(world, rule)` of the dial `name`: a world without a cache writes the default of the dial asked
+    /// into the shared rules (the world of every dimension: the overworld's cache keeps its value until it refreshes)
+    /// and refreshes that world (the `isIteration` retry, `RBMKDials:141-147`).
+    pub fn read(&mut self, rules: &mut GameRules, dim: &str, name: &str) -> Dials {
+        if !self.caches.contains_key(dim) {
             let key = key(name);
-            self.rules.set(key.rule, &key.default.java_string());
-            self.refresh();
+            rules.set(key.rule, &key.default.java_string());
+            self.refresh(rules, dim);
         }
-        self.cache.as_ref().unwrap()
+        self.caches[dim]
     }
 
-    pub fn cached(&self) -> Option<&Dials> {
-        self.cache.as_ref()
+    /// What [`DialState::read`] of `name` would give in `dim`, without reading (nothing is written).
+    pub fn peek(&self, rules: &GameRules, dim: &str, name: &str) -> Dials {
+        match self.caches.get(dim) {
+            Some(d) => *d,
+            None => {
+                let mut r = rules.clone();
+                r.set(key(name).rule, &key(name).default.java_string());
+                Dials::refresh(&r, self.config_528_reasim)
+            }
+        }
+    }
+
+    pub fn cached(&self, dim: &str) -> Option<&Dials> {
+        self.caches.get(dim)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// 3A: one set of rules for the save, one cache per world. The Nether's first read writes the default of the dial
+    /// it asks for into the shared rules and builds the Nether's cache from them; the overworld keeps its cache until
+    /// it refreshes; `/gamerule` refreshes only the world of who typed it; `createDials` empties every cache.
+    #[test]
+    fn each_world_keeps_its_own_cache_over_the_shared_rules() {
+        let (ow, nether) = ("minecraft:overworld", "minecraft:the_nether");
+        let mut rules = GameRules::default();
+        let mut d = DialState::default();
+        d.create(&mut rules, ow, false);
+        rules.set("dialFluxRange", "9");
+        rules.set("dialColumnHeatFlow", "0.7");
+        d.refresh(&rules, ow);
+        assert_eq!((d.cached(ow).unwrap().flux_range, d.cached(ow).unwrap().column_heat_flow), (9, 0.7));
+        // The Nether's first read is a fuel channel's burn (`getXenon`): only dialDisableXenon goes back to its default.
+        rules.set("dialDisableXenon", "true");
+        assert!(d.cached(nether).is_none());
+        let peek = d.peek(&rules, nether, "KEY_DISABLE_XENON");
+        let n = d.read(&mut rules, nether, "KEY_DISABLE_XENON");
+        assert_eq!(peek, n, "peek is the read, without writing");
+        assert_eq!((n.flux_range, n.column_heat_flow, n.xenon_disabled), (9, 0.7, false));
+        assert_eq!(rules.string("dialDisableXenon"), "false", "written in the save's rules");
+        // A second read in the Nether is the cache: no rule is written again.
+        rules.set("dialDisableXenon", "true");
+        assert!(!d.read(&mut rules, nether, "KEY_REASIM_BOILERS").xenon_disabled);
+        assert_eq!(rules.string("dialDisableXenon"), "true");
+        // `/gamerule` typed in the Nether refreshes the Nether only.
+        rules.set("dialFluxRange", "3");
+        d.refresh(&rules, nether);
+        assert_eq!((d.cached(nether).unwrap().flux_range, d.cached(ow).unwrap().flux_range), (3, 9));
+        assert!(d.cached(nether).unwrap().xenon_disabled && !d.cached(ow).unwrap().xenon_disabled);
+        // `createDials` (the server's start) empties every world's cache and rebuilds the overworld's.
+        d.create(&mut rules, ow, false);
+        assert!(d.cached(nether).is_none());
+        assert_eq!(d.cached(ow).unwrap().flux_range, 3);
     }
 }

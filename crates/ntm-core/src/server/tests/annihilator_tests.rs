@@ -32,6 +32,7 @@ fn id_stack(fluid: &str) -> Stack {
         count: 1,
         damage: 0,
         custom: Some(format!(r#"{{ntm_fluid:"{fluid}"}}"#)),
+        tagged: false,
     }
 }
 

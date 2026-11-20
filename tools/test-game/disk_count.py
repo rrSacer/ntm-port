@@ -163,6 +163,14 @@ def _stack(s, prefixes):
     return int(s.get('count', s.get('Count', 1)) or 0)
 
 
+LIDS = {'Standard': 'ntm:rbmk_lid', 'Glass': 'ntm:rbmk_lid_glass'}
+
+
+def _lid(v):
+    """The lid item an RBMK column's model holds (`RbmkColumn::lid`, T02), if one."""
+    return LIDS.get(v.get('lid')) if 'has_rod' in v else None
+
+
 def _model(text, prefixes):
     """The items an NTM machine's model holds: slot stacks, and a pile's fuel rods (one item each)."""
     try:
@@ -185,6 +193,9 @@ def _model(text, prefixes):
                         walk(x)
                 return
             total += _stack(v, prefixes) + _installed_blade(v, prefixes)
+            lid = _lid(v)
+            if lid and lid.startswith(prefixes):
+                total += 1
             for x in v.values():
                 walk(x)
         elif isinstance(v, list):
@@ -407,6 +418,8 @@ def _machine_items(m, prefixes, out, installed=True):
             _stack_items(v, prefixes, out)
             if installed and _installed_blade(v, prefixes):
                 _add(out, BLADE, 1, prefixes)
+            if _lid(v):
+                _add(out, _lid(v), 1, prefixes)
             for x in v.values():
                 walk(x)
         elif isinstance(v, list):

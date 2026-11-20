@@ -908,6 +908,446 @@ contexto; (2) o tipo de detrito do T20 precisa estar registrado como invocável;
 (4) o bug Java da barra renomeada (`{display}` → `yield` 0) é do T03; (5) `item replace block` sem marcar o chunk, no
 motor, candidato a upstream.
 
+## RBMK T02 — altura, dummies, tampas e portas (09/11/2026)
+
+Branch `rbmk-t02` (a partir de `rbmk-t01` @ `0e8eda47`) e, no motor, `rbmk-t02-engine` (a partir de `ntm-current` @
+`a31497f38`). O binário das provas sai de `tools/build-native.sh` com `NEXT_REV=<commit de rbmk-t02-engine>` e
+`HORIZON_NEXT` apontando para essa worktree: o pin de `native/ntm/compatibility.json` continua o da `ntm-current` até o
+motor ser integrado (o coordenador funde a branch do motor e move o pin).
+
+### O que mudou
+
+| Parte | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Coluna no motor | Multibloco `column` (1×H, núcleo embaixo), H = 2..16. A altura de uma coluna em pé é lida do mundo: o núcleo e a sequência de `ntm:dummy_rbmk` logo acima (máx. 16). Núcleo a partir de qualquer célula, quebra inteira e contorno usam essa altura; a colocação usa a altura que o mod deu (`set_column_height`) e checa obstrução nela antes de colocar | `BlockDummyable.findCore`, `fillSpace`, `checkRequirement`, `RBMKBase.getDimensions(world)` |
+| Dummy próprio | `ntm:dummy_rbmk` (mesma dureza do núcleo); nenhum dummy de outra máquina entra numa sequência de coluna | No Java o dummy é o próprio bloco da coluna |
+| 18 colunas adotadas | As dez que eram `Inert` (5 controles, caldeira, outgasser, storage, cooler, aquecedor) viraram `Kind::Rbmk` com `Layout::Native`: tampa, slots do tamanho Java (outgasser 2, storage 12, aquecedor 1) e tamanho da tela por bloco. Só as oito do T01 entram no passo; os slots que o motor já guardava são a verdade da primeira sincronização | `TileEntityRBMKSlottedBase` |
+| Dials | As 25 regras do Java guardadas no estado do mundo (`rbmk_rules`, uma vez por save), criadas no início do servidor como `createDials` (padrões salvo `dialSaveDials`; o cache fica com os valores antigos até um refresh, D2). `/ntmrbmk dial [regra [valor]]` (op 2) faz o que `/gamerule` + `RBMKDials.refresh` fazem; só as 25 regras existentes. O passo do reator passa a ler o cache (antes: padrões) | `RBMKDials.createDials`, `refresh`, `GameRuleHelper.parseInt`, `ModEventHandler.commandEvent` |
+| Altura (D5) | O cache (`clamp(parseInt or 4, 2, 16)`) vai para o motor; só colunas colocadas depois mudam. `/ntmrbmk migrate x y z [x2 y2 z2]` (caixa ≤ 32768) refaz as colunas em pé para o dial: cresce em ar, encolhe tirando dummies do topo; recusa célula ocupada ou não carregada e diz qual. Cada coluna é um único `set_blocks` no seu chunk (uma coluna nunca cruza chunk) | Desvio D5 (o Java relê o dial e deixa partes órfãs) |
+| Órfãos e quebra sem jogador | Um dummy que some por comando ou explosão leva a coluna inteira: as células abaixo dele até o núcleo vão a ar e o núcleo quebra como bloco, o conteúdo do BE devido no registro do chunk na mesma publicação (`commit_structural` + `RetainedDrop`) e a tampa pelo caminho de remoção; os de cima vão como órfãos. Núcleo removido: os dummies vão como órfãos. Célula do caminho não carregada: fica | `BlockDummyable.breakBlock:301-326`, `RBMKBase.breakBlock:183-195`, `destroyIfOrphan` (com `checkChunksExist`) |
+| Tampas | Com ou sem shift, `rbmk_lid`/`rbmk_lid_glass` na mão sobre uma coluna sem tampa (qualquer célula): entra, uma sai da mão (não no criativo) na mesma transferência jogador↔BE, som de colocação de pedra/“step.stone” do vidro a 1,0/0,8. Coluna com tampa ou controle (tampa própria): o menu abre. Chave de fenda com shift (sem shift o menu abre antes, como no Java): a tampa sai como item no topo, devida no registro do chunk da coluna junto com a mudança (`RetainedDrop` com nome próprio por remoção) e a ferramenta gasta na mesma publicação; sem tampa: nada, sem desgaste. Coluna quebrada: a tampa cai pelo caminho de remoção de sempre. Os dois drops saem no topo **como o dial diz agora** (`getColumnHeight`), não como a coluna está. O modelo mostra a tampa (valor 0 da tela: 1 tampa, 2 vidro) | `ItemRBMKLid.onItemUse`, `RBMKBase.openInv`, `onScrew`, `breakBlock` |
+| Chave de fenda | `screwdriver` (100 de durabilidade) e `screwdriver_desh` (sem desgaste) saíram do backlog de equipamentos: receitas `ToolRecipes` 139/140, nomes, aba de controle. O export da bigorna ganhou a receita que precisava dela (`AnvilRecipes`:523) | `ItemTooling(SCREWDRIVER, …)` |
+| Proxies e automação | Porta de inventário no topo dos canais e do outgasser, em todos os dummies do storage. Automação: storage aceita só barras e entrega tudo; outgasser entrega só o slot 1; canais e aquecedor não mostram slot. A mão não é restrita aqui (T05) | `createNewTileEntity` + `TileEntityProxyCombo`, `getAccessibleSlotsFromSide`, `canInsertItem`, `canExtractItem` |
+| Portas de fluido | `persist::column_ports` + `LoaderShape` reproduzem `getPortsNoLoader/CloseLoader/ClassicLoader` (loader a 2 abaixo vence a 1) e `PortDef.make`, com teste. Fluxo pelas portas: T08 | `TileEntityRBMKBase.getPorts*`, `TilePort.PortDef` |
+
+### Pontos de contato com o motor (para reaplicar sobre o upstream novo)
+
+Commit `rbmk-t02-engine`: `feat(multiblocks): columns as tall as each was placed`.
+
+| Arquivo | Função / trecho | O quê |
+| --- | --- | --- |
+| `crates/horizon-world/src/mod_multiblocks.rs` | `Multiblock.column`, `Column`, `ColumnPorts`, `parse` (chave `column`), `Registry.column_heights` (mantido em `load`), `set_column_height`, `placed`/`placed_in`, `standing`, `Multiblock::with_height`, `rise` (coluna conta a altura máxima), `core_of` (coluna: só na mesma x/z, altura em pé), `inventory_core` → `column_port`, dois testes novos | Toda a lógica |
+| `crates/horizon-world/src/level/place.rs` | `place`, bloco "A content mod's multiblock": `let m = &crate::mod_multiblocks::placed(&def);` | Colocação com a altura do mod |
+| `crates/horizon-client/src/game/multiblocks.rs` | `standing` (novo), `machine_multiblock` e `multiblock_outline` usam `self.standing(&def, core)` | Quebra inteira e contorno pela altura em pé |
+
+**Candidato a upstream:** o gancho de altura na colocação (`mod_multiblocks::set_column_height`) e a coluna de altura
+variável lida do mundo, úteis a qualquer mod com estruturas de altura configurável.
+
+### Desvios registrados
+
+- D5: altura por instância; dial muda só colunas novas; migração explícita. O Java relê o dial global em todo acesso.
+- Drop da tampa (chave e quebra) no topo pelo dial atual, como o Java, mesmo que a coluna tenha outra altura.
+- Cache de dials: um só, o do servidor. No Java cada `World` tem o seu: a primeira leitura numa dimensão sem cache
+  reescreve a regra lida com o padrão (`getGameRule`, `isIteration`) e o `/gamerule` só refaz o cache do mundo de quem
+  digitou. Essa peculiaridade por dimensão fica para o runtime de dials do T04.
+- `/setblock` trocando no lugar o núcleo de uma coluna por outra coluna: os dummies seguem com o núcleo novo (no Java
+  sumiriam como órfãos, pois o dummy é o próprio bloco da coluna).
+- Entrada do outgasser por automação recusada até as receitas reais (T09).
+- Lado do Java tomado como referência para os sons da tampa: `Blocks.glass.stepSound.func_150496_b()` é `step.stone` e
+  o `concrete_smooth` (pedra) `dig.stone`; aqui `minecraft:block.stone.step` e `minecraft:block.stone.place`, volume
+  1,0 e tom 0,8.
+
+### Validação (09/11/2026)
+
+Binário release `horizon-client` SHA-256 `d3258e6650ee7f9ed8bde27d1e75011a01f6cf7e7b8c3660341b7b0666cd4b2e`, construído
+de `rbmk-t02` @ `c3097105` (os commits seguintes só mudam roteiros de prova e docs) sobre o motor
+`rbmk-t02-engine` @ `5b9d6ee175` (`NEXT_REV`); pacote `ntm.hmod` `cc81c47f…`. Evidências em
+`.agent-tmp/rbmk-t02/evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| Motor (`horizon-world`, `mod_multiblocks`) | 7/7 testes (dois novos: coluna lida do mundo, portas top/all, altura do mod com clamp; registro carregado: núcleo de qualquer célula, porta só no topo). Clippy `horizon-world` lib+testes: 0 avisos |
+| NTM em debug | 521 testes da lib (2 ignorados) e os de integração, verdes; 8 testes novos do T02 (dials como regras Java e reabertura, coluna de qualquer célula e migração com recusa/célula não carregada/caixa grande, órfãos, tampas com mão/criativo/recusa/chave errada/drop pelo dial/reabertura, quebra com tampa, adoção das 18, automação Java, `RetainedDrop` antigo) e o de portas de fluido |
+| `save_model` (release) | 11/11 |
+| Clippy | `ntm-core` todos os alvos `-D warnings` e a glue (`horizon-client`, `horizon-client-lib`, release): 0 avisos |
+| Mutações (`evidence/mutations.log`) | 10/10 pegas: cadeia de órfãos não seguida, drop da tampa com o nome da origem, drop num topo fixo, mão debitada no criativo, storage aceitando qualquer item, motor sem a altura no início, controle aceitando tampa, migração crescendo sobre blocos, toda coluna numa camada, dials sempre zerados no início |
+| J em jogo (`--play`, sobrevivência) | 27/27 e, após reabrir, 4/4: alturas 2, 4, 16 e clamp/parse (1→2, 99→16, abc→4) com o item consumido; colunas em pé mantêm a altura quando o dial muda; obstrução recusada com o item na mão; quatro lados de colocação (quatro facings) dão a mesma coluna; quebra pela base, pelo meio e pelo topo leva a coluna inteira e devolve um item; tampa pelo topo (uma da mão), nenhuma segunda, nenhuma num controle; chave de fenda com shift: tampa como item, desgaste 1; sem tampa, nenhum desgaste; tampa de vidro; núcleo trocado por comando leva os dummies; `/ntmrbmk migrate` refaz 2 → 6 e 16 → 6; funil no topo do storage passa barra e segura pedra, no topo do canal segura a barra. Reaberto: dial 4, alturas 6/2/16, tampa de vidro, coluna nova com 4 |
+| C em jogo, duas execuções | `kill`, `kv_committed`, `players_saved`, `live_chunk:2,0`: 4/4 em cada, NTM igual ao controle item a item nas duas reaberturas (3 = 3; 2 = 2 nos cortes em que o controle vanilla também perde a última escrita). O ato: uma tampa da mão para A (transferência), a de B tirada com a chave (item devido no registro do chunk), C quebrada com a tampa (item da coluna e a tampa) |
+
+### Pendências herdadas do T02 (decisão do coordenador, 09/11/2026)
+
+| # | Pendência | Ticket | Critério de saída |
+| --- | --- | --- | --- |
+| 1 | Visual da altura: o modelo é um OBJ fixo de 4 células com a tampa a 4 blocos e os dummies são invisíveis, então uma coluna de 2 ou de 16, certa física e logicamente, desenha 4 | **Ticket próprio de visual, depois do T04** | Colunas de 2, 4 e 16 desenham suas células e a tampa (as duas) no topo, conferidas por captura em jogo; o gerador visual emite os grupos por célula e a tela leva a altura em pé |
+| 2 | Colisão da tampa (`getCollisionBoundingBoxFromPool`, +0,25 em cada célula de coluna tampada) e radiação de coluna destampada | T04 | Caixa de colisão igual à do Java com e sem tampa; dose fora de uma coluna destampada/tampada igual ao Java por teste e em jogo |
+| 3 | Cache de dials por dimensão do Java (primeira leitura num `World` sem cache reescreve o padrão da regra lida; `/gamerule` refaz só o mundo de quem digita) | T04 | Teste com dials mudados lidos na Nether e na Superfície reproduzindo a sequência do Java, ou desvio aprovado e registrado |
+| 4 | Fluxo de fluido pelas portas e loaders (as formas já existem em `persist::column_ports`) | T08 | Água/vapor e criogel entrando e saindo pelas posições Java (sem loader, loader a 1 e a 2) em jogo, com contagem antes/depois e após queda |
+| 5 | Entrada do outgasser por automação (receitas reais) | T09 | Funil insere só insumos com receita no slot 0 e retira só do 1, em jogo |
+| 5b | Fila do storage e guindaste | T11 | Conforme o T11 do plano |
+| 5c | Física das dez colunas adotadas (controles, caldeira, cooler, aquecedor, outgasser, storage no passo) | T08/T09/T11 | Cada coluna no passo do reator com paridade de oráculo |
+| 6 | ~~Dureza das colunas e do dummy~~ | **Feito** (`837a5fb9`) | Teste `test_rbmk_strength` contra o `RBMKBase` (3/30 → 3/18) |
+| 7 | Rebase da `rbmk-t02-engine` sobre o upstream novo | Quando o agente do Horizon fechar a atualização | Commit reaplicado sobre a `ntm-current` nova, testes do motor, glue e provas J/C repetidos no binário novo |
+
+Desvios registrados (não pendências): D5; drop da tampa pelo dial (como o Java); `/setblock` trocando o núcleo por
+outra coluna mantém os dummies; o pin de `compatibility.json` segue a `ntm-current` até o motor ser integrado.
+
+### Correções da revisão independente (`revisao-rbmk-t02`)
+
+| Achado | Correção |
+| --- | --- |
+| P1-1 | `rbmk_columns::rbmk_breaks`: o dummy que some por comando ou explosão desce a corrente até o núcleo (`BlockDummyable.breakBlock`). O núcleo e os dummies abaixo saem numa única `commit_structural` do chunk da coluna, com o conteúdo do BE como `RetainedDrop` de nome próprio; a tampa cai pelo caminho de remoção, no topo pelo dial. Sem item da coluna (ninguém colheu). O teste que fixava o comportamento antigo foi trocado (`a_dummy_taken_away_takes_the_whole_column_and_drops_its_contents_once`), e a J e o C ganharam um canal com barra e tampa cujo dummy do meio sai por `/setblock`. Explosões: com a resistência Java (18), TNT e creeper não quebram células de coluna, aqui e no Java; uma explosão que quebre um dummy passa pelo mesmo caminho (as bombas são do T16) |
+| P1-1 (achado na reprova J) | A migração encolhendo uma coluna tira dummies do topo: essas escritas são do mod (`set_machine_blocks` com as células como suas, o escopo de blocos próprios do host nativo), não "dummy tirado", senão a corrente do P1-1 quebraria a coluna (a J mostrou 16 → 6 deixando nada). Teste `a_column_is_found_from_any_cell_and_rebuilt_only_on_demand` com as escritas devolvidas como o jogo devolve; a mutação (voltar a `set_blocks`) é pega |
+| P2-1 | A J conta a tampa tirada com a chave em entidades + inventário (a tampa sai sem atraso de coleta, como no Java, e o jogador pode pegá-la). Reexecutada inteira com o pacote atual |
+| P2-2 | **Escolha: confirmação explícita.** `/ntmrbmk dial dialColumnHeight <v>` cuja altura efetiva seja diferente de 4 é recusado com a explicação ("o modelo das colunas ainda desenha 4 células até o ticket T02-V") e só vale com `confirmar` no fim; mesmo assim responde com o aviso. Motivo: mantém o dial do Java disponível (2..16, D5) para quem precisa, sem que alguém o mude por engano e veja um reator enganoso; limitar a 4 tiraria uma regra do Java até o T02-V |
+| P3-1 | **Custo conhecido, sem mudança.** A velocidade já é a do `new EntityItem` do Java (±0,1 horizontal, 0,2 para cima: `dispenser::new_item_motion`). O voo vem de a tampa nascer dentro da célula do topo e ser empurrada para fora dela, como no 1.7.10: `func_145771_j` empurra qualquer entidade dentro de uma caixa de colisão, e toda coluna tem colisão inteira (`RBMKBase.getCollisionBoundingBoxFromPool:127-148`), canais inclusive. Só a direção difere: no Java a primeira face livre testada é −x; o motor segue a sua ordem. Igualar a direção exigiria a física de entidade do motor; fica registrado |
+| P3-2 | `core_of` de uma célula de coluna desce pela sequência do próprio dummy (`column_core`); a busca dos outros multiblocos volta à altura deles (`rise` sem colunas) |
+| P3-3 | `Registry.column_dummies` (montado no `load`) no lugar de percorrer as definições a cada consulta de funil |
+| P3-4 | Ver P1-1 |
+| P3-5 | Evidências refeitas com o pacote do HEAD (dureza 3/18) |
+
+Pontos de contato com o motor: o segundo commit da `rbmk-t02-engine` (`perf(multiblocks): columns find their core down
+their own run`) mexe só em `mod_multiblocks.rs` (`Registry.column_dummies`/`column_rise`, `load`, `Multiblock::rise`,
+`core_of` → `column_core`, `inventory_core`, `column_port`, testes).
+
+O T03 acrescentou um terceiro commit à `rbmk-t02-engine` (`93359657aa`, `feat(mods): the host's crafting grid asks
+prepare_item_craft too`): ver a tabela única "Contatos de motor do RBMK" no fim do T03.
+
+### Ressalvas da re-revisão (P3, registradas)
+
+| Achado | Registro |
+| --- | --- |
+| P3-6 | A fila `rbmk_breaks` (dummy tirado → corrente até o núcleo) vive só em memória. Se o chunk descarregar ou o save cair dentro do mesmo tick em que o dummy saiu e antes de a fila rodar, a coluna fica mais baixa, sem perda nem cópia de item (o BE e o conteúdo ficam no núcleo). Ao reabrir, a coluna mais baixa é uma coluna válida; não há retomada da corrente |
+| P3-7 | `/setblock` sobre o **núcleo** segue o `/setblock` moderno do motor, que apaga o BE sem derramar (como um baú no vanilla atual); no Java o `breakBlock` derramaria o inventário. A tampa cai mesmo assim (caminho de remoção do mod). Quebra pelo jogador, explosão e dummy por comando derramam |
+| P3-8 | Numa explosão, o Java dropa um item da coluna por célula explodida, com chance 1/tamanho da explosão (`Block.dropBlockAsItemWithChance`), dummies inclusive (o dummy é o próprio bloco da coluna). O port não dropa nenhum: o dummy é um bloco sem item e o núcleo quebrado pela corrente não dá o item. Desvio que ficou de fora antes; com a resistência Java (18) só explosões fortes chegam lá (T16) |
+
+O cenário C passa a contar também o item da coluna quebrada pelo jogador (`ntm:rbmk_blank`) na próxima rodada de
+provas do T02 (no rebase sobre o motor novo).
+
+
+### Validação das correções (10/11/2026)
+
+Binário release `horizon-client` SHA-256 `abbd98a934ddf5fbb3a278746ceb87e295c2c101e836a181f57bd3a87433d868`, de
+`rbmk-t02` @ `49842d28` sobre `rbmk-t02-engine` @ `06bf7ffe5c` (`NEXT_REV`); pacote `ntm.hmod`
+`739cc99c6b418c36a2f15c4976de07b1f6a18f06eda918735656f5ef487c0094` (o do HEAD, dureza 3/18). Evidências em
+`.agent-tmp/rbmk-t02/evidence/r2/` e `evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| Motor | 7/7 testes de `mod_multiblocks` (um novo: a busca dos outros multiblocos não cresce com coluna carregada) |
+| NTM debug | lib 522 (2 ignorados) e 47 de integração (todos os alvos menos `save_model`); 9 testes do T02 |
+| `save_model` (release) | 11/11 |
+| Clippy | `ntm-core` todos os alvos `-D warnings`, glue (`horizon-client`, `horizon-client-lib`, release, no stage de `06bf7ffe5c`) e `horizon-world` lib+testes: 0 avisos |
+| Mutações novas | sem a corrente para baixo (P1-1): 2 testes falham; migração com `set_blocks` em vez de escritas próprias: o teste da migração falha |
+| J em jogo | 29/29 e, após reabrir, 4/4; inclui o canal com barra e tampa cujo dummy do meio sai por `/setblock` (coluna inteira some, barra +1, tampa +1, item da coluna 0) e a tampa da chave contada em chão + inventário |
+| C em jogo, duas execuções | `kill`, `kv_committed`, `players_saved`, `live_chunk:2,0`: 4/4 em cada, NTM igual ao controle item a item nas duas reaberturas: 5 = 5 (4 tampas, 1 barra) em `kill` e `players_saved`; 4 = 4 em `kv_committed` e 2 = 2 em `live_chunk:2,0` (a última escrita que o vanilla também perde). O ato agora inclui o canal D com barra e tampa cujo dummy do meio sai por `/setblock` (no controle, o barril quebrado com `destroy`) |
+
+## RBMK T03 — barras, xenônio e hazards dinâmicos (pronto para revisão, 10/11/2026)
+
+Branch `rbmk-t03` (a partir de `rbmk-t02` @ `5582ece5`). Escopo do plano: codec de stack, queima, nove curvas e cinco
+depleções, coeficiente térmico, core/hull/transfer, tooltips e radiação/HOT. Aceitação: U cada barra e função em
+entradas nulas/limites/NaN admitidos, yield/poison e sequência de calor, defaults NBT; J retirar/reinserir barra entre
+inventários e reabrir, observar hazard e tooltip do mesmo stack; C yield só reduz conforme o Java, componentes alheios
+preservados, retirar não zera calor/poison. Depende de T00/T01, D2/D3/D6.
+
+| Item | Fonte Java | Situação de partida |
+| --- | --- | --- |
+| Codec definitivo da pilha: `stackTagCompound` existe quando a pilha tem **qualquer** dado do 1.7.10 (nome, lore, encantamentos, `RepairCost`, `custom_data`), não só `custom_data`; sem tag, `setNBTDefaults` (yield = máximo, core/hull 20, xenônio ausente → 0) na primeira leitura ou escrita; com tag e chave ausente, `getDouble` → 0 | `ItemRBMKRod.getDouble/setDouble/setNBTDefaults` (571-598) | Provisório do T01 (`persist::rod_stack`) só olha `custom_data` |
+| **Bug da barra renomeada:** um nome (ou lore, ou encantamento) cria o `stackTagCompound` sem `yield`, que lê 0: a barra fica morta | `getDouble` (579-585) | Hoje funciona (desvio a corrigir) |
+| `onCreated` (feitio): `setNBTDefaults` no resultado da receita | `onCreated` (600) | Ausente |
+| Queima, curvas, depleções, xenônio, coeficiente térmico, `updateHeat`/`provideHeat`, `rectify` | `burn`, `updateHeat`, `provideHeat`, `reactivityFunc`, `reactivityModByEnrichment` | Núcleo puro com paridade de oráculo (`rods.rs`); ligar ao codec definitivo |
+| Barra de durabilidade: mostrada quando `1 − enrichment > 0`, valor `1 − enrichment` | `showDurabilityBar`, `getDurabilityForDisplay` (562-569) | Ausente |
+| Tooltip dinâmico (as duas variantes, RBMK e DRX/rbmx): nome completo, resfriando (≥ 50 °C), fonte, depleção, xenônio, n/r, função de fluxo e tipo, xenônio gen/burn, calor, difusão, casco, núcleo, fusão, com os arredondamentos Java | `addInformation` (447-516), `getFuncDescription` | Tooltip estático do T00 |
+| Hazards dinâmicos: radiação pela depleção (linear ou `1 − e²`) + Xe135 pelo veneno; HOT `int(min(ceil((hull − 100)/10), 60))`; pellets pelos cinco graus e veneno | `HazardModifierRBMKRadiation`, `HazardModifierRBMKHot`, `HazardRegistry` | Taxas estáticas por id (`radiation.rs`) |
+
+**Estado em 10/11/2026 (antes da revisão).** Feito, item por item da tabela acima:
+
+| Item | Como ficou | Prova de unidade |
+| --- | --- | --- |
+| Codec da pilha | `Stack::tagged` marca o `stackTagCompound` do 1.7.10 (nome, lore, encantamentos, custo de reparo ou `custom_data`); `persist::stack_rod` lê as chaves com os defaults do Java (sem tag: `setNBTDefaults`; com tag e sem a chave: 0). A glue marca `tagged` nos três caminhos (slots de máquina, inventário do jogador lido pelo servidor, cliente) | `a_stack_with_a_tag_but_no_key_reads_a_dead_rod_as_java` |
+| Barra renomeada (bug Java) | Uma barra só com nome lê `yield` 0: morta no reator, radiação no alvo, barra de durabilidade cheia | o mesmo teste, `a_rod_goes_towards_its_target…` e o de radiação do servidor |
+| `onCreated` | O resultado da receita sai com `setNBTDefaults` (gancho `prepare_item_craft`, injeção `rbmk-rod-crafted`) | prova J |
+| Queima/curvas/calor | Já no núcleo (`rods.rs`, paridade de oráculo do T00/T01), agora lendo o codec definitivo | testes do T00/T01 |
+| Barra de durabilidade | `tooltip::durability_bar`: mostrada quando `1 − enrichment > 0`, largura e cor como o Forge 1.7.10 as desenha (`round(13 − 13·h)`, cor de `round(255 − 255·h)`); gancho `item_bar` (injeção `rbmk-rod-bar`) | `the_bar_is_forges_for_1_minus_the_enrichment` |
+| Tooltip | `tooltip::lines`: as linhas de `addInformation` nas duas variantes, com `Double.toString` e os truncamentos do Java; as chaves de idioma do Java nos dois idiomas | testes de `tooltip.rs` |
+| Radiação dinâmica | `rbmk::hazards::radiation_rate`: `level + (target − level)·depleção` (linear ou `1 − e²`), floats e doubles como o Java, `+ xe135·veneno`; o extrator de hazards exporta `target`, `linear`, `hot`, `xe135` e `nugget` de cada `registerRBMK*`. Entra na soma por segundo do servidor e no tooltip | `a_rod_goes_towards_its_target_as_it_depletes_plus_its_xenon`, `carried_pellet_rate_uses_custom_long…` |
+| HOT | `rbmk::hazards::hot_level` (`(int) min(ceil((casco − 100)/10), 60)`); a cada tick o servidor acende o jogador pelo maior nível que ele carrega (`setFire`, o maior entre o que resta e o novo, menos a proteção contra fogo), salvo molhado (água ou chuva nos pés ou no topo) ou com um `reacher` no inventário; tooltip `[trait.hot]` em dourado, depois da radiação, como o Java registra | `a_rod_is_hot_from_its_hull`, `a_hot_rod_sets_its_holder_on_fire_unless_they_carry_a_reacher` |
+
+Pendências honestas (fora do T03 ou adaptações):
+
+- **Pellets** (graus pela `metadata` 0–9 e o xenônio): o port não tem subtipos de pellet (32 ids, sem metadata). A
+  radiação deles fica a fresca. Vão com o T14 (a desmontagem é o que os produz), que tem de decidir como o grau vive na
+  pilha.
+- **Digamma da barra DRX (1/3) e cegueira:** o port não tem os sistemas `DIGAMMA` e `BLINDING` de hazard (nenhum item
+  os aplica). Pendência do sistema de hazards geral, não do RBMK.
+- **`reacher` na radiação** (`BobMathUtil.squirt` da taxa): o sistema de radiação geral do port não o considera; só o
+  HOT o considera. Mesma pendência geral.
+- **NaN:** um `level` NaN não contamina (como o Java, `level > 0` é falso), mas o tooltip Java ainda escreveria
+  `[Radioactive] NaNRAD/s`; o port não mostra linha. Só alcançável com uma tag NaN.
+- **Cadência:** a radiação segue a soma por segundo do port (o Java aplica por tick; a dose é a mesma); o HOT é por tick,
+  como o Java. O inventário lido inclui a mão secundária, que o 1.7.10 não tem, como a radiação já fazia.
+- **Molhado (contato de motor):** visitar a cada tick (`native_visit_player`) um convidado que já está em chamas e
+  entra na água trazia o fogo de volta (a água apagava uma vez; depois as leituras davam 600). Sem visita, o fogo
+  ficava apagado. A glue agora lê "molhado" (água no bloco dos pés ou chuva) pela posição publicada do jogador, sem
+  visitar, e só visita um jogador seco para acendê-lo (`52d7bb62`; antes, `2ae9c805` só somava a água dos pés). A
+  prova J checa as duas coisas: em chamas e com a barra, apaga na água. A causa no motor (a troca de estado da visita
+  contra a cópia do movimento do convidado) fica para o agente do Horizon: qualquer visita por tick a um convidado em
+  chamas pode regravar o fogo.
+- **Mobs** segurando barras (`updateLivingInventory`) não pegam fogo nem radiação: o port não tem esse caminho para item
+  nenhum.
+- **Proteção contra fogo:** resolvida no HOT na revisão (P2-1, `7d9cb26d`: o maior nível da armadura, como o
+  1.7.10). O resto do fogo do motor usa o atributo moderno `burning_time`, que soma as peças: lacuna nominal da Onda 4.
+
+**Validação (10/11/2026).** Commits do T03 na `rbmk-t03`: `4341a3c2` (codec e `onCreated`), `199586c5` (tooltip),
+`0f0a2e97` (barra de durabilidade), `87c6f96b` (radiação e HOT), `2ae9c805` e `52d7bb62` (HOT e água), `5e79136a`
+(cores do tooltip), `bc7fa29c` (componentes da pilha que sai de uma máquina), `431a00af`/`14100a59` (provas),
+`35650ea6`/`bf5c19a4` (clippy). No motor, `rbmk-t02-engine`: `93359657aa`, `01e5147ef5`, `00454b508a` (tabela abaixo).
+NTM em debug: 530 testes da lib (2 ignorados) e 47 de integração; `save_model` em release 11/11; Clippy `-D warnings`
+de `ntm-core` com todos os alvos: 0 avisos; glue (`horizon-client`, `horizon-client-lib`, release, no stage de
+`00454b508a`): 0 avisos; `horizon-protocol` lib+testes: 0 avisos; `item::hash` 9/9. Binário final `567a72b9f30bdde7a145d3559efcea41e882262854b037562a51126693f6560c`
+(NTM `bf5c19a4`, motor `00454b508a`). As provas J e C rodaram no `82c16afe…` (NTM `bc7fa29c`, motor `01e5147ef5`); o
+que veio depois não está no caminho delas: dois ajustes de clippy sem mudança de comportamento (o da glue gera o mesmo
+código) e o `00454b508a`, que só toca a retirada do anfitrião local (sem `serving`); a janela das provas é cliente do
+próprio servidor integrado e usa `lan_crafting`.
+
+**Prova J (`tools/test-game/run-rbmk-t03-proof.py --play` + `native_rbmk_t03.py`, 10/11/2026).** Binário
+`horizon-client` SHA-256 `82c16afe3177663a9aefb2bf6717977d22986fcd9bef542e89bff18d6ddaafbc` (NTM `bc7fa29c`, motor
+`rbmk-t02-engine` @ `01e5147ef5`), pacote `ntm.hmod` `4276ef60dd0358297990bac69d9e506c5e4556dd25247edfa3334be9095cdf61`.
+Evidências em `.agent-tmp/rbmk-t03/evidence/j/` (JSON das duas aberturas e os três prints de tooltip). **21 de 21
+checagens passaram** (16 na primeira abertura, 5 na reabertura):
+
+| Checagem | Resultado |
+| --- | --- |
+| Barra feita na mesa pelo anfitrião sai com a tag (lida no servidor) e a janela também a recebe | ok (`yield` 1e8, `core`/`hull` 20) |
+| Renomeada depois de feita, continua viva | ok (nome e as três chaves) |
+| Queima ao lado de uma fonte Po-210/Be: rendimento cai, calor sobe | ok (xenônio fica em 0: com fluxo acima de 25 a queima de xenônio vence a geração, como no Java) |
+| Retirada (gota lançada, apanhada) com a tag; parada fora do reator, não queima | ok |
+| Radiação carregada = `HazardModifierRBMKRadiation` da tag (mRAD/s) | ok (2 435 = 2 435 mRAD/s; com 40 % de xenônio, 1 400 350) |
+| No baú: a mesma tag bit a bit; nenhuma radiação vinda do baú | ok |
+| HOT: com `reacher` não pega fogo; na água não pega; seco pega (600 ticks) | ok |
+| Já em chamas, apaga na água, sem e com a barra | ok (6 de 6 e 6 de 6 apagadas). Na rodada anterior, com o mesmo código do HOT (binário `cb092d09…`), 1 de 6 leituras deu 600: intermitente, ver "Molhado (contato de motor)" acima |
+| Renomeada (tag sem chaves): radiação no alvo, não queima no canal | ok (1 200 000 mRAD/s; `yield` 0, núcleo 20) |
+| Depois de reabrir: a barra do baú igual, carregada com a mesma radiação; num canal isolado, rendimento e xenônio iguais, calor segue | ok |
+
+Os prints mostram as linhas nas cores do Java (verde, roxo, azul, amarelo, dourado, vermelho; `[Pyrophoric / Hot]` em
+dourado 255,170,0) e os números como o Java os escreve. A primeira rodada achou o defeito de cor (`5e79136a`). Os prints
+das barras de 1 200 e 1 400 RAD/s ficaram de fora: na tela de inventário de sobrevivência a radiação mata em um
+segundo; as linhas delas são testadas em `tooltip.rs`.
+
+**Prova C (`tools/test-game/run-rbmk-t03-proof.py` + `native_rbmk_t03.py` `prepare/act/verify/again/drain`,
+10/11/2026).** Binário `horizon-client` SHA-256 `82c16afe3177663a9aefb2bf6717977d22986fcd9bef542e89bff18d6ddaafbc` (NTM
+`bc7fa29c`, motor `01e5147ef5`), pacote `4276ef60…`. Mundo: no chunk (2, 0), um canal P ao lado de uma fonte ReaSim de
+Po-210/Be (S) e um canal Q mais longe; as barras de P e Q feitas por comando com um estado (`yield` 6e7, `xenon` 12,5,
+`core` 300, `hull` 250), uma chave alheia (`foreign`) e uma lore, postas pela mão. O ato tira a barra de P como gota
+lançada (`ntmtest take`) e o save é cortado. Controle vanilla: barris nos mesmos lugares e a mesma pilha invocada como
+item; um bloco do chunk (2, 0) muda nos dois mundos (o `item replace` do motor não marca o chunk, achado do T01).
+Relatório em `.agent-tmp/rbmk-t03/evidence/c/report.json`; mundos apagados.
+
+| Corte | Barras no disco e nas duas reaberturas (NTM = controle) | Estado de cada barra (NTM) |
+| --- | --- | --- |
+| `kill` | 3 = 3 | chave alheia, lore, as quatro chaves, `yield` ≤ 6e7, calor não zerado; P, de volta ao canal, nunca sobe |
+| `kv_committed` | 3 = 3 | idem |
+| `players_saved` | 3 = 3 (a gota no chão nos dois) | idem, a gota com a lore |
+| `live_chunk:2,0` | 2 = 2 | resíduo vanilla: o canal (ou o barril) gravado vazio e a gota não, nos dois; a barra restante íntegra |
+
+Veredictos do R7c em todos: nada duplicado, nada pior que o vanilla, armazenamento sem item, as duas reaberturas iguais.
+Antes de passar, a prova achou dois defeitos: (1) a gota de uma barra tirada do canal voltava **sem a lore** no
+`players_saved`, porque a glue montava a gota só com o `Stack` da ponte (id, quantidade, `custom_data`); corrigido em
+`bc7fa29c` (o que sai de um slot de máquina na mesma transferência usa a pilha do próprio slot como modelo, todos os
+componentes, como o `ItemStack.copy()`); vale também para a pilha que um slot do jogador recebe de uma máquina (o
+cursor do T05). (2) Os critérios do roteiro: o xenônio cai a 0 com fluxo forte (como no Java) e a fonte ReaSim pode
+passar segundos sem acertar P; a checagem passou a ser "a tag não volta ao estado de fábrica" e "o rendimento nunca
+sobe". Numa rodada, o save do controle vanilla não respondeu ("server thread did not answer within 10 s"); a rodada foi
+refeita inteira.
+
+### Revisão do T03 (a1102939): aprovado com ressalvas, correções
+
+Relatório em `artifacts/revisao-rbmk-t03/index.md`. Sem P0 nem P1. Corrigido em commits pequenos:
+
+| Achado | O quê | Commit |
+| --- | --- | --- |
+| P2-1 | O HOT acende como o `setFire` do 1.7.10: `t − floor(t · nível · 0.15F)` com o **maior** nível de Proteção contra Fogo da armadura (`getMaxEnchantmentLevel` sobre `getLastActiveItems`, que no jogador é só a armadura, conferido no `EntityPlayer` decompilado do 1.7.10), o maior entre o que resta e o novo, gravado com `set_remaining_fire_ticks` (sem o `burning_time` do motor, que soma as peças). Teste: 0, IV (240), II (420); J: duas peças de IV dão 240 ticks | `7d9cb26d`, `c02fa6b3` |
+| P2-2 | A linha de radiação da barra sai do nível em float, como o `HazardTypeRadiation`: nada abaixo de `1e-5`, `Math.floor(level·1000)/1000` com o produto em float e `Double.toString`, a linha `Stack:` igual, NaN como `NaN`. Teste com os 999 estados de depleção da UEU, a 0,998 (6.189) e a balefire gasta (`1.2…E8`, sem o teto de `u32`) | `e94e6651` |
+| P3-1 | O nome completo em cinza itálico (`§7§o`), o `§7` que o `GuiScreen.renderToolTip` põe em toda linha depois da primeira | `2b762bc3` |
+| P3-3 | O doc de `rod_doubles` volta para cima dela | `01474f20` |
+| P3-4 | Sem visita, só a água e a chuva **nos pés**; a chuva no topo fica para a visita, que lê a caixa real | `3a2d1abe` |
+| P3-5 | A J espera o servidor ter a barra na mão (`data get entity @s SelectedItem`) depois do `select` | `c02fa6b3` |
+| P3-6 | O `onCreated` sempre dá os defaults ao `custom_data` do resultado, como o `new NBTTagCompound()` do `setNBTDefaults` (os outros componentes ficam; nenhuma receita do port os faz) | `01474f20` |
+
+Também da J pós-revisão: a água da prova do HOT virou um poço 1×1 cercado no meio do piso (`a9f16771`). A primeira J
+depois da revisão leu o fogo aceso na água porque a corrente levava o jogador para fora da borda do piso, a 4 blocos,
+até o chão natural 22 blocos abaixo, seco e com o fogo aceso corretamente (a altura dos pés, agora gravada com cada
+leitura, mostrou 78 onde o piso fica em 101). Explica também o "1 de 6 = 600" das rodadas anteriores.
+
+**Provas depois da revisão.** Binário `horizon-client` SHA-256
+`08072ff65eac49a4d4b3b17c41754254bccc5a7cb9e510ba668eeb8017ccba17` (NTM `c02fa6b3`, motor `00454b508a`), pacote
+`4276ef60…`. **J: 22 de 22** (17 + 5), evidências em `.agent-tmp/rbmk-t03/evidence/j-r2/`: as 21 de antes, mais
+`fire_protection_takes_the_highest_piece` (duas peças de IV: 240, 240, 240 ticks). Na água, as 8 leituras de cada
+etapa apagadas, os pés em 101. O nome sai em cinza itálico, e a radiação, truncada como no Java (`2.135RAD/s` para um
+nível de 2,1359…). **C nos cortes `kill`, `players_saved` e `live_chunk:2,0`: 3 de 3**, NTM = controle (3/3/3, 3/3/3
+e 2/2/2, este o resíduo vanilla), todos os veredictos do R7c verdadeiros e cada barra com a chave alheia, a lore e a
+tag; relatório em `.agent-tmp/rbmk-t03/evidence/c-r2/report.json`. Testes: lib 532 (2 ignorados) e 47 de integração; `save_model` em release
+11/11; clippy `-D warnings` de `ntm-core` com todos os alvos e da glue (stage de `00454b508a`): 0 avisos.
+
+Re-revisão (`881663f7`): aprovada sem P0, P1 nem P2. P3-1 corrigido (o limite `1e-5` comparado em double, como o
+Java). P3-2 registrado: a ordem de `fire_ticks` é a do `EnchantmentProtection.getFireTimeForEntity` decompilado do
+1.7.10, `(float)ticks * (float)nível * 0.15F`; o resultado é o mesmo.
+
+Registrado, sem mudança de código:
+
+- **P3-2, barra de durabilidade:** o Forge 1.7.10 (`RenderItem.renderItemOverlayIntoGUI`, conferido no decompilado)
+  desenha três quads: preto 13×2, uma faixa 12×1 na cor `(255−k)/4 << 16 | 0x3F00` e a barra `j1`×1. O gancho
+  `item_bar` do motor (API 60) só aceita largura e cor: a faixa escura não sai. Adaptação; contato de motor enviado ao
+  agente do Horizon (um campo de cor de faixa na API).
+- **P2-3, fogo na água:** o contorno do NTM (`52d7bb62`) basta e não é P1 (decisão da revisão). Contatos de motor
+  enviados ao agente do Horizon: o `tick_remaining_fire` aplica o dano antes de a água apagar
+  (`crates/horizon-client/src/motion/environment.rs:37-45`; no 1.7.10, o `handleWaterMovement` zera o fogo antes do
+  dano) e a regravação do fogo pela visita por tick. Deixa de estar na lista de bloqueio do T03.
+- **Proteção contra Fogo fora do HOT:** o resto do fogo do motor continua somando as peças (`burning_time`). Lacuna
+  nominal da Onda 4 (regra de armadura), decisão do coordenador; não bloqueia o T03.
+
+### Motor do T03 sobre o pin novo (`rbmk-t03-engine`, 10/11/2026)
+
+Com a `main` em `e4aa8b2c` (pin `6a79054fa9`, a `ntm-current` sobre o upstream `a3bf6531e`), a `rbmk-t03` foi fundida
+nela (`87ade1f2`, depois de `836c7bb7` com a `8ecff5d8`) e o motor das provas passou a ser a `rbmk-t03-engine`, a partir
+de `6a79054fa9`, com, nesta ordem:
+
+| Commit | Origem | Nota |
+| --- | --- | --- |
+| `56fbb210a7` | `5b9d6ee175` (T02, altura das colunas) | Aplicado limpo; o pin novo não tinha nada de coluna (`set_column_height`, `column_core`, `column_heights` ausentes em `mod_multiblocks.rs`) |
+| `3b96e2d998` | `06bf7ffe5c` (T02, `column_core` e `column_dummies`) | Aplicado limpo |
+| `643e359566` | `00454b508a` (T03, o cursor só empilha com os mesmos componentes) | Portado à mão: no upstream o laço do slot 200 está em `game/menu_clicks.rs` e `host_prepared_craft` em `game/inventory_slots.rs`; a formatação do teste de `hash.rs` já vinha no `88d6b88a2d`. **Exceção** decidida pelo coordenador: entra agora porque a J e a C do T03 dependem dele, e vai pela mesma revisão do T03 |
+
+`01e5147ef5` e `93359657aa` já estão no pin novo (`88d6b88a2d`, `6a79054fa9`). A `rbmk-t02-engine` e a `ntm-current`
+não foram tocadas. O pin de `native/ntm/compatibility.json` continua `6a79054fa9`: as provas usam `NEXT_REV` na ponta
+da `rbmk-t03-engine`, e o pin muda quando o agente do Horizon integrar esses três commits.
+
+**Provas depois dos merges (10/11/2026).** NTM `57144cee` (com a `main` `e4aa8b2c`), motor `rbmk-t03-engine` @
+`643e359566`; binário `horizon-client` SHA-256 `fef5a228546a1770774df2c23a74aaf5d6303d28981e7e3f9c3e1a6755206232`,
+pacote `ntm.hmod` `1fc434042789510b844d2fcfdf53cf6d25778eb3afe48850d2f9f0c9c90cb956`. **J: 22 de 22**
+(`.agent-tmp/rbmk-t03/evidence/j-merge/`). **C nos cortes `kill`, `players_saved` e `live_chunk:2,0`: 3 de 3**
+(`evidence/c-merge/report.json`), NTM = controle em todos (2/2/2, 3/3/3, 2/2/2), cada barra com a chave alheia, a lore e a
+tag. No motor novo o `kill` fica com 2 nos dois mundos: depois do ato o motor faz um save sozinho, que grava o canal
+(ou o barril) vazio antes da gota; é o resíduo vanilla, igual nos dois. Testes na árvore fundida: os 293 do
+`tools/content-gen`; lib 534 (2 ignorados) e 118 de integração em 12 binários; `save_model` em release 11/11; clippy do
+`ntm-core`, da glue (stage de `643e359566`) e do `horizon-world` (motor): 0 avisos; `mod_multiblocks` 7/7 e
+`item::hash` 9/9 na `rbmk-t03-engine`.
+
+### Contatos de motor do RBMK (todos os commits a portar para o motor novo)
+
+Branch `rbmk-t02-engine`, a partir de `ntm-current` @ `a31497f38`. Cada linha é reaplicada sobre o upstream novo
+(`a3bf6531e`, branch `upstream-a3bf653`), com os testes do motor e as provas J/C do ticket repetidos no binário novo.
+Já portados pelo agente do Horizon (10/11): `01e5147ef5` como `88d6b88a2d` e `93359657aa` como `6a79054fa9` na
+`ntm-current` nova (`6a79054fa9`); `00454b508a` veio da re-revisão desse porte e falta portar. Quem fundir a
+`rbmk-t02-engine` roda `cargo fmt` (o `native_hooks.rs` já vinha com diferenças de formatação de antes).
+
+| Commit | Ticket | Arquivo | Função / trecho (no motor atual) | No upstream `a3bf6531e` | O quê |
+| --- | --- | --- | --- | --- | --- |
+| `5b9d6ee175` `feat(multiblocks): columns as tall as each was placed` | T02 | `crates/horizon-world/src/mod_multiblocks.rs` | `Multiblock.column`, `Column`, `ColumnPorts`, `parse` (`column`), `Registry.column_heights`, `set_column_height`, `placed`/`placed_in`, `standing`, `with_height`, `rise`, `core_of`, `inventory_core` → `column_port`, testes | mesmo arquivo | A altura das colunas lida do mundo, colocação na altura do mod, portas `top`/`all` |
+| `5b9d6ee175` | T02 | `crates/horizon-world/src/level/place.rs` | `place`, bloco de multibloco de mod: `placed(&def)` | mesmo arquivo | Colocação com a altura do mod |
+| `5b9d6ee175` | T02 | `crates/horizon-client/src/game/multiblocks.rs` | `machine_multiblock`, `multiblock_outline` | mesmo arquivo | Volume em pé no contorno e no núcleo |
+| `06bf7ffe5c` `perf(multiblocks): columns find their core down their own run` | T02 | `crates/horizon-world/src/mod_multiblocks.rs` | `Registry.column_dummies`/`column_rise`, `load`, `rise`, `core_of` → `column_core`, `inventory_core`, `column_port`, testes | mesmo arquivo | Busca do núcleo descendo a própria coluna |
+| `93359657aa` `feat(mods): the host's crafting grid asks prepare_item_craft too` | T03 | `crates/horizon-client/src/game.rs` | nova `host_prepared_craft` (l. 9115, antes de `craft_result`); no clique do slot 200 (`ResultSlot`, l. 10668) o `while let` passa o resultado por ela antes de entregá-lo | `crates/horizon-client/src/game/menu_clicks.rs`, laço do slot 200 (l. 784); a nova função vai junto de `craft_result`, agora em `game/inventory_slots.rs` (l. 324) | O anfitrião do mundo integrado também chama `native_prepare_item_craft` (API 290) ao pegar o resultado (inventário 2x2: `pos` None; mesa: a posição dela), em cada pilha do shift-click; sem resultado do mod, nada é pego; o que não cabe é recusado como antes. Antes só os convidados de LAN e o servidor dedicado chamavam. Usado pelo `onCreated` da barra RBMK |
+| `01e5147ef5` `fix(lan): a click agrees only on the same components` | T03 | `crates/horizon-protocol/src/item/hash.rs` (novo `Hashed::matches`, teste `a_claim_matches_only_the_same_components`) e `crates/horizon-client/src/lan/containers.rs` (`hashed_matches`, l. 509) | `hashed_matches` usa `Hashed::matches` com os registros do hub (`SyncedNames`) | mesmo comparador em `lan/containers.rs:630`; `hash.rs` igual | `HashedStack.matches` do vanilla: item, quantidade e componentes. Antes só item e quantidade: uma mudança de componente feita pelo servidor num clique (a tag do `onCreated` da barra, vinda do gancho no resultado) nunca chegava ao cliente que previu o vanilla. Componente que o servidor não sabe hashear conta como diferente (o slot é reenviado). Agente do Horizon avisado (10/11) |
+| `00454b508a` `fix(mods): a crafted result joins the cursor only with its components` | T03 (re-revisão do porte) | `crates/horizon-client/src/game.rs` | no laço do slot 200 do anfitrião, o cursor só empilha o resultado com `same_item_same_components` (antes, só o item); doc de `host_prepared_craft`; `cargo fmt` do teste de `01e5147ef5` em `hash.rs` | `game/menu_clicks.rs`, mesmo laço (l. 784) | Um resultado que o mod preparou (com `custom_data`) não se junta a uma pilha sem ele no cursor (`ItemStack.isSameItemSameComponents`). O gancho é perguntado antes de se saber se a retirada cabe, como na grade de um convidado (perguntado a cada mudança): é o resultado preparado, não a retirada; a glue do NTM não tem efeito colateral nele |
+
+Testes dos commits do T03. `93359657aa`: o motor não tem harness de `Game` para cliques de menu, e o despacho da API
+de mods (`contract: replace`) só substitui um resultado vazio, então um teste de `dispatch_prepare_item_craft` não
+exercita o caminho que o NTM usa (a injeção no início de `native_prepare_item_craft`). Esse commit vale para o modo local
+(janela sem `serving`); no jogo das provas a janela é cliente do próprio servidor integrado e o craft do anfitrião passa
+por `lan_crafting_click`, que já chamava o gancho (12 chamadas, uma por clique, vistas com um log temporário da glue). O
+defeito real desse caminho era o do `01e5147ef5`, que tem teste de unidade puro no protocolo (9/9 em `item::hash`). A
+prova J lê o inventário do lado do servidor (`data get entity`): barra feita na mesa pelo anfitrião sai com a tag,
+renomeada continua viva; a cópia da janela fica na evidência.
+
+
+## RBMK T04 — escalonador, fluxo cardinal/ReaSim e calor (18/11/2026)
+
+Branch `rbmk-t04`, a partir da `main` @ `fa3c1df3` com a `rbmk-t03` (`7286787a`, que contém a `rbmk-t02`) fundida em
+`6faa68cc` (decisão 1A do coordenador; pin do motor da `main`, `2187c3192b`, mantido). Sem mudança de motor. Decisões do
+coordenador para este ticket: 1A (base), 2B (colisão `+0,25` da tampa fica fora: pendência de motor), 3A (dials por
+dimensão fiéis ao `RBMKDials`), 4A (`SatelliteScan` num registro persistido por dimensão, TTL 300).
+
+### O que mudou
+
+| Item | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Colunas no passo | As 18 colunas entram no passo (`persist::kind_of`): cada TE é nó dos fluxos (`OTHER` deixa passar, controle em nível 0 encerra) e vizinho do `moveHeat`. O que o save ainda não guarda passa como o TE recém-colocado: controle em nível e alvo 0 (T07 move), tanques secos (T08), outgasser que não processa (T09: os slots dele não são lidos) | `RBMKNeutronHandler.getNodes:213-238`/`runStreamInteraction:242-397`, `TileEntityRBMKBase.moveHeat:159-215` |
+| Oclusão | `getHits` conta `isOpaqueCube` do bloco em cada altura da célula sem coluna da camada: a família RBMK pelo próprio override (`persist::java_opaque`: colunas `true`, canais `false`, console/guindaste/autoloader/painéis/pribris `false`, loader/inlet/outlet `true`); o dummy de uma coluna como o bloco da coluna (no Java o dummy é o próprio bloco), achado descendo até o núcleo; o resto pelo `solid_render` do motor (`ServerHost::block_opaque`, na glue e no `Deferred` do passo). Desconhecido continua congelando (D4) | `RBMKNeutronHandler.getHits:400-414`, `RBMKBase:58`, `RBMKRod:33`, `BlockDummyable:358`, `RBMKMiniPanelBase:42`, `RBMKDebris:21` |
+| Dials por dimensão (3A) | As regras são as do save (no 1.7.10 a dimensão lê as do overworld, `DerivedWorldInfo`); o cache é por `World`: o início do servidor faz o do overworld (`createDials`, que esvazia os outros); a primeira leitura numa dimensão sem cache reescreve **a regra lida** com o padrão e monta o cache dela; `/ntmrbmk dial` refaz só o cache da dimensão de quem digitou; uma coluna colocada lê a altura da sua dimensão. A primeira leitura de um passo é a da primeira coluna da ordem lógica: canal com barra `dialDisableXenon` (`burn:157`), colunas com portas `dialColumnHeight` (`getPorts*:616`), as outras `dialReasimBoilers` (`moveHeat:161`). A altura que o motor usa ao colocar segue a dimensão do jogador | `RBMKDials.createDials:55-71`, `refresh:77-115`, `getGameRule:124-155`, `ModEventHandler.commandEvent:1088`, `MainRegistry.serverStart:665` |
+| Radiação | `rad` do passo (barras destampadas, fluxos sobre e para dentro de colunas abertas, células de ar) vai ao campo por chunk com o commit (Onda 1). D2: incremento NaN não entra (o Java guarda e espalha o NaN; o JSON do campo gravaria `null` e perderia a chave inteira) | `TileEntityRBMKRod:153`, `RBMKNeutronHandler:305,417,421` |
+| Satélite (4A) | `Effect::SatelliteScan` vira `RayEvent` (posição, `NEUTRON_EMISSION`, `expiresOn = tick + 300`) no registro da dimensão, com a semântica de `LinkedHashMap.put` (o mesmo lugar substitui onde está); `updateSystem` tira os vencidos (`tick > expiresOn`) quando `tick % 20 == 10`, só nas dimensões abertas. Guardado na chave `rbmk_rays`, gravada com os reatores. Desvio aprovado: o Java guarda só em memória | `SatelliteRayScan.reportEvent:89-91`, `updateSystem:94-99`, `ModEventHandler.worldTick:661`, `TileEntityRBMKRod:124` |
+| Dump de passo | `rbmk::dump::ReactorDump`: a entrada exata de um passo (dials, RNG, fila, oclusão, colunas, pelos bits); `ntmtest rbmkdump` (só com `NTM_TEST_HOOKS=1`) grava a do próximo passo aceito. Dois dumps de um reator sem mão entre eles reproduzem um ao outro pelo núcleo puro | — |
+
+### Desvios e limites registrados
+
+- 2B: colisão `+0,25` da tampa (`RBMKBase.getCollisionBoundingBoxFromPool:128-148`) fora do T04: o
+  `BlockCollisionRegistry` do motor não tem formas dinâmicas por BE. Pendência de motor pós-T02.
+- `solid_render` como `isOpaqueCube`: blocos cujo `isOpaqueCube` do 1.7.10 diverge do moderno (folhas num servidor
+  dedicado do 1.7.10 são opacas; no integrado seguem os gráficos "fancy"; aqui nunca), e blocos de mod sem paridade
+  de forma, seguem o fato do motor.
+- Um motor, uma altura de colocação: jogadores em duas dimensões cujos caches diferem colocam colunas na altura da
+  dimensão do primeiro jogador. Uma coluna posta por `/setblock` também conta como leitura da altura (no Java só a
+  colocação do jogador lê).
+- Ordem de leitura por dimensão: a primeira leitura é a do primeiro passo de reator da dimensão na ordem dos grupos
+  (camada, componente, ordem de registro), não a da lista de TEs carregados do Java (D1).
+- O que o save não guarda das dez colunas novas no passo volta ao valor do TE novo a cada tick (temporizador do
+  cooler, `ventDelay` do boiler): sem fluido não há efeito observável; T07/T08/T09 persistem o que for deles.
+- **Um tick de espera ao abrir o mundo: corrigido na revisão** (ver "Correções da revisão" abaixo). Medido na entrega:
+  o save guardava relógio e estado juntos (271 passos em 271 ticks), mas depois de abrir o reator dava um passo a menos
+  que o relógio (25 em 26), porque a máquina só era adotada no primeiro tick do BE, um tick depois da carga.
+
+### Validação (19/11/2026)
+
+Código: `ac410fab` (passo, oclusão, dials, satélite, D2, dump), `47cc7ca8` (testes), `6e086f21` (oráculo),
+`f21bfa3a` (predicado único de expiração), roteiros de prova e docs nos commits seguintes. Binário release
+`horizon-client` SHA-256 `aaa9076a25b2ff4a9079505faad1f1fea3e1525216163b93c5872fddcc46a814` (motor `2187c3192b`, o pin
+da `main`; fontes do bundle iguais a `ac410fab`; o que veio depois só muda testes, roteiros, docs e a forma do
+predicado de expiração, mesmo comportamento), pacote `ntm.hmod` `ea71442ae806f6082f29d109d2388bfb23b2f32e09d4b1436c3aeaa85c1671d6`.
+Evidências em `/mnt/ssd120/sacer/so/rbmk-t04/evidence/` (JSON das aberturas, dumps, replays, mutações, logs).
+
+| Prova | Resultado |
+| --- | --- |
+| U: oráculo Java | `run_flux.py --check` igual byte a byte (`593ceb71…`): 43 cenários, os 39 anteriores com resultados idênticos e 4 novos (eficiências 0; canais vazios no caminho, todos os tipos `OTHER` e um segundo reator fora de alcance; fim de stream com controle na última célula e obstrução total/parcial/nenhuma na célula de irradiação; todos os dials físicos fora do padrão com controle se movendo). `rbmk_flux_parity` compara tick a tick, por bits. Suíte Python do oráculo: 21/21 |
+| U: unidade | Lib `ntm-core`: 759 (debug, suíte inteira) + integração 118 = 877, 6 ignorados, 0 falhas; testes RBMK 51 depois dos últimos ajustes. Novos: oclusão (`isOpaqueCube`: vidro, console, painel, dummies de canal não contam; pedra 3/4 do fluxo, dummies de blank metade, bits exatos), as 18 colunas como nós (storage e caldeira deixam passar bit a bit, controle em nível 0 encerra) e no calor, primeira leitura de dial por tipo de coluna, cache por dimensão (comando, colocação no End, reabertura com leitura do primeiro canal no Nether), satélite (relato a cada 200, substituição no lugar, expiração estrita em `% 20 == 10`, save e leitura), NaN sem efeito no campo, camada corrompida no save, dump e replay |
+| U: mutações | 15/15 pegas (`evidence/mutations-1.log`, `mutations-2.log`): `kind_of` só com as oito do T01; canal opaco; dummy sempre opaco; tabela RBMK ignorada; host do passo sem `block_opaque`; primeira leitura sem gravar o padrão; comando refazendo o overworld; `createDials` sem esvaziar os caches; primeira leitura sempre `moveHeat`; relato de satélite somado em vez de substituído; expiração em `>=` (sobreviveu na 1ª passada: o predicado estava duplicado; unificado em `f21bfa3a` e pega); expiração todo tick; chave `rbmk_rays` não gravada; NaN chegando ao campo; dump sem a fila |
+| Clippy / rustfmt | `ntm-core` todos os alvos `-D warnings`: 0; glue (`horizon-client`, `horizon-client-lib`, release, no stage do build): 0. Arquivos novos (`dump.rs`, `rbmk_t04_tests.rs`) `rustfmt` limpos; os existentes seguem com as diferenças de antes (`docs/estado-da-integracao.md`) |
+| `save_model` (release) | 11/11 |
+| `keep_world_cost` (release) | 3 execuções, 0,17–0,30 ms por tick com 0, 5 mil e 50 mil gerações (a chave `rbmk_rays` vai com a `rbmk`); uma primeira execução com o jogo e uma compilação nos mesmos 2 núcleos passou de 1 ms e foi refeita |
+| J: reator 15×15 (rodada 3, `run-rbmk-t04-proof.py`) | **play 23/24, reopen 5/5**. 225 colunas colocadas e 59 canais abastecidos pela mão, um só reator com 12 tipos no passo (refletor, absorvedor, blank, caldeira, storage, resfriador, aquecedor, moderador, os dois canais e os dois controles). Com `dialReactivityMod 0,35` (escolhido passando o núcleo sobre o dump do próprio layout: no padrão 1,0, sem caldeiras, ele dispara e toda coluna passa de 1500 em 2 min, o que a rodada 1 mostrou) opera: fluxo nos 59 canais, 276 → 303 °C em 25 s. `dialFluxRange 3` chega à entrada do passo seguinte e volta a 5. Eventos de satélite: todos `NEUTRON_EMISSION`, `expiresOn ≡ 100 (mod 200)`, mantidos na reabertura (85) |
+| J: replay contra o núcleo | Cadeias da rodada 3: `a` 515 passos em 515 ticks, `b-1→b-2` 4249/4249 (com o jogador longe, nas provas de oclusão e radiação), `b-3→b-4` 312/312, todas bit a bit (225 colunas, RNG, fila); `b-2→b-3` atravessa a reabertura: 34 passos em 35 ticks (o tick de espera acima). Rodadas 1 e 2 iguais (516, 4039+1, 212; 512, 4224, 34+1, 313; terceira abertura `c` 111/111). Do dump antes do fim ao estado em disco: 271/271 |
+| J: oclusão sobre os blocos do motor | 12/12 nas três rodadas: aberto, vidro, folhas, laje, escada, painel de vidro, grades e os dummies de um canal → nenhuma; pedra (altura 1), terra (0), os dummies de um blank (0 e 1), quatro pedras (0–3) |
+| J: radiação | Prova curta (pares em chunks vizinhos lidos num comando, `evidence/j-rad-only.log`): o chunk do par destampado acima do tampado nas 5 leituras (1280/1140, 1426/1271, 1185/1054, 1329/1184, 1494/1333), ≈ +12%; o núcleo, sobre os dumps dos pares da rodada 3, dá +11% de `incrementRad` em 400 passos (8168 contra 7354). Na rodada 3 a comparação com leituras separadas por 6 ticks saiu invertida (954/987): a leitura do campo, não a física |
+| J: 3A em jogo | Uma coluna posta no Nether (sem cache) reescreveu `dialColumnHeight` para 4 enquanto o overworld, com cache em 6, colocou a coluna seguinte do jogador com 6 blocos |
+| C (`run-rbmk-t03-proof.py`, cenário do T03, no binário do T04, `HORIZON_NO_EAGER_SAVE=1`) | 4/4 cortes, NTM igual ao controle vanilla item a item nas duas reaberturas: `kill`, `kv_committed` e `players_saved` 3 = 3; `live_chunk:2,0` 2 = 2 (o mesmo resíduo vanilla do T03); sem duplicação, armazenamento sem item em todas as aberturas (a chave nova `rbmk_rays` não guarda item). Relatório em `evidence/c-report.json`; mundos apagados |
+| C: saldo térmico e de fluxo | O replay das cadeias reproduz bit a bit, a cada tick, o calor de cada coluna (produção da barra, `moveHeat`, resfriamento passivo, limites) e os buffers de fluxo (`fluxQuantity`/`lastFluxQuantity` e a fila de 240 fluxos) do núcleo validado pelo oráculo; nenhum item muda pelo passo (as barras só mudam pela própria tag) |
+
+### Correções da revisão (19/11/2026)
+
+A revisão independente aprovou a entrega (0 reprovações, sem P1/P2). Decisão do usuário: corrigir o tick de espera com a
+opção (a) e os P3 apontados, sem sync com o upstream (motor `2187c3192b`).
+
+| Item | Como fica | Commit |
+| --- | --- | --- |
+| Tick de espera ao abrir (opção a) | A glue lê, na carga de cada chunk (o gancho `chunk_load` do motor: "seus blocos e BEs já estão lá"), as máquinas do chunk com o estado salvo e as entrega ao servidor (`Server::native_chunk_machines_loaded`), que as adota no começo do tick seguinte, depois das obrigações do chunk e antes do passo. A adoção no primeiro tick do BE continua para o que a carga não trouxe (um BE salvo antes do primeiro tick) | `274cac6b` |
+| P3(a): radiação na prova principal | Os pares aberto e tampado em chunks vizinhos, lidos num único comando, cinco vezes | `99b1947c` |
+| P3(d): corte estrito sobre o estado novo | Cenário C do T03 com uma regra de dial reescrita antes do ato (o controle reescreve uma gamerule vanilla) e os eventos de satélite em jogo, cortado entre `kv_committed` e `chunks_written` | `e32ed906` |
+| P3(e): dummy órfão | Teste: uma sequência de dummies sobre nenhuma coluna, ou mais longa que qualquer coluna, conta como o bloco opaco do `RBMKBase` | `b4ce9677` |
+
+Testes: `machines_adopted_as_their_chunk_loads_lose_no_step_at_an_opening` abre o mundo como o motor (as máquinas só pela
+carga) e segue igual ao mundo que nunca fechou, 23 ticks e 23 passos; o mesmo mundo com a adoção atrasada um tick (o
+caminho de antes) fica um passo atrás. `an_orphan_dummy_counts_as_opaque`: dois dummies órfãos tomam metade do fluxo.
+Mutações: 3/3 pegas (adoção na carga sem efeito; órfão sobre um bloco transparente; sequência além do alcance
+transparente). Binário release `ebe6658680d151cd28555ea37f2cc665d3822dd3a9b77ef6421480d0a7dcd5ca` (motor `2187c3192b`,
+fontes do bundle de `274cac6b`; o que veio depois só muda testes, roteiros e docs), pacote `ntm.hmod` `ea71442a…`
+(conteúdo inalterado).
+
+| Prova | Resultado |
+| --- | --- |
+| U | Suíte `ntm-core` em debug 879 ok, 6 ignorados, 0 falhas; testes RBMK 53; `save_model` release 11/11; `keep_world_cost` 0,16–0,21 ms por tick; Clippy `-D warnings` do `ntm-core` (todos os alvos) e da glue (release, stage): 0 |
+| J (rodada 4, `evidence/j-run4/`) | **play 24/24, reopen 6/6**: inclui `open_columns_leak_more_every_read` e `satellite_phase_kept` (85 eventos relatados depois da abertura, todos em múltiplos de 200). Replay com tolerância zero de espera (`RBMK_T04_WAIT=0`): `a` 515/515, `b-1→b-2` 4401/4401, **`b-2→b-3` através da reabertura 67/67** (antes 34 em 35), `b-3→b-4` 312/312, **`b-4→b-5` através de uma terceira abertura 335/335**, `b-5→b-6` 115/115, todos bit a bit |
+| C: cenário do T03 no binário novo (`HORIZON_NO_EAGER_SAVE=1`, `evidence/c-report-r2.json`) | 4/4 cortes, NTM igual ao controle vanilla item a item nas duas reaberturas: `kill`, `kv_committed`, `players_saved` 3 = 3; `live_chunk:2,0` 2 = 2 (o resíduo vanilla de sempre); sem duplicação, armazenamento sem item. A adoção na carga não muda o saldo |
+| C: corte estrito sobre o estado novo (`run-rbmk-t04-c-proof.py`, `HORIZON_NO_EAGER_SAVE=1`, `evidence/c-strict-report.json`, `c-strict-rules.json`) | Cenário C do T03 com `dialFluxRange` 5 → 7 logo antes do ato (o controle: `random_tick_speed` 5 → 7) e os eventos de satélite em jogo, cortado nos 5 pontos entre `kv_committed` e `chunks_written`: **5/5**, NTM igual ao controle item a item (3 = 3 em quatro cortes; `chunks_written` 2 = 2, a mesma última escrita que o vanilla perde); armazenamento sem item. A regra lida depois das duas reaberturas é a mesma nos dois mundos em todos os cortes: 7 em `kv_committed`, 5 (o valor do último save) nos três `region_record` e em `chunks_written`; nunca outro valor. Os eventos de satélite voltam legíveis e em fase (múltiplos de 200) em todos os cortes. Uma primeira rodada reprovou o controle por erro do roteiro (o nome antigo `randomTickSpeed`, depois um valor de base não salvo); corrigido em `85803721` e `992b5b26` |
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**

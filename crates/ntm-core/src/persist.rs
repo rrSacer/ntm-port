@@ -20,6 +20,9 @@ pub const KEY: &str = "world";
 /// The key of the RBMK layers' state (`WorldState::rbmk`), in the same storage and written with it at every save, apart
 /// from the rest: a reactor that steps rewrites only this one between saves (P2-3 of the T01 review).
 pub const RBMK_KEY: &str = "rbmk";
+/// The `SatelliteRayScan` events of the RBMK's steps, by dimension (`WorldState::rbmk_rays`, T04 4A): written with the
+/// layers, under their own key (the layers' format stays as it was).
+pub const RBMK_RAYS_KEY: &str = "rbmk_rays";
 /// The sickness rolls' random (`radiation::SicknessRng`), under its own key: a tick with someone sick rewrites only it.
 pub const SICKNESS_KEY: &str = "sickness";
 /// The storage key of the world's radiation by chunk as the chunks' saves hold it (`chunk_radiation::Saved`): under its
@@ -137,6 +140,9 @@ pub struct Kept {
     /// What machines became in steps whose block entities may reach the disk in different chunk records.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub survivors:Vec<crate::server::Survivor>,
+    /// The RBMK dials (`RBMKDials`): Java's game rules of the world, as strings.
+    #[serde(default, skip_serializing_if = "crate::rbmk::dials::GameRules::is_empty")]
+    pub rbmk_rules: crate::rbmk::dials::GameRules,
 }
 
 fn is_zero(n: &u64) -> bool {
@@ -222,6 +228,10 @@ pub struct WorldState {
     /// Each RBMK layer's simulation state, by dimension and base Y. It holds no item: a crash between the regions and
     /// this storage sets it back to the save before while the columns are as the regions left them (docs).
     pub rbmk: Tracked<BTreeMap<(String, i32), crate::rbmk::persist::Layer>>,
+    /// The RBMK's `SatelliteRayScan` events by dimension (T04, 4A), kept and written with the layers.
+    pub rbmk_rays: Tracked<BTreeMap<String, Vec<crate::rbmk::persist::RayEvent>>>,
+    /// The RBMK dials, Java's game rules (`/gamerule dial...` there, `/ntmrbmk dial` here): one set for the whole save.
+    pub rbmk_rules: Tracked<crate::rbmk::dials::GameRules>,
     /// The removals and batches an earlier version's storage held, still kept here as it held them: until a waited
     /// save wrote their chunk's record with them before this storage, or that record was read back with them.
     pub legacy: Tracked<Legacy>,
@@ -258,6 +268,7 @@ impl WorldState {
                 .and_then(|b| serde_json::from_slice::<crate::annihilator::Pools>(&b).ok())
                 .unwrap_or_default()
                 .into(),
+            rbmk_rules: kept.rbmk_rules.into(),
             rbmk: Tracked::new(
                 kv.get(RBMK_KEY)
                     .and_then(|b| serde_json::from_slice::<Vec<((String, i32), crate::rbmk::persist::Layer)>>(&b).ok())
@@ -266,6 +277,11 @@ impl WorldState {
                     .filter(|(_, l)| l.schema == crate::rbmk::persist::SCHEMA)
                     .collect(),
             ),
+            rbmk_rays: kv
+                .get(RBMK_RAYS_KEY)
+                .and_then(|b| serde_json::from_slice::<BTreeMap<String, Vec<crate::rbmk::persist::RayEvent>>>(&b).ok())
+                .unwrap_or_default()
+                .into(),
             ticks: kept.ticks,
             effect_serial: kept.effect_serial.into(),
             ..WorldState::default()
@@ -279,7 +295,7 @@ impl WorldState {
             Tracked::stamp(&self.effect_serial),
             Tracked::stamp(&self.legacy),
             Tracked::stamp(&self.generations),
-            0,
+            Tracked::stamp(&self.rbmk_rules),
             0,
             Tracked::stamp(&self.prepared_retentions),
             0,
@@ -317,7 +333,13 @@ impl WorldState {
 
     /// The stamp of the RBMK layers' last change (`RBMK_KEY`).
     pub fn rbmk_stamp(&self) -> u64 {
-        Tracked::stamp(&self.rbmk)
+        // Stamps only grow: the later of the two moves whenever either part changes, and goes back with both.
+        Tracked::stamp(&self.rbmk).max(Tracked::stamp(&self.rbmk_rays))
+    }
+
+    /// What [`WorldState::load`] reads back of the RBMK's satellite events (`RBMK_RAYS_KEY`).
+    pub fn kept_rbmk_rays(&self) -> Vec<u8> {
+        serde_json::to_vec(&*self.rbmk_rays).unwrap_or_default()
     }
 
     /// What [`WorldState::load`] reads back of the RBMK layers (`RBMK_KEY`): as big as the reactors, whatever the world.
@@ -355,6 +377,8 @@ impl WorldState {
             machine_effects: std::collections::VecDeque<&'a crate::server::CommittedEffects>,
             #[serde(skip_serializing_if = "std::collections::VecDeque::is_empty")]
             prepared_retentions: &'a std::collections::VecDeque<crate::server::PreparedRetention>,
+            #[serde(skip_serializing_if = "crate::rbmk::dials::GameRules::is_empty")]
+            rbmk_rules: &'a crate::rbmk::dials::GameRules,
         }
         let kept = KeptRef {
             radiation: &self.radiation,
@@ -367,6 +391,7 @@ impl WorldState {
             generations: self.generations.iter().collect(),
             machine_effects: self.legacy.batches.iter().map(|(_, b)| b).collect(),
             prepared_retentions: &self.prepared_retentions,
+            rbmk_rules: &self.rbmk_rules,
         };
         serde_json::to_vec(&kept).unwrap_or_default()
     }
@@ -387,6 +412,7 @@ impl WorldState {
             machine_effects: (*self.machine_effects).clone(),
             applied_machine_effects: (*self.applied_machine_effects).clone(),
             prepared_retentions: (*self.prepared_retentions).clone(),
+            rbmk_rules: (*self.rbmk_rules).clone(),
             survivors: self.survivors.values().cloned().collect(),
         };
         serde_json::to_vec(&kept).unwrap_or_default()

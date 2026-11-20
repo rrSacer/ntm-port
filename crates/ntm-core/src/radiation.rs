@@ -56,6 +56,24 @@ pub struct Hazard {
     #[serde(default)] pub radiation_rad_s: f32,
     #[serde(default)] pub fuel_target_rad_s: Option<f32>,
     #[serde(default)] pub rtg_target_rad_s: Option<f32>,
+    /// An RBMK rod's or pellet's `HazardModifierRBMKRadiation` (and the rods' `HazardModifierRBMKHot`).
+    #[serde(default)] pub rbmk: Option<RbmkHazard>,
+}
+
+/// `registerRBMK*`'s modifiers: the radiation the item tends to as it depletes (`dep`), whether linearly, whether it
+/// is HOT, and `HazardRegistry.xe135` and `nugget` (the pellets' xenon weight).
+#[derive(Clone, Copy, Debug, PartialEq, Deserialize)]
+pub struct RbmkHazard {
+    pub target_rad_s: f32,
+    pub linear: bool,
+    pub hot: bool,
+    pub xe135_rad_s: f32,
+    pub nugget: f32,
+}
+
+/// The RBMK hazard of item `id`.
+pub fn rbmk_hazard(id: &str) -> Option<&'static Hazard> {
+    all_hazards().iter().find(|h| h.id == id && h.rbmk.is_some())
 }
 #[derive(Deserialize)]
 struct Table {

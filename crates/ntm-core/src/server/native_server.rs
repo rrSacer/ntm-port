@@ -70,7 +70,7 @@ impl Server {
         let broken=world.removals.iter().map(|r|(r.key.clone(),r.machine.block.clone())).collect();
         let mut bridge=container_bridge::Bridge::default();
         for r in &world.removals {if r.engine_slots{bridge.last.insert(r.key.clone(),Vec::new());}}
-        Server {
+        let mut server = Server {
             polaroid: launch_polaroid(),
             field: Default::default(),
             blasts: crate::blast::Runtime::default(),
@@ -106,7 +106,9 @@ impl Server {
             taken_annihilator: None,
             awaiting_annihilator: None,
             nonce: obligations::draw_nonce(),
-        }
+        };
+        server.rbmk_start(host);
+        server
     }
 
     /// One server tick: the blocks that changed, the slots players moved,
@@ -161,9 +163,11 @@ impl Server {
         phases.mark("heat");
         self.solar_tick(host);
         phases.mark("solar");
+        self.rbmk_world_tick(host);
         self.simulate(host);
         // The RBMK's incrementRad of the steps accepted (TileEntityRBMKRod:153, RBMKNeutronHandler:305,417,421).
         self.apply_chunk_rad_pending();
+        self.rbmk_flush_dumps(host);
         self.ash_tick();
         phases.mark("simulate");
         self.stirling_finish(host);
@@ -181,6 +185,7 @@ impl Server {
         phases.mark("bombs");
         self.decon_tick(host);
         self.radiation_tick(host);
+        self.hot_tick(host);
         phases.mark("radiation");
         if !frozen.is_empty(){self.ready.topo_dirty=true;self.ready.world.machines.append(&mut frozen);}
         // A player's EntityEffectHandler runs in NetHandlerPlayServer.processPlayer, during the network tick that
@@ -236,6 +241,7 @@ impl Server {
         // the queue (behind a removal at its cell). Any other is spent (the placement was undone in the same tick).
         let waiting:BTreeSet<(Key,u64)>=self.queued.iter().filter_map(|(e,g)|match e{BlockEvent::Placed(d,p,_)=>Some(((d.clone(),*p),*g)),_=>None}).collect();
         self.ready.sawmills_without_blade.retain(|k,g|g.is_some_and(|g|waiting.contains(&(k.clone(),g))));
+        self.rbmk_orphans(host);
         self.observe_removals(host);
         self.cancel_obsolete_inputs(host);
         self.checkpoint_facts(host);
@@ -262,6 +268,7 @@ impl Server {
     /// A block changed (`Level.setBlock`): a machine or cable put, taken
     /// away or replaced, as the client's events said before.
     pub fn native_block_changed(&mut self, dim: &str, pos: Pos, old: &str, new: &str) {
+        self.rbmk_note_change(dim, pos, old, new);
         let tracked = |s: &str| {
             let id = blockstate::id_of(s);
             registry::is_cable(id) || machine_from_state(s).is_some()
@@ -291,6 +298,16 @@ impl Server {
     /// Whether the server holds a machine for the cell (a test and diagnostic question).
     pub fn native_has_machine(&mut self, dim: &str, pos: Pos) -> bool {
         self.ready().is_some_and(|r| r.world.machines.contains_key(&(dim.to_string(), pos)))
+    }
+
+    /// The machines of a chunk just loaded, by cell and saved state (the engine's chunk load: its blocks and block
+    /// entities are there, its block entities tick from a later tick): adopted now, so that the first tick after a
+    /// world opens steps them, and the mod's clock never runs a tick a machine waits for its adoption (RBMK T04: with
+    /// the adoption at the block entity's first tick only, a reactor stepped one tick less than the clock at each
+    /// opening). A machine already known is left; the obligations of the chunk come first (`native_obligations_loaded`).
+    /// How many it adopted.
+    pub fn native_chunk_machines_loaded(&mut self, dim: &str, machines: &[(Pos, String)]) -> usize {
+        machines.iter().filter(|(p, json)| !self.native_has(dim, *p) && self.native_adopt(dim, *p, json)).count()
     }
 
     pub fn native_adopt(&mut self, dim: &str, pos: Pos, json: &str) -> bool {

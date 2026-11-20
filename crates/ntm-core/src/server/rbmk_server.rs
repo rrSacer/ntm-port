@@ -18,34 +18,23 @@
 //!   its first surviving column, and each other part draws a seed from the parent's state and its own place, drawing
 //!   nothing from the parent's random; each stream goes with its origin.
 //!
-//! **Provisional (approved D-b):** the minimal step needed to prove the transactional contract. Default dials and
-//! height, no lids, ports, menus by context, radiation, meltdowns (logged once, not run) or the HBM opacity of blocks
-//! (any block but air counts as opaque); `crate::rbmk::persist` lists which ticket takes each.
+//! T04 (docs/horizon-current.md "RBMK T04"): all eighteen columns step (`persist::kind_of`); the dials are each
+//! dimension's cache over the save's rules, read as the first column reads them (`rbmk_columns::first_dial`, 3A);
+//! occlusion is Java's `isOpaqueCube` (`rbmk_opaque`); the step's `incrementRad` goes to the world's radiation by
+//! chunk and its `SatelliteRayScan` events to the dimension's kept list (`persist::report_ray`, 4A), both with the
+//! step's commit. Still out of the step: ports and fluids (T08), the outgasser's recipes (T09), control rods' targets
+//! and power (T07), meltdowns (logged once, not run: T16).
 use super::*;
 use crate::{
     machine::Data,
     rbmk::{
-        dials::{DialState, Dials},
         persist::{self, Layer, Member, RbmkColumn},
-        reactor::{Column, Kind as ColumnKind, Reactor},
+        reactor::{Column, Effect, Kind as ColumnKind, Reactor},
     },
     server::container_bridge::Stack,
 };
 
 type Cell = [i32; 2];
-
-/// The default dials, as a world that never set its rules reads them (T04 brings the rules).
-fn default_dials() -> Dials {
-    let mut d = DialState::default();
-    d.create(false);
-    d.refresh();
-    *d.cached().expect("refreshed dials")
-}
-
-/// Air, by the block's id (not a suffix).
-fn is_air(state: &str) -> bool {
-    matches!(blockstate::id_of(state), "minecraft:air" | "minecraft:cave_air" | "minecraft:void_air")
-}
 
 /// What a remembered column the step does not hold is now.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -142,9 +131,29 @@ impl<F: FnMut(Cell, &str) -> Absent> Graph<'_, F> {
 }
 
 impl Server {
+    /// `block.isOpaqueCube()` of the block at `p`, as `RBMKNeutronStream.getHits` asks it (T04): an RBMK-family block
+    /// by its Java override (`persist::java_opaque`); a column's dummy as its column's block, which it is in Java (the
+    /// core under its run of dummies; none found: `RBMKBase`'s true); any other block by the engine's facts. None: a
+    /// cell not loaded (D4: never air).
+    fn rbmk_opaque(host: &mut impl ServerHost, dim: &str, p: Pos) -> Option<bool> {
+        let (b, fact) = host.block_opaque(dim, p)?;
+        let id = blockstate::id_of(&b);
+        if id == persist::DUMMY {
+            for dy in 1..=persist::DUMMY_REACH {
+                let below = host.get_block(dim, [p[0], p[1] - dy, p[2]])?;
+                match blockstate::id_of(&below) {
+                    persist::DUMMY => continue,
+                    core => return Some(persist::java_opaque(core).filter(|_| persist::is_column(core)).unwrap_or(true)),
+                }
+            }
+            return Some(true);
+        }
+        Some(persist::java_opaque(id).unwrap_or(fact))
+    }
+
     /// The block entity columns of the layer of `k`, if it is one: (dimension, base Y).
     fn rbmk_layer_of(k: &Key, m: &Machine) -> Option<(String, i32)> {
-        matches!(m.data, Data::Rbmk(_)).then(|| (k.0.clone(), k.1[1]))
+        (matches!(m.data, Data::Rbmk(_)) && persist::kind_of(&m.block).is_some()).then(|| (k.0.clone(), k.1[1]))
     }
 
     /// What a remembered column is, as the world shows it now (a column the step removed has left the layer before:
@@ -160,8 +169,6 @@ impl Server {
     /// The RBMK groups of a step: one per reactor, the machines of each component the layers' columns form. A
     /// component whose remembered columns are all out of reach has no group: it waits, its state kept.
     pub(super) fn rbmk_groups(&mut self, host: &mut impl ServerHost, outside: &BTreeSet<Key>) -> Vec<Vec<Key>> {
-        let range = default_dials().flux_range;
-        let (rod, reasim) = (persist::ray_offsets(ColumnKind::Rod, range), persist::ray_offsets(ColumnKind::RodReaSim, range));
         let mut layers: BTreeMap<(String, i32), BTreeMap<Cell, String>> = BTreeMap::new();
         for (k, m) in &self.ready.world.machines {
             if outside.contains(k) {
@@ -173,6 +180,9 @@ impl Server {
         }
         let mut groups = Vec::new();
         for ((dim, y), present) in layers {
+            // The range the dimension's step will read (no dial's first read writes the range back).
+            let range = self.rbmk_dials_peek(&dim, "KEY_REASIM_BOILERS").flux_range;
+            let (rod, reasim) = (persist::ray_offsets(ColumnKind::Rod, range), persist::ray_offsets(ColumnKind::RodReaSim, range));
             let empty = Layer::new();
             let members = self.ready.world.rbmk.get(&(dim.clone(), y)).unwrap_or(&empty);
             let mut g = Graph { present: &present, members: &members.members, absent: |c, _: &str| Self::rbmk_absent(host, &dim, y, c), seen: BTreeMap::new(), rod: rod.clone(), reasim: reasim.clone() };
@@ -202,8 +212,6 @@ impl Server {
             }
         }
         let Some((dim, y)) = at else { return true };
-        let dials = default_dials();
-        let range = dials.flux_range;
         let mut layer = self.ready.world.rbmk.get(&(dim.clone(), y)).cloned().unwrap_or_default();
         // A column the step removed leaves (P1-1: one replaced in place by another is a new registration once adopted);
         // a column registered as another block is registered anew.
@@ -215,6 +223,12 @@ impl Server {
                 layer.members.insert(*c, Member { seq, block: block.clone(), comp: *c });
             }
         }
+        // The dimension's dials (3A), read as the group's first column in the logical order reads them first.
+        let first = present.keys().min_by_key(|c| layer.members[*c].seq).copied().expect("a column");
+        let first_machine = &self.ready.world.machines[&(dim.clone(), [first[0], y, first[1]])];
+        let fuelled = matches!(&first_machine.data, Data::Rbmk(c) if c.slots.first().and_then(|s| s.as_ref()).is_some_and(|s| persist::rod_of(&s.id).is_some()));
+        let dials = self.rbmk_dials(&dim, super::rbmk_columns::first_dial(&first_machine.block.clone(), fuelled));
+        let range = dials.flux_range;
         let (rod, reasim) = (persist::ray_offsets(ColumnKind::Rod, range), persist::ray_offsets(ColumnKind::RodReaSim, range));
         let (mine, siblings, gone) = {
             let mut g = Graph { present: &present, members: &layer.members, absent: |c, _: &str| Self::rbmk_absent(host, &dim, y, c), seen: BTreeMap::new(), rod: rod.clone(), reasim: reasim.clone() };
@@ -253,8 +267,8 @@ impl Server {
                 let Data::Rbmk(c) = &m.data else { unreachable!() };
                 let (kind, moderated) = persist::kind_of(&m.block).expect("an RBMK column");
                 let mut col = Column::new(kind, p[0], p[1]);
-                // Java places a column without its lid (`RBMKBase.getDirModified`: DIR_NO_LID); lids are T02's.
-                col.lid = false;
+                // Placed without one (`getDirModified`: DIR_NO_LID); a lid put on since (T02), or a control rod's own.
+                col.lid = c.has_lid(&m.block);
                 col.moderated = moderated;
                 col.heat = c.heat;
                 col.reasim_water = c.reasim_water;
@@ -265,7 +279,7 @@ impl Server {
                     rod.last_flux_quantity = c.last_flux_quantity;
                     rod.last_flux_ratio = c.last_flux_ratio;
                     rod.has_rod = c.has_rod;
-                    rod.fuel = c.slots.first().cloned().flatten().and_then(|s| persist::rod_of(&s.id).map(|t| (t, persist::rod_stack(s.custom.as_deref()))));
+                    rod.fuel = c.slots.first().cloned().flatten().and_then(|s| persist::rod_of(&s.id).map(|t| (t, persist::stack_rod(&s))));
                 }
                 r.add(col);
             }
@@ -310,7 +324,9 @@ impl Server {
                     c.slots[0] = None;
                 }
             }
-            // Provisional occlusion (T04): every block but air, in the cells the streams of this reactor can read.
+            // Occlusion (T04, `getHits`): the opaque cubes of the cells this reactor's streams can read, as Java's
+            // `isOpaqueCube` (the RBMK family's own overrides, the engine's facts for the rest). A cell with a column
+            // of the reactor is the column's (`Reactor::hits`); unknown is never air (D4).
             let mut cells = BTreeSet::new();
             for p in order {
                 let offsets = match persist::kind_of(&self.ready.world.machines[&(dim.clone(), [p[0], y, p[1]])].block).map(|k| k.0) {
@@ -322,15 +338,29 @@ impl Server {
             }
             for c in cells {
                 for h in 0..height {
-                    let Some(b) = host.get_block(&dim, [c[0], y + h, c[1]]) else { return false };
-                    if !is_air(&b) {
+                    let Some(opaque) = Self::rbmk_opaque(host, &dim, [c[0], y + h, c[1]]) else { return false };
+                    if opaque {
                         r.obstacles.insert((c[0], c[1], h));
                     }
                 }
             }
+            // Test hook: the step's input, written once the step is accepted (`rbmk_flush_dumps`).
+            if let Some(path) = order.iter().find_map(|p| self.ready.rbmk_dump_asked.remove(&(dim.clone(), [p[0], y, p[1]]))) {
+                let d = crate::rbmk::dump::ReactorDump::of(&r, &dim);
+                self.ready.rbmk_dumps.push((path, serde_json::to_string(&d).expect("a dump")));
+            }
             r.step();
-            // incrementRad of the open rods and of the streams over and into open columns (4d), as they came.
-            self.ready.chunk_rad_pending.extend(r.rad.drain(..).map(|e| (dim.clone(), [e.x, e.y, e.z], e.amount)));
+            // incrementRad of the open rods and of the streams over and into open columns (4d), as they came. D2: a NaN
+            // flux makes a NaN increment, which Java stores and spreads (`clamp_float` lets it through) and which the
+            // field's JSON cannot keep (it would write `null` and lose the whole key on reading): it adds nothing.
+            self.ready.chunk_rad_pending.extend(r.rad.drain(..).filter(|e| !e.amount.is_nan()).map(|e| (dim.clone(), [e.x, e.y, e.z], e.amount)));
+            // `SatelliteRayScan.reportEvent(INFO_NUCLEAR, 300)` of the rods that took flux (4A), with the step.
+            for e in r.effects.drain(..) {
+                if let Effect::SatelliteScan { column } = e {
+                    let p = order[column];
+                    crate::rbmk::persist::report_ray(&mut self.ready.world.rbmk_rays, &dim, [p[0], y, p[1]], crate::rbmk::persist::INFO_NUCLEAR, self.ready.world.ticks as i64, 300);
+                }
+            }
             let melting: BTreeSet<usize> = r.meltdowns.iter().copied().collect();
             for (j, p) in order.iter().enumerate() {
                 let key = (dim.clone(), [p[0], y, p[1]]);
@@ -380,6 +410,51 @@ impl Server {
             self.ready.world.rbmk.insert((dim, y), layer);
         }
         true
+    }
+
+    /// What a world tick does for the RBMK before its tile entities (T04): `SatelliteRayScan.updateSystem` of each
+    /// open dimension when the world time is 10 past a multiple of 20 (`ModEventHandler.worldTick:661`, a dimension
+    /// whose world is not open is not ticked and keeps its events, as an unloaded `WorldServer`); and the engine's
+    /// column height for where the acting player is (`rbmk_engine_height`).
+    pub(super) fn rbmk_world_tick(&mut self, host: &mut impl ServerHost) {
+        let now = self.ready.world.ticks as i64;
+        if now % 20 == 10 {
+            let dims: Vec<String> = self.ready.world.rbmk_rays.keys().cloned().collect();
+            for dim in dims {
+                if host.pile_reachable(&dim) && persist::expire_rays(&self.ready.world.rbmk_rays, &dim, now) {
+                    persist::drop_expired_rays(&mut self.ready.world.rbmk_rays, &dim, now);
+                }
+            }
+        }
+        let dim = self.players.first().map_or_else(|| super::rbmk_columns::OVERWORLD.to_string(), |p| p.dim.clone());
+        self.rbmk_engine_height(host, &dim);
+    }
+
+    /// Test hook (`NTM_TEST_HOOKS=1`): the input of the next accepted step of the reactor of the column at `pos`
+    /// (`rbmk::dump`), written to `path` after it. False: no column there.
+    pub fn native_test_rbmk_dump(&mut self, dim: &str, pos: Pos, path: &str) -> bool {
+        let key = (dim.to_string(), pos);
+        let column = self.ready.world.machines.get(&key).is_some_and(|m| matches!(m.data, Data::Rbmk(_)));
+        if column {
+            self.ready.rbmk_dump_asked.insert(key, path.to_string());
+        }
+        column
+    }
+
+    /// The dumps of this tick's accepted steps, to their files.
+    pub(super) fn rbmk_flush_dumps(&mut self, host: &mut impl ServerHost) {
+        for (path, json) in std::mem::take(&mut self.ready.rbmk_dumps) {
+            if let Err(e) = std::fs::write(&path, json) {
+                host.log(&format!("rbmk dump {path}: {e}"));
+            }
+        }
+    }
+
+    /// Test hook (`NTM_TEST_HOOKS=1`): the dimension's kept `SatelliteRayScan` events, one `x,y,z:info:expiresOn` each,
+    /// in their order, and the world tick.
+    pub fn native_test_rays(&self, dim: &str) -> String {
+        let list: Vec<String> = self.ready.world.rbmk_rays.get(dim).into_iter().flatten().map(|e| format!("{},{},{}:{}:{}", e.pos[0], e.pos[1], e.pos[2], e.info, e.expires_on)).collect();
+        format!("tick={} rays={}", self.ready.world.ticks, list.join(";"))
     }
 
     /// Test hook (`NTM_TEST_HOOKS=1`): the rod of the fuel channel at `pos` leaves as an item entity at `at` through a

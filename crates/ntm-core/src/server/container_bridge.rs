@@ -23,6 +23,11 @@ pub struct Stack {
     /// with different data don't pile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom: Option<String>,
+    /// Whether the 1.7.10 stack would carry a `stackTagCompound`: it has any data that one held (`custom_data`, a name,
+    /// lore, enchantments, an anvil's repair cost). An RBMK rod reads its keys from that tag, its defaults only without
+    /// one (`ItemRBMKRod.getDouble`: a rod renamed before it ever burnt reads a yield of 0). Set for the RBMK rods only.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub tagged: bool,
 }
 
 fn is_zero(v: &u32) -> bool {
@@ -36,6 +41,7 @@ impl Stack {
             count,
             damage: 0,
             custom: None,
+            tagged: false,
         }
     }
 }
@@ -180,6 +186,18 @@ pub const SLOTTED: &[(&str, Layout)] = &[
     ("ntm:rbmk_moderator", Layout::Native),
     ("ntm:rbmk_reflector", Layout::Native),
     ("ntm:rbmk_absorber", Layout::Native),
+    // T02: the other ten columns, for their lid; the outgasser's, the storage's and the heater's slots, the engine's
+    // until now, are the first sync's truth.
+    ("ntm:rbmk_control", Layout::Native),
+    ("ntm:rbmk_control_mod", Layout::Native),
+    ("ntm:rbmk_control_auto", Layout::Native),
+    ("ntm:rbmk_control_reasim", Layout::Native),
+    ("ntm:rbmk_control_reasim_auto", Layout::Native),
+    ("ntm:rbmk_boiler", Layout::Native),
+    ("ntm:rbmk_outgasser", Layout::Native),
+    ("ntm:rbmk_storage", Layout::Native),
+    ("ntm:rbmk_cooler", Layout::Native),
+    ("ntm:rbmk_heater", Layout::Native),
     ("ntm:pile_device__loader", Layout::Native),
     ("ntm:machine_solar_boiler", Layout::Native),
     ("ntm:solar_mirror", Layout::Native),
@@ -1160,7 +1178,7 @@ impl Server {
                         if let Some(cell) = want.get_mut(i) {
                             // A part keeps the damage its slot gave it.
                             let damage = cell.as_ref().filter(|c| Some(&c.id) == s.as_ref()).map_or(0, |c| c.damage);
-                            *cell = s.clone().map(|id| Stack { id, count: 1, damage, custom: None });
+                            *cell = s.clone().map(|id| Stack { id, count: 1, damage, custom: None, tagged: false });
                         }
                     }
                     bomb_data(b)

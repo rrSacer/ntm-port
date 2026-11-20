@@ -38,7 +38,7 @@ def number(expr):
 for match in re.finditer(r'public static final float (\w+)\s*=\s*([^;]+);',registry):
     try:constants[match[1]]=number(match[2])
     except (ValueError,SyntaxError):pass
-rates=defaultdict(dict);sources=defaultdict(list);gaps=[];fuel_targets={};rtg_targets={}
+rates=defaultdict(dict);sources=defaultdict(list);gaps=[];fuel_targets={};rtg_targets={};rbmk={}
 def put(item,kind,value,source):
     # Hazard source mutexes prevent adding equivalent ore-dictionary registrations.
     # Use the maximum equivalent entry. Explicit direct entries are applied later.
@@ -146,16 +146,17 @@ for pos,args,method in calls(registry,r'\bregisterRBMK(?:Rod|Pellet)?\b'):
         item,_=r.item(parts[0],unqualified=True)
         base=number(parts[1]);dep=number(parts[2])
         rest=parts[3:]
-        if method=='registerRBMK':hot=rest[0]=='true';blinding=number(rest[2]);digamma=number(rest[3])
-        elif method=='registerRBMKPellet':blinding=number(rest[1]) if len(rest)>1 else 0;digamma=number(rest[2]) if len(rest)>2 else 0;hot=False
-        else:hot=True;blinding=number(rest[0]) if rest and rest[0] not in ('true','false') else 0;digamma=0
+        if method=='registerRBMK':hot=rest[0]=='true';linear=rest[1]=='true';blinding=number(rest[2]);digamma=number(rest[3])
+        elif method=='registerRBMKPellet':linear=bool(rest) and rest[0]=='true';blinding=number(rest[1]) if len(rest)>1 else 0;digamma=number(rest[2]) if len(rest)>2 else 0;hot=False
+        else:hot=True;linear=bool(rest) and rest[0]=='true';blinding=number(rest[0]) if rest and rest[0] not in ('true','false') else 0;digamma=0
     except (Unsupported,ValueError,SyntaxError,IndexError):continue
     source='src/main/java/com/hbm/hazard/HazardRegistry.java:'+str(registry[:pos].count('\n')+1)
     put(item,'radiation',base,source)
     if blinding>0:put(item,'blinding',blinding,source)
     if digamma>0:put(item,'digamma',digamma,source)
-    gaps.append({'id':item,'source':source,'expression':'HazardModifierRBMKRadiation(target='+str(dep)+'): fresh base exported; depletion interpolation requires native item data.'
-                 +(' HazardModifierRBMKHot (HOT from rod core heat) is also NBT-driven.' if hot else '')})
+    # HazardModifierRBMKRadiation(dep, linear) and, for the rods, HazardModifierRBMKHot: the stack's tag drives them
+    # (ntm_core::rbmk::hazards); xe135 is HazardRegistry's, nugget the pellets' xenon weight.
+    rbmk[item]={'target_rad_s':round(dep,6),'linear':linear,'hot':hot,'xe135_rad_s':constants['xe135'],'nugget':constants['nugget']}
 # Other fuel helper's first rate is the fresh item's radiation; depletion is NBT.
 for pos,args,method in calls(registry,r'\b(?:registerOtherFuel|registerOtherWaste|registerRadSourceWaste)'):
     parts=split(args)
@@ -171,7 +172,7 @@ entries=[]
 for row in rows:
     data=rates[row['id']];rad=round(data.get('radiation',0),6)
     other={k:v for k,v in data.items() if k!='radiation'}
-    entries.append({'id':row['id'],'radiation_rad_s':rad,'radiation_millirad_s':round(rad*1000),**({'fuel_target_rad_s':fuel_targets[row['id']]} if row['id'] in fuel_targets else {}),**({'rtg_target_rad_s':rtg_targets[row['id']]} if row['id'] in rtg_targets else {}),'other_hazards':other,'sources':sources[row['id']], 'note':'Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.' if rad else 'No resolved RADIATION registration for this catalog identity; not a claim of physical safety.', 'resolution':'resolved source registration' if data else 'no matched source registration'})
+    entries.append({'id':row['id'],'radiation_rad_s':rad,'radiation_millirad_s':round(rad*1000),**({'fuel_target_rad_s':fuel_targets[row['id']]} if row['id'] in fuel_targets else {}),**({'rtg_target_rad_s':rtg_targets[row['id']]} if row['id'] in rtg_targets else {}),**({'rbmk':rbmk[row['id']]} if row['id'] in rbmk else {}),'other_hazards':other,'sources':sources[row['id']], 'note':'Inventory item; placed-block radiation and dynamic NBT/modifiers are separate.' if rad else 'No resolved RADIATION registration for this catalog identity; not a claim of physical safety.', 'resolution':'resolved source registration' if data else 'no matched source registration'})
 output={'schema':1,'source':'HBM NTM 1.7.10 local ntm-src','units':'RAD/s per item (NTM gameplay units)','rules':{'stack':'sum(count * radiation_rad_s)','other_hazards_implemented_m1':False,'zero':'No resolved source registration; dynamic/NBT and missing source registrations are gaps.'},'entries':entries,'extraction_gaps':gaps}
 (ROOT/'crates/ntm-core/data/hazards.json').write_text(json.dumps(output,indent=2)+'\n')
 buckets=defaultdict(list)
