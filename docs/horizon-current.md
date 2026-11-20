@@ -1437,7 +1437,7 @@ usa só o que o motor já oferece (`net_from_client`/`native_net_send_to_server`
 | Aplicação | O comando aceito espera, guardado pela geração do BE, a próxima transação da máquina, e entra antes do passo (como um botão de menu). No Java entra quando o pacote chega, entre dois ticks | `NBTControlPacket.Handler.onMessage` |
 | Piloto: controle automático | Tela sem slot de máquina (`ContainerRBMKControlAuto`): os quatro campos (3, 3, 4, 4 caracteres; os valores guardados como `int` ao abrir), salvar e as três curvas. A coluna guarda as quatro faixas e a curva (`AutoControl`, pelos bits; save anterior lê os padrões do TE) e as recebe como o `receiveControl`. Os botões ±1/±10 (o atalho de antes) saíram. Nível, alvo e energia ficam em 0 até o T07 mover a barra | `GUIRBMKControlAuto`, `TileEntityRBMKControlAuto.receiveControl:131-146`, `serialize:111-118` |
 
-### Desvios e decisões para o coordenador
+### Desvios (decisões confirmadas pelo coordenador, 20/11/2026: as quatro abaixo ficam como estão)
 
 - **Texto que passa no `isNumber` e quebra o `parseDouble`** (`1L`, `0x1`, 312 das 111 151 cadeias do oráculo): no
   1.7.10 o clique em salvar derruba o cliente. Aqui o salvar para nesse campo e não manda nada; os campos antes dele já
