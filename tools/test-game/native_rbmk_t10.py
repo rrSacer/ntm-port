@@ -128,7 +128,8 @@ class Proof:
         g.close()
         self.host.command(f'clear {name}')
         if carry:
-            self.host.command(f'give {name} {carry}')
+            # In the main inventory, out of the hotbar: the hand stays empty.
+            self.host.command(f'item replace entity {name} container.20 with {carry}')
         self.host.command(f'tp {name} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
         time.sleep(.6)
         g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
@@ -138,6 +139,7 @@ class Proof:
                 time.sleep(1.5)
                 return g
             time.sleep(.2)
+        self.host.evidence.setdefault('not_opened', []).append({'who': name, 'screen': g.ctl('screen'), 'ui': g.ctl('ui').get('screen')})
         raise AssertionError(f'{name}: the console did not open')
 
     def setup(self):
