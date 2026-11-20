@@ -8,6 +8,7 @@
 //! engine (debris entities, world blocks, menus, saving) is not here; see
 //! `docs/rbmk-core.md` for the list of gaps and of what is left to wire.
 
+pub mod console;
 pub mod dials;
 pub mod dump;
 pub mod fluids;
