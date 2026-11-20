@@ -16,7 +16,8 @@ pub const VERSION: u8 = 1;
 pub const MAX_KEY: usize = 64;
 pub const MAX_STRING: usize = 4096;
 pub const MAX_ARRAY: usize = 4096;
-pub const MAX_FIELDS: usize = 64;
+/// The RBMK console's commands carry a key for each column picked (`sel_j`, `sJ`: up to the window's 225, T10).
+pub const MAX_FIELDS: usize = 512;
 /// The engine's cap on a mod message (`native_net_send_to_server`).
 pub const MAX_MESSAGE: usize = 30_000;
 /// `hasPermission`'s reach.

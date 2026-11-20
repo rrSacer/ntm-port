@@ -85,11 +85,18 @@ fn the_console_scans_its_window_every_ten_ticks() {
     let at1 = |x: i32, z: i32| (0..225).find(|&i| console::offset(1, i) == (x, z)).unwrap() as usize;
     assert_eq!(turned.scan[at1(4, 0)].as_ref().map(|v| v.kind), Some(ColumnType::ControlAuto));
     assert_ne!(at1(4, 0), at(4, 0));
-    // The screen's snapshot carries the types.
+    // The screen's snapshot carries what the scan saw: a manual rod's level and group (none: -1), the moderated one,
+    // the automatic rod's level alone, the boiler's tanks.
     let grant = Grant::decode(&g.server.native_screen_open("p1", OW, CONSOLE).unwrap()).unwrap();
-    let kinds = grant.snapshot.fields.get_int_array("k").unwrap();
-    assert_eq!(kinds[at1(0, 0)], ColumnType::Control as i32);
-    assert_eq!(kinds.iter().filter(|k| **k >= 0).count(), 5, "three rods, the boiler, the blank");
+    let cols = console::unpack(&grant.snapshot.fields.get_int_array("cols").unwrap()).expect("the packed scan");
+    assert_eq!(cols, turned.scan);
+    assert_eq!(cols.iter().flatten().count(), 5, "three rods, the boiler, the blank");
+    let seen = |x, z| cols[at1(x, z)].clone().unwrap();
+    assert_eq!((seen(0, 0).data, seen(0, 0).moderated), (console::ColumnData::Control { level: 0.6, color: Some(-1) }, false));
+    assert!(seen(2, 0).moderated);
+    assert!(matches!(seen(4, 0).data, console::ColumnData::Control { color: None, .. }), "its curve moves it: {:?}", seen(4, 0).data);
+    assert!(matches!(seen(0, 2).data, console::ColumnData::Tanks { max_water: 10000, .. }), "{:?}", seen(0, 2).data);
+    assert_eq!(grant.snapshot.fields.get_int_array("flux").unwrap(), vec![0; console::FLUX], "no fuel channel");
 }
 
 /// AZ-5 (`level` 0 for every CONTROL column the scan saw): the two manual rods take a target of 0 from where they are
@@ -156,4 +163,66 @@ fn the_consoles_commands_reach_their_columns() {
 fn with_boiler_cold(g: &mut Game) {
     let Data::Rbmk(c) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), [0, Y, 2])).unwrap().data else { panic!() };
     c.heat = 20.0;
+}
+
+/// The RBMK tool gives the console its target, the screwdriver turns its window (five turns: one quarter); each waits
+/// for the console's next tick, and neither reaches a block that is no console.
+#[test]
+fn the_tool_links_and_the_screwdriver_turns_the_console() {
+    let mut g = game();
+    reactor(&mut g);
+    assert!(g.server.native_rbmk_console_link(OW, CONSOLE, TARGET));
+    for _ in 0..5 {
+        assert!(g.server.native_rbmk_console_rotate(OW, CONSOLE));
+    }
+    assert!(!g.server.native_rbmk_console_link(OW, TARGET, CONSOLE), "a column is no console");
+    assert!(!g.server.native_rbmk_console_rotate(OW, [2, Y, 0]));
+    assert_eq!((console_of(&mut g).state.target, console_of(&mut g).state.rotation), ([0; 3], 0), "not before its tick");
+    g.run(1);
+    assert_eq!((console_of(&mut g).state.target, console_of(&mut g).state.rotation), (TARGET, 1));
+    g.run(10);
+    let c = console_of(&mut g);
+    let at = (0..225).find(|&i| console::offset(1, i) == (4, 0)).unwrap() as usize;
+    assert_eq!(c.scan[at].as_ref().map(|v| v.kind), Some(ColumnType::ControlAuto), "the window seen from the new target, turned");
+}
+
+/// A fuel channel in the window: the scan sees its rod (`getNBTForConsole`: enrichment, xenon, hull and core heat,
+/// melting point) and the flux graph takes the channels' `lastFluxQuantity`, cast to an int, at each scan.
+#[test]
+fn the_console_sees_the_fuel_and_its_flux() {
+    use crate::server::container_bridge::Stack;
+    let mut g = game();
+    g.place(CONSOLE, "ntm:rbmk_console[facing=north,honey_level=0]");
+    // Two Po-210/Be rods side by side: each its own source, each the other's flux.
+    let other = [TARGET[0] + 1, Y, TARGET[2]];
+    for p in [TARGET, other] {
+        g.place(p, &column("rbmk_rod"));
+    }
+    g.run(2);
+    for p in [TARGET, other] {
+        let stack = Stack::new("ntm:rbmk_fuel_po210be", 1);
+        g.world.borrow_mut().hands = Some(PlayerSlots {
+            hand: Some(PlayerSlot::Inventory(0)),
+            inventory: vec![Some(HeldStack { encoded: format!("{stack:?}"), stack }), None],
+            creative: false,
+            ..Default::default()
+        });
+        assert!(g.server.native_rbmk_use(&mut g.sh, OW, [p[0], p[1] + 2, p[2]], p, "p1"), "the rod goes in");
+    }
+    link(&mut g, TARGET, 0);
+    g.run(20);
+    // The scan comes before the columns' steps: it reads what the step before left.
+    while !g.ready().world.ticks.is_multiple_of(10) {
+        g.run(1);
+    }
+    let flux = col(&mut g, TARGET).last_flux_quantity + col(&mut g, other).last_flux_quantity;
+    assert!(flux > 0.0, "each rod has the other's flux: {flux}");
+    g.run(1);
+    let c = console_of(&mut g);
+    assert_eq!(*c.flux.last().unwrap(), flux as i32);
+    let at = (0..225).find(|&i| console::offset(0, i) == (0, 0)).unwrap() as usize;
+    let console::ColumnData::Fuel(Some([enrichment, xenon, hull, core, melting])) = c.scan[at].clone().unwrap().data else { panic!("{:?}", c.scan[at]) };
+    let rod = crate::rbmk::persist::rod_of("ntm:rbmk_fuel_po210be").unwrap();
+    assert_eq!(melting, rod.melting_point);
+    assert!(enrichment > 0.0 && enrichment <= 1.0 && xenon >= 0.0 && hull >= 20.0 && core >= hull, "{enrichment} {xenon} {hull} {core}");
 }

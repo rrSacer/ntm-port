@@ -85,14 +85,174 @@ pub fn column_type(block: &str) -> Option<ColumnType> {
     })
 }
 
-/// What the console's last scan saw of a column (`rescan`, every 10 ticks): its type and the values its map and
-/// screens read (`heat`; a control rod's `level` and group, `RBMKColor` ordinal).
+/// What the console's last scan saw of a column (`rescan`, every 10 ticks: its type, `getNBTForConsole` and
+/// `heat`; `maxHeat` is 1500 for every column, `moderated` set for a moderated manual rod).
 #[derive(Clone, Debug, PartialEq)]
 pub struct ColumnView {
     pub kind: ColumnType,
     pub heat: f64,
-    pub level: Option<f64>,
-    pub color: Option<u8>,
+    pub moderated: bool,
+    pub data: ColumnData,
+}
+
+/// A column's `getNBTForConsole`, by the Java class that writes it (the others write none).
+#[derive(Clone, Debug, PartialEq)]
+pub enum ColumnData {
+    None,
+    /// `TileEntityRBMKControl`: `level` (and `targetLevel`, read by nothing); a manual rod's `color` (-1 none).
+    Control { level: f64, color: Option<i16> },
+    /// `TileEntityRBMKRod`: the rod's `enrichment`, `xenon`, `c_heat`, `c_coreHeat`, `c_maxHeat`; none without a rod.
+    Fuel(Option<[f64; 5]>),
+    /// `TileEntityRBMKBoiler`, `TileEntityRBMKHeater`: `water`, `maxWater`, `steam`, `maxSteam`, `type` and the
+    /// heater's `hottype` (fluid ids).
+    Tanks { water: i32, max_water: i32, steam: i32, max_steam: i32, kind: u16, hot: u16 },
+    /// `TileEntityRBMKOutgasser`: `gas`, `maxGas`, `type`, `progress` (read by no screen).
+    Gas { gas: i32, max_gas: i32, kind: u16, progress: f64 },
+}
+
+/// `RBMKColumn.data.getDouble("level")`: 0 for a column that wrote none.
+impl ColumnView {
+    pub fn level(&self) -> Option<f64> {
+        match self.data {
+            ColumnData::Control { level, .. } => Some(level),
+            _ => None,
+        }
+    }
+}
+
+/// The `Fluids` id of a tank's `Fluids` name (NONE 0).
+fn fluid_id(name: &str) -> u16 {
+    crate::fluid::types().iter().find(|t| t.name == name).map_or(0, |t| t.id)
+}
+
+/// What `rescan` reads of the column of `block`: none for a block that is no column.
+pub fn view_of(block: &str, col: &persist::RbmkColumn) -> Option<ColumnView> {
+    let kind = column_type(block)?;
+    let manual = persist::is_manual_control(block);
+    let data = match kind {
+        ColumnType::Control | ColumnType::ControlAuto => {
+            let st = col.control.clone().unwrap_or_default();
+            ColumnData::Control { level: st.level, color: manual.then(|| st.color.map_or(-1, i16::from)) }
+        }
+        ColumnType::Fuel | ColumnType::FuelSim => ColumnData::Fuel(col.slots.first().and_then(Option::as_ref).and_then(|s| {
+            let rod = persist::rod_of(&s.id)?;
+            let mut r = persist::stack_rod(s);
+            Some([r.enrichment(rod), r.poison(rod), r.hull_heat(rod), r.core_heat(rod), rod.melting_point])
+        })),
+        ColumnType::Boiler | ColumnType::Heatex => {
+            let Some(p) = &col.piped else { return Some(ColumnView { kind, heat: col.heat, moderated: false, data: ColumnData::None }) };
+            let (feed, steam) = (&p.input, &p.output);
+            // The boiler's `type` is its steam's (the compressor), the heater's its feed's.
+            let (kind_id, hot) = if kind == ColumnType::Boiler { (fluid_id(&steam.fluid), 0) } else { (fluid_id(&feed.fluid), fluid_id(&steam.fluid)) };
+            ColumnData::Tanks { water: feed.fill, max_water: feed.max, steam: steam.fill, max_steam: steam.max, kind: kind_id, hot }
+        }
+        ColumnType::Outgasser => match &col.outgasser {
+            Some(o) => ColumnData::Gas { gas: o.gas.fill, max_gas: o.gas.max, kind: fluid_id(&o.gas.fluid), progress: o.progress },
+            None => ColumnData::None,
+        },
+        _ => ColumnData::None,
+    };
+    // `isModerated`: only `TileEntityRBMKControlManual` answers it, by its block.
+    let moderated = manual && persist::kind_of(block).is_some_and(|(_, m)| m);
+    Some(ColumnView { kind, heat: col.heat, moderated, data })
+}
+
+/// The scan as one int array (D6: a snapshot has room for few keys, an array for the 225 columns): for each cell a
+/// head, -1 for none, else `ColumnType` ordinal | moderated << 8 | data kind << 9, then its data, a double as its
+/// two halves (exact).
+pub fn pack(scan: &[Option<ColumnView>]) -> Vec<i32> {
+    let mut out = Vec::new();
+    let double = |out: &mut Vec<i32>, v: f64| {
+        let b = v.to_bits();
+        out.extend([(b >> 32) as i32, b as i32]);
+    };
+    for c in scan {
+        let Some(c) = c else {
+            out.push(-1);
+            continue;
+        };
+        let tag = match c.data {
+            ColumnData::None => 0,
+            ColumnData::Control { color: None, .. } => 1,
+            ColumnData::Control { color: Some(_), .. } => 2,
+            ColumnData::Fuel(None) => 3,
+            ColumnData::Fuel(Some(_)) => 4,
+            ColumnData::Tanks { .. } => 5,
+            ColumnData::Gas { .. } => 6,
+        };
+        out.push(c.kind as i32 | i32::from(c.moderated) << 8 | tag << 9);
+        double(&mut out, c.heat);
+        match &c.data {
+            ColumnData::None | ColumnData::Fuel(None) => {}
+            ColumnData::Control { level, color } => {
+                double(&mut out, *level);
+                if let Some(color) = color {
+                    out.push(i32::from(*color));
+                }
+            }
+            ColumnData::Fuel(Some(v)) => v.iter().for_each(|v| double(&mut out, *v)),
+            ColumnData::Tanks { water, max_water, steam, max_steam, kind, hot } => {
+                out.extend([*water, *max_water, *steam, *max_steam, i32::from(*kind), i32::from(*hot)])
+            }
+            ColumnData::Gas { gas, max_gas, kind, progress } => {
+                out.extend([*gas, *max_gas, i32::from(*kind)]);
+                double(&mut out, *progress);
+            }
+        }
+    }
+    out
+}
+
+/// [`pack`] read back; none for an array it did not write.
+pub fn unpack(packed: &[i32]) -> Option<Vec<Option<ColumnView>>> {
+    const KINDS: [ColumnType; 14] = [
+        ColumnType::Blank,
+        ColumnType::Fuel,
+        ColumnType::FuelSim,
+        ColumnType::Control,
+        ColumnType::ControlAuto,
+        ColumnType::Boiler,
+        ColumnType::Moderator,
+        ColumnType::Absorber,
+        ColumnType::Reflector,
+        ColumnType::Outgasser,
+        ColumnType::Breeder,
+        ColumnType::Storage,
+        ColumnType::Cooler,
+        ColumnType::Heatex,
+    ];
+    struct Reader<'a>(std::slice::Iter<'a, i32>);
+    impl Reader<'_> {
+        fn int(&mut self) -> Option<i32> {
+            self.0.next().copied()
+        }
+        fn double(&mut self) -> Option<f64> {
+            Some(f64::from_bits(u64::from(self.int()? as u32) << 32 | u64::from(self.int()? as u32)))
+        }
+    }
+    let mut r = Reader(packed.iter());
+    let mut out = Vec::new();
+    while out.len() < CELLS as usize {
+        let head = r.int()?;
+        if head == -1 {
+            out.push(None);
+            continue;
+        }
+        let kind = *KINDS.get((head & 0xFF) as usize)?;
+        let heat = r.double()?;
+        let data = match head >> 9 {
+            0 => ColumnData::None,
+            1 => ColumnData::Control { level: r.double()?, color: None },
+            2 => ColumnData::Control { level: r.double()?, color: Some(r.int()? as i16) },
+            3 => ColumnData::Fuel(None),
+            4 => ColumnData::Fuel(Some([r.double()?, r.double()?, r.double()?, r.double()?, r.double()?])),
+            5 => ColumnData::Tanks { water: r.int()?, max_water: r.int()?, steam: r.int()?, max_steam: r.int()?, kind: r.int()? as u16, hot: r.int()? as u16 },
+            6 => ColumnData::Gas { gas: r.int()?, max_gas: r.int()?, kind: r.int()? as u16, progress: r.double()? },
+            _ => return None,
+        };
+        out.push(Some(ColumnView { kind, heat, moderated: head >> 8 & 1 == 1, data }));
+    }
+    Some(out)
 }
 
 /// The console as the server keeps it: its saved state and, in memory only (the Java's `columns` are refilled by the
@@ -103,6 +263,9 @@ pub struct Console {
     pub state: ConsoleState,
     #[serde(skip)]
     pub scan: Vec<Option<ColumnView>>,
+    /// `fluxBuffer` (not saved: 60 zeros after a load).
+    #[serde(skip)]
+    pub flux: Vec<i32>,
 }
 
 impl crate::machine::Logic for Console {
@@ -114,9 +277,19 @@ impl crate::machine::Logic for Console {
     }
 }
 
-/// What the console's screen reads (`serialize`'s columns and screens, typed, D6): the target, the rotation, the six
-/// screens (`tN` type, `sN` columns) and the last scan, `k` the 225 column types (`ColumnType` ordinal, -1 none) and,
-/// for each column seen, `hN` its heat, `lN` a control rod's level and `cN` a manual rod's group (-1 none).
+/// `fluxBuffer`'s length: the flux graph's last 60 scans.
+pub const FLUX: usize = 60;
+
+/// `rescan`'s end: the buffer moves one place and takes `(int) flux`, the sum of the fuel channels' `lastFluxQuantity`
+/// (Java's cast: a NaN is 0, beyond an int its bound).
+pub fn push_flux(buffer: &mut Vec<i32>, flux: f64) {
+    buffer.resize(FLUX, 0);
+    buffer.remove(0);
+    buffer.push(flux as i32);
+}
+
+/// What the console's screen reads (`serialize`'s full packet, typed, D6): the target, the rotation, the six screens
+/// (`tN` type, `sN` columns), `cols` the last scan ([`pack`]) and `flux` the flux graph.
 pub fn snapshot(console: &Console) -> Fields {
     use crate::screens::control::Value;
     let mut f = Fields::default();
@@ -126,18 +299,12 @@ pub fn snapshot(console: &Console) -> Fields {
     for (i, s) in st.screens.iter().enumerate() {
         f.set(&format!("t{i}"), Value::Byte(s.kind as i8)).set(&format!("s{i}"), Value::IntArray(s.columns.clone()));
     }
-    let kinds = (0..CELLS as usize).map(|i| console.scan.get(i).cloned().flatten().map_or(-1, |c| c.kind as i32)).collect();
-    f.set("k", Value::IntArray(kinds));
-    for (i, c) in console.scan.iter().enumerate() {
-        let Some(c) = c else { continue };
-        f.set(&format!("h{i}"), Value::Double(c.heat));
-        if let Some(l) = c.level {
-            f.set(&format!("l{i}"), Value::Double(l));
-        }
-        if c.kind == ColumnType::Control {
-            f.set(&format!("c{i}"), Value::Int(c.color.map_or(-1, i32::from)));
-        }
-    }
+    let mut scan = console.scan.clone();
+    scan.resize(CELLS as usize, None);
+    f.set("cols", Value::IntArray(pack(&scan)));
+    let mut flux = console.flux.clone();
+    flux.resize(FLUX, 0);
+    f.set("flux", Value::IntArray(flux));
     f
 }
 
@@ -312,5 +479,65 @@ mod tests {
             assert!(receive(&mut s, &bad).is_err(), "{bad:?}");
             assert_eq!(s, before, "nothing changed: {bad:?}");
         }
+    }
+
+    fn every_kind() -> Vec<Option<ColumnView>> {
+        let view = |kind, data| Some(ColumnView { kind, heat: 20.5, moderated: false, data });
+        vec![
+            None,
+            view(ColumnType::Blank, ColumnData::None),
+            view(ColumnType::ControlAuto, ColumnData::Control { level: 0.3, color: None }),
+            Some(ColumnView { kind: ColumnType::Control, heat: f64::NAN, moderated: true, data: ColumnData::Control { level: -0.0, color: Some(-1) } }),
+            view(ColumnType::Control, ColumnData::Control { level: 1.0, color: Some(4) }),
+            view(ColumnType::Fuel, ColumnData::Fuel(None)),
+            view(ColumnType::FuelSim, ColumnData::Fuel(Some([0.99, 12.5, 2000.25, f64::INFINITY, 3000.0]))),
+            view(ColumnType::Boiler, ColumnData::Tanks { water: 1, max_water: 10000, steam: 2, max_steam: 1000000, kind: 7, hot: 0 }),
+            view(ColumnType::Heatex, ColumnData::Tanks { water: -3, max_water: 16000, steam: i32::MAX, max_steam: 16000, kind: 600, hot: 601 }),
+            view(ColumnType::Outgasser, ColumnData::Gas { gas: 5, max_gas: 64000, kind: 9, progress: 1.5e-300 }),
+        ]
+    }
+
+    /// Every column the scan may see reads back as it was, doubles by their bits (a NaN heat, a -0 level).
+    #[test]
+    fn the_scan_packs_exactly() {
+        let mut scan = every_kind();
+        scan.resize(CELLS as usize, None);
+        let back = unpack(&pack(&scan)).expect("read back");
+        assert_eq!(back.len(), scan.len());
+        for (a, b) in scan.iter().zip(&back) {
+            let bits = |v: &Option<ColumnView>| format!("{:?}", v.as_ref().map(|c| (c.kind, c.heat.to_bits(), c.moderated, format!("{:?}", c.data))));
+            assert_eq!(bits(a), bits(b));
+        }
+        assert_eq!(back[3].as_ref().unwrap().level().map(f64::to_bits), Some((-0.0f64).to_bits()));
+        assert!(unpack(&pack(&scan)[..10]).is_none(), "cut short");
+        assert!(unpack(&[1 | 7 << 9, 0, 0]).is_none(), "a data kind it never writes");
+    }
+
+    /// The fullest window there is (225 fuel channels with rods, six screens of every column) still fits a snapshot,
+    /// and AZ-5 with 225 manual rods fits a command.
+    #[test]
+    fn a_full_window_fits_the_messages() {
+        use crate::screens::control::{Command, Snapshot};
+        let fuel = Some(ColumnView { kind: ColumnType::Fuel, heat: 1.0, moderated: false, data: ColumnData::Fuel(Some([1.0; 5])) });
+        let mut console = Console { scan: vec![fuel; CELLS as usize], ..Console::default() };
+        for s in console.state.screens.iter_mut() {
+            s.columns = (0..CELLS).collect();
+        }
+        let snap = Snapshot { session: 1, generation: 1, pos: [0; 3], tick: 0, fields: snapshot(&console) };
+        assert!(snap.encode().is_ok(), "{:?}", snap.encode().err());
+        let az5 = az5(&vec![Some(ColumnType::Control); CELLS as usize]);
+        let cmd = Command { session: 1, generation: 1, pos: [0; 3], seq: 1, fields: az5 };
+        assert!(cmd.encode().is_ok(), "{:?}", cmd.encode().err());
+    }
+
+    /// `fluxBuffer`: 60 zeros at first, then each scan's sum at the end, the oldest out; `(int)` of a NaN is 0.
+    #[test]
+    fn the_flux_graph_slides() {
+        let mut b = Vec::new();
+        push_flux(&mut b, 12.9);
+        assert_eq!((b.len(), b[59], b[58]), (FLUX, 12, 0));
+        push_flux(&mut b, f64::NAN);
+        push_flux(&mut b, 1e300);
+        assert_eq!(&b[57..], &[12, 0, i32::MAX]);
     }
 }

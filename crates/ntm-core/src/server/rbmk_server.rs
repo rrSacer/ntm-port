@@ -597,6 +597,7 @@ impl Server {
         for key in consoles {
             let Some(Data::RbmkConsole(c)) = self.ready.world.machines.get(&key).map(|m| &m.data) else { continue };
             let (st, dim) = (c.state.clone(), key.0.clone());
+            let mut flux = 0.0;
             let scan: Vec<Option<ColumnView>> = (0..console::CELLS)
                 .map(|i| {
                     let (x, z) = console::offset(st.rotation, i);
@@ -606,16 +607,16 @@ impl Server {
                     }
                     let m = self.ready.world.machines.get(&k)?;
                     let Data::Rbmk(col) = &m.data else { return None };
-                    Some(ColumnView {
-                        kind: console::column_type(&m.block)?,
-                        heat: col.heat,
-                        level: col.control.as_ref().map(|s| s.level),
-                        color: col.control.as_ref().and_then(|s| s.color),
-                    })
+                    // `fuel.lastFluxQuantity` of each `TileEntityRBMKRod` (a ReaSim channel is one).
+                    if persist::is_channel(&m.block) {
+                        flux += col.last_flux_quantity;
+                    }
+                    console::view_of(&m.block, col)
                 })
                 .collect();
             if let Some(Data::RbmkConsole(c)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data) {
                 c.scan = scan;
+                console::push_flux(&mut c.flux, flux);
             }
         }
     }
