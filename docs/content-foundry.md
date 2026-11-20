@@ -134,7 +134,7 @@ Lacunas declaradas: o desenho animado do lingotamento
 
 **Decisão do coordenador: opção B**, implementada (rodada 5):
 
-- **`ntm:foundry_slagtap`** é `Kind::Slagtap` / `Data::Slagtap(Outlet)` (o mesmo filtro e inversão da saída, sem o fechamento por redstone: lacuna declarada, igual à da saída). Recebe metal só por trás (`side == opposite(facing)`), com o filtro, e só se o raio acha um bloco (`canAcceptPartialFlow`, `foundry_server::accept_flow`).
+- **`ntm:foundry_slagtap`** é `Kind::Slagtap` / `Data::Slagtap(Outlet)` (o mesmo filtro, inversão e fechamento por redstone da saída). Recebe metal só por trás (`side == opposite(facing)`), com o filtro, e só se o raio acha um bloco (`canAcceptPartialFlow`, `foundry_server::accept_flow`).
 - **`ntm:slag`** é um bloco de máquina (`Kind::Slag` / `Data::Slag`, `foundry/slag.rs`) sem item e sem `facing`; a altura é a propriedade `layer` (0..8, oitavos do máximo: `fill_level`) e a forma é a mesma altura, na seleção e na colisão (`shapes` do conteúdo, template `minecraft:iron_block` com `state_properties`). Guarda tudo no registro (não tem slots: `slots_recorded` verdadeiro) e o quebrar solta **uma sucata exata** (`Logic::scraps`, D4).
 - **O vazamento é um commit só** (`server/slag_server.rs`). O canal ou tanque de origem, ao entregar à bica, não muda nada em memória: apenas registra o pedido. No fim do tique, `slag_pour` lê tudo (a escória atingida, a célula de cima, o registro da origem) e publica **de uma vez** (`ServerHost::commit_machines`): o registro menor da origem, o registro maior da escória atingida (se é do mesmo material) e o bloco novo com o primeiro registro (`CellWrite.initial`). Recusado (chunk descarregado, mudança de bloco pendente, `refuse_commits`), nada muda em memória nem no mundo e a origem guarda o metal; aceito, o modelo em memória é trocado depois. Assim, em qualquer ponto, o metal está na origem ou na escória, nunca nos dois e nunca em nenhum.
 - **Um chunk só.** A origem, a escória que ela enche e a célula do bloco novo precisam estar no mesmo chunk. O registro de um chunk é o que o mundo grava de forma atômica; os registros de dois chunks chegam ao disco em momentos diferentes, e o diário que cobre um passo em vários chunks (`Survivor`) não sabe criar o bloco que falta numa gravação rasgada: o canal ficaria vazio sem a escória, o metal perdido. Uma bica cujo vazamento sairia do chunk da origem **não vaza nada** e a origem guarda o metal (lacuna declarada, com teste e prova em jogo `slagtap-border`). Fazer o vazamento atravessar chunks pede o diário recriar o bloco ausente: fatia à parte.
@@ -146,7 +146,7 @@ Lacunas declaradas desta primeira versão (visuais, de poluição ou fora do esc
 1. **O escoamento da escória** (`updateTick`: para baixo, sobre a escória de baixo, para os lados) não existe: a escória fica onde cai. É a fatia seguinte.
 2. **Cor neutra**: o Java pinta a textura pelo material (`colorMultiplier`); aqui o bloco usa `slag.png` sem tinta.
 3. **Blocos substituíveis** (mato, neve, líquidos): o Java ignora os de colisão nula no raio e substitui o atingido se for substituível; aqui só o ar (e `cave_air`/`void_air`) é uma célula livre: a escória pousa em cima de qualquer outro bloco.
-4. **Fechamento por redstone** da bica (`isClosed`), a **partícula do jato** (`AuxParticlePacketNT`) e o **pick-block** (sucata do conteúdo) não existem.
+4. A **partícula do jato** (`AuxParticlePacketNT`) e o **pick-block** (sucata do conteúdo) não existem.
 5. Uma escória posta por comando (`/setblock`) nasce vazia (`layer=0`, forma vazia); o Java a removeria no primeiro tique.
 6. A bica não tem modelo próprio (cubo orientado, como as outras saídas antes do visual).
 
@@ -156,3 +156,13 @@ As outras duas lacunas da lista são **visuais ou de poluição**: a "conexão c
 
 - **`data/tool_shovels.json` precisa ser regerado** (`python3 tools/machine-gen/build.py`, que lê `ModItems.java` e `content/ids.json`) **quando outras `ItemToolAbility` SHOVEL ou MINER forem portadas** (`steel_shovel`, `desh_shovel` etc. ainda não estão no catálogo): sem isso a pá nova não age nos blocos de fundição. Um teste (`the_shovels_come_from_the_content`) pega só os casos conhecidos.
 - `foundry::scrap::stacks` **descarta a pilha de quantia 0** (o Java criaria uma sucata de 0 quanta, um item sem valor: improvável de ocorrer, porque nenhuma máquina guarda uma pilha de metal com quantia 0).
+
+## Fechamento por redstone da saída e da bica (`isClosed`)
+
+`TileEntityFoundryOutlet.isClosed() = invertRedstone ^ isBlockIndirectlyGettingPowered`; fechada, a saída (e a bica, que a estende) não aceita metal (`canAcceptPartialFlow`). No port: `Outlet.invert_redstone`, lido em `foundry_server::accept_flow` por `ServerHost::redstone_many` (qualquer sinal > 0). **Sem leitura** (chunk não carregado ou host que não lê) conta como **fechada**: nada verte e a origem guarda o metal; a leitura de volta, a saída abre no tique seguinte (teste de servidor). Os dois sentidos vão num inteiro só do BE (bit 0 filtro invertido, bit 1 redstone invertida): os registros antigos (0 ou 1) leem como antes e o layout de dados não muda. A inversão se muda por um botão da tela antiga ("Redstone: fecha/abre com sinal"), porque o Java usa a chave de fenda (`onScrew`), que não existe. Fora: a barreira desenhada quando fechada (visual).
+Prova em jogo simples (`slagtap-redstone`, ponto `none`): um bloco de redstone ao lado da bica a fecha (o canal guarda os 144), tirado ele a bica abre e verte; a inversão só por teste de servidor.
+
+## Tickets abertos da fundição
+
+- **Vazamento da bica entre chunks**: o diário (`Survivor`) recriar o bloco ausente (`WorldEffect::Blocks` com registro inicial) para a origem e a escória em chunks diferentes sem perda. Hoje a bica não vaza nesse caso (o metal fica na origem). Aceito pelo coordenador como fatia à parte.
+- **Escoamento da escória** (`BlockDynamicSlag.updateTick`: para baixo, sobre a escória de baixo, para os lados), dentro de um chunk.

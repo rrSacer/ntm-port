@@ -137,6 +137,12 @@ fn accept_pour(m: &mut Machines, t: &Tables, hit: &Hit, mat: &str, q: u32) -> Op
     }
 }
 
+/// `isClosed`: the redstone at the outlet against its inversion. Without a reading (the chunk is not there, or the host
+/// cannot read it) it is closed: nothing pours and the source keeps its metal.
+fn closed(o: &crate::foundry::flow::Outlet, host: &mut impl ServerHost, key: &Key) -> bool {
+    host.redstone_many(&key.0, &[key.1]).first().copied().flatten().is_none_or(|s| o.closed(s))
+}
+
 /// Metal flowing into `key` from its side `from` (the direction from `key`
 /// to the source): `canAcceptPartialFlow` + `flow`.
 fn accept_flow(m: &mut Machines, host: &mut impl ServerHost, cx: &mut Cx, key: &Key, from: [i32; 3], mat: &str, q: u32) -> Option<u32> {
@@ -148,7 +154,7 @@ fn accept_flow(m: &mut Machines, host: &mut impl ServerHost, cx: &mut Cx, key: &
     // takes it all.
     if let Data::Slagtap(o) = &x.data {
         let behind = facing.as_deref().and_then(registry::facing_dir).is_some_and(|f| from == [-f[0], -f[1], -f[2]]);
-        if !o.passes(mat) || !behind {
+        if !o.passes(mat) || !behind || closed(o, host, key) {
             return None;
         }
         below(m, host, &key.0, [key.1[0], key.1[1] - 1, key.1[2]], SLAGTAP_FALL - 1)?;
@@ -163,7 +169,7 @@ fn accept_flow(m: &mut Machines, host: &mut impl ServerHost, cx: &mut Cx, key: &
         let Some(Data::Outlet(o)) = m.get(key).map(|x| &x.data) else { return None };
         // From behind only (the source is against its facing).
         let behind = facing.as_deref().and_then(registry::facing_dir).is_some_and(|f| from == [-f[0], -f[1], -f[2]]);
-        if !o.passes(mat) || !behind {
+        if !o.passes(mat) || !behind || closed(o, host, key) {
             return None;
         }
         let target = below(m, host, &key.0, [key.1[0], key.1[1] - 1, key.1[2]], OUTLET_FALL - 1)?;

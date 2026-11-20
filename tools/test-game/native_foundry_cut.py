@@ -35,6 +35,9 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           and the 144 stay in the channel at every cut (the metal is never moved across two chunks' records)
   slagtap-break   the pour done in the prepare; the act breaks the slag block as a player in survival and picks up what it drops:
           one scrap with all 144 (D4). Control: as `slagtap-pour`, the ingots taken by command
+  slagtap-redstone  the pour's chain with a block of redstone beside the tap: the tap is closed and the channel keeps its 144; the
+          block taken away, the tap opens and the 144 pour into the slag (the signal comes from the real world; the inversion is
+          tested in the server's tests: its button is in the old screen). Run at the point `none`
   caster  a strand caster whose funnel cell a crucible's stream falls on (F1): 2 ingots (144) melt, pour and wait in
           its pool (no water: nothing is cast); the act breaks the caster as a player in survival and picks up its
           drops: its mold and one scrap with all 144. Control: a barrel with the 2 ingots and the mold, broken and
@@ -517,6 +520,16 @@ def act(g):
         if VANILLA:
             g.command('item replace block %d %d %d container.1 with minecraft:air' % CHANNEL_AT)
             g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % SLAG_AT)
+        elif SCENARIO == 'slagtap-redstone':
+            # A block of redstone beside the tap closes it (`isClosed`): the channel keeps its 144; taken away, the tap opens and pours.
+            beside = (TAP_AT[0] + 1, TAP_AT[1], TAP_AT[2])
+            g.command('setblock %d %d %d minecraft:redstone_block' % beside)
+            put_tap(g, wait=False)
+            time.sleep(15)
+            g.check('powered_the_tap_is_closed', server_block(g, SLAG_AT) == '' and molten(model(g, CHANNEL_AT)) == 144,
+                    [server_block(g, SLAG_AT), molten(model(g, CHANNEL_AT))])
+            g.command('setblock %d %d %d minecraft:air' % beside)
+            put_tap(g)
         else:
             # The tap, and straight to the save: the pour is one game step racing it, whichever side of the cut it falls on.
             put_tap(g, wait=False)

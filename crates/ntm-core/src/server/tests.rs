@@ -66,6 +66,8 @@ struct World {
     blasts: Vec<(String, [f64; 3])>,
     /// The storage's writes fail (I/O).
     kv_fails: bool,
+    /// The host cannot read the redstone (`redstone_many` answers none), the chunks being loaded.
+    no_redstone: bool,
 }
 
 impl World {
@@ -99,6 +101,7 @@ impl World {
             blasts: Vec::new(),
             no_entities: false,
             kv_fails: false,
+            no_redstone: false,
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -267,7 +270,7 @@ impl ServerHost for SHost {
     }
     fn redstone_many(&mut self, dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
         let w = self.world.borrow();
-        cells.iter().map(|p| w.loaded(dim, *p).then(|| w.signal.get(&(dim.to_string(), *p)).copied().unwrap_or(0))).collect()
+        cells.iter().map(|p| (w.loaded(dim, *p) && !w.no_redstone).then(|| w.signal.get(&(dim.to_string(), *p)).copied().unwrap_or(0))).collect()
     }
     fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
         Some(self.world.borrow().carried.get(id).cloned().unwrap_or_default())

@@ -68,6 +68,11 @@ MUTANTS = [
     ('slag tap: it ignores its filter', 'crates/ntm-core/src/server/foundry_server.rs', 'if !o.passes(mat) || !behind {\n            return None;\n        }\n        below(m, host, &key.0, [key.1[0], key.1[1] - 1, key.1[2]], SLAGTAP_FALL', 'if !behind {\n            return None;\n        }\n        below(m, host, &key.0, [key.1[0], key.1[1] - 1, key.1[2]], SLAGTAP_FALL', 'slag'),
     ('slag tap: the ray reaches 16 blocks', 'crates/ntm-core/src/server/foundry_server.rs', 'pub(super) const SLAGTAP_FALL: i32 = 15;', 'pub(super) const SLAGTAP_FALL: i32 = 16;', 'slag'),
     ('slag tap: the ray reaches 14 blocks', 'crates/ntm-core/src/server/foundry_server.rs', 'pub(super) const SLAGTAP_FALL: i32 = 15;', 'pub(super) const SLAGTAP_FALL: i32 = 14;', 'slag'),
+    ('redstone: the slag tap ignores it', 'crates/ntm-core/src/server/foundry_server.rs', 'if !o.passes(mat) || !behind || closed(o, host, key) {\n            return None;\n        }\n        below(', 'if !o.passes(mat) || !behind {\n            return None;\n        }\n        below(', 'redstone_closes'),
+    ('redstone: the outlet ignores it', 'crates/ntm-core/src/server/foundry_server.rs', 'if !o.passes(mat) || !behind || closed(o, host, key) {\n            return None;\n        }\n        let target', 'if !o.passes(mat) || !behind {\n            return None;\n        }\n        let target', 'redstone_closes'),
+    ('redstone: no reading is open', 'crates/ntm-core/src/server/foundry_server.rs', '.is_none_or(|s| o.closed(s))', '.is_some_and(|s| o.closed(s))', 'redstone_closes'),
+    ('redstone: the inversion is ignored', FL, 'self.invert_redstone ^ (signal > 0)', 'signal > 0', 'redstone_closes'),
+    ('redstone: the inversion is not kept', FL, 'i32::from(self.invert) | i32::from(self.invert_redstone) << 1', 'i32::from(self.invert)', 'redstone_closes'),
     ('rotary progress ignores the process speed', RF, 'self.progress += process_speed / r.duration.max(1) as f32;', 'self.progress += 1.0 / r.duration.max(1) as f32;', 'rotary'),
 ]
 

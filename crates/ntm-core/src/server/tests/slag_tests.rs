@@ -342,3 +342,75 @@ fn a_slag_restored_from_the_journal_keeps_what_it_holds() {
     reopened.run(8);
     assert_eq!(slag_at(&mut reopened, FIRST).unwrap().melt, Melt { mat: Some("steel".into()), amount: 777 });
 }
+
+fn signal(g: &mut Game, at: Pos, level: u8) {
+    g.world.borrow_mut().signal.insert((OW.to_string(), at), level);
+}
+
+fn set_invert_redstone(g: &mut Game, at: Pos, on: bool) {
+    edit(g, at, |d| match d {
+        Data::Slagtap(o) | Data::Outlet(o) => o.invert_redstone = on,
+        other => panic!("{other:?}"),
+    });
+}
+
+/// `isClosed`: a signal closes the tap, `invertRedstone` opens it only with one. Closed, the channel keeps its metal; the
+/// reading's absence is closed too, and when it is back the tap opens on the next turn with the metal that stayed.
+#[test]
+fn redstone_closes_the_slag_tap_and_a_missing_reading_does_not_close_it_for_good() {
+    let mut g = pour_setup("iron", 100);
+    signal(&mut g, TAP, 15);
+    g.run(40);
+    assert_eq!((channel(&mut g).amount, held(&mut g)), (100, 100), "powered: closed");
+    assert!(slag_at(&mut g, FIRST).is_none());
+    signal(&mut g, TAP, 0);
+    g.run(40);
+    assert_eq!(slag_at(&mut g, FIRST).unwrap().melt.amount, 100, "unpowered: open");
+    // No reading at all: closed, nothing lost; the reading back, it opens.
+    let mut g = pour_setup("iron", 100);
+    g.world.borrow_mut().no_redstone = true;
+    g.run(40);
+    assert_eq!((channel(&mut g).amount, held(&mut g)), (100, 100), "no reading: closed");
+    g.world.borrow_mut().no_redstone = false;
+    g.run(10);
+    assert_eq!(slag_at(&mut g, FIRST).unwrap().melt.amount, 100, "the reading is back: open");
+    assert_eq!((channel(&mut g).amount, held(&mut g), recorded(&g)), (0, 100, 100));
+    // Inverted: closed without a signal, open with one.
+    let mut g = pour_setup("iron", 100);
+    set_invert_redstone(&mut g, TAP, true);
+    g.run(40);
+    assert_eq!(channel(&mut g).amount, 100, "inverted, no signal: closed");
+    signal(&mut g, TAP, 7);
+    g.run(40);
+    assert_eq!(slag_at(&mut g, FIRST).unwrap().melt.amount, 100, "inverted, powered: open");
+}
+
+/// The same for the outlet, which pours into what is under it (a tank).
+#[test]
+fn redstone_closes_the_outlet_too() {
+    let (tank, outlet) = ([0, 68, 4], TAP);
+    for (invert, power, flows) in [(false, 0, true), (false, 15, false), (true, 0, false), (true, 15, true)] {
+        let mut g = game();
+        put(&mut g, SRC, "ntm:foundry_channel[facing=north,honey_level=0]");
+        put(&mut g, outlet, "ntm:foundry_outlet[facing=south,honey_level=0]");
+        put(&mut g, tank, "ntm:foundry_tank[facing=north,honey_level=0]");
+        set_invert_redstone(&mut g, outlet, invert);
+        signal(&mut g, outlet, power);
+        edit(&mut g, SRC, |d| {
+            let Data::Channel(c) = d else { panic!() };
+            c.melt = Melt { mat: Some("iron".into()), amount: 100 };
+        });
+        g.run(60);
+        let Data::FoundryTank(t) = g.machine(tank).data else { panic!() };
+        assert_eq!(t.melt.amount, if flows { 100 } else { 0 }, "invert {invert}, signal {power}");
+        assert_eq!(held(&mut g), 100);
+    }
+    // The block entity keeps both inversions in one value, and reads the old one (0 or 1) as before.
+    let mut o = crate::foundry::flow::Outlet { invert: true, invert_redstone: true, ..Default::default() };
+    let v = Slotted::save_state(&o);
+    let mut back = crate::foundry::flow::Outlet::default();
+    Slotted::load_state(&mut back, &v);
+    assert_eq!(back, o);
+    Slotted::load_state(&mut o, &[0, 1]);
+    assert!(o.invert && !o.invert_redstone);
+}
