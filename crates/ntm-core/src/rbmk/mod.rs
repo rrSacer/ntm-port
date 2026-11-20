@@ -9,6 +9,7 @@
 //! `docs/rbmk-core.md` for the list of gaps and of what is left to wire.
 
 pub mod console;
+pub mod console_gui;
 pub mod dials;
 pub mod dump;
 pub mod fluids;

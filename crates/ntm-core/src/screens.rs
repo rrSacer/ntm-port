@@ -133,6 +133,8 @@ pub struct ScreenDef {
     /// The title's colour as 0xRRGGBB, when not vanilla's grey.
     pub title_color: Option<u32>,
     pub inventory_label: Option<[f32; 2]>,
+    /// `"inventory": false`: a screen without the player's inventory (a `GuiScreen`, the RBMK console's).
+    pub hide_inventory: bool,
     pub bars: Vec<Bar>,
     pub gauges: Vec<Gauge>,
     pub overlays: Vec<Overlay>,
@@ -298,6 +300,7 @@ pub fn parse(doc: &Value) -> Result<ScreenDef, String> {
         title,
         title_color: rgb(&doc["title_color"]),
         inventory_label,
+        hide_inventory: doc["inventory"] == Value::Bool(false),
         bars,
         gauges,
         overlays,
@@ -481,6 +484,15 @@ impl ScreenDef {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// A `GuiScreen` (the RBMK console's, T10): no title, no inventory nor its label; a machine's screen keeps them.
+    #[test]
+    fn a_screen_may_leave_out_the_inventory() {
+        let console = parse(&serde_json::json!({"texture": "ntm:textures/gui/x.png", "size": [244, 172], "title": false, "inventory_label": false, "inventory": false})).unwrap();
+        assert_eq!((console.title, console.inventory_label, console.hide_inventory), (None, None, true));
+        let machine = parse(&serde_json::json!({"texture": "ntm:textures/gui/x.png"})).unwrap();
+        assert!(machine.title.is_some() && machine.inventory_label.is_some() && !machine.hide_inventory);
+    }
 
     #[test]
     fn lines_take_values() {
