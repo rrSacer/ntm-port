@@ -99,6 +99,8 @@ impl Server {
             taken: None,
             awaiting: None,
             nonce: obligations::draw_nonce(),
+            screens: Default::default(),
+            screen_sent: BTreeMap::new(),
         };
         server.rbmk_start(host);
         server

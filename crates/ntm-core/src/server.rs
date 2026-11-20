@@ -404,6 +404,8 @@ struct Ready {
     ghosts:Vec<(Key,generation::CellGuard)>,
     broken:BTreeMap<Key,String>,
     pending_buttons:Vec<generation::Guarded<(String,String,Pos,u32)>>,
+    /// Screen commands taken (`Server::native_screen_command`, T06): the machine and the fields, guarded by its generation.
+    pending_commands:Vec<generation::Guarded<(Key,crate::screens::control::Fields)>>,
     detonations:BTreeMap<Key,generation::Guarded<(String,container_bridge::Slots)>>,
     native_item_claims:BTreeMap<String,(u64,String,Option<Pos>)>,
     /// The state last written or seen, per machine.
@@ -509,6 +511,10 @@ pub struct Server {
     /// Drawn when the server starts: the names of the batches it puts out are its own, whatever an older storage or
     /// a newer chunk record names (a storage set back by a death names no batch twice).
     nonce: u64,
+    /// The players' screen sessions (`server::screen_server`, T06), and the snapshot each was last told. In memory only:
+    /// a screen does not outlive the server.
+    screens: crate::screens::control::Sessions,
+    screen_sent: BTreeMap<String, crate::screens::control::Snapshot>,
 }
 
 impl Server {
@@ -802,6 +808,7 @@ pub use pile_server::PileUse;
 
 mod zirnox_server;
 mod rbmk_server;
+mod screen_server;
 pub mod rbmk_columns;
 mod transaction;
 pub mod obligations;

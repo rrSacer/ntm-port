@@ -759,6 +759,8 @@ impl Server {
             }
         }
         buttons.retain(|i|self.current_guard(&i.guard)&&!self.ready.broken.contains_key(&i.guard.key()));
+        let mut commands = std::mem::take(&mut self.ready.pending_commands);
+        commands.retain(|i|self.current_guard(&i.guard)&&!self.ready.broken.contains_key(&i.guard.key()));
         let mut groups: Vec<Vec<Key>> = Vec::new();
         let mut piles: BTreeMap<Key, Vec<Key>> = BTreeMap::new();
         // Machines that wait for a batch of their own: no step takes them.
@@ -896,6 +898,11 @@ impl Server {
                         self.machine_button(&(d.clone(), *p), *b);
                     }
                 }
+                for input in &commands {
+                    if keys.contains(&input.value.0) {
+                        self.machine_command(&input.value.0, &input.value.1);
+                    }
+                }
                 self.pile_tick(&mut staged);
                 self.zirnox_tick(&mut staged);
                 if !self.rbmk_tick(&mut staged, &removed_keys) {
@@ -1005,6 +1012,7 @@ impl Server {
                         if w.desired!=w.expected.state&&!self.ready.world.generations.contains_key(&w.guard.key()){self.ready.world.generations.insert(w.guard.key(),w.guard.generation);}
                     }
                     buttons.retain(|i| !keys.contains(&i.guard.key()));
+                    commands.retain(|i| !keys.contains(&i.guard.key()));
                     for k in &keys {
                         self.ready.broken.remove(k);
                         if self.ready.world.removals.iter().any(|r| &r.key == k) {
@@ -1062,6 +1070,8 @@ impl Server {
         }
         buttons.retain(|i| self.ready.world.machines.get(&i.guard.key()).is_some_and(|m|m.generation==i.guard.generation));
         self.ready.pending_buttons = buttons;
+        commands.retain(|i| self.ready.world.machines.get(&i.guard.key()).is_some_and(|m|m.generation==i.guard.generation));
+        self.ready.pending_commands = commands;
         self.track_effect_cells();
     }
 }
