@@ -307,6 +307,7 @@ pub(super) fn use_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos:
 fn rbmk_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
     let item = &*stack.item;
     let screw = matches!(item, "ntm:screwdriver" | "ntm:screwdriver_desh");
+    if item == "ntm:rbmk_tool" || screw && rbmk_console_core(game, pos).is_some() { return rbmk_console_item(game, stack, pos); }
     if !screw && ntm_core::rbmk::persist::Lid::of_item(item).is_none() { return false; }
     let core = game.machine_cell_core(pos);
     if !game.native_loaded_block(game.dim.id(), core).is_some_and(|b| ntm_core::rbmk::persist::is_column(ntm_core::blockstate::id_of(&b))) { return false; }
@@ -317,6 +318,47 @@ fn rbmk_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3])
     let mut host = Host { game, buttons: Vec::new() };
     reconcile(server, &mut host);
     if screw { server.native_rbmk_screw(&mut host, &dim, core, item) } else { server.native_rbmk_lid(&mut host, &dim, pos, core, &player) }
+}
+
+fn rbmk_console_core(game: &mut crate::game::Game<'_>, pos: [i32; 3]) -> Option<[i32; 3]> {
+    let core = game.machine_cell_core(pos);
+    game.native_loaded_block(game.dim.id(), core).is_some_and(|b| ntm_core::blockstate::id_of(&b) == ntm_core::rbmk::screen::CONSOLE).then_some(core)
+}
+
+/// The RBMK tool and the screwdriver on the console (T10), a sneaking use (a plain one opened the menu). The tool on a
+/// column keeps the column's position in the stack (`ItemRBMKTool.onItemUse`: `posX/Y/Z`, ".linked"), on the console
+/// it gives the console that target (`setTarget`, ".set"); the screwdriver turns the console's window a quarter
+/// (`RBMKConsole.onScrew` → `rotate`) and wears (`ItemTooling.onItemUse`). Both wait for the console's next tick.
+fn rbmk_console_item(game: &mut crate::game::Game<'_>, stack: &ItemStack, pos: [i32; 3]) -> bool {
+    use horizon_client::text::Text;
+    const YELLOW: u32 = 0xFFFF55;
+    let dim = game.dim.id().to_string();
+    let core = game.machine_cell_core(pos);
+    let block = game.native_loaded_block(&dim, core).map(|b| ntm_core::blockstate::id_of(&b).to_string());
+    let tell = |game: &mut crate::game::Game<'_>, key: &str, fallback: &str| {
+        if let Some(id) = game.native_actor_uuid().and_then(|u| u128::from_str_radix(&u.replace('-', ""), 16).ok()) {
+            game.native_tell(id, Text::translate_with_fallback(key, fallback, &[]).with_color(YELLOW));
+        }
+    };
+    if &*stack.item == "ntm:rbmk_tool" && block.as_deref().is_some_and(ntm_core::rbmk::persist::is_column) {
+        let mut data = stack.data().and_then(|d| d.other("minecraft:custom_data")).and_then(|t| match t { Tag::Compound(c) => Some(c.clone()), _ => None }).unwrap_or_default();
+        for (key, value) in ["posX", "posY", "posZ"].into_iter().zip(core) { data.insert(JavaString::from(key), Tag::Int(value)); }
+        if let Some(h) = game.held_mut() { h.data_mut().set_other("minecraft:custom_data", Some(Tag::Compound(data))); }
+        tell(game, "item.ntm.rbmk_tool.linked", "Position set!");
+        return true;
+    }
+    if block.as_deref() != Some(ntm_core::rbmk::screen::CONSOLE) { return false; }
+    let mut guard = lock(&SERVER);
+    let Some((server, _)) = guard.as_mut() else { return false };
+    if &*stack.item == "ntm:rbmk_tool" {
+        // `stack.hasTagCompound()`: a tool that never linked a column does nothing to the console.
+        let Some(Tag::Compound(data)) = stack.data().and_then(|d| d.other("minecraft:custom_data")) else { return false };
+        let target = ["posX", "posY", "posZ"].map(|key| match data.get(&JavaString::from(key)) { Some(Tag::Int(n)) => *n, _ => 0 });
+        if server.native_rbmk_console_link(&dim, core, target) { tell(game, "item.ntm.rbmk_tool.set", "RBMK linked!"); }
+        return true;
+    }
+    if server.native_rbmk_console_rotate(&dim, core) { game.damage_held_tool(); }
+    true
 }
 
 /// The radiation server's reading for a player (`radBuf`, milliRAD/s).
