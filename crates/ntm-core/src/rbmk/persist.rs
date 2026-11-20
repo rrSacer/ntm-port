@@ -978,4 +978,18 @@ mod hull_tests {
             assert!(cold_enough_for_manual(Some(&s)) && !hot_enough_to_melt_on_break(Some(&s)), "{s:?}");
         }
     }
+
+    /// `IEnergyReceiverMK2.transferPower`: more than the room left fills the buffer to `maxPower` (the overshoot goes
+    /// back), never past it; the network never gives that much, so only a direct give shows it.
+    #[test]
+    fn a_reasim_rods_buffer_stops_at_its_maximum() {
+        use crate::energy::EnergyNode;
+        let mut c = ControlState::of("ntm:rbmk_control_reasim");
+        c.power = 45_000;
+        assert_eq!(c.demand(), 5_000);
+        c.give(20_000);
+        assert_eq!((c.power, c.demand()), (CONTROL_MAX_POWER, 0));
+        c.give(1);
+        assert_eq!(c.power, CONTROL_MAX_POWER);
+    }
 }
