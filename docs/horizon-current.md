@@ -1600,8 +1600,7 @@ Branch `rbmk-t05` (continua sobre o T07), motor sem mudança. A física das trê
   blocos (`hasPermission`).
 - **Barra de vapor e dicas da caldeira**: a barra é proporcional (o Java soma 1 duas vezes, diferença de 1 px) e as
   dicas dizem "Water"/"Steam" fixos (o Java mostra o nome do fluido); a partícula `rbmksteam` do respiro. T19.
-- **Queda (C após crash)**: não rodada; a prova reabre depois de um save normal. As redes de fluido do port mexem fora
-  das transações (limite geral, não do T08).
+- **Queda (C após crash)**: rodada depois da revisão (ver "Revisão do T08"): nada perdido nem criado nos cinco cortes.
 
 ### Validação
 
@@ -1619,6 +1618,19 @@ Commits: `c5a7e4e6` (N1: tanque retipado esvazia), `6b4ef2dd` (N2: tanques e est
 | U: mutações | 35/37 pegas, 2 equivalentes (`mutations-*.log`): o cache por registro (uma coluna trocada sempre perde um passo, e o cache perde a célula nele; mantido como defesa) e o padrão de tanques de um save antigo (o `Column::new` já dá os mesmos; o código redundante saiu) |
 | J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py --script native_rbmk_t08.py --reopen`, `evidence/j-run6/`) | **12/12 e 1/1 na reabertura**. Caldeira sem loader: 10 000 de água pela base, 6 000 ficam no barril; aquecida, 6 000 mB de água viram 600 000 mB de vapor (584 000 no tanque, 16 000 no barril pelo topo). O hóspede aperta o compressor duas vezes: STEAM → HOTSTEAM → SUPERHOTSTEAM, o vapor perdido. Loader a 1 e a 2: 10 000 pela célula do loader. Resfriador: a coluna a duas casas vai de 900 a 20; 16 000 mB de criogel frio saem usados pelo topo (soma 16 000). Aquecedor: 2 664 mB de refrigerante quente pelo topo (soma 16 000). ReaSim: a entrada ao lado do dummy enche a água da coluna (16 000); fervida, o vapor sai pela saída (15 981 no barril, 19 na coluna, soma 16 000). Em repouso antes do save; reaberto, todos os tanques e barris iguais. Binário `7b38f01a…`, pacote `0f9c0154…` (o do T07; o conteúdo não mudou). As rodadas 1–5 caíram por: o roteiro (piso para o hóspede; fase que parava as outras), o menu da caldeira (defeito, `66bae438`), o loader procurado entre as máquinas (defeito, `50df5ca2`), a espera do executor (`c5ee1d85`) e o servidor que caía ao reabrir um barril (defeito da ponte, `92a29f18`) |
 
+
+### Revisão do T08 (20/11/2026)
+
+A revisão independente aprovou o T08 e os P3 do T07 (sem P1/P2). Decisões do coordenador: os desvios registrados
+(fluido fora do passo, rede refeita a cada 10 ticks, altura das portas pelo dial, passagem só entre canos, compressor só
+com a tela aberta, barra/dicas/partícula para o T19) aceitos; o `canConnect` do loader não é regra de fluxo (`c5187e95`).
+
+| Item | Como fica | Commit |
+| --- | --- | --- |
+| P3-1 slots completos na fonte | O motor lê de volta os itens de uma entidade de bloco só até o último guardado (`decode_mod_block_entity`: "the game sizes them to the block's container when it uses them"). A ponte completava só a sua cópia; os outros leitores de `machine_slots` (`rbmk_server` 661/705, `rbmk_columns` 366/398, `solar_server` 91, `bomb_server` 528/550, `pile_server` 315, `native_server` 136/504/514, `transaction` 623/847, `zirnox_server` 81) recebiam o vetor curto, e todo commit comparava o esperado com os itens curtos: um canal gravado vazio recusava toda barra posta à mão depois de reabrir. Agora o acesso da glue à entidade (`entity`) completa os itens (`native::size_slots`) antes de qualquer leitor ou commit; o host de teste faz igual. Sem mudança de motor. Testes: barril com 4 de 6 slots, canal com 0 de 1 slot que ainda aceita a barra à mão; mutante pego pelos dois | `4046c940` |
+| P3-2 quantidade do compressor | Na J (`evidence/j-run7/`, **13/13 e 1/1 na reabertura**, binário `b9582404…`), a caldeira que ferveu (584 000 mB de vapor, 10 000 de água, fria a 20 °C) tem o compressor apertado pelo hóspede: HOTSTEAM com 0 mB, a água mantida (o `setTankType` esvazia antes do `/ 10`) | `0a54a810` |
+| P3-3 pontos sem revisão a fundo | O som do respiro (`c7fc0035`) e o menu da caldeira (`66bae438`, `4f7eb382`) não foram lidos a fundo pela revisão: ficam como sem revisão independente, cobertos só pelos testes e pela J deste ticket | — |
+| Corte C com fluido em movimento | `run-rbmk-t08-c-proof.py` + `native_rbmk_t08_c.py`: 16 000 mB de criogel saindo de um barril no chunk (1, 0), passando por um resfriador no chunk (2, 0) e voltando a um barril no (1, 0); o jogo morto em `kill`, `kv_committed`, `region_record:1`, `chunks_written` e `world_saved` com o fluido em movimento (no save: 6 300–6 800 na fonte, 4 000 no resfriador, 5 200–5 700 no destino). Nas duas reaberturas, a fonte, os dois tanques do resfriador e o destino, lidos de uma vez (`ntmtest fluids`, `b00d69e2`), somam **16 000 mB em todos os pontos**: nada perdido nem criado. `kill` e `region_record:1` voltam ao save anterior (16 000 na fonte); `kv_committed`, `chunks_written` e `world_saved` voltam ao estado do save e seguem. Controle vanilla no mesmo corte: 64 pedras levadas por funis pela mesma divisa, 64/64 em todos os pontos. O limite geral (redes de fluido fora das transações) não apareceu: o save grava o estado de um tick, e os tanques de cada lado da divisa são do mesmo tick. Binário `b9582404…`, pacote `0f9c0154…`; `evidence/c-run3/` (`kill`, `kv_committed`) e `evidence/c-run4/` (os outros três). As rodadas 1–2 e o `world_saved` da 3 caíram pelo roteiro (funil que puxa de cima; contagem vanilla em movimento; leitura depois do corte) | `b00d69e2`, `052ae523` |
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
