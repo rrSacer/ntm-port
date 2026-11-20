@@ -231,13 +231,19 @@ def break_it(g, cells, label):
     g.command('give @s minecraft:diamond_pickaxe 1')
     g.ctl('select minecraft:diamond_pickaxe')
     broken = None
-    for cell in cells:
+    queue = list(cells)
+    while queue:
+        cell = queue.pop(0)
         try:
             g.ctl('break %d %d %d --timeout 30' % cell)
             broken = cell
             break
-        except RuntimeError:
-            continue
+        except RuntimeError as error:
+            # A multiblock's other cells hide the core's faces from where the player stands: breaking any of its
+            # dummies breaks the machine, so the one in the way is tried (the control's barrel has none).
+            blocker = re.search(r'ntm:dummy_machine at \[(-?\d+), (-?\d+), (-?\d+)\] is in the way', str(error))
+            if blocker:
+                queue.append(tuple(int(v) for v in blocker.groups()))
     g.check('broken_' + label, broken is not None, broken)
     time.sleep(1.5)
 
