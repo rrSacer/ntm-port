@@ -49,6 +49,24 @@ impl MachineEffect {
                     items: vec![(item, count)],
                 }
             }
+            MachineEffect::DropStack {
+                offset,
+                item,
+                count,
+                custom,
+            } => {
+                let pos = [
+                    key.1[0] + offset[0] * right[0] + offset[2] * forward[0],
+                    key.1[1] + offset[1],
+                    key.1[2] + offset[0] * right[2] + offset[2] * forward[2],
+                ];
+                let stack = container_bridge::Stack { id: item, count, damage: 0, custom, tagged: false };
+                WorldEffect::EncodedItems {
+                    dim: key.0.clone(),
+                    pos,
+                    items: vec![crate::foundry::scrap::snbt(&stack)],
+                }
+            }
         }
     }
 }

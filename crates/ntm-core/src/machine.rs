@@ -51,6 +51,9 @@ pub enum Kind {
     Channel,
     FoundryTank,
     Outlet,
+    /// The slag tap (an outlet that pours onto the ground) and the slag it pours (`crate::foundry::slag`).
+    Slagtap,
+    Slag,
     /// Casting bases (`crate::foundry::cast`): small molds, and the basin.
     Mold,
     Basin,
@@ -132,6 +135,10 @@ pub enum Kind {
     CableSwitch,
     /// The wire endpoints: connectors and pylons (`crate::wire`).
     Wire,
+    /// The rotary furnace (`crate::rotary_furnace`).
+    RotaryFurnace,
+    /// The continuous caster (`crate::strand_caster`).
+    StrandCaster,
     /// A machine block whose logic isn't written yet: tracked, screen says so.
     Inert,
 }
@@ -170,6 +177,13 @@ pub enum MachineEffect {
         offset: crate::Pos,
         item: String,
         count: u32,
+    },
+    /// A drop with item data (`minecraft:custom_data` as SNBT): the foundry's scrap with its exact amount.
+    DropStack {
+        offset: crate::Pos,
+        item: String,
+        count: u32,
+        custom: Option<String>,
     },
 }
 
@@ -210,6 +224,11 @@ pub trait Logic {
     fn contents(&self) -> Vec<(String, u32)> {
         Vec::new()
     }
+    /// Its molten metal as `(material, quanta)`, dropped as one exact scrap each when it is broken
+    /// (`ItemScraps.create`, `foundry::scrap`).
+    fn scraps(&self) -> Vec<(String, u32)> {
+        Vec::new()
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -233,6 +252,8 @@ pub enum Data {
     Channel(crate::foundry::flow::Channel),
     FoundryTank(crate::foundry::flow::Tank),
     Outlet(crate::foundry::flow::Outlet),
+    Slagtap(crate::foundry::flow::Outlet),
+    Slag(crate::foundry::slag::Slag),
     Mold(crate::foundry::cast::Cast),
     Basin(crate::foundry::cast::Cast),
     Anvil(crate::anvil::Anvil),
@@ -277,6 +298,8 @@ pub enum Data {
     Chimney(crate::chimney::Chimney),
     CableSwitch(crate::cable_switch::CableSwitch),
     Wire(crate::wire::Wire),
+    RotaryFurnace(Box<crate::rotary_furnace::RotaryFurnace>),
+    StrandCaster(Box<crate::strand_caster::StrandCaster>),
     Inert { name: String },
 }
 
@@ -329,6 +352,8 @@ impl Machine {
             Kind::Channel => Data::Channel(Default::default()),
             Kind::FoundryTank => Data::FoundryTank(Default::default()),
             Kind::Outlet => Data::Outlet(Default::default()),
+            Kind::Slagtap => Data::Slagtap(Default::default()),
+            Kind::Slag => Data::Slag(Default::default()),
             Kind::Mold => Data::Mold(crate::foundry::cast::Cast::new(0)),
             Kind::Basin => Data::Basin(crate::foundry::cast::Cast::new(1)),
             Kind::Anvil => Data::Anvil(crate::anvil::Anvil::new(crate::anvil::tier(block_id))),
@@ -392,6 +417,8 @@ impl Machine {
                 Some(w) => Data::Welder(Box::new(w)),
                 None => Data::Inert { name: block_id.into() },
             },
+            Kind::RotaryFurnace => Data::RotaryFurnace(Box::default()),
+            Kind::StrandCaster => Data::StrandCaster(Box::default()),
             Kind::Furnace => match crate::furnaces::of(block_id) {
                 Some(f) => Data::Furnace(Box::new(f)),
                 None => Data::Inert { name: block_id.into() },
@@ -462,6 +489,8 @@ impl Machine {
             Data::Channel(_) => Kind::Channel,
             Data::FoundryTank(_) => Kind::FoundryTank,
             Data::Outlet(_) => Kind::Outlet,
+            Data::Slagtap(_) => Kind::Slagtap,
+            Data::Slag(_) => Kind::Slag,
             Data::Mold(_) => Kind::Mold,
             Data::Basin(_) => Kind::Basin,
             Data::Anvil(_) => Kind::Anvil,
@@ -505,6 +534,8 @@ impl Machine {
             Data::Chimney(_) => Kind::Chimney,
             Data::CableSwitch(_) => Kind::CableSwitch,
             Data::Wire(_) => Kind::Wire,
+            Data::RotaryFurnace(_) => Kind::RotaryFurnace,
+            Data::StrandCaster(_) => Kind::StrandCaster,
             Data::Inert { .. } => Kind::Inert,
         }
     }
@@ -529,6 +560,8 @@ impl Machine {
             Data::Channel(m) => m,
             Data::FoundryTank(m) => m,
             Data::Outlet(m) => m,
+            Data::Slagtap(m) => m,
+            Data::Slag(m) => m,
             Data::Mold(m) => m,
             Data::Basin(m) => m,
             Data::Anvil(m) => m,
@@ -572,6 +605,8 @@ impl Machine {
             Data::Chimney(m) => m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
+            Data::RotaryFurnace(m) => &**m,
+            Data::StrandCaster(m) => &**m,
             Data::Inert { name } => name,
         }
     }
@@ -596,6 +631,8 @@ impl Machine {
             Data::Channel(m) => m,
             Data::FoundryTank(m) => m,
             Data::Outlet(m) => m,
+            Data::Slagtap(m) => m,
+            Data::Slag(m) => m,
             Data::Mold(m) => m,
             Data::Basin(m) => m,
             Data::Anvil(m) => m,
@@ -639,6 +676,8 @@ impl Machine {
             Data::Chimney(m) => m,
             Data::CableSwitch(m) => m,
             Data::Wire(m) => m,
+            Data::RotaryFurnace(m) => &mut **m,
+            Data::StrandCaster(m) => &mut **m,
             Data::Inert { name } => name,
         }
     }
@@ -771,6 +810,8 @@ pub mod actions {
     pub const BATTERY_DEBUG_FILL: u32 = 90;
     pub const BURNER_TOGGLE: u32 = 1;
     pub const BURNER_FUEL: u32 = 2;
+    /// The wood burner's fuel switch (solid / fluid): button 1 of its screen.
+    pub const BURNER_LIQUID: u32 = 3;
     pub const FURNACE_INSERT: u32 = 1;
     pub const FURNACE_TAKE: u32 = 2;
 }
@@ -885,7 +926,9 @@ impl EnergyNode for Battery {
 /// burns, is on, and its buffer has room. Slice 6 (decision D2 A), as the Java's `updateEntity:95-123`: with no burn
 /// left it lights the next fuel, on or off, for its burn module's time (logs x4, wood x2), and that time goes into
 /// the fuel's kind of ash, one ash in slot 1 each 2000 (`processAsh` in a `while`); the tick it lights a fuel it
-/// makes nothing. Left out: the liquid burning, its tank and the battery slot's charge.
+/// makes nothing. The liquid burning (`liquidBurn`, `FT_Flammable.getHeatEnergy`) takes 2 mB a tick of the tank (typed by
+/// the identifier in slot 2, loaded from the containers of slot 3 into slot 4, filled by a duct at its back) and gives
+/// `heat * mB / 2000` HE. Left out: the battery slot's charge (the port has no charge in items), the soot, the second port cell.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WoodBurner {
     pub power: u64,
@@ -901,6 +944,12 @@ pub struct WoodBurner {
     pub ash_coal: i32,
     #[serde(default)]
     pub ash_misc: i32,
+    /// `liquidBurn`: burns the tank's fluid instead of the fuel in slot 0.
+    #[serde(default)]
+    pub liquid_burn: bool,
+    /// `FluidTank(Fluids.WOODOIL, 16_000)`.
+    #[serde(default = "burner_tank")]
+    pub tank: crate::fluid::Tank,
     /// `ContainerMachineWoodBurner`: fuel, ash, the fluid containers (2, 3
     /// and 4), the battery it charges.
     #[serde(skip, default = "burner_slots")]
@@ -909,6 +958,10 @@ pub struct WoodBurner {
 
 fn burner_slots() -> crate::server::container_bridge::Slots {
     vec![None; 6]
+}
+
+fn burner_tank() -> crate::fluid::Tank {
+    crate::fluid::Tank::typed("woodoil", WoodBurner::TANK)
 }
 
 impl Default for WoodBurner {
@@ -922,6 +975,8 @@ impl Default for WoodBurner {
             ash_wood: 0,
             ash_coal: 0,
             ash_misc: 0,
+            liquid_burn: false,
+            tank: burner_tank(),
             slots: burner_slots(),
         }
     }
@@ -944,11 +999,40 @@ impl crate::server::container_bridge::Slotted for WoodBurner {
         }
     }
     fn screen_data(&self) -> Vec<i32> {
-        vec![self.power as i32, Self::MAX as i32, self.burn as i32, self.max_burn as i32, i32::from(self.on), 0, 0, 0, 0]
+        let colour = crate::fluid::get(&self.tank.fluid).map_or(0, |f| f.color as i32);
+        vec![
+            self.power as i32,
+            Self::MAX as i32,
+            self.burn as i32,
+            self.max_burn as i32,
+            i32::from(self.on),
+            i32::from(self.liquid_burn),
+            self.tank.mb as i32,
+            self.tank.cap as i32,
+            colour,
+        ]
+    }
+    /// The tank goes with the slots in the block entity (the container taken out of slot 3 and the fluid in the tank are
+    /// from the same moment): its type's id and its mB.
+    fn save_state(&self) -> Vec<i32> {
+        vec![crate::fluid::get(&self.tank.fluid).map_or(0, |f| i32::from(f.id)), self.tank.mb as i32]
+    }
+    fn load_state(&mut self, v: &[i32]) {
+        if let [id, mb, ..] = v {
+            let kind = crate::fluid::types().iter().find(|f| i32::from(f.id) == *id && f.id != 0);
+            // The type of a tank the block entity names; none (0) is an untyped tank. A record from before the tank has no values.
+            self.tank.fluid = kind.map(|f| f.string_id.clone()).unwrap_or_default();
+            self.tank.mb = (*mb).clamp(0, self.tank.cap as i32) as u32;
+            if self.tank.fluid.is_empty() {
+                self.tank.mb = 0;
+            }
+        }
     }
     fn button(&mut self, id: u32) -> bool {
-        if id == 0 {
-            self.on = !self.on;
+        match id {
+            0 => self.on = !self.on,
+            1 => self.liquid_burn = !self.liquid_burn,
+            _ => {}
         }
         false
     }
@@ -957,6 +1041,7 @@ impl crate::server::container_bridge::Slotted for WoodBurner {
 impl WoodBurner {
     pub const MAX: u64 = 100_000;
     pub const GEN: u64 = 100;
+    pub const TANK: u32 = 16_000;
     pub const FUEL_STACK: u32 = 64;
     /// `processAsh`'s threshold.
     pub const ASH_THRESHOLD: i32 = 2000;
@@ -1024,7 +1109,23 @@ pub fn burn_ticks(item: &str) -> u32 {
 impl Logic for WoodBurner {
     fn tick(&mut self) -> bool {
         use crate::fuel::Ash;
-        let before = (self.burn, self.power, self.ash_wood, self.ash_coal, self.ash_misc, self.slots.get(1).cloned());
+        let before = (self.burn, self.power, self.ash_wood, self.ash_coal, self.ash_misc, self.slots.get(1).cloned(), self.tank.clone(), self.slots.get(3).cloned(), self.slots.get(4).cloned());
+        // `updateEntity`: the identifier types the tank, then a full container of its type is loaded (slot 3 into slot 4).
+        crate::combustion::type_from_identifier(&mut self.tank, &self.slots, 2, |_| true);
+        crate::combustion::load_tank(&mut self.tank, &mut self.slots, 3, 4);
+        if self.liquid_burn {
+            // `FT_Flammable`: 2 mB a tick, `heat * mB / 2000` HE, while there is room for it.
+            if self.power < Self::MAX
+                && self.tank.mb > 0
+                && self.on
+                && let Some(heat) = crate::fuel::flammable_heat(&self.tank.fluid)
+            {
+                let burned = self.tank.mb.min(2);
+                self.tank.drain(burned);
+                self.power = (self.power + heat * u64::from(burned) / 2_000).min(Self::MAX);
+            }
+            return (self.burn, self.power, self.ash_wood, self.ash_coal, self.ash_misc, self.slots.get(1).cloned(), self.tank.clone(), self.slots.get(3).cloned(), self.slots.get(4).cloned()) != before;
+        }
         let lit = self.fuel.as_ref().map(|(item, _)| (item.clone(), Self::burn_time(item))).filter(|(_, burn)| *burn > 0);
         if self.burn == 0 {
             if let Some((item, burn)) = lit {
@@ -1056,9 +1157,12 @@ impl Logic for WoodBurner {
             self.burn -= 1;
             self.power = (self.power + Self::GEN).min(Self::MAX);
         }
-        (self.burn, self.power, self.ash_wood, self.ash_coal, self.ash_misc, self.slots.get(1).cloned()) != before
+        (self.burn, self.power, self.ash_wood, self.ash_coal, self.ash_misc, self.slots.get(1).cloned(), self.tank.clone(), self.slots.get(3).cloned(), self.slots.get(4).cloned()) != before
     }
     fn energy(&mut self) -> Option<&mut dyn EnergyNode> {
+        Some(self)
+    }
+    fn fluid(&mut self) -> Option<&mut dyn crate::fluid::FluidNode> {
         Some(self)
     }
     fn level(&self, max: u8) -> u8 {
@@ -1080,12 +1184,15 @@ impl Logic for WoodBurner {
             Some((item, n)) => vm.item(item, format!("Combustível: {n}")),
             None => vm.text("Sem combustível", view::GREY),
         };
+        vm = vm.text(format!("Tanque: {}", self.tank.line()), view::GREY);
         vm.button(actions::BURNER_FUEL, "Pôr combustível da mão (1)")
             .button(actions::BURNER_TOGGLE, if self.on { "Desligar" } else { "Ligar" })
+            .button(actions::BURNER_LIQUID, if self.liquid_burn { "Queimando fluido" } else { "Queimando sólido" })
     }
     fn action(&mut self, action: u32, held: Option<&Held>, fx: &mut Vec<Effect>) {
         match action {
             actions::BURNER_TOGGLE => self.on = !self.on,
+            actions::BURNER_LIQUID => self.liquid_burn = !self.liquid_burn,
             actions::BURNER_FUEL => {
                 let Some(held) = held.filter(|h| Self::burn_time(&h.item) > 0) else {
                     fx.push(Effect::Toast("Segure um combustível sólido na mão.".into()));
@@ -1119,6 +1226,29 @@ impl Logic for WoodBurner {
     }
     fn contents(&self) -> Vec<(String, u32)> {
         self.fuel.iter().cloned().collect()
+    }
+}
+
+/// The tank takes its own type from a duct at the back (`IFluidStandardReceiverMK2`: it only receives).
+impl crate::fluid::FluidNode for WoodBurner {
+    fn fluid_offer(&self, _fluid: &str) -> u64 {
+        0
+    }
+    /// Only its own type: a tank an identifier of no type left untyped is Java's `Fluids.NONE`, which no network carries, so it takes
+    /// nothing (a barrel takes any fluid while empty; this tank does not).
+    fn fluid_demand(&self, fluid: &str) -> u64 {
+        if !self.tank.fluid.is_empty() && self.tank.accepts(fluid) { u64::from(self.tank.free()) } else { 0 }
+    }
+    fn fluid_types(&self) -> Vec<String> {
+        Some(self.tank.fluid.clone()).filter(|f| !f.is_empty()).into_iter().collect()
+    }
+    fn fluid_give(&mut self, fluid: &str, mb: u64) {
+        if !self.tank.fluid.is_empty() {
+            self.tank.fill(fluid, mb.min(u64::from(u32::MAX)) as u32);
+        }
+    }
+    fn fluid_take(&mut self, _fluid: &str, mb: u64) {
+        self.tank.drain(mb.min(u64::from(u32::MAX)) as u32);
     }
 }
 

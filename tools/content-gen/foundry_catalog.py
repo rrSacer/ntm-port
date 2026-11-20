@@ -39,6 +39,20 @@ def build(source):
                        'opaque_machine_textures': True,
                        'model_gap': 'Source block texture on oriented cube fallback; visual pipeline owns TESR/multiblock',
                        'source_orientation': var in ('machine_crucible', 'heater_firebox', 'foundry_outlet')})
+    # What the slag tap pours (`BlockDynamicSlag`): a block with no item and no facing, whose height is its fill in
+    # eighths (`layer`); its colour is the material's in the Java and neutral here (declared gap).
+    name, texture = registration(blocks, 'slag', 'block')
+    result.append({'id': name, 'source_variable': 'slag', 'type': 'block', 'category': 'machine',
+                   'template': 'minecraft:iron_block', 'layer_block': True, 'loot_none': True,
+                   'names': {'en_us': 'Slag (DEBUG)', 'pt_br': translations['pt_br']['tile.slag.name']},
+                   'source_texture': 'src/main/resources/assets/hbm/textures/blocks/' + texture + '.png',
+                   'block_properties': {'requires_tool': False, 'hardness': 5.0, 'explosion_resistance': 10.0, 'sounds': 'minecraft:iron_block'},
+                   'model_gap': 'Neutral colour (the Java tints it by the material); no flow of its own'})
+    # The eternal coal (`FuelHandler`: single * 16; its own container item, so a firebox never uses it up): obtained from the
+    # forgotten bricks, hidden from the creative tabs in the Java too.
+    name, texture = registration(items, 'coal_eternal', 'item')
+    result.append({'id': name, 'source_variable': 'coal_eternal', 'type': 'item', 'category': 'component',
+                   'source_texture': 'src/main/resources/assets/hbm/textures/items/' + texture + '.png', 'max_stack_size': 1})
     name, _ = registration(items, 'mold', 'item')
     for mold in molds(source):
         shape = mold['args'][0].removeprefix('MaterialShapes.') if mold['class'] != 'MoldMulti' else mold['name']

@@ -75,6 +75,10 @@ struct World {
     /// Cells the server wrote as its own (`set_machine_blocks`): their change is not told back to it, as the native
     /// host's owned block scope keeps it from the block change hook.
     owned: BTreeSet<(String, Pos)>,
+    /// The host cannot read the redstone (`redstone_many` answers none), the chunks being loaded.
+    no_redstone: bool,
+    /// Commits that write cells or touch several machines (a pour) are refused; the single-machine ones pass.
+    refuse_structured: bool,
 }
 
 impl World {
@@ -112,6 +116,8 @@ impl World {
             worn: Vec::new(),
             retained: BTreeSet::new(),
             owned: BTreeSet::new(),
+            no_redstone: false,
+            refuse_structured: false,
         };
         for x in -32..32 {
             for z in -32..32 {
@@ -169,6 +175,7 @@ impl ServerHost for SHost {
             self.world.borrow().radiation_factor
         }
         fn commit_structural(&mut self,cells:&[CellWrite],drops:&[RetainedDrop],owners:&[(String,Pos)])->bool{
+            if self.world.borrow().refuse_commits||self.world.borrow().refuse_structured{return false;}
             // Retained drops only from an RBMK column's block entity (the cells `cell_snapshot` gives items for).
             if drops.iter().any(|d|!crate::rbmk::persist::is_column(blockstate::id_of(&d.origin.state))){return false;}
             if cells.iter().any(|c|self.cell_snapshot(&c.guard.dim,c.guard.pos).as_ref()!=Some(&c.expected)){return false;}
@@ -184,6 +191,18 @@ impl ServerHost for SHost {
             let dims:BTreeSet<_>=cells.iter().map(|c|c.guard.dim.clone()).collect();
             if dims.len()>1{return false;}
             let Some(dim)=dims.first()else{return true};
+            if cells.iter().any(|c|c.initial.is_some()||blockstate::id_of(&c.desired)=="minecraft:air"&&self.world.borrow().engine.contains_key(&c.guard.key())){
+                // Made at once, with the block entities that go and come (the host's publication is one step).
+                let mut w=self.world.borrow_mut();
+                for c in cells{
+                    w.set(&c.guard.dim,c.guard.pos,&c.desired);
+                    if blockstate::id_of(&c.expected.state)!=blockstate::id_of(&c.desired){
+                        w.engine.remove(&c.guard.key());w.saved.remove(&c.guard.key());
+                        if let Some(i)=&c.initial{w.engine.insert(c.guard.key(),(Vec::new(),i.data.clone()));w.saved.insert(c.guard.key(),i.json.clone());}
+                    }
+                }
+                return true;
+            }
             let blocks:Vec<_>=cells.iter().map(|c|(c.guard.pos,c.desired.clone())).collect();
             self.set_machine_blocks(dim,&blocks,owners).is_ok()
         }
@@ -247,7 +266,7 @@ impl ServerHost for SHost {
         let mut w=self.world.borrow_mut();
         w.hands=Some(hands);
         w.copied.extend(copied);
-        for (d,_) in &t.drops{w.dropped.push(format!("player {} {}",d.id,d.count));}
+        for (d,_) in &t.drops{w.dropped.push(format!("player {} {}{}",d.id,d.count,d.custom.as_deref().map_or(String::new(),|c|format!(" {c}"))));}
         true
     }
     fn commit_lid_removal(&mut self,c:&MachineCommit,drop:&RetainedDrop,tool:&str)->bool{
@@ -283,10 +302,12 @@ impl ServerHost for SHost {
     }
     fn commit_machines(&mut self,cs:&[MachineCommit])->bool{
         let mut w=self.world.borrow_mut();
-        if w.refuse_commits{return false;}
+        if w.refuse_commits||(w.refuse_structured&&(cs.len()>1||cs.iter().any(|c|!c.cells.is_empty()))){return false;}
         if cs.iter().flat_map(|c|&c.cells).any(|c|!w.loaded(&c.guard.dim,c.guard.pos)||w.get(&c.guard.dim,c.guard.pos)!=c.expected.state){return false;}
         if cs.iter().any(|c|!w.loaded(&c.dim,c.pos)||w.engine.get(&(c.dim.clone(),c.pos)).map(|e|e.0.clone()).unwrap_or_default()!=c.expected){return false;}
-        for c in cs {for cell in &c.cells{w.set(&cell.guard.dim,cell.guard.pos,&cell.desired);if blockstate::id_of(&cell.expected.state)!=blockstate::id_of(&cell.desired){w.engine.remove(&cell.guard.key());w.saved.remove(&cell.guard.key());}}}
+        for c in cs {for cell in &c.cells{w.set(&cell.guard.dim,cell.guard.pos,&cell.desired);if blockstate::id_of(&cell.expected.state)!=blockstate::id_of(&cell.desired){w.engine.remove(&cell.guard.key());w.saved.remove(&cell.guard.key());
+            // The block entity the new block comes with: its first state, as the glue puts it in (`CellWrite::initial`).
+            if let Some(i)=&cell.initial{w.engine.insert(cell.guard.key(),(Vec::new(),i.data.clone()));w.saved.insert(cell.guard.key(),i.json.clone());}}}}
         for c in cs {w.engine.insert((c.dim.clone(),c.pos),(c.desired.clone(),c.data.clone()));w.saved.insert((c.dim.clone(),c.pos),c.json.clone());}true
     }
 
@@ -338,7 +359,7 @@ impl ServerHost for SHost {
     }
     fn redstone_many(&mut self, dim: &str, cells: &[Pos]) -> Vec<Option<u8>> {
         let w = self.world.borrow();
-        cells.iter().map(|p| w.loaded(dim, *p).then(|| w.signal.get(&(dim.to_string(), *p)).copied().unwrap_or(0))).collect()
+        cells.iter().map(|p| (w.loaded(dim, *p) && !w.no_redstone).then(|| w.signal.get(&(dim.to_string(), *p)).copied().unwrap_or(0))).collect()
     }
     fn inventory(&mut self, id: &str) -> Option<Vec<(String, u32)>> {
         Some(self.world.borrow().carried.get(id).cloned().unwrap_or_default())
@@ -380,6 +401,19 @@ impl ServerHost for SHost {
         let mut w = self.world.borrow_mut();
         for (item, n) in items {
             w.dropped.push(format!("{dim} {} {} {} {item} {n}", p[0], p[1], p[2]));
+        }
+        true
+    }
+    fn drop_encoded_items(&mut self, dim: &str, p: Pos, items: &[String]) -> bool {
+        let stacks: Vec<_> = items.iter().filter_map(|i| crate::foundry::scrap::from_snbt(i)).collect();
+        assert_eq!(stacks.len(), items.len(), "an item the ledger form cannot read: {items:?}");
+        self.drop_stacks(dim, p, &stacks)
+    }
+    fn drop_stacks(&mut self, dim: &str, p: Pos, stacks: &[crate::server::container_bridge::Stack]) -> bool {
+        let mut w = self.world.borrow_mut();
+        for s in stacks {
+            let data = s.custom.as_deref().map_or(String::new(), |c| format!(" {c}"));
+            w.dropped.push(format!("{dim} {} {} {} {} {}{data}", p[0], p[1], p[2], s.id, s.count));
         }
         true
     }
@@ -781,6 +815,11 @@ mod brick_furnace_tests;
 mod furnaces_tests;
 mod blastfurnace_tests;
 mod foundry_tests;
+mod rotary_furnace_tests;
+mod strand_caster_tests;
+mod foundry_hand_tests;
+mod slag_tests;
+mod wood_burner_tests;
 mod slot_items_tests;
 mod rbmk_tests;
 mod rbmk_t02_tests;

@@ -120,7 +120,12 @@ impl Crucible {
     /// and with an alloy loaded it brings one of its materials (no more
     /// of an input than the alloy's share of the capacity).
     pub fn smeltable(&self, t: &Tables, item: &str) -> bool {
-        let mats = t.smelting(item);
+        self.smeltable_stack(t, item, None)
+    }
+
+    /// `isItemSmeltable` of a stack: a scrap counts its own amount.
+    pub fn smeltable_stack(&self, t: &Tables, item: &str, custom: Option<&str>) -> bool {
+        let mats = t.smelting_of(item, custom);
         if mats.is_empty() {
             return false;
         }
@@ -156,15 +161,15 @@ impl Crucible {
         if self.heat < MAX_HEAT / 2 {
             return false;
         }
-        let Some(slot) = INPUTS.clone().find(|&i| self.slots[i].as_ref().is_some_and(|s| self.smeltable(t, &s.id))) else { return false };
+        let Some(slot) = INPUTS.clone().find(|&i| self.slots[i].as_ref().is_some_and(|s| self.smeltable_stack(t, &s.id, s.custom.as_deref()))) else { return false };
         let delta = ((self.heat - MAX_HEAT / 2) as f64 * 0.05) as u32;
         self.progress += delta;
         self.heat -= delta;
         if self.progress >= PROCESS {
             self.progress = 0;
-            let item = self.slots[slot].as_ref().unwrap().id.clone();
+            let (item, custom) = self.slots[slot].as_ref().map(|s| (s.id.clone(), s.custom.clone())).unwrap();
             let recipe = self.recipe.as_deref().and_then(|r| t.alloy(r));
-            for (m, q) in t.smelting(&item) {
+            for (m, q) in t.smelting_of(&item, custom.as_deref()) {
                 if recipe.is_some_and(|r| r.input(&m) > 0 || r.output(&m) > 0) {
                     add(&mut self.recipe_stack, &m, q);
                 } else {
@@ -327,35 +332,21 @@ impl Logic for Crucible {
         }
     }
 
-    /// Its items and its molten metal as scraps.
+    /// Its items.
     fn contents(&self) -> Vec<(String, u32)> {
-        let mut out: Vec<(String, u32)> = self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect();
-        out.extend(self.scraps());
-        out
+        self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect()
     }
-}
-
-impl Crucible {
-    /// Its molten metal as scraps, a whole ingot of each material per 72
-    /// quanta (a scrap here is always an ingot's worth: the slots carry no
-    /// amount). What is under an ingot is lost.
-    pub fn scraps(&self) -> Vec<(String, u32)> {
-        self.recipe_stack
-            .iter()
-            .chain(&self.waste_stack)
-            .filter(|(_, q)| q / 72 > 0)
-            .map(|(m, q)| (format!("ntm:scraps__{m}"), q / 72))
-            .collect()
+    /// Its molten metal, one stack per material (`MachineCrucible.breakBlock`:68, 117).
+    fn scraps(&self) -> Vec<(String, u32)> {
+        self.recipe_stack.iter().chain(&self.waste_stack).filter(|(_, q)| *q > 0).cloned().collect()
     }
 }
 
 impl Slotted for Crucible {
-    /// Its record keeps its slots (the model's JSON): a restore from the journal has them.
+    /// Its record keeps its slots (the model's JSON): a restore from the journal has them. Its molten metal is
+    /// `Logic::scraps` (exact, D4), not `held_contents`.
     fn slots_recorded(&self) -> bool {
         true
-    }
-    fn held_contents(&self) -> Vec<(String, u32)> {
-        self.scraps()
     }
     /// Heat, progress, the alloy (row in the list, 0 none), both stacks.
     fn save_state(&self) -> Vec<i32> {
@@ -479,6 +470,26 @@ mod tests {
         assert_eq!(c.waste_stack, vec![("iron".to_string(), 72)]);
         assert_eq!(c.slots[3], Some(Stack::new("minecraft:iron_ingot", 1)));
         assert!(!c.smeltable(&t, "minecraft:dirt"));
+    }
+
+    /// D4, R7: a scrap melts into exactly the amount it carries, so the metal a broken machine
+    /// dropped comes back whole: nothing under an ingot is lost, and nothing is made.
+    #[test]
+    fn a_scrap_melts_into_its_own_amount() {
+        let t = tables();
+        for q in [5, 72, 100, 1_000] {
+            let mut c = hot();
+            c.slots[3] = Some(crate::foundry::scrap::stack("iron", q));
+            let mut ticks = 0;
+            while c.waste_stack.is_empty() && ticks < 100 {
+                c.heat = MAX_HEAT;
+                c.step(&t, None, ticks);
+                ticks += 1;
+            }
+            assert_eq!(c.waste_stack, vec![("iron".to_string(), q)], "{q}");
+            assert_eq!(c.slots[3], None);
+            assert_eq!(crate::foundry::quanta(&crate::machine::Logic::scraps(&c), None), q);
+        }
     }
 
     #[test]

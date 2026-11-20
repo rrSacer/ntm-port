@@ -1,0 +1,12 @@
+{
+"source": "content/ids.json, the outputs of content/machine-recipes/foundry.json",
+"limits": {
+"ntm:blades_steel": 1,
+"ntm:blades_titanium": 1,
+"ntm:stamp_iron_flat": 1,
+"ntm:stamp_obsidian_flat": 1,
+"ntm:stamp_steel_flat": 1,
+"ntm:stamp_stone_flat": 1,
+"ntm:stamp_titanium_flat": 1
+}
+}

@@ -2914,6 +2914,28 @@
         ]
       }
     },
+    "ntm:foundry_slagtap": {
+      "source": "TileEntityFoundrySlagtap: an outlet that pours onto the ground (its filter in the old screen); no model of its own yet: the oriented block",
+      "machine": {
+        "slots": [],
+        "data": 4,
+        "synced": [
+          0
+        ]
+      }
+    },
+    "ntm:slag": {
+      "source": "TileEntitySlag (BlockDynamicSlag): one material and its quanta; no slots, the whole record in the model",
+      "machine": {
+        "slots": [],
+        "data": 5,
+        "synced": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
     "ntm:nuke_gadget": {
       "source": "ContainerNukeGadget, GUINukeGadget (exp1-4 and isReady)",
       "machine": {
@@ -21143,7 +21165,18 @@
           8,
           104
         ],
-        "data": 9
+        "data": 11,
+        "synced": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       },
       "screen": {
         "texture": "ntm:textures/gui/generators/gui_wood_burner_alt.png",
@@ -38401,8 +38434,163 @@
       "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
     },
     "ntm:machine_strand_caster": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineStrandCaster, GUIMachineStrandCaster (gui_strand_caster.png 176x214), MachineStrandCaster {0,0,6,0,1,0} + {2,0,1,0,1,0} offset 0; the model (RenderStrandCaster) is a declared gap: the casing keeps its cube",
+      "machine": {
+        "slots": [
+          {
+            "x": 57,
+            "y": 62
+          },
+          {
+            "x": 125,
+            "y": 26
+          },
+          {
+            "x": 143,
+            "y": 26
+          },
+          {
+            "x": 125,
+            "y": 44
+          },
+          {
+            "x": 143,
+            "y": 44
+          },
+          {
+            "x": 125,
+            "y": 62
+          },
+          {
+            "x": 143,
+            "y": 62
+          }
+        ],
+        "inventory": [
+          8,
+          132
+        ],
+        "data": 32,
+        "synced": [],
+        "multiblock": {
+          "min": [
+            -1,
+            0,
+            0
+          ],
+          "max": [
+            1,
+            0,
+            6
+          ],
+          "offset": 0,
+          "dummy": "ntm:dummy_machine",
+          "extra": [
+            {
+              "min": [
+                -1,
+                0,
+                0
+              ],
+              "max": [
+                1,
+                2,
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_strand_caster.png",
+        "texture_from": "textures/gui/processing/gui_strand_caster.png",
+        "size": [
+          176,
+          214
+        ],
+        "title": [
+          88,
+          4,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          118
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max": 1,
+            "rect": [
+              17,
+              14,
+              34,
+              79
+            ],
+            "color": 2,
+            "dir": "up"
+          },
+          {
+            "value": 3,
+            "max": 4,
+            "rect": [
+              82,
+              38,
+              16,
+              24
+            ],
+            "color": 5,
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              82,
+              89,
+              16,
+              24
+            ],
+            "color": 8,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              16,
+              17,
+              36,
+              81
+            ],
+            "lines": [
+              "{0} / {1} quanta"
+            ]
+          },
+          {
+            "rect": [
+              82,
+              38,
+              16,
+              24
+            ],
+            "lines": [
+              "{3} / {4} mB"
+            ]
+          },
+          {
+            "rect": [
+              82,
+              89,
+              16,
+              24
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          }
+        ]
+      }
     },
     "ntm:machine_fel": {
       "auto": false,
@@ -38696,8 +38884,226 @@
       }
     },
     "ntm:machine_rotary_furnace": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "ContainerMachineRotaryFurnace, GUIMachineRotaryFurnace (gui_rotary_furnace.png 176x186), RenderRotaryFurnace (meta 2: 90, Piston sway sps((anim*0.75)*0.125)*0.5-0.5, Plane hidden), MachineRotaryFurnace {4,0,1,1,2,2} offset 1",
+      "machine": {
+        "slots": [
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 26,
+            "y": 18
+          },
+          {
+            "x": 44,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 54
+          },
+          {
+            "x": 44,
+            "y": 54
+          }
+        ],
+        "inventory": [
+          8,
+          104
+        ],
+        "data": 32,
+        "synced": [],
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -1
+          ],
+          "max": [
+            2,
+            4,
+            1
+          ],
+          "offset": 1,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "screen": {
+        "texture": "ntm:textures/gui/processing/gui_rotary_furnace.png",
+        "texture_from": "textures/gui/processing/gui_rotary_furnace.png",
+        "size": [
+          176,
+          186
+        ],
+        "title": [
+          61,
+          6,
+          "center"
+        ],
+        "inventory_label": [
+          8,
+          92
+        ],
+        "bars": [
+          {
+            "value": 0,
+            "max_value": 10000,
+            "rect": [
+              63,
+              30,
+              33,
+              10
+            ],
+            "uv": [
+              176,
+              0
+            ],
+            "dir": "right"
+          },
+          {
+            "value": 1,
+            "max": 2,
+            "rect": [
+              26,
+              55,
+              14,
+              14
+            ],
+            "uv": [
+              176,
+              10
+            ],
+            "dir": "up"
+          },
+          {
+            "value": 3,
+            "max": 4,
+            "rect": [
+              98,
+              18,
+              16,
+              52
+            ],
+            "color": 5,
+            "dir": "up"
+          },
+          {
+            "value": 6,
+            "max": 7,
+            "rect": [
+              8,
+              36,
+              52,
+              16
+            ],
+            "color": 8,
+            "dir": "right"
+          },
+          {
+            "value": 9,
+            "max": 10,
+            "rect": [
+              134,
+              18,
+              16,
+              52
+            ],
+            "color": 11,
+            "dir": "up"
+          },
+          {
+            "value": 12,
+            "max": 13,
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "color": 14,
+            "dir": "up"
+          }
+        ],
+        "tooltips": [
+          {
+            "rect": [
+              98,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{3} / {4} quanta"
+            ]
+          },
+          {
+            "rect": [
+              8,
+              36,
+              52,
+              16
+            ],
+            "lines": [
+              "{6} / {7} mB"
+            ]
+          },
+          {
+            "rect": [
+              134,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{9} / {10} mB"
+            ]
+          },
+          {
+            "rect": [
+              152,
+              18,
+              16,
+              52
+            ],
+            "lines": [
+              "{12} / {13} mB"
+            ]
+          }
+        ]
+      },
+      "model": {
+        "obj": "ntm:models/obj/rotary_furnace.obj",
+        "obj_from": "models/machines/rotary_furnace.obj",
+        "texture": "ntm:textures/models/machines/rotary_furnace.png",
+        "texture_from": "textures/models/machines/rotary_furnace.png",
+        "rotation": 90,
+        "radius": 6.0,
+        "hide": [
+          "Plane"
+        ],
+        "loop_animation": {
+          "name": "animation.rotary_furnace.work",
+          "length": 3.35,
+          "bones": {
+            "Piston": {
+              "sway": {
+                "axis": "y",
+                "amp": 8,
+                "offset": -8,
+                "cycles": 1
+              }
+            }
+          }
+        },
+        "play": [
+          {
+            "animation": "animation.rotary_furnace.work",
+            "property": "honey_level",
+            "not": "0"
+          }
+        ]
+      }
     },
     "ntm:machine_furnace_brick_off": {
       "auto": false,

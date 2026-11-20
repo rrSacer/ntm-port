@@ -1,0 +1,27 @@
+{
+  "binary_sha256": "2843f67d16b79995d40c2ac6ed469a681f0d0f7f903ef7736cf59d068f7c3c14",
+  "bundle_sha256": "a6aaaad5f7527966a6270d3448f33b19488a7a47270628de976eb16a9a28a54b",
+  "checks": {
+    "setup:the_firebox_heats": {
+      "ok": true,
+      "actual": [
+        31300,
+        62000,
+        92800
+      ]
+    },
+    "setup:the_coal_is_still_there": {
+      "ok": true,
+      "actual": "47, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:coal_eternal\"}]"
+    }
+  },
+  "evidence": {
+    "heats": [
+      31300,
+      62000,
+      92800
+    ],
+    "items": "47, 101, 8 has the following block data: [{count: 1, Slot: 0b, id: \"ntm:coal_eternal\"}]"
+  },
+  "ok": true
+}

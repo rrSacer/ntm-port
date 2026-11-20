@@ -1,0 +1,142 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_rotary_furnace.png",
+  "size": [
+    176,
+    186
+  ],
+  "title": [
+    61,
+    6,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    92
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max_value": 10000,
+      "rect": [
+        63,
+        30,
+        33,
+        10
+      ],
+      "uv": [
+        176,
+        0
+      ],
+      "dir": "right"
+    },
+    {
+      "value": 1,
+      "max": 2,
+      "rect": [
+        26,
+        55,
+        14,
+        14
+      ],
+      "uv": [
+        176,
+        10
+      ],
+      "dir": "up"
+    },
+    {
+      "value": 3,
+      "max": 4,
+      "rect": [
+        98,
+        18,
+        16,
+        52
+      ],
+      "color": 5,
+      "dir": "up"
+    },
+    {
+      "value": 6,
+      "max": 7,
+      "rect": [
+        8,
+        36,
+        52,
+        16
+      ],
+      "color": 8,
+      "dir": "right"
+    },
+    {
+      "value": 9,
+      "max": 10,
+      "rect": [
+        134,
+        18,
+        16,
+        52
+      ],
+      "color": 11,
+      "dir": "up"
+    },
+    {
+      "value": 12,
+      "max": 13,
+      "rect": [
+        152,
+        18,
+        16,
+        52
+      ],
+      "color": 14,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        98,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{3} / {4} quanta"
+      ]
+    },
+    {
+      "rect": [
+        8,
+        36,
+        52,
+        16
+      ],
+      "lines": [
+        "{6} / {7} mB"
+      ]
+    },
+    {
+      "rect": [
+        134,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{9} / {10} mB"
+      ]
+    },
+    {
+      "rect": [
+        152,
+        18,
+        16,
+        52
+      ],
+      "lines": [
+        "{12} / {13} mB"
+      ]
+    }
+  ]
+}

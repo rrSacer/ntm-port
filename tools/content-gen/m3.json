@@ -30081,6 +30081,35 @@
       "source_orientation": false
     },
     {
+      "id": "slag",
+      "source_variable": "slag",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:iron_block",
+      "layer_block": true,
+      "loot_none": true,
+      "names": {
+        "en_us": "Slag (DEBUG)",
+        "pt_br": "Escória (DEBUG)"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/slag.png",
+      "block_properties": {
+        "requires_tool": false,
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "sounds": "minecraft:iron_block"
+      },
+      "model_gap": "Neutral colour (the Java tints it by the material); no flow of its own"
+    },
+    {
+      "id": "coal_eternal",
+      "source_variable": "coal_eternal",
+      "type": "item",
+      "category": "component",
+      "source_texture": "src/main/resources/assets/hbm/textures/items/coal_eternal.png",
+      "max_stack_size": 1
+    },
+    {
       "id": "mold__nugget",
       "source_variable": "mold",
       "source_class": "ItemMold",

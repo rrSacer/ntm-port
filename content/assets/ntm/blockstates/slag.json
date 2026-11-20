@@ -1,0 +1,31 @@
+{
+  "variants": {
+    "layer=0": {
+      "model": "ntm:block/slag_1"
+    },
+    "layer=1": {
+      "model": "ntm:block/slag_1"
+    },
+    "layer=2": {
+      "model": "ntm:block/slag_2"
+    },
+    "layer=3": {
+      "model": "ntm:block/slag_3"
+    },
+    "layer=4": {
+      "model": "ntm:block/slag_4"
+    },
+    "layer=5": {
+      "model": "ntm:block/slag_5"
+    },
+    "layer=6": {
+      "model": "ntm:block/slag_6"
+    },
+    "layer=7": {
+      "model": "ntm:block/slag_7"
+    },
+    "layer=8": {
+      "model": "ntm:block/slag_8"
+    }
+  }
+}

@@ -351,6 +351,8 @@ def export(source, output, rows):
     counts['purex'] = purex_recipes.export(source, output, rows)['coverage']
     import bedrock_recipes
     counts['bedrock'] = bedrock_recipes.export(source, output, rows)['coverage']
+    import rotary_furnace_recipes
+    counts['rotary_furnace'] = rotary_furnace_recipes.export(source, output, rows)['coverage']
     import crystallizer_recipes
     counts['crystallizer'] = crystallizer_recipes.export(source, output, rows)['coverage']
     import pyrooven_recipes, electrolyser_recipes, arc_furnace_recipes

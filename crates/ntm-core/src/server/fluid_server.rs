@@ -158,6 +158,12 @@ impl Server {
                     faces.insert(core,vec![vec![]]);
                     for (p,d) in crate::zirnox::Zirnox::port_cells(core,m.facing.as_deref()) {faces.insert(p,vec![vec![d]]);}
                 }
+                // The rotary furnace's and the caster's cells are open to one direction each (`PortDef` connections).
+                if let Some(m) = self.ready.world.machines.get(&(dim.clone(), core)) {
+                    for (p, d) in super::container_bridge::fluid_port_faces(&m.block, core, m.facing.as_deref()) {
+                        faces.insert(p, vec![vec![d]]);
+                    }
+                }
                 if self.ready.world.machines.get(&(dim.clone(),core)).is_some_and(|m| m.block == "ntm:machine_solar_boiler") {
                     faces.insert(core,vec![vec![[0,-1,0]]]);
                     faces.insert([core[0],core[1]+2,core[2]],vec![vec![[0,1,0]]]);

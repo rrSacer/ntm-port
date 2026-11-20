@@ -880,5 +880,20 @@
   "data/ntm/horizon/block/dummy_rbmk.json",
   "assets/ntm/blockstates/dummy_rbmk.json",
   "assets/ntm/models/block/dummy_rbmk.json",
-  "assets/ntm/textures/gui/processing/gui_recipe_selector.png"
+  "assets/ntm/textures/gui/processing/gui_recipe_selector.png",
+  "data/ntm/horizon_machine/foundry_slagtap.json",
+  "data/ntm/horizon_machine/slag.json",
+  "data/ntm/horizon_machine/machine_strand_caster.json",
+  "assets/ntm/textures/gui/processing/gui_strand_caster.png",
+  "assets/ntm/horizon_screen/machine_strand_caster.json",
+  "assets/ntm/models/obj/strand_caster.obj",
+  "assets/ntm/textures/models/machines/strand_caster.png",
+  "assets/ntm/horizon_model/machine_strand_caster.json",
+  "data/ntm/horizon_machine/machine_rotary_furnace.json",
+  "assets/ntm/textures/gui/processing/gui_rotary_furnace.png",
+  "assets/ntm/horizon_screen/machine_rotary_furnace.json",
+  "assets/ntm/models/obj/rotary_furnace.obj",
+  "assets/ntm/textures/models/machines/rotary_furnace.png",
+  "assets/ntm/animations/machine_rotary_furnace.animation.json",
+  "assets/ntm/horizon_model/machine_rotary_furnace.json"
 ]

@@ -246,6 +246,8 @@ def firebox_fuels(source, resolver, ores):
     itemtext = clean((source / (BASE + 'items/ModItems.java')).read_text())
     containers = {}
     for var, expr in re.findall(r'\b(\w+)\.setContainerItem\(([^)]+)\)', itemtext):
+        # `coal_eternal.setContainerItem(coal_eternal)`: its own container, never used up.
+        if expr.strip() == var and resolver.byvar.get(var): containers[var] = resolver.byvar[var][0]['id']; continue
         try: containers[var] = resolver.item(expr)[0]
         except Unsupported: pass
     for var,expr in re.findall(r'^\s*(\w+)\s*=\s*new[^;]*?\.setContainerItem\(([^)]+)\)', itemtext, re.M):

@@ -1,0 +1,17 @@
+{
+  "obj": "ntm:models/obj/rotary_furnace.obj",
+  "texture": "ntm:textures/models/machines/rotary_furnace.png",
+  "rotation": 90,
+  "radius": 6.0,
+  "hide": [
+    "Plane"
+  ],
+  "play": [
+    {
+      "animation": "animation.rotary_furnace.work",
+      "property": "honey_level",
+      "not": "0"
+    }
+  ],
+  "animations": "ntm:animations/machine_rotary_furnace.animation.json"
+}

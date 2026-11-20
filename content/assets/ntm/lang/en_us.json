@@ -3495,5 +3495,7 @@
   "itemGroup.ntm.consumables": "NTM Consumables and Gear",
   "block.ntm.dummy_zirnox": "Machine (part)",
   "block.ntm.dummy_zirnox_destroyed": "Machine (part)",
-  "block.ntm.dummy_rbmk": "Machine (part)"
+  "block.ntm.dummy_rbmk": "Machine (part)",
+  "block.ntm.slag": "Slag (DEBUG)",
+  "item.ntm.coal_eternal": "Eternal Coal"
 }

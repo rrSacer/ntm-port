@@ -259,6 +259,10 @@ pub(super) fn use_block(game: &mut crate::game::Game<'_>, pos: [i32; 3], core: [
     if !sneaking && server.native_sawmill_use(&mut host, &dim, pos, core, &player) {
         return true;
     }
+    // The foundry by hand, not sneaking (MachineStrandCaster, FoundryCastingBase, FoundryChannel, FoundryTank, MachineCrucible .onBlockActivated): a mold in, a shovel takes the metal as scraps, the cast out.
+    if !sneaking && server.native_foundry_use(&mut host, &dim, pos, core, &player) {
+        return true;
+    }
     let game = host.game;
     if let Some(held) = game.held().cloned() {
         if &*held.item == "ntm:mirror_tool" {
@@ -521,6 +525,12 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
     if w.first()==Some(&"dose"){
         let reply=format!("ntmtest ok=true dose={} buf={}",server.player_dose(&me).millirad,server.rad_buf(&me));
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
+        return true;
+    }
+    // `ntmtest cable <x> <y> <z>`: whether the server's network still holds a cable at the cell (its own set, not the world's block).
+    if w.first()==Some(&"cable") && let (Some(x),Some(y),Some(z))=(n(1),n(2),n(3)){
+        let held=server.native_test_cable(&dim,[x as i32,y as i32,z as i32]);
+        host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok=true cable={}",u8::from(held))));
         return true;
     }
     let at=match (n(1),n(2),n(3)){(Some(x),Some(y),Some(z))=>Some([x as i32,y as i32,z as i32]),_=>None};
@@ -1874,6 +1884,10 @@ impl ServerHost for Host<'_, '_> {
         self.commit_machines(std::slice::from_ref(c))
     }
     fn commit_machines(&mut self, commits: &[ntm_core::server::MachineCommit]) -> bool {
+        // The cells that come with a machine of their own (a slag tap's new block, `CellWrite::initial`) installed its model
+        // synchronously: the block change they cause is the server's own, not a placement. The other cells (what a mining step
+        // breaks: cables, machines) are external changes the server must hear of.
+        let _scope=OwnedBlockScope::new(ntm_core::server::owned_cells(commits));
         self.publish_atomic(commits,&[],&consumed_contents(commits),false)
     }
     /// The acting player's stacks (`native_actor_uuid`), each with its whole SNBT, as a transfer compares them.
@@ -2290,6 +2304,8 @@ pub(super) fn slot_filters(_game: &crate::game::Game<'_>, block: &str, filters: 
         ntm_core::furnaces::COMBINATION => Some(SlotPolicy(combination_furnace_slot_policy)),
         ntm_core::welders::ARC => Some(SlotPolicy(arc_welder_slot_policy)),
         ntm_core::welders::SOLDER => Some(SlotPolicy(soldering_slot_policy)),
+        ntm_core::rotary_furnace::BLOCK => Some(SlotPolicy(rotary_furnace_slot_policy)),
+        ntm_core::strand_caster::BLOCK => Some(SlotPolicy(strand_caster_slot_policy)),
         ntm_core::sawmill::BLOCK => Some(SlotPolicy(sawmill_slot_policy)),
         "ntm:rbmk_storage" => Some(SlotPolicy(rbmk_storage_slot_policy)),
         "ntm:rbmk_outgasser" => Some(SlotPolicy(rbmk_outgasser_slot_policy)),
@@ -2362,6 +2378,14 @@ fn arc_welder_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemS
 fn soldering_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
     machine_slot_policy(ntm_core::welders::SOLDER, slots, slot, item, action, origin)
+}
+fn strand_caster_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::strand_caster::BLOCK, slots, slot, item, action, origin)
+}
+fn rotary_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
+    action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
+    machine_slot_policy(ntm_core::rotary_furnace::BLOCK, slots, slot, item, action, origin)
 }
 fn combination_furnace_slot_policy(slots: &[Option<ItemStack>], slot: usize, item: &ItemStack,
     action: horizon_client::containers::SlotAction, origin: horizon_client::containers::SlotOrigin) -> bool {
@@ -2437,10 +2461,10 @@ pub(super) fn stack(s: &Option<ItemStack>) -> Option<Stack> {
     let mut t = Stack::new(&s.item, s.count);
     t.damage = s.damage;
     // The items whose custom data a machine reads: rods and pellets, the fluid identifier (its type), the broken item (its product),
-    // the keys and locks (their pins) and the battery packs (their charge).
+    // the keys and locks (their pins), the battery packs (their charge) and the foundry scraps (their amount).
     if ntm_core::storage::slot_item(&s.item) != ntm_core::energy_network::SlotItem::Other || ntm_core::pile::Rod::of(&s.item,0.0).is_some() || ntm_core::zirnox::fuel(&s.item).is_some() || ntm_core::radioisotopes::pellet(&s.item).is_some() || ntm_core::rbmk::persist::rod_of(&s.item).is_some()
         || &*s.item == ntm_core::server::native_server::IDENTIFIER || &*s.item == ntm_core::broken::ID
-        || ntm_core::keyforge::is_pin_item(&s.item) {
+        || ntm_core::keyforge::is_pin_item(&s.item) || ntm_core::foundry::scrap::is_scrap(&s.item) {
         t.custom = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt);
     } else if let Some(custom) = s.data().and_then(|d|d.other("minecraft:custom_data")).map(horizon_world::snbt_text::to_snbt)
         // Any item may carry the contagion (`ntmContagion`) the radiolysis chamber sterilizes, and an autocrafter's

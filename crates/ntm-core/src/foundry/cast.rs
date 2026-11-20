@@ -133,25 +133,20 @@ impl Logic for Cast {
             .text(format!("Metal: {metal}"), view::GREY)
     }
 
-    /// The mold, the cast and the metal as scraps (an ingot's worth each).
+    /// The mold and the cast.
     fn contents(&self) -> Vec<(String, u32)> {
-        let mut out: Vec<(String, u32)> = self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect();
-        if let Some(m) = &self.melt.mat
-            && self.melt.amount >= 72
-        {
-            out.push((format!("ntm:scraps__{m}"), self.melt.amount / 72));
-        }
-        out
+        self.slots.iter().flatten().map(|s| (s.id.clone(), s.count)).collect()
+    }
+    fn scraps(&self) -> Vec<(String, u32)> {
+        self.melt.molten()
     }
 }
 
 impl Slotted for Cast {
-    /// Its record keeps its slots (the model's JSON): a restore from the journal has them.
+    /// Its record keeps its slots (the model's JSON): a restore from the journal has them. Its molten metal is
+    /// `Logic::scraps` (exact, D4), not `held_contents`.
     fn slots_recorded(&self) -> bool {
         true
-    }
-    fn held_contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
     }
     /// The metal and the cooling left.
     fn save_state(&self) -> Vec<i32> {

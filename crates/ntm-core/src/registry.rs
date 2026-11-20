@@ -315,7 +315,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_strand_caster",
-        kind: Kind::Inert,
+        kind: Kind::StrandCaster,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -336,7 +336,7 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:machine_rotary_furnace",
-        kind: Kind::Inert,
+        kind: Kind::RotaryFurnace,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -781,9 +781,17 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:foundry_slagtap",
-        kind: Kind::Inert,
+        kind: Kind::Slagtap,
         facing: Some("facing"),
         level: HONEY,
+        ports: Ports::None,
+    },
+    // What the slag tap pours: no item, no facing, the height of its fill in eighths.
+    BlockSpec {
+        id: "ntm:slag",
+        kind: Kind::Slag,
+        facing: None,
+        level: Some(("layer", crate::foundry::slag::LAYERS)),
         ports: Ports::None,
     },
     BlockSpec {
@@ -1747,7 +1755,11 @@ pub const TOKEN: &str = "ntm:logic_token";
 /// A machine's fluid ports (the NTM's `TilePortShapes`, on one block): every
 /// machine with tanks has one port open all round; ducts are the cables.
 pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
-    if spec.kind == Kind::Zirnox || crate::steam::is_tower(spec.id) {
+    // The wood burner takes fluid at its back only (`canConnect(type, dir)`: `dir == rot.getOpposite()`), where its power goes out.
+    if spec.kind == Kind::WoodBurner {
+        return ports(spec, facing);
+    }
+    if spec.kind == Kind::Zirnox || crate::steam::is_tower(spec.id) || matches!(spec.kind, Kind::RotaryFurnace | Kind::StrandCaster) {
         return vec![vec![]];
     }
     if spec.id == "ntm:pile_device__vent" {

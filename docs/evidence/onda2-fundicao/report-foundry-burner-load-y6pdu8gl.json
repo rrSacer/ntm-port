@@ -1,0 +1,2736 @@
+{
+  "ok": true,
+  "scenario": "burner-load",
+  "binary": "/mnt/ssd120/sacer/so/fundicao/bin/horizon-client-r12",
+  "binary_sha256": "935e09b6ab9ef15568524a914f8b6a108e82303a80de6473ff89d5b1bc049672",
+  "bundle_sha256": "bfb9248d53c8e52da17b18c7ba377644cd537bac296c7ef66b6fd2e9dfa7f4dc",
+  "points": [
+    {
+      "point": "none",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-none",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 6000
+      },
+      "after_act": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "died_in_act": false,
+      "exit": "survived",
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 6000,
+        "owed": 0,
+        "player": 0,
+        "total": 6000
+      },
+      "items": {
+        "metal_quanta": 6000
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            6000,
+            6000
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 6000
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "items_again": {
+        "metal_quanta": 6000
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "none",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-none-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 6000
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "died_in_act": false,
+        "exit": "survived",
+        "disk": {
+          "entities": 0,
+          "blocks": 6000,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6000
+        },
+        "items": {
+          "metal_quanta": 6000
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              6000,
+              6000
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 6000
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "items_again": {
+          "metal_quanta": 6000
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6000,
+        "first": 6000,
+        "second": 6000,
+        "expected": 6000,
+        "control_expected": 6000,
+        "control_disk": 6000,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": true,
+        "compared_with": "none",
+        "control_first": 6000,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 6000
+          },
+          "control_base": {
+            "metal_quanta": 6000
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "kill",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-kill",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 6000
+      },
+      "after_act": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "died_in_act": false,
+      "exit": -9,
+      "disk": {
+        "entities": 0,
+        "blocks": 6000,
+        "molten": 0,
+        "owed": 0,
+        "player": 0,
+        "total": 6000
+      },
+      "items": {
+        "metal_quanta": 6000
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 0,
+        "slots": 6000,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 6000
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 0,
+        "slots": 6000,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "items_again": {
+        "metal_quanta": 6000
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "kill",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-kill-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 6000
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "died_in_act": false,
+        "exit": -9,
+        "disk": {
+          "entities": 0,
+          "blocks": 6000,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6000
+        },
+        "items": {
+          "metal_quanta": 6000
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 6000
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "items_again": {
+          "metal_quanta": 6000
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6000,
+        "first": 6000,
+        "second": 6000,
+        "expected": 6000,
+        "control_expected": 6000,
+        "control_disk": 6000,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": true,
+        "compared_with": "kill",
+        "control_first": 6000,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 6000
+          },
+          "control_base": {
+            "metal_quanta": 6000
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "last_save",
+        "criterion_reason": "nothing written outside a save: both worlds are the last save, exactly",
+        "proof": true,
+        "as_the_last_save": true
+      }
+    },
+    {
+      "point": "kv_committed",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-kv_committed",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 6000
+      },
+      "after_act": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 6000,
+        "owed": 0,
+        "player": 0,
+        "total": 6000
+      },
+      "items": {
+        "metal_quanta": 6000
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            6000,
+            6000
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 6000
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "items_again": {
+        "metal_quanta": 6000
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "kv_committed",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-kv_committed-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 6000
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 6000,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6000
+        },
+        "items": {
+          "metal_quanta": 6000
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 6000
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "items_again": {
+          "metal_quanta": 6000
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6000,
+        "first": 6000,
+        "second": 6000,
+        "expected": 6000,
+        "control_expected": 6000,
+        "control_disk": 6000,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": true,
+        "compared_with": "kv_committed",
+        "control_first": 6000,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 6000
+          },
+          "control_base": {
+            "metal_quanta": 6000
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "L/D",
+        "criterion_reason": "files written outside a save (eager chunk saves): L and D item by item, as the files, storage clean; the result depends on when each world's pass ran, so it is evidence, not proof: the proof is the strict mode (HORIZON_NO_EAGER_SAVE)",
+        "proof": false
+      }
+    },
+    {
+      "point": "save_begin",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-save_begin",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 6000
+      },
+      "after_act": null,
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 6000,
+        "molten": 0,
+        "owed": 0,
+        "player": 0,
+        "total": 6000
+      },
+      "items": {
+        "metal_quanta": 6000
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 0,
+        "slots": 6000,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 6000
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 0,
+        "slots": 6000,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "items_again": {
+        "metal_quanta": 6000
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "save_begin",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-save_begin-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 6000
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 6000,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6000
+        },
+        "items": {
+          "metal_quanta": 6000
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 6000
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "items_again": {
+          "metal_quanta": 6000
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6000,
+        "first": 6000,
+        "second": 6000,
+        "expected": 6000,
+        "control_expected": 6000,
+        "control_disk": 6000,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "save_begin",
+        "control_first": 6000,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 6000
+          },
+          "control_base": {
+            "metal_quanta": 6000
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "chunks_written",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-chunks_written",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 6000
+      },
+      "after_act": null,
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 6000,
+        "owed": 0,
+        "player": 0,
+        "total": 6000
+      },
+      "items": {
+        "metal_quanta": 6000
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            6000,
+            6000
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 6000
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "items_again": {
+        "metal_quanta": 6000
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "chunks_written",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-chunks_written-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 6000
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 6000,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6000
+        },
+        "items": {
+          "metal_quanta": 6000
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              6000,
+              6000
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 6000
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "items_again": {
+          "metal_quanta": 6000
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6000,
+        "first": 6000,
+        "second": 6000,
+        "expected": 6000,
+        "control_expected": 6000,
+        "control_disk": 6000,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "chunks_written",
+        "control_first": 6000,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 6000
+          },
+          "control_base": {
+            "metal_quanta": 6000
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "entities_written",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-entities_written",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 6000
+      },
+      "after_act": null,
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 6000,
+        "owed": 0,
+        "player": 0,
+        "total": 6000
+      },
+      "items": {
+        "metal_quanta": 6000
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            6000,
+            6000
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 6000
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "items_again": {
+        "metal_quanta": 6000
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "entities_written",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-entities_written-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 6000
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 6000,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6000
+        },
+        "items": {
+          "metal_quanta": 6000
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              6000,
+              6000
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 6000
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "items_again": {
+          "metal_quanta": 6000
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6000,
+        "first": 6000,
+        "second": 6000,
+        "expected": 6000,
+        "control_expected": 6000,
+        "control_disk": 6000,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "entities_written",
+        "control_first": 6000,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 6000
+          },
+          "control_base": {
+            "metal_quanta": 6000
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "world_saved",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-world_saved",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 6000
+      },
+      "after_act": null,
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 6000,
+        "owed": 0,
+        "player": 0,
+        "total": 6000
+      },
+      "items": {
+        "metal_quanta": 6000
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            6000,
+            6000
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 6000
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "items_again": {
+        "metal_quanta": 6000
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "world_saved",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-world_saved-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 6000
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 6000,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6000
+        },
+        "items": {
+          "metal_quanta": 6000
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              6000,
+              6000
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 6000
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "items_again": {
+          "metal_quanta": 6000
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6000,
+        "first": 6000,
+        "second": 6000,
+        "expected": 6000,
+        "control_expected": 6000,
+        "control_disk": 6000,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "world_saved",
+        "control_first": 6000,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 6000
+          },
+          "control_base": {
+            "metal_quanta": 6000
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    },
+    {
+      "point": "players_saved",
+      "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-players_saved",
+      "ok": true,
+      "vanilla_control": false,
+      "base_items": {
+        "metal_quanta": 6000
+      },
+      "after_act": null,
+      "died_in_act": false,
+      "exit": -6,
+      "killed_at_the_point": true,
+      "disk": {
+        "entities": 0,
+        "blocks": 0,
+        "molten": 6000,
+        "owed": 0,
+        "player": 0,
+        "total": 6000
+      },
+      "items": {
+        "metal_quanta": 6000
+      },
+      "kv_items": 0,
+      "written": {
+        "region": [
+          [
+            2,
+            0,
+            6000,
+            6000
+          ]
+        ],
+        "entities": []
+      },
+      "first_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "checks": {
+        "verify": {},
+        "again": {}
+      },
+      "items_after": {
+        "metal_quanta": 6000
+      },
+      "kv_items_after": 0,
+      "second_reopen": {
+        "molten": 6000,
+        "slots": 0,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      },
+      "items_again": {
+        "metal_quanta": 6000
+      },
+      "kv_items_again": 0,
+      "control": {
+        "point": "players_saved",
+        "folder": "/mnt/ssd120/sacer/so/fundicao/foundry-burner-load-y6pdu8gl/point-players_saved-vanilla",
+        "ok": true,
+        "vanilla_control": true,
+        "base_items": {
+          "metal_quanta": 6000
+        },
+        "after_act": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "died_in_act": false,
+        "exit": -6,
+        "killed_at_the_point": true,
+        "disk": {
+          "entities": 0,
+          "blocks": 6000,
+          "molten": 0,
+          "owed": 0,
+          "player": 0,
+          "total": 6000
+        },
+        "items": {
+          "metal_quanta": 6000
+        },
+        "kv_items": 0,
+        "written": {
+          "region": [
+            [
+              2,
+              0,
+              6000,
+              6000
+            ]
+          ],
+          "entities": []
+        },
+        "first_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "checks": {
+          "verify": {},
+          "again": {}
+        },
+        "items_after": {
+          "metal_quanta": 6000
+        },
+        "kv_items_after": 0,
+        "second_reopen": {
+          "molten": 0,
+          "slots": 6000,
+          "inventory": 0,
+          "ground": 0,
+          "total": 6000
+        },
+        "items_again": {
+          "metal_quanta": 6000
+        },
+        "kv_items_again": 0
+      },
+      "verdict": {
+        "disk": 6000,
+        "first": 6000,
+        "second": 6000,
+        "expected": 6000,
+        "control_expected": 6000,
+        "control_disk": 6000,
+        "parts_ok": true,
+        "as_the_files": true,
+        "as_the_files_items": true,
+        "storage_clean": true,
+        "same_cut": true,
+        "same_cut_by_definition": false,
+        "compared_with": "players_saved",
+        "control_first": 6000,
+        "no_duplicate": true,
+        "lost": 0,
+        "control_lost": 0,
+        "no_worse_than_vanilla": true,
+        "items": {
+          "base": {
+            "metal_quanta": 6000
+          },
+          "control_base": {
+            "metal_quanta": 6000
+          },
+          "items_after": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          },
+          "items_again": {
+            "mine": {
+              "metal_quanta": 6000
+            },
+            "control": {
+              "metal_quanta": 6000
+            }
+          }
+        },
+        "no_duplicate_item": true,
+        "no_worse_item": true,
+        "criterion": "cut",
+        "criterion_reason": "a cut inside a save: compared with the control at the same cut",
+        "proof": true
+      }
+    }
+  ],
+  "prepare": {
+    "ntm": {
+      "scenario": "foundry-cut-prepare",
+      "ok": false,
+      "steps": [
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 0,
+            "creative": false,
+            "day_time": 1000,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.0,
+            "frames": 0,
+            "generated_chunks": 0,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 0,
+            "mobs": 0,
+            "music": null,
+            "name_tags": null,
+            "objects": [],
+            "offhand": null,
+            "particles": {},
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": null,
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 0,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 0,
+              "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 0,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                0,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 0,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 0,
+              "food": 20,
+              "game_mode": 0,
+              "health": 20.0,
+              "joined": false,
+              "loaded": false,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": false,
+              "player_positions": [],
+              "players": [],
+              "status": "Connecting to the server...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": null,
+            "ticks": 0,
+            "tridents": 0,
+            "uptime_seconds": 1.910691093,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 3,
+            "creative": true,
+            "day_time": 5,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.46907907724380493,
+            "frames": 2,
+            "generated_chunks": 3,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 0,
+            "mobs": 0,
+            "music": null,
+            "name_tags": [],
+            "objects": [],
+            "offhand": null,
+            "particles": {
+              "tinted_leaves": 2
+            },
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": {
+              "food": 20,
+              "health": 20.0,
+              "max_health": null,
+              "on_ground": true,
+              "position": [
+                5.5,
+                71.0,
+                0.5
+              ],
+              "velocity": [
+                0.0,
+                -0.0784000015258789,
+                0.0
+              ]
+            },
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 0,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 0,
+              "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 0,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                0,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 3,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 1,
+              "food": 20,
+              "game_mode": 1,
+              "health": 20.0,
+              "joined": true,
+              "loaded": true,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": true,
+              "player_positions": [],
+              "players": [
+                "CrashTest"
+              ],
+              "status": "Loading terrain...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": {
+              "block": "minecraft:grass_block",
+              "pos": [
+                5,
+                72,
+                5
+              ]
+            },
+            "ticks": 14,
+            "tridents": 0,
+            "uptime_seconds": 2.198463646,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "close",
+          "result": {
+            "ok": true
+          }
+        },
+        {
+          "command": "command gamemode creative @s",
+          "result": {
+            "chat": [],
+            "ok": true
+          }
+        },
+        {
+          "command": "close",
+          "result": {
+            "ok": true
+          }
+        },
+        {
+          "command": "command forceload add 30 0 64 16",
+          "result": {
+            "chat": [
+              "Marked 8 chunks in minecraft:overworld from [1, 0] to [4, 1] to be force loaded"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command fill 30 101 0 64 107 16 minecraft:air",
+          "result": {
+            "chat": [
+              "No blocks were filled"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command fill 30 100 0 64 100 16 minecraft:stone",
+          "result": {
+            "chat": [
+              "Successfully filled 595 block(s)"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 42 101 8 minecraft:barrel",
+          "result": {
+            "chat": [
+              "Changed the block at 42, 101, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 40 101 8 ntm:machine_wood_burner[facing=north,honey_level=0]",
+          "result": {
+            "chat": [
+              "Changed the block at 40, 101, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command item replace block 42 101 8 container.0 with ntm:canister_full__woodoil 6",
+          "result": {
+            "chat": [
+              "Replaced 1 slot(s) at 42, 101, 8 with [Canister of Wood Oil]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 42 101 8 Items",
+          "result": {
+            "chat": [
+              "42, 101, 8 has the following block data: [{count: 6, Slot: 0b, id: \"ntm:canister_full__woodoil\"}]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_wood_burner\",\"facing\":\"north\",\"data\":{\"k\":\"WoodBurner\",\"power\":0,\"burn\":0,\"max_burn\":0,\"on\":true,\"fuel\":null,\"ash_wood\":0,\"ash_coal\":0,\"ash_misc\":0,\"liquid_burn\":false,\"tank\":{\"fluid\":\"woodoil\",\"mb\":0,\"cap\":16000}}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 Items",
+          "result": {
+            "chat": [
+              "Found no elements matching Items"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_wood_burner\",\"facing\":\"north\",\"data\":{\"k\":\"WoodBurner\",\"power\":0,\"burn\":0,\"max_burn\":0,\"on\":true,\"fuel\":null,\"ash_wood\":0,\"ash_coal\":0,\"ash_misc\":0,\"liquid_burn\":false,\"tank\":{\"fluid\":\"woodoil\",\"mb\":0,\"cap\":16000}}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 42 101 8 Items",
+          "result": {
+            "chat": [
+              "42, 101, 8 has the following block data: [{count: 6, Slot: 0b, id: \"ntm:canister_full__woodoil\"}]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_wood_burner\",\"facing\":\"north\",\"data\":{\"k\":\"WoodBurner\",\"power\":0,\"burn\":0,\"max_burn\":0,\"on\":true,\"fuel\":null,\"ash_wood\":0,\"ash_coal\":0,\"ash_misc\":0,\"liquid_burn\":false,\"tank\":{\"fluid\":\"woodoil\",\"mb\":0,\"cap\":16000}}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 Items",
+          "result": {
+            "chat": [
+              "Found no elements matching Items"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_wood_burner\",\"facing\":\"north\",\"data\":{\"k\":\"WoodBurner\",\"power\":0,\"burn\":0,\"max_burn\":0,\"on\":true,\"fuel\":null,\"ash_wood\":0,\"ash_coal\":0,\"ash_misc\":0,\"liquid_burn\":false,\"tank\":{\"fluid\":\"woodoil\",\"mb\":0,\"cap\":16000}}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command kill @e[type=minecraft:item]",
+          "result": {
+            "chat": [
+              "No entity was found"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command tp @s 40.5 101 12.5",
+          "result": {
+            "chat": [
+              "Teleported CrashTest to 40.500000, 101.000000, 12.500000"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 42 101 8 Items",
+          "result": {
+            "chat": [
+              "42, 101, 8 has the following block data: [{count: 6, Slot: 0b, id: \"ntm:canister_full__woodoil\"}]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_wood_burner\",\"facing\":\"north\",\"data\":{\"k\":\"WoodBurner\",\"power\":0,\"burn\":0,\"max_burn\":0,\"on\":true,\"fuel\":null,\"ash_wood\":0,\"ash_coal\":0,\"ash_misc\":0,\"liquid_burn\":false,\"tank\":{\"fluid\":\"woodoil\",\"mb\":0,\"cap\":16000}}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 Items",
+          "result": {
+            "chat": [
+              "Found no elements matching Items"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 ntm",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: '{\"generation\":2,\"block\":\"ntm:machine_wood_burner\",\"facing\":\"north\",\"data\":{\"k\":\"WoodBurner\",\"power\":0,\"burn\":0,\"max_burn\":0,\"on\":true,\"fuel\":null,\"ash_wood\":0,\"ash_coal\":0,\"ash_misc\":0,\"liquid_burn\":false,\"tank\":{\"fluid\":\"woodoil\",\"mb\":0,\"cap\":16000}}}'"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "save",
+          "result": {
+            "ok": true
+          }
+        }
+      ],
+      "checks": {
+        "setup:the_barrel_holds_the_canisters": {
+          "ok": true,
+          "actual": {
+            "molten": 0,
+            "slots": 6000,
+            "inventory": 0,
+            "ground": 0,
+            "total": 6000
+          }
+        }
+      },
+      "base": {
+        "molten": 0,
+        "slots": 6000,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      }
+    },
+    "vanilla": {
+      "scenario": "foundry-cut-prepare",
+      "ok": false,
+      "steps": [
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 0,
+            "creative": false,
+            "day_time": 1000,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.0,
+            "frames": 0,
+            "generated_chunks": 0,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 0,
+            "mobs": 0,
+            "music": null,
+            "name_tags": null,
+            "objects": [],
+            "offhand": null,
+            "particles": {},
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": null,
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 0,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 0,
+              "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 0,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                0,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 0,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 0,
+              "food": 20,
+              "game_mode": 0,
+              "health": 20.0,
+              "joined": false,
+              "loaded": false,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": false,
+              "player_positions": [],
+              "players": [],
+              "status": "Connecting to the server...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": null,
+            "ticks": 0,
+            "tridents": 0,
+            "uptime_seconds": 2.058400639,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "status",
+          "result": {
+            "block_entities": 0,
+            "border": {
+              "center": [
+                0.0,
+                0.0
+              ],
+              "size": 59999968.0
+            },
+            "carts": [],
+            "chunks": 6,
+            "creative": true,
+            "day_time": 5,
+            "debug": {
+              "advanced_tooltips": false,
+              "chunk_borders": false,
+              "clipboard": null,
+              "hitboxes": false,
+              "overlay": false,
+              "pause_menu": true,
+              "pause_on_lost_focus": true
+            },
+            "destroying": [],
+            "dimension": "minecraft:overworld",
+            "dirty_light": 0,
+            "display": {
+              "height": 720,
+              "refresh_hz": null,
+              "scale": 1.0,
+              "width": 1280
+            },
+            "fangs_vertices": 0,
+            "fight": {
+              "alive_crystals": 0,
+              "crystal_list": [],
+              "crystals": 0,
+              "dragon": null,
+              "exit_portal": null,
+              "killed": false,
+              "players": false,
+              "respawn": null
+            },
+            "fishing": null,
+            "fps": 0.43851369619369507,
+            "frames": 2,
+            "generated_chunks": 6,
+            "heard": {},
+            "held": null,
+            "input": {
+              "counts": {
+                "agent": 0,
+                "game": 0,
+                "user": 0
+              },
+              "events": 0,
+              "last_origin": null,
+              "last_user_age_s": null,
+              "recording": null,
+              "replay": null,
+              "user_since_agent": 0
+            },
+            "keys": [],
+            "lightning": {
+              "bolts": 0,
+              "flash": 0,
+              "flashes": 0,
+              "struck": 0
+            },
+            "lod": {
+              "active_tiles": 0,
+              "cached_tiles": 0,
+              "detail_target_columns": 0,
+              "distance": 0,
+              "effective_distance": 0,
+              "far_detail": "full",
+              "kept_mb": 0,
+              "kept_tiles": 0,
+              "levels": [],
+              "pending_observations": 0,
+              "refined_samples": 0,
+              "refined_target_columns": 0,
+              "resident_quads": 0,
+              "sampled_target_tiles": 0,
+              "source": "none",
+              "source_attempted": false,
+              "target_tiles": 0,
+              "terrain_distance": 2
+            },
+            "maps": [],
+            "meshed_sections": 0,
+            "mobs": 0,
+            "music": null,
+            "name_tags": [],
+            "objects": [],
+            "offhand": null,
+            "particles": {},
+            "pending_chunks": 0,
+            "pending_uploads": 0,
+            "physical_keys": [],
+            "pickups": {},
+            "pitch": 0.0,
+            "player": {
+              "food": 20,
+              "health": 20.0,
+              "max_health": null,
+              "on_ground": true,
+              "position": [
+                10.5,
+                74.0,
+                4.5
+              ],
+              "velocity": [
+                0.0,
+                -0.0784000015258789,
+                0.0
+              ]
+            },
+            "projectiles": [],
+            "render_distance": 2,
+            "renderer": {
+              "arena_bytes": 0,
+              "backend": "Gl",
+              "culled_sections": null,
+              "device_type": "cpu",
+              "drawn_sections": 0,
+              "driver": "4.6 (Core Profile) Mesa 26.3.1-arch1.1",
+              "gpu": "llvmpipe (LLVM 23.1.5, 256 bits)",
+              "gpu_allocated_bytes": null,
+              "gpu_culling": false,
+              "gpu_culling_auto": "watching",
+              "gpu_culling_mode": "off",
+              "gpu_culling_offer": "Unsupported",
+              "gpu_fading": null,
+              "gpu_frame": false,
+              "gpu_occluding": false,
+              "gpu_reserved_bytes": null,
+              "packed_layout": [
+                false,
+                true
+              ],
+              "present_mode": "Immediate",
+              "resident_sections": 0,
+              "section_draw_calls": 0,
+              "section_draws": 0,
+              "section_vertex_bytes": 0,
+              "size": [
+                1280,
+                720
+              ],
+              "stats_lag": 0,
+              "uploaded_bytes": 0,
+              "vendor": "mesa",
+              "vertex_bytes_split": [
+                0,
+                0
+              ]
+            },
+            "riding": null,
+            "rockets": 0,
+            "screen": "playing",
+            "selected": 1,
+            "server": {
+              "address": "local",
+              "chat": [],
+              "chunks": 6,
+              "dead_players": [],
+              "decode_errors": 0,
+              "dimension": "minecraft:overworld",
+              "entities": {},
+              "entity_id": 1,
+              "food": 20,
+              "game_mode": 1,
+              "health": 20.0,
+              "joined": true,
+              "loaded": true,
+              "lying_players": [],
+              "name": "CrashTest",
+              "own_body": false,
+              "player_equipment": [],
+              "player_model": true,
+              "player_positions": [],
+              "players": [
+                "CrashTest"
+              ],
+              "status": "Loading terrain...",
+              "text_display_vertices": 0,
+              "text_displays": 0
+            },
+            "sidebar": null,
+            "sounds": {
+              "channels": 0,
+              "decoded": 0,
+              "decoded_mib": 0,
+              "events": [],
+              "handles": 0,
+              "instances": 0,
+              "playing": 0,
+              "queued": 0,
+              "ticking": 0,
+              "used": [
+                0,
+                0
+              ]
+            },
+            "stopped_sounds": {},
+            "streaming": {
+              "decorating": 0,
+              "finishing": 0,
+              "generating": 0,
+              "lighting": 0,
+              "meshing": 0,
+              "protos": 0,
+              "queued": 0
+            },
+            "target": null,
+            "ticks": 14,
+            "tridents": 0,
+            "uptime_seconds": 2.34283121,
+            "using": null,
+            "yaw": 0.0
+          }
+        },
+        {
+          "command": "close",
+          "result": {
+            "ok": true
+          }
+        },
+        {
+          "command": "command gamemode creative @s",
+          "result": {
+            "chat": [],
+            "ok": true
+          }
+        },
+        {
+          "command": "close",
+          "result": {
+            "ok": true
+          }
+        },
+        {
+          "command": "command forceload add 30 0 64 16",
+          "result": {
+            "chat": [
+              "Marked 8 chunks in minecraft:overworld from [1, 0] to [4, 1] to be force loaded"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command fill 30 101 0 64 107 16 minecraft:air",
+          "result": {
+            "chat": [
+              "No blocks were filled"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command fill 30 100 0 64 100 16 minecraft:stone",
+          "result": {
+            "chat": [
+              "Successfully filled 595 block(s)"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command clear @s",
+          "result": {
+            "chat": [
+              "No items were found on player CrashTest"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 42 101 8 minecraft:barrel",
+          "result": {
+            "chat": [
+              "Changed the block at 42, 101, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command setblock 40 101 8 minecraft:barrel",
+          "result": {
+            "chat": [
+              "Changed the block at 40, 101, 8"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command item replace block 42 101 8 container.0 with ntm:canister_full__woodoil 6",
+          "result": {
+            "chat": [
+              "Replaced 1 slot(s) at 42, 101, 8 with [Canister of Wood Oil]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 42 101 8 Items",
+          "result": {
+            "chat": [
+              "42, 101, 8 has the following block data: [{count: 6, Slot: 0b, id: \"ntm:canister_full__woodoil\"}]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 Items",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: []"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 42 101 8 Items",
+          "result": {
+            "chat": [
+              "42, 101, 8 has the following block data: [{count: 6, Slot: 0b, id: \"ntm:canister_full__woodoil\"}]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 Items",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: []"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command kill @e[type=minecraft:item]",
+          "result": {
+            "chat": [
+              "No entity was found"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command tp @s 40.5 101 12.5",
+          "result": {
+            "chat": [
+              "Teleported CrashTest to 40.500000, 101.000000, 12.500000"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 42 101 8 Items",
+          "result": {
+            "chat": [
+              "42, 101, 8 has the following block data: [{count: 6, Slot: 0b, id: \"ntm:canister_full__woodoil\"}]"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "command data get block 40 101 8 Items",
+          "result": {
+            "chat": [
+              "40, 101, 8 has the following block data: []"
+            ],
+            "ok": true
+          }
+        },
+        {
+          "command": "save",
+          "result": {
+            "ok": true
+          }
+        }
+      ],
+      "checks": {
+        "setup:the_barrel_holds_the_canisters": {
+          "ok": true,
+          "actual": {
+            "molten": 0,
+            "slots": 6000,
+            "inventory": 0,
+            "ground": 0,
+            "total": 6000
+          }
+        }
+      },
+      "base": {
+        "molten": 0,
+        "slots": 6000,
+        "inventory": 0,
+        "ground": 0,
+        "total": 6000
+      }
+    }
+  }
+}

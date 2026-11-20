@@ -205,6 +205,23 @@ mod tests {
         assert_eq!(Firebox::default().pull_heat(Some(10_000)), 0, "a firebox não puxa");
     }
 
+    /// `FuelHandler`: `coal_eternal` is `single * 16` and its own container item: lit, it is given back whole (the burn
+    /// comes out of the table, the item is never used up), and its ash is the miscellaneous one with the module's time.
+    #[test]
+    fn the_eternal_coal_is_given_back_when_lit() {
+        let t = Tables::ntm();
+        let mut f = Firebox::default();
+        f.slots[0] = Some(Stack::new("ntm:coal_eternal", 1));
+        assert!(f.step(t));
+        assert_eq!((f.burn, f.burn_heat), (3_200, 100));
+        assert_eq!(f.slots[0], Some(Stack::new("ntm:coal_eternal", 1)), "its own container");
+        assert_eq!(f.ash_out, Some((crate::fuel::Ash::Misc, 3_200)));
+        // And again, when the burn is over: the same coal burns for ever.
+        f.burn = 0;
+        f.step(t);
+        assert_eq!(f.slots[0], Some(Stack::new("ntm:coal_eternal", 1)));
+    }
+
     #[test]
     fn a_lava_bucket_leaves_its_bucket_and_idle_heat_fades() {
         let t = tables();

@@ -98,6 +98,25 @@ pub fn container(block: &str) -> Option<Container> {
     if block == crate::cyclotron::BLOCK {
         return Some(crate::cyclotron::container());
     }
+    if block == crate::strand_caster::BLOCK {
+        // `getAccessibleSlotsFromSide`: the six outputs on every side; the mold goes in by hand only.
+        return Some(Container {
+            slots: crate::strand_caster::slot::COUNT,
+            faces: std::array::from_fn(|_| crate::strand_caster::slot::OUT.collect()),
+            inputs: vec![],
+            outputs: crate::strand_caster::slot::OUT.collect(),
+            menu: Some("minecraft:generic_9x3"),
+        });
+    }
+    if block == crate::rotary_furnace::BLOCK {
+        return Some(Container {
+            slots: crate::rotary_furnace::slot::COUNT,
+            faces: std::array::from_fn(|_| vec![0, 1, 2, 4]),
+            inputs: vec![0, 1, 2, 4],
+            outputs: vec![],
+            menu: Some("minecraft:generic_9x3"),
+        });
+    }
     if is_brick_furnace(block) {
         // `TileEntityFurnaceBrick.getAccessibleSlotsFromSide`: the input from
         // above, the fuel from the sides, the output, fuel and ash below;
@@ -252,6 +271,22 @@ pub fn slot_filters(block: &str) -> Vec<SlotFilter> {
         }
         return rules;
     }
+    if block == crate::strand_caster::BLOCK {
+        // `isItemValidForSlot`: only a mold, in slot 0; the outputs are `SlotCraftingOutput`.
+        let molds: Vec<String> = crate::foundry::Tables::ntm().molds.iter().map(|m| m.item.clone()).collect();
+        let mut f = vec![SlotFilter { quick_move: Some(molds), quick_reverse: true, ..Default::default() }];
+        f.extend((1..crate::strand_caster::slot::COUNT).map(|_| SlotFilter { quick_reverse: true, ..Default::default() }));
+        return f;
+    }
+    if block == crate::rotary_furnace::BLOCK {
+        return vec![
+            SlotFilter { quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_move: Some(vec!["ntm:fluid_identifier_multi".into()]), quick_reverse: true, ..Default::default() },
+            SlotFilter { quick_move: Some(crate::fuel::fuels()), quick_reverse: true, ..Default::default() },
+        ];
+    }
     if is_brick_furnace(block) {
         // `ContainerFurnaceBrick.transferStackInSlot`: a fuel is merged into
         // slot 1 first and then slot 0, anything else into slot 0 only: the
@@ -346,6 +381,20 @@ pub fn slot_allows(block: &str, slots: &[Option<crate::server::container_bridge:
     }
     if block == crate::funnel::BLOCK {
         return crate::funnel::allows(slots, slot, &item.id, action == SlotAction::Insert, origin == SlotOrigin::Manual);
+    }
+    if block == crate::strand_caster::BLOCK {
+        // The mold in slot 0 by hand (`ContainerMachineStrandCaster`: `SlotNonRetarded`); nothing goes into the outputs
+        // and a funnel never sees the mold (`getAccessibleSlotsFromSide`).
+        return match action {
+            SlotAction::Insert => origin == SlotOrigin::Manual && slot == crate::strand_caster::slot::MOLD && crate::foundry::Tables::ntm().mold(&item.id).is_some(),
+            _ => origin == SlotOrigin::Manual || slot != crate::strand_caster::slot::MOLD,
+        };
+    }
+    if block == crate::rotary_furnace::BLOCK {
+        return match origin {
+            SlotOrigin::Manual => true,
+            SlotOrigin::Automation => action == SlotAction::Insert && (slot < 3 || slot == crate::rotary_furnace::slot::FUEL),
+        };
     }
     if is_brick_furnace(block) {
         // The plain slots 0 and 1 take anything from a hand (1.7.10's
@@ -917,6 +966,117 @@ mod screens {
         w.sync_in();
         w.tick();
         assert_eq!((w.ash_coal, w.slots[1].clone()), (0, Some(Stack::new("ntm:powder_ash__coal", 8))));
+    }
+
+    /// `liquidBurn` (`updateEntity:127-142`): 2 mB a tick of a flammable tank give `heat * mB / 2000` HE, only while it is on and
+    /// not full; the solid fuel and the ash are left alone; a fluid without `FT_Flammable` gives nothing.
+    #[test]
+    fn the_wood_burner_burns_its_tank_in_liquid_mode() {
+        let mut w = WoodBurner { liquid_burn: true, ..WoodBurner::default() };
+        w.tank.fill("woodoil", 5);
+        w.slots[0] = Some(Stack::new("minecraft:coal", 2));
+        w.sync_in();
+        w.tick();
+        // woodoil is 110 000 TU a bucket: 110 000 * 2 / 2000 = 110 HE a tick, 2 mB out.
+        assert_eq!((w.power, w.tank.mb, w.burn, w.slots[0].as_ref().map(|s| s.count)), (110, 3, 0, Some(2)), "the fuel is not touched");
+        w.tick();
+        w.tick();
+        // The last mB: 110 000 * 1 / 2000 = 55.
+        assert_eq!((w.power, w.tank.mb), (110 + 110 + 55, 0));
+        w.tick();
+        assert_eq!(w.power, 275, "an empty tank gives nothing");
+        // Off, or full: nothing is burnt.
+        let mut w = WoodBurner { liquid_burn: true, on: false, ..WoodBurner::default() };
+        w.tank.fill("woodoil", 100);
+        w.tick();
+        assert_eq!((w.power, w.tank.mb), (0, 100));
+        w.on = true;
+        w.power = WoodBurner::MAX;
+        w.tick();
+        assert_eq!(w.tank.mb, 100, "full of power: it does not burn");
+        // The cap.
+        w.power = WoodBurner::MAX - 20;
+        w.tick();
+        assert_eq!((w.power, w.tank.mb), (WoodBurner::MAX, 98));
+        // Water is not flammable.
+        let mut w = WoodBurner { liquid_burn: true, ..WoodBurner::default() };
+        w.tank.set_type("water");
+        w.tank.fill("water", 100);
+        w.tick();
+        assert_eq!((w.power, w.tank.mb), (0, 100));
+        // And in solid mode the tank is left alone.
+        let mut w = WoodBurner::default();
+        w.tank.fill("woodoil", 100);
+        w.tick();
+        assert_eq!((w.power, w.tank.mb), (0, 100));
+    }
+
+    /// `tank.setType(2, slots)` and `tank.loadTank(3, 4, slots)`: an identifier types the tank (the content goes), a full container of
+    /// its type is poured in and the empty one comes out; the screen's button 1 switches the fuel.
+    #[test]
+    fn the_wood_burner_takes_its_type_and_its_containers_from_its_slots() {
+        let mut w = WoodBurner::default();
+        w.tank.fill("woodoil", 500);
+        let full = crate::fluid::all_full_containers().into_iter().find(|c| c.ends_with("woodoil")).expect("a woodoil container");
+        w.slots[3] = Some(Stack::new(&full, 2));
+        w.tick();
+        assert_eq!(w.tank.mb, 500 + crate::fluid::contents(&full).unwrap().mb);
+        assert_eq!(w.slots[3], Some(Stack::new(&full, 1)));
+        assert!(w.slots[4].is_some(), "the empty container is out");
+        // An identifier of another type: the content goes with the old type.
+        let mut w = WoodBurner::default();
+        w.tank.fill("woodoil", 500);
+        w.slots[2] = Some(Stack { custom: Some("{ntm_fluid:\"diesel\"}".into()), ..Stack::new("ntm:fluid_identifier_multi", 1) });
+        w.tick();
+        assert_eq!((w.tank.fluid.as_str(), w.tank.mb), ("diesel", 0));
+        assert!(!w.liquid_burn);
+        w.button(1);
+        assert!(w.liquid_burn);
+        assert_eq!(w.screen_data()[5], 1);
+    }
+
+    /// An identifier of no type leaves the tank as `Fluids.NONE`: it takes no fluid from a network and is in no network (not one of
+    /// an empty name).
+    #[test]
+    fn an_untyped_wood_burner_tank_takes_nothing() {
+        use crate::fluid::FluidNode;
+        let mut w = WoodBurner::default();
+        w.slots[2] = Some(Stack { custom: Some("{ntm_fluid:\"none\"}".into()), ..Stack::new("ntm:fluid_identifier_multi", 1) });
+        w.tick();
+        assert_eq!(w.tank.fluid, "");
+        assert_eq!(w.fluid_demand("water"), 0);
+        assert!(w.fluid_types().is_empty());
+        w.fluid_give("water", 500);
+        assert_eq!(w.tank.mb, 0);
+        // Typed again, it takes its own.
+        w.tank.set_type("woodoil");
+        assert_eq!(w.fluid_demand("woodoil"), 16_000);
+        assert_eq!(w.fluid_types(), vec!["woodoil".to_string()]);
+    }
+
+    /// The tank goes with the slots in the block entity (id, mB) and an old record, without it, leaves it as it is.
+    #[test]
+    fn the_wood_burners_tank_goes_through_the_block_entity() {
+        let mut w = WoodBurner::default();
+        w.tank.fill("woodoil", 1_234);
+        let state = w.save_state();
+        let mut back = WoodBurner::default();
+        back.load_state(&state);
+        assert_eq!(back.tank, w.tank);
+        let mut old = WoodBurner::default();
+        old.tank.fill("woodoil", 77);
+        old.load_state(&[]);
+        assert_eq!(old.tank.mb, 77);
+        // An untyped tank (id 0) has no fluid.
+        let mut e = WoodBurner::default();
+        e.tank.set_type("");
+        let mut back = WoodBurner::default();
+        back.tank.fill("woodoil", 9);
+        back.load_state(&e.save_state());
+        assert_eq!((back.tank.fluid.as_str(), back.tank.mb), ("", 0));
+        let json = serde_json::to_string(&w).unwrap();
+        let from_old: WoodBurner = serde_json::from_str(&json.replace(&format!(",\"tank\":{}", serde_json::to_string(&w.tank).unwrap()), "").replace("\"liquid_burn\":false,", "")).unwrap();
+        assert_eq!((from_old.tank.fluid.as_str(), from_old.tank.mb, from_old.liquid_burn), ("woodoil", 0, false), "a record from before the tank");
     }
 
     /// The barrel: a full tank in slot 2 pours, its empty one out at 3; an

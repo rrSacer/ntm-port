@@ -149,6 +149,11 @@ pub trait ServerHost: Kv {
     /// Items a broken machine held outside its slots (the slots the game
     /// spills itself), dropped at `p`.
     fn drop_items(&mut self, _dim: &str, _p: Pos, _items: &[(String, u32)]) -> bool { false }
+    /// Items with their data (the exact scraps of a broken foundry machine), dropped at `p`.
+    fn drop_stacks(&mut self, dim: &str, p: Pos, stacks: &[container_bridge::Stack]) -> bool {
+        let encoded: Vec<String> = stacks.iter().map(crate::foundry::scrap::snbt).collect();
+        self.drop_encoded_items(dim, p, &encoded)
+    }
     /// The players in the world (None: the host can't tell, and
     /// [`Server::set_players`] says).
     fn players(&mut self) -> Option<Vec<PlayerInfo>> {
@@ -399,6 +404,54 @@ pub struct MachineCommit {
     pub json: String,
 }
 
+/// The cells of `commits` whose block change is the server's own, as (dimension, position, new block id): those that
+/// are born with a machine (`CellWrite::initial`), whose model is installed with them. The others, such as what a mining
+/// step breaks, are changes the server must still hear of (a broken cable leaves its network).
+pub fn owned_cells(commits: &[MachineCommit]) -> Vec<(String, Pos, String)> {
+    commits
+        .iter()
+        .flat_map(|c| &c.cells)
+        .filter(|c| c.initial.is_some())
+        .map(|c| (c.guard.dim.clone(), c.guard.pos, blockstate::id_of(&c.desired).to_string()))
+        .collect()
+}
+
+#[cfg(test)]
+mod owned_cells_tests {
+    use super::*;
+
+    fn cell(at: Pos, desired: &str, initial: bool) -> CellWrite {
+        CellWrite {
+            notify: true,
+            guard: CellGuard { dim: "d".into(), pos: at, generation: 0, state: "x".into() },
+            expected: CellSnapshot { state: "x".into(), entity: None, items: Vec::new() },
+            desired: desired.into(),
+            destroy: false,
+            initial: initial.then(|| InitialState { json: "{}".into(), data: Vec::new() }),
+        }
+    }
+
+    /// A mining step writes air over a cable in the same commit as the machine: that change is external (the cable's
+    /// network must lose the link); only the cell born with its machine is the server's own.
+    #[test]
+    fn only_the_cells_born_with_a_machine_are_owned() {
+        let machine = |cells| MachineCommit {
+            cells,
+            guard: CellGuard { dim: "d".into(), pos: [0, 0, 0], generation: 0, state: "x".into() },
+            expected_saved: false,
+            dim: "d".into(),
+            pos: [0, 0, 0],
+            expected: Vec::new(),
+            desired: Vec::new(),
+            data: Vec::new(),
+            json: String::new(),
+        };
+        let commits = [machine(vec![cell([1, 0, 0], "minecraft:air", false), cell([2, 0, 0], "ntm:slag[layer=1]", true)])];
+        assert_eq!(owned_cells(&commits), vec![("d".to_string(), [2, 0, 0], "ntm:slag".to_string())]);
+        assert!(owned_cells(&[machine(vec![cell([1, 0, 0], "minecraft:air", false)])]).is_empty());
+    }
+}
+
 /// A loaded cell, including its complete block entity, not just its slots.
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct CellSnapshot {
@@ -466,6 +519,8 @@ struct Ready {
     loaded: BTreeMap<Key, bool>,
     sound_marks: BTreeMap<Key, crate::sounds::Mark>,
     frozen: BTreeSet<Key>,
+    /// The slag blocks scheduled to flow on the next tick (`scheduleBlockUpdate(..., 1)`); not kept: a restart ends a flow.
+    slag_active: BTreeSet<Key>,
     facts_pending:bool,
     facts_dirty:bool,
     /// Machines whose state came from the journal, not from a block entity of an older chunk: their slots are the
@@ -627,6 +682,11 @@ impl Server {
             if !host.drop_items(dim, top, &[(lid.into(), 1)]) {
                 host.drop_items(dim, pos, &[(lid.into(), 1)]);
             }
+        }
+        // The molten metal: one scrap per stack, with all of its quanta (`ItemScraps.create`).
+        let scraps = crate::foundry::scrap::stacks(&m.logic().scraps());
+        if !scraps.is_empty() {
+            host.drop_stacks(dim, pos, &scraps);
         }
     }
 
@@ -833,7 +893,7 @@ impl Server {
         for (key, m, seen) in removed {
             if seen {
                 self.drop_contents(host, &key.0, key.1, &m);
-            } else if !m.logic().contents().is_empty() {
+            } else if !m.logic().contents().is_empty() || !m.logic().scraps().is_empty() {
                 host.log(&format!(
                     "machine {} at {:?} was never seen in this world: its contents are not dropped",
                     m.block, key.1
@@ -924,10 +984,12 @@ mod bomb_server;
 mod excavator_server;
 mod oil_server;
 mod sawmill_server;
+mod foundry_hand;
 mod solar_server;
 pub mod container_bridge;
 mod fluid_server;
 mod foundry_server;
+mod slag_server;
 pub mod native_server;
 mod radiation_server;
 mod digamma_server;

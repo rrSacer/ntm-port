@@ -3495,5 +3495,7 @@
   "itemGroup.ntm.consumables": "Consumíveis e Equipamentos do NTM",
   "block.ntm.dummy_zirnox": "Máquina (parte)",
   "block.ntm.dummy_zirnox_destroyed": "Máquina (parte)",
-  "block.ntm.dummy_rbmk": "Máquina (parte)"
+  "block.ntm.dummy_rbmk": "Máquina (parte)",
+  "block.ntm.slag": "Escória (DEBUG)",
+  "item.ntm.coal_eternal": "Carvão Eterno"
 }

@@ -57,10 +57,10 @@ impl Melt {
         }
     }
 
-    /// As scraps, a whole ingot's worth each (see `Crucible::scraps`).
-    pub fn scraps(&self) -> Vec<(String, u32)> {
+    /// What it holds, as the material and its exact quanta (one scrap, `foundry::scrap`).
+    pub fn molten(&self) -> Vec<(String, u32)> {
         match &self.mat {
-            Some(m) if self.amount >= 72 => vec![(format!("ntm:scraps__{m}"), self.amount / 72)],
+            Some(m) if self.amount > 0 => vec![(m.clone(), self.amount)],
             _ => Vec::new(),
         }
     }
@@ -95,14 +95,17 @@ pub struct Tank {
 
 /// `TileEntityFoundryOutlet`: takes metal from behind and pours it into
 /// what is under it (up to 4 blocks down). A material filter, which may be
-/// inverted. Left out: the redstone that closes it (the block's template
-/// has no signal state).
+/// inverted, and the redstone that closes it (`isClosed`: `invertRedstone ^ powered`; its drawn barrier is a visual
+/// gap).
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Outlet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<String>,
     #[serde(default)]
     pub invert: bool,
+    /// `invertRedstone`: blocked by default, open only with a signal.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub invert_redstone: bool,
     #[serde(skip)]
     pub slots: Slots,
 }
@@ -169,8 +172,8 @@ impl Logic for Channel {
     fn view(&self) -> ViewModel {
         ViewModel::new("Canal de fundição").text(self.melt.line(), view::GREY)
     }
-    fn contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
+    fn scraps(&self) -> Vec<(String, u32)> {
+        self.melt.molten()
     }
 }
 
@@ -181,8 +184,8 @@ impl Logic for Tank {
     fn view(&self) -> ViewModel {
         ViewModel::new("Tanque de fundição").text(self.melt.line(), view::GREY)
     }
-    fn contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
+    fn scraps(&self) -> Vec<(String, u32)> {
+        self.melt.molten()
     }
 }
 
@@ -204,9 +207,6 @@ impl Melt {
 }
 
 impl Slotted for Channel {
-    fn held_contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
-    }
     fn save_state(&self) -> Vec<i32> {
         self.melt.save().to_vec()
     }
@@ -222,9 +222,6 @@ impl Slotted for Channel {
 }
 
 impl Slotted for Tank {
-    fn held_contents(&self) -> Vec<(String, u32)> {
-        self.melt.scraps()
-    }
     fn save_state(&self) -> Vec<i32> {
         self.melt.save().to_vec()
     }
@@ -239,21 +236,24 @@ impl Slotted for Tank {
     }
 }
 
-/// The outlet holds no metal: its filter's colour (0: none), inverted.
+/// The outlet holds no metal: its filter's colour (0: none) and its flags (bit 0 the filter inverted, bit 1 the redstone
+/// inverted: one value, so the block entity's layout stays as it was).
 impl Slotted for Outlet {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
     fn screen_data(&self) -> Vec<i32> {
-        vec![self.filter.as_deref().map_or(0, |m| Tables::ntm().color(m)) as i32, i32::from(self.invert)]
+        vec![self.filter.as_deref().map_or(0, |m| Tables::ntm().color(m)) as i32, self.flags()]
     }
     fn save_state(&self) -> Vec<i32> {
-        vec![Tables::ntm().mat_id(self.filter.as_deref()), i32::from(self.invert)]
+        vec![Tables::ntm().mat_id(self.filter.as_deref()), self.flags()]
     }
     fn load_state(&mut self, v: &[i32]) {
-        if let [id, inv, ..] = v {
+        if let [id, flags, ..] = v {
             self.filter = Tables::ntm().mat_name(*id);
-            self.invert = *inv != 0;
+            // A record from before the redstone had 0 or 1 here: the same bit.
+            self.invert = *flags & 1 != 0;
+            self.invert_redstone = *flags & 2 != 0;
         }
     }
 }
@@ -263,9 +263,19 @@ pub mod actions {
     pub const FILTER_HELD: u32 = 1;
     pub const FILTER_CLEAR: u32 = 2;
     pub const FILTER_INVERT: u32 = 3;
+    pub const REDSTONE_INVERT: u32 = 4;
 }
 
 impl Outlet {
+    fn flags(&self) -> i32 {
+        i32::from(self.invert) | i32::from(self.invert_redstone) << 1
+    }
+
+    /// `isClosed`: the signal it gets (0 none) against the inversion.
+    pub fn closed(&self, signal: u8) -> bool {
+        self.invert_redstone ^ (signal > 0)
+    }
+
     /// `canAcceptPartialFlow`'s filter rule.
     pub fn passes(&self, mat: &str) -> bool {
         self.filter.as_deref().is_none_or(|f| (f == mat) != self.invert)
@@ -286,6 +296,7 @@ impl Logic for Outlet {
             .text(format!("Filtro: {f}"), view::GREY)
             .button(actions::FILTER_HELD, "Filtrar pelo material da sucata na mão")
             .button(actions::FILTER_INVERT, "Inverter o filtro")
+            .button(actions::REDSTONE_INVERT, if self.invert_redstone { "Redstone: abre com sinal" } else { "Redstone: fecha com sinal" })
             .button(actions::FILTER_CLEAR, "Limpar o filtro")
     }
     fn action(&mut self, action: u32, held: Option<&Held>, _fx: &mut Vec<Effect>) {
@@ -297,6 +308,7 @@ impl Logic for Outlet {
             }
             actions::FILTER_CLEAR => self.filter = None,
             actions::FILTER_INVERT => self.invert = !self.invert,
+            actions::REDSTONE_INVERT => self.invert_redstone = !self.invert_redstone,
             _ => {}
         }
     }
@@ -308,6 +320,21 @@ mod tests {
 
     fn m(mat: &str, q: u32) -> Melt {
         Melt { mat: Some(mat.into()), amount: q }
+    }
+
+    /// D4, R7: what a broken channel, tank or cast holds comes out whole, whatever the amount
+    /// (the Java: `ItemScraps.create(new MaterialStack(type, amount))`); 30 quanta was lost before.
+    #[test]
+    fn a_broken_block_gives_back_every_quantum() {
+        for q in [1, 30, 71, 72, 73, 144, 1_000] {
+            let channel = Channel { melt: m("iron", q), ..Default::default() };
+            let tank = Tank { melt: m("iron", q), ..Default::default() };
+            let cast = crate::foundry::cast::Cast { melt: m("iron", q), ..crate::foundry::cast::Cast::new(0) };
+            for scraps in [Logic::scraps(&channel), Logic::scraps(&tank), Logic::scraps(&cast)] {
+                assert_eq!(scraps, vec![("iron".to_string(), q)], "{q}");
+            }
+        }
+        assert!(Logic::scraps(&Channel::default()).is_empty());
     }
 
     #[test]

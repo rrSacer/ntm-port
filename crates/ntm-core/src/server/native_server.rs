@@ -159,6 +159,9 @@ impl Server {
         let mut frozen=BTreeMap::new();
         for k in &self.ready.frozen{if let Some(m)=self.ready.world.machines.remove(k){frozen.insert(k.clone(),m);}}
         if !frozen.is_empty(){self.ready.topo_dirty=true;}
+        // The slag scheduled last tick flows (`scheduleBlockUpdate(.., 1)`) before the machines' looks are written, so that a
+        // block that went is not drawn again by a look queued for it; the pours of this tick schedule it for the next.
+        self.slag_flow(host);
         self.heat_tick();
         phases.mark("heat");
         self.solar_tick(host);
@@ -310,6 +313,11 @@ impl Server {
         machines.iter().filter(|(p, json)| !self.native_has(dim, *p) && self.native_adopt(dim, *p, json)).count()
     }
 
+    /// Test hook (`NTM_TEST_HOOKS=1`): whether the server's network holds a cable at `pos` (the set the topology is built from).
+    pub fn native_test_cable(&mut self, dim: &str, pos: Pos) -> bool {
+        self.ready().is_some_and(|r| r.world.cables.contains(&(dim.to_string(), pos)))
+    }
+
     pub fn native_adopt(&mut self, dim: &str, pos: Pos, json: &str) -> bool {
         let Some(r) = self.ready() else { return false };
         let key = (dim.to_string(), pos);
@@ -365,6 +373,10 @@ impl Server {
             }
             let confirmed = r.world.annihilator.applied_seq(&key, m.generation);
             a.pending.retain(|p| p.seq > confirmed);
+        }
+        // A slag the world was saved with empty (the step that emptied it ran, its removal did not) goes on the next tick.
+        if matches!(&m.data, crate::machine::Data::Slag(s) if s.melt.amount == 0) {
+            r.slag_active.insert(key.clone());
         }
         r.world.machines.insert(key.clone(), m);
         r.seen.insert(key.clone());
@@ -751,6 +763,8 @@ mod tests {
         }
         fn tell(&mut self, _player: &str, text: &str) {self.told.push(text.into());}
         fn drop_items(&mut self,_:&str,_:Pos,items:&[(String,u32)])->bool{self.emitted.extend(items.iter().map(|(id,n)|Stack::new(id,*n)));true}
+        fn drop_stacks(&mut self,_:&str,_:Pos,stacks:&[Stack])->bool{self.emitted.extend(stacks.iter().cloned());true}
+        fn drop_encoded_items(&mut self,_:&str,_:Pos,items:&[String])->bool{self.emitted.extend(items.iter().filter_map(|i|crate::foundry::scrap::from_snbt(i)));true}
         fn log(&mut self, _text: &str) {}
         fn machine_slots(&mut self, _dim: &str, p: Pos) -> Option<Slots> {
             if self.unreachable {
@@ -1038,16 +1052,16 @@ mod tests {
         // N1 of the fresh review: the save takes the chunks only once the hidden metal is out, as a vanilla
         // container's items are out the instant its block goes.
         s.native_world_saving(&mut w);
-        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)],"put out before the save takes the chunks");
+        assert_eq!(w.emitted,vec![crate::foundry::scrap::stack("iron",144)],"put out before the save takes the chunks");
         assert!(s.ready.world.removals.is_empty()&&w.homes.is_empty(),"nothing left owing");
         s.native_world_saved(&mut w,true);
         let kept:crate::persist::Kept=serde_json::from_slice(&w.kv.map[crate::persist::KEY]).unwrap();assert!(kept.removals.is_empty());
         let mut reopened=reopen(&mut w,2);reopened.native_tick(&mut w,3);
         assert_eq!(w.player,vec![Stack::new("minecraft:iron_ingot",1)]);
-        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)]);
+        assert_eq!(w.emitted,vec![crate::foundry::scrap::stack("iron",144)]);
         assert!(!reopened.native_has(OW,AT));reopened.native_world_saved(&mut w,true);
         let mut again=reopen(&mut w,4);again.native_tick(&mut w,5);
-        assert_eq!(w.emitted,vec![Stack::new("ntm:scraps__iron",2)]);
+        assert_eq!(w.emitted,vec![crate::foundry::scrap::stack("iron",144)]);
         assert!(again.ready.world.removals.is_empty());assert!(again.ready.world.machine_effects.is_empty());
     }
 

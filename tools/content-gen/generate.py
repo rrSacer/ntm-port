@@ -236,11 +236,21 @@ def generate(src,out,rows,distributions,max_damage=True):
    properties={'hardness':5.0,'explosion_resistance':10.0,'requires_tool':True,'sounds':'minecraft:iron_block' if machine or row['category']=='storage' else 'minecraft:stone','light':0,**row.get('block_properties',{})}
    properties['sounds']=sound_block(properties['sounds'])
    declaration={'template':template,'properties':properties,'item':True}
+   if row.get('layer_block'):
+    # The slag: its height is its `layer` in eighths (0 holds nothing: no shape), the outline and the collision both.
+    heights={str(n):[[0,0,0,1,n/8,1]] if n else [] for n in range(9)}
+    declaration.update(item=False,state_properties={'layer':{'type':'enum','values':[str(n) for n in range(1,9)]+['0']}},
+                       default_state={'layer':'1'},shapes={'property':'layer','values':heights})
    # Bounds by state (the engine's `shapes`, the collision too when no `collision_shapes`), in blocks.
    for key in ('shapes','collision_shapes'):
     if row.get(key):declaration[key]=row[key]
    emit(f'data/ntm/horizon/block/{name}.json',declaration)
-   if machine:
+   if row.get('layer_block'):
+    for n in range(1,9):
+     emit(f'assets/ntm/models/block/{name}_{n}.json',{'parent':'minecraft:block/cube_all','textures':{'all':tex},'elements':[{'from':[0,0,0],'to':[16,2*n,16],'faces':{face:{'texture':'#all',**({'cullface':face} if n==8 or face=='down' else {})} for face in ('down','up','north','south','east','west')}}]})
+    variants={f'layer={n}':{'model':f'ntm:block/{name}_{max(n,1)}'} for n in range(9)}
+    model=f'ntm:block/{name}_8'
+   elif machine:
     textures={face:texture('src/main/resources/assets/hbm/textures/'+path+'.png') for face,path in row['textures'].items()}
     if row.get('opaque_machine_textures'):
      backing=(src/'src/main/resources/assets/hbm/textures/blocks/block_steel.png').read_bytes()
@@ -324,7 +334,7 @@ def generate(src,out,rows,distributions,max_damage=True):
   if row.get('item_texture'):
    emit(f'assets/ntm/models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':texture(row['item_texture'])}})
    model='ntm:item/'+name
-  emit(f'assets/ntm/items/{name}.json',{'model':{'type':'minecraft:model','model':model}})
+  if not row.get('layer_block'):emit(f'assets/ntm/items/{name}.json',{'model':{'type':'minecraft:model','model':model}})
   for loc in languages:languages[loc][('block.' if kind=='block' else 'item.')+'ntm.'+name]=row['names'][loc]
  if any(row['id']=='ntm:machine_armor_table' for row in rows):
   emit('data/ntm/horizon/menu/armor_table.json',{'slots':14,'data_slots':0})
@@ -395,7 +405,8 @@ def main():
  for row in rows:
   if 'sounds' in row.get('block_properties', {}):
    row['block_properties']['sounds']=sound_block(row['block_properties']['sounds'])
-  if row['category']=='machine':row['logic']={'kind':'machine','facing':'facing','active':None,'level':{'prop':'honey_level','max':5}}
+  if row.get('layer_block'):row['logic']={'kind':'machine','facing':None,'active':None,'level':{'prop':'layer','max':8}}
+  elif row['category']=='machine':row['logic']={'kind':'machine','facing':'facing','active':None,'level':{'prop':'honey_level','max':5}}
   elif row['category']=='cable':row['logic']={'kind':'cable'}
   elif row['category']=='duct':row['logic']={'kind':'duct'}
  write_json(args.output/'ids.json',{'schema':1,'namespace':'ntm','subtype_convention':'<original_registry_path>__<material>; source_registry and metadata retain 1.7.10 identity','ducts':[r['id'] for r in rows if r['category']=='duct'],'bombs':[r['id'] for r in rows if r['category']=='bomb'],'machines':[r['id'] for r in rows if r['category']=='machine'],'internal_blocks':[{'id':'ntm:logic_token','type':'block','category':'internal','item':False,'template':'minecraft:composter','logic':{'level':{'prop':'level','max':8}}}],'worldgen':manifest.get('worldgen',[]),'worldgen_gaps':manifest.get('worldgen_gaps',{}),'entries':rows})

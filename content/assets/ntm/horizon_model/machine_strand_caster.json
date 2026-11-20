@@ -1,0 +1,6 @@
+{
+  "obj": "ntm:models/obj/strand_caster.obj",
+  "texture": "ntm:textures/models/machines/strand_caster.png",
+  "rotation": 0,
+  "radius": 7.0
+}

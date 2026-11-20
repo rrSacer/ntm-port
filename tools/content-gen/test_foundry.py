@@ -112,7 +112,7 @@ class FoundryContracts(unittest.TestCase):
             self.assertEqual(fuels[ident], {'ticks':ticks,'heat':heat,'container':container})
         self.assertNotIn('minecraft:ladder',fuels)
         self.assertNotIn('minecraft:oak_button',fuels)
-        self.assertEqual({r['variable'] for r in self.data['fuel_gaps'] if 'variable' in r},{'book_guide','coal_eternal'})
+        self.assertEqual({r['variable'] for r in self.data['fuel_gaps'] if 'variable' in r},{'book_guide'})
 
     def test_registered_item_and_block_graph(self):
         vanilla = Path('/home/sacer/Games/horizon/.local/horizon-client/26.3/assets/minecraft/items')

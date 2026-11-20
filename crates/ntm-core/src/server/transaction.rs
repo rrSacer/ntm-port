@@ -210,6 +210,14 @@ impl<H: ServerHost> ServerHost for Deferred<'_, H> {
         });
         true
     }
+    fn drop_stacks(&mut self, d: &str, p: Pos, stacks: &[Stack]) -> bool {
+        self.critical.push_back(WorldEffect::EncodedItems {
+            dim: d.into(),
+            pos: p,
+            items: stacks.iter().map(crate::foundry::scrap::snbt).collect(),
+        });
+        true
+    }
     fn pile_drop(&mut self, d: &str, p: Pos, i: &str) -> bool {
         self.drop_items(d, p, &[(i.into(), 1)])
     }
@@ -1151,6 +1159,9 @@ impl Server {
                 self.requested_detonations(&mut staged);
                 self.silex_lasers_in(&keys);
                 for (key, m) in &mut self.ready.world.machines {
+                    if let crate::machine::Data::StrandCaster(c) = &mut m.data {
+                        c.now = self.tick;
+                    }
                     m.logic_mut().tick();
                     staged.critical.extend(m.logic_mut().world_effects().into_iter().map(|e| e.in_world(key, m.facing.as_deref())));
                     match &mut m.data {

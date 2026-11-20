@@ -1,0 +1,90 @@
+{
+  "texture": "ntm:textures/gui/processing/gui_strand_caster.png",
+  "size": [
+    176,
+    214
+  ],
+  "title": [
+    88,
+    4,
+    "center"
+  ],
+  "inventory_label": [
+    8,
+    118
+  ],
+  "bars": [
+    {
+      "value": 0,
+      "max": 1,
+      "rect": [
+        17,
+        14,
+        34,
+        79
+      ],
+      "color": 2,
+      "dir": "up"
+    },
+    {
+      "value": 3,
+      "max": 4,
+      "rect": [
+        82,
+        38,
+        16,
+        24
+      ],
+      "color": 5,
+      "dir": "up"
+    },
+    {
+      "value": 6,
+      "max": 7,
+      "rect": [
+        82,
+        89,
+        16,
+        24
+      ],
+      "color": 8,
+      "dir": "up"
+    }
+  ],
+  "tooltips": [
+    {
+      "rect": [
+        16,
+        17,
+        36,
+        81
+      ],
+      "lines": [
+        "{0} / {1} quanta"
+      ]
+    },
+    {
+      "rect": [
+        82,
+        38,
+        16,
+        24
+      ],
+      "lines": [
+        "{3} / {4} mB"
+      ]
+    },
+    {
+      "rect": [
+        82,
+        89,
+        16,
+        24
+      ],
+      "lines": [
+        "{6} / {7} mB"
+      ]
+    }
+  ],
+  "title_color": "#ffffff"
+}
