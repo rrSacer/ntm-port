@@ -62,4 +62,5 @@ restored_keeps_its_block_entity_slots! {
     an_ore_slopper_restored_from_the_journal_keeps_its_block_entitys_slots: "ntm:machine_ore_slopper",
     a_battery_socket_restored_from_the_journal_keeps_its_block_entitys_slots: "ntm:machine_battery_socket",
     a_battery_redd_restored_from_the_journal_keeps_its_block_entitys_slots: "ntm:machine_battery_redd",
+    a_microwave_restored_from_the_journal_keeps_its_block_entitys_slots: "ntm:machine_microwave",
 }
