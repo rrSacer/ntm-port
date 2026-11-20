@@ -418,7 +418,8 @@ def act(g):
             g.command('clear @s')
             g.command('gamemode survival @s')
             g.command('give @s ntm:mold__ingot 2')
-            g.command(f'tp @s {MOLD_AT[0] + .5} {MOLD_AT[1] + 1} {MOLD_AT[2] + 3.5}')
+            # From above: the mold block is in the floor and a side face is hidden by the floor's blocks.
+            g.command(f'tp @s {MOLD_AT[0] + .5} {MOLD_AT[1] + 2} {MOLD_AT[2] + 2.5}')
             time.sleep(1)
             g.ctl('select ntm:mold__ingot')
             use_machine(g, [MOLD_AT], 'mold_block_with_a_mold')
@@ -428,7 +429,8 @@ def act(g):
             # The stream fills the mold (72) and the cast cools for 200 ticks: an ingot in its slot, 72 left in the crucible.
             g.check('the_cast_cooled', wait_for(lambda: held_gold(g, MOLD_AT) == 1, 120), [block_items(g, MOLD_AT)[:200], molten(model(g, CORE))])
             g.command('clear @s')
-            g.ctl('select minecraft:air') if False else None
+            g.command(f'tp @s {MOLD_AT[0] + .5} {MOLD_AT[1] + 2} {MOLD_AT[2] + 2.5}')
+            time.sleep(1)
             use_machine(g, [MOLD_AT], 'mold_block_with_an_empty_hand')
             g.check('the_ingot_came_out', held_gold(g, MOLD_AT) == 0 and 'minecraft:gold_ingot' in inventory_text(g), [block_items(g, MOLD_AT)[:200], inventory_text(g)[:300]])
             g.command('give @s minecraft:iron_shovel 1')
