@@ -126,6 +126,17 @@ class Proof:
         for name in (HOST, GUEST):
             h.command(f'gamemode creative {name}')
             h.command(f'effect give {name} minecraft:resistance 1200 4 true')
+        # INFRA-H's check: Enter in the world, away from any crane, on each client. Vanilla opens the chat only with
+        # its chat and command keys (T and /); the engine's LAN guest client also with Enter (`remote_key`).
+        for name in (HOST, GUEST):
+            g = self.players[name]
+            g.close()
+            h.command(f'tp {name} {PARK[0]} {PARK[1]} {PARK[2]} 0 0')
+            time.sleep(.6)
+            g.ctl('key key.keyboard.enter tap')
+            time.sleep(.6)
+            self.host.evidence.setdefault('enter_in_world', {})[name] = g.ctl('screen').get('screen')
+            g.close()
         # By hand: each column with its dummies up to its top, the cell the crane looks at (`setblock` places the core
         # alone, and the crane would see air there, as in the Java).
         for p, id_ in ((BLANK, 'rbmk_blank'), (STORE, 'rbmk_storage'), (CHANNEL, 'rbmk_rod')):
