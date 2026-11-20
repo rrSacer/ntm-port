@@ -1100,8 +1100,10 @@ impl Server {
         let Some(r) = self.ready() else { return };
         let Some(m) = r.world.machines.get_mut(key) else { return };
         let block = m.block.clone();
-        if let Data::Rbmk(c) = &mut m.data {
-            crate::rbmk::screen::apply(&block, c, pending);
+        match &mut m.data {
+            Data::Rbmk(c) => crate::rbmk::screen::apply(&block, c, pending),
+            Data::RbmkConsole(c) => crate::rbmk::screen::apply_console(&mut c.state, pending),
+            _ => {}
         }
     }
 

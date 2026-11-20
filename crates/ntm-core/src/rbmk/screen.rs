@@ -12,11 +12,14 @@ pub fn takes_commands(block: &str) -> bool {
 }
 
 /// Whether a column of `block` has a screen with no machine slot, which still needs a menu (the player's inventory,
-/// the screen's session or buttons): the control rods' (`ContainerRBMKControlAuto`, T06/T07) and the boiler's
-/// (`ContainerRBMKGeneric`, T08).
+/// the screen's session or buttons): the control rods' (`ContainerRBMKControlAuto`, T06/T07), the boiler's
+/// (`ContainerRBMKGeneric`, T08) and the console's (`ContainerRBMKGeneric`, T10).
 pub fn has_slotless_menu(block: &str) -> bool {
-    takes_commands(block) || block == "ntm:rbmk_boiler"
+    takes_commands(block) || block == "ntm:rbmk_boiler" || block == CONSOLE
 }
+
+/// The console's block (`RBMKConsole`, T10).
+pub const CONSOLE: &str = "ntm:rbmk_console";
 
 /// `TileEntityRBMKControlManual.receiveControl`: `level` sets the target (`setTarget`: the target as sent, the start
 /// where the rod is now), `color` toggles a group (`abs(i) % 5`; the group the rod is in takes it out). A negative index
@@ -103,10 +106,16 @@ pub fn snapshot(block: &str, column: &RbmkColumn) -> Option<Fields> {
 /// last value of each kind the command sets outright (a manual rod's target, an automatic rod's settings or curve), and
 /// a manual rod's group toggles composed into one map of the group before to the group after (index 0 none, 1..=5 the
 /// five), which is what any number of `color` presses in a row does. A column's queue holds at most one of each.
+///
+/// The console (T10) adds two kinds: a boiler's compressor pressed `n` times (`compressor` of the selection; four
+/// presses bring the grade round, so `n` is kept in 1..=4), and the console's own screens (each screen's `toggle`s,
+/// counted round its six types, and the columns an `id` gave it last).
 #[derive(Clone, Debug, PartialEq)]
 pub enum Pending {
     Set(&'static str, Fields),
     Groups([Option<u8>; 6]),
+    Compress(u8),
+    Screens([u8; 6], [Option<Vec<i32>>; 6]),
 }
 
 fn group_index(g: Option<u8>) -> usize {
@@ -147,6 +156,42 @@ pub fn coalesce(queue: &mut Vec<Pending>, next: Pending) {
             Some(before) => *before = std::array::from_fn(|i| after[group_index(before[i])]),
             None => queue.push(Pending::Groups(after)),
         },
+        Pending::Compress(n) => match queue.iter_mut().find_map(|p| if let Pending::Compress(m) = p { Some(m) } else { None }) {
+            Some(m) => *m = (*m + n - 1) % 4 + 1,
+            None => queue.push(Pending::Compress(n)),
+        },
+        Pending::Screens(toggles, columns) => match queue.iter_mut().find_map(|p| if let Pending::Screens(t, c) = p { Some((t, c)) } else { None }) {
+            Some((t, c)) => {
+                for i in 0..6 {
+                    t[i] = (t[i] + toggles[i]) % crate::rbmk::console::SCREEN_TYPES;
+                    if columns[i].is_some() {
+                        c[i] = columns[i].clone();
+                    }
+                }
+            }
+            None => queue.push(Pending::Screens(toggles, columns)),
+        },
+    }
+}
+
+/// A console's command as its own queue keeps it (`Pending::Screens`), what `console::receive` did to its screens.
+pub fn console_pending(before: &crate::rbmk::console::ConsoleState, after: &crate::rbmk::console::ConsoleState) -> Option<Pending> {
+    let n = crate::rbmk::console::SCREEN_TYPES;
+    let toggles: [u8; 6] = std::array::from_fn(|i| (after.screens[i].kind + n - before.screens[i].kind) % n);
+    let columns: [Option<Vec<i32>>; 6] = std::array::from_fn(|i| (after.screens[i].columns != before.screens[i].columns).then(|| after.screens[i].columns.clone()));
+    (toggles.iter().any(|t| *t != 0) || columns.iter().any(Option::is_some)).then_some(Pending::Screens(toggles, columns))
+}
+
+/// A console's waiting screens applied in its transaction.
+pub fn apply_console(console: &mut crate::rbmk::console::ConsoleState, pending: &Pending) {
+    if let Pending::Screens(toggles, columns) = pending {
+        for i in 0..6 {
+            let s = &mut console.screens[i];
+            s.kind = (s.kind + toggles[i]) % crate::rbmk::console::SCREEN_TYPES;
+            if let Some(c) = &columns[i] {
+                s.columns = c.clone();
+            }
+        }
     }
 }
 
@@ -160,6 +205,13 @@ pub fn apply(block: &str, column: &mut RbmkColumn, pending: &Pending) {
             let st = column.control.get_or_insert_with(|| ControlState::of(block));
             st.color = map[group_index(st.color)];
         }
+        Pending::Compress(n) => {
+            use crate::server::container_bridge::Slotted;
+            for _ in 0..*n {
+                column.button(0);
+            }
+        }
+        Pending::Screens(..) => {}
     }
 }
 

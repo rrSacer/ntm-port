@@ -11,6 +11,7 @@ use crate::screens::control::{Command, Fields, Grant, Refusal, Snapshot};
 fn screen_fields(m: &Machine) -> Option<Fields> {
     match &m.data {
         Data::Rbmk(c) if crate::rbmk::screen::takes_commands(&m.block) => crate::rbmk::screen::snapshot(&m.block, c),
+        Data::RbmkConsole(c) => Some(crate::rbmk::console::snapshot(c)),
         _ => None,
     }
 }
@@ -49,6 +50,9 @@ impl Server {
             .cloned();
         self.screens.accept(player, player_dim, at, &cmd, machine.as_ref().map(|m| m.generation))?;
         let m = machine.expect("a session's generation is a machine's");
+        if let Data::RbmkConsole(c) = &m.data {
+            return self.console_command(&key, c, &cmd.fields);
+        }
         // What the Java's `receiveControl` would throw on is refused before it waits (D2).
         if let Data::Rbmk(c) = &m.data {
             crate::rbmk::screen::receive(&m.block, &mut c.clone(), &cmd.fields)?;
@@ -70,6 +74,60 @@ impl Server {
         }
         let guard = generation::CellGuard::machine(&key, &m);
         self.ready.pending_commands.extend(queue.into_iter().map(|p| generation::Guarded { guard: guard.clone(), value: (key.clone(), p) }));
+        Ok(())
+    }
+
+    /// A console's command (T10, `TileEntityRBMKConsole.receiveControl`): refused whole on what the Java would throw on
+    /// (D2), else its screens wait in the console's own queue and what it does to the columns of its window waits in
+    /// each column's queue, guarded by that column's generation, for that column's transaction (the level of a manual
+    /// rod as its own screen's `level`, a group set outright, a boiler's compressor). A cell with no column, a column of
+    /// another kind or one not loaded is left as the Java's `getTileStandard` leaves it: untouched.
+    fn console_command(&mut self, key: &Key, c: &crate::rbmk::console::Console, fields: &Fields) -> Result<(), Refusal> {
+        use crate::rbmk::{console::Edit, persist, screen::Pending};
+        use crate::screens::control::Value;
+        let mut after = c.state.clone();
+        let edits = crate::rbmk::console::receive(&mut after, fields)?;
+        let mut waiting: Vec<(Key, Pending)> = Vec::new();
+        if let Some(p) = crate::rbmk::screen::console_pending(&c.state, &after) {
+            waiting.push((key.clone(), p));
+        }
+        let [tx, ty, tz] = c.state.target;
+        for e in edits {
+            let (at, kind) = match &e {
+                Edit::Target { at, .. } | Edit::Color { at, .. } | Edit::Compress { at } => (*at, &e),
+            };
+            let ck = (key.0.clone(), [tx + at.0, ty, tz + at.1]);
+            let Some(cm) = self.ready.world.machines.get(&ck) else { continue };
+            if self.ready.loaded.get(&ck) != Some(&true) || !matches!(cm.data, Data::Rbmk(_)) {
+                continue;
+            }
+            let p = match kind {
+                Edit::Target { level, .. } if persist::is_manual_control(&cm.block) => {
+                    let mut f = Fields::default();
+                    f.set("level", Value::Double(*level));
+                    Pending::Set("level", f)
+                }
+                Edit::Color { color, .. } if persist::is_manual_control(&cm.block) => Pending::Groups([Some(*color); 6]),
+                Edit::Compress { .. } if cm.block == "ntm:rbmk_boiler" => Pending::Compress(1),
+                _ => continue,
+            };
+            waiting.push((ck, p));
+        }
+        for (k, p) in waiting {
+            let Some(target) = self.ready.world.machines.get(&k).cloned() else { continue };
+            let mut queue: Vec<Pending> = Vec::new();
+            self.ready.pending_commands.retain(|g| {
+                if g.value.0 == k {
+                    queue.push(g.value.1.clone());
+                    false
+                } else {
+                    true
+                }
+            });
+            crate::rbmk::screen::coalesce(&mut queue, p);
+            let guard = generation::CellGuard::machine(&k, &target);
+            self.ready.pending_commands.extend(queue.into_iter().map(|p| generation::Guarded { guard: guard.clone(), value: (k.clone(), p) }));
+        }
         Ok(())
     }
 

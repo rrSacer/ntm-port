@@ -763,6 +763,7 @@ mod rbmk_t06_tests;
 mod rbmk_t07_tests;
 mod rbmk_t08_tests;
 mod rbmk_t09_tests;
+mod rbmk_t10_tests;
 mod anvil_tests;
 mod press_slots_tests;
 mod purex_tests;
