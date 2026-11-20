@@ -6,7 +6,7 @@ priority = 100
 # Current upstream plus reusable model, multiblock and container extensions.
 # Keep the exact integration pin: official API alone lacks those extensions.
 [compatibility]
-horizon_revision = "2187c3192b2c8fc1a28e4017002f43bb4800f5e3"
+horizon_revision = "7f61a9c1719d36cbe7dca76fd8226fe122199733"
 
 # The logic, plain Rust (cargo test against the fake world): copied into
 # this folder by tools/package-native.sh, never kept here.
