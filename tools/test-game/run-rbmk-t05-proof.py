@@ -63,7 +63,7 @@ def free_places(n, timeout=7200):
 class Client:
     def __init__(self, folder, env, binary, resources, bundle, name, world=None):
         self.folder = folder
-        folder.mkdir()
+        folder.mkdir(exist_ok=True)
         (folder / 'options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
         (folder / 'horizon-controller.txt').write_text('enabled:false\n')
         (folder / 'horizon-graphics.txt').write_text('workers:2\n')
@@ -103,6 +103,7 @@ def main():
     parser.add_argument('--scratch-root', type=Path, required=True)
     parser.add_argument('--bundle', type=Path, required=True)
     parser.add_argument('--script', default='native_rbmk_t05.py')
+    parser.add_argument('--reopen', action='store_true', help="then reopen the host's world alone and run the script's reopen phase")
     args = parser.parse_args()
     binary, resources = Path(os.environ['NTM_T05_BINARY']).resolve(), Path(os.environ['NTM_T05_RESOURCES']).resolve()
     scratch = Path(tempfile.mkdtemp(prefix='rbmk-t05-', dir=args.scratch_root))
@@ -138,8 +139,23 @@ def main():
         wait(guest.game, 'status', lambda v: v['server']['joined'] and v['player'] is not None, 300, 'guest joined')
         played = subprocess.run([sys.executable, str(HERE / args.script), str(host.folder), str(guest.folder)],
                                 cwd=scratch, env=env, timeout=3600).returncode
-        evidence = host.folder / f"native-{args.script.removeprefix('native_').removesuffix('.py').replace('_', '-')}-host.json"
+        if played == 0 and args.reopen:
+            # The world reopened: both clients quit (the host saves it), the host opens it again alone.
+            for c in reversed(clients):
+                c.quit()
+            clients.clear()
+            host = Client(scratch / 'host', env, binary, resources, args.bundle.resolve(), 'Host', 'T05')
+            clients.append(host)
+            wait(host.game, 'status', lambda v: v.get('player') is not None and v.get('pending_chunks') == 0
+                 and v.get('server', {}).get('loaded') is not False, 2400, 'host world again')
+            played = subprocess.run([sys.executable, str(HERE / args.script), str(host.folder), str(guest.folder), 'reopen'],
+                                    cwd=scratch, env=env, timeout=3600).returncode
+        stem = args.script.removeprefix('native_').removesuffix('.py').replace('_', '-')
+        evidence = host.folder / f"native-{stem}-host.json"
         report['evidence'] = json.loads(evidence.read_text()) if evidence.exists() else None
+        reopened = host.folder / f"native-{stem}-reopen.json"
+        if reopened.exists():
+            report['reopen'] = json.loads(reopened.read_text())
         report['ok'] = played == 0
     except Exception as error:
         report['error'] = repr(error)

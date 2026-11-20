@@ -20,6 +20,9 @@ HOST, GUEST = 'Host', 'Guest'
 Y = 101
 AUTO = 'ntm:rbmk_control_auto[facing=north,honey_level=0]'
 AT = {HOST: (40, Y, 8), GUEST: (44, Y, 8)}
+# A column the host sets and leaves: its settings must come back when the world opens again.
+KEPT = (48, Y, 8)
+KEPT_VALUES = {'level_upper': 33.0, 'level_lower': 66.0, 'heat_upper': 777.0, 'heat_lower': 222.0, 'function': 1}
 # The screen's inventory (`horizon_machine`: [8, 104]) gives its origin; the fields (30, 27 + 11i, 26 x 6), the save
 # (28, 70, 30 x 10) and the curves (61, 48 + 11k, 22 x 10).
 INVENTORY = (8, 104)
@@ -85,10 +88,10 @@ class Proof:
         self.click(self.players[name], SAVE)
         time.sleep(1.0)
 
-    def screen_hook(self, name):
+    def screen_hook(self, name, what='replay'):
         # Asked by the host for the player (the reply goes to whoever runs the command): the hook replays that
         # player's last command, from where they stand.
-        text = ' '.join(self.host.command(f'ntmtest screen replay {name}').get('chat', []))
+        text = ' '.join(self.host.command(f'ntmtest screen {what} {name}').get('chat', []))
         m = re.search(r'screen=(\S+)', text)
         return m[1] if m else text
 
@@ -136,7 +139,16 @@ class Proof:
         self.open(name)
         self.check(f'{name}:an_old_session_is_refused', self.screen_hook(name) == 'refused:OldSession', self.screen_hook(name))
         self.check(f'{name}:nothing_changed', auto(self.host, p) == before, auto(self.host, p))
+        # Too far (T06 review P3(d)): a command of the current session, sent again with the next number by a player
+        # 25 blocks away, is refused at `hasPermission`'s reach.
+        self.save(name)
+        self.host.command(f'tp {name} {p[0] + .5} {p[1]} {p[2] - 25.5} 0 0')
+        time.sleep(1.0)
+        got = self.screen_hook(name, 'next')
+        self.check(f'{name}:too_far_is_refused', got == 'refused:TooFar', got)
+        self.check(f'{name}:nothing_changed_from_afar', auto(self.host, p) == before, auto(self.host, p))
         # The column replaced under an open screen: its commands are another generation's.
+        self.open(name)
         self.save(name)
         self.host.command(f'setblock {p[0]} {p[1]} {p[2]} minecraft:air')
         time.sleep(1.0)
@@ -148,6 +160,35 @@ class Proof:
         self.check(f'{name}:the_new_column_is_untouched', auto(self.host, p)['function'] == 0, auto(self.host, p))
         g.close()
 
+    def keep(self):
+        """The host sets the kept column through its screen and leaves it."""
+        g = self.players[HOST]
+        self.host.command(f'tp {HOST} {KEPT[0] + .5} {KEPT[1]} {KEPT[2] - 2.5} 0 0')
+        time.sleep(.6)
+        g.ctl(f'interact {KEPT[0]} {KEPT[1]} {KEPT[2]} north')
+        time.sleep(1.5)
+        for i, v in enumerate(['33', '66', '777', '222']):
+            self.write(g, i, v)
+        self.save(HOST)
+        self.click(g, CURVE[1])
+        time.sleep(1.0)
+        self.check('kept_column_set', auto(self.host, KEPT) == KEPT_VALUES, auto(self.host, KEPT))
+        g.close()
+        self.host.ctl('save')
+
+    def reopen(self):
+        """After the world opened again: the kept column's settings, as the save kept them (T06 review P3(d))."""
+        self.host.ctl('wait-ready 120')
+        self.host.evidence['phase'] = 'reopen'
+        deadline = time.monotonic() + 60
+        got = auto(self.host, KEPT)
+        while time.monotonic() < deadline and got is None:
+            time.sleep(1)
+            got = auto(self.host, KEPT)
+        self.check('settings_survive_a_world_reopen', got == KEPT_VALUES, got)
+        self.host.evidence['ok'] = True
+        self.host.save()
+
     def run(self):
         h = self.host
         h.ctl('wait-ready 120')
@@ -156,6 +197,7 @@ class Proof:
         time.sleep(3)
         h.command('fill 36 99 2 62 108 22 minecraft:air')
         h.command('fill 36 100 2 62 100 22 minecraft:stone')
+        h.command(f'setblock {KEPT[0]} {KEPT[1]} {KEPT[2]} {AUTO}')
         for name in (HOST, GUEST):
             p = AT[name]
             h.command(f'setblock {p[0]} {p[1]} {p[2]} {AUTO}')
@@ -164,11 +206,16 @@ class Proof:
         time.sleep(2)
         for name in (HOST, GUEST):
             self.play(name)
+        self.keep()
         h.evidence['ok'] = True
         h.save()
 
 
 if __name__ == '__main__':
+    if sys.argv[3:] == ['reopen']:
+        host = Game(Path(sys.argv[1]), 'rbmk-t06-reopen')
+        Proof(host, None).reopen()
+        sys.exit(0)
     host, guest = Game(Path(sys.argv[1]), 'rbmk-t06-host'), Game(Path(sys.argv[2]), 'rbmk-t06-guest')
     Proof(host, guest).run()
     guest.evidence['ok'] = True
