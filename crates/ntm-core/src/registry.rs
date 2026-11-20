@@ -1403,14 +1403,14 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:rbmk_steam_inlet",
-        kind: Kind::Inert,
+        kind: Kind::RbmkReasim,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
     },
     BlockSpec {
         id: "ntm:rbmk_steam_outlet",
-        kind: Kind::Inert,
+        kind: Kind::RbmkReasim,
         facing: Some("facing"),
         level: HONEY,
         ports: Ports::None,
@@ -1714,6 +1714,10 @@ pub const TOKEN: &str = "ntm:logic_token";
 pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port> {
     if spec.kind == Kind::Zirnox {
         return vec![vec![]];
+    }
+    // The RBMK's ReaSim inlet and outlet (T08): every face (`TilePortShapes.around`).
+    if spec.kind == Kind::RbmkReasim {
+        return vec![crate::energy::DIRS.to_vec()];
     }
     // An RBMK boiler, heater or cooler (T08): its ports are cells of its column or of a loader under it, by the world
     // (`fluid_server`, `rbmk::persist::column_ports`); the core itself only as one of them.

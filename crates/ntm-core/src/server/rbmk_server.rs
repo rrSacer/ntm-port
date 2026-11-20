@@ -496,6 +496,57 @@ impl Server {
         true
     }
 
+    /// The ReaSim inlets and outlets (T08, `TileEntityRBMKInlet/Outlet.updateEntity`), after their networks moved
+    /// fluid this tick: with `dialReasimBoilers`, each fills the ReaSim water of the column at each of its sides
+    /// (NORTH, SOUTH, WEST, EAST; any cell of it, `findCore`) up to `maxWater`, or takes the column's steam into its
+    /// tank. Out of the reactor step, as the networks are: a column steps with what the last tick left it.
+    pub(super) fn rbmk_reasim_ports(&mut self, host: &mut impl ServerHost) {
+        let ports: Vec<Key> = self.ready.world.machines.iter().filter(|(k, m)| matches!(m.data, Data::RbmkReasim(_)) && self.ready.loaded.get(*k) == Some(&true)).map(|(k, _)| k.clone()).collect();
+        for key in ports {
+            let (dim, [x, y, z]) = (key.0.clone(), key.1);
+            if !self.rbmk_dials(&dim, "KEY_REASIM_BOILERS").reasim_boilers {
+                continue;
+            }
+            for (dx, dz) in [(0, -1), (0, 1), (-1, 0), (1, 0)] {
+                let Some(core) = Self::rbmk_core_of(host, &dim, [x + dx, y, z + dz]) else { continue };
+                let ck = (dim.clone(), core);
+                if self.ready.loaded.get(&ck) != Some(&true) {
+                    continue;
+                }
+                let Some(Data::Rbmk(col)) = self.ready.world.machines.get(&ck).map(|m| &m.data) else { continue };
+                let (water, steam) = (col.reasim_water, col.reasim_steam);
+                let Some(Data::RbmkReasim(p)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data) else { break };
+                let (water, steam) = if p.inlet {
+                    let prov = (persist::REASIM_MAX - water).min(p.tank.fill);
+                    p.tank.fill -= prov;
+                    (water + prov, steam)
+                } else {
+                    let prov = (p.tank.max - p.tank.fill).min(steam);
+                    p.tank.fill += prov;
+                    (water, steam - prov)
+                };
+                if let Some(Data::Rbmk(col)) = self.ready.world.machines.get_mut(&ck).map(|m| &mut m.data) {
+                    (col.reasim_water, col.reasim_steam) = (water, steam);
+                }
+            }
+        }
+    }
+
+    /// `RBMKBase.findCore` from a cell of a column: the core, the cell itself or the first column block under its run
+    /// of dummies. None: no column there, or a cell on the way not loaded.
+    fn rbmk_core_of(host: &mut impl ServerHost, dim: &str, p: Pos) -> Option<Pos> {
+        for dy in 0..=persist::DUMMY_REACH {
+            let at = [p[0], p[1] - dy, p[2]];
+            let b = host.get_block(dim, at)?;
+            match blockstate::id_of(&b) {
+                persist::DUMMY => continue,
+                id if persist::is_column(id) => return Some(at),
+                _ => return None,
+            }
+        }
+        None
+    }
+
     /// What a world tick does for the RBMK before its tile entities (T04): `SatelliteRayScan.updateSystem` of each
     /// open dimension when the world time is 10 past a multiple of 20 (`ModEventHandler.worldTick:661`, a dimension
     /// whose world is not open is not ticked and keeps its events, as an unloaded `WorldServer`); and the engine's

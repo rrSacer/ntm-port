@@ -288,3 +288,58 @@ fn a_loader_moves_the_bottom_port() {
         assert_eq!((piped(&mut g, at).input.fill, barrel(&mut g, src).mb), (3_000, 3_000), "no loader at {loader_at:?}");
     }
 }
+
+fn dial(g: &mut Game, line: &str) {
+    let who = PlayerInfo { dim: OW.into(), ..player() };
+    assert!(g.server.native_rbmk_command(&mut g.sh, &who, 2, line).expect("an ntmrbmk command").is_ok(), "{line}");
+}
+
+fn port(g: &mut Game, p: Pos) -> crate::rbmk::persist::ReasimPort {
+    match g.machine(p).data {
+        Data::RbmkReasim(r) => *r,
+        other => panic!("{other:?}"),
+    }
+}
+
+/// The ReaSim inlet fills the water of the column beside it up to 16 000 and the outlet drains its steam, only with
+/// `dialReasimBoilers`; each takes or gives by its networks, and keeps its tank in the save.
+#[test]
+fn the_reasim_inlet_and_outlet_move_water_in_and_steam_out() {
+    let mut g = game();
+    let (a, b) = ([0, Y, 0], [4, Y, 0]);
+    // The inlet beside the column's dummy (`findCore` from any cell), the outlet beside the core.
+    let (inlet, outlet) = ([1, Y + 1, 0], [5, Y, 0]);
+    g.place(a, &column("rbmk_blank"));
+    g.place([0, Y + 1, 0], crate::rbmk::persist::DUMMY);
+    g.place(b, &column("rbmk_blank"));
+    g.place(inlet, "ntm:rbmk_steam_inlet[facing=north,honey_level=0]");
+    g.place(outlet, "ntm:rbmk_steam_outlet[facing=north,honey_level=0]");
+    let (water, steam) = ([1, Y + 1, 2], [5, Y, 2]);
+    g.place(water, "ntm:barrel_steel[facing=north,honey_level=0]");
+    g.place(steam, "ntm:barrel_steel[facing=north,honey_level=0]");
+    g.run(2);
+    assert_eq!((port(&mut g, inlet).tank, port(&mut g, outlet).tank), (tank("WATER", 0, 32_000), tank("SUPERHOTSTEAM", 0, 32_000)));
+    duct(&mut g, [1, Y + 1, 1], "water");
+    duct(&mut g, [5, Y, 1], "superhotsteam");
+    set_barrel(&mut g, water, |s| {
+        s.tank.fill("water", 16_000);
+        s.mode = crate::fluidbox::Mode::Output;
+    });
+    with(&mut g, b, |c| c.reasim_steam = 10_000);
+    g.run(12);
+    assert_eq!(port(&mut g, inlet).tank.fill, 16_000, "the inlet takes water from its network");
+    assert_eq!((col(&mut g, a).reasim_water, col(&mut g, b).reasim_steam), (0, 10_000), "the dial is off");
+    dial(&mut g, "ntmrbmk dial dialReasimBoilers true");
+    if let Some(Data::RbmkReasim(p)) = g.ready().world.machines.get_mut(&(OW.to_string(), inlet)).map(|m| &mut m.data) {
+        p.tank.fill = 20_000;
+    }
+    g.run(1);
+    assert_eq!((col(&mut g, a).reasim_water, port(&mut g, inlet).tank.fill), (16_000, 4_000), "up to maxWater");
+    let after = col(&mut g, b).reasim_steam;
+    assert!(after < 10_000, "the outlet drains the steam: {after}");
+    g.run(12);
+    let out = barrel(&mut g, steam);
+    assert_eq!((out.fluid.as_str(), out.mb + port(&mut g, outlet).tank.fill as u32 + col(&mut g, b).reasim_steam as u32), ("superhotsteam", 10_000), "the steam leaves by the outlet's network");
+    let mut back = reopen(&g);
+    assert_eq!(port(&mut back, outlet).tank, port(&mut g, outlet).tank);
+}

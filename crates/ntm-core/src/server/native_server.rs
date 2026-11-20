@@ -170,6 +170,7 @@ impl Server {
             if let crate::machine::Data::Radioisotope(r) = &mut m.data { r.finish(); }
         }
         self.fluids_tick();
+        self.rbmk_reasim_ports(host);
         phases.mark("fluids");
         self.fraction_tick();
         phases.mark("fraction");

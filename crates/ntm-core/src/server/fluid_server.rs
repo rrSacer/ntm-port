@@ -246,11 +246,13 @@ impl Server {
 /// others that touch it, as in the NTM, where machines only touch and ducts
 /// carry: built as one graph, a barrel on one port of the cracker filled
 /// another barrel on its other port.
+#[cfg(test)]
 pub fn fluid_networks(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxies) -> Vec<Vec<Pos>> {
     fluid_networks_at(ducts,machines,proxies,&Members::new())
 }
 
 /// Port faces for displaced endpoints, overriding the default proxy faces.
+#[cfg(test)]
 pub fn fluid_networks_at(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxies, faces: &Members) -> Vec<Vec<Pos>> {
     fluid_networks_through(ducts, machines, proxies, faces, &Proxies::new())
 }

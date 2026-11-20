@@ -540,6 +540,65 @@ fn network_fluid(name: &str) -> Option<&'static str> {
     super::fluids::network_fluid(name)
 }
 
+/// The ReaSim inlet (`TileEntityRBMKInlet`: 32 000 mB of water it takes from its networks) or outlet
+/// (`TileEntityRBMKOutlet`: 32 000 mB of super dense steam it gives them), its tank as `writeToNBT` keeps it
+/// (`tank`). With `dialReasimBoilers` it fills the ReaSim water of the columns beside it, or drains their steam
+/// (`rbmk_server::rbmk_reasim_ports`).
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ReasimPort {
+    pub inlet: bool,
+    pub tank: KeptTank,
+}
+
+pub const INLET: &str = "ntm:rbmk_steam_inlet";
+pub const OUTLET: &str = "ntm:rbmk_steam_outlet";
+/// `TileEntityRBMKBase.maxWater` and `maxSteam`.
+pub const REASIM_MAX: i32 = 16_000;
+
+impl ReasimPort {
+    pub fn of(block: &str) -> Self {
+        let inlet = block == INLET;
+        ReasimPort { inlet, tank: KeptTank::of(if inlet { "WATER" } else { "SUPERHOTSTEAM" }, 32_000) }
+    }
+}
+
+/// The inlet takes water (`IFluidStandardReceiverMK2`), the outlet gives its steam (`IFluidStandardSenderMK2`), on
+/// the network of the tank's type, by every face (`TilePortShapes.around`).
+impl crate::fluid::FluidNode for ReasimPort {
+    fn fluid_offer(&self, fluid: &str) -> u64 {
+        if !self.inlet && network_fluid(&self.tank.fluid) == Some(fluid) { self.tank.fill.max(0) as u64 } else { 0 }
+    }
+    fn fluid_demand(&self, fluid: &str) -> u64 {
+        if self.inlet && network_fluid(&self.tank.fluid) == Some(fluid) { (self.tank.max - self.tank.fill).max(0) as u64 } else { 0 }
+    }
+    fn fluid_types(&self) -> Vec<String> {
+        network_fluid(&self.tank.fluid).map(str::to_string).into_iter().collect()
+    }
+    fn fluid_give(&mut self, fluid: &str, mb: u64) {
+        if self.inlet && network_fluid(&self.tank.fluid) == Some(fluid) {
+            self.tank.fill = (i64::from(self.tank.fill) + mb as i64).min(i64::from(self.tank.max)) as i32;
+        }
+    }
+    fn fluid_take(&mut self, fluid: &str, mb: u64) {
+        if !self.inlet && network_fluid(&self.tank.fluid) == Some(fluid) {
+            self.tank.fill = (i64::from(self.tank.fill) - mb as i64).max(0) as i32;
+        }
+    }
+}
+
+impl Logic for ReasimPort {
+    fn fluid(&mut self) -> Option<&mut dyn crate::fluid::FluidNode> {
+        Some(self)
+    }
+    fn level(&self, _: u8) -> u8 {
+        0
+    }
+    fn view(&self) -> ViewModel {
+        ViewModel::new("RBMK ReaSim")
+    }
+}
+
+
 impl Logic for RbmkColumn {
     /// A ReaSim control rod takes power from below (T07); no other column is on a network.
     fn energy(&mut self) -> Option<&mut dyn crate::energy::EnergyNode> {
