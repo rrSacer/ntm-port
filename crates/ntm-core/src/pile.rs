@@ -667,6 +667,10 @@ impl FluidNode for Pile {
     }
 }
 impl Slotted for Pile {
+    /// Its record keeps its slots (the model's JSON): a restore from the journal has them.
+    fn slots_recorded(&self) -> bool {
+        true
+    }
     fn slots_mut(&mut self) -> &mut Slots {
         if let Self::Loader(l) = self {
             &mut l.slots

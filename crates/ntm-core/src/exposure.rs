@@ -216,6 +216,10 @@ impl EnergyNode for Exposure {
 }
 
 impl Slotted for Exposure {
+    /// Its record keeps its slots (the model's JSON): a restore from the journal has them.
+    fn slots_recorded(&self) -> bool {
+        true
+    }
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }

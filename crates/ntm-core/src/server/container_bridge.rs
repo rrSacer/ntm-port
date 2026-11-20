@@ -69,10 +69,12 @@ pub trait Slotted {
     fn migrates(&self) -> bool {
         false
     }
-    /// Whether its record (the model's JSON, and the journal's copy of it) keeps its slots. False: they are the block
-    /// entity's alone, and a model the journal restored, which has none, takes them from the block entity.
+    /// Whether its record (the model's JSON, and the journal's copy of it) keeps its slots. False (the rule): they are
+    /// the block entity's alone, and a model the journal restored, which has none, takes them from the block entity. A
+    /// machine whose record does keep them says so, and `every_slotted_machine_says_whether_its_record_keeps_its_slots`
+    /// reads that off each one's own JSON, so a record that gains or loses its slots can't leave this wrong.
     fn slots_recorded(&self) -> bool {
-        true
+        false
     }
     /// What it holds outside its slots (molten metal as scraps), dropped
     /// when it is broken: the engine spills the slots, not this.
@@ -1057,9 +1059,10 @@ impl Server {
             let first = !r.bridge.last.contains_key(&key);
             let observed = now.clone();
             if r.restored.remove(&key) {
-                // The model came from the journal and the block entity is older: the model's slots are the truth, and
-                // the next step writes them over the block entity's. A machine whose record has no slots (the
-                // sawmill) has none to write: the block entity's are its only ones, and it takes them.
+                // The model came from the journal and the block entity is older: the model's slots are the truth when its
+                // record keeps them, and the next step writes them over the block entity's. A machine whose record has
+                // none (`Slotted::slots_recorded`) has none to write: the block entity's are its only ones, and it takes
+                // them.
                 if let Some(n) = slotted(&mut m.data)
                     && !n.slots_recorded()
                 {
@@ -1380,5 +1383,35 @@ mod tests {
         let now = totals([Some(Stack::new("a", 1)), Some(Stack::new("b", 2))].iter());
         apply_delta(&mut list, &last, &now);
         assert_eq!(list, vec![("a".to_string(), 7), ("b".to_string(), 2)]);
+    }
+
+    /// The P2 of the Onda 2 integration's review: the restore takes the block entity's slots for every machine whose record
+    /// has none, so each machine's `slots_recorded` must say what its own JSON does (the old default, true, left every
+    /// `#[serde(skip)]` machine with empty slots written over its block entity's).
+    #[test]
+    fn every_slotted_machine_says_whether_its_record_keeps_its_slots() {
+        let marker = Stack::new("minecraft:stick", 3);
+        let mut wrong = Vec::new();
+        let mut seen = 0;
+        for (block, layout) in SLOTTED {
+            if !matches!(layout, Layout::Native) {
+                continue;
+            }
+            let Some(spec) = crate::registry::spec(block) else { continue };
+            let mut m = crate::machine::Machine::new(spec.kind, block, Some("north".into()));
+            let Some(n) = slotted(&mut m.data) else { continue };
+            n.slots_mut().resize(3, None);
+            n.slots_mut()[0] = Some(marker.clone());
+            let json = serde_json::to_string(&m).expect("a machine serializes");
+            let mut back: crate::machine::Machine = serde_json::from_str(&json).expect("and reads back");
+            let kept = slotted(&mut back.data).is_some_and(|b| b.slots_mut().first() == Some(&Some(marker.clone())));
+            let says = slotted(&mut m.data).is_some_and(|b| b.slots_recorded());
+            seen += 1;
+            if kept != says {
+                wrong.push(format!("{block}: its JSON keeps the slots: {kept}, it says: {says}"));
+            }
+        }
+        assert!(seen > 40, "the table is read ({seen} machines)");
+        assert!(wrong.is_empty(), "{} machines say wrong:\n{}", wrong.len(), wrong.join("\n"));
     }
 }

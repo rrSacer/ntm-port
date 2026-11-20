@@ -146,6 +146,10 @@ impl Logic for Cast {
 }
 
 impl Slotted for Cast {
+    /// Its record keeps its slots (the model's JSON): a restore from the journal has them.
+    fn slots_recorded(&self) -> bool {
+        true
+    }
     fn held_contents(&self) -> Vec<(String, u32)> {
         self.melt.scraps()
     }

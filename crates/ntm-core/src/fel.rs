@@ -100,6 +100,10 @@ impl crate::machine::Logic for Fel {
 }
 
 impl crate::server::container_bridge::Slotted for Fel {
+    /// Its record keeps its slots (the model's JSON): a restore from the journal has them.
+    fn slots_recorded(&self) -> bool {
+        true
+    }
     fn slots_mut(&mut self) -> &mut Slots { &mut self.slots }
     fn screen_data(&self) -> Vec<i32> { vec![self.power as i32, MAX_POWER as i32, i32::from(self.on), self.mode as i32, self.distance, i32::from(self.missing_valid_silex)] }
     fn button(&mut self, id: u32) -> bool {
