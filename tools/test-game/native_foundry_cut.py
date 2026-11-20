@@ -340,14 +340,14 @@ def break_it(g, cells, label):
     time.sleep(1.5)
 
 
-def use_machine(g, cells, label):
+def use_machine(g, cells, label, face='south'):
     """A right click on the first of `cells` that the player can reach; a multiblock's other cells hide the core's faces, so
     the dummy in the way is clicked (it is the same machine)."""
     queue = list(cells)
     while queue:
         cell = queue.pop(0)
         try:
-            g.ctl('interact %d %d %d south' % cell)
+            g.ctl('interact %d %d %d %s' % (*cell, face))
             time.sleep(1.5)
             return cell
         except RuntimeError as error:
@@ -422,7 +422,7 @@ def act(g):
             g.command(f'tp @s {MOLD_AT[0] + .5} {MOLD_AT[1] + 2} {MOLD_AT[2] + 2.5}')
             time.sleep(1)
             g.ctl('select ntm:mold__ingot')
-            use_machine(g, [MOLD_AT], 'mold_block_with_a_mold')
+            use_machine(g, [MOLD_AT], 'mold_block_with_a_mold', 'up')
             g.check('the_mold_went_in', 'ntm:mold__ingot' in block_items(g, MOLD_AT), block_items(g, MOLD_AT)[:200])
             held = [n for i, n, _ in entries(inventory_text(g)) if i == 'ntm:mold__ingot']
             g.check('one_mold_of_the_stack', held == [1], held)
@@ -431,7 +431,7 @@ def act(g):
             g.command('clear @s')
             g.command(f'tp @s {MOLD_AT[0] + .5} {MOLD_AT[1] + 2} {MOLD_AT[2] + 2.5}')
             time.sleep(1)
-            use_machine(g, [MOLD_AT], 'mold_block_with_an_empty_hand')
+            use_machine(g, [MOLD_AT], 'mold_block_with_an_empty_hand', 'up')
             g.check('the_ingot_came_out', held_gold(g, MOLD_AT) == 0 and 'minecraft:gold_ingot' in inventory_text(g), [block_items(g, MOLD_AT)[:200], inventory_text(g)[:300]])
             g.command('give @s minecraft:iron_shovel 1')
             g.ctl('select minecraft:iron_shovel')
