@@ -242,7 +242,14 @@ class Proof:
         self.host.evidence.setdefault('enter_opens', []).append({'who': name, 'screen': screen})
         if screen != 'playing':
             g.close()
-        time.sleep(3.2)
+        # What the crane and the storage hold while the hook goes down and up, and what the server says.
+        trace = []
+        end = time.monotonic() + 3.2
+        while time.monotonic() < end:
+            trace.append({'t': round(3.2 - (end - time.monotonic()), 2), 'held': items(self.host, self.core)[-90:], 'store': items(self.host, STORE)[-90:],
+                          'server': ' '.join(self.host.command('ntmtest crane').get('chat', []))[-110:]})
+            time.sleep(.25)
+        self.host.evidence.setdefault('load_traces', []).append(trace)
 
     def held(self):
         return items(self.host, self.core)
