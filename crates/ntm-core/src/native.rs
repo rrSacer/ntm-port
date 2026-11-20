@@ -807,6 +807,25 @@ mod screens {
         assert_eq!(w.screen_data()[5], 1);
     }
 
+    /// An identifier of no type leaves the tank as `Fluids.NONE`: it takes no fluid from a network and is in no network (not one of
+    /// an empty name).
+    #[test]
+    fn an_untyped_wood_burner_tank_takes_nothing() {
+        use crate::fluid::FluidNode;
+        let mut w = WoodBurner::default();
+        w.slots[2] = Some(Stack { custom: Some("{ntm_fluid:\"none\"}".into()), ..Stack::new("ntm:fluid_identifier_multi", 1) });
+        w.tick();
+        assert_eq!(w.tank.fluid, "");
+        assert_eq!(w.fluid_demand("water"), 0);
+        assert!(w.fluid_types().is_empty());
+        w.fluid_give("water", 500);
+        assert_eq!(w.tank.mb, 0);
+        // Typed again, it takes its own.
+        w.tank.set_type("woodoil");
+        assert_eq!(w.fluid_demand("woodoil"), 16_000);
+        assert_eq!(w.fluid_types(), vec!["woodoil".to_string()]);
+    }
+
     /// The tank goes with the slots in the block entity (id, mB) and an old record, without it, leaves it as it is.
     #[test]
     fn the_wood_burners_tank_goes_through_the_block_entity() {

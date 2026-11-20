@@ -1103,14 +1103,18 @@ impl crate::fluid::FluidNode for WoodBurner {
     fn fluid_offer(&self, _fluid: &str) -> u64 {
         0
     }
+    /// Only its own type: a tank an identifier of no type left untyped is Java's `Fluids.NONE`, which no network carries, so it takes
+    /// nothing (a barrel takes any fluid while empty; this tank does not).
     fn fluid_demand(&self, fluid: &str) -> u64 {
-        if self.tank.accepts(fluid) { u64::from(self.tank.free()) } else { 0 }
+        if !self.tank.fluid.is_empty() && self.tank.accepts(fluid) { u64::from(self.tank.free()) } else { 0 }
     }
     fn fluid_types(&self) -> Vec<String> {
-        vec![self.tank.fluid.clone()]
+        Some(self.tank.fluid.clone()).filter(|f| !f.is_empty()).into_iter().collect()
     }
     fn fluid_give(&mut self, fluid: &str, mb: u64) {
-        self.tank.fill(fluid, mb.min(u64::from(u32::MAX)) as u32);
+        if !self.tank.fluid.is_empty() {
+            self.tank.fill(fluid, mb.min(u64::from(u32::MAX)) as u32);
+        }
     }
     fn fluid_take(&mut self, _fluid: &str, mb: u64) {
         self.tank.drain(mb.min(u64::from(u32::MAX)) as u32);
