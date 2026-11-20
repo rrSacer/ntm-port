@@ -280,7 +280,7 @@ impl Server {
                 // Placed without one (`getDirModified`: DIR_NO_LID); a lid put on since (T02), or a control rod's own.
                 col.lid = c.has_lid(&m.block);
                 col.moderated = moderated;
-                col.heat = c.heat;
+                col.heat = self.ready.rbmk_heats.remove(&(dim.clone(), [p[0], y, p[1]])).unwrap_or(c.heat);
                 col.reasim_water = c.reasim_water;
                 col.reasim_steam = c.reasim_steam;
                 if let Some(rod) = col.rod_mut() {
@@ -602,6 +602,17 @@ impl Server {
         let (at, took) = self.ready.rbmk_flux_200.get(dim).cloned().unwrap_or((-1, BTreeSet::new()));
         let took: Vec<String> = took.iter().map(|p| format!("{},{},{}", p[0], p[1], p[2])).collect();
         format!("tick={} rays={} flux200={at}:{}", self.ready.world.ticks, list.join(";"), took.join(";"))
+    }
+
+    /// Test hook (`NTM_TEST_HOOKS=1`, RBMK T08): the column at `pos` starts its reactor's next step at `heat` (a
+    /// boiler, heater or cooler made hot without a reactor around it). False: no column there, or a heat not finite.
+    pub fn native_test_heat(&mut self, dim: &str, pos: Pos, heat: f64) -> bool {
+        let key = (dim.to_string(), pos);
+        let column = self.ready.world.machines.get(&key).is_some_and(|m| matches!(m.data, Data::Rbmk(_)));
+        if column && heat.is_finite() {
+            self.ready.rbmk_heats.insert(key, heat);
+        }
+        column && heat.is_finite()
     }
 
     /// Test hook (`NTM_TEST_HOOKS=1`): the rod of the fuel channel at `pos` leaves as an item entity at `at` through a

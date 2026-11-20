@@ -404,3 +404,19 @@ fn the_heaters_screen_reads_its_tanks() {
     let colour = |id: &str| crate::fluid::get(id).unwrap().color as i32;
     assert_eq!(&v[1..7], &[1_000, 16_000, colour("coolant"), 300, 16_000, colour("coolant_hot")]);
 }
+
+/// The proofs' heat hook (`ntmtest heat`): the column's next step starts at the heat asked, then the column goes on.
+#[test]
+fn the_heat_hook_starts_the_next_step_hot() {
+    let mut g = game();
+    let at = [0, Y, 0];
+    g.place(at, &column("rbmk_blank"));
+    g.run(2);
+    assert!(g.server.native_test_heat(OW, at, 900.0));
+    assert!(!g.server.native_test_heat(OW, at, f64::NAN) && !g.server.native_test_heat(OW, [9, Y, 9], 900.0));
+    g.run(1);
+    let h = col(&mut g, at).heat;
+    assert!(h > 800.0 && h < 900.0, "900 less this step's cooling: {h}");
+    g.run(1);
+    assert!(col(&mut g, at).heat < h, "only once");
+}

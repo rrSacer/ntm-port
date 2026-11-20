@@ -441,6 +441,8 @@ struct Ready {
     /// Test hooks only (`Server::native_test_eject`): fuel channels asked to put their rod out as an item entity at a
     /// place, taken by their reactor's next accepted step.
     rbmk_ejects: BTreeMap<Key, [f64; 3]>,
+    /// Test hooks only (`Server::native_test_heat`): columns whose heat their reactor's next step starts from.
+    rbmk_heats: BTreeMap<Key, f64>,
     /// Test hooks only (`Server::native_test_rbmk_dump`): reactors whose next step's input is asked for, by a column of
     /// theirs, and where to write it; and the dumps of the steps accepted, written after them.
     rbmk_dump_asked: BTreeMap<Key, String>,

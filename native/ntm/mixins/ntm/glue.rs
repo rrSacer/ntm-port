@@ -455,6 +455,12 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok=true power={}",got.map_or("none".into(),|v|v.to_string()))));
         return true;
     }
+    // `ntmtest heat <x> <y> <z> <heat>` (RBMK T08): the column's reactor's next step starts it at that heat.
+    if w.first()==Some(&"heat") && let (Some(x),Some(y),Some(z),Some(h))=(n(1),n(2),n(3),n(4)){
+        let ok=server.native_test_heat(&dim,[x as i32,y as i32,z as i32],h);
+        host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok={ok}")));
+        return true;
+    }
     if w.first()==Some(&"rays"){
         let reply=format!("ntmtest ok=true {}",server.native_test_rays(&dim));
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
