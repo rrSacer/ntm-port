@@ -64,10 +64,17 @@ cache por dimensão sobre as regras do save (`dials::DialState`, decisão 3A, pr
 dimensão com TTL 300 (`persist::RayEvent`, chave `rbmk_rays`, decisão 4A). O dump de passo (`rbmk::dump`,
 `ntmtest rbmkdump`) é a prova em jogo contra o núcleo. Ver `docs/horizon-current.md`, seção "RBMK T04".
 
+**T05 (branch `rbmk-t05`, motor `rbmk-t05-engine`)** ligou o acesso ao combustível: o menu de um canal recusa, em
+sobrevivência, todo gesto sobre o slot enquanto o casco da barra passa de 200 °C (`persist::cold_enough_for_manual`,
+`ContainerRBMKRod.slotClick`/`transferStackInSlot`), e deixa em criativo (`ModSlotFilter::creative_bypass`, extensão
+do motor); a mão continua inserindo sem olhar o calor (`RBMKRod.onBlockActivated`). Os limiares do autoloader
+(`cold_enough_for_autoloader`, `<= 1000`, T12) e da fusão na quebra (`hot_enough_to_melt_on_break`, `>= 1500`, T16)
+ficam prontos e testados. Ver `docs/horizon-current.md`, seção "RBMK T05".
+
 0. Quebra de bloco: `Reactor::remove`; o `rbmk_storage` entra como `Kind::Storage`; `Inlet`/`Outlet` não participam do calor.
 1. ~~Registrar os demais blocos `Inert` `rbmk_*` como `Kind`~~ (T02: adotados; T04: no passo; a física própria deles com portas, receitas e alvos é T07/T08/T09/T11).
 2. ~~Chamar `Reactor::step` uma vez por tick~~ (T01); ~~ler `rad`, `effects`; `obstacles` com a opacidade HBM~~ (T04); `meltdowns` (T16).
 3. ~~Persistir colunas, a tag das barras, a RNG e a fila de fluxos~~ (T01).
 4. Tanques do boiler/heater/cooler/outgasser ligados ao `FluidStore`, portas e loaders (posições: `getPorts*Loader`), `identifiers` do heater a partir do item do slot 0, `ore_names` da OreDict.
-5. Energia dos controles ReaSim (`transfer_power`), hazards/tooltips dinâmicos das barras (T03), GUIs e console (T05/T06).
+5. Energia dos controles ReaSim (`transfer_power`), hazards/tooltips dinâmicos das barras (T03), GUIs e console (T06; a regra do slot do canal é T05).
 6. Detritos e meltdown (D9) e o som `leverStop` (D8).
