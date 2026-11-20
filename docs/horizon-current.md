@@ -1801,11 +1801,15 @@ Branch `rbmk-t05` (continua sobre o T10), motor sem mudança prevista. O storage
 | R | Render | A ponte, o guincho, a barra suspensa, a inclinação do joystick | `RenderCraneConsole` |
 | U/J/C | Provas | U: posição e arredondamento em toda rotação do console, vãos com bloqueio, compactação de uma passagem, alvo ausente ou trocado no fundo da descida; J: levar uma barra quente de um canal ao storage e de volta com os dados preservados, quebrar o console e o alvo no meio e reabrir; C: total de barras (mão, canal, storage, guindaste) constante, sem duplicar nem perder num corte durante a transferência | — |
 
-Decisões pedidas ao coordenador: (1) teclas fixas nas padrões do HBM (setas e Enter) pelo gancho `key` do motor, sem
-tela de remapeamento (o `KeyBinding` do Java é remapeável); (2) a custódia do `held` num slot oculto do console do
-guindaste (sem menu nem automação), movido junto com o slot da coluna; ao quebrar o console, o Java perde o item (o TE
-não é inventário): no port ele cairia no chão ou seguiria o Java?; (3) o render da ponte (R) e o `craneIndicator` nas
-colunas no T19, como o render do console.
+Decisões do coordenador (20/11/2026): (1) teclas fixas nas padrões do HBM (setas e Enter) pelo gancho `key` do motor,
+uma mensagem ao servidor a cada mudança; sem remapeamento (limite declarado, remapeamento no T19). (2) O item suspenso
+num slot oculto do console do guindaste (sem menu nem automação), movido com o slot da coluna numa publicação conjunta
+(`commit_player_transfer` com os dois `MachineCommit`). Ao quebrar o console o item **cai** no chão inteiro (desvio
+intencional: o Java o perde, as regras do port proíbem perda), testado com o inventário cheio e na quebra por
+escavadeira e explosão. (3) Render da ponte, do guincho, da barra suspensa e do joystick e o `craneIndicator` nas colunas
+no T19; as provas leem o estado do servidor. (4) `progress`/`goesDown` não gravados, como no Java: uma descida pela
+metade volta ao alto sem transferir; teste de corte durante a descida com o item suspenso: o item fica na coluna ou
+suspenso, nunca nos dois nem em nenhum, em todos os pontos de corte.
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
