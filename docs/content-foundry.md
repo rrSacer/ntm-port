@@ -142,3 +142,8 @@ Opções (a decidir; **não implementei nada**, porque a segunda metade é o tip
 - **C.** B completa, com o escoamento por tiques agendados e a cor por material: pede também uma extensão visual do motor.
 
 As outras duas lacunas da lista são **visuais ou de poluição**: a "conexão canal/tanque" (`FoundryChannel.canConnectTo`) só muda a forma e os braços desenhados do canal, e a "porta firebox" é a porta de fumaça (`TilePortShapes.assembler`, `moduleSmokePorts`) da fornalha, que depende de um sistema de poluição que o port não tem.
+
+## Checklist do conteúdo e notas de rodada 5
+
+- **`data/tool_shovels.json` precisa ser regerado** (`python3 tools/machine-gen/build.py`, que lê `ModItems.java` e `content/ids.json`) **quando outras `ItemToolAbility` SHOVEL ou MINER forem portadas** (`steel_shovel`, `desh_shovel` etc. ainda não estão no catálogo): sem isso a pá nova não age nos blocos de fundição. Um teste (`the_shovels_come_from_the_content`) pega só os casos conhecidos.
+- `foundry::scrap::stacks` **descarta a pilha de quantia 0** (o Java criaria uma sucata de 0 quanta, um item sem valor: improvável de ocorrer, porque nenhuma máquina guarda uma pilha de metal com quantia 0).
