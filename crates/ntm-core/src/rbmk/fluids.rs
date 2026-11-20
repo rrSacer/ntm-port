@@ -18,6 +18,14 @@ impl Tank {
             max,
         }
     }
+
+    /// `FluidTank.setTankType`: a new type empties the tank; the same type keeps it.
+    pub fn set_tank_type(&mut self, fluid: &'static str) {
+        if self.fluid != fluid {
+            self.fluid = fluid;
+            self.fill = 0;
+        }
+    }
 }
 
 /// `TileEntityRBMKBoiler.getHeatFromSteam`.

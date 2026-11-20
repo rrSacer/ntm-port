@@ -1175,7 +1175,8 @@ impl Reactor {
         self.base_update(i);
     }
 
-    /// `cyceCompressor`: steps the boiler's steam grade (only when it is cold or dry).
+    /// `cyceCompressor`: steps the boiler's steam grade (only when it is cold or dry). `setTankType` empties the tank
+    /// before the `/ 10` (or `* 1000`) reads it, so the steam is always lost.
     pub fn boiler_compress(&mut self, i: usize) {
         let heat = self.columns[i].heat;
         let Data::Boiler(b) = &mut self.columns[i].data else {
@@ -1186,19 +1187,19 @@ impl Reactor {
         }
         match b.steam.fluid {
             "STEAM" => {
-                b.steam.fluid = "HOTSTEAM";
+                b.steam.set_tank_type("HOTSTEAM");
                 b.steam.fill /= 10;
             }
             "HOTSTEAM" => {
-                b.steam.fluid = "SUPERHOTSTEAM";
+                b.steam.set_tank_type("SUPERHOTSTEAM");
                 b.steam.fill /= 10;
             }
             "SUPERHOTSTEAM" => {
-                b.steam.fluid = "ULTRAHOTSTEAM";
+                b.steam.set_tank_type("ULTRAHOTSTEAM");
                 b.steam.fill /= 10;
             }
             "ULTRAHOTSTEAM" => {
-                b.steam.fluid = "STEAM";
+                b.steam.set_tank_type("STEAM");
                 b.steam.fill = b.steam.fill.wrapping_mul(1000).min(b.steam.max);
             }
             _ => {}
@@ -1221,7 +1222,7 @@ impl Reactor {
         let mut cooled = 0.0;
         match fluids::heatable(h.feed.fluid) {
             Some(step) => {
-                h.steam.fluid = step.produced;
+                h.steam.set_tank_type(step.produced);
                 let temp_range = heat - f64::from(step.produced_temperature);
                 let eff = step.heat_exchanger_efficiency;
                 if temp_range > 0.0 && eff > 0.0 {
@@ -1236,13 +1237,13 @@ impl Reactor {
                     cooled = (f64::from(step.heat_req.wrapping_mul(ops)) / tu_per_degree) * eff;
                 }
                 if eff <= 0.0 {
-                    h.feed.fluid = "NONE";
-                    h.steam.fluid = "NONE";
+                    h.feed.set_tank_type("NONE");
+                    h.steam.set_tank_type("NONE");
                 }
             }
             None => {
-                h.feed.fluid = "NONE";
-                h.steam.fluid = "NONE";
+                h.feed.set_tank_type("NONE");
+                h.steam.set_tank_type("NONE");
             }
         }
         self.columns[i].heat -= cooled;

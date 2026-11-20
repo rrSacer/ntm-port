@@ -1872,6 +1872,66 @@
    ]
   },
   {
+   "name": "heater_retype",
+   "ticks": 30,
+   "seed": 1,
+   "columns": [
+    {
+     "kind": "heater",
+     "x": 0,
+     "z": 0,
+     "heat": 700,
+     "feed": {
+      "fluid": "COOLANT",
+      "fill": 8000
+     },
+     "steam_tank": {
+      "fluid": "COOLANT_HOT",
+      "fill": 5000
+     }
+    }
+   ],
+   "actions": [
+    {
+     "tick": 5,
+     "column": 0,
+     "set_tanks": {
+      "feed": {
+       "fill": 0
+      }
+     }
+    },
+    {
+     "tick": 5,
+     "column": 0,
+     "identifier": "WATER"
+    },
+    {
+     "tick": 8,
+     "column": 0,
+     "set_tanks": {
+      "feed": {
+       "fill": 4000
+      }
+     }
+    },
+    {
+     "tick": 20,
+     "column": 0,
+     "set_tanks": {
+      "feed": {
+       "fill": 0
+      }
+     }
+    },
+    {
+     "tick": 20,
+     "column": 0,
+     "identifier": "AIR"
+    }
+   ]
+  },
+  {
    "name": "cooler_window",
    "ticks": 140,
    "seed": 1,

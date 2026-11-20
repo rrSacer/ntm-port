@@ -123,6 +123,11 @@ scenario("heater_coolant", 50, [col("heater", 0, 0, heat=700), col("heater", 8, 
                                 col("heater", 32, 0, heat=700, feed={"fluid": "AIR", "fill": 500}), col("heater", 40, 0, heat=700, feed={"fluid": "LAVA", "fill": 500})])
 scenario("heater_identifier", 30, [col("heater", 0, 0, heat=400, identifier="WATER", feed={"fluid": "COOLANT", "fill": 100}), col("heater", 8, 0, heat=30, feed={"fluid": "COOLANT", "fill": 100}, identifier="OIL")],
          actions=[{"tick": 10, "column": 0, "identifier": "PERFLUOROMETHYL"}, {"tick": 20, "column": 0, "identifier": None}, {"tick": 22, "column": 1, "set_tanks": {"feed": {"fill": 0}}}])
+# T08: `setTankType` empties a tank whose type changes: the hot tank when the produced type changes, both at NONE
+scenario("heater_retype", 30, [col("heater", 0, 0, heat=700, feed={"fluid": "COOLANT", "fill": 8000}, steam_tank={"fluid": "COOLANT_HOT", "fill": 5000})],
+         actions=[{"tick": 5, "column": 0, "set_tanks": {"feed": {"fill": 0}}}, {"tick": 5, "column": 0, "identifier": "WATER"},
+                  {"tick": 8, "column": 0, "set_tanks": {"feed": {"fill": 4000}}},
+                  {"tick": 20, "column": 0, "set_tanks": {"feed": {"fill": 0}}}, {"tick": 20, "column": 0, "identifier": "AIR"}])
 cool = [col("blank", x, z, heat=600) for x in range(5) for z in range(5) if (x, z) != (2, 2)]
 cool.append(col("cooler", 2, 2, heat=100, cold={"fill": 1000}, hot={"fill": 3500}))
 scenario("cooler_window", 140, cool, actions=[{"tick": 100, "column": len(cool) - 1, "set_tanks": {"cold": {"fill": 400}, "hot": {"fill": 0}}}])

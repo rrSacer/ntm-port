@@ -177,7 +177,7 @@ put('cpw/mods/fml/common/gameevent/TickEvent.java', '''package cpw.mods.fml.comm
 # ---- Outgasser surface
 put('com/hbm/inventory/fluid/tank/FluidTank.java', '''package com.hbm.inventory.fluid.tank; import com.hbm.inventory.fluid.FluidType; import net.minecraft.nbt.NBTTagCompound; import io.netty.buffer.ByteBuf;
 public class FluidTank { private FluidType type; private int fill, max; public FluidTank(FluidType t,int max){type=t;this.max=max;}
- public FluidType getTankType(){return type;} public void setTankType(FluidType t){type=t;} public int getFill(){return fill;} public void setFill(int f){fill=f;} public int getMaxFill(){return max;}
+ public FluidType getTankType(){return type;} public void setTankType(FluidType t){if(t==null)t=com.hbm.inventory.fluid.Fluids.NONE;if(type==t)return;type=t;setFill(0);} public int getFill(){return fill;} public void setFill(int f){fill=f;} public int getMaxFill(){return max;}
  public void readFromNBT(NBTTagCompound n,String k){fill=n.getInteger(k);} public void writeToNBT(NBTTagCompound n,String k){n.setInteger(k,fill);} public void serialize(ByteBuf b){} public void deserialize(ByteBuf b){} }''')
 put('com/hbm/module/portmanager/ModulePortManFluidAdaptive.java', '''package com.hbm.module.portmanager; import com.hbm.inventory.fluid.tank.FluidTank; import com.hbm.tileentity.TilePort.PortDef;
 public class ModulePortManFluidAdaptive { public ModulePortManFluidAdaptive(Object te){} public ModulePortManFluidAdaptive setOutputTanks(FluidTank... t){return this;} public void update(PortDef[] p){} }''')
@@ -205,7 +205,7 @@ public class JsonWriter { public JsonWriter name(String n) throws IOException {r
  public JsonWriter beginArray() throws IOException {return this;} public JsonWriter endArray() throws IOException {return this;} public JsonWriter beginObject() throws IOException {return this;} public JsonWriter endObject() throws IOException {return this;} }''')
 put('com/hbm/inventory/fluid/tank/FluidTank.java', '''package com.hbm.inventory.fluid.tank; import com.hbm.inventory.fluid.FluidType; import net.minecraft.nbt.NBTTagCompound; import net.minecraft.item.ItemStack; import io.netty.buffer.ByteBuf;
 public class FluidTank { private FluidType type; private int fill, max; public FluidTank(FluidType t,int max){type=t;this.max=max;}
- public FluidType getTankType(){return type;} public void setTankType(FluidType t){type=t;} public int getFill(){return fill;} public void setFill(int f){fill=f;} public int getMaxFill(){return max;}
+ public FluidType getTankType(){return type;} public void setTankType(FluidType t){if(t==null)t=com.hbm.inventory.fluid.Fluids.NONE;if(type==t)return;type=t;setFill(0);} public int getFill(){return fill;} public void setFill(int f){fill=f;} public int getMaxFill(){return max;}
  public boolean setType(int in, ItemStack[] slots){ if(slots[in]!=null && slots[in].getItem() instanceof com.hbm.items.machine.IItemFluidIdentifier){ FluidType n=((com.hbm.items.machine.IItemFluidIdentifier)slots[in].getItem()).getType(); if(type!=n){type=n;fill=0;return true;} } return false; }
  public void readFromNBT(NBTTagCompound n,String k){fill=n.getInteger(k);} public void writeToNBT(NBTTagCompound n,String k){n.setInteger(k,fill);} public void serialize(ByteBuf b){} public void deserialize(ByteBuf b){} }''')
 put('com/hbm/items/machine/IItemFluidIdentifier.java', 'package com.hbm.items.machine; public interface IItemFluidIdentifier { com.hbm.inventory.fluid.FluidType getType(); }')
