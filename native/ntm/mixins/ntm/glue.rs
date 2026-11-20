@@ -2442,10 +2442,10 @@ fn player_place(game: &crate::game::Game<'_>, player: u128) -> Option<(String, [
     game.native_server_players().into_iter().find(|p| p.uuid == player).map(|p| (p.dimension, p.position))
 }
 
-/// A player opens a block's menu (`native_menu_extra_data`): a column that takes commands gives its screen a session
-/// and its first snapshot.
+/// A player opens a block's menu (`native_menu_extra_data`): a column that takes commands, or the console (T10), gives
+/// its screen a session and its first snapshot.
 pub(super) fn menu_extra_data(game: &crate::game::Game<'_>, player: u128, block: &str, pos: [i32; 3], data: &mut Option<Vec<u8>>) {
-    if !ntm_core::rbmk::screen::takes_commands(block) {
+    if !crate::game::ntm_control_screens::takes_commands(block) {
         return;
     }
     // The menu opens in the level the player acts in (`native_server_players` does not list them while their menu
