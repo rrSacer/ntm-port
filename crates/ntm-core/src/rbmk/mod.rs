@@ -10,6 +10,7 @@
 
 pub mod console;
 pub mod console_gui;
+pub mod crane;
 pub mod dials;
 pub mod dump;
 pub mod fluids;

@@ -500,6 +500,10 @@ impl Server {
                     }
                     _ => {}
                 }
+                // `TileEntityRBMKStorage.updateEntity`: its queue's pass every 10 ticks, in the column's own commit.
+                if block == crate::rbmk::crane::STORAGE && r.time % 10 == 0 {
+                    crate::rbmk::crane::storage_pass(&mut c.slots);
+                }
                 if let Some(rod) = col.rod() {
                     c.flux_quantity = rod.flux_quantity;
                     c.flux_fast_ratio = rod.flux_fast_ratio;
