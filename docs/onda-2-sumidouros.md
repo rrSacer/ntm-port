@@ -140,11 +140,11 @@ Scripts e evidências: `/mnt/ssd120/sacer/so/c` (`run_drain_proof.py`, `run_micr
 ### Falso alarme do corte de gravação: o "registro órfão" não existe (corrigido)
 
 Uma versão desta seção dizia que, ao colocar uma máquina na última janela antes de um corte em `chunks_written`/`entities_written`, "o registro continua num lugar de ar". **Era um artefato da leitura do cliente**, não um defeito do servidor, do glue nem do disco, e o
-"5/7" da primeira prova de corte das chaminés (a que colocava a máquina como ato) tinha a mesma causa.
+"5/7" da primeira prova de corte das chaminés (a que colocava a máquina como ato) é compatível com a mesma causa (lia o `block` do controle depois de reabrir); o relatório daquela rodada não foi guardado, então não há arquivo para citar.
 
 - **O que o `block` do controle lê.** O comando `block x y z` do controle devolve a **visão do cliente**, que só tem os chunks que o cliente recebeu. Nesses dois cortes o arquivo do jogador não chega a ser gravado, então o jogador reabre onde o último save o deixou (no spawn,
   `1,5 72 8,5`), longe do chunk, e o cliente devolve ar, no baú de controle também. O servidor (chunk mantido por `forceload`) e `data get block` enxergam tudo.
-- **Disco.** No corte em `chunks_written` o chunk `(4,1)` da região já guarda o micro-ondas e o baú na seção do chunk e as duas entidades de bloco (lido com um decodificador próprio das `.mca`): nada ficou pela metade.
+- **Disco.** No corte em `chunks_written` o chunk `(4,1)` da região já guarda o micro-ondas e o baú na seção do chunk e as duas entidades de bloco, lidos com o decodificador de `run_orphan_probe2.py` (a primeira versão devolvia `null` para o bloco quando a paleta tinha vários elementos; foi corrigida e a leitura regravada em `orphan-disk-decode-chunks_written.json`, com `block_at_pos` `ntm:machine_microwave` e `minecraft:chest`): nada ficou pela metade.
 - **Servidor.** Na build com o `orphan_scan` do glue (`be-scan`), no carregamento do chunk, na adoção e em cada save: `orphan=false` e `block=ntm:machine_microwave[...]`, nenhuma vez `orphan=true`.
 - **Teleporte.** Reabrindo o mesmo mundo cortado e levando o jogador para a célula: `block` é o micro-ondas e o controle é o baú (antes do teleporte, no spawn, ambos eram ar).
 
@@ -163,7 +163,7 @@ leem o `block` do controle com o jogador no lugar do último save e **de novo de
 Em nenhum ponto há registro sem bloco ou bloco sem registro. A prova de corte das chaminés foi refeita nessa build (6/6 em jogo e 7/7 no corte, `chimney-proof-report.json`, `sha256` do mesmo cliente).
 
 **Ticket de baixa prioridade (motor).** O motor não descarta uma entidade de bloco sem bloco dono como o vanilla (`LevelChunk`: "Tried to load a block entity ... but failed"; não existe em `decode_chunk`). Nenhum caminho que a produza foi achado; o glue só **registra**
-(`orphan_scan`: sempre que houver uma entidade de bloco de máquina sobre uma célula sem bloco de máquina, no carregamento do chunk) e não toma ação.
+(`orphan_scan`: sempre que houver uma entidade de bloco de máquina sobre uma célula sem bloco de máquina, no carregamento do chunk) e não toma ação. A varredura usa `mods_near` do motor, que percorre o índice de chunks com entidades de bloco de mod (não é O(1) por carga); o motor não expõe acesso direto ao chunk, então fica anotado.
 
 **Auditoria dos roteiros que afirmam ausência lendo o cliente.** As leituras de "é ar" em sessão (quebras em sobrevivência de cabo/chave, compressor, fio, extrator, torres) são feitas com o jogador teleportado ao lado do bloco e quebrando-o (`tp` e `break` a poucos blocos, lidos nos scripts), logo com o chunk no cliente; as leituras depois de reabrir (ralo, micro-ondas, chaminés) exigem **presença**, que o cliente sem o chunk não consegue dar, então não passam em vazio. A única afirmação de ausência depois de reabrir estava nas sondas do achado, já refeitas olhando de perto.
 
