@@ -36,6 +36,8 @@ SCENARIOS = {
     'scrap': (('metal_quanta',), 96, [*STRICT, 'players_saved']),
     # 144 quanta poured by a crucible's stream into the caster's pool, then the one scrap its break drops.
     'caster': (('metal_quanta',), 144, [*STRICT, 'players_saved']),
+    # The caster's pool of 144 after a lighter mold: 80 in the pool and one exact scrap of 64 (the review's P1-1 at kv_committed).
+    'excess': (('metal_quanta',), 144, [*STRICT, 'players_saved']),
 }
 POINTS = STRICT
 

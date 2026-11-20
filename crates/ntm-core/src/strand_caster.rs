@@ -287,6 +287,11 @@ impl Slotted for StrandCaster {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
+    /// Its record keeps no slots (`serde(skip)`): they are the block entity's alone, so a model the journal restored
+    /// takes them from it instead of writing empty ones over them (the review's P1-1).
+    fn slots_recorded(&self) -> bool {
+        false
+    }
     /// `horizon_screen/machine_strand_caster.json`: quanta, capacity, molten colour, then water and spent steam.
     fn screen_data(&self) -> Vec<i32> {
         let t = Tables::ntm();

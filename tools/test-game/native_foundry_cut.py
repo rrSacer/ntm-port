@@ -7,6 +7,11 @@ run-foundry-proof.py, owns the process and the cut. NTM_FOUNDRY_SCENARIO picks o
           `ntm:scraps__gold` with `ntm_amount:96`, D4) and puts that scrap into a crucible slot again, by the screen.
           Whatever time passes after, the 96 are the crucible's slot or its melted pool. Control: a barrel with the
           ingot and the 3 nuggets, broken, picked up and put back by the screen
+  excess  the caster's pool of 144 and, by a lighter mold put in by command (capacity 80), the excess of 64 that goes out as
+          one exact scrap above the machine (F5: a critical effect, journaled with the model): picked up, the atoms are
+          the pool's 80 and the scrap's 64. The cut `kv_committed` reopens the chunk with the model from the journal
+          (the review's P1-1: the mold and the outputs of the block entity must stay). Control: a barrel with an ingot
+          and a nugget and the player's 8 nuggets
   caster  a strand caster whose funnel cell a crucible's stream falls on (F1): 2 ingots (144) melt, pour and wait in
           its pool (no water: nothing is cast); the act breaks the caster as a player in survival and picks up its
           drops: its mold and one scrap with all 144. Control: a barrel with the 2 ingots and the mold, broken and
@@ -58,6 +63,13 @@ def stack_quanta(text):
     return sum(quanta_of(i, e) * n for i, n, e in entries(text))
 
 
+def server_block(g, p):
+    """The block of the machine at `p` as the server's model says (`data get block ... ntm`: the block entity's), not as the
+    client sees it: '' where there is no machine."""
+    found = re.search(r'"block":"([a-z_:0-9]+)"', machine_state(g, p))
+    return found.group(1) if found else ''
+
+
 def block_items(g, p):
     return ' '.join(g.command('data get block %d %d %d Items' % tuple(p)).get('chat', []))
 
@@ -102,14 +114,14 @@ def machines(g):
     for p in places(g):
         if VANILLA:
             slots += stack_quanta(block_items(g, p))
-        elif g.ctl('block %d %d %d' % tuple(p)).get('state', '').startswith(('ntm:machine_crucible', CASTER)):
+        elif server_block(g, p) in ('ntm:machine_crucible', CASTER):
             mol += molten(model(g, p))
             slots += stack_quanta(block_items(g, p))
     return mol, slots
 
 
 def places(g):
-    if SCENARIO != 'caster':
+    if SCENARIO not in ('caster', 'excess'):
         return [CORE]
     return [caster_core(g)] + ([] if VANILLA else [tuple(placed(g)['crucible'])])
 
@@ -163,7 +175,7 @@ def prepare(g):
             g.check('the_slots_are_empty', stack_quanta(block_items(g, CORE)) == 0, block_items(g, CORE))
             # Cold from here: nothing changes on its own after the base.
             g.command('setblock %d %d %d minecraft:stone' % (CORE[0], CORE[1] - 1, CORE[2]))
-    elif SCENARIO == 'caster':
+    elif SCENARIO in ('caster', 'excess'):
         place_caster(g)
     g.command('kill @e[type=minecraft:item]')
     g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
@@ -191,17 +203,16 @@ def place_caster(g):
     for dx in range(-3, 4):
         for dz in range(-3, 4):
             p = (OTHER[0] + dx, OTHER[1], OTHER[2] + dz)
-            if g.ctl('block %d %d %d' % p).get('state', '').startswith(CASTER + '['):
+            if server_block(g, p) == CASTER:
                 core = core or p
     # The core is the cell that holds the model (the dummies have none).
     for dx in range(-3, 4):
         for dz in range(-3, 4):
             p = (OTHER[0] + dx, OTHER[1], OTHER[2] + dz)
-            if g.ctl('block %d %d %d' % p).get('state', '').startswith(CASTER + '[') and model(g, p):
+            if server_block(g, p) == CASTER and model(g, p):
                 core = p
     g.check('caster_placed', core is not None, core)
-    state = g.ctl('block %d %d %d' % core)['state']
-    facing = re.search(r'facing=(north|south|east|west)', state).group(1)
+    facing = re.search(r'"facing":"(north|south|east|west)"', machine_state(g, core)).group(1)
     d = {'north': (0, -1), 'south': (0, 1), 'east': (1, 0), 'west': (-1, 0)}[facing]
     g.evidence['caster'] = {'core': core, 'facing': facing}
     cell = (core[0], core[1] + 2, core[2])  # the cell over the core is one of the four funnel cells
@@ -300,6 +311,21 @@ def act(g):
             g.command('setblock %d %d %d %s[facing=north,honey_level=0]' % (*CORE, CRUCIBLE))
             time.sleep(2)
             put_back(g, SCRAP)
+    elif SCENARIO == 'excess':
+        core = caster_core(g)
+        if VANILLA:
+            # The 144 become what a barrel and a hand hold: an ingot and a nugget, and 8 nuggets for the player.
+            g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 1' % tuple(core))
+            g.command('item replace block %d %d %d container.2 with minecraft:gold_nugget 1' % tuple(core))
+            g.command('give @s minecraft:gold_nugget 8')
+        else:
+            g.command('item replace block %d %d %d container.0 with ntm:mold__nugget 1' % tuple(core))
+            g.check('the_excess_went_out', wait_for(lambda: molten(model(g, core)) == 80, 120), molten(model(g, core)))
+            time.sleep(2)
+            pick_up_all(g)
+            g.check('one_exact_scrap_of_64', 'ntm_amount:64' in inventory_text(g).replace(' ', '').replace('"', ''), inventory_text(g)[:400])
+        g.evidence['picked'] = inventory_text(g)[:600]
+        g.command('gamemode creative @s')
     elif SCENARIO == 'caster':
         core = caster_core(g)
         cells = [(core[0], core[1] + dy, core[2]) for dy in (0, 1, 2)]

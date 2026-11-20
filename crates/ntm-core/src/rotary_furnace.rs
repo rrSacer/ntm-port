@@ -392,6 +392,10 @@ impl Slotted for RotaryFurnace {
     fn slots_mut(&mut self) -> &mut Slots {
         &mut self.slots
     }
+    /// Its record keeps no slots (`serde(skip)`): they are the block entity's alone (see `StrandCaster`).
+    fn slots_recorded(&self) -> bool {
+        false
+    }
 
     /// `horizon_screen/machine_rotary_furnace.json` indices `0..15`.
     fn screen_data(&self) -> Vec<i32> {

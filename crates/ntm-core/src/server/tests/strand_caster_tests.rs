@@ -215,3 +215,57 @@ fn the_slot_rules_of_the_caster() {
     let c = crate::native::container(BLOCK).unwrap();
     assert_eq!((c.slots, c.inputs.clone(), c.outputs.clone()), (7, vec![], vec![1, 2, 3, 4, 5, 6]));
 }
+
+fn engine_slots(g: &Game) -> Slots {
+    slots_of(g, CASTER)
+}
+
+/// The review's P1-1: the caster's record keeps no slots (they are the block entity's). The excess a lighter mold leaves
+/// is a critical effect: it journals the machine; a chunk cut older than that journal reopens with the model from the
+/// journal, which has no slots, and the bridge took them as the truth and wrote empty slots over the block entity's: the
+/// mold and up to six stacks gone. The caster takes the block entity's slots, the scrap is dropped once and the pool is
+/// the journal's (F5 and the restoration in one scenario).
+#[test]
+fn a_caster_restored_from_the_journal_keeps_its_mold_and_outputs_and_drops_the_excess_once() {
+    let mut g = game();
+    caster(&mut g, "ntm:mold__ingot");
+    {
+        let mut w = g.world.borrow_mut();
+        let slots = &mut w.engine.get_mut(&(OW.to_string(), CASTER)).unwrap().0;
+        slots[slot::OUT.start] = Some(Stack::new("ntm:ingot_steel", 3));
+        slots[slot::OUT.start + 4] = Some(Stack::new("ntm:ingot_steel", 60));
+    }
+    edit_caster(&mut g, |c| {
+        c.melt.mat = Some("steel".into());
+        c.melt.amount = 700;
+        c.water.mb = 0; // nothing casts
+        c.last_progress = u64::MAX / 2;
+    });
+    g.run(1);
+    let key = (OW.to_string(), CASTER);
+    // The chunk as last saved: the ingot mold and the outputs in the block entity, the pool of 700.
+    let (old_json, old_slots) = (g.world.borrow().saved[&key].clone(), engine_slots(&g));
+    assert_eq!(old_slots[slot::MOLD], Some(Stack::new("ntm:mold__ingot", 1)));
+    assert_eq!(old_slots[slot::OUT.start], Some(Stack::new("ntm:ingot_steel", 3)));
+    // A lighter mold: the pool keeps 80, 620 go out as one scrap, journaled with the model.
+    g.world.borrow_mut().engine.get_mut(&key).unwrap().0[slot::MOLD] = Some(Stack::new("ntm:mold__nugget", 1));
+    g.run(1);
+    assert_eq!(caster_model(&mut g).melt.amount, 80);
+    assert!(g.server.ready.world.survivors.contains_key(&key), "the excess is journaled with the machine");
+    // The journal is newer than the chunk's record, which still has the older model and the older slots.
+    let earlier = g.server.ready.world.kept_as_an_earlier_version(0);
+    let world = Rc::new(RefCell::new(g.world.borrow().clone()));
+    world.borrow_mut().kv.set(crate::persist::KEY, &earlier).unwrap();
+    world.borrow_mut().saved.insert(key.clone(), old_json);
+    world.borrow_mut().engine.get_mut(&key).unwrap().0 = old_slots.clone();
+    world.borrow_mut().dropped.clear();
+    let mut reopened = Game::new(world);
+    assert!(reopened.server.ready.restored.contains(&key), "restored from the journal");
+    reopened.run(8);
+    assert_eq!(engine_slots(&reopened), old_slots, "the mold and the outputs stay");
+    assert_eq!(caster_model(&mut reopened).slots, old_slots, "the model takes them from the block entity");
+    assert_eq!(caster_model(&mut reopened).melt.amount, 80, "the pool is the journal's");
+    let dropped = reopened.world.borrow().dropped.clone();
+    assert_eq!(dropped.len(), 1, "the excess is dropped once: {dropped:?}");
+    assert!(dropped[0].ends_with("ntm:scraps__steel 1 {ntm_amount:620}"), "{dropped:?}");
+}
