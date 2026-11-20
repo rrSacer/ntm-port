@@ -38,13 +38,17 @@ def _weight(item, custom):
     return WEIGHT.get(item, 0)
 
 
+def _custom(s):
+    """A stack's `custom_data`: the NBT's `components`, or a machine model's `custom` (SNBT text)."""
+    return (s.get('components') or {}).get('minecraft:custom_data') or s.get('custom')
+
+
 def stack_quanta(s):
-    """A stack in the files' NBT (`id`, `count`, `components`): its quanta."""
+    """A stack in the files' NBT (`id`, `count`, `components`) or in a model (`id`, `count`, `custom`): its quanta."""
     if not isinstance(s, dict):
         return 0
     item = s.get('id') or s.get('Id') or ''
-    custom = (s.get('components') or {}).get('minecraft:custom_data')
-    return _weight(item, custom) * int(s.get('count', s.get('Count', 1)) or 0)
+    return _weight(item, _custom(s)) * int(s.get('count', s.get('Count', 1)) or 0)
 
 
 def snbt_quanta(text):
@@ -90,8 +94,7 @@ def _model(model):
             molten += _molten(v)
             q = stack_quanta(v)
             if q:
-                key = (v.get('id') or v.get('Id'), _weight(v.get('id') or v.get('Id'),
-                       (v.get('components') or {}).get('minecraft:custom_data')))
+                key = (v.get('id') or v.get('Id'), _weight(v.get('id') or v.get('Id'), _custom(v)))
                 slots[key] = slots.get(key, 0) + q
             for x in v.values():
                 walk(x)
@@ -109,8 +112,7 @@ def _be(be):
     for s in be.get('Items', []) or []:
         q = stack_quanta(s)
         if q:
-            key = (s.get('id') or s.get('Id'), _weight(s.get('id') or s.get('Id'),
-                   (s.get('components') or {}).get('minecraft:custom_data')))
+            key = (s.get('id') or s.get('Id'), _weight(s.get('id') or s.get('Id'), _custom(s)))
             slots[key] = slots.get(key, 0) + q
     molten, model_slots = 0, {}
     if isinstance(be.get('ntm'), str):
