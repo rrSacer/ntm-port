@@ -3311,6 +3311,7 @@
   "block.ntm.foundry_slagtap": "Saída de Escória da Fundição",
   "block.ntm.foundry_mold": "Bacia Rasa de Fundição",
   "block.ntm.foundry_basin": "Bacia de Fundição",
+  "block.ntm.slag": "Escória (DEBUG)",
   "item.ntm.mold__nugget": "Molde de Fundição (Pepita)",
   "item.ntm.mold__billet": "Molde de Fundição (Tarugo)",
   "item.ntm.mold__ingot": "Molde de Fundição (Lingote)",

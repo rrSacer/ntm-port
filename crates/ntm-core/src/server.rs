@@ -797,6 +797,7 @@ mod solar_server;
 pub mod container_bridge;
 mod fluid_server;
 mod foundry_server;
+mod slag_server;
 pub mod native_server;
 mod radiation_server;
 mod chunk_radiation_server;

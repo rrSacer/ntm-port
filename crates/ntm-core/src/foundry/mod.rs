@@ -18,6 +18,7 @@ pub mod crucible;
 pub mod firebox;
 pub mod flow;
 pub mod scrap;
+pub mod slag;
 
 use serde::Deserialize;
 use std::collections::HashMap;

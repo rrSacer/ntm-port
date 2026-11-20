@@ -3311,6 +3311,7 @@
   "block.ntm.foundry_slagtap": "Foundry Spill Outlet",
   "block.ntm.foundry_mold": "Shallow Foundry Basin",
   "block.ntm.foundry_basin": "Foundry Basin",
+  "block.ntm.slag": "Slag (DEBUG)",
   "item.ntm.mold__nugget": "Foundry Mold (Nugget)",
   "item.ntm.mold__billet": "Foundry Mold (Billet)",
   "item.ntm.mold__ingot": "Foundry Mold (Ingot)",

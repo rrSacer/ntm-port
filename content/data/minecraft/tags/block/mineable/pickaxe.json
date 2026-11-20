@@ -712,6 +712,7 @@
     "ntm:foundry_slagtap",
     "ntm:foundry_mold",
     "ntm:foundry_basin",
+    "ntm:slag",
     "ntm:anvil_iron",
     "ntm:anvil_lead",
     "ntm:anvil_steel",

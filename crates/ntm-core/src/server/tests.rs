@@ -232,7 +232,9 @@ impl ServerHost for SHost {
         if w.refuse_commits{return false;}
         if cs.iter().flat_map(|c|&c.cells).any(|c|!w.loaded(&c.guard.dim,c.guard.pos)||w.get(&c.guard.dim,c.guard.pos)!=c.expected.state){return false;}
         if cs.iter().any(|c|!w.loaded(&c.dim,c.pos)||w.engine.get(&(c.dim.clone(),c.pos)).map(|e|e.0.clone()).unwrap_or_default()!=c.expected){return false;}
-        for c in cs {for cell in &c.cells{w.set(&cell.guard.dim,cell.guard.pos,&cell.desired);if blockstate::id_of(&cell.expected.state)!=blockstate::id_of(&cell.desired){w.engine.remove(&cell.guard.key());w.saved.remove(&cell.guard.key());}}}
+        for c in cs {for cell in &c.cells{w.set(&cell.guard.dim,cell.guard.pos,&cell.desired);if blockstate::id_of(&cell.expected.state)!=blockstate::id_of(&cell.desired){w.engine.remove(&cell.guard.key());w.saved.remove(&cell.guard.key());
+            // The block entity the new block comes with: its first state, as the glue puts it in (`CellWrite::initial`).
+            if let Some(i)=&cell.initial{w.engine.insert(cell.guard.key(),(Vec::new(),i.data.clone()));w.saved.insert(cell.guard.key(),i.json.clone());}}}}
         for c in cs {w.engine.insert((c.dim.clone(),c.pos),(c.desired.clone(),c.data.clone()));w.saved.insert((c.dim.clone(),c.pos),c.json.clone());}true
     }
 
@@ -710,6 +712,7 @@ mod foundry_tests;
 mod rotary_furnace_tests;
 mod strand_caster_tests;
 mod foundry_hand_tests;
+mod slag_tests;
 mod slot_items_tests;
 mod rbmk_tests;
 mod anvil_tests;

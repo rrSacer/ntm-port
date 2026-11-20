@@ -93,6 +93,8 @@
   "assets/ntm/models/block/visual/foundry_outlet.json",
   "assets/ntm/blockstates/foundry_outlet.json",
   "assets/ntm/items/foundry_outlet.json",
+  "data/ntm/horizon_machine/foundry_slagtap.json",
+  "data/ntm/horizon_machine/slag.json",
   "data/ntm/horizon_machine/nuke_gadget.json",
   "assets/ntm/textures/gui/weapon/gadgetschematic.png",
   "assets/ntm/horizon_screen/nuke_gadget.json",

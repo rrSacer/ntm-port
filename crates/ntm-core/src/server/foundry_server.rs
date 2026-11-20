@@ -15,6 +15,8 @@
 //!   Tank}.java`).
 //! - An outlet takes metal from behind only and pours it into what is
 //!   under it, up to 4 blocks down (`TileEntityFoundryOutlet.java`).
+//! - A slag tap is an outlet that pours onto the ground, up to 15 blocks down; what it pours is a block of slag
+//!   (`slag_server`), made in one commit with the source's loss.
 //! - Molds take metal from above and from the sides, basins from above
 //!   (`crate::foundry::cast`; they cool on their own tick).
 use super::*;
@@ -31,8 +33,10 @@ use std::collections::BTreeMap;
 /// an outlet's (from `y − 0.125` to `y − 3.875`).
 const CRUCIBLE_FALL: i32 = 6;
 const OUTLET_FALL: i32 = 4;
+/// The slag tap's ray, from `y − 0.125` to `y + 0.125 − 15` (`TileEntityFoundrySlagtap`).
+pub(super) const SLAGTAP_FALL: i32 = 15;
 
-type Machines = BTreeMap<Key, crate::machine::Machine>;
+pub(super) type Machines = BTreeMap<Key, crate::machine::Machine>;
 
 fn add(p: Pos, d: [i32; 3]) -> Pos {
     [p[0] + d[0], p[1] + d[1], p[2] + d[2]]
@@ -41,9 +45,24 @@ fn add(p: Pos, d: [i32; 3]) -> Pos {
 /// Where a stream landed: the machine (`key`, its core) and the block
 /// struck (`cell`, the core itself or one of the cells of its multiblock).
 #[derive(Clone, Debug)]
-struct Hit {
-    key: Key,
-    cell: Key,
+pub(super) struct Hit {
+    pub(super) key: Key,
+    pub(super) cell: Key,
+}
+
+/// What a tick of the foundry carries between its blocks: the tables, and the pours into a slag tap that its sources
+/// asked for. A pour is not made where it is asked for: it changes the source, a block and a record, which only the
+/// server's commit makes together (`slag_server`).
+struct Cx<'a> {
+    t: &'a Tables,
+    slag: Vec<SlagPour>,
+}
+
+/// A source (a channel or a tank) that handed its metal to a slag tap this tick.
+#[derive(Clone, Debug, PartialEq)]
+pub(super) struct SlagPour {
+    pub(super) src: Key,
+    pub(super) tap: Key,
 }
 
 /// The face a falling stream strikes (`mop.sideHit` of a ray from above).
@@ -69,7 +88,7 @@ pub(super) fn pour_core(m: &Machines, cell: &Key) -> Option<Key> {
 
 /// The first block a stream from `from` hits within `fall` blocks down
 /// (a machine, a cell of one, or anything that isn't air).
-fn below(m: &Machines, host: &mut impl ServerHost, dim: &str, from: Pos, fall: i32) -> Option<Hit> {
+pub(super) fn below(m: &Machines, host: &mut impl ServerHost, dim: &str, from: Pos, fall: i32) -> Option<Hit> {
     let cell = (0..=fall).map(|k| (dim.to_string(), [from[0], from[1] - k, from[2]])).find(|p| {
         m.contains_key(p) || host.get_block(&p.0, p.1).is_none_or(|b| blockstate::id_of(&b) != "minecraft:air")
     })?;
@@ -120,9 +139,26 @@ fn accept_pour(m: &mut Machines, t: &Tables, hit: &Hit, mat: &str, q: u32) -> Op
 
 /// Metal flowing into `key` from its side `from` (the direction from `key`
 /// to the source): `canAcceptPartialFlow` + `flow`.
-fn accept_flow(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &Key, from: [i32; 3], mat: &str, q: u32) -> Option<u32> {
+fn accept_flow(m: &mut Machines, host: &mut impl ServerHost, cx: &mut Cx, key: &Key, from: [i32; 3], mat: &str, q: u32) -> Option<u32> {
+    let t = cx.t;
     let x = m.get(key)?;
     let (facing, outlet) = (x.facing.clone(), matches!(x.data, Data::Outlet(_)));
+    // A slag tap takes metal from behind, if anything is under it to pour onto (`canAcceptPartialFlow`); the pour
+    // itself is the server's. The source keeps its metal until then, so the flow ends here, as it does when the tap
+    // takes it all.
+    if let Data::Slagtap(o) = &x.data {
+        let behind = facing.as_deref().and_then(registry::facing_dir).is_some_and(|f| from == [-f[0], -f[1], -f[2]]);
+        if !o.passes(mat) || !behind {
+            return None;
+        }
+        below(m, host, &key.0, [key.1[0], key.1[1] - 1, key.1[2]], SLAGTAP_FALL - 1)?;
+        let src = (key.0.clone(), add(key.1, from));
+        let pour = SlagPour { src, tap: key.clone() };
+        if !cx.slag.contains(&pour) {
+            cx.slag.push(pour);
+        }
+        return Some(q);
+    }
     if outlet {
         let Some(Data::Outlet(o)) = m.get(key).map(|x| &x.data) else { return None };
         // From behind only (the source is against its facing).
@@ -154,7 +190,7 @@ impl Acceptor for Target<'_> {
     }
 }
 
-fn melt_of(d: &mut Data) -> Option<(&mut Melt, u32)> {
+pub(super) fn melt_of(d: &mut Data) -> Option<(&mut Melt, u32)> {
     match d {
         Data::Channel(c) => Some((&mut c.melt, CHANNEL_CAP)),
         Data::FoundryTank(c) => Some((&mut c.melt, TANK_CAP)),
@@ -166,6 +202,7 @@ impl Server {
     pub(super) fn foundry_tick(&mut self, host: &mut impl ServerHost) {
         let tick = self.tick;
         let t = Tables::ntm();
+        let mut cx = Cx { t, slag: Vec::new() };
         let r = &mut self.ready;
         let mine: Vec<(Key, u8)> = r
             .world
@@ -183,10 +220,13 @@ impl Server {
         for (key, kind) in mine {
             match kind {
                 0 => crucible_tick(&mut r.world.machines, host, t, &key, tick),
-                1 => channel_tick(&mut r.world.machines, host, t, &key, tick),
-                2 => tank_tick(&mut r.world.machines, host, t, &key, tick),
+                1 => channel_tick(&mut r.world.machines, host, &mut cx, &key, tick),
+                2 => tank_tick(&mut r.world.machines, host, &mut cx, &key, tick),
                 _ => molten_tick(&mut r.world.machines, host, t, &key),
             };
+        }
+        for pour in cx.slag {
+            self.slag_pour(host, &pour);
         }
     }
 }
@@ -270,7 +310,7 @@ fn crucible_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: 
     changed
 }
 
-fn channel_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &Key, tick: u64) -> bool {
+fn channel_tick(m: &mut Machines, host: &mut impl ServerHost, cx: &mut Cx, key: &Key, tick: u64) -> bool {
     let Some(mut me) = m.remove(key) else { return false };
     let Data::Channel(c) = &mut me.data else {
         m.insert(key.clone(), me);
@@ -292,7 +332,7 @@ fn channel_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &
                 continue;
             }
             let back = SIDES[s].map(|v| -v);
-            if let Some(left) = accept_flow(m, host, t, &n, back, &mat, c.melt.amount) {
+            if let Some(left) = accept_flow(m, host, cx, &n, back, &mat, c.melt.amount) {
                 c.melt.amount = left;
                 if left == 0 {
                     c.melt.mat = None;
@@ -327,7 +367,7 @@ fn channel_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &
     changed
 }
 
-fn tank_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &Key, tick: u64) -> bool {
+fn tank_tick(m: &mut Machines, host: &mut impl ServerHost, cx: &mut Cx, key: &Key, tick: u64) -> bool {
     let Some(mut me) = m.remove(key) else { return false };
     let Data::FoundryTank(c) = &mut me.data else {
         m.insert(key.clone(), me);
@@ -363,7 +403,7 @@ fn tank_tick(m: &mut Machines, host: &mut impl ServerHost, t: &Tables, key: &Key
                 if matches!(m.get(&n).map(|x| &x.data), Some(Data::Channel(_))) {
                     continue;
                 }
-                if let Some(left) = accept_flow(m, host, t, &n, SIDES[s].map(|v| -v), &mat, c.melt.amount) {
+                if let Some(left) = accept_flow(m, host, cx, &n, SIDES[s].map(|v| -v), &mat, c.melt.amount) {
                     c.melt.amount = left;
                     if left == 0 {
                         c.melt.mat = None;

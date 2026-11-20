@@ -221,6 +221,7 @@
     "ntm:foundry_slagtap",
     "ntm:foundry_mold",
     "ntm:foundry_basin",
+    "ntm:slag",
     "ntm:anvil_iron",
     "ntm:anvil_lead",
     "ntm:anvil_steel",
@@ -107436,6 +107437,44 @@
         "level": {
           "prop": "honey_level",
           "max": 5
+        }
+      }
+    },
+    {
+      "id": "ntm:slag",
+      "source_variable": "slag",
+      "type": "block",
+      "category": "machine",
+      "template": "minecraft:iron_block",
+      "layer_block": true,
+      "loot_none": true,
+      "names": {
+        "en_us": "Slag (DEBUG)",
+        "pt_br": "Escória (DEBUG)"
+      },
+      "source_texture": "src/main/resources/assets/hbm/textures/blocks/slag.png",
+      "block_properties": {
+        "requires_tool": false,
+        "hardness": 5.0,
+        "explosion_resistance": 10.0,
+        "sounds": "minecraft:iron_block"
+      },
+      "model_gap": "Neutral colour (the Java tints it by the material); no flow of its own",
+      "source_registry": "hbm:tile.slag",
+      "name_sources": {
+        "en_us": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)",
+        "pt_br": "catalog subtype name derived from NTM localization/render declarations (fallbacks documented in bulk catalog)"
+      },
+      "source_recipe_machine": [],
+      "source_recipe_references": [],
+      "recipe_resolution": "indexed exact machine output where supported; references may be inputs; see bulk recipe coverage for unresolved expressions",
+      "logic": {
+        "kind": "machine",
+        "facing": null,
+        "active": null,
+        "level": {
+          "prop": "layer",
+          "max": 8
         }
       }
     },

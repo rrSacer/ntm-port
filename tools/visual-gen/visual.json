@@ -2914,6 +2914,28 @@
         ]
       }
     },
+    "ntm:foundry_slagtap": {
+      "source": "TileEntityFoundrySlagtap: an outlet that pours onto the ground (its filter in the old screen); no model of its own yet: the oriented block",
+      "machine": {
+        "slots": [],
+        "data": 4,
+        "synced": [
+          0
+        ]
+      }
+    },
+    "ntm:slag": {
+      "source": "TileEntitySlag (BlockDynamicSlag): one material and its quanta; no slots, the whole record in the model",
+      "machine": {
+        "slots": [],
+        "data": 5,
+        "synced": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
     "ntm:nuke_gadget": {
       "source": "ContainerNukeGadget, GUINukeGadget (exp1-4 and isReady)",
       "machine": {

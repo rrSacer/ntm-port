@@ -742,9 +742,17 @@ pub const BLOCKS: &[BlockSpec] = &[
     },
     BlockSpec {
         id: "ntm:foundry_slagtap",
-        kind: Kind::Inert,
+        kind: Kind::Slagtap,
         facing: Some("facing"),
         level: HONEY,
+        ports: Ports::None,
+    },
+    // What the slag tap pours: no item, no facing, the height of its fill in eighths.
+    BlockSpec {
+        id: "ntm:slag",
+        kind: Kind::Slag,
+        facing: None,
+        level: Some(("layer", crate::foundry::slag::LAYERS)),
         ports: Ports::None,
     },
     BlockSpec {
