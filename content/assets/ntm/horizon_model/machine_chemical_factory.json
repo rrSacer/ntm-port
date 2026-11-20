@@ -1,0 +1,11 @@
+{
+  "obj": "ntm:models/obj/chemical_factory.obj",
+  "texture": "ntm:textures/models/machines/chemical_factory.png",
+  "rotation": 90,
+  "parts": [
+    "Base",
+    "Fan1",
+    "Fan2"
+  ],
+  "radius": 5.0
+}

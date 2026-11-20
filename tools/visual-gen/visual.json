@@ -41095,8 +41095,182 @@
       }
     },
     "ntm:machine_chemical_factory": {
-      "auto": false,
-      "source": "K3 inert casing; source machine/door models, multiblocks and behavior deferred."
+      "source": "MachineChemicalFactory {2,0,2,2,2,2} offset 2, TileEntityMachineChemicalFactory (four ModuleMachineChemplant), ContainerMachineChemicalFactory (battery (224,88), three upgrades down (206,125), per module a blueprint (93,20+22i), three inputs (10+16c,20+22i) and three outputs (139+16c,20+22i, take only), the inventory at (26,134)), RenderChemicalFactory (case 2: 90 after the fixed 90; Base, Fan1 and Fan2: the Frame shows only when there is a block over the casing, which is not drawn here, and the fans do not turn yet); the ports and the screen come with their own change",
+      "machine": {
+        "slots": [
+          {
+            "x": 224,
+            "y": 88
+          },
+          {
+            "x": 206,
+            "y": 125
+          },
+          {
+            "x": 206,
+            "y": 143
+          },
+          {
+            "x": 206,
+            "y": 161
+          },
+          {
+            "x": 93,
+            "y": 20
+          },
+          {
+            "x": 10,
+            "y": 20
+          },
+          {
+            "x": 26,
+            "y": 20
+          },
+          {
+            "x": 42,
+            "y": 20
+          },
+          {
+            "x": 139,
+            "y": 20,
+            "output": true
+          },
+          {
+            "x": 155,
+            "y": 20,
+            "output": true
+          },
+          {
+            "x": 171,
+            "y": 20,
+            "output": true
+          },
+          {
+            "x": 93,
+            "y": 42
+          },
+          {
+            "x": 10,
+            "y": 42
+          },
+          {
+            "x": 26,
+            "y": 42
+          },
+          {
+            "x": 42,
+            "y": 42
+          },
+          {
+            "x": 139,
+            "y": 42,
+            "output": true
+          },
+          {
+            "x": 155,
+            "y": 42,
+            "output": true
+          },
+          {
+            "x": 171,
+            "y": 42,
+            "output": true
+          },
+          {
+            "x": 93,
+            "y": 64
+          },
+          {
+            "x": 10,
+            "y": 64
+          },
+          {
+            "x": 26,
+            "y": 64
+          },
+          {
+            "x": 42,
+            "y": 64
+          },
+          {
+            "x": 139,
+            "y": 64,
+            "output": true
+          },
+          {
+            "x": 155,
+            "y": 64,
+            "output": true
+          },
+          {
+            "x": 171,
+            "y": 64,
+            "output": true
+          },
+          {
+            "x": 93,
+            "y": 86
+          },
+          {
+            "x": 10,
+            "y": 86
+          },
+          {
+            "x": 26,
+            "y": 86
+          },
+          {
+            "x": 42,
+            "y": 86
+          },
+          {
+            "x": 139,
+            "y": 86,
+            "output": true
+          },
+          {
+            "x": 155,
+            "y": 86,
+            "output": true
+          },
+          {
+            "x": 171,
+            "y": 86,
+            "output": true
+          }
+        ],
+        "inventory": [
+          26,
+          134
+        ],
+        "multiblock": {
+          "min": [
+            -2,
+            0,
+            -2
+          ],
+          "max": [
+            2,
+            2,
+            2
+          ],
+          "offset": 2,
+          "dummy": "ntm:dummy_machine"
+        }
+      },
+      "model": {
+        "obj": "ntm:models/obj/chemical_factory.obj",
+        "obj_from": "models/machines/chemical_factory.obj",
+        "texture": "ntm:textures/models/machines/chemical_factory.png",
+        "texture_from": "textures/models/machines/chemical_factory.png",
+        "rotation": 90,
+        "parts": [
+          "Base",
+          "Fan1",
+          "Fan2"
+        ],
+        "radius": 5.0
+      }
     },
     "ntm:machine_supercomputer": {
       "auto": false,
