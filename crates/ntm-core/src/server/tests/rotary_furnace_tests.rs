@@ -390,3 +390,24 @@ fn a_rotary_jet_on_a_funnel_cell_parks_without_loss() {
     g.run(20);
     assert_eq!(furnace(&mut g, CORE).output, Some(("steel".into(), 288)));
 }
+
+/// The steam ports are `PortDef`s open to `dir.getOpposite()`, the fluid ones to `rot` (`getSteamPorts`, `getFluidPorts`):
+/// a duct on another side of the port cell does not join the furnace.
+#[test]
+fn a_duct_reaches_a_rotary_port_only_from_the_connection_side() {
+    let place_steam = |g: &mut Game, duct_at: Pos, src: Pos| {
+        duct(g, duct_at, "steam");
+        barrel(g, src, "steam", 50_000, Mode::Output);
+    };
+    // North: dir = (0,0,-1), rot = (-1,0,0); the steam port cell (2,70,1) is open to the south (0,0,1).
+    let mut g = game();
+    rotary(&mut g, CORE, "north");
+    place_steam(&mut g, [3, 70, 1], [4, 70, 1]); // from the east: not its connection
+    g.run(30);
+    assert_eq!(furnace(&mut g, CORE).steam.mb, 0, "the wrong side takes nothing");
+    let mut g = game();
+    rotary(&mut g, CORE, "north");
+    place_steam(&mut g, [2, 70, 2], [2, 70, 3]); // from the south: its connection
+    g.run(30);
+    assert!(furnace(&mut g, CORE).steam.mb > 0, "the connection side reaches it");
+}

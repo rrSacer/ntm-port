@@ -268,3 +268,31 @@ fn a_caster_restored_from_the_journal_keeps_its_mold_and_outputs_and_drops_the_e
     assert_eq!(dropped.len(), 1, "the excess is dropped once: {dropped:?}");
     assert!(dropped[0].ends_with("ntm:scraps__steel 1 {ntm_amount:620}"), "{dropped:?}");
 }
+
+/// The ports are `PortDef`s with a direction (`TileEntityMachineStrandCaster.getPorts`): a duct touching a port cell from
+/// another side than its connection does not join the machine.
+#[test]
+fn a_duct_reaches_a_caster_port_only_from_the_connection_side() {
+    let f = |g: &mut Game, duct_at: Pos, src: Pos| {
+        g.place(duct_at, "ntm:fluid_duct_neo");
+        g.run(2);
+        g.type_duct(duct_at, "water");
+        g.place(src, "ntm:barrel_steel[facing=north,honey_level=0]");
+        g.run(2);
+        let r = g.ready();
+        let Some(Data::FluidStore(s)) = r.world.machines.get_mut(&(OW.to_string(), src)).map(|m| &mut m.data) else { panic!() };
+        s.tank.fill("water", 10_000);
+        s.mode = Mode::Output;
+    };
+    // North: dir = (0,0,-1), rot = (1,0,0). The third port cell is (1, y, core.z + 5) open to +x.
+    let mut g = game();
+    put_machine(&mut g, CASTER, &format!("{BLOCK}[facing=north,honey_level=0]"), slot::COUNT);
+    f(&mut g, [1, 68, 3], [1, 68, 4]); // from the south of the cell: not its connection
+    g.run(30);
+    assert_eq!(caster_model(&mut g).water.mb, 0, "the wrong side takes nothing");
+    let mut g = game();
+    put_machine(&mut g, CASTER, &format!("{BLOCK}[facing=north,honey_level=0]"), slot::COUNT);
+    f(&mut g, [2, 68, 2], [3, 68, 2]); // from the east, the connection of that port
+    g.run(30);
+    assert!(caster_model(&mut g).water.mb > 0, "the connection side reaches it");
+}

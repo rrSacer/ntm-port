@@ -32,6 +32,12 @@ MUTANTS = [
     ('rotary burns a fuel for its whole time, not half', RF, 'burn_time(&s.id) / 2;', 'burn_time(&s.id);', 'rotary'),
     ('rotary pours 36 quanta a tick', RF, 'pub const POUR: u32 = 72;', 'pub const POUR: u32 = 36;', 'rotary'),
     ('rotary spout one block closer', 'crates/ntm-core/src/server/foundry_server.rs', 'rot[0] * 3, key.1[1] + 1, key.1[2] + rot[2] * 3]', 'rot[0] * 2, key.1[1] + 1, key.1[2] + rot[2] * 2]', 'rotary'),
+    ('port: the fluid ducts reach a port from any side', 'crates/ntm-core/src/server/fluid_server.rs', 'faces.insert(p, vec![vec![d]]);', 'let _ = (p, d);', 'reaches_a'),
+    ('port: a caster port faces the wrong way', 'crates/ntm-core/src/server/container_bridge.rs', '(cell(1, rot, 1, back), rot),', '(cell(1, rot, 1, back), anti),', 'directed_ports'),
+    ('port: the rotary steam ports face the front', 'crates/ntm-core/src/server/container_bridge.rs', '(cell(2, anti, 1, back), back),', '(cell(2, anti, 1, back), d),', 'directed_ports'),
+    ('stack: every output stacks to 64', SC, '    .copied()\n    .unwrap_or(64)', '    .copied()\n    .map(|_| 64)\n    .unwrap_or(64)', 'an_output_that'),
+    ('stack: the cast deposits up to 64', SC, 'remaining.min(stack_limit(&out_id).saturating_sub(s.count))', 'remaining.min(64u32.saturating_sub(s.count))', 'an_output_that'),
+    ('rotary claims its record keeps the slots', RF, '    fn slots_recorded(&self) -> bool {\n        false', '    fn slots_recorded(&self) -> bool {\n        true', 'say_their_records'),
     ('rotary progress ignores the process speed', RF, 'self.progress += process_speed / r.duration.max(1) as f32;', 'self.progress += 1.0 / r.duration.max(1) as f32;', 'rotary'),
 ]
 

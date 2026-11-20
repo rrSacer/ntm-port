@@ -63,8 +63,21 @@ pub const STEAM_CAP: u32 = 64_000;
 pub const NO_MOLD_CAP: u32 = 50_000;
 /// Ticks without progress before a partial batch is cast (`updateEntity`:93).
 pub const IDLE_FLUSH: u64 = 200;
-/// What a stack of an output holds: the molds make ingots, plates, wires and blocks, all 64.
-const STACK: u32 = 64;
+/// What a stack of an output holds (`ItemStack.getMaxStackSize`, `maxProcessable`:122 and the deposit:98): 64, but for the
+/// items the content says otherwise (the shredder blades and the stamps, 1): `data/machines/mold_stack_limits.json`.
+pub fn stack_limit(item: &str) -> u32 {
+    static T: std::sync::OnceLock<std::collections::HashMap<String, u32>> = std::sync::OnceLock::new();
+    T.get_or_init(|| {
+        #[derive(Deserialize)]
+        struct File {
+            limits: std::collections::HashMap<String, u32>,
+        }
+        serde_json::from_str::<File>(include_str!("../data/machines/mold_stack_limits.json")).expect("mold_stack_limits.json").limits
+    })
+    .get(item)
+    .copied()
+    .unwrap_or(64)
+}
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StrandCaster {
@@ -154,10 +167,11 @@ impl StrandCaster {
     pub fn max_processable(&self, t: &Tables) -> u32 {
         let (Some(mat), Some(mold)) = (self.melt.mat.as_deref(), self.mold(t)) else { return 0 };
         let Some((out_id, per)) = mold.outputs.get(mat) else { return 0 };
+        let limit = stack_limit(out_id);
         let free: u32 = slot::OUT
             .map(|i| match &self.slots[i] {
-                None => STACK,
-                Some(s) if s.id == *out_id => STACK.saturating_sub(s.count),
+                None => limit,
+                Some(s) if s.id == *out_id => limit.saturating_sub(s.count),
                 Some(_) => 0,
             })
             .sum();
@@ -208,7 +222,7 @@ impl StrandCaster {
                 self.slots[i] = Some(Stack::new(&out_id, 0));
             }
             if let Some(s) = self.slots[i].as_mut().filter(|s| s.id == out_id) {
-                let n = remaining.min(STACK.saturating_sub(s.count));
+                let n = remaining.min(stack_limit(&out_id).saturating_sub(s.count));
                 s.count += n;
                 remaining -= n;
             }
@@ -561,5 +575,40 @@ mod tests {
         assert_eq!(c.steam.mb, 300);
         c.fluid_take("water", 200);
         assert_eq!(c.water.mb, 1_000, "the water is not taken back out");
+    }
+
+    /// The stack size of an output is the item's (`getMaxStackSize`): a stamp stacks to 1, so six slots hold six and only six
+    /// of nine molds can be cast, the rest stays in the pool.
+    #[test]
+    fn an_output_that_does_not_stack_fills_one_slot_each() {
+        assert_eq!((stack_limit("ntm:stamp_steel_flat"), stack_limit("ntm:blades_steel"), stack_limit("ntm:ingot_steel")), (1, 1, 64));
+        let mut c = with_mold("ntm:mold__stamp"); // 288 a mold, a steel stamp each
+        c.now = 10_000;
+        c.melt = Melt { mat: Some("steel".into()), amount: 288 * 9 };
+        c.steam.mb = 0;
+        assert_eq!(c.max_processable(Tables::ntm()), 6, "six slots of one");
+        c.step(Tables::ntm());
+        for i in slot::OUT {
+            assert_eq!(c.slots[i], Some(Stack::new("ntm:stamp_steel_flat", 1)), "slot {i}");
+        }
+        assert_eq!(c.melt.amount, 288 * 3, "three molds' worth stay");
+        assert_eq!(c.max_processable(Tables::ntm()), 0, "no room left");
+    }
+
+    #[test]
+    fn a_slot_of_another_item_is_never_a_place_for_the_output() {
+        let mut c = with_mold("ntm:mold__ingot");
+        c.now = 10_000;
+        for i in slot::OUT {
+            c.slots[i] = Some(Stack::new("ntm:plate_steel", 1));
+        }
+        pour(&mut c, "steel", 72);
+        assert_eq!(c.max_processable(Tables::ntm()), 0);
+    }
+
+    #[test]
+    fn the_rotary_furnace_and_the_caster_say_their_records_keep_no_slots() {
+        assert!(!Slotted::slots_recorded(&StrandCaster::default()));
+        assert!(!Slotted::slots_recorded(&crate::rotary_furnace::RotaryFurnace::default()));
     }
 }

@@ -799,6 +799,43 @@ pub const ENERGY_CHAINS: &[(&str, &[[i32; 3]])] = &[
     ),
 ];
 
+/// The directed fluid ports of a multiblock (`TilePort.PortDef.make(x, y, z, dir)`): each cell and the one direction a duct
+/// may touch it from (the connection's `DirPos`): the rotary furnace (`TileEntityMachineRotaryFurnace.getSteamPorts` and
+/// `getFluidPorts`, `rot = dir.getRotation(DOWN)`) and the strand caster (`TileEntityMachineStrandCaster.getPorts`,
+/// `rot = dir.getRotation(UP)`); none for any other block.
+pub fn fluid_port_faces(block: &str, core: Pos, facing: Option<&str>) -> Vec<(Pos, Pos)> {
+    let Some(d) = facing.and_then(crate::registry::facing_dir) else { return Vec::new() };
+    // `core + a·u + b·v` on the core's level.
+    let cell = |a: i32, u: [i32; 3], b: i32, v: [i32; 3]| [core[0] + a * u[0] + b * v[0], core[1], core[2] + a * u[2] + b * v[2]];
+    let back = [-d[0], 0, -d[2]];
+    match block {
+        crate::rotary_furnace::BLOCK => {
+            let rot = [d[2], 0, -d[0]];
+            let anti = [-rot[0], 0, -rot[2]];
+            vec![
+                // Steam in and spent steam out: behind the core, open to the back (`dir.getOpposite()`).
+                (cell(2, anti, 1, back), back),
+                (cell(1, anti, 1, back), back),
+                // The fluid in: on the `rot` side, open to it.
+                (cell(2, rot, 1, d), rot),
+                (cell(2, rot, 1, back), rot),
+            ]
+        }
+        crate::strand_caster::BLOCK => {
+            let rot = [-d[2], 0, d[0]];
+            let anti = [-rot[0], 0, -rot[2]];
+            vec![
+                // Two ports a side, one and five cells behind the core: the near ones open to `rot`, the others against it.
+                (cell(1, rot, 1, back), rot),
+                (cell(0, rot, 1, back), anti),
+                (cell(1, rot, 5, back), rot),
+                (cell(0, rot, 5, back), anti),
+            ]
+        }
+        _ => Vec::new(),
+    }
+}
+
 /// Cell `l` (placer's frame) of the multiblock with its core at `core`.
 pub fn world_cell(core: Pos, facing: [i32; 3], l: [i32; 3]) -> Pos {
     let fwd = [-facing[0], -facing[2]];
@@ -1139,6 +1176,28 @@ pub fn bomb_slots(parts: &[Option<&str>]) -> Slots {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// The directed ports sit on the proxy cells and open away from the machine, as the Java's `PortDef`s.
+    #[test]
+    fn the_directed_ports_are_the_proxy_cells_with_one_direction_each() {
+        for block in [crate::rotary_furnace::BLOCK, crate::strand_caster::BLOCK] {
+            for facing in ["north", "east", "south", "west"] {
+                let core = [10, 64, 10];
+                let mut cells: Vec<Pos> = fluid_port_faces(block, core, Some(facing)).iter().map(|c| c.0).collect();
+                let mut proxies = fluid_proxy_cells(block, core, Some(facing));
+                cells.sort();
+                proxies.sort();
+                assert_eq!(cells, proxies, "{block} {facing}");
+            }
+        }
+        // North: dir = (0,0,-1). Rotary (rot = (-1,0,0)): the steam ports open to the south, the fluid ones to the west.
+        let r = fluid_port_faces(crate::rotary_furnace::BLOCK, [0, 70, 0], Some("north"));
+        assert_eq!(r, vec![([2, 70, 1], [0, 0, 1]), ([1, 70, 1], [0, 0, 1]), ([-2, 70, -1], [-1, 0, 0]), ([-2, 70, 1], [-1, 0, 0])]);
+        // Caster (rot = (1,0,0)): the near ports one and five cells behind, east and west.
+        let c = fluid_port_faces(crate::strand_caster::BLOCK, [0, 70, 0], Some("north"));
+        assert_eq!(c, vec![([1, 70, 1], [1, 0, 0]), ([0, 70, 1], [-1, 0, 0]), ([1, 70, 5], [1, 0, 0]), ([0, 70, 5], [-1, 0, 0])]);
+        assert!(fluid_port_faces("ntm:machine_crucible", [0, 70, 0], Some("north")).is_empty());
+    }
 
     #[test]
     fn a_layout_keeps_slots_and_fills_holes() {

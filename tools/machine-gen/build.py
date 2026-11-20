@@ -245,6 +245,17 @@ if (root / 'content/machine-recipes/rotary_furnace.json').exists():
     p.write_text(json.dumps(data, ensure_ascii=False, indent=0) + '\n')
     print(f"rotary_furnace: {len(data['recipes'])} receitas ({data['skipped']} puladas na extração) → {p.relative_to(root)}")
 
+# O tamanho da pilha de cada saída dos moldes (`ItemStack.getMaxStackSize`, usado pelo lingotamento): só as que não
+# passam de 1 ou de outro valor diferente de 64 (as lâminas e os carimbos têm 1); o resto é 64.
+if (root / 'content/machine-recipes/foundry.json').exists() and (root / 'content/ids.json').exists():
+    molds = json.loads((root / 'content/machine-recipes/foundry.json').read_text())['molds']
+    outs = {item for m in molds for item, _ in m['outputs'].values()}
+    ids = {e['id']: e for e in json.loads((root / 'content/ids.json').read_text())['entries']}
+    limits = {i: ids[i]['max_stack_size'] for i in sorted(outs) if i in ids and ids[i].get('max_stack_size', 64) != 64}
+    p = root / 'crates/ntm-core/data/machines/mold_stack_limits.json'
+    p.write_text(json.dumps({'source': 'content/ids.json, the outputs of content/machine-recipes/foundry.json', 'limits': limits}, ensure_ascii=False, indent=0) + '\n')
+    print(f"mold_stack_limits: {len(limits)} saídas de molde com pilha diferente de 64 → {p.relative_to(root)}")
+
 # A prensa fica fora de machines/: as duas prensas do M1 a leem de data/.
 if (root / 'content/machine-recipes/press.json').exists():
     data = press()
