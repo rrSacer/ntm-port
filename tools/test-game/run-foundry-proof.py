@@ -79,7 +79,7 @@ def no_worse_than_a_copy(outcome):
 
 def play(args, base, scratch, env, point, control=False):
     folder = rcp.point_folder(scratch, point, control)
-    rcp.clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-foundry-cut-*.json', 'caster-core.json'))
+    rcp.clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-foundry-cut-*.json'))
     world = World(args, folder, env)
     result = {'point': point, 'folder': str(folder), 'ok': False, 'vanilla_control': control}
     result['base_items'] = quanta_items(base)
