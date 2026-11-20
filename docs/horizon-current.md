@@ -1590,8 +1590,12 @@ Branch `rbmk-t05` (continua sobre o T07), motor sem mudança. A física das trê
   de outra altura tem a porta de cima onde o dial diz. Mesmo critério da tampa no T02.
 - **Passagem só entre canos**: dois canos em portas diferentes viram uma rede; uma máquina encostada numa porta (barril
   no topo) faz par só com a coluna, não entra na rede dos canos.
-- **`canConnect` do loader** (por cima só fluidos aquecíveis; nos lados os resfriáveis e o perfluorometano): aqui
-  qualquer cano tipado ao lado do loader liga. Decidir se entra (é a regra do cano, não da coluna).
+- **`canConnect` do loader não é regra de fluxo** (conferido no Java, decisão do coordenador): o elo de rede do cano é
+  só entre nós (`UniNodespace.checkNodeConnection`/`checkConnection` comparam as conexões `DirPos`, sem consultar o
+  bloco), e o nó da porta fica na célula do loader com as 6 conexões; `RBMKLoader.canConnect` só chega por
+  `Library.canConnectFluid` a `FluidDuctStandard.canConnectTo` (caixa de colisão e seleção do cano) e a
+  `RenderBoxDuct`/`RenderFluidBarrel` (desenho). Um cano de qualquer tipo ao lado do loader passa fluido, como no Java;
+  o desenho e a caixa do cano encostado no loader são do T19.
 - **Compressor pelo botão do menu**: precisa da tela aberta; o Java aceita o pacote de qualquer jogador a menos de 20
   blocos (`hasPermission`).
 - **Barra de vapor e dicas da caldeira**: a barra é proporcional (o Java soma 1 duas vezes, diferença de 1 px) e as
