@@ -137,21 +137,25 @@ Scripts e evidências: `/mnt/ssd120/sacer/so/c` (`run_drain_proof.py`, `run_micr
 - **Corte de gravação estrito (`HORIZON_NO_EAGER_SAVE=1`), 7/7 pontos `ok: true`** (`none`, `kill`, `kv_committed`, `save_begin`, `chunks_written`, `entities_written`, `world_saved`), `kv_items=0`. Base salva com a chaminé industrial e um baú de controle;
   nas duas reaberturas de cada ponto a chaminé está lá, com o corpo industrial, a célula mais alta do eixo e o baú.
 
-### Achado do corte de gravação (não é das chaminés)
+### Falso alarme do corte de gravação: o "registro órfão" não existe (corrigido)
 
-**O que acontece.** Colocar uma máquina **na última janela antes do corte** (a colocação como ato do corte) dá, em `chunks_written` e `entities_written`, um bloco que ainda não foi gravado (o baú de controle também é ar) **com o registro da máquina já gravado**. Os outros pontos
-(`none`, `kill`, `kv_committed`, `save_begin`, `world_saved`) não mostram isso: a máquina não existe ou existe inteira. Foi visto com a chaminé industrial e com o micro-ondas, na mesma build, e as provas dos três itens preparam a máquina na base e cortam em cima de um estado já gravado.
+Uma versão desta seção dizia que, ao colocar uma máquina na última janela antes de um corte em `chunks_written`/`entities_written`, "o registro continua num lugar de ar". **Era um artefato da leitura do cliente**, não um defeito do servidor, do glue nem do disco, e o
+"5/7" da primeira prova de corte das chaminés (a que colocava a máquina como ato) tinha a mesma causa.
 
-**Sonda limpa (`/mnt/ssd120/sacer/so/c/run_orphan_probe.py`, relatório `orphan-probe-report-all.json`, com `binary`/`sha256` do cliente `34288bf6…94f0`).** O relatório antigo `orphan-probe-report-chunks_written.json` (`after_act.block` com `ntm:machine_microwave` e `body: "Industrial"`) era
-uma cópia do script das chaminés trocando só o bloco: o rótulo `body` ficou `"Industrial"` para qualquer registro (aqui o do micro-ondas); não havia mistura de duas máquinas, e o relatório foi apagado. A sonda nova mede só o que lê: o micro-ondas posto na janela, com um baú de controle, cortado em `chunks_written` e em `entities_written`, e duas reaberturas de cada um:
+- **O que o `block` do controle lê.** O comando `block x y z` do controle devolve a **visão do cliente**, que só tem os chunks que o cliente recebeu. Nesses dois cortes o arquivo do jogador não chega a ser gravado, então o jogador reabre onde o último save o deixou (no spawn,
+  `1,5 72 8,5`), longe do chunk, e o cliente devolve ar, no baú de controle também. O servidor (chunk mantido por `forceload`) e `data get block` enxergam tudo.
+- **Disco.** No corte em `chunks_written` o chunk `(4,1)` da região já guarda o micro-ondas e o baú na seção do chunk e as duas entidades de bloco (lido com um decodificador próprio das `.mca`): nada ficou pela metade.
+- **Servidor.** Na build com o `orphan_scan` do glue (`be-scan`), no carregamento do chunk, na adoção e em cada save: `orphan=false` e `block=ntm:machine_microwave[...]`, nenhuma vez `orphan=true`.
+- **Teleporte.** Reabrindo o mesmo mundo cortado e levando o jogador para a célula: `block` é o micro-ondas e o controle é o baú (antes do teleporte, no spawn, ambos eram ar).
 
-- Ao abrir, depois de 8 ticks e depois de 208 ticks, nas duas reaberturas: `block` é `minecraft:air` e o controle também; **`data get block` da célula devolve o registro** (`{"generation":2,"block":"ntm:machine_microwave","facing":"south","data":{"k":"Microwave",...}}`). Salvar e fechar entre as duas reaberturas não o tira.
-- **O registro sobre o ar entra na rede elétrica:** com um cabo vermelho do lado da célula e uma bateria carregada depois dele, o `power` do registro vai de 0 (um micro-ondas posto sem cabo nasce com 0: check da prova em jogo) a 50 000. Não li o `power` do registro antes de ligar a rede na sonda.
-- O log do cliente não tem nenhuma linha sobre o registro, a geração ou a remoção (3 linhas de `ntm`/conteúdo), então não há diagnóstico.
-- **Fluidos: por leitura do código**, não exercitado em jogo: `fluid_server` monta os proxies das portas a partir de `world.machines`, sem olhar o bloco, então uma máquina de fluido nessa situação também contaria.
+As medidas anteriores (o `power` do "registro" indo de 0 a 50 000 com cabo e bateria ao lado) eram as de um micro-ondas real. **Não há entidade de bloco sem bloco, energia destruída nem item duplicado demonstrados.** O relatório antigo `orphan-probe-report-all.json`/`run_orphan_probe.py` era a sonda errada
+e fica só como registro do erro.
 
-**Por que `observe_removals` não o removeu: não sei.** Lendo `generation.rs::observe_removals` (chamado por `native_record_events`, também no callback de save) o registro só deixaria de ser visto se `broken` já tivesse a chave, se `host.get_block` devolvesse `None` (`?`) ou se o estado esperado
-(`machine_effects`) fosse o próprio ar; a sonda mostra o bloco como ar pelo comando `block`, o que não prova o que `host.get_block` vê. Falta instrumentar o servidor para dizer qual dos três. É o conteúdo do ticket P2 transversal para o dono do glue/motor; não mexi aqui.
+**Ticket de baixa prioridade (motor).** O motor não descarta uma entidade de bloco sem bloco dono como o vanilla (`LevelChunk`: "Tried to load a block entity ... but failed"; não existe em `decode_chunk`). Nenhum caminho que a produza foi achado; o glue só **registra**
+(`orphan_scan`: sempre que houver uma entidade de bloco de máquina sobre uma célula sem bloco de máquina, no carregamento do chunk) e não toma ação.
+
+**Auditoria dos roteiros que afirmam ausência lendo o cliente.** As leituras de "é ar" em sessão (quebras em sobrevivência de cabo/chave, compressor, fio, extrator, torres) são feitas com o jogador teleportado ao lado do bloco, logo com o chunk no cliente, e depois de uma leitura positiva da
+mesma célula; as leituras depois de reabrir (ralo, micro-ondas, chaminés) exigem **presença**, que o cliente sem o chunk não consegue dar, então não passam em vazio. A única afirmação de ausência depois de reabrir estava nas sondas do achado, já refeitas olhando de perto.
 
 ### Lacunas nominais
 
