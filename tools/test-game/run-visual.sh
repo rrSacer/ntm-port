@@ -11,8 +11,8 @@
 set -euo pipefail
 
 P="$(cd "$(dirname "$0")/../.." && pwd)"
-H=${HORIZON_VISUAL:-/home/sacer/Workspace/horizon-visual}
-root=${NTM_GAME_DIR:-/home/sacer/Workspace/.agent-tmp/ntm-visual-game}
+H=${HORIZON_VISUAL:-/home/sacer/Projects/horizon-ntm/horizon-visual}
+root=${NTM_GAME_DIR:-/home/sacer/Projects/horizon-ntm/.agent-tmp/ntm-visual-game}
 name="${1:?name}"; shift
 game="$root/$name"
 # The mods, whole: a .hmod copied while tools/build-visual.sh writes it is

@@ -18,7 +18,7 @@ from pathlib import Path
 
 game = Path(sys.argv[1])
 steps = sys.argv[2:] or ['forjar', 'construir']
-CTL = ['/home/sacer/Workspace/horizon-visual/target/release/horizon-ctl', '--socket', str(game / 'control.sock')]
+CTL = ['/home/sacer/Projects/horizon-ntm/horizon-visual/target/release/horizon-ctl', '--socket', str(game / 'control.sock')]
 ev_path = game / 'anvil-evidence.json'
 evidence = json.loads(ev_path.read_text()) if ev_path.exists() else {}
 X, Z = 3700, -1398

@@ -9,7 +9,7 @@ from pathlib import Path
 HOME = Path('/tmp/ntm-accept/home')
 SHOTS = Path('/tmp/ntm-accept/shots')
 EVID = Path('/tmp/ntm-accept/evidence.json')
-CTL = ['/home/sacer/Workspace/horizon-patched/target/release/horizon-ctl', '--socket', str(HOME / 'control.sock')]
+CTL = ['/home/sacer/Projects/horizon-ntm/horizon-patched/target/release/horizon-ctl', '--socket', str(HOME / 'control.sock')]
 ev = json.loads(EVID.read_text()) if EVID.exists() else {}
 reenter = '--reenter' in sys.argv
 
