@@ -1692,6 +1692,26 @@ roteiro J), `cb2d4b97` (roteiro C). Evidências em `/mnt/ssd120/sacer/so/rbmk-t0
 | C: corte com o processamento em andamento (`run-rbmk-t08-c-proof.py --script native_rbmk_t09_c.py`, `evidence/c-run1/`) | Extrator com 4 piches no chunk (2, 0), gás por cano a um barril no (1, 0), a barra posta no ato; no save, 2 piches e 200 mB. Em `kill`, `kv_committed`, `region_record:1`, `:2`, `:3`, `chunks_written` e `world_saved`, as duas reaberturas somam **400** (piche a 100): os cinco primeiros voltam ao save anterior (4 piches), os dois últimos ao novo (2 e 200, e o processamento segue até 0 e 400). Cada processamento gastou um piche e fez o óleo de uma receita, e nada foi refeito depois da queda. Nenhum corte deste mundo caiu na emenda dos dois chunks: o gás que atravessa a divisa segue no limite geral (INFRA-F) |
 
 
+## RBMK T10 — console 15×15, AZ-5 e parada de emergência (planejado, 20/11/2026)
+
+Branch `rbmk-t05` (continua sobre o T09), motor sem mudança prevista. O console (`rbmk_console`) e a ferramenta de
+ligação (`rbmk_tool`) já existem como conteúdo inerte; os sons `block.shutdown` e `block.rbmk_az5_cover` estão no pacote;
+não há tela do console no conteúdo.
+
+### Plano
+
+| # | Parte | O quê | Fonte Java |
+| --- | --- | --- | --- |
+| L | Ligação | A ferramenta guarda o núcleo da coluna clicada (`posX/Y/Z` no stack) e, no console, passa esse alvo (`setTarget`), com a mensagem `.linked`; o alvo gravado no console; resolve no mundo de uso, como o Java (D4) | `ItemRBMKTool.onItemUse`, `TileEntityRBMKConsole.setTarget`, `readFromNBT/writeToNBT` |
+| V | Varredura | A cada 10 ticks, as 15×15 colunas em volta do alvo (`rescan`): tipo de console de cada uma (`getConsoleType`) e os seus dados (`getNBTForConsole`: calor, máximo, indicador do guindaste, moderada; barra: nível e grupo; caldeira: água, vapor e tipo; aquecedor; resfriador; extrator: gás e progresso), como projeção do estado confirmado, sem mexer na física | `TileEntityRBMKConsole.rescan`, `getNBTForConsole` das colunas |
+| A | AZ-5 | Comando de tela (sessão do T06, `hasPermission` 20 blocos): `level` 0 com `sel_` de cada coluna de controle que o console vê; no servidor só as barras manuais (`TileEntityRBMKControlManual`: as três manuais) recebem `startingLevel = level` e o alvo 0 (as automáticas não); o surto da descida é o do T07. Na tela, a tampa (primeiro clique abre, som `rbmk_az5_cover` 0,5) e o botão (som `shutdown`, 3 s entre apertos no cliente) | `GUIRBMKConsole.mouseClicked` (AZ-5), `TileEntityRBMKConsole.receiveControl` (`level`) |
+| C | Comandos | Nível para a seleção (`level` com `sel_`, `clamp(0, 1)`, o campo de texto pela regra do T06), grupo (`assignColor`, `grabEnumSafely`), compressor das caldeiras selecionadas (`compressor`, o do T08), telas (`toggle` do tipo, `id` com as colunas) | `receiveControl` |
+| T | Telas | As seis telas (tipo e colunas) e o histórico, a seleção, o mapa 15×15 com as cores e os medidores, desenhados na glue a partir de um snapshot tipado (D6) | `GUIRBMKConsole`, `RBMKScreen` |
+| R | Render | O modelo do console com os valores das telas no mundo | `RenderRBMKConsole` |
+| U/J/C | Provas | U: os 225 índices nas quatro rotações, agregações vazias e de tipos misturados, a amostragem de 10 ticks, AZ-5 só nas manuais; J: ligar, abrir, selecionar, mudar nível e grupo, AZ-5 pelo hóspede descendo as manuais e não as automáticas, reabrir; C: comandos só mudam alvos elegíveis, abrir a tela não avança física nem copia inventário | — |
+
+Decisões que o T10 pode pedir ao coordenador: a tela do console (não há JSON de conteúdo; desenho próprio na glue, como as telas das barras do T06/T07) e o render das telas no mundo (T19 se não couber).
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
