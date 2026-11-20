@@ -1,4 +1,4 @@
-# Fundição da Onda 2: provas em jogo (20/11/2026, revisão 3)
+# Fundição da Onda 2: provas em jogo (20/11/2026, revisões 3 e 4)
 
 Binário release `3fb561ff3b54…` (motor `onda2-writer-barrier` `7f61a9c171`, HEAD `27f31677`/`134a7ccf`: portas com direção, pilha
 por item, pá e molde na mão) e `ntm.hmod` `6a380ecbafe7…`; Xvfb mudo, `HORIZON_NO_EAGER_SAVE=1`. Roteiros
@@ -54,3 +54,21 @@ direções dos portos, o tamanho de pilha e a pá e o molde na mão.
 
     HORIZON_NO_EAGER_SAVE=1 agent-run python3 tools/test-game/run-foundry-proof.py --scenario scrap|caster|excess|batch|hand \
         --binary B --resources R --bundle H --scratch-root S --keep [POINT ...]
+
+## Revisão 4: a fundição por clique (binário `cb6e15de0658…`, HEAD `62f9b62d`)
+
+O gancho de mão do lingotamento virou o da fundição inteira (`foundry_hand.rs`: molde e bacia, canal, tanque, cadinho, lingotamento; só a
+mão principal; as pás vêm do conteúdo). Provas em jogo com esse binário (reports `report-foundry-clicks-*.json`,
+`report-foundry-hand-x_eu4p9u.json`; os quatro `hand` anteriores sem pontos foram tentativas que o mundo de controle derrubou por
+carga da máquina, sem nada a ver com o código):
+
+- **hand** (o lingotamento por clique, agora pelo gancho geral): 8 de 8 pontos, 144 em todos (kv_committed 288, chunks/entities_written 0),
+  iguais ao controle. O molde sai à mão **pela tela** do lingotamento (slot 0) e volta por um clique com molde na mão: o molde não fica
+  preso sem a chave de fenda.
+- **clicks** (novo): um cadinho com 144 quanta de ouro cuja corrente cai sobre um bloco de molde sem molde (nada verte); como jogador em
+  sobrevivência: um clique na face de cima com um molde na mão o coloca (um da pilha de 2); a corrente enche o molde e o lingote
+  esfria no slot; com o lingote no slot nada mais verte, e uma pá no cadinho leva os 72 que sobraram como uma sucata; um clique
+  com a mão vazia tira o lingote. 8 de 8 pontos, mesmos números do controle: 144 (kv_committed 288, chunks/entities_written 0).
+
+Os cenários scrap, caster, excess e batch da revisão 3 não foram repetidos com este binário (o que mudou nele é só o gancho de mão).
+Mutantes: `mutants-foundry.log`, 41 de 41 mortos.
