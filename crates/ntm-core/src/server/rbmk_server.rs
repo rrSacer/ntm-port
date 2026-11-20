@@ -643,12 +643,20 @@ impl Server {
 
     /// Test hook (`NTM_TEST_HOOKS=1`, RBMK T08's cut): what the tanks of the machines at `cells` hold, read in one go
     /// (a flow between them never splits the reading): `x,y,z=fluid:amount+fluid:amount` for each, `;` between them,
-    /// `none` for a cell without a tank. A barrel's tank, a boiler's, heater's or cooler's two, a ReaSim port's.
+    /// `none` for a cell without a tank. A barrel's tank, a boiler's, heater's or cooler's two, a ReaSim port's; an
+    /// outgasser's gas and the stacks of its slots (`id:count`, T09).
     pub fn native_test_fluids(&self, dim: &str, cells: &[Pos]) -> String {
         let read = |p: &Pos| -> Vec<(String, i64)> {
             match self.ready.world.machines.get(&(dim.to_string(), *p)).map(|m| &m.data) {
                 Some(Data::FluidStore(s)) => vec![(s.tank.fluid.clone(), i64::from(s.tank.mb))],
-                Some(Data::Rbmk(c)) => c.piped.iter().flat_map(|t| [(t.input.fluid.clone(), i64::from(t.input.fill)), (t.output.fluid.clone(), i64::from(t.output.fill))]).collect(),
+                Some(Data::Rbmk(c)) => c
+                    .piped
+                    .iter()
+                    .flat_map(|t| [(t.input.fluid.clone(), i64::from(t.input.fill)), (t.output.fluid.clone(), i64::from(t.output.fill))])
+                    .chain(c.outgasser.iter().map(|o| (o.gas.fluid.clone(), i64::from(o.gas.fill))))
+                    // An outgasser's slots too (T09's cut): what it consumes and makes, in the same reading.
+                    .chain(c.outgasser.iter().flat_map(|_| c.slots.iter().flatten().map(|s| (s.id.clone(), i64::from(s.count)))))
+                    .collect(),
                 Some(Data::RbmkReasim(r)) => vec![(r.tank.fluid.clone(), i64::from(r.tank.fill))],
                 _ => Vec::new(),
             }

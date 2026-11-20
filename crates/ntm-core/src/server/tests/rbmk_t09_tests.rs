@@ -145,3 +145,17 @@ fn the_screen_reads_the_arrow_and_the_gas() {
     let v = c.screen_data();
     assert_eq!(&v[1..5], &[9, 13, 1_500, 64_000], "7692.3 * 13 / 10000 = 9.99: 9 pixels");
 }
+
+/// The cut's hook reads an outgasser's gas and slots with its other tanks, at once.
+#[test]
+fn the_fluids_hook_reads_the_outgassers_gas_and_slots() {
+    let mut g = game();
+    g.place(AT, &column("rbmk_outgasser"));
+    g.run(2);
+    put(&mut g, 0, "ntm:oil_tar__coal", 3);
+    g.run(1);
+    let Data::Rbmk(c) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), AT)).unwrap().data else { panic!() };
+    c.outgasser.as_mut().unwrap().gas.fill = 100;
+    // The tar's recipe typed the tank (`canProcess` sets the gas's type), as the Java does.
+    assert_eq!(g.server.native_test_fluids(OW, &[AT]), format!("1,{Y},0=COALOIL:100+ntm:oil_tar__coal:3"));
+}
