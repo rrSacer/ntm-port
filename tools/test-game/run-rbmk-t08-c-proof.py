@@ -34,13 +34,15 @@ class World(rcp.World):
 
 
 def evidence(folder, mode):
-    path = folder / f'native-rbmk-t08c-{mode}.json'
+    """The scenario's evidence: `native_rbmk_t08_c.py` writes `native-rbmk-t08c-<mode>.json`."""
+    stem = SCRIPT.removeprefix('native_').removesuffix('.py').replace('_c', 'c').replace('_', '-')
+    path = folder / f'native-{stem}-{mode}.json'
     return json.loads(path.read_text()) if path.exists() else {}
 
 
 def play(args, base, scratch, env, point, control):
     folder = rcp.point_folder(scratch, point, control)
-    rcp.clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-rbmk-t08c-*.json'))
+    rcp.clone_world(base, folder, shutil.ignore_patterns('control.sock', 'native-rbmk-t0*c-*.json'))
     world = World(args, folder, env)
     result = {'point': point, 'vanilla_control': control, 'ok': False}
     try:
@@ -83,6 +85,7 @@ def play(args, base, scratch, env, point, control):
 
 
 def main():
+    global SCRIPT
     import resource
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     parser = argparse.ArgumentParser(description=__doc__)
@@ -91,7 +94,11 @@ def main():
     parser.add_argument('--resources', type=Path, required=True)
     parser.add_argument('--bundle', type=Path, required=True)
     parser.add_argument('--scratch-root', type=Path, required=True)
+    parser.add_argument('--sides', default='ntm,vanilla', help='which worlds to cut: ntm, vanilla or both (the default)')
+    parser.add_argument('--script', default=SCRIPT, help='the scenario (T08: native_rbmk_t08_c.py; T09: native_rbmk_t09_c.py)')
     args = parser.parse_args()
+    SCRIPT = args.script
+    sides = set(args.sides.split(','))
     args.binary, args.bundle = args.binary.resolve(), args.bundle.resolve()
     scratch = Path(tempfile.mkdtemp(prefix='rbmk-t08c-', dir=args.scratch_root))
     print(scratch, flush=True)
@@ -114,7 +121,7 @@ def main():
             copy_env[key] = str(folder / sub)
         return copy_env
     try:
-        bases = {False: scratch / 'base', True: scratch / 'base-vanilla'}
+        bases = {c: w for c, w in {False: scratch / 'base', True: scratch / 'base-vanilla'}.items() if ('vanilla' if c else 'ntm') in sides}
         for control, where in bases.items():
             where.mkdir()
             (where / 'options.txt').write_text('soundCategory_master:0.0\nsoundCategory_music:0.0\nmaxFps:30\nenableVsync:false\nguiScale:2\ntutorialStep:none\n')
@@ -128,12 +135,17 @@ def main():
             if prepared:
                 raise AssertionError('prepare failed; see its evidence')
         for point in args.points or POINTS:
-            ntm = play(args, bases[False], scratch, homed(rcp.point_folder(scratch, point, False), False), point, False)
-            vanilla = play(args, bases[True], scratch, homed(rcp.point_folder(scratch, point, True), True), point, True)
+            ntm = play(args, bases[False], scratch, homed(rcp.point_folder(scratch, point, False), False), point, False) if False in bases else {'ok': True, 'skipped': True}
+            vanilla = play(args, bases[True], scratch, homed(rcp.point_folder(scratch, point, True), True), point, True) if True in bases else {'ok': True, 'skipped': True}
             totals = lambda r: [(r.get(k) or {}).get('total') for k in ('first_reopen', 'second_reopen')]
             outcome = {'point': point, 'ntm': ntm, 'vanilla': vanilla, 'ntm_totals': totals(ntm), 'vanilla_totals': totals(vanilla)}
             # NTM: exactly 16 000 mB on both reopens, and the same state on both (nothing left to apply twice).
-            outcome['ok'] = ntm['ok'] and outcome['ntm_totals'] == [16_000, 16_000]
+            # What the scenario started with (T08: 16 000 mB; T09: the tars as 100 mB each plus their oil), kept exactly.
+            expected = (report['prepare'].get('ntm') or {}).get('total')
+            outcome['ok'] = ntm.get('skipped') or (ntm['ok'] and outcome['ntm_totals'] == [expected, expected])
+            if vanilla.get('skipped') is None:
+                # The control: what vanilla keeps at the same kind of cut (its seam may be another N than the mod's).
+                outcome['vanilla_kept_all'] = outcome['vanilla_totals'] == [64, 64]
             report['points'].append(outcome)
             print(json.dumps({k: outcome[k] for k in ('point', 'ok', 'ntm_totals', 'vanilla_totals')}), flush=True)
             (scratch / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
