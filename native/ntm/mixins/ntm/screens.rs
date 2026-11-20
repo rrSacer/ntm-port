@@ -53,6 +53,11 @@ fn current(game: &crate::game::Game<'_>, block: &str) -> Option<Arc<ScreenDef>> 
     screen(game, &name)
 }
 
+/// The texture of the screen block `block` shows now (`horizon_screen`'s `texture`), for a screen that draws on it.
+pub(super) fn sprite(game: &crate::game::Game<'_>, block: &str) -> Option<String> {
+    current(game, block).map(|def| def.sprite.clone())
+}
+
 /// A machine's screen as the engine lays it out.
 fn machine_screen(game: &crate::game::Game<'_>, block: &str, name: &str) -> Option<crate::game::native_hooks::NativeScreen> {
     let layout = layout(block)?;

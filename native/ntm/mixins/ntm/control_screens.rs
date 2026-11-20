@@ -1,7 +1,9 @@
-// The screens that send their block commands (RBMK T06), on the client: the automatic control rod's
-// (GUIRBMKControlAuto), drawn over its L2 screen. Its four text fields are 1.7.10 GuiTextFields
-// (ntm_core::screens::field), its save rule is the Java's (ntm_core::screens::number), and what it sends goes
-// as a command of the session the server gave the screen when it opened (ntm_core::screens::control).
+// The screens that send their block commands, on the client, drawn over their L2 screen (its texture, title and
+// labels): the automatic control rod's (GUIRBMKControlAuto, RBMK T06), with four 1.7.10 GuiTextFields
+// (ntm_core::screens::field) and the Java's save rule (ntm_core::screens::number), and the manual rods'
+// (GUIRBMKControl, T07), with its five levels and five groups. Both draw the rod's level, curve or group and
+// power from the block's snapshot, and send as commands of the session the server gave the screen when it opened
+// (ntm_core::screens::control).
 use horizon_client::hud::HudBatch;
 use ntm_core::screens::control::{Command, Fields, Grant, Snapshot, Value};
 use ntm_core::screens::field::{self, Key, TextField};
@@ -21,10 +23,29 @@ const KEYS: [&str; 4] = ["levelUpper", "levelLower", "heatUpper", "heatLower"];
 /// `mouseClicked`'s save rectangle and the three curves' (x, y, width, height), as its tests read them.
 const SAVE: [i32; 4] = [28, 70, 30, 10];
 const CURVES: [[i32; 4]; 3] = [[61, 48, 22, 10], [61, 59, 22, 10], [61, 70, 22, 10]];
+/// `GUIRBMKControl.mouseClicked`: the five levels (1 - 0.25k) at (118, 26 + 11k), 30 by 10, and the five groups at
+/// (28, 26 + 11k), 12 by 10.
+const LEVELS: [[i32; 4]; 5] = [[118, 26, 30, 10], [118, 37, 30, 10], [118, 48, 30, 10], [118, 59, 30, 10], [118, 70, 30, 10]];
+const GROUPS: [[i32; 4]; 5] = [[28, 26, 12, 10], [28, 37, 12, 10], [28, 48, 12, 10], [28, 59, 12, 10], [28, 70, 12, 10]];
+
+/// Where each screen draws the rod: the level bar's top left (56 high, `uv` (176, 0)), the power light (`isPowered`)
+/// and its texture column, and the level's hover rectangle.
+struct Layout {
+    bar: [f32; 2],
+    light: [f32; 2],
+    light_u: f32,
+    level_hover: [i32; 4],
+}
+
+const MANUAL: Layout = Layout { bar: [75.0, 29.0], light: [87.0, 21.0], light_u: 196.0, level_hover: [71, 29, 16, 56] };
+const AUTO: Layout = Layout { bar: [124.0, 29.0], light: [136.0, 21.0], light_u: 210.0, level_hover: [124, 29, 16, 56] };
 
 /// The screen open now, as its session started.
 struct Open {
     pos: [i32; 3],
+    /// A manual rod's screen (no fields), or an automatic one's.
+    manual: bool,
+    powered: bool,
     session: u64,
     generation: u64,
     /// The commands it sent (the next one is `seq + 1`).
@@ -42,14 +63,16 @@ pub(super) fn takes_commands(block: &str) -> bool {
 }
 
 /// The session of the screen showing now (its extra data), started again when it is another screen's.
-fn with_open<R>(game: &crate::game::Game<'_>, f: impl FnOnce(&mut Open) -> R) -> Option<R> {
+fn with_open<R>(game: &crate::game::Game<'_>, block: &str, f: impl FnOnce(&mut Open) -> R) -> Option<R> {
     let pos = game.native_screen_pos()?;
     let grant = Grant::decode(game.native_screen_extra_data()?).ok()?;
     let mut guard = lock(&OPEN);
     if guard.as_ref().is_none_or(|o| o.session != grant.session || o.pos != pos) {
+        let manual = ntm_core::rbmk::persist::is_manual_control(block);
         let auto = ntm_core::rbmk::screen::auto_of(&grant.snapshot.fields);
-        // `initGui`: the maximum first, then the stored values, cast to int.
-        let fields = [auto.level_upper, auto.level_lower, auto.heat_upper, auto.heat_lower]
+        // `initGui`: the maximum first, then the stored values, cast to int. A manual rod's screen has none.
+        let values = if manual { Vec::new() } else { vec![auto.level_upper, auto.level_lower, auto.heat_upper, auto.heat_lower] };
+        let fields = values
             .iter()
             .zip(MAX)
             .map(|(v, max)| {
@@ -61,6 +84,8 @@ fn with_open<R>(game: &crate::game::Game<'_>, f: impl FnOnce(&mut Open) -> R) ->
             .collect();
         *guard = Some(Open {
             pos,
+            manual,
+            powered: ntm_core::rbmk::persist::is_powered_control(block),
             session: grant.session,
             generation: grant.snapshot.generation,
             seq: 0,
@@ -83,13 +108,39 @@ pub(super) fn receive(_game: &mut crate::game::Game<'_>, channel: &str, data: &[
     }
 }
 
-/// The fields over the L2 screen (`GuiTextField.drawTextBox` without a background): the text with its shadow, the
-/// selection, and the blinking cursor (`cursorCounter / 6 % 2`: six ticks on, six off).
+/// Over the L2 screen (`drawGuiContainerBackgroundLayer`): the level bar, `(int)(56 * (1 - level))` from the top;
+/// the manual rod's group or the automatic rod's curve; a powered rod's light; then the fields
+/// (`GuiTextField.drawTextBox` without a background: the text with its shadow, the selection, and the blinking cursor,
+/// `cursorCounter / 6 % 2`: six ticks on, six off).
 pub(super) fn draw(game: &crate::game::Game<'_>, block: &str, batch: &mut HudBatch, origin: [f32; 2]) {
     if !takes_commands(block) {
         return;
     }
-    with_open(game, |open| {
+    let Some(sprite) = crate::game::ntm_screens::sprite(game, block) else { return };
+    with_open(game, block, |open| {
+        let layout = if open.manual { &MANUAL } else { &AUTO };
+        let part = |batch: &mut HudBatch, uv: [f32; 4], at: [f32; 2]| {
+            game.native_sprite(batch, &sprite, uv, [origin[0] + at[0], origin[1] + at[1], uv[2], uv[3]]);
+        };
+        let height = number::java_int(56.0 * (1.0 - open.shown.get_double("level")));
+        if height > 0 {
+            let h = height as f32;
+            part(batch, [176.0, 56.0 - h, 8.0, h], layout.bar);
+        }
+        if open.manual {
+            let group = open.shown.get_integer("color");
+            if (0..5).contains(&group) {
+                let g = group as f32;
+                part(batch, [184.0, g * 10.0, 12.0, 10.0], [28.0, 26.0 + g * 11.0]);
+            }
+        } else {
+            let f = open.shown.get_integer("function").clamp(0, 2) as f32;
+            part(batch, [184.0, f * 19.0, 26.0, 19.0], [59.0, 27.0]);
+        }
+        if open.powered {
+            let v = if open.shown.get_boolean("hasPower") { 16.0 } else { 0.0 };
+            part(batch, [layout.light_u, v, 16.0, 16.0], layout.light);
+        }
         let ticks = open.since.elapsed().as_millis() / 50;
         for (f, rect) in open.fields.iter().zip(FIELDS) {
             let [x, y] = [origin[0] + rect[0] as f32, origin[1] + rect[1] as f32];
@@ -119,21 +170,35 @@ fn inside(rect: [i32; 4], x: i32, y: i32) -> bool {
     rect[0] <= x && rect[0] + rect[2] > x && rect[1] < y && rect[1] + rect[3] >= y
 }
 
-/// `GUIRBMKControlAuto.drawScreen`'s hover texts.
+/// `GUIRBMKControl.drawScreen`'s and `GUIRBMKControlAuto.drawScreen`'s hover texts.
 pub(super) fn tooltip(game: &crate::game::Game<'_>, block: &str, at: [f32; 2], lines: &mut Vec<String>) -> bool {
     if !takes_commands(block) {
         return false;
     }
     let (x, y) = (at[0].floor() as i32, at[1].floor() as i32);
-    with_open(game, |open| {
+    with_open(game, block, |open| {
         let level = open.shown.get_double("level");
+        let layout = if open.manual { &MANUAL } else { &AUTO };
+        let level_text = (layout.level_hover, vec![format!("{}%", number::java_int(level * 100.0))]);
+        let light = [layout.light[0] as i32, layout.light[1] as i32, 16, 16];
+        let power = format!("{} / {}HE", number::short_number(open.shown.get_long("power")), number::short_number(ntm_core::rbmk::persist::CONTROL_MAX_POWER));
+        if inside(level_text.0, x, y) {
+            lines.extend(level_text.1);
+            return;
+        }
+        if open.powered && inside(light, x, y) {
+            lines.push(power);
+            return;
+        }
+        if open.manual {
+            return;
+        }
         let function = match open.shown.get_integer("function") {
             1 => "Quadratic",
             2 => "Inverse Quadratic",
             _ => "Linear",
         };
-        let texts: [([i32; 4], Vec<String>); 10] = [
-            ([124, 29, 16, 56], vec![format!("{}%", number::java_int(level * 100.0))]),
+        let texts: [([i32; 4], Vec<String>); 9] = [
             ([58, 26, 28, 19], vec![format!("Function: {function}")]),
             (CURVES[0], vec!["Select linear interpolation".into()]),
             (CURVES[1], vec!["Select quadratic interpolation".into()]),
@@ -144,7 +209,6 @@ pub(super) fn tooltip(game: &crate::game::Game<'_>, block: &str, at: [f32; 2], l
             ([28, 59, 30, 10], vec!["Min heat".into(), "Must be smaller than max heat".into()]),
             (SAVE, vec!["Save parameters".into()]),
         ];
-        // The powered rod's charge (`isPowered`) comes with T07's power.
         if let Some((_, l)) = texts.into_iter().find(|(r, _)| inside(*r, x, y)) {
             lines.extend(l);
         }
@@ -207,7 +271,7 @@ pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, event: &crate
         return false;
     }
     let mut taken = false;
-    if with_open(game, |_| ()).is_none() {
+    if with_open(game, block, |_| ()).is_none() {
         return false;
     }
     let mut guard = lock(&OPEN);
@@ -220,12 +284,32 @@ pub(super) fn event(game: &mut crate::game::Game<'_>, block: &str, event: &crate
                 f.mouse_clicked(x, y, button, rect, |units, width| fit(game, units, width));
                 taken |= x >= rect[0] && x < rect[0] + rect[2] && y >= rect[1] && y < rect[1] + rect[3];
             }
-            if inside(SAVE, x, y) {
+            if !open.manual && inside(SAVE, x, y) {
                 game.audio.play_button_click();
                 save(game, open);
                 taken = true;
             }
+            // `GUIRBMKControl.mouseClicked`: a level (1 - 0.25k) or a group (k), each its own command.
+            for k in 0..5 {
+                if !open.manual {
+                    break;
+                }
+                let mut f = Fields::default();
+                if inside(LEVELS[k], x, y) {
+                    f.set("level", Value::Double(1.0 - k as f64 * 0.25));
+                } else if inside(GROUPS[k], x, y) {
+                    f.set("color", Value::Int(k as i32));
+                } else {
+                    continue;
+                }
+                game.audio.play_button_click();
+                send(game, open, f);
+                taken = true;
+            }
             for (k, rect) in CURVES.iter().enumerate() {
+                if open.manual {
+                    break;
+                }
                 if inside(*rect, x, y) {
                     game.audio.play_button_click();
                     let mut f = Fields::default();
