@@ -135,10 +135,11 @@ execuções novas: os 5 de redstone, `cave_air`, o do commit recusado só no vaz
 Uma bateria que dá, cinco `red_cable` e uma bateria que recebe; a `power` da segunda, lida do **modelo do servidor** (`data get block … ntm`),
 sobe (111 622 → 323 204 em 6 s). A escavadeira (bateria criativa e broca de ferro) minera os três cabos do seu alcance (as células viram ar),
 a `power` da bateria que recebe **para de subir** (614 754 → 614 754 em 8 s) e os dois cabos de fora ficam. 8 de 8 verificações
-(`report-mining-cable-qbi0vyhe.json`). **Honestidade**: o mesmo cenário também passa com o binário da rodada intermediária (`dde029c5ca87…`),
-que tinha o escopo largo demais: o cabo fantasma, na prática, é refeito pela rede em poucos segundos, então o cenário não separa o defeito
-antigo; o que o garante é o teste do core (`only_the_cells_born_with_a_machine_are_owned`) e o mutante. O outro lado de `owned_cells`
-(a máquina que nasce junto) é o `slagtap-pour` com este mesmo binário: a escória guarda os 144 e não vira máquina vazia.
+(`report-mining-cable-qbi0vyhe.json`). **Separado o defeito antigo** (revisão): o cenário agora roda com `NTM_TEST_HOOKS=1` e, assim que a primeira célula de cabo vira ar,
+pergunta ao servidor (`ntmtest cable x y z`: o conjunto de cabos que ele mantém, não o bloco do mundo) se ainda tem o cabo. Binário atual
+(`horizon-client-r10`): **não tem** (o `Broken` chega no tique seguinte), 9 de 9 checks (`report-mining-cable-good.json`). Binário com o escopo
+largo (o `filter` de `owned_cells` tirado, `horizon-client-r11`): **ainda tem** o cabo, o check falha (`report-mining-cable-overwide-scope-negative-control.json`);
+a varredura só o tiraria 20 a 40 ticks depois.
 
 ## O escoamento da escória em jogo (`slagtap-flow`, binário `543892c8b650…`, final)
 
@@ -151,3 +152,12 @@ três do espalhar): antes do vazamento (`kill`, `save_begin`: 2592 no tanque), d
 espalhar ainda não gravado): em todos, o metal exatamente uma vez.
 Os cenários `slagtap-pour/border/break/redstone` e o da escavadeira foram reexecutados com este binário (resultados iguais aos anteriores; cabo
 minerado: a energia da bateria que recebe para de subir, 937 958 → 937 958).
+
+## O escoamento com queda em jogo (`slagtap-flow`, binário `horizon-client-r10`)
+
+O fosso ganhou um buraco de um bloco sob o lado oeste: a escória espalhada para lá **cai** (um commit estrutural: a célula de cima vira ar, a
+de baixo nasce com a quantia). 8 de 8 pontos, 2592 em todos, igual ao controle; mundo reaberto: 2592 no tanque (`kill`, `save_begin`) ou
+1296 / 0 / 432 / 432 / 432 (a do centro, a oeste no y 98 que caiu, leste, sul, e a oeste no y 97) nos outros seis (`where-slagtap.json`).
+**Não coberto em jogo** (declarado): escória sobre escória (a transferência e a remoção em dois passos): ficam nos testes de servidor
+(soma exata a cada tick, reabertura entre os dois passos pelo registro e pelo diário); um cenário em jogo exigiria dois vazamentos
+sucessivos sobre a mesma coluna ou uma escória posta por comando (nasce vazia).

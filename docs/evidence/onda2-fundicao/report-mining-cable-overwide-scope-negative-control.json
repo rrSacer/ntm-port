@@ -1,6 +1,6 @@
 {
-  "binary_sha256": "543892c8b650a0ca0667674545fe62fe1d1460f5a265b7de1a21086cfd85100f",
-  "bundle_sha256": "59181d49dc8bcbbe4d1cceecf473ec19d96046d26539a1ac88633029919b485f",
+  "binary_sha256": "95e1a1dc77d5f2badf47eae3709f9a606989609da70c0008df5f0d1ee0d8b7b1",
+  "bundle_sha256": "a6aaaad5f7527966a6270d3448f33b19488a7a47270628de976eb16a9a28a54b",
   "checks": {
     "setup:machine_excavator_real_core_placed": {
       "ok": true,
@@ -13,8 +13,8 @@
     "setup:the_network_carries_power": {
       "ok": true,
       "actual": [
-        133280,
-        398174
+        111622,
+        323204
       ]
     },
     "setup:excavator_menu_open": {
@@ -4232,47 +4232,9 @@
         ]
       }
     },
-    "setup:the_cables_in_the_footprint_were_mined": {
-      "ok": true,
-      "actual": [
-        [
-          19,
-          99,
-          11
-        ],
-        [
-          20,
-          99,
-          11
-        ],
-        [
-          21,
-          99,
-          11
-        ]
-      ]
-    },
-    "setup:the_network_lost_the_link": {
-      "ok": true,
-      "actual": [
-        937958,
-        937958
-      ]
-    },
-    "setup:the_other_cables_stand": {
-      "ok": true,
-      "actual": [
-        [
-          18,
-          99,
-          11
-        ],
-        [
-          22,
-          99,
-          11
-        ]
-      ]
+    "setup:the_server_drops_the_mined_cable_at_once": {
+      "ok": false,
+      "actual": true
     }
   },
   "evidence": {
@@ -4282,30 +4244,12 @@
       11
     ],
     "power_connected": [
-      133280,
-      398174
+      111622,
+      323204
     ],
-    "mined": [
-      [
-        19,
-        99,
-        11
-      ],
-      [
-        20,
-        99,
-        11
-      ],
-      [
-        21,
-        99,
-        11
-      ]
-    ],
-    "power_after": [
-      937958,
-      937958
-    ]
+    "mined": null,
+    "power_after": null,
+    "server_holds_the_mined_cable": true
   },
-  "ok": true
+  "ok": false
 }
