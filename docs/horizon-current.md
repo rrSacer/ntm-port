@@ -1405,6 +1405,57 @@ motor `6e13d4271c`. Binário release `a387888669a5402c94d872647e3a6e2fde33aafb26
 | U: suíte | Lib `ntm-core` 769 ok, 6 ignorados, 0 falhas + integração toda ok; `save_model` release 11/11; `keep_world_cost` 0,24–0,25 ms; Clippy `-D warnings` do `ntm-core` (todos os alvos) e da glue: 0; motor: `mod_slot_filters` 3/3 e testes de menu do `horizon-client` 36 ok, 4 ignorados, 0 falhas |
 | J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py`, `evidence/j-run3/`) | **56/56**, dois clientes (anfitrião com o mundo aberto em LAN e um hóspede que entrou por `connect`), cada um em sobrevivência com barra quente (casco 1200) e fria (150): **quente** — clique, clique direito, shift-click, tecla numérica e Q recusados, nada muda no BE, na mão, no cursor nem no chão; **fria** — clique tira a barra inteira (tag igual) e devolve, shift-click sai e volta, tecla numérica troca com a pedra da hotbar e destroca, shift-click com o inventário cheio não move nada, Q joga uma; **vazio** — drag de duas pedras deixa uma no canal; **criativo** — a barra quente sai por clique e por shift-click e volta; **mão** — barra quente e fria entram em canal vazio, uma da pilha, com um `upgradePlug` por inserção (anfitrião ouviu 5, as 5 inserções perto dele; hóspede 2, as suas); canal cheio abre o menu, sem som; **funis** — o de cima não põe a barra no canal vazio, o de baixo não tira do canal frio. O casco fica onde a prova pôs (`dialHeatProvision` 0, core = casco). Rodadas 1 e 2 caíram por motivos da prova, não do mod: cliente sem responder ao `status` por mais de 6 min com carga média 84, e um BE vazio sem `Items`; corrigido no executor e no roteiro |
 
+### P3 da revisão do T05 (20/11/2026)
+
+A revisão independente aprovou os P3 do T04 e o T05 (sem P1/P2) e apontou dois P3, um commit cada:
+
+| Item | Como fica | Commit |
+| --- | --- | --- |
+| (a) mínimo nos eventos de satélite do corte estrito | O gancho de teste guarda em memória, por dimensão, os canais com barra que tomaram fluxo no último passo num múltiplo de 200 (o `lastFluxQuantity` depois do passo, à parte dos relatos), e `ntmtest rays` o mostra (`flux200=`). Quando a leitura dele é a do último múltiplo antes da leitura, cada canal dele precisa ter o seu evento, relatado naquele tick (`expiresOn` = tick + 300). Antes de um passo assim depois de uma abertura nada é exigido | `723f22d3` |
+| (b) frase do desvio do clique duplo | "Inobservável: barras não empilham (`maxStackSize` 1) e o modo 6 só junta até o máximo do cursor" | `1dd73bc1` |
+
+Corte estrito refeito com o mínimo (binário `4ccb24bc…`, `evidence/c-strict-p3a-min/` em `rbmk-t05`): `kv_committed`
+3 = 3, e nas duas reaberturas a leitura do servidor (ticks 1200 e 1600) nomeou os dois canais que tomaram fluxo, ambos
+com o evento daquele tick; `chunks_written` 2 = 2, sem canal com fluxo nos múltiplos lidos (1000 e 1200), os eventos
+restantes de antes da abertura. Mesmo resultado do controle vanilla item a item.
+
+## RBMK T06 — base de telas, sessões e codec de comandos (20/11/2026)
+
+Branch `rbmk-t05` (continua sobre o T05 aprovado), motor `rbmk-t05-engine` @ `6e13d4271c` **sem mudança nova**: o T06
+usa só o que o motor já oferece (`net_from_client`/`native_net_send_to_server` e `native_net_send_to_player`/
+`net_from_server`, o canal de mensagens de mod, até 30 000 bytes; `menu_extra_data`/`native_screen_extra_data`;
+`player_logged_out`). O jogador do anfitrião é hóspede do próprio anfitrião, então o mesmo caminho serve aos dois.
+
+### O que mudou
+
+| Parte | Comportamento | Fonte Java |
+| --- | --- | --- |
+| Campo de texto | `screens::field::TextField`: o `GuiTextField` do 1.7.10 como o Java edita (texto em unidades UTF-16, cursor e outra ponta da seleção, a folga do `writeText` — com a seleção feita de trás para a frente num campo cheio o caractere digitado some, como no Java —, palavras, teclas 14/199/203/205/207/211, Ctrl+A/C/V/X com a área de transferência do jogo, `ChatAllowedCharacters`, o cursor posto pelo clique) | `GuiTextField`, `ChatAllowedCharacters` |
+| Regra de salvar | `screens::number`: `NumberUtils.isNumber` do commons-lang3 3.3.2 (inclusive hexadecimal, octal com zero à frente e os sufixos `d`/`f`/`l`), `Double.parseDouble`, `MathHelper.clamp_double` e o `(int)` | `GUIRBMKControlAuto.mouseClicked:93-138` (a regra em `:104-118`) |
+| Codec | `screens::control`: comando (sessão, geração do BE, posição, número de sequência, campos), snapshot (o pacote de rede do TE) e concessão (a sessão e o primeiro snapshot, nos dados extras do menu), binários e versionados; tags NBT com os getters do `NBTTagCompound` (número de outro tipo convertido, `double` lido como `int` arredondado para baixo, chave ausente = 0); leitura estrita (versão, tipo, tag, UTF-8, chave repetida, bytes sobrando, limites) | `NBTControlPacket`, `NBTTagCompound`, `NBTTagDouble/Int/Byte` |
+| Sessão | Uma por jogador: abre com a tela, termina com a próxima tela ou com a saída do jogador. Comando aceito só da sessão atual, para o lugar e a geração do BE em que ela abriu, com número de sequência acima do último e dentro do alcance do `hasPermission` (distância menor que 20 do canto do bloco, mesma dimensão); qualquer outro é recusado inteiro, sem mudar bloco nem jogador | `IControlReceiver.hasPermission` (`TileEntityRBMKControlAuto:35`) |
+| Aplicação | O comando aceito espera, guardado pela geração do BE, a próxima transação da máquina, e entra antes do passo (como um botão de menu). No Java entra quando o pacote chega, entre dois ticks | `NBTControlPacket.Handler.onMessage` |
+| Piloto: controle automático | Tela sem slot de máquina (`ContainerRBMKControlAuto`): os quatro campos (3, 3, 4, 4 caracteres; os valores guardados como `int` ao abrir), salvar e as três curvas. A coluna guarda as quatro faixas e a curva (`AutoControl`, pelos bits; save anterior lê os padrões do TE) e as recebe como o `receiveControl`. Os botões ±1/±10 (o atalho de antes) saíram. Nível, alvo e energia ficam em 0 até o T07 mover a barra | `GUIRBMKControlAuto`, `TileEntityRBMKControlAuto.receiveControl:131-146`, `serialize:111-118` |
+
+### Desvios e decisões para o coordenador
+
+- **Texto que passa no `isNumber` e quebra o `parseDouble`** (`1L`, `0x1`, 312 das 111 151 cadeias do oráculo): no
+  1.7.10 o clique em salvar derruba o cliente. Aqui o salvar para nesse campo e não manda nada; os campos antes dele já
+  aparecem como salvos (o que o Java fez antes de cair).
+- **Índice de curva fora de 0..2** (`abs(i) % 5` dá 3 ou 4; `abs(Integer.MIN_VALUE)` é negativo): no Java,
+  `ArrayIndexOutOfBounds` no tratador do pacote. Aqui o comando é recusado inteiro (D2). Nosso cliente nunca manda isso.
+- **Sessão**: o Java aceita um `NBTControlPacket` de qualquer jogador a menos de 20 blocos, com ou sem a tela aberta.
+  Aqui o comando precisa da sessão atual (critério de aceite do plano: "rejeitar comando de sessão antiga"). O cliente
+  só manda com a tela aberta, então a diferença só aparece para um cliente modificado.
+- **Momento**: até o começo do tick seguinte, em vez de entre ticks.
+- **D6 (spike)**: os snapshots tipados por mensagem de mod estão confirmados por este ticket; o estado das pelotas por
+  `custom_data` tem caminho no motor para o desenho (`item_model_property`, modelos condicionais avaliados pelo mod, e
+  `custom_model_data`), para o T14.
+
+### Validação
+
+J_T06_PENDING
+
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
 Upstream congelado no início: `a3bf6531e07f6292414eda44773d30ab0a47f9db` (09/11/2026 20:14 +01:00), **9.404 commits**
