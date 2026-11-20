@@ -351,6 +351,54 @@ pub struct MachineCommit {
     pub json: String,
 }
 
+/// The cells of `commits` whose block change is the server's own, as (dimension, position, new block id): those that
+/// are born with a machine (`CellWrite::initial`), whose model is installed with them. The others, such as what a mining
+/// step breaks, are changes the server must still hear of (a broken cable leaves its network).
+pub fn owned_cells(commits: &[MachineCommit]) -> Vec<(String, Pos, String)> {
+    commits
+        .iter()
+        .flat_map(|c| &c.cells)
+        .filter(|c| c.initial.is_some())
+        .map(|c| (c.guard.dim.clone(), c.guard.pos, blockstate::id_of(&c.desired).to_string()))
+        .collect()
+}
+
+#[cfg(test)]
+mod owned_cells_tests {
+    use super::*;
+
+    fn cell(at: Pos, desired: &str, initial: bool) -> CellWrite {
+        CellWrite {
+            notify: true,
+            guard: CellGuard { dim: "d".into(), pos: at, generation: 0, state: "x".into() },
+            expected: CellSnapshot { state: "x".into(), entity: None, items: Vec::new() },
+            desired: desired.into(),
+            destroy: false,
+            initial: initial.then(|| InitialState { json: "{}".into(), data: Vec::new() }),
+        }
+    }
+
+    /// A mining step writes air over a cable in the same commit as the machine: that change is external (the cable's
+    /// network must lose the link); only the cell born with its machine is the server's own.
+    #[test]
+    fn only_the_cells_born_with_a_machine_are_owned() {
+        let machine = |cells| MachineCommit {
+            cells,
+            guard: CellGuard { dim: "d".into(), pos: [0, 0, 0], generation: 0, state: "x".into() },
+            expected_saved: false,
+            dim: "d".into(),
+            pos: [0, 0, 0],
+            expected: Vec::new(),
+            desired: Vec::new(),
+            data: Vec::new(),
+            json: String::new(),
+        };
+        let commits = [machine(vec![cell([1, 0, 0], "minecraft:air", false), cell([2, 0, 0], "ntm:slag[layer=1]", true)])];
+        assert_eq!(owned_cells(&commits), vec![("d".to_string(), [2, 0, 0], "ntm:slag".to_string())]);
+        assert!(owned_cells(&[machine(vec![cell([1, 0, 0], "minecraft:air", false)])]).is_empty());
+    }
+}
+
 /// A loaded cell, including its complete block entity, not just its slots.
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct CellSnapshot {

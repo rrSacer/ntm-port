@@ -121,3 +121,11 @@ Versionado a partir das pastas de prova. Canal / escória, em quanta, no mundo r
 Um bloco de redstone ao lado da bica a fecha: depois de 15 s o canal guarda os 144 e não há bloco de escória; tirado o bloco, a bica abre e os 144
 vão para a escória (`ntm:slag`); 144 no mundo reaberto duas vezes, igual ao controle. A inversão (`invert_redstone`) e a leitura ausente
 ficam nos testes de servidor (`redstone_closes_*`), cinco mutantes mortos.
+
+## Revisão da revisão: o escopo das células próprias
+
+`commit_machines` marcava como próprias **todas** as células dos seus commits; o passo local põe nele os `world_writes` da mineração
+(escavadeira e broca), então um cabo minerado não gerava `Broken` e ficava fantasma. Agora só as células com `initial` (a máquina que nasce
+junto, a escória) são próprias: `ntm_core::server::owned_cells`, com teste (`only_the_cells_born_with_a_machine_are_owned`) e mutante morto.
+Os cenários `slagtap-*` foram reexecutados com o binário depois desta correção (abaixo, mesma tabela). O `mutants-foundry.log` anexa as
+execuções novas: os 5 de redstone, `cave_air`, o do commit recusado só no vazamento (agora morto) e o das células próprias.

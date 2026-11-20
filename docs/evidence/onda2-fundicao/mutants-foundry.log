@@ -59,3 +59,16 @@ KILLED       slag tap: it ignores its filter  <- a_tap_that_refuses_the_metal_le
 KILLED       slag tap: the ray reaches 16 blocks  <- the_slag_tap_pours_only_from_behind_what_its_filter_passes_and_with_something_under_it
 KILLED       slag tap: the ray reaches 14 blocks  <- the_slag_tap_pours_only_from_behind_what_its_filter_passes_and_with_something_under_it
 14 of 16 killed
+
+# Rodada 5, revisão: redstone (5), cave_air, commit recusado só o do vazamento, células próprias
+KILLED       redstone: the slag tap ignores it  <- redstone_closes_the_slag_tap_and_a_missing_reading_does_not_close_it_for_good
+KILLED       redstone: the outlet ignores it  <- redstone_closes_the_outlet_too
+KILLED       redstone: no reading is open  <- redstone_closes_the_slag_tap_and_a_missing_reading_does_not_close_it_for_good
+KILLED       redstone: the inversion is ignored  <- redstone_closes_the_outlet_too, redstone_closes_the_slag_tap_and_a_missing_reading_does_not_close_it_for_good
+KILLED       redstone: the inversion is not kept  <- redstone_closes_the_outlet_too
+5 of 5 killed
+KILLED       slag: a refused commit is poured in memory anyway  <- a_pour_refused_alone_leaves_the_source_whole_in_memory_and_in_its_record
+KILLED       slag: the ray stops at cave air  <- the_ray_passes_cave_air
+2 of 2 killed
+KILLED       own: every cell of a commit is the server's own (a mined cable stays a ghost)  <- only_the_cells_born_with_a_machine_are_owned
+1 of 1 killed
