@@ -1676,6 +1676,21 @@ nada.
   dos nomes do port. Só diferiria para um item com dois nomes de receitas diferentes: nenhum no port (teste
   `no_port_item_has_two_recipe_names`).
 
+### Validação
+
+Commits: `d87bef17` (N1: itens das receitas), `983de48d` (N4: funis), `c270f723` (N2/N3: slots, progresso, gás e
+portas), `7522f8bd` (tela), `5cac2c0e` (gancho `ntmtest fluids`), `3d07496f` (ordem do OreDict), `b7fa3f96` (doc e
+roteiro J), `cb2d4b97` (roteiro C). Evidências em `/mnt/ssd120/sacer/so/rbmk-t09/evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| U: oráculo Java | O do T04 (`outgasser_recipes`, limiares `> 10000`, perda do excedente, rápido/lento, reset, `fusionOnly`, saída cheia), verde |
+| U: unidade | Itens das receitas (cada item Java do port ou lacuna nomeada; ids no `ids.json`; receitas pelo item e pelo OreDict; cogumelo sem receita; nenhum item com dois nomes de receitas); piche irradiado vira óleo de carvão e o save guarda gás e progresso; ouro vira o lingote Au-198 do port no slot de saída; cogumelo espera (progresso 0) e funil só põe o que tem receita no slot 0; gás sai pela porta; tela (seta truncada, gás); gancho lê gás e slots juntos |
+| U: suíte | `ntm-core` debug 949 ok, 6 ignorados, 0 falhas; Clippy `-D warnings` do `ntm-core` e da glue (binário `d30579da`): 0; `save_model` release 11/11; `keep_world_cost` 0,18 / 0,18 / 0,23 ms por tick (0, 5 000 e 50 000 gerações; medido com jogos e builds rodando juntos: a última acima dos 0,17–0,19 de antes, sem repetição isolada). Em `cb2d4b97` |
+| U: mutações | 13/13 pegas (`mutations-t09.log`) |
+| J: anfitrião e hóspede LAN (`native_rbmk_t09.py --reopen`, `evidence/j-run5/`) | **7/7 e 1/1 na reabertura**: extrator posto à mão; um funil sobre o topo põe os 2 piches e os 2 lingotes de ouro (a pedra fica no funil); a barra de Po-210/Be ao lado irradia (`dialOutgasserSpeedMod` 10); 200 mB de óleo de carvão chegam ao barril pelo cano; 2 lingotes de Au-198 no slot de saída, que o hóspede tira pela tela; tudo igual depois de reabrir. Binário `d30579da…`, pacote `0f9c0154…`. As rodadas 1–4 caíram pelo roteiro (o item para colocar, a face do cano, a leitura dos itens do 1.21 com `count` antes do `id`) |
+| C: corte com o processamento em andamento (`run-rbmk-t08-c-proof.py --script native_rbmk_t09_c.py`, `evidence/c-run1/`) | Extrator com 4 piches no chunk (2, 0), gás por cano a um barril no (1, 0), a barra posta no ato; no save, 2 piches e 200 mB. Em `kill`, `kv_committed`, `region_record:1`, `:2`, `:3`, `chunks_written` e `world_saved`, as duas reaberturas somam **400** (piche a 100): os cinco primeiros voltam ao save anterior (4 piches), os dois últimos ao novo (2 e 200, e o processamento segue até 0 e 400). Cada processamento gastou um piche e fez o óleo de uma receita, e nada foi refeito depois da queda. Nenhum corte deste mundo caiu na emenda dos dois chunks: o gás que atravessa a divisa segue no limite geral (INFRA-F) |
+
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
