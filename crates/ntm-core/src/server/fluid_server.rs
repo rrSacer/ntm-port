@@ -19,12 +19,15 @@ pub struct FluidNet {
 type Members = BTreeMap<Pos, Vec<Port>>;
 /// Each machine's proxy cells, by its core.
 type Proxies = BTreeMap<Pos, Vec<Pos>>;
-/// A fluid to build: (dimension, fluid), its ducts, machines and proxies.
-type Job = ((String, String), BTreeSet<Pos>, Members, Proxies);
+/// The port cells of a machine whose ports are cells of the world (an RBMK column's, by its loaders), by its core:
+/// each cell and the directions it is open to. They are one passthrough group (`TilePort` of several positions).
+type PortCells = BTreeMap<Pos, Vec<(Pos, Vec<Pos>)>>;
+/// A fluid to build: (dimension, fluid), its ducts, machines, proxies and port cells.
+type Job = ((String, String), BTreeSet<Pos>, Members, Proxies, PortCells);
 
 struct Rebuild {
     sig: u64,
-    /// (fluid, its ducts, its machines, their proxy cells).
+    /// (fluid, its ducts, its machines, their proxy cells, their port cells).
     todo: Vec<Job>,
     done: Vec<(String, String, Vec<Vec<Pos>>)>,
 }
@@ -67,6 +70,15 @@ impl Server {
     /// machines and the types they hold), hashed without building strings;
     /// the networks are rebuilt when it changed.
     fn fluid_shape(&mut self) {
+        // RBMK columns' ports (T08): where the loaders stand, and each dimension's `getColumnHeight` (the dial, as the
+        // Java's `getPorts*` read it, not the column's own height: D5).
+        let loaders: BTreeSet<Key> = self.ready.world.machines.iter().filter(|(_, m)| m.block == crate::rbmk::persist::LOADER).map(|(k, _)| k.clone()).collect();
+        let piped_dims: BTreeSet<String> = self.ready.world.machines.iter().filter(|(_, m)| crate::rbmk::persist::piped_types(&m.block).is_some()).map(|(k, _)| k.0.clone()).collect();
+        let heights: BTreeMap<String, i32> = piped_dims.into_iter().map(|d| {
+            let h = self.rbmk_dials_peek(&d, "KEY_COLUMN_HEIGHT").column_height;
+            (d, h)
+        }).collect();
+        let mut ports_of: BTreeMap<String, PortCells> = BTreeMap::new();
         let r = &mut self.ready;
         let mut h: u64 = 0x6e74_6d66;
         let mut feed = |v: u64| h = crate::hash::mix(h ^ v);
@@ -99,7 +111,21 @@ impl Server {
             }
             // A multiblock's proxy cells are more of its ports
             // (container_bridge): a duct or a machine touching one reaches it.
-            let proxies = super::container_bridge::fluid_proxy_cells(&m.block, *pos, m.facing.as_deref());
+            let mut proxies = super::container_bridge::fluid_proxy_cells(&m.block, *pos, m.facing.as_deref());
+            // An RBMK column's ports by the loaders under it (`getPortsNoLoader/CloseLoader/ClassicLoader`).
+            if crate::rbmk::persist::piped_types(&m.block).is_some() {
+                use crate::rbmk::persist::{column_ports, LoaderShape};
+                let [x, y, z] = *pos;
+                let shape = LoaderShape::of(loaders.contains(&(dim.clone(), [x, y - 1, z])), loaders.contains(&(dim.clone(), [x, y - 2, z])));
+                let cells: Vec<(Pos, Vec<Pos>)> = column_ports(*pos, heights[dim], shape).into_iter().map(|p| (p.at, p.connections.into_iter().map(|c| c.1).collect())).collect();
+                for (c, dirs) in &cells {
+                    feed(((c[0] as u64) ^ ((c[1] as u64) << 21) ^ ((c[2] as u64) << 42)).rotate_left(29) ^ dirs.len() as u64);
+                    if c != pos {
+                        proxies.push(*c);
+                    }
+                }
+                ports_of.entry(dim.clone()).or_default().insert(*pos, cells);
+            }
             let Some(node) = m.logic_mut().fluid() else { continue };
             feed(at.rotate_left(7) ^ crate::hash::fnv64(dim.as_bytes()));
             if node.accepts_any() {
@@ -137,7 +163,9 @@ impl Server {
                     let cables = ducts.remove(&(dim.clone(), f.clone())).unwrap_or_default();
                     let all = proxies_of.get(&dim);
                     let proxies = machines.keys().filter_map(|p| all.and_then(|a| a.get(p)).map(|c| (*p, c.clone()))).collect();
-                    ((dim, f), cables, machines, proxies)
+                    let all = ports_of.get(&dim);
+                    let ports = machines.keys().filter_map(|p| all.and_then(|a| a.get(p)).map(|c| (*p, c.clone()))).collect();
+                    ((dim, f), cables, machines, proxies, ports)
                 })
                 .collect();
             self.fluidnet.pending = Some(Rebuild { sig, todo, done: Vec::new() });
@@ -149,7 +177,7 @@ impl Server {
     fn fluid_rebuild_step(&mut self) {
         let Some(p) = &mut self.fluidnet.pending else { return };
         let mut walked = 0;
-        while let Some(((dim, f), cables, machines, proxies)) = p.todo.pop() {
+        while let Some(((dim, f), cables, machines, proxies, ports)) = p.todo.pop() {
             walked += cables.len() + machines.len() + proxies.values().map(Vec::len).sum::<usize>();
             // Solar boiler ports are only the bottom and top, facing out.
             let mut faces = Members::new();
@@ -163,7 +191,16 @@ impl Server {
                     faces.insert([core[0],core[1]+2,core[2]],vec![vec![[0,1,0]]]);
                 }
             }
-            let nets = if faces.is_empty() { fluid_networks(&cables,&machines,&proxies) } else { fluid_networks_at(&cables, &machines, &proxies, &faces) };
+            // An RBMK column's port cells: open where their connections are, the core closed unless it is one of them.
+            let mut pass = Proxies::new();
+            for (core, cells) in &ports {
+                faces.insert(*core, vec![vec![]]);
+                for (c, dirs) in cells {
+                    faces.insert(*c, vec![dirs.clone()]);
+                }
+                pass.insert(*core, cells.iter().map(|c| c.0).collect());
+            }
+            let nets = fluid_networks_through(&cables, &machines, &proxies, &faces, &pass);
             p.done.push((dim, f, nets));
             if walked >= REBUILD_CELLS_PER_TICK {
                 break;
@@ -215,6 +252,12 @@ pub fn fluid_networks(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxi
 
 /// Port faces for displaced endpoints, overriding the default proxy faces.
 pub fn fluid_networks_at(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxies, faces: &Members) -> Vec<Vec<Pos>> {
+    fluid_networks_through(ducts, machines, proxies, faces, &Proxies::new())
+}
+
+/// With passthrough port groups (`pass`, by core: an RBMK column's `TilePort` of several positions, T08): the ducts
+/// on any of a group's cells are one bus, as they all touch one node of the Java network.
+pub fn fluid_networks_through(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Proxies, faces: &Members, pass: &Proxies) -> Vec<Vec<Pos>> {
     use crate::energy::DIRS;
     let add = |p: Pos, d: Pos| [p[0] + d[0], p[1] + d[1], p[2] + d[2]];
     // Every cell a machine answers at, and the machine.
@@ -250,6 +293,14 @@ pub fn fluid_networks_at(ducts: &BTreeSet<Pos>, machines: &Members, proxies: &Pr
                     && open(n, [-d[0], -d[1], -d[2]])
                 {
                     members.insert(m);
+                    for &c in pass.get(&m).into_iter().flatten() {
+                        for dd in DIRS {
+                            let q2 = add(c, dd);
+                            if ducts.contains(&q2) && open(c, dd) && seen.insert(q2) {
+                                queue.push_back(q2);
+                            }
+                        }
+                    }
                 }
             }
         }

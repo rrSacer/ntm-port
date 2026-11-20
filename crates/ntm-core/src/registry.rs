@@ -1715,6 +1715,11 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
     if spec.kind == Kind::Zirnox {
         return vec![vec![]];
     }
+    // An RBMK boiler, heater or cooler (T08): its ports are cells of its column or of a loader under it, by the world
+    // (`fluid_server`, `rbmk::persist::column_ports`); the core itself only as one of them.
+    if crate::rbmk::persist::piped_types(spec.id).is_some() {
+        return vec![vec![]];
+    }
     if spec.id == "ntm:pile_device__vent" {
         return facing
             .and_then(facing_dir)

@@ -444,7 +444,7 @@ impl Server {
                 }
                 c.reasim_water = col.reasim_water;
                 c.reasim_steam = col.reasim_steam;
-                let kept = |t: &Tank| persist::KeptTank { fluid: t.fluid.to_string(), fill: t.fill };
+                let kept = |t: &Tank| persist::KeptTank { fluid: t.fluid.to_string(), fill: t.fill, max: t.max };
                 match &col.data {
                     ReactorData::Boiler(b) => {
                         let st = c.piped.get_or_insert_with(|| persist::PipedState::of(&block).expect("a boiler"));

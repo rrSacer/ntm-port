@@ -198,6 +198,9 @@ impl PortDef {
     }
 }
 
+/// The fluid loader block (`RBMKLoader`).
+pub const LOADER: &str = "ntm:rbmk_loader";
+
 /// Where an `rbmk_loader` stands under a piped column (the boiler, heater, cooler and outgasser `updateEntity`): two
 /// cells below wins over one (`ClassicLoader` is asked first).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -324,17 +327,18 @@ pub struct RbmkColumn {
     pub piped: Option<PipedState>,
 }
 
-/// A `FluidTank` as its `writeToNBT` keeps it: the type (`Fluids` name, `NONE` for none) and the fill. Its maximum is
-/// the column's (the constructor's).
+/// A `FluidTank` as its `writeToNBT` keeps it: the type (`Fluids` name, `NONE` for none), the fill and the maximum
+/// (`_max`, the constructor's).
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct KeptTank {
     pub fluid: String,
     pub fill: i32,
+    pub max: i32,
 }
 
 impl KeptTank {
-    fn of(fluid: &str) -> Self {
-        KeptTank { fluid: fluid.to_string(), fill: 0 }
+    fn of(fluid: &str, max: i32) -> Self {
+        KeptTank { fluid: fluid.to_string(), fill: 0, max }
     }
 }
 
@@ -359,12 +363,12 @@ pub struct PipedState {
     pub cache: Vec<Option<([i32; 2], u64)>>,
 }
 
-/// The tanks' types of a fresh boiler, heater or cooler (their constructors), none for the other columns.
-pub fn piped_types(block: &str) -> Option<(&'static str, &'static str)> {
+/// The tanks of a fresh boiler, heater or cooler (their constructors: types and maxima), none for the other columns.
+pub fn piped_types(block: &str) -> Option<((&'static str, i32), (&'static str, i32))> {
     match block {
-        "ntm:rbmk_boiler" => Some(("WATER", "STEAM")),
-        "ntm:rbmk_heater" => Some(("COOLANT", "COOLANT_HOT")),
-        "ntm:rbmk_cooler" => Some(("PERFLUOROMETHYL_COLD", "PERFLUOROMETHYL")),
+        "ntm:rbmk_boiler" => Some((("WATER", 10_000), ("STEAM", 1_000_000))),
+        "ntm:rbmk_heater" => Some((("COOLANT", 16_000), ("COOLANT_HOT", 16_000))),
+        "ntm:rbmk_cooler" => Some((("PERFLUOROMETHYL_COLD", 4_000), ("PERFLUOROMETHYL", 4_000))),
         _ => None,
     }
 }
@@ -372,8 +376,8 @@ pub fn piped_types(block: &str) -> Option<(&'static str, &'static str)> {
 impl PipedState {
     pub fn of(block: &str) -> Option<Self> {
         piped_types(block).map(|(i, o)| PipedState {
-            input: KeptTank::of(i),
-            output: KeptTank::of(o),
+            input: KeptTank::of(i.0, i.1),
+            output: KeptTank::of(o.0, o.1),
             vent_delay: 0,
             consumption: 0,
             produced: 0,
@@ -507,10 +511,43 @@ impl RbmkColumn {
     }
 }
 
+/// A boiler, heater or cooler on the networks of its two tanks' types (`IFluidStandardTransceiverMK2`): it takes into
+/// its receiving tank what it has room for and offers all of its sending tank, each only on the network of the
+/// tank's type (`ModulePortManFluidAdaptive` keeps one port per tank, of the tank's type; NONE has none).
+impl crate::fluid::FluidNode for PipedState {
+    fn fluid_offer(&self, fluid: &str) -> u64 {
+        if network_fluid(&self.output.fluid) == Some(fluid) { self.output.fill.max(0) as u64 } else { 0 }
+    }
+    fn fluid_demand(&self, fluid: &str) -> u64 {
+        if network_fluid(&self.input.fluid) == Some(fluid) { (self.input.max - self.input.fill).max(0) as u64 } else { 0 }
+    }
+    fn fluid_types(&self) -> Vec<String> {
+        [&self.input.fluid, &self.output.fluid].into_iter().filter_map(|f| network_fluid(f)).map(str::to_string).collect()
+    }
+    fn fluid_give(&mut self, fluid: &str, mb: u64) {
+        if network_fluid(&self.input.fluid) == Some(fluid) {
+            self.input.fill = (i64::from(self.input.fill) + mb as i64).min(i64::from(self.input.max)) as i32;
+        }
+    }
+    fn fluid_take(&mut self, fluid: &str, mb: u64) {
+        if network_fluid(&self.output.fluid) == Some(fluid) {
+            self.output.fill = (i64::from(self.output.fill) - mb as i64).max(0) as i32;
+        }
+    }
+}
+
+fn network_fluid(name: &str) -> Option<&'static str> {
+    super::fluids::network_fluid(name)
+}
+
 impl Logic for RbmkColumn {
     /// A ReaSim control rod takes power from below (T07); no other column is on a network.
     fn energy(&mut self) -> Option<&mut dyn crate::energy::EnergyNode> {
         self.control.as_mut().filter(|c| c.powered).map(|c| c as &mut dyn crate::energy::EnergyNode)
+    }
+    /// A boiler, heater or cooler on the fluid networks of its tanks (T08).
+    fn fluid(&mut self) -> Option<&mut dyn crate::fluid::FluidNode> {
+        self.piped.as_mut().map(|p| p as &mut dyn crate::fluid::FluidNode)
     }
     fn level(&self, _: u8) -> u8 {
         0
