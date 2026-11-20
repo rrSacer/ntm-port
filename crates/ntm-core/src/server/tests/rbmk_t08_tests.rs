@@ -53,9 +53,20 @@ fn a_boiler_boils_keeps_its_tanks_and_waits_its_vent_delay_in_memory() {
         })
     };
     feed(&mut g);
+    g.world.borrow_mut().shown.clear();
     g.run(1);
     let st = piped(&mut g, at);
     assert_eq!(st.output, tank("STEAM", 1_000_000), "the steam fills the tank up");
+    let vents = |g: &Game| {
+        g.world.borrow().shown.iter().filter_map(|(_, s)| match s {
+            crate::blast::visuals::Show::Sound { id: "ntm:block.steamengineoperate", at, volume, pitch, .. } => Some((*at, *volume, *pitch)),
+            _ => None,
+        }).collect::<Vec<_>>()
+    };
+    let v = vents(&g);
+    assert_eq!(v.len(), 1, "one vent: {v:?}");
+    assert_eq!((v[0].0, v[0].1), ([0.0, f64::from(Y + 3), 0.0], 2.0), "at the core's corner, the column's height up");
+    assert!((1.0..1.25).contains(&v[0].2), "{v:?}");
     assert!(st.consumption > 0 && st.produced > 0, "{st:?}");
     let first = st.vent_delay;
     assert!((20..30).contains(&first), "a vent sets the delay: {first}");
@@ -64,6 +75,7 @@ fn a_boiler_boils_keeps_its_tanks_and_waits_its_vent_delay_in_memory() {
         g.run(1);
         assert_eq!(piped(&mut g, at).vent_delay, first - k, "the delay counts down from tick to tick");
     }
+    assert_eq!(vents(&g).len(), 1, "no vent while the delay runs");
     // The save keeps the tanks and not the delay.
     let mut back = reopen(&g);
     let st = piped(&mut back, at);

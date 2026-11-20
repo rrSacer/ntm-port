@@ -406,9 +406,19 @@ impl Server {
             self.ready.chunk_rad_pending.extend(r.rad.drain(..).filter(|e| !e.amount.is_nan()).map(|e| (dim.clone(), [e.x, e.y, e.z], e.amount)));
             // `SatelliteRayScan.reportEvent(INFO_NUCLEAR, 300)` of the rods that took flux (4A), with the step.
             for e in r.effects.drain(..) {
-                if let Effect::SatelliteScan { column } = e {
-                    let p = order[column];
-                    crate::rbmk::persist::report_ray(&mut self.ready.world.rbmk_rays, &dim, [p[0], y, p[1]], crate::rbmk::persist::INFO_NUCLEAR, self.ready.world.ticks as i64, 300);
+                match e {
+                    Effect::SatelliteScan { column } => {
+                        let p = order[column];
+                        crate::rbmk::persist::report_ray(&mut self.ready.world.rbmk_rays, &dim, [p[0], y, p[1]], crate::rbmk::persist::INFO_NUCLEAR, self.ready.world.ticks as i64, 300);
+                    }
+                    // A full boiler's vent (T08): `playSoundEffect(x, y + getColumnHeight, z, "hbm:block.steamEngineOperate",
+                    // 2, pitch)` at the core's corner, with the step's commit. Its `rbmksteam` particle
+                    // (`ParticleRBMKSteam`) is T19's.
+                    Effect::SteamVent { column, pitch, .. } => {
+                        let p = order[column];
+                        let at = [f64::from(p[0]), f64::from(y + dials.column_height), f64::from(p[1])];
+                        host.show(&dim, &crate::blast::visuals::Show::Sound { id: "ntm:block.steamengineoperate", source: "block", at, volume: 2.0, pitch });
+                    }
                 }
             }
             let melting: BTreeSet<usize> = r.meltdowns.iter().copied().collect();
