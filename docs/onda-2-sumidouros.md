@@ -151,6 +151,17 @@ Uma versão desta seção dizia que, ao colocar uma máquina na última janela a
 As medidas anteriores (o `power` do "registro" indo de 0 a 50 000 com cabo e bateria ao lado) eram as de um micro-ondas real. **Não há entidade de bloco sem bloco, energia destruída nem item duplicado demonstrados.** O relatório antigo `orphan-probe-report-all.json`/`run_orphan_probe.py` era a sonda errada
 e fica só como registro do erro.
 
+**Sonda dos 7 pontos, olhando de perto (build `onda2-orfao` `c720cc7e`, `horizon-client` SHA-256 `eb9934733a64bc669017390f953d216f78de7f4d86c2830a4befeb0d0abf6a0e`, pacote `52bdb043…cf`; relatórios `orphan-disk-report-*.json` com `binary`/`sha256`).** O ato é colocar um micro-ondas e um baú de controle; depois do corte, duas reaberturas
+leem o `block` do controle com o jogador no lugar do último save e **de novo depois de teleportá-lo para a célula**, mais o registro (`data get block`). Resultado, 7/7 coerentes e `kv_items=0`:
+
+| Ponto | O que sobra (as duas reaberturas, olhando de perto) |
+| --- | --- |
+| `kill`, `kv_committed`, `save_begin` | nenhum bloco, baú de controle ar, **sem registro** (volta ao último save) |
+| `chunks_written`, `entities_written` | micro-ondas, baú de controle **e** registro (no primeiro olhar, com o jogador no spawn, ainda ar: a leitura do cliente) |
+| `world_saved`, `none` | micro-ondas, baú de controle e registro (jogador salvo ao lado, já os vê ao abrir) |
+
+Em nenhum ponto há registro sem bloco ou bloco sem registro. A prova de corte das chaminés foi refeita nessa build (6/6 em jogo e 7/7 no corte, `chimney-proof-report.json`, `sha256` do mesmo cliente).
+
 **Ticket de baixa prioridade (motor).** O motor não descarta uma entidade de bloco sem bloco dono como o vanilla (`LevelChunk`: "Tried to load a block entity ... but failed"; não existe em `decode_chunk`). Nenhum caminho que a produza foi achado; o glue só **registra**
 (`orphan_scan`: sempre que houver uma entidade de bloco de máquina sobre uma célula sem bloco de máquina, no carregamento do chunk) e não toma ação.
 
