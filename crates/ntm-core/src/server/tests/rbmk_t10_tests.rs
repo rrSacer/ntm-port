@@ -193,11 +193,10 @@ fn the_console_sees_the_fuel_and_its_flux() {
     use crate::server::container_bridge::Stack;
     let mut g = game();
     g.place(CONSOLE, "ntm:rbmk_console[facing=north,honey_level=0]");
-    // Two Po-210/Be rods side by side: each its own source, each the other's flux.
+    // Two Po-210/Be rods side by side: each its own source, each the other's flux; the second in a moderated channel.
     let other = [TARGET[0] + 1, Y, TARGET[2]];
-    for p in [TARGET, other] {
-        g.place(p, &column("rbmk_rod"));
-    }
+    g.place(TARGET, &column("rbmk_rod"));
+    g.place(other, &column("rbmk_rod_mod"));
     g.run(2);
     for p in [TARGET, other] {
         let stack = Stack::new("ntm:rbmk_fuel_po210be", 1);
@@ -222,6 +221,9 @@ fn the_console_sees_the_fuel_and_its_flux() {
     assert_eq!(*c.flux.last().unwrap(), flux as i32);
     let at = (0..225).find(|&i| console::offset(0, i) == (0, 0)).unwrap() as usize;
     let console::ColumnData::Fuel(Some([enrichment, xenon, hull, core, melting])) = c.scan[at].clone().unwrap().data else { panic!("{:?}", c.scan[at]) };
+    // `isModerated` is only the manual rods': a moderated channel is not said to be.
+    let moderated = (0..225).find(|&i| console::offset(0, i) == (1, 0)).unwrap() as usize;
+    assert!(!c.scan[moderated].as_ref().unwrap().moderated);
     let rod = crate::rbmk::persist::rod_of("ntm:rbmk_fuel_po210be").unwrap();
     assert_eq!(melting, rod.melting_point);
     assert!(enrichment > 0.0 && enrichment <= 1.0 && xenon >= 0.0 && hull >= 20.0 && core >= hull, "{enrichment} {xenon} {hull} {core}");
