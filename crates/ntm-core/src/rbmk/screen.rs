@@ -11,6 +11,13 @@ pub fn takes_commands(block: &str) -> bool {
     persist::is_control(block)
 }
 
+/// Whether a column of `block` has a screen with no machine slot, which still needs a menu (the player's inventory,
+/// the screen's session or buttons): the control rods' (`ContainerRBMKControlAuto`, T06/T07) and the boiler's
+/// (`ContainerRBMKGeneric`, T08).
+pub fn has_slotless_menu(block: &str) -> bool {
+    takes_commands(block) || block == "ntm:rbmk_boiler"
+}
+
 /// `TileEntityRBMKControlManual.receiveControl`: `level` sets the target (`setTarget`: the target as sent, the start
 /// where the rod is now), `color` toggles a group (`abs(i) % 5`; the group the rod is in takes it out). A negative index
 /// (`abs(Integer.MIN_VALUE)`) throws in the Java after the level was set; here it is refused whole (D2).

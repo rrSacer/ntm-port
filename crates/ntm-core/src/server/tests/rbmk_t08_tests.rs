@@ -420,3 +420,11 @@ fn the_heat_hook_starts_the_next_step_hot() {
     g.run(1);
     assert!(col(&mut g, at).heat < h, "only once");
 }
+
+/// The boiler's screen has no slot of its own (`ContainerRBMKGeneric`): it still has a menu, or it would never open.
+#[test]
+fn the_boilers_screen_has_a_menu() {
+    let c = crate::native::container("ntm:rbmk_boiler").expect("a menu");
+    assert_eq!((c.slots, c.inputs.len(), c.outputs.len()), (0, 0, 0));
+    assert!(crate::native::container("ntm:rbmk_cooler").is_none(), "the cooler has no screen");
+}

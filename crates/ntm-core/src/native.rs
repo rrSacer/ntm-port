@@ -78,9 +78,9 @@ pub fn container(block: &str) -> Option<Container> {
         });
     }
     let slots = block_slots(block);
-    // A screen with no slot of the machine's (RBMK T06: the automatic control rods, `ContainerRBMKControlAuto`): a
-    // menu all the same, which the screen's session and the player's inventory need.
-    (machine_block(block) && (!slots.is_empty() || crate::rbmk::screen::takes_commands(block))).then(|| file_container(&slots))
+    // A screen with no slot of the machine's (RBMK T06: the control rods, `ContainerRBMKControlAuto`; T08: the boiler,
+    // `ContainerRBMKGeneric`): a menu all the same, which the screen's session, buttons and the player's inventory need.
+    (machine_block(block) && (!slots.is_empty() || crate::rbmk::screen::has_slotless_menu(block))).then(|| file_container(&slots))
 }
 
 /// A slot's rule, as the game's `ModSlotFilter` takes it: the items it
