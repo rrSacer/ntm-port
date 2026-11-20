@@ -525,6 +525,12 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok={ok}")));
         return true;
     }
+    // `ntmtest crane` (RBMK T11): the crane keys the server holds, the players it knows, each crane's input and place.
+    if w.first()==Some(&"crane"){
+        let reply=format!("ntmtest ok=true {}",server.native_test_crane());
+        host.game.native_feedback(horizon_client::text::Text::literal(reply));
+        return true;
+    }
     if w.first()==Some(&"rays"){
         let reply=format!("ntmtest ok=true {}",server.native_test_rays(&dim));
         host.game.native_feedback(horizon_client::text::Text::literal(reply));

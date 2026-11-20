@@ -118,6 +118,30 @@ impl Server {
         true
     }
 
+    /// `ntmtest crane` (T11): the keys the server holds for each player, the players it knows and where, and each loaded
+    /// crane's last input, hook, place and target lamp.
+    pub fn native_test_crane(&self) -> String {
+        let keys: Vec<String> = self.crane_keys.iter().map(|(p, k)| format!("{p}={}", k.bits())).collect();
+        let players: Vec<String> = self.players.iter().map(|p| format!("{}@{}:{:.2},{:.2},{:.2}", p.id, p.dim, p.pos[0], p.pos[1], p.pos[2])).collect();
+        let cranes: Vec<String> = self
+            .cranes()
+            .iter()
+            .filter_map(|k| match &self.ready.world.machines.get(k)?.data {
+                Data::RbmkCrane(c) => Some(format!(
+                    "{:?}:input={:?},progress={},front={},left={},valid={}",
+                    k.1,
+                    c.input.map(Keys::bits),
+                    c.progress,
+                    c.pos_front,
+                    c.pos_left,
+                    c.valid_target
+                )),
+                _ => None,
+            })
+            .collect();
+        format!("keys={} players={} cranes={}", keys.join(";"), players.join(";"), cranes.join(";"))
+    }
+
     /// The RBMK tool on a crane console with a column linked (`setTarget`): the spans found now around the column, at
     /// the girders' height (a cell of a chunk not loaded stops a span); the link waits for the console's next tick.
     /// False when `core` is no crane console.

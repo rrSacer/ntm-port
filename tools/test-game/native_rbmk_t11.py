@@ -202,6 +202,8 @@ class Proof:
                 time.sleep(1)
                 data = ' '.join(self.host.command(f'data get block {self.core[0]} {self.core[1]} {self.core[2]} data').get('chat', []))
                 self.host.evidence.setdefault('drive', []).append({'key': key, 'target': target, 'crane': crane(self.host, self.core),
+                                                                    'server': ' '.join(self.host.command('ntmtest crane').get('chat', [])),
+                                                                    'screen': g.ctl('screen').get('screen'),
                                                                     'data': data[-60:], 'guest_at': g.ctl('status').get('player', {}).get('position')})
                 deadline = time.monotonic() + 12
                 best = None
