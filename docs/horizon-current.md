@@ -1515,7 +1515,17 @@ movia as barras (validado contra o oráculo no T1); o T07 liga o estado, as tela
 
 ### Validação
 
-J_T07_PENDING
+Commits: `d06ac206` (estado das barras), `0cb60b12` (o passo move as barras), `e61fc737` (comandos da manual,
+snapshots reais, copiar configurações), `64ab45a9` (testes), `e18aa0dd` (glue: a tela da manual e o estado vivo),
+`093679aa` (conteúdo: as telas só com a textura), `29a8c13c` (ganchos `ntmtest power` e `ntmtest screen next`),
+`4f4a1bb1` (roteiro J). Evidências em `/mnt/ssd120/sacer/so/rbmk-t07/evidence/`.
+
+| Prova | Resultado |
+| --- | --- |
+| U: unidade | Manual na velocidade do Java até o alvo e parada nele; surto ao descer; ReaSim só anda com energia e paga 5000 por tick em que anda, parada não paga; automática segue a curva sobre o calor da coluna (faixas iguais e invertidas); barra em 0 corta o fluxo e fora deixa passar; coluna anterior ao T07 lê como barra nova; grupo alternado, copiar e colar como o Java; `getShortNumber` |
+| U: suíte (`29a8c13c`) | `ntm-core` debug 924 ok, 6 ignorados, 0 falhas; `save_model` release 11/11; `keep_world_cost` 0,17–0,19 ms; Clippy `-D warnings` do `ntm-core` e da glue: 0 |
+| U: mutações | 10/11 pegas, 1 equivalente (`evidence/mutations-t07.log`): sem teto no buffer da barra, nada muda, porque a rede nunca entrega mais do que a barra pede (`demand` já é `max − power`) |
+| J: anfitrião e hóspede LAN (`run-rbmk-t05-proof.py --script native_rbmk_t07.py --reopen`, `evidence/j-run5/`) | **23/23 e 1/1 na reabertura**. Pelas telas: manual (anfitrião) e moderada, ReaSim (hóspede) tomam o alvo, andam e alternam o grupo; automática e ReaSim automática tiram o alvo da curva (0,6) e andam. Energia sem célula criativa: as duas ReaSim alimentadas por uma bateria com 1 000 000 HE pela face de baixo chegam aos alvos; paradas não gastam (bateria 1 000 000, buffers 50 000); uma barra andando de 0,578 a 0,501 tira 139 944 HE da bateria (28 ticks a 5000, 0,00277 por tick); de volta ao alvo não gasta (545 000 constante); com a bateria em 0 a barra para (0,170 com alvo 0). Fluxo: barra em 0 zera o que vem atrás; em 1 deixa passar. Reaberto: manual 0,5, moderada 1, automáticas 0,6 e a ReaSim parada em 0,170 com alvo 0 (energia não gravada). Binário `d02db588…`, pacote `0f9c0154…`. As rodadas 2–4 caíram pelo roteiro: leitura atrasada da bateria (o gancho `ntmtest power` lê o servidor), a célula criativa no slot da bateria, e o orçamento da bateria (descer de 0,75 a 0 custa mais do que ela tinha; agora volta a 0,5 e a falta de energia virou a verificação final) |
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
 
