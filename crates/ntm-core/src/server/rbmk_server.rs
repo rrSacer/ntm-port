@@ -459,6 +459,16 @@ impl Server {
         }
     }
 
+    /// Test hook (`NTM_TEST_HOOKS=1`): the power a battery or a control rod's buffer holds now, as the server keeps it
+    /// (a block entity's copy lags; a rod's buffer is never saved). None for another machine or none there.
+    pub fn native_test_power(&self, dim: &str, pos: Pos) -> Option<i64> {
+        match &self.ready.world.machines.get(&(dim.to_string(), pos))?.data {
+            Data::Battery(b) => Some(b.power as i64),
+            Data::Rbmk(c) => c.control.as_ref().map(|c| c.power),
+            _ => None,
+        }
+    }
+
     /// Test hook (`NTM_TEST_HOOKS=1`): the dimension's kept `SatelliteRayScan` events, one `x,y,z:info:expiresOn` each,
     /// in their order, and the world tick.
     pub fn native_test_rays(&self, dim: &str) -> String {

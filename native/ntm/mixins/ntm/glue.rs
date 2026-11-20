@@ -449,6 +449,12 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
         return true;
     }
+    // `ntmtest power <x> <y> <z>` (RBMK T07): a battery's or a control rod's power as the server holds it now.
+    if w.first()==Some(&"power") && let (Some(x),Some(y),Some(z))=(n(1),n(2),n(3)){
+        let got=server.native_test_power(&dim,[x as i32,y as i32,z as i32]);
+        host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok=true power={}",got.map_or("none".into(),|v|v.to_string()))));
+        return true;
+    }
     if w.first()==Some(&"rays"){
         let reply=format!("ntmtest ok=true {}",server.native_test_rays(&dim));
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
@@ -2419,8 +2425,8 @@ fn send_screen_snapshots(game: &mut crate::game::Game<'_>, server: &mut Server) 
     }
 }
 
-/// `ntmtest screen replay|refusal`: the acting player's last taken command sent again through the same checks (its
-/// refusal, or `ok`), or the last refusal of any command.
+/// `ntmtest screen replay|next|refusal`: the acting player's last taken command sent again through the same checks
+/// (its refusal, or `taken`), as it was or with the next sequence number, or the last refusal of any command.
 fn screen_test_hook(server: &mut Server, me: &str, dim: &str, at: [f64; 3], what: &str) -> String {
     match what {
         "replay" => match lock(&LAST_COMMAND).clone().filter(|(p, _)| p == me) {
@@ -2429,6 +2435,23 @@ fn screen_test_hook(server: &mut Server, me: &str, dim: &str, at: [f64; 3], what
                 Ok(()) => "screen=taken".to_string(),
                 Err(why) => format!("screen=refused:{why:?}"),
             },
+        },
+        // The same command once more with the next sequence number: past the repeat check, to what comes after it
+        // (reach, T06 review P3(d)).
+        "next" => match lock(&LAST_COMMAND).clone().filter(|(p, _)| p == me) {
+            None => "screen=none".to_string(),
+            Some((_, data)) => {
+                let Ok(mut cmd) = ntm_core::screens::control::Command::decode(&data) else { return "screen=undecodable".into() };
+                cmd.seq += 1;
+                let Ok(bytes) = cmd.encode() else { return "screen=unencodable".into() };
+                match server.native_screen_command(me, dim, at, &bytes) {
+                    Ok(()) => {
+                        *lock(&LAST_COMMAND) = Some((me.to_string(), bytes));
+                        "screen=taken".to_string()
+                    }
+                    Err(why) => format!("screen=refused:{why:?}"),
+                }
+            }
         },
         _ => format!("screen=last:{}", lock(&LAST_REFUSAL).clone().unwrap_or_default()),
     }
