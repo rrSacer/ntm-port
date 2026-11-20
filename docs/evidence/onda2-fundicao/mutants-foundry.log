@@ -19,5 +19,17 @@ KILLED       rotary returns a spent steam per 50 used, not 100  <- steam_use_mul
 KILLED       rotary burns a fuel for its whole time, not half  <- fluid_identifier_types_tank_and_runs_recipe, spent_steam_full_blocks_processing_without_consuming_burn_time, steam_use_mult_and_spent_steam_return_exa
 KILLED       rotary pours 36 quanta a tick  <- facing_east_pours_north_into_basin_and_casts_block, a_rotary_jet_on_a_funnel_cell_fills_the_caster_and_it_casts_the_batch
 KILLED       rotary spout one block closer  <- facing_east_pours_north_into_basin_and_casts_block, fluid_proxy_delivers_lightoil_and_core_rejects_direct_duct, rotary_furnace_melts_steel_with_steam_
+KILLED       port: the fluid ducts reach a port from any side  <- a_duct_reaches_a_rotary_port_only_from_the_connection_side, a_duct_reaches_a_caster_port_only_from_the_connection_side
+KILLED       port: a caster port faces the wrong way  <- the_directed_ports_are_the_proxy_cells_with_one_direction_each
+KILLED       port: the rotary steam ports face the front  <- the_directed_ports_are_the_proxy_cells_with_one_direction_each
+KILLED       stack: every output stacks to 64  <- an_output_that_does_not_stack_fills_one_slot_each
+KILLED       stack: the cast deposits up to 64  <- an_output_that_does_not_stack_fills_one_slot_each
+KILLED       rotary claims its record keeps the slots  <- the_rotary_furnace_and_the_caster_say_their_records_keep_no_slots
+KILLED       hand: a shovel takes only the whole ingots of the pool  <- a_shovel_takes_the_whole_pool_as_one_exact_scrap
+KILLED       hand: a shovel leaves the pool  <- a_shovel_takes_the_whole_pool_as_one_exact_scrap
+KILLED       hand: a mold goes in even into a taken slot  <- a_mold_in_hand_goes_into_the_empty_mold_slot_in_one_transfer
+KILLED       hand: the whole stack of molds goes in, not one  <- a_mold_in_hand_goes_into_the_empty_mold_slot_in_one_transfer
+KILLED       hand: a shovel with an empty pool opens the screen  <- a_shovel_takes_the_whole_pool_as_one_exact_scrap
+KILLED       hand: the scrap that does not fit is lost  <- a_scrap_that_does_not_fit_in_the_inventory_is_thrown_once
 KILLED       rotary progress ignores the process speed  <- progress_grows_with_the_process_speed
-22 of 22 killed
+34 of 34 killed
