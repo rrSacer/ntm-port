@@ -172,3 +172,13 @@ Uma fornalha com um `ntm:coal_eternal` no slot 0: o calor sobe (31 300 → 62 00
 `horizon-client-r11` (sha256 `95e1a1dc77d5…`, `ntm.hmod` `a6aaaad5f752…`) é o `horizon-client-r10` (`2843f67d16b7…`) com **uma linha tirada** de
 `ntm_core::server::owned_cells`: `.filter(|c| c.initial.is_some())` (patch em `negative-control-r11.patch`). Com ele o cenário da
 escavadeira falha em `the_server_drops_the_mined_cable_at_once` (o servidor ainda tem o cabo minerado).
+
+## O queimador a lenha em jogo (binário `horizon-client-r12`)
+
+- **`run-wood-burner-game.py`**: uma barrica de woodoil (quatro tanques postos pela tela) atrás do queimador, um duto typed woodoil: o tanque do queimador
+  enche até 4000 mB e a barrica com duto do **lado** não enche o dele; pelo botão 1 da tela o queimador passa a fluido e queima: 268 mB queimados em 6 s deram
+  14 740 HE, **55 por mB** (`report-wood-burner-game.json`; leitura do modelo do servidor).
+- **`burner-load`** (cortes estritos, óleo contado em mB): seis recipientes cheios (1000 mB) levados por comando ao slot 3 do queimador, o ato indo direto ao
+  save (o queimador os despeja um por tique): **8 de 8 pontos, 6000 mB em todos, 0 perdido, nenhum duplicado, igual ao controle** (duas barricas). Mundo reaberto
+  (`where-burner-load.json`): 0 no tanque e 6 recipientes (`kill`, `save_begin`) ou 6000 no tanque e nenhum (os outros seis), nunca nos dois, nunca nenhum
+  (o tanque vai com os slots no bloco entity). Fluido em rede de dutos entre chunks: não tocado (INFRA-F).

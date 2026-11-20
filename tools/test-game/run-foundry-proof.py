@@ -18,6 +18,11 @@ import subprocess
 import sys
 import tempfile
 
+# The atoms `foundry_quanta` counts depend on the scenario (the burner's are mB of oil): it reads the name when imported.
+for _i, _a in enumerate(sys.argv):
+    if _a == '--scenario' and _i + 1 < len(sys.argv):
+        os.environ['NTM_FOUNDRY_SCENARIO'] = sys.argv[_i + 1]
+
 import disk_count
 import foundry_quanta as fq
 

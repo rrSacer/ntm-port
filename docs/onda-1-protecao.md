@@ -1338,8 +1338,8 @@ mais curto: o nível espera e nada cai.
 
 - **Chaminés** (D1 A): as cinzas volantes e a fuligem vêm da fumaça que as máquinas emitem
   (`TileEntityMachinePolluting`), que o port não tem. Os níveis `fly` e `soot` do cinzeiro existem e ficam em zero.
-- **Queimador a lenha** (D2 A): faltam a queima líquida, o tanque e a recarga de bateria pelo slot, além das
-  portas do queimador. A fuligem de poluição (`PollutionHandler`) também falta.
+- **Queimador a lenha** (D2 A): a queima líquida, o tanque e a porta de fluido entraram na rodada 6 (seção abaixo). Faltam a recarga de bateria
+  pelo slot 5 (o port não tem carga em itens), a segunda célula de porta e a fuligem de poluição (`PollutionHandler`).
 - **A ordem de atualização no mesmo tick**: no Java, o cinzeiro pode processar antes ou depois da fornalha, conforme
   a ordem da lista de *tile entities*. No port, a fornalha passa a cinza depois das máquinas, e o cinzeiro a
   transforma no tick seguinte. A diferença é de no máximo um tick.
@@ -1372,3 +1372,20 @@ que depende de outro sistema. Cada uma já aparece na sua fatia; aqui ficam agru
 | **Blocos** | A camada de fallout que solta item e empilha (5d) |
 | **Efeitos que o port ainda não tem** | O resto do `handleRadiationFX` acima de 200 RAD (vômito, suor, partículas) (4b); a poção `mutation` e o `isRadImmune` (5); as conquistas (5) |
 | **Regras globais do projeto** | A durabilidade com um uso a mais do 1.7.10, a aba criativa dos revestimentos e o `ShadyUtil` (1); as leituras do OpenComputers e do Energy Control (4b) |
+
+## O queimador a lenha, fluido (rodada 6, `TileEntityMachineWoodBurner.updateEntity:127-142`)
+
+- **Tanque** de 16 000 mB do tipo `woodoil` (`FluidTank(Fluids.WOODOIL, 16_000)`); o **identificador no slot 2** troca o tipo (o conteúdo vai com o tipo antigo), um
+  **recipiente cheio no slot 3** é despejado e o vazio sai no slot 4 (`setType`, `loadTank`, as mesmas do gerador a diesel).
+- **`liquidBurn`** (botão 1 da tela): em vez do combustível do slot 0, queima 2 mB por tique do tanque, só ligado e com a bateria interna não cheia
+  (`power < maxPower && fill > 0 && isOn`), e dá `heat * mB / 2000` HE, com `heat` o `FT_Flammable.getHeatEnergy` do fluido em TU por balde
+  (`data/machines/flammable.json`, das 60 entradas do `fluid_traits.json` do conteúdo, igualdade testada): woodoil 110 000, 110 HE por tique, 55 por mB. Um fluido sem
+  o traço (água) não queima. O modo sólido não toca o tanque; o líquido não toca o combustível, a cinza nem a queima.
+- **Porta de fluido** só atrás (`canConnect(type, dir)`: `dir == rot.getOpposite()`), no mesmo lado da energia; o queimador do port é um bloco só, a
+  segunda célula de porta (`PortDef` + `rot`) é a que falta.
+- **Bloco entity**: o tanque (id do tipo, mB) vai junto dos slots (`save_state`, dois valores a mais: 11 dados, 9 sincronizados), de modo que o recipiente
+  que saiu do slot 3 e o fluido no tanque são do mesmo instante; um registro de antes (9 dados, sem tanque) lê como era. Entre chunks (a rede de dutos
+  entre uma barrica e o queimador em chunks diferentes) o fluido segue a regra geral das redes de fluido, em memória, **sem commit atômico**: é o limite que
+  o INFRA-F vai tratar, e não é tocado por esta fatia (o recipiente→tanque é dentro do bloco entity).
+- Em jogo: `run-wood-burner-game.py` (uma barrica de woodoil atrás por um duto: 4000 mB chegam, a barrica do lado não enche; o botão 1; 14 740 HE por 268 mB queimados = 55 por mB)
+  e `burner-load` com cortes estritos (seis recipientes de 1000 mB movidos ao slot 3 correndo contra o save: o óleo exatamente uma vez em todos).

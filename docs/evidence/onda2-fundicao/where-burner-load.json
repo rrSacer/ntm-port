@@ -1,0 +1,34 @@
+{
+ "none": {
+  "tank": 6000,
+  "canisters": 0
+ },
+ "kill": {
+  "tank": 0,
+  "canisters": 6
+ },
+ "kv_committed": {
+  "tank": 6000,
+  "canisters": 0
+ },
+ "save_begin": {
+  "tank": 0,
+  "canisters": 6
+ },
+ "chunks_written": {
+  "tank": 6000,
+  "canisters": 0
+ },
+ "entities_written": {
+  "tank": 6000,
+  "canisters": 0
+ },
+ "world_saved": {
+  "tank": 6000,
+  "canisters": 0
+ },
+ "players_saved": {
+  "tank": 6000,
+  "canisters": 0
+ }
+}

@@ -164,6 +164,7 @@ Prova em jogo simples (`slagtap-redstone`, ponto `none`): um bloco de redstone a
 
 ## Tickets abertos da fundição
 
+- **`book_guide`** (o livro de guia, `FuelHandler` single, `ModEventHandler` o dá no início): fora do catálogo por **depender da tela do guia** (`ItemGuideBook`, os tipos `BookType`); entra com ela.
 - **Vazamento da bica entre chunks**: o diário (`Survivor`) recriar o bloco ausente (`WorldEffect::Blocks` com registro inicial) para a origem e a escória em chunks diferentes sem perda. Hoje a bica não vaza nesse caso (o metal fica na origem). Aceito pelo coordenador como fatia à parte.
 
 ## O escoamento da escória (`BlockDynamicSlag.updateTick`), dentro de um chunk

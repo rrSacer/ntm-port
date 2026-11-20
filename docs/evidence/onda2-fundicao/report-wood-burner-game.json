@@ -1,0 +1,42 @@
+{
+  "binary_sha256": "935e09b6ab9ef15568524a914f8b6a108e82303a80de6473ff89d5b1bc049672",
+  "bundle_sha256": "bfb9248d53c8e52da17b18c7ba377644cd537bac296c7ef66b6fd2e9dfa7f4dc",
+  "checks": {
+    "setup:the_back_duct_filled_the_tank_and_the_side_one_did_not": {
+      "ok": true,
+      "actual": [
+        4000,
+        0
+      ]
+    },
+    "setup:the_burner_screen_is_open": {
+      "ok": true,
+      "actual": "container"
+    },
+    "setup:it_burns_the_tank": {
+      "ok": true,
+      "actual": [
+        3732,
+        14740
+      ]
+    },
+    "setup:55_he_a_mb": {
+      "ok": true,
+      "actual": [
+        3732,
+        14740
+      ]
+    }
+  },
+  "evidence": {
+    "filled": [
+      4000,
+      0
+    ],
+    "burning": [
+      3732,
+      14740
+    ]
+  },
+  "ok": true
+}
