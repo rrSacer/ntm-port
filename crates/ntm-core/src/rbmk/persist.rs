@@ -40,7 +40,7 @@ pub const SCHEMA: u32 = 2;
 ///
 /// T04: all eighteen step, each as its tile entity is a node of the streams and a neighbour of `moveHeat`
 /// (`RBMKNeutronHandler.getNodes`, `TileEntityRBMKBase.moveHeat`). What the save does not hold yet steps as Java's
-/// fresh tile entity: a control rod at level and target 0 (it stops a stream: T07 moves it), dry boiler, heater and
+/// fresh tile entity: dry boiler, heater and
 /// cooler tanks (T08 fills them), an outgasser that never processes (T09 feeds it, its slots are not read here).
 pub fn kind_of(block: &str) -> Option<(Kind, bool)> {
     Some(match block {
@@ -314,10 +314,82 @@ pub struct RbmkColumn {
     /// save from before T06, where they read as the TE's defaults.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auto: Option<AutoControl>,
+    /// A control rod's movement (`TileEntityRBMKControl`, T07): none for the other columns, and in a save from before
+    /// T07, where it reads as the TE's defaults.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub control: Option<ControlState>,
+}
+
+/// `TileEntityRBMKControl`'s state, and the manual rods' (`TileEntityRBMKControlManual`): what the Java saves (`level`,
+/// `targetLevel`; `startingLevel` and `color` for a manual rod), doubles by their bits, and the power buffer of the ReaSim
+/// rods, which the Java does not save (`power` is not in `writeToNBT`: a reopened rod starts empty) and so is kept in
+/// memory only here too.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct ControlState {
+    #[serde(with = "bits")]
+    pub level: f64,
+    #[serde(with = "bits")]
+    pub target_level: f64,
+    #[serde(with = "bits")]
+    pub starting_level: f64,
+    /// `RBMKColor`'s ordinal (`RED`..`PURPLE`), none when the rod is in no group. Manual rods only.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub color: Option<u8>,
+    /// The ReaSim rods (`isPowered`): `power` and `hasPower` (the last step's), never saved.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub powered: bool,
+    #[serde(skip)]
+    pub power: i64,
+    #[serde(skip)]
+    pub has_power: bool,
+}
+
+/// `TileEntityRBMKControl.maxPower`: ten ticks of movement.
+pub const CONTROL_MAX_POWER: i64 = 50_000;
+
+/// The five control rods (`TileEntityRBMKControl`).
+pub fn is_control(block: &str) -> bool {
+    matches!(block, "ntm:rbmk_control" | "ntm:rbmk_control_mod" | "ntm:rbmk_control_reasim" | "ntm:rbmk_control_auto" | "ntm:rbmk_control_reasim_auto")
+}
+
+/// `TileEntityRBMKControl.isPowered`: the ReaSim rods, which move only on power.
+pub fn is_powered_control(block: &str) -> bool {
+    matches!(block, "ntm:rbmk_control_reasim" | "ntm:rbmk_control_reasim_auto")
+}
+
+/// The manual rods (`TileEntityRBMKControlManual`).
+pub fn is_manual_control(block: &str) -> bool {
+    matches!(block, "ntm:rbmk_control" | "ntm:rbmk_control_mod" | "ntm:rbmk_control_reasim")
+}
+
+impl ControlState {
+    pub fn of(block: &str) -> Self {
+        ControlState { powered: is_powered_control(block), ..ControlState::default() }
+    }
+}
+
+/// A ReaSim rod as a receiver on its network (`IEnergyReceiverMK2`): it takes what its buffer has room for
+/// (`transferPower`, `getReceiverSpeed` = `getMaxPower`) and gives nothing.
+impl crate::energy::EnergyNode for ControlState {
+    fn role(&self) -> crate::energy::Role {
+        crate::energy::Role::Consumer
+    }
+    fn offer(&self) -> u64 {
+        0
+    }
+    fn demand(&self) -> u64 {
+        (CONTROL_MAX_POWER - self.power).max(0) as u64
+    }
+    /// Energy the network gives it.
+    fn give(&mut self, he: u64) {
+        self.power = (self.power + he as i64).min(CONTROL_MAX_POWER);
+    }
+    /// It offers none, so the network takes none.
+    fn take(&mut self, _he: u64) {}
 }
 
 /// `TileEntityRBMKControlAuto`'s settings, set from its screen (`receiveControl`): the levels at the heat bounds and
-/// the curve between them. Doubles by their bits. T07 moves the rod by them.
+/// the curve between them. Doubles by their bits. The step moves the rod by them (T07).
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct AutoControl {
     #[serde(with = "bits")]
@@ -361,6 +433,7 @@ impl RbmkColumn {
             lid: Lid::None,
             screen: screen_len(block) as u8,
             auto: is_auto_control(block).then(AutoControl::default),
+            control: is_control(block).then(|| ControlState::of(block)),
         }
     }
 
@@ -371,6 +444,10 @@ impl RbmkColumn {
 }
 
 impl Logic for RbmkColumn {
+    /// A ReaSim control rod takes power from below (T07); no other column is on a network.
+    fn energy(&mut self) -> Option<&mut dyn crate::energy::EnergyNode> {
+        self.control.as_mut().filter(|c| c.powered).map(|c| c as &mut dyn crate::energy::EnergyNode)
+    }
     fn level(&self, _: u8) -> u8 {
         0
     }
@@ -398,7 +475,14 @@ impl Slotted for RbmkColumn {
             Lid::Standard => 1,
             Lid::Glass => 2,
         };
-        // An automatic control rod's curve, the value its screen's overlays read (T06).
+        // A control rod's level for its model (`RenderRBMKControlRod` raises the rod by it, in thousandths, T07), and
+        // in [2] the automatic rod's curve (T06) or the manual rod's group, 0 for none (the model's colour).
+        if let (Some(c), Some(l)) = (&self.control, v.get_mut(1)) {
+            *l = (c.level * 1000.0) as i32;
+        }
+        if let (Some(c), Some(g)) = (&self.control, v.get_mut(2)) {
+            *g = c.color.map_or(0, |c| i32::from(c) + 1);
+        }
         if let (Some(a), Some(f)) = (&self.auto, v.get_mut(2)) {
             *f = i32::from(a.function);
         }

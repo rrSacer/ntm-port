@@ -30,6 +30,8 @@ pub enum Ports {
     Sides,
     /// The wood burner: one port at its back (`dir.getOpposite()`).
     Back,
+    /// One port below (`TileEntityRBMKControl.canConnect`: the ReaSim control rods, `DOWN` only).
+    Down,
 }
 
 /// A horizontal facing as an offset.
@@ -54,6 +56,7 @@ pub fn ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy::Port>
             .filter(|d| d[1] == 0)
             .map(|d| vec![*d])
             .collect(),
+        Ports::Down => vec![vec![[0, -1, 0]]],
         Ports::Back => match facing.and_then(facing_dir) {
             Some([x, y, z]) => vec![vec![[-x, -y, -z]]],
             None => vec![DIRS.to_vec()],
@@ -1235,14 +1238,14 @@ pub const BLOCKS: &[BlockSpec] = &[
         kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Down,
     },
     BlockSpec {
         id: "ntm:rbmk_control_reasim_auto",
         kind: Kind::Rbmk,
         facing: Some("facing"),
         level: HONEY,
-        ports: Ports::None,
+        ports: Ports::Down,
     },
     BlockSpec {
         id: "ntm:rbmk_blank",
