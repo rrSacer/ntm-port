@@ -165,3 +165,13 @@ fn a_column_saved_before_t06_opens_with_the_tes_defaults() {
     let grant = Grant::decode(&g.server.native_screen_open("p1", OW, AT).unwrap()).unwrap();
     assert_eq!(crate::rbmk::screen::auto_of(&grant.snapshot.fields), AutoControl::default());
 }
+
+#[test]
+fn a_screen_without_a_machine_slot_has_a_menu() {
+    for b in ["ntm:rbmk_control_auto", "ntm:rbmk_control_reasim_auto"] {
+        let c = crate::native::container(b).expect("a menu");
+        assert_eq!((c.slots, c.inputs.len(), c.outputs.len()), (0, 0, 0), "{b}");
+    }
+    // The manual rods' screen is T07's: no menu yet, as before.
+    assert!(crate::native::container("ntm:rbmk_control").is_none());
+}
