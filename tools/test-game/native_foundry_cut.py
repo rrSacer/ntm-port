@@ -259,9 +259,10 @@ def break_it(g, cells, label):
     time.sleep(1.5)
 
 
-def pick_up_all(g):
+def pick_up_all(g, required=True):
     drops = [e['pos'] for e in g.ctl('entities 20')['entities'] if e.get('kind') == 'item']
-    g.check('it_dropped_something', bool(drops), drops)
+    if required:
+        g.check('it_dropped_something', bool(drops), drops)
     for d in drops:
         g.command(f'tp @s {d[0]} {d[1]} {d[2]}')
         time.sleep(1)
@@ -322,7 +323,8 @@ def act(g):
             g.command('item replace block %d %d %d container.0 with ntm:mold__nugget 1' % tuple(core))
             g.check('the_excess_went_out', wait_for(lambda: molten(model(g, core)) == 80, 120), molten(model(g, core)))
             time.sleep(2)
-            pick_up_all(g)
+            # A player near the machine may have picked the scrap up already: the inventory is what is checked.
+            pick_up_all(g, required=False)
             g.check('one_exact_scrap_of_64', 'ntm_amount:64' in inventory_text(g).replace(' ', '').replace('"', ''), inventory_text(g)[:400])
         g.evidence['picked'] = inventory_text(g)[:600]
         g.command('gamemode creative @s')
@@ -373,6 +375,12 @@ def verify(g, again=False):
     g.command(f'tp @s {CORE[0] + .5} {CORE[1]} {CORE[2] + 4.5}')
     time.sleep(6)
     now = count(g)
+    if SCENARIO == 'excess' and not VANILLA:
+        # The review's P1-1: a caster restored from the journal keeps the block entity's mold (the older or the newer one:
+        # never none) and its model has the pool and the slots.
+        items = block_items(g, caster_core(g))
+        g.evidence['caster_items'] = items[:400]
+        g.check('the_mold_survives', 'ntm:mold__' in items, items[:400])
     # Counted only: the verdict is the runner's, against the base and the vanilla control.
     g.evidence['counted' + ('_again' if again else '')] = now
     g.ctl('save')
