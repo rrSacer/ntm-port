@@ -123,6 +123,19 @@ mod tests {
         assert!(!known.contains("ntm:mush"), "the glowing mushroom came in: take it off MISSING");
     }
 
+    /// `getOutput` walks an item's OreDict names in the OreDict's order, here in the port's: the same for every port item
+    /// that has at most one name a recipe asks for, which is every one of them.
+    #[test]
+    fn no_port_item_has_two_recipe_names() {
+        let keys: Vec<&str> = OUTGASSER.iter().filter_map(|r| if let OutgasserInput::Ore(k) = r.input { Some(k) } else { None }).collect();
+        for k in &keys {
+            for item in crate::oredict::items(k) {
+                let hits: Vec<&String> = crate::oredict::names(item).iter().filter(|n| keys.contains(&n.as_str())).collect();
+                assert!(hits.len() <= 1, "{item}: {hits:?}");
+            }
+        }
+    }
+
     /// The port's items find their recipes: by the exact item (the tar, the vanilla mushroom stew), by OreDict name,
     /// and none for a mushroom (its product is missing) or an item without one.
     #[test]

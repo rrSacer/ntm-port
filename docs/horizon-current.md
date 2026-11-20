@@ -1673,7 +1673,8 @@ nada.
 - **Gás pela rede**: o mesmo limite geral provado no T08 (corte entre os registros de dois chunks ligados por cano
   pode duplicar ou perder fluido; ticket INFRA-F no plano).
 - **Ordem do OreDict**: o `getOutput` do Java percorre os nomes do item na ordem de registro do OreDict; aqui na ordem
-  dos nomes do port. Só diferiria para um item com dois nomes de receitas diferentes (nenhum entre os do port hoje).
+  dos nomes do port. Só diferiria para um item com dois nomes de receitas diferentes: nenhum no port (teste
+  `no_port_item_has_two_recipe_names`).
 
 
 ## Sexta atualização — 09/11/2026, upstream `a3bf6531e`
