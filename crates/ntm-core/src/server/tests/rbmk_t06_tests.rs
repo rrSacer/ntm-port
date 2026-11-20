@@ -75,7 +75,8 @@ fn a_command_of_the_open_screen_sets_the_column_in_its_next_transaction() {
 #[test]
 fn a_refused_command_changes_nothing() {
     let (mut g, grant) = opened();
-    let good = settings([50.0, 5.0, 500.0, 50.0]);
+    // A level of 0 below the bounds: the rod stays where it is (in), so only the settings change (T07 moves the rod).
+    let good = settings([50.0, 0.0, 500.0, 50.0]);
     let before = untouched(&mut g);
     let refuse = |g: &mut Game, player: &str, dim: &str, at: [f64; 3], data: Vec<u8>, why: Refusal| {
         assert_eq!(g.server.native_screen_command(player, dim, at, &data), Err(why.clone()), "{why:?}");
@@ -139,7 +140,8 @@ fn a_command_waiting_on_a_column_that_went_is_dropped() {
 fn the_snapshot_follows_the_column_while_the_screen_is_open() {
     let (mut g, grant) = opened();
     assert!(g.server.native_screen_snapshots().is_empty(), "the grant was the first");
-    g.server.native_screen_command("p1", OW, NEAR, &cmd(&grant, 1, settings([90.0, 10.0, 800.0, 200.0]))).unwrap();
+    // A level of 0 below the bounds: the rod stays in, so the snapshot changes once (T07 moves the rod).
+    g.server.native_screen_command("p1", OW, NEAR, &cmd(&grant, 1, settings([90.0, 0.0, 800.0, 200.0]))).unwrap();
     g.run(1);
     let sent = g.server.native_screen_snapshots();
     assert_eq!(sent.len(), 1);
@@ -150,7 +152,7 @@ fn the_snapshot_follows_the_column_while_the_screen_is_open() {
     g.run(3);
     assert!(g.server.native_screen_snapshots().is_empty());
     // A column with no screen of its kind opens none.
-    g.place([3, Y, 3], &column("rbmk_control"));
+    g.place([3, Y, 3], &column("rbmk_blank"));
     g.run(1);
     assert!(g.server.native_screen_open("p1", OW, [3, Y, 3]).is_none());
 }
@@ -172,6 +174,7 @@ fn a_screen_without_a_machine_slot_has_a_menu() {
         let c = crate::native::container(b).expect("a menu");
         assert_eq!((c.slots, c.inputs.len(), c.outputs.len()), (0, 0, 0), "{b}");
     }
-    // The manual rods' screen is T07's: no menu yet, as before.
-    assert!(crate::native::container("ntm:rbmk_control").is_none());
+    // The manual rods (T07) too; a column with no screen of its kind has none.
+    assert_eq!(crate::native::container("ntm:rbmk_control").map(|c| c.slots), Some(0));
+    assert!(crate::native::container("ntm:rbmk_blank").is_none());
 }
