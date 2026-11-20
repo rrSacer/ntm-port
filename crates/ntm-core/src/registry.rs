@@ -1721,7 +1721,7 @@ pub fn fluid_ports(spec: &BlockSpec, facing: Option<&str>) -> Vec<crate::energy:
     }
     // An RBMK boiler, heater or cooler (T08): its ports are cells of its column or of a loader under it, by the world
     // (`fluid_server`, `rbmk::persist::column_ports`); the core itself only as one of them.
-    if crate::rbmk::persist::piped_types(spec.id).is_some() {
+    if crate::rbmk::persist::has_column_ports(spec.id) {
         return vec![vec![]];
     }
     if spec.id == "ntm:pile_device__vent" {

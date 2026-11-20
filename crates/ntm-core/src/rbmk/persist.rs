@@ -325,6 +325,50 @@ pub struct RbmkColumn {
     /// where they read as the TE's (empty, of its types).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub piped: Option<PipedState>,
+    /// The outgasser's progress and gas (T09): none for the other columns, and in a save from before T09, where it
+    /// reads as the TE's (no progress, an empty tank of tritium).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub outgasser: Option<OutgasserState>,
+}
+
+/// `TileEntityRBMKOutgasser`'s `progress` (by its bits) and `gas` tank as its `writeToNBT` keeps them; its two slots
+/// are the engine's (the input 0, the output 1).
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct OutgasserState {
+    #[serde(with = "bits")]
+    pub progress: f64,
+    pub gas: KeptTank,
+}
+
+impl OutgasserState {
+    pub fn of(block: &str) -> Option<Self> {
+        (block == "ntm:rbmk_outgasser").then(|| OutgasserState { progress: 0.0, gas: KeptTank::of("TRITIUM", super::outgasser::GAS_MAX) })
+    }
+}
+
+/// The outgasser on the network of its gas's type, sending only (`setOutputTanks(gas)`).
+impl crate::fluid::FluidNode for OutgasserState {
+    fn fluid_offer(&self, fluid: &str) -> u64 {
+        if network_fluid(&self.gas.fluid) == Some(fluid) { self.gas.fill.max(0) as u64 } else { 0 }
+    }
+    fn fluid_demand(&self, _fluid: &str) -> u64 {
+        0
+    }
+    fn fluid_types(&self) -> Vec<String> {
+        network_fluid(&self.gas.fluid).map(str::to_string).into_iter().collect()
+    }
+    fn fluid_give(&mut self, _fluid: &str, _mb: u64) {}
+    fn fluid_take(&mut self, fluid: &str, mb: u64) {
+        if network_fluid(&self.gas.fluid) == Some(fluid) {
+            self.gas.fill = (i64::from(self.gas.fill) - mb as i64).max(0) as i32;
+        }
+    }
+}
+
+/// The columns whose ports are the column's (`getPortsNoLoader/CloseLoader/ClassicLoader`): the boiler, heater and
+/// cooler (T08) and the outgasser (T09).
+pub fn has_column_ports(block: &str) -> bool {
+    piped_types(block).is_some() || block == "ntm:rbmk_outgasser"
 }
 
 /// A `FluidTank` as its `writeToNBT` keeps it: the type (`Fluids` name, `NONE` for none), the fill and the maximum
@@ -520,6 +564,7 @@ impl RbmkColumn {
             auto: is_auto_control(block).then(AutoControl::default),
             control: is_control(block).then(|| ControlState::of(block)),
             piped: PipedState::of(block),
+            outgasser: OutgasserState::of(block),
         }
     }
 
@@ -622,8 +667,11 @@ impl Logic for RbmkColumn {
     fn energy(&mut self) -> Option<&mut dyn crate::energy::EnergyNode> {
         self.control.as_mut().filter(|c| c.powered).map(|c| c as &mut dyn crate::energy::EnergyNode)
     }
-    /// A boiler, heater or cooler on the fluid networks of its tanks (T08).
+    /// A boiler, heater or cooler on the fluid networks of its tanks (T08); an outgasser on its gas's (T09).
     fn fluid(&mut self) -> Option<&mut dyn crate::fluid::FluidNode> {
+        if let Some(o) = self.outgasser.as_mut() {
+            return Some(o as &mut dyn crate::fluid::FluidNode);
+        }
         self.piped.as_mut().map(|p| p as &mut dyn crate::fluid::FluidNode)
     }
     fn level(&self, _: u8) -> u8 {

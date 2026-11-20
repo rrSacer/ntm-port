@@ -75,7 +75,7 @@ impl Server {
         // dial, as the Java's `getPorts*` read it, not the column's own height: D5).
         let mut loaders: BTreeSet<Key> = BTreeSet::new();
         for (k, m) in &self.ready.world.machines {
-            if crate::rbmk::persist::piped_types(&m.block).is_none() || self.ready.loaded.get(k) != Some(&true) {
+            if !crate::rbmk::persist::has_column_ports(&m.block) || self.ready.loaded.get(k) != Some(&true) {
                 continue;
             }
             for dy in [1, 2] {
@@ -85,7 +85,7 @@ impl Server {
                 }
             }
         }
-        let piped_dims: BTreeSet<String> = self.ready.world.machines.iter().filter(|(_, m)| crate::rbmk::persist::piped_types(&m.block).is_some()).map(|(k, _)| k.0.clone()).collect();
+        let piped_dims: BTreeSet<String> = self.ready.world.machines.iter().filter(|(_, m)| crate::rbmk::persist::has_column_ports(&m.block)).map(|(k, _)| k.0.clone()).collect();
         let heights: BTreeMap<String, i32> = piped_dims.into_iter().map(|d| {
             let h = self.rbmk_dials_peek(&d, "KEY_COLUMN_HEIGHT").column_height;
             (d, h)
@@ -125,7 +125,7 @@ impl Server {
             // (container_bridge): a duct or a machine touching one reaches it.
             let mut proxies = super::container_bridge::fluid_proxy_cells(&m.block, *pos, m.facing.as_deref());
             // An RBMK column's ports by the loaders under it (`getPortsNoLoader/CloseLoader/ClassicLoader`).
-            if crate::rbmk::persist::piped_types(&m.block).is_some() {
+            if crate::rbmk::persist::has_column_ports(&m.block) {
                 use crate::rbmk::persist::{column_ports, LoaderShape};
                 let [x, y, z] = *pos;
                 let shape = LoaderShape::of(loaders.contains(&(dim.clone(), [x, y - 1, z])), loaders.contains(&(dim.clone(), [x, y - 2, z])));

@@ -29,6 +29,7 @@ use crate::{
     machine::Data,
     rbmk::{
         fluids::{self, Tank},
+        outgasser,
         persist::{self, Layer, Member, RbmkColumn},
         reactor::{AutoFunction, Column, Data as ReactorData, Effect, Kind as ColumnKind, Reactor},
     },
@@ -322,6 +323,27 @@ impl Server {
                         _ => {}
                     }
                 }
+                // An outgasser as its TE (T09): its progress and gas, and its two slots in the recipes' terms (the Java
+                // item of a port item a recipe names; an input whose recipe makes an item the port lacks has none).
+                if let ReactorData::Outgasser(o) = &mut col.data {
+                    let st = c.outgasser.clone().unwrap_or_else(|| persist::OutgasserState::of(&m.block).expect("an outgasser"));
+                    (o.progress, o.gas) = (st.progress, Tank { fluid: fluids::java_fluid(&st.gas.fluid), fill: st.gas.fill, max: o.gas.max });
+                    let as_recipe = |s: &Stack, input: bool| {
+                        let (item, meta) = if !input || outgasser::recipe_of_port(&s.id).is_some() { outgasser::java_item(&s.id) } else { (s.id.clone(), 0) };
+                        let max_stack = outgasser::port_item(&item, meta).map_or(64, |(_, n)| n);
+                        outgasser::Stack { item, count: s.count as i32, meta, max_stack }
+                    };
+                    o.input = c.slots.first().cloned().flatten().map(|s| as_recipe(&s, true));
+                    o.output = c.slots.get(1).cloned().flatten().map(|s| as_recipe(&s, false));
+                    if let (Some(i), Some(Some(s))) = (&o.input, c.slots.first())
+                        && outgasser::recipe_of_port(&s.id).is_some()
+                    {
+                        r.ore_names.insert((i.item.clone(), i.meta), crate::oredict::names(&s.id).to_vec());
+                    }
+                    for (item, _, _, n) in outgasser::PORT_ITEMS {
+                        r.max_stack.insert(item.to_string(), n);
+                    }
+                }
                 r.add(col);
             }
             // The heaters' fluid identifiers (`feed.setType(0, slots)`): a stack that is one types the feed, one naming
@@ -454,6 +476,21 @@ impl Server {
                     ReactorData::Heater(h) => {
                         let st = c.piped.get_or_insert_with(|| persist::PipedState::of(&block).expect("a heater"));
                         (st.input, st.output) = (kept(&h.feed), kept(&h.steam));
+                    }
+                    ReactorData::Outgasser(o) => {
+                        let st = c.outgasser.get_or_insert_with(|| persist::OutgasserState::of(&block).expect("an outgasser"));
+                        (st.progress, st.gas) = (o.progress, kept(&o.gas));
+                        // The slots back as the engine's stacks: the input's own stack, fewer; the output's, more, or the
+                        // product's port item in an empty slot.
+                        let back = |was: Option<Stack>, now: &Option<outgasser::Stack>| match (was, now) {
+                            (_, None) => None,
+                            (Some(s), Some(n)) => Some(Stack { count: n.count as u32, ..s }),
+                            (None, Some(n)) => outgasser::port_item(&n.item, n.meta).map(|(id, _)| Stack::new(id, n.count as u32)),
+                        };
+                        let (input, output) = (c.slots.first().cloned().flatten(), c.slots.get(1).cloned().flatten());
+                        if c.slots.len() >= 2 {
+                            (c.slots[0], c.slots[1]) = (back(input, &o.input), back(output, &o.output));
+                        }
                     }
                     ReactorData::Cooler(k) => {
                         let st = c.piped.get_or_insert_with(|| persist::PipedState::of(&block).expect("a cooler"));
