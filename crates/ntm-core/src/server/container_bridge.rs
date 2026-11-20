@@ -960,6 +960,14 @@ impl Server {
             let Some(mut now) = host.machine_slots(&key.0, key.1) else {
                 continue;
             };
+            // A block entity read back from a save can hold fewer slots than its machine has (its items up to the last
+            // one kept): the rest are empty, as many as the machine's file says.
+            if let Some(m) = r.world.machines.get(&key) {
+                let n = crate::native::block_slots(&m.block).len();
+                if now.len() < n {
+                    now.resize(n, None);
+                }
+            }
             // Item data as the engine writes it back, canonical: compared
             // and piled as the same data the port wrote.
             for s in now.iter_mut().flatten() {

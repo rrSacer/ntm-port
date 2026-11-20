@@ -50,3 +50,24 @@ fn a_duct_of_the_right_type_carries_water_between_barrels() {
     assert_eq!(s.tank.mb, 9000);
     assert!(g.world.borrow().get(OW, b).contains("honey_level=2"), "{}", g.world.borrow().get(OW, b));
 }
+
+/// A barrel whose block entity comes back from the save with its items only up to the last kept (the empty container
+/// in slot 3: four of its six) opens with the rest empty, and goes on (it read slot 4 out of bounds: RBMK T08's proof).
+#[test]
+fn a_barrel_read_back_with_fewer_slots_opens_with_the_rest_empty() {
+    let mut g = game();
+    let at = [0, 70, 0];
+    g.place(at, "ntm:barrel_steel[facing=north,honey_level=0]");
+    g.run(2);
+    let key = (OW.to_string(), at);
+    g.world.borrow_mut().engine.get_mut(&key).unwrap().0[2] = Some(crate::server::container_bridge::Stack::new("ntm:fluid_barrel_full__water", 1));
+    g.run(2);
+    assert_eq!(store(&mut g, at).tank.mb, 16_000);
+    let mut world = g.world.borrow().clone();
+    let slots = &mut world.engine.get_mut(&key).unwrap().0;
+    assert!(slots[3].is_some(), "the empty container in slot 3: {slots:?}");
+    slots.truncate(4);
+    let mut back = Game::new(Rc::new(RefCell::new(world)));
+    back.run(3);
+    assert_eq!(store(&mut back, at).tank.mb, 16_000);
+}
