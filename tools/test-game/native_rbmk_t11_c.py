@@ -118,6 +118,18 @@ def prepare(g):
     g.evidence['lamps'] = [re.search(r'data: \[I; ([^\]]*)\]', ' '.join(g.command(f'data get block {core[0]} {core[1]} {core[2]} data').get('chat', []))) for _ in range(6)]
     g.evidence['lamps'] = [m[1] if m else None for m in g.evidence['lamps']]
     time.sleep(4)
+    if os.environ.get('NTM_T11_PROBE') == '1':
+        # Diagnosis: an arrow held a second at the console; where the player and the crane are before and after.
+        stand(g, core, facing)
+        probe = {'before': [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data')]}
+        g.ctl('key key.keyboard.left down')
+        time.sleep(1)
+        probe['held'] = [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data')]
+        g.ctl('key key.keyboard.left up')
+        time.sleep(.5)
+        probe['after'] = [g.ctl('status').get('player', {}).get('position'), (machine(g, core) or {}).get('data')]
+        g.evidence['probe'] = probe
+        g.save()
     g.command('tp @s 24.5 101 1.5 0 0')
     time.sleep(2)
     base = count(g)

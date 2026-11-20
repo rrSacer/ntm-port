@@ -199,6 +199,10 @@ class Proof:
                 if at == (target[0], target[2]):
                     return s
                 g.ctl(f'key key.keyboard.{key} down')
+                time.sleep(1)
+                data = ' '.join(self.host.command(f'data get block {self.core[0]} {self.core[1]} {self.core[2]} data').get('chat', []))
+                self.host.evidence.setdefault('drive', []).append({'key': key, 'target': target, 'crane': crane(self.host, self.core),
+                                                                    'data': data[-60:], 'guest_at': g.ctl('status').get('player', {}).get('position')})
                 deadline = time.monotonic() + 12
                 best = None
                 while time.monotonic() < deadline:
