@@ -330,6 +330,16 @@ impl Server {
                 self.ready.rbmk_dumps.push((path, serde_json::to_string(&d).expect("a dump")));
             }
             r.step();
+            // Test hook: the channels whose rod took flux in a step on a multiple of 200 (the flux it burnt, kept as
+            // `lastFluxQuantity`; an overheating channel's is zeroed and does not count), apart from its reports.
+            if r.time % 200 == 0 {
+                let seen = self.ready.rbmk_flux_200.entry(dim.clone()).or_default();
+                if seen.0 != r.time {
+                    *seen = (r.time, BTreeSet::new());
+                }
+                let took = |c: &crate::rbmk::reactor::Column| c.rod().is_some_and(|rc| rc.fuel.is_some() && rc.last_flux_quantity > 0.0);
+                seen.1.extend(order.iter().zip(&r.columns).filter(|(_, c)| took(c)).map(|(p, _)| [p[0], y, p[1]]));
+            }
             // incrementRad of the open rods and of the streams over and into open columns (4d), as they came. D2: a NaN
             // flux makes a NaN increment, which Java stores and spreads (`clamp_float` lets it through) and which the
             // field's JSON cannot keep (it would write `null` and lose the whole key on reading): it adds nothing.
@@ -434,7 +444,9 @@ impl Server {
     /// in their order, and the world tick.
     pub fn native_test_rays(&self, dim: &str) -> String {
         let list: Vec<String> = self.ready.world.rbmk_rays.get(dim).into_iter().flatten().map(|e| format!("{},{},{}:{}:{}", e.pos[0], e.pos[1], e.pos[2], e.info, e.expires_on)).collect();
-        format!("tick={} rays={}", self.ready.world.ticks, list.join(";"))
+        let (at, took) = self.ready.rbmk_flux_200.get(dim).cloned().unwrap_or((-1, BTreeSet::new()));
+        let took: Vec<String> = took.iter().map(|p| format!("{},{},{}", p[0], p[1], p[2])).collect();
+        format!("tick={} rays={} flux200={at}:{}", self.ready.world.ticks, list.join(";"), took.join(";"))
     }
 
     /// Test hook (`NTM_TEST_HOOKS=1`): the rod of the fuel channel at `pos` leaves as an item entity at `at` through a

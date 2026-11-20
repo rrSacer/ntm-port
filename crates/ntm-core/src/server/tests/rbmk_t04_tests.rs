@@ -324,6 +324,9 @@ fn satellite_events_are_kept_by_dimension_with_their_lifetime() {
     let first = rays(&mut g);
     let at = first[0].expires_on - 300;
     assert_eq!(at % 200, 0, "reported on a tick multiple of 200");
+    // The test hook's own reading of that step's input: both channels took flux on it (T04 re-review P3(a)).
+    let hook = g.server.native_test_rays(OW);
+    assert!(hook.ends_with(&format!("flux200={at}:0,{Y},0;1,{Y},0")), "{hook}");
     assert_eq!(
         first
             .iter()

@@ -32,12 +32,13 @@ def rays(g):
     if t03.VANILLA:
         return None
     text = ' '.join(g.command('ntmtest rays').get('chat', []))
-    m = re.search(r'tick=(\d+) rays=(\S*)', text)
+    m = re.search(r'tick=(\d+) rays=(\S*) flux200=(-?\d+):(\S*)', text)
     if not m:
         return {'readable': False, 'text': text[:200]}
     events = [e.split(':') for e in filter(None, m[2].split(';'))]
     return {'readable': True, 'tick': int(m[1]), 'count': len(events), 'expires': [int(e[2]) for e in events],
-            'at': [[int(v) for v in e[0].split(',')] for e in events]}
+            'at': [[int(v) for v in e[0].split(',')] for e in events],
+            'flux200_tick': int(m[3]), 'flux200': [[int(v) for v in c.split(',')] for c in filter(None, m[4].split(';'))]}
 
 
 def channels_with_rod(g):
@@ -50,9 +51,18 @@ def rays_as_expected(r, rods):
     while it has a rod and flux, `TileEntityRBMKRod:122-124`), each on its phase (reported on a tick multiple of 200:
     `expiresOn = tick + 300`), none past its expiry by more than the 20 ticks `updateSystem` may take to remove it.
     None at all is expected when no channel took flux on the last multiple of 200, as after a cut that lost P's rod
-    (`chunks_written`: S's partner gone, S and Q starve)."""
-    return (r['readable'] and all(e % 200 == 100 for e in r['expires'])
-            and all(e > r['tick'] - 20 for e in r['expires']) and all(a in rods for a in r['at']))
+    (`chunks_written`: S's partner gone, S and Q starve).
+
+    And at least (T04 re-review 2, P3(a)): when the server's own reading of the last step on a multiple of 200 before
+    this one is there (`flux200`, the steps' input, kept in memory since the opening), every channel with a rod that
+    took flux in it has its event, reported then (`expiresOn` = that tick + 300)."""
+    at_most = (r['readable'] and all(e % 200 == 100 for e in r['expires'])
+               and all(e > r['tick'] - 20 for e in r['expires']) and all(a in rods for a in r['at']))
+    last = r['tick'] - r['tick'] % 200
+    if not at_most or r['flux200_tick'] != last:
+        return at_most
+    reported = {tuple(a): e for a, e in zip(r['at'], r['expires'])}
+    return all(reported.get(tuple(c)) == last + 300 for c in r['flux200'])
 
 
 def set_rule(g, value):

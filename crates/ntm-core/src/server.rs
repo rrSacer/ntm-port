@@ -442,6 +442,10 @@ struct Ready {
     /// theirs, and where to write it; and the dumps of the steps accepted, written after them.
     rbmk_dump_asked: BTreeMap<Key, String>,
     rbmk_dumps: Vec<(String, String)>,
+    /// Test hooks only (`Server::native_test_rays`): by dimension, the last step on a tick multiple of 200 and the
+    /// fuel channels holding a rod that took flux in it, read from the steps' input (the condition of
+    /// `TileEntityRBMKRod:122`, apart from the reports it makes). In memory only: none after an opening until such a step.
+    rbmk_flux_200: BTreeMap<String, (i64, BTreeSet<Pos>)>,
     /// The RBMK dials as `RBMKDials` caches them, one cache per dimension (`rbmk_columns`, T04 3A): the overworld's
     /// created when the server starts.
     rbmk_dials: crate::rbmk::dials::DialState,
