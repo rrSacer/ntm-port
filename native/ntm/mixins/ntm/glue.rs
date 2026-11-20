@@ -101,6 +101,7 @@ fn feed_changes(server:&mut Server,host:&mut Host<'_,'_>){
 /// last tick (a command, a frozen tick) has its machine's contents out and what it owes in its chunk's record first,
 /// as a vanilla container's items are out the instant its block goes (N1 of the fresh review).
 pub(super) fn world_saving(game:&mut crate::game::Game<'_>,_wait:bool){
+    if trace_effects(){eprintln!("ntm save-order: world_saving wait={_wait} tick={}",game.ticks);let dim=game.dim.id().to_string();orphan_scan(game,&dim,None,"world-saving");}
     horizon_client::spans::time("ntm_world_saving", || {
         if let Some((server,_))=lock(&SERVER).as_mut(){
             let mut host=Host{game,buttons:Vec::new()};
@@ -116,6 +117,7 @@ pub(super) fn world_saved(game:&mut crate::game::Game<'_>,wait:bool){
     horizon_client::spans::time("ntm_world_saved", || world_saved_timed(game, wait));
 }
 fn world_saved_timed(game:&mut crate::game::Game<'_>,wait:bool){
+    if trace_effects(){eprintln!("ntm save-order: world_saved begin wait={wait} tick={}",game.ticks);let dim=game.dim.id().to_string();orphan_scan(game,&dim,None,"world-saved");}
     if let Some((server,_))=lock(&SERVER).as_mut(){
         let mut host=Host{game,buttons:Vec::new()};
         // Everything the world did up to this save is in its chunks (`world_saving`): no receipt is pending past it,
@@ -125,6 +127,7 @@ fn world_saved_timed(game:&mut crate::game::Game<'_>,wait:bool){
         if server.native_kept_items()>0{eprintln!("ntm: the storage keeps {} removals/batches of an earlier version",server.native_kept_items());}
     }
     store_commit(game,wait);
+    if trace_effects(){eprintln!("ntm save-order: store committed wait={wait} tick={}",game.ticks);}
     // `NTM_FAILPOINT=kv_committed` (tests): the process dies right after the storage of a save that does not wait is
     // written, its records still queued (with `HORIZON_WRITER_HOLD`, none of them is written). Off by default.
     if !wait&&std::env::var("NTM_FAILPOINT").is_ok_and(|v|v=="kv_committed"){
@@ -1183,12 +1186,45 @@ fn arrived(server: &mut Server) {
     }
 }
 
+/// The machine block entities of `chunk` (all of the dimension when none) and the block each one's cell holds now. An
+/// entity over a cell that holds no machine block is the anomaly the log is for (vanilla's `LevelChunk` drops it as
+/// "Tried to load a block entity ... but failed"); with `NTM_TRACE_EFFECTS` every machine entity is told, as a trace.
+fn orphan_scan(game: &mut crate::game::Game<'_>, dim: &str, chunk: Option<[i32; 2]>, why: &str) {
+    let mut found: Vec<([i32; 3], String, String)> = Vec::new();
+    for (pos, entity) in game.world.block_entities.iter_mut() {
+        if chunk.is_some_and(|c| pos.0 >> 4 != c[0] || pos.2 >> 4 != c[1]) {
+            continue;
+        }
+        let horizon_client::containers::BlockEntity::Mod(m) = entity else { continue };
+        if !is_machine(&m.id) {
+            continue;
+        }
+        let state = match m.nbt.get(&JavaString::from(STATE)) {
+            Some(Tag::String(text)) => text.to_string_lossy().chars().take(120).collect::<String>(),
+            _ => String::new(),
+        };
+        found.push(([pos.0, pos.1, pos.2], m.id.clone(), state));
+    }
+    for (pos, id, state) in found {
+        let block = game.native_loaded_block(dim, pos);
+        let over_nothing = block.as_deref().is_some_and(|b| !is_machine(ntm_core::blockstate::id_of(b)));
+        if over_nothing || trace_effects() {
+            eprintln!(
+                "ntm be-scan[{why}] {dim} {pos:?} be={id} block={} orphan={over_nothing} tick={} state={state}",
+                block.as_deref().unwrap_or("<not loaded>"),
+                game.ticks
+            );
+        }
+    }
+}
+
 /// A chunk loaded: its ledger, if it has one, is read and kept.
 pub(super) fn chunk_loaded(game: &mut crate::game::Game<'_>, dim: &str, chunk: [i32; 2]) {
     if dim_of(dim) != Some(game.dim) {
         return;
     }
     lock(&RAD_CHUNKS).push((dim.to_string(), chunk, true));
+    orphan_scan(game, dim, Some(chunk), "chunk-load");
     let key = chunk_key(dim, chunk);
     lock(&LOADED_AT).insert(key.clone(), game.ticks);
     let ledger = ledger_load(game, chunk);
@@ -2218,6 +2254,7 @@ pub(super) fn tick(game: &mut crate::game::Game<'_>, pos: [i32; 3], entity: &mut
         && { arrived(server); !server.native_has(&dim, pos) }
     {
         if let Some(Tag::String(state))=entity.nbt.get(&JavaString::from(STATE)) {
+            if trace_effects(){eprintln!("ntm adopt {dim} {pos:?}: be={} block={:?} state={}",entity.id,game.native_loaded_block(&dim,pos),state.to_string_lossy().chars().take(120).collect::<String>());}
             server.native_adopt(&dim,pos,&state.to_string_lossy());
         }else if let Some(state)=game.native_loaded_block(&dim,pos){
             // A just-placed BE may have been saved before its first NTM tick.

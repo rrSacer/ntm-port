@@ -90,6 +90,10 @@ impl Server {
             })
             .collect();
         for (k, generation) in absent {
+            if host.trace_effects() {
+                let held = host.get_block(&k.0, k.1);
+                host.log(&format!("observe_removals: {k:?} generation {generation} is absent: world holds {held:?}"));
+            }
             if self.ready.world.generations.get(&k).copied().unwrap_or(0) == generation {
                 self.ready
                     .world

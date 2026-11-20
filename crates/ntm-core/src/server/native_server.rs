@@ -266,6 +266,9 @@ impl Server {
         }
         let key=(dim.to_string(),pos);
         if !tracked(old)&&!tracked(new)&&!self.ready.world.generations.contains_key(&key){return;}
+        if std::env::var_os("NTM_TRACE_EFFECTS").is_some() {
+            eprintln!("ntm: block changed {dim} {pos:?}: {old} -> {new} (generation {} before)", self.ready.world.generations.get(&key).copied().unwrap_or(0));
+        }
         let old_generation=self.ready.world.generations.get(&key).copied().unwrap_or(0);
         let generation=old_generation.saturating_add(1);
         self.ready.world.generations.insert(key,generation);
