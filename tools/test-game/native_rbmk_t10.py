@@ -130,9 +130,17 @@ class Proof:
         if carry:
             # In the main inventory, out of the hotbar: the hand stays empty.
             self.host.command(f'item replace entity {name} container.20 with {carry}')
-        self.host.command(f'tp {name} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
-        time.sleep(.6)
-        g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
+        if name == HOST:
+            # The front cell, a dummy: its core's screen.
+            self.host.command(f'tp {name} {PLACE[0] + .5} {PLACE[1]} {PLACE[2] - 2.5} 0 0')
+            time.sleep(.6)
+            g.ctl(f'interact {PLACE[0]} {PLACE[1]} {PLACE[2]} north')
+        else:
+            # A LAN guest's use of a dummy cell opens nothing (the engine's, recorded in the T10 doc): the core itself,
+            # from behind.
+            self.host.command(f'tp {name} {self.core[0] + .5} {Y} {self.core[2] + 3.5} 180 0')
+            time.sleep(.6)
+            g.ctl(f'interact {self.core[0]} {self.core[1]} {self.core[2]} south')
         deadline = time.monotonic() + 10
         while time.monotonic() < deadline:
             if g.ctl('screen').get('screen') == 'container':
@@ -140,7 +148,30 @@ class Proof:
                 return g
             time.sleep(.2)
         self.host.evidence.setdefault('not_opened', []).append({'who': name, 'screen': g.ctl('screen'), 'ui': g.ctl('ui').get('screen')})
+        self.diagnose(name)
+        self.host.save()
         raise AssertionError(f'{name}: the console did not open')
+
+    def diagnose(self, name):
+        """Which uses open a screen for `name`: the console's core from the south, a top cell, a rod's core (T07's)."""
+        g = self.players[name]
+        tries = [('core_south', self.core, (self.core[0] + .5, self.core[2] + 3.5, 180), 'south'),
+                 ('top_cell', (PLACE[0], Y + 2, PLACE[2]), (PLACE[0] + .5, PLACE[2] - 2.5, 0), 'north'),
+                 ('rod_core', RODS['auto'], (RODS['auto'][0] + .5, RODS['auto'][2] - 2.5, 0), 'north')]
+        out = {}
+        for label, cell, (x, z, yaw), face in tries:
+            g.close()
+            time.sleep(.5)
+            self.host.command(f'tp {name} {x} {Y} {z} {yaw} 0')
+            time.sleep(.8)
+            try:
+                r = g.ctl(f'interact {cell[0]} {cell[1]} {cell[2]} {face}')
+            except RuntimeError as error:
+                r = {'error': str(error)}
+            time.sleep(2)
+            out[label] = {'interact': {k: r.get(k) for k in ('ok', 'error', 'block')} if isinstance(r, dict) else str(r), 'screen': g.ctl('screen').get('screen')}
+        self.host.evidence['diagnose'] = out
+        g.close()
 
     def setup(self):
         h = self.host
@@ -192,6 +223,14 @@ class Proof:
         text = ' '.join(self.host.command(f'clear {name} {item} 0').get('chat', []))
         m = re.search(r'(\d+)', text)
         return int(m[1]) if m else 0
+
+    def host_opens(self):
+        try:
+            self.open(HOST)
+            self.check('the_host_opens_the_console', True, self.host.ctl('screen').get('screen'))
+        except AssertionError as e:
+            self.check('the_host_opens_the_console', False, str(e))
+        self.host.close()
 
     def commands(self):
         # C: the guest carries 7 cobblestone through the screen; the console has no slot, and none is copied.
@@ -270,6 +309,7 @@ class Proof:
         self.host.evidence['phase'] = 'link'
         self.link()
         self.host.evidence['phase'] = 'commands'
+        self.host_opens()
         self.commands()
         self.host.evidence['phase'] = 'az5'
         self.az5()
