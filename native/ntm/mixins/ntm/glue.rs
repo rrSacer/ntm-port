@@ -437,9 +437,15 @@ fn test_hook(game:&mut crate::game::Game<'_>,player:&horizon_client::mod_api::Na
         host.game.native_feedback(horizon_client::text::Text::literal(format!("ntmtest ok={ok}")));
         return true;
     }
-    // `ntmtest screen replay|refusal` (RBMK T06): the screen commands' checks, as a stale client would meet them.
+    // `ntmtest screen replay|refusal [player]` (RBMK T06): the screen commands' checks, as a stale client would meet
+    // them; a named player's (a LAN guest's, asked by the host, who gets the reply) from where that player stands.
     if w.first()==Some(&"screen"){
-        let reply=format!("ntmtest ok=true {}",screen_test_hook(server,&me,&dim,player.position,w.get(1).copied().unwrap_or("")));
+        let named=w.get(2).and_then(|name|host.game.native_server_players().into_iter().find(|p|p.name==*name));
+        let (who,in_dim,at)=match &named{
+            Some(p)=>(horizon_protocol::crypto::uuid_string(p.uuid),p.dimension.clone(),p.position),
+            None=>(me.clone(),dim.clone(),player.position),
+        };
+        let reply=format!("ntmtest ok=true {}",screen_test_hook(server,&who,&in_dim,at,w.get(1).copied().unwrap_or("")));
         host.game.native_feedback(horizon_client::text::Text::literal(reply));
         return true;
     }

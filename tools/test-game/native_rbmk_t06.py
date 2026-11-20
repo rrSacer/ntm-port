@@ -86,8 +86,9 @@ class Proof:
         time.sleep(1.0)
 
     def screen_hook(self, name):
-        # Run by the player itself: the hook replays that player's last command, from where they stand.
-        text = ' '.join(self.players[name].command('ntmtest screen replay').get('chat', []))
+        # Asked by the host for the player (the reply goes to whoever runs the command): the hook replays that
+        # player's last command, from where they stand.
+        text = ' '.join(self.host.command(f'ntmtest screen replay {name}').get('chat', []))
         m = re.search(r'screen=(\S+)', text)
         return m[1] if m else text
 
