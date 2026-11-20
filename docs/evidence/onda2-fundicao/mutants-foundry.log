@@ -1,0 +1,23 @@
+KILLED       F1 the face of the jet is not checked  <- it_takes_metal_only_with_a_mold_on_a_funnel_cell_from_above, only_the_face_up_of_a_funnel_cell_takes_a_pour
+KILLED       F1 the resolution misses a column of the funnel  <- a_jet_on_a_funnel_cell_resolves_to_the_caster_core
+KILLED       F4 the limit is ten molds  <- it_accepts_nine_molds_and_hands_back_the_rest
+KILLED       F4 a partial batch goes after 100 ticks  <- a_partial_batch_waits_200_ticks_after_the_last_progress
+KILLED       F4 an overflow keeps the old progress  <- it_accepts_nine_molds_and_hands_back_the_rest
+KILLED       F4 a cast uses no water  <- a_rotary_jet_on_a_funnel_cell_fills_the_caster_and_it_casts_the_batch, nine_molds_cast_at_once_and_use_the_water_and_make_steam
+KILLED       F5 the excess is lost (no effect)  <- a_caster_restored_from_the_journal_keeps_its_mold_and_outputs_and_drops_the_excess_once, the_excess_after_a_lighter_mold_is_dropped_as_one_exact_scrap
+KILLED       F5 the excess is rounded to ingots  <- a_caster_restored_from_the_journal_keeps_its_mold_and_outputs_and_drops_the_excess_once, the_excess_after_a_lighter_mold_is_dropped_as_one_exact_scrap
+KILLED       F5 the effects are not drained  <- the_excess_after_a_lighter_mold_is_dropped_as_one_exact_scrap, the_excess_of_a_lighter_mold_is_one_exact_scrap
+KILLED       P1-1 the caster claims its record keeps the slots  <- a_caster_restored_from_the_journal_keeps_its_mold_and_outputs_and_drops_the_excess_once
+KILLED       D4 the pool is rounded to ingots on break  <- a_broken_block_gives_back_every_quantum, a_broken_caster_gives_back_its_items_and_every_quantum
+KILLED       D4 the crucible ignores a scrap's amount  <- a_scrap_melts_into_its_own_amount
+KILLED       R8 the rotary furnace's molten output becomes a scrap  <- r8_molten_output_is_lost_on_break, r8_breaking_rotary_furnace_loses_molten_output_and_keeps_only_slots
+KILLED       rotary steamUseMult uses 5 instead of 10  <- steam_use_mult_and_spent_steam_return_exact
+KILLED       rotary canProcess ignores the steam already used  <- it_stops_only_above_100_steam_used_and_not_returned
+KILLED       rotary canProcess ignores the room for the spent steam  <- spent_steam_full_blocks_processing_without_consuming_burn_time
+KILLED       rotary consumes one of an ingredient, not its count  <- an_ingredient_takes_its_own_count_out_of_the_slot
+KILLED       rotary returns a spent steam per 50 used, not 100  <- steam_use_mult_and_spent_steam_return_exact
+KILLED       rotary burns a fuel for its whole time, not half  <- fluid_identifier_types_tank_and_runs_recipe, spent_steam_full_blocks_processing_without_consuming_burn_time, steam_use_mult_and_spent_steam_return_exa
+KILLED       rotary pours 36 quanta a tick  <- facing_east_pours_north_into_basin_and_casts_block, a_rotary_jet_on_a_funnel_cell_fills_the_caster_and_it_casts_the_batch
+KILLED       rotary spout one block closer  <- facing_east_pours_north_into_basin_and_casts_block, fluid_proxy_delivers_lightoil_and_core_rejects_direct_duct, rotary_furnace_melts_steel_with_steam_
+KILLED       rotary progress ignores the process speed  <- progress_grows_with_the_process_speed
+22 of 22 killed
