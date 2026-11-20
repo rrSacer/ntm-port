@@ -161,3 +161,8 @@ de baixo nasce com a quantia). 8 de 8 pontos, 2592 em todos, igual ao controle; 
 **Não coberto em jogo** (declarado): escória sobre escória (a transferência e a remoção em dois passos): ficam nos testes de servidor
 (soma exata a cada tick, reabertura entre os dois passos pelo registro e pelo diário); um cenário em jogo exigiria dois vazamentos
 sucessivos sobre a mesma coluna ou uma escória posta por comando (nasce vazia).
+
+## O carvão eterno em jogo (`run-eternal-coal-game.py`, binário `horizon-client-r10`)
+
+Uma fornalha com um `ntm:coal_eternal` no slot 0: o calor sobe (31 300 → 62 000 → 92 800 em 30 s) e o carvão continua no slot, pilha de 1
+(`report-eternal-coal.json`).
