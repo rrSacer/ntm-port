@@ -729,6 +729,14 @@ impl Slotted for RbmkColumn {
                 *slot = value;
             }
         }
+        // The outgasser's screen (T09, `horizon_screen/rbmk_outgasser.json`): `GUIRBMKOutgasser`'s progress arrow,
+        // `(int)(progress * 13 / duration)` of 13 pixels, and the gas (fill, max).
+        if let Some(o) = &self.outgasser {
+            let arrow = (o.progress * 13.0 / super::outgasser::DURATION) as i32;
+            for (slot, value) in v.iter_mut().skip(1).zip([arrow, 13, o.gas.fill, o.gas.max]) {
+                *slot = value;
+            }
+        }
         v
     }
 

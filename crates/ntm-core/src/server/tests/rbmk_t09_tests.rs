@@ -131,3 +131,17 @@ fn the_gas_leaves_by_the_ports() {
     let Data::FluidStore(b) = g.machine([2, Y - 1, 0]).data else { panic!() };
     assert_eq!((b.tank.fluid.as_str(), b.tank.mb, state(&mut g).gas.fill), ("coaloil", 300, 0));
 }
+
+/// The screen: the progress arrow as `GUIRBMKOutgasser` cuts it (13 pixels at 10 000) and the gas (fill, max).
+#[test]
+fn the_screen_reads_the_arrow_and_the_gas() {
+    let mut g = game();
+    g.place(AT, &column("rbmk_outgasser"));
+    g.run(2);
+    let Data::Rbmk(c) = &mut g.ready().world.machines.get_mut(&(OW.to_string(), AT)).unwrap().data else { panic!() };
+    let o = c.outgasser.as_mut().unwrap();
+    (o.progress, o.gas.fill) = (7_692.3, 1_500);
+    use container_bridge::Slotted;
+    let v = c.screen_data();
+    assert_eq!(&v[1..5], &[9, 13, 1_500, 64_000], "7692.3 * 13 / 10000 = 9.99: 9 pixels");
+}
