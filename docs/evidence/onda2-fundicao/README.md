@@ -72,3 +72,34 @@ carga da máquina, sem nada a ver com o código):
 
 Os cenários scrap, caster, excess e batch da revisão 3 não foram repetidos com este binário (o que mudou nele é só o gancho de mão).
 Mutantes: `mutants-foundry.log`, 41 de 41 mortos.
+
+## Revisão 5: a bica (`ntm:foundry_slagtap`) e a escória (`ntm:slag`) (binário `6d8c54fb1780…`, `ntm.hmod` `59181d49dcc8…`, HEAD `6ce9aace`)
+
+Commits: `80ba2f30` (a bica, a escória, o commit único, testes de servidor, conteúdo) e `6ce9aace` (mutantes, roteamento, roteiros de jogo).
+O vazamento é **um commit só** (`commit_machines` com o registro menor da origem, o maior da escória atingida e o bloco novo com o
+primeiro registro, `CellWrite.initial`): recusado, nada muda; aceito, os três chegam juntos. **Um chunk só**: se a escória sairia do chunk da
+origem, a bica não vaza e a origem guarda o metal (o diário de vários chunks não sabe recriar o bloco que falta numa gravação rasgada).
+
+Provas em jogo (reports `report-foundry-slagtap-*.json`), 144 quanta de ouro (2 lingotes) num canal, a bica posta por comando e **a
+gravação pedida em seguida** (o vazamento corre contra ela), cortes estritos, contra o controle vanilla (barris):
+
+- **slagtap-pour**: 8 de 8 pontos, **144 em todos**, 0 perdido, nenhum duplicado, igual ao controle, mesmo corte. O mundo reaberto
+  (evidência `where`) está no estado de antes do vazamento (`kill`, `save_begin`: 144 no canal, sem bloco de escória) ou no de depois
+  (`none`, `kv_committed`, `chunks_written`, `entities_written`, `world_saved`, `players_saved`: 0 no canal, 144 no bloco `ntm:slag`),
+  nunca nos dois e nunca em nenhum.
+- **slagtap-border** (canal em z 15, bica e fosso em z 16: outro chunk): a bica **não vaza** e o canal fica com os 144 em todos os pontos
+  (`where`: canal 144, sem bloco). Todos os 8 pontos: 144, 0 perdido, nenhum duplicado, não pior que o controle. `ok` do relatório é falso
+  em 4 pontos (`chunks_written` em diante) só porque a máquina de cortes não casou o conjunto de chunks gravados com o do controle
+  (`same_cut: false`): o controle mexe nos barris dos dois chunks, o mod não muda nada (não vaza). Os números não dependem disso.
+- **slagtap-break** (D4): o jogador em sobrevivência quebra o bloco de escória de 144 e a sucata exata (`ntm_amount:144`) chega ao inventário
+  (8 de 8 pontos ok). **Atenção**: em `chunks_written` e `entities_written` o mundo reaberto tem **0** (144 perdidos) e em `kv_committed`
+  **288** (144 duplicados): são os mesmos números do controle vanilla (`control_lost` 144, −144), o resíduo da ordem em que o arquivo do
+  jogador é gravado depois dos chunks (o mesmo de `scrap`, `hand` e `clicks`, rodadas 3 e 4). Não vêm do vazamento (a escória já existia).
+
+Mutantes: `mutants-foundry.log`, os 16 da escória e da bica, **14 mortos**. Os dois que sobrevivem são equivalentes: (1) "um commit recusado
+é vertido em memória mesmo assim": o servidor refaz o modelo a partir do bloco entity no mesmo tique (nada observável sobrou nem pelo
+registro lembrado, pela sucata caída ou pelo bloco); (2) "toda célula de cima é ar": a definição do raio já garante que a célula de cima da
+primeira atingida é ar, uma máquina (excluída antes) ou fora do chunk (excluída antes).
+
+Lacunas declaradas: sem o escoamento da escória, cor neutra, sem o vazamento entre chunks, mato/neve/líquido não são substituídos, sem
+fechamento por redstone, sem partícula do jato, sem pick-block (`docs/content-foundry.md`).

@@ -248,12 +248,15 @@ def slagtap_world(g):
     pit behind it, down to stone at y 97 (and, for the break, a corridor south for the player). In `slagtap-break` the tap is
     placed here and the slag is made; in the others the act places it."""
     pit_end = SLAG_AT[2] + (0 if BORDER else 3)
-    g.command('fill %d %d %d %d %d %d minecraft:air' % (SLAG_AT[0], SLAG_AT[1], SLAG_AT[2], SLAG_AT[0], CORE[1] - 1, pit_end))
-    g.command('fill %d %d %d %d %d %d minecraft:stone' % (SLAG_AT[0], SLAG_AT[1] - 1, SLAG_AT[2], SLAG_AT[0], SLAG_AT[1] - 1, pit_end))
+    # A closed pit, three blocks wide: the scrap of a broken slag flies a little and must land inside, on its stone (the
+    # area's floor is one block thick, with nothing but the world's own ground under it).
+    g.command('fill %d %d %d %d %d %d minecraft:stone' % (SLAG_AT[0] - 2, SLAG_AT[1] - 1, SLAG_AT[2] - 1, SLAG_AT[0] + 2, CORE[1] - 1, pit_end + 1))
+    g.command('fill %d %d %d %d %d %d minecraft:air' % (SLAG_AT[0] - 1, SLAG_AT[1], SLAG_AT[2], SLAG_AT[0] + 1, CORE[1] - 1, pit_end))
     if VANILLA:
         g.command('setblock %d %d %d minecraft:barrel' % CHANNEL_AT)
         g.command('setblock %d %d %d minecraft:barrel' % SLAG_AT)
-        g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % CHANNEL_AT)
+        # The break's control starts where the pour ends: the ingots in the pit's barrel.
+        g.command('item replace block %d %d %d container.1 with minecraft:gold_ingot 2' % (SLAG_AT if SCENARIO == 'slagtap-break' else CHANNEL_AT))
         return
     g.command('setblock %d %d %d %s[facing=south,honey_level=0]' % (CORE[0], CORE[1] - 1, CORE[2], FIREBOX))
     g.command('setblock %d %d %d %s[facing=north,honey_level=0]' % (*CORE, CRUCIBLE))
@@ -517,10 +520,14 @@ def act(g):
         else:
             # The tap, and straight to the save: the pour is one game step racing it, whichever side of the cut it falls on.
             put_tap(g, wait=False)
-            try:
-                g.ctl('save')
-            except Exception as error:
-                g.evidence['early_save_error'] = repr(error)[:200]
+            if not NO_SAVE:
+                try:
+                    g.ctl('save')
+                except Exception as error:
+                    # The process died at the cut, inside the save the pour raced: nothing more to do, the reopens count.
+                    g.evidence['died_in_the_early_save'] = repr(error)[:200]
+                    g.save()
+                    return
             if BORDER:
                 time.sleep(15)
                 g.check('the_border_tap_pours_nothing', server_block(g, SLAG_AT) == '' and molten(model(g, CHANNEL_AT)) == 144,
@@ -541,7 +548,8 @@ def act(g):
             g.command(f'tp @s {SLAG_AT[0] + .5} {SLAG_AT[1]} {SLAG_AT[2] + 2.5}')
             time.sleep(1)
             break_it(g, [SLAG_AT], 'slag')
-            pick_up_all(g)
+            # The player stands at the pit: the scrap may be in the inventory already, as the break's result says.
+            pick_up_all(g, required=False)
             inv = inventory_text(g)
             g.check('one_exact_scrap_of_144', stack_quanta(inv) == 144 and 'ntm_amount:144' in inv.replace(' ', '').replace('"', ''), inv[:400])
             g.check('the_slag_is_gone', server_block(g, SLAG_AT) == '', server_block(g, SLAG_AT))
@@ -655,6 +663,10 @@ def verify(g, again=False):
         items = block_items(g, caster_core(g))
         g.evidence['caster_items'] = items[:400]
         g.check('the_mold_survives', 'ntm:mold__' in items, items[:400])
+    if SLAGTAP and not VANILLA:
+        # Where the metal is after the reopen: the channel (the world kept the base), or the slag block (the pour).
+        g.evidence['where' + ('_again' if again else '')] = {
+            'channel': molten(model(g, CHANNEL_AT)), 'slag': molten(model(g, SLAG_AT)), 'slag_block': server_block(g, SLAG_AT)}
     # Counted only: the verdict is the runner's, against the base and the vanilla control.
     g.evidence['counted' + ('_again' if again else '')] = now
     g.ctl('save')

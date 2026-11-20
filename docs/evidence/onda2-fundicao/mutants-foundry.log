@@ -40,3 +40,22 @@ KILLED       hand: the crucible takes only the waste  <- a_shovel_takes_each_sta
 KILLED       hand: the crucible keeps its stacks  <- a_shovel_takes_each_stack_of_a_crucible_as_its_own_exact_scrap
 KILLED       hand: an empty channel opens the screen with a shovel  <- a_shovel_takes_a_channels_metal_as_one_exact_scrap_and_the_click_is_taken_even_when_empty
 41 of 41 killed
+
+# Rodada 5: os 16 mutantes da escória e da bica (14 mortos; 2 equivalentes)
+KILLED       slag: it takes any material  <- it_takes_its_own_material_up_to_sixteen_blocks, another_material_below_takes_nothing_and_the_pour_sits_on_top_of_it
+KILLED       slag: it takes more than its capacity  <- it_takes_its_own_material_up_to_sixteen_blocks, what_no_block_can_take_stays_in_the_source, what_the_block_hit_does_not_take_goes_into_a_new_block_abo
+KILLED       slag D4: a broken slag gives whole ingots only  <- a_broken_slag_gives_every_quantum, a_broken_slag_drops_its_exact_scrap, a_channel_pours_through_a_slag_tap_into_a_new_slag_block_and_no_tick_has_a_qua
+KILLED       slag: the source is not reduced (the metal twice)  <- a_channel_pours_through_a_slag_tap_into_a_new_slag_block_and_no_tick_has_a_quantum_more_or_less, a_refused_commit_pours_nothing_and_the_source_keeps_i
+KILLED       slag: the source is emptied whatever was poured (the rest lost)  <- what_no_block_can_take_stays_in_the_source
+SURVIVED     slag: a refused commit is poured in memory anyway
+KILLED       slag: no block above for what the hit cannot take  <- a_broken_slag_drops_its_exact_scrap, a_channel_pours_through_a_slag_tap_into_a_new_slag_block_and_no_tick_has_a_quantum_more_or_less, a_pour_that_woul
+SURVIVED     slag: any block above is air
+KILLED       slag: the new block is not part of the commit  <- a_broken_slag_drops_its_exact_scrap, a_channel_pours_through_a_slag_tap_into_a_new_slag_block_and_no_tick_has_a_quantum_more_or_less, a_pour_that_woul
+KILLED       slag: the slag filled is not in the commit  <- what_no_block_can_take_stays_in_the_source, what_the_block_hit_does_not_take_goes_into_a_new_block_above_it
+KILLED       slag: a pour leaves the source's chunk (new block)  <- a_pour_that_would_leave_the_sources_chunk_pours_nothing
+KILLED       slag: a pour leaves the source's chunk (slag filled)  <- a_pour_that_would_leave_the_sources_chunk_pours_nothing
+KILLED       slag tap: it takes metal from any side  <- a_tap_that_refuses_the_metal_leaves_it_to_the_next_neighbour
+KILLED       slag tap: it ignores its filter  <- a_tap_that_refuses_the_metal_leaves_it_to_the_next_neighbour
+KILLED       slag tap: the ray reaches 16 blocks  <- the_slag_tap_pours_only_from_behind_what_its_filter_passes_and_with_something_under_it
+KILLED       slag tap: the ray reaches 14 blocks  <- the_slag_tap_pours_only_from_behind_what_its_filter_passes_and_with_something_under_it
+14 of 16 killed
