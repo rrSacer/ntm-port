@@ -159,6 +159,7 @@ impl Server {
         self.solar_tick(host);
         phases.mark("solar");
         self.rbmk_world_tick(host);
+        self.rbmk_console_scan();
         self.simulate(host);
         // The RBMK's incrementRad of the steps accepted (TileEntityRBMKRod:153, RBMKNeutronHandler:305,417,421).
         self.apply_chunk_rad_pending();

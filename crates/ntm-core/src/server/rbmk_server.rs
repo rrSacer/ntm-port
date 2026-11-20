@@ -584,6 +584,42 @@ impl Server {
         None
     }
 
+    /// `TileEntityRBMKConsole.rescan` of every console in an open level when the world time is a multiple of 10 (T10):
+    /// the 225 cells around its target, turned by its rotation, as the columns' block entities stand (each a column's
+    /// type, heat, and a control rod's level and group); a cell with no column, or one not loaded, is none. Kept in
+    /// memory, as the Java's `columns`.
+    pub(super) fn rbmk_console_scan(&mut self) {
+        if !self.ready.world.ticks.is_multiple_of(10) {
+            return;
+        }
+        use crate::rbmk::console::{self, ColumnView};
+        let consoles: Vec<Key> = self.ready.world.machines.iter().filter(|(k, m)| matches!(m.data, Data::RbmkConsole(_)) && self.ready.loaded.get(*k) == Some(&true)).map(|(k, _)| k.clone()).collect();
+        for key in consoles {
+            let Some(Data::RbmkConsole(c)) = self.ready.world.machines.get(&key).map(|m| &m.data) else { continue };
+            let (st, dim) = (c.state.clone(), key.0.clone());
+            let scan: Vec<Option<ColumnView>> = (0..console::CELLS)
+                .map(|i| {
+                    let (x, z) = console::offset(st.rotation, i);
+                    let k = (dim.clone(), [st.target[0] + x, st.target[1], st.target[2] + z]);
+                    if self.ready.loaded.get(&k) != Some(&true) {
+                        return None;
+                    }
+                    let m = self.ready.world.machines.get(&k)?;
+                    let Data::Rbmk(col) = &m.data else { return None };
+                    Some(ColumnView {
+                        kind: console::column_type(&m.block)?,
+                        heat: col.heat,
+                        level: col.control.as_ref().map(|s| s.level),
+                        color: col.control.as_ref().and_then(|s| s.color),
+                    })
+                })
+                .collect();
+            if let Some(Data::RbmkConsole(c)) = self.ready.world.machines.get_mut(&key).map(|m| &mut m.data) {
+                c.scan = scan;
+            }
+        }
+    }
+
     /// What a world tick does for the RBMK before its tile entities (T04): `SatelliteRayScan.updateSystem` of each
     /// open dimension when the world time is 10 past a multiple of 20 (`ModEventHandler.worldTick:661`, a dimension
     /// whose world is not open is not ticked and keeps its events, as an unloaded `WorldServer`); and the engine's

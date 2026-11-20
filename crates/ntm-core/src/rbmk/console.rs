@@ -85,6 +85,62 @@ pub fn column_type(block: &str) -> Option<ColumnType> {
     })
 }
 
+/// What the console's last scan saw of a column (`rescan`, every 10 ticks): its type and the values its map and
+/// screens read (`heat`; a control rod's `level` and group, `RBMKColor` ordinal).
+#[derive(Clone, Debug, PartialEq)]
+pub struct ColumnView {
+    pub kind: ColumnType,
+    pub heat: f64,
+    pub level: Option<f64>,
+    pub color: Option<u8>,
+}
+
+/// The console as the server keeps it: its saved state and, in memory only (the Java's `columns` are refilled by the
+/// next `rescan`), its last scan of the 225 cells.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct Console {
+    #[serde(flatten)]
+    pub state: ConsoleState,
+    #[serde(skip)]
+    pub scan: Vec<Option<ColumnView>>,
+}
+
+impl crate::machine::Logic for Console {
+    fn level(&self, _: u8) -> u8 {
+        0
+    }
+    fn view(&self) -> crate::view::ViewModel {
+        crate::view::ViewModel::new("RBMK console")
+    }
+}
+
+/// What the console's screen reads (`serialize`'s columns and screens, typed, D6): the target, the rotation, the six
+/// screens (`tN` type, `sN` columns) and the last scan, `k` the 225 column types (`ColumnType` ordinal, -1 none) and,
+/// for each column seen, `hN` its heat, `lN` a control rod's level and `cN` a manual rod's group (-1 none).
+pub fn snapshot(console: &Console) -> Fields {
+    use crate::screens::control::Value;
+    let mut f = Fields::default();
+    let st = &console.state;
+    f.set("tX", Value::Int(st.target[0])).set("tY", Value::Int(st.target[1])).set("tZ", Value::Int(st.target[2]));
+    f.set("rotation", Value::Byte(st.rotation as i8));
+    for (i, s) in st.screens.iter().enumerate() {
+        f.set(&format!("t{i}"), Value::Byte(s.kind as i8)).set(&format!("s{i}"), Value::IntArray(s.columns.clone()));
+    }
+    let kinds = (0..CELLS as usize).map(|i| console.scan.get(i).cloned().flatten().map_or(-1, |c| c.kind as i32)).collect();
+    f.set("k", Value::IntArray(kinds));
+    for (i, c) in console.scan.iter().enumerate() {
+        let Some(c) = c else { continue };
+        f.set(&format!("h{i}"), Value::Double(c.heat));
+        if let Some(l) = c.level {
+            f.set(&format!("l{i}"), Value::Double(l));
+        }
+        if c.kind == ColumnType::Control {
+            f.set(&format!("c{i}"), Value::Int(c.color.map_or(-1, i32::from)));
+        }
+    }
+    f
+}
+
 /// What a command does to a column at a cell relative to the target (each only to the column kind the Java casts to;
 /// another kind there, or none, is untouched).
 #[derive(Clone, Debug, PartialEq)]
@@ -204,7 +260,7 @@ mod tests {
         let mut s = ConsoleState::default();
         // In key order (the Java's is a HashSet's): every one gets the same level, so the order changes nothing.
         let mut at: Vec<(i32, i32)> = receive(&mut s, &f).unwrap().into_iter().map(|e| match e {
-            Edit::Target { at, level } if level == 0.0 => at,
+            Edit::Target { at, level: 0.0 } => at,
             other => panic!("{other:?}"),
         }).collect();
         at.sort();

@@ -91,6 +91,8 @@ pub enum Kind {
     Rbmk,
     /// The RBMK's ReaSim inlet and outlet (`crate::rbmk::persist::ReasimPort`, T08).
     RbmkReasim,
+    /// The RBMK console (`crate::rbmk::console::Console`, T10).
+    RbmkConsole,
     /// The brick furnace (`crate::furnace_brick`), lit or not.
     BrickFurnace,
     /// The K3 furnaces of several slots (`crate::furnaces`).
@@ -199,6 +201,7 @@ pub enum Data {
     Radioisotope(Box<crate::radioisotopes::Radioisotope>),
     Rbmk(Box<crate::rbmk::persist::RbmkColumn>),
     RbmkReasim(Box<crate::rbmk::persist::ReasimPort>),
+    RbmkConsole(Box<crate::rbmk::console::Console>),
     BrickFurnace(crate::furnace_brick::BrickFurnace),
     Furnace(Box<crate::furnaces::Furnace>),
     Welder(Box<crate::welders::Welder>),
@@ -281,6 +284,7 @@ impl Machine {
             Kind::Zirnox => Data::Zirnox(Box::new(crate::zirnox::Zirnox::of(block_id))),
             Kind::Rbmk => Data::Rbmk(Box::new(crate::rbmk::persist::RbmkColumn::of(block_id))),
             Kind::RbmkReasim => Data::RbmkReasim(Box::new(crate::rbmk::persist::ReasimPort::of(block_id))),
+            Kind::RbmkConsole => Data::RbmkConsole(Box::default()),
             Kind::Pile => Data::Pile(Box::new(crate::pile::Pile::of(block_id).expect("pile block"))),
             Kind::SolarStirling => Data::SolarStirling(Box::new(crate::solar_stirling::SolarStirling::of(block_id).expect("solar/stirling block"))),
             Kind::Combustion => match crate::combustion::Combustion::of(block_id) {
@@ -382,6 +386,7 @@ impl Machine {
             Data::Zirnox(_) => Kind::Zirnox,
             Data::Rbmk(_) => Kind::Rbmk,
             Data::RbmkReasim(_) => Kind::RbmkReasim,
+            Data::RbmkConsole(_) => Kind::RbmkConsole,
             Data::Radioisotope(_) => Kind::Radioisotope,
             Data::Pile(_) => Kind::Pile,
             Data::SolarStirling(_) => Kind::SolarStirling,
@@ -431,6 +436,7 @@ impl Machine {
             Data::Zirnox(m) => &**m,
             Data::Rbmk(m) => &**m,
             Data::RbmkReasim(m) => &**m,
+            Data::RbmkConsole(m) => &**m,
             Data::Radioisotope(m) => &**m,
             Data::Pile(m) => &**m,
             Data::SolarStirling(m) => &**m,
@@ -480,6 +486,7 @@ impl Machine {
             Data::Zirnox(m) => &mut **m,
             Data::Rbmk(m) => &mut **m,
             Data::RbmkReasim(m) => &mut **m,
+            Data::RbmkConsole(m) => &mut **m,
             Data::Radioisotope(m) => &mut **m,
             Data::Pile(m) => &mut **m,
             Data::SolarStirling(m) => &mut **m,
