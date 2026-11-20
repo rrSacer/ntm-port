@@ -1616,3 +1616,66 @@ fn a_change_that_leaves_the_revision_behind_is_caught() {
     s.ready.kept_rev = Some(kept);
     let _ = s.world_changed();
 }
+
+/// RBMK T04 review P3(b,c): the chunk-load adoption (`native_chunk_machines_loaded`, what the glue calls as a chunk
+/// loads) goes the ways `native_adopt` goes. A machine whose generation a receipt consumed is a ghost: told as handled,
+/// not adopted, not counted, and the break is carried through on the next tick.
+#[test]
+fn a_chunk_load_leaves_a_ghost_unadopted_and_uncounted() {
+    use super::{CommittedEffects, WorldEffect};
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let guard = super::CellGuard::machine(&key, &s.ready.world.machines[&key]);
+    let saved = serde_json::to_string(&s.ready.world.machines[&key]).unwrap();
+    let consumed = s.ready.world.machines.remove(&key).unwrap();
+    s.ready.world.generations.insert(key.clone(), 1);
+    s.ready.world.applied_machine_effects.push_back(CommittedEffects {
+        serial: 4,
+        origins: vec![guard],
+        owners: vec![key.clone()],
+        tombstones: vec![(key.clone(), consumed)],
+        effects: std::collections::VecDeque::from([WorldEffect::Items { dim: D.into(), pos: P, items: vec![("ntm:pile_rod__zr".into(), 1)] }]),
+        ..Default::default()
+    });
+    assert_eq!(s.native_chunk_machines_loaded(D, &[(P, saved.clone())]), 0, "a ghost is no adoption");
+    assert!(!s.native_has_machine(D, P));
+    assert_eq!(s.ready.ghosts.iter().filter(|(k, _)| *k == key).count(), 1);
+    // Its block entity's first tick, as before the chunk-load adoption: still one ghost, still nothing adopted.
+    assert!(s.native_adopt(D, P, &saved));
+    assert_eq!(s.ready.ghosts.iter().filter(|(k, _)| *k == key).count(), 1);
+    s.native_tick(&mut h, 2);
+    assert_eq!(blockstate::id_of(&h.blocks[&P]), "minecraft:air", "the break is carried through");
+    assert!(h.retained.is_empty(), "and releases nothing: the receipt did that");
+}
+
+/// An older generation than the storage's that a pending batch names: not adopted at the chunk's load either (the
+/// batch's own replay decides the cell), and not counted; the current generation of the storage stays.
+#[test]
+fn a_chunk_load_leaves_an_older_generation_a_pending_batch_names() {
+    use super::{CommittedEffects, WorldEffect};
+    let mut h = Host::default();
+    let mut s = install(&mut h, zirnox::BLOCK, 28);
+    let key = (D.to_string(), P);
+    let old = super::CellGuard::machine(&key, &s.ready.world.machines[&key]);
+    let saved = serde_json::to_string(&s.ready.world.machines[&key]).unwrap();
+    s.ready.world.machines.remove(&key);
+    s.ready.world.generations.insert(key.clone(), old.generation + 2);
+    // Pending (not applied yet): it names the old generation as an origin, its effect elsewhere.
+    s.ready.world.machine_effects.push_back(CommittedEffects {
+        serial: 9,
+        origins: vec![old.clone()],
+        owners: vec![key.clone()],
+        effects: std::collections::VecDeque::from([WorldEffect::Items { dim: D.into(), pos: [3, 64, 3], items: vec![("ntm:pile_rod__zr".into(), 1)] }]),
+        ..Default::default()
+    });
+    assert_eq!(s.native_chunk_machines_loaded(D, &[(P, saved.clone())]), 0);
+    assert!(!s.native_has_machine(D, P));
+    assert_eq!(s.ready.world.generations[&key], old.generation + 2, "the storage's generation stays");
+    assert!(!s.native_adopt(D, P, &saved), "the same answer at the block entity's tick");
+    // A machine of the current generation in another chunk record is adopted and counted.
+    let mut current = serde_json::from_str::<crate::machine::Machine>(&saved).unwrap();
+    current.generation = old.generation + 2;
+    assert_eq!(s.native_chunk_machines_loaded(D, &[(P, serde_json::to_string(&current).unwrap())]), 1);
+    assert!(s.native_has_machine(D, P));
+}

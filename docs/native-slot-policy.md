@@ -70,6 +70,16 @@ Filtros estáticos devem expressar restrições comuns às duas origens. Por
 exemplo, se RTG aceita qualquer item manualmente, não adicione um `accept`
 estático que o limite a pellets: ponha a restrição da automação na política.
 
+### Bypass criativo (`creative_bypass`)
+
+`ModSlotFilter::creative_bypass: bool` (motor `rbmk-t05-engine`, `6e13d4271c`) deixa os gestos de menu de um
+jogador em criativo passarem pela `policy` sem consultá-la, como um contêiner Java cujo `slotClick` ou
+`transferStackInSlot` testa `player.capabilities.isCreativeMode` antes da sua regra. Só a `policy` é pulada:
+`accept`/`reject`, `output`, `max` e `quick_move` continuam valendo, e a origem `Automation` nunca pula (um funil
+não tem jogador). O menu do anfitrião usa o modo de jogo do jogador local; o menu do hóspede LAN, o do hóspede
+(`Guest::creative`), no anfitrião. `false` conserva o comportamento anterior. Primeiro uso: o canal de combustível
+RBMK (T05), cuja regra de casco quente (`ContainerRBMKRod.slotClick`) não vale em criativo.
+
 ## Exemplo mínimo
 
 ```rust

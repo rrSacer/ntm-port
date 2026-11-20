@@ -545,6 +545,36 @@ pub fn ray_offsets(kind: Kind, range: i32) -> Vec<[i32; 2]> {
     crate::rbmk::reactor::Reactor::ray_cells(kind, 0, 0, range).into_iter().map(|(x, z)| [x, z]).collect()
 }
 
+/// The four fuel channels (`RBMKRod`, `RBMKRodReaSim`): the columns whose menu is `ContainerRBMKRod`.
+pub fn is_channel(block: &str) -> bool {
+    matches!(block, "ntm:rbmk_rod" | "ntm:rbmk_rod_mod" | "ntm:rbmk_rod_reasim" | "ntm:rbmk_rod_reasim_mod")
+}
+
+/// `ItemRBMKRod.getHullHeat` of the stack in a channel's slot, if it is a fuel rod (`instanceof ItemRBMKRod`): the
+/// defaults of a stack with no tag (20), 0 for a tag without the key, NaN as written.
+fn rod_hull(slot: Option<&Stack>) -> Option<f64> {
+    let s = slot?;
+    let rod = rod_of(&s.id)?;
+    Some(stack_rod(s).hull_heat(rod))
+}
+
+/// `TileEntityRBMKRod.coldEnoughForManual`: no rod, or a hull at 200 °C or less (`<=`; NaN is not cold). What the
+/// channel's menu asks of every survival gesture on its slot (`ContainerRBMKRod.slotClick`, `transferStackInSlot`).
+pub fn cold_enough_for_manual(slot: Option<&Stack>) -> bool {
+    rod_hull(slot).is_none_or(|h| h <= 200.0)
+}
+
+/// `TileEntityRBMKRod.coldEnoughForAutoloader`: no rod, or a hull at 1000 °C or less (the autoloader, T12).
+pub fn cold_enough_for_autoloader(slot: Option<&Stack>) -> bool {
+    rod_hull(slot).is_none_or(|h| h <= 1_000.0)
+}
+
+/// The hull at which `TileEntityRBMKRod.invalidate` melts the channel down when it goes (`>= 1500`, unless
+/// `dialDisableMeltdowns`): the predicate T16's meltdown on break reads.
+pub fn hot_enough_to_melt_on_break(slot: Option<&Stack>) -> bool {
+    rod_hull(slot).is_some_and(|h| h >= 1_500.0)
+}
+
 /// `RayEvent.INFO_NUCLEAR`: what a fuel channel that took flux reports.
 pub const INFO_NUCLEAR: &str = "NEUTRON_EMISSION";
 
@@ -783,5 +813,59 @@ mod port_tests {
         assert_eq!(classic.iter().map(|p| p.at).collect::<Vec<_>>(), vec![[10, 65, -3], [10, 64, -3], [10, 62, -3]]);
         assert_eq!(classic[2].connections.len(), 6);
         assert_eq!(classic[2].connections[1], ([10, 63, -3], [0, 1, 0]));
+    }
+}
+
+#[cfg(test)]
+mod hull_tests {
+    use super::*;
+
+    fn rod(custom: Option<&str>, tagged: bool) -> Stack {
+        let mut s = Stack::new("ntm:rbmk_fuel_ueu", 1);
+        s.custom = custom.map(str::to_string);
+        s.tagged = tagged;
+        s
+    }
+
+    fn hull(h: f64) -> Stack {
+        rod(Some(&format!("{{hull:{}d}}", crate::snbt::java_double(h))), true)
+    }
+
+    #[test]
+    fn the_hull_thresholds_are_javas_comparisons() {
+        let cases: [(f64, bool, bool, bool); 9] = [
+            (200.0, true, true, false),
+            (f64::from_bits(200.0f64.to_bits() + 1), false, true, false),
+            (1_000.0, false, true, false),
+            (f64::from_bits(1_000.0f64.to_bits() + 1), false, false, false),
+            (f64::from_bits(1_500.0f64.to_bits() - 1), false, false, false),
+            (1_500.0, false, false, true),
+            (f64::NAN, false, false, false),
+            (f64::INFINITY, false, false, true),
+            (f64::NEG_INFINITY, true, true, false),
+        ];
+        for (h, manual, autoloader, melts) in cases {
+            let s = hull(h);
+            assert_eq!(cold_enough_for_manual(Some(&s)), manual, "manual {h}");
+            assert_eq!(cold_enough_for_autoloader(Some(&s)), autoloader, "autoloader {h}");
+            assert_eq!(hot_enough_to_melt_on_break(Some(&s)), melts, "melts {h}");
+        }
+    }
+
+    #[test]
+    fn an_empty_slot_or_another_item_is_cold() {
+        let stone = Stack::new("minecraft:stone", 1);
+        let hot_stone = Stack { custom: Some("{hull:9000.0d}".into()), ..stone.clone() };
+        for s in [None, Some(&stone), Some(&hot_stone)] {
+            assert!(cold_enough_for_manual(s) && cold_enough_for_autoloader(s) && !hot_enough_to_melt_on_break(s));
+        }
+    }
+
+    #[test]
+    fn a_rod_without_the_key_reads_its_defaults_or_zero() {
+        // No tag: `setNBTDefaults` first (hull 20). A tag without the key: `getDouble` reads 0. Both cold.
+        for s in [rod(None, false), rod(None, true), rod(Some("{yield:5.0d}"), true)] {
+            assert!(cold_enough_for_manual(Some(&s)) && !hot_enough_to_melt_on_break(Some(&s)), "{s:?}");
+        }
     }
 }
